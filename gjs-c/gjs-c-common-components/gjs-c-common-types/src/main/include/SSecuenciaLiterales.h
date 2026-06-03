@@ -37,16 +37,12 @@ int SSecLitEstaVacia ( SSecuenciaLiterales * p_secObj );
 
 char * SSecLitElemento ( SSecuenciaLiterales * p_secObj, int iElem );
 
-int SSecLitInsertar ( SSecuenciaLiterales * p_secObj, char * p_cDato );
-int SSecLitInsertarDup ( SSecuenciaLiterales * p_secObj, const char * p_cDato );
+int SSecLitInsertar ( SSecuenciaLiterales * p_secObj, const char * p_cDato );
 int SSecLitEliminar ( SSecuenciaLiterales * p_secObj, int iElem );
 int SSecLitVaciar ( SSecuenciaLiterales * p_secObj );
 
-int	SSecLitLiberacionMemoriaActivada ( SSecuenciaLiterales * p_secObj );
-void SSecLitActivarLiberacionMemoria ( SSecuenciaLiterales * p_secObj );
-void SSecLitDesactivarLiberacionMemoria ( SSecuenciaLiterales * p_secObj );
-
 int SSecLitExiste ( SSecuenciaLiterales * p_secObj, const char * p_cDato );
+int SSecLitBuscar ( SSecuenciaLiterales * p_secObj, const char * p_cDato );
 
 
 #endif

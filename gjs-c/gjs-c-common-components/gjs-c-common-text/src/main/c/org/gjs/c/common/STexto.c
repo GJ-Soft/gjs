@@ -176,17 +176,23 @@ int STxtInicializar ( STexto * p_txtObj, const char * p_cTexto )
 			p_cLinea = CadPalabraSep ( p_cTexto, iLinea, '\n' );
 			p_cadLinea = SCadGenerar ( p_cLinea );
 			SLisCadInsertar ( p_txtObj->p_lisLineas, p_cadLinea );
-			MemLiberar ( (void **) p_cLinea );
+			MemLiberar ( (void **) &p_cLinea );
 		}
 		iRes = iNumLineas;
-		p_txtObj->iLineaAct = 0;
-		p_txtObj->iColumnaAct = 0;
+		if ( iNumLineas > 0 )
+		{
+			p_txtObj->iLineaAct = 0;
+			p_txtObj->iColumnaAct = 0;
+		}
+		else
+		{
+			p_txtObj->iLineaAct = -1;
+			p_txtObj->iColumnaAct = -1;
+		}
 	}
 	else
 	{
 		iRes = 0;
-		p_txtObj->iLineaAct = -1;
-		p_txtObj->iColumnaAct = -1;
 	}
 	return ( iRes );
 }
@@ -285,7 +291,7 @@ void STxtIrFinal ( STexto * p_txtObj )
 	{
 		if ( STxtNumLineas ( p_txtObj ) > 0 )
 		{
-			p_txtObj->iLineaAct = STxtNumLineas ( p_txtObj );
+			p_txtObj->iLineaAct = STxtNumLineas ( p_txtObj ) - 1;
 			p_cadLinea = STxtLineaActual ( p_txtObj );
 			if ( ES_VALIDO ( p_cadLinea ) ) 
 			{
@@ -422,7 +428,7 @@ void STxtIrFinalLinea ( STexto * p_txtObj )
 		{
 			if ( SCadLongitud ( p_cadLinea ) > 0 )
 			{			
-				p_txtObj->iColumnaAct = 0;
+				p_txtObj->iColumnaAct = SCadLongitud ( p_cadLinea ) - 1;
 			}
 			else
 			{
@@ -750,7 +756,17 @@ void STxtCursorRetroceder ( STexto * p_txtObj, SCursor * p_curPos, int iPosicion
 
 SCadena * STxtLineaActual ( STexto * p_txtObj )
 {
-	return ( STxtLinea ( p_txtObj, p_txtObj->iLineaAct ) );
+	SCadena * p_cadRes;
+	
+	if ( ES_VALIDO ( p_txtObj ) )
+	{
+		p_cadRes = STxtLinea ( p_txtObj, p_txtObj->iLineaAct );
+	}
+	else
+	{
+		p_cadRes = NULL;
+	}
+	return ( p_cadRes );
 }
 
 SCadena * STxtLinea ( STexto * p_txtObj, int iLinea )
@@ -842,7 +858,6 @@ SCadena * STxtExtraer ( STexto * p_txtObj, int iLinIni, int iColIni, int iLinFin
 		( STxtPosEsValida ( p_txtObj, iLinFin, iColFin ) == 1 ) && 
 			( _STxtPosMenorOIgual ( iLinIni, iColIni, iLinFin, iColFin ) == 1 ) )
 	{
-		printf ( "** ENTRA LinIni %d  Fin %d  ColIni %d Fin %d\n", iLinIni, iLinFin, iColIni, iColFin );
 		p_cadRes = SCadCrearDef ();
 		for ( int iLinea = iLinIni; iLinea <= iLinFin;  iLinea = iLinea + 1 )
 		{
@@ -864,7 +879,6 @@ SCadena * STxtExtraer ( STexto * p_txtObj, int iLinIni, int iColIni, int iLinFin
 			{
 				iPosFin = iColFin;
 			}
-			printf ( "Extrayendo %d a %d\n", iPosIni, iPosFin );
 			p_cadSubcad = SCadExtraer ( p_cadLinea, iPosIni, iPosFin - iPosIni );	
 			SCadImprimirExt( p_cadSubcad, "** SUB", '=', 1);
 			SCadConcatenar ( p_cadRes, p_cadSubcad );
@@ -875,9 +889,6 @@ SCadena * STxtExtraer ( STexto * p_txtObj, int iLinIni, int iColIni, int iLinFin
 	else
 	{
 		p_cadRes = NULL;
-		printf ( "Valida 1=%d\n", STxtPosEsValida ( p_txtObj, iLinIni, iColIni ) ); 
-		printf ( "Valida 1=%d\n", STxtPosEsValida ( p_txtObj, iLinFin, iColFin ) ); 
-		printf ( "Valida 1=%d\n", _STxtPosMenorOIgual ( iLinIni, iColIni, iLinFin, iColFin ));
 	}
 	return ( p_cadRes );
 }
@@ -897,42 +908,3 @@ int _STxtPosMenorOIgual ( int iLinIni, int iColIni, int iLinFin, int iColFin )
 	return ( iRes );
 }
 
-
-/*
-void TxtInsertarCaracter ( TTEXTO *p_txtObj, char c )
-{
-	char 	*sLineaNueva;
-
-	if ( lNumLineas == 0 ) 
-	{
-		TxtInsertarLinea ( p_txtObj );
-		TxtInicio ( p_txtObj );
-	}
-
-	if ( p_txtObj->iColumnaAct == strlen ( * ( ( p_txtObj->psLineas ) + iLineaAct ) ) )
-	{
-		// Añadir al final:
-		
-	}
-	else
-	{
-		// Insertar en medio:
-	}
-}
-
-
-void TxtInsertarLinea ( TTEXTO *p_txtObj, char *sCadena );
-
-
-TLINEA TxtLinea ( TTEXTO *plinDatos );
-char *TxtCadenaLinea ( TTEXTO *plinDatos );
-char *TxtCadenaTexto ( TTEXTO *plinDatos );
-
-void TxtEliminarCaracter ( TTEXTO *pLinDatos );
-
-
-void TxtImprimir ( TTEXTO *p_txtObj )
-{
-}
-
-*/

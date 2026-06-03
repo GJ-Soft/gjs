@@ -326,7 +326,7 @@ void SLinMover ( SLinea * p_linObj, int iPos )
 	}
 }
 
-int SVaciar ( SLinea * p_linObj )
+int SLinVaciar ( SLinea * p_linObj )
 {
 	int iRes;
 
@@ -545,7 +545,7 @@ int SLinInsertarExt ( SLinea * p_linObj, SCadena * p_cadValor, SCadena ** p_p_ca
 		if ( ( iLonRes > 0 ) && ES_VALIDO ( p_p_cadResto ) )
 		{
 			p_cadResto = SCadExtraerUltimos ( p_linObj->p_cadTexto, iLonRes );
-			p_p_cadResto = &p_cadResto;
+			*p_p_cadResto = p_cadResto;
 		}
 
 		iRes = SCadInsertar ( p_linObj->p_cadTexto, iPos, p_cadValor );
@@ -583,7 +583,7 @@ int SLinInsertarLiteralExt ( SLinea * p_linObj, const char * p_cValor, char ** p
 		if ( ( iLonRes > 0 ) && ES_VALIDO ( p_p_cResto ) )
 		{
 			p_cResto = CadExtraerUltimos ( SCadValor ( p_linObj->p_cadTexto ), iLonRes );
-			p_p_cResto = &p_cResto;
+			*p_p_cResto = p_cResto;
 		}
 
 		iRes = SCadInsertarLiteral ( p_linObj->p_cadTexto, iPos, p_cValor );
@@ -836,6 +836,6 @@ void SLinImprimir ( SLinea * p_linObj )
 {
 	if ( SLinEsValida ( p_linObj ) == 1 )
 	{
-		//SCadImprimir ( p_linObj->p_cadTexto );
+		SCadImprimir ( p_linObj->p_cadTexto );
 	}
 }

@@ -8,9 +8,7 @@
 		<relativePath>../gjs-java-web-parent</relativePath>
 	</parent>	
 
-    <groupId>org.gjs.java</groupId>
     <artifactId>gjs-java-springboot-parent</artifactId>
-    <version>1.0.0-RC.1</version>
 	<packaging>pom</packaging>
 
 	<name>GJS Spring Boot parent</name>

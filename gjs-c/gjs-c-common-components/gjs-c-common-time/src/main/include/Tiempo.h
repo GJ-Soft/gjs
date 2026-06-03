@@ -36,6 +36,7 @@
 #include <UTC.h>
 
 #include <SFecha.h>
+#include <SHora.h>
 #include <SFechaHora.h>
 #include <SCronometro.h>
 #include <SReloj.h>

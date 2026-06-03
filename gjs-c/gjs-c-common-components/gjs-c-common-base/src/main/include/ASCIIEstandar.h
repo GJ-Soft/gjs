@@ -28,6 +28,8 @@ int ASCIICodigo ( char cVal );
 char ASCIICaracter ( int iCod );
 
 int ASCIIEsCodigoControl ( char cVal );
+int ASCIIEsCodigoNoImprimible ( char cVal );
+int ASCIIEsCodigoControlImprimible ( char cVal );
 int ASCIIEsNUL ( char cVal );
 int ASCIIEsSOH ( char cVal );
 int ASCIIEsSTX ( char cVal );

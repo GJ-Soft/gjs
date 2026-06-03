@@ -6,7 +6,7 @@
 #include <TiempoDefs.h>
 
 #include <SFecha.h>
-
+#include <SHora.h>
 
 
 
@@ -19,6 +19,7 @@ typedef struct
 
 SFechaHora * SFecHorCrearDef ();
 SFechaHora * SFecHorCrearFecha ( SFecha * p_fecValor );
+SFechaHora * SFecHorCrearFechaHora ( SFecha * p_fecValor, SHora * p_horValor );
 SFechaHora * SFecHorCrear ( double dValor );
 SFechaHora * SFecHorCrearFecHor ( long lFecha, long lHora );
 SFechaHora * SFecHorCrearLit ( const char * p_cValor );

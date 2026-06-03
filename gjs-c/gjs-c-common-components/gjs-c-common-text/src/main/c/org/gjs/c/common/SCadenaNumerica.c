@@ -162,6 +162,11 @@ SCadenaNumerica * SCadnDuplicar ( SCadenaNumerica * p_cadObj )
 	if ( ES_VALIDO ( p_cadObj ) )
 	{
 		p_cadCopia = SCadnCrearValor ( SCadMaxTam ( SCadcCadena ( p_cadObj->p_cadInfo ) ), p_cadObj->iVal );
+		if ( ES_VALIDO ( p_cadCopia ) )
+		{
+			p_cadCopia->iCeros = p_cadObj->iCeros;
+			p_cadCopia->iAlin = p_cadObj->iAlin;
+		}
 	}
 	else
 	{

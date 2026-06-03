@@ -9,9 +9,7 @@
 		<relativePath>../gjs-archetype-parent</relativePath>
 	</parent>	
 
-    <groupId>org.gjs.maven.archetypes</groupId>    
     <artifactId>gjs-plugin-archetype</artifactId>    
-    <version>1.0.0-RC.1</version>    
     <packaging>maven-archetype</packaging>    
     
     <name>gjs-plugin-archetype</name>    

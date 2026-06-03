@@ -38,7 +38,7 @@ typedef struct
 SNombre * SNomCrearDef ();
 SNombre * SNomCrear ( int iMaxTam );
 
-void SNomDetruir ( SNombre ** p_p_nomObj );
+void SNomDestruir ( SNombre ** p_p_nomObj );
 
 int SNomMaxLongitud ( SNombre * p_nomObj );
 int SNomLongitud ( SNombre * p_nomObj );

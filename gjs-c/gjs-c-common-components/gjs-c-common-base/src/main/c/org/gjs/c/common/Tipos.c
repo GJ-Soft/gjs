@@ -38,9 +38,9 @@ const char * TipLiteral ( int iCod )
 	{
 		return ( TIP_TXT_BYTE );
 	}
-	else if ( iCod == TIP_FECHA )	
+	else if ( iCod == TIP_TIEMPO )	
 	{
-		return ( TIP_TXT_FECHA );
+		return ( TIP_TXT_TIEMPO );
 	}
 	else if ( iCod == TIP_BINARIO )	
 	{
@@ -82,6 +82,18 @@ const char * TipLiteral ( int iCod )
 	{
 		return ( TIP_TXT_NUMERO_HEXADECIMAL );
 	}
+	else if ( iCod == TIP_TIEMPO_FECHA )
+	{
+		return ( TIP_TXT_TIEMPO_FECHA );
+	}
+	else if ( iCod == TIP_TIEMPO_HORA )
+	{
+		return ( TIP_TXT_TIEMPO_HORA );
+	}
+	else if ( iCod == TIP_TIEMPO_FECHA_HORA )
+	{
+		return ( TIP_TXT_TIEMPO_FECHA_HORA );
+	}
 	else 
 	{
 		return ( NULL );
@@ -122,9 +134,9 @@ int TipCodigo ( const char * p_cTipo )
 		{
 			iTipo = TIP_BYTE;
 		}
-		else if ( strcmp ( p_cTipo, TIP_TXT_FECHA ) == 0 )
+		else if ( strcmp ( p_cTipo, TIP_TXT_TIEMPO ) == 0 )
 		{
-			iTipo = TIP_FECHA;
+			iTipo = TIP_TIEMPO;
 		}
 		else if ( strcmp ( p_cTipo, TIP_TXT_BINARIO ) == 0 )
 		{
@@ -166,6 +178,18 @@ int TipCodigo ( const char * p_cTipo )
 		{
 			iTipo = TIP_NUMERO_HEXADECIMAL;
 		}
+		else if ( strcmp ( p_cTipo, TIP_TXT_TIEMPO_FECHA ) == 0 )
+		{
+			iTipo = TIP_TIEMPO_FECHA;
+		}
+		else if ( strcmp ( p_cTipo, TIP_TXT_TIEMPO_HORA ) == 0 )
+		{
+			iTipo = TIP_TIEMPO_HORA;
+		}
+		else if ( strcmp ( p_cTipo, TIP_TXT_TIEMPO_FECHA_HORA ) == 0 )
+		{
+			iTipo = TIP_TIEMPO_FECHA_HORA;
+		}
 		else 
 		{
 			iTipo = TIP_DESCONOCIDO;
@@ -188,7 +212,7 @@ int TipEsValido ( int iCod )
 		 ( iCod == TIP_BYTE ) ||
 		 ( iCod == TIP_CADENA ) ||
 		 ( iCod == TIP_BOOLEANO ) ||
-		 ( iCod == TIP_FECHA ) ||
+		 ( iCod == TIP_TIEMPO ) ||
 		 ( iCod == TIP_BINARIO ) ||
 		 ( iCod == TIP_OBJETO ) ||
 		 ( iCod == TIP_NUMERO_NATURAL ) ||
@@ -198,7 +222,10 @@ int TipEsValido ( int iCod )
 		 ( iCod == TIP_BINARIO_16 ) ||
 		 ( iCod == TIP_BINARIO_32 ) ||
 		 ( iCod == TIP_BINARIO_64 ) ||
-		 ( iCod == TIP_BINARIO_128 ) )
+		 ( iCod == TIP_BINARIO_128 ) ||
+		 ( iCod == TIP_TIEMPO_FECHA ) ||
+		 ( iCod == TIP_TIEMPO_HORA ) ||
+		 ( iCod == TIP_TIEMPO_FECHA_HORA ) )
 	{
 		iRes = 1;
 	}
@@ -218,7 +245,7 @@ int TipEsEstrictamenteValido ( int iCod )
 		 ( iCod == TIP_BYTE ) ||
 		 ( iCod == TIP_CADENA ) ||
 		 ( iCod == TIP_BOOLEANO ) ||
-		 ( iCod == TIP_FECHA ) ||
+		 ( iCod == TIP_TIEMPO ) ||
 		 ( iCod == TIP_BINARIO ) ||
 		 ( iCod == TIP_OBJETO ) ||
 		 ( iCod == TIP_NUMERO_NATURAL ) ||
@@ -228,7 +255,10 @@ int TipEsEstrictamenteValido ( int iCod )
 		 ( iCod == TIP_BINARIO_16 ) ||
 		 ( iCod == TIP_BINARIO_32 ) ||
 		 ( iCod == TIP_BINARIO_64 ) ||
-		 ( iCod == TIP_BINARIO_128 ) )
+		 ( iCod == TIP_BINARIO_128 ) ||
+		 ( iCod == TIP_TIEMPO_FECHA ) ||
+		 ( iCod == TIP_TIEMPO_HORA ) ||
+		 ( iCod == TIP_TIEMPO_FECHA_HORA ) )
 	{
 		iRes = 1;
 	}
@@ -348,11 +378,14 @@ int TipEsBooleano ( int iCod )
 	return ( iRes );
 }
 
-int TipEsFecha ( int iCod )
+int TipEsTiempo ( int iCod )
 {
 	int iRes;
 
-	if ( iCod == TIP_FECHA )
+	if ( ( iCod == TIP_TIEMPO ) ||
+		 ( iCod == TIP_TIEMPO_FECHA ) ||
+		 ( iCod == TIP_TIEMPO_HORA ) ||
+		 ( iCod == TIP_TIEMPO_FECHA_HORA ) )
 	{
 		iRes = 1;
 	}
@@ -457,6 +490,51 @@ int TipEsHexadecimal ( int iCod )
 	return ( iRes );
 }
 
+int TipEsFecha ( int iCod )
+{
+	int iRes;
+
+	if ( iCod == TIP_TIEMPO_FECHA )
+	{
+		iRes = 1;
+	}
+	else 
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int TipEsHora ( int iCod )
+{
+	int iRes;
+
+	if ( iCod == TIP_TIEMPO_HORA )
+	{
+		iRes = 1;
+	}
+	else 
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int TipEsFechaHora ( int iCod )
+{
+	int iRes;
+
+	if ( iCod == TIP_TIEMPO_FECHA_HORA )
+	{
+		iRes = 1;
+	}
+	else 
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int TipEsDeTamVariable ( int iCod )
 {
 	int iRes;
@@ -512,9 +590,9 @@ int TipTam ( int iCod )
 	{
 		iRes = 1;
 	}
-	else if ( iCod == TIP_FECHA )	
+	else if ( iCod == TIP_TIEMPO )	
 	{
-		iRes = 8;
+		iRes = 14;
 	}
 	else if ( iCod == TIP_NUMERO_NATURAL )
 	{
@@ -548,13 +626,24 @@ int TipTam ( int iCod )
 	{
 		iRes = 16;
 	}
+	else if ( iCod == TIP_TIEMPO_FECHA )
+	{
+		iRes = 8;
+	}
+	else if ( iCod == TIP_TIEMPO_HORA )
+	{
+		iRes = 6;
+	}
+	else if ( iCod == TIP_TIEMPO_FECHA_HORA )
+	{
+		iRes = 14;
+	}
 	else 
 	{
 		iRes = -1;
 	}
 	return ( iRes );
 }
-
 
 
 

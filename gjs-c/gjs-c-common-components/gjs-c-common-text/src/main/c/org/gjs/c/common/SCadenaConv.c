@@ -85,7 +85,8 @@ void SCadcDestruir ( SCadenaConv ** p_p_cadObj )
 
 		if ( ES_VALIDO ( p_cadObj ) )
 		{
-			SConvDestruir ( &(p_cadObj->p_convValores ) );
+			SCadDestruir ( &(p_cadObj->p_cadInfo) );
+			SConvDestruir ( &(p_cadObj->p_convValores) );
 			MemLiberar ( (void **) p_p_cadObj );
 		}
 	}
@@ -2455,7 +2456,7 @@ int SCadcAcabaPorCad ( SCadenaConv * p_cadObj, SCadena * p_cadValor )
 
 	if ( ES_VALIDO ( p_cadObj ) )
 	{
-		iRes = SCadEmpiezaPor ( p_cadObj->p_cadInfo, p_cadValor );
+		iRes = SCadAcabaPor ( p_cadObj->p_cadInfo, p_cadValor );
 	}
 	else
 	{

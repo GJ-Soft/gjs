@@ -23,7 +23,7 @@
 
 
 
-static int STokCopiarConFormatoVararg ( SToken * p_tokObj, const char * p_cFormato, va_list valArgumentos  );
+int _STokCopiarConFormatoVararg ( SToken * p_tokObj, const char * p_cFormato, va_list valArgumentos );
 
 
 
@@ -161,7 +161,7 @@ int STokVaciar ( SToken * p_tokObj )
 	return ( iRes );
 }
 
-int STokEsNulo ( SToken * p_tokObj )
+int STokEstaVacio ( SToken * p_tokObj )
 {
 	int iRes;
 
@@ -336,7 +336,7 @@ int STokCopiar ( SToken * p_tokObj, SToken * p_tokValor )
 
 	if ( ES_VALIDO ( p_tokObj ) && ES_VALIDO ( p_tokValor ) )
 	{
-		iRes = STokCopiarCadena ( p_tokObj, STokCadena ( p_tokObj ) );
+		iRes = STokCopiarCadena ( p_tokObj, STokCadena ( p_tokValor ) );
 	}
 	else
 	{
@@ -375,7 +375,7 @@ int STokCopiarConFormato ( SToken * p_tokObj, const char * p_cFormato, ... )
 	if ( ES_VALIDO ( p_tokObj ) && ES_VALIDO ( p_cFormato ) )
 	{
 		va_start ( valArgumentos,  p_cFormato );
-		iRes = STokCopiarConFormato ( p_tokObj, p_cFormato, valArgumentos );
+		iRes = _STokCopiarConFormatoVararg ( p_tokObj, p_cFormato, valArgumentos );
 		va_end ( valArgumentos );
 	}
 	else
@@ -385,7 +385,7 @@ int STokCopiarConFormato ( SToken * p_tokObj, const char * p_cFormato, ... )
 	return ( iRes );
 }
 
-static int STokCopiarConFormatoVararg ( SToken * p_tokObj, const char * p_cFormato, va_list valArgumentos  )
+int _STokCopiarConFormatoVararg ( SToken * p_tokObj, const char * p_cFormato, va_list valArgumentos  )
 {
 	int		iRes;
 	char *	p_cCadena;

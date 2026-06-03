@@ -58,7 +58,43 @@ int ASCIIEsCodigoControl ( char cVal )
 	return ( iRes );
 }
 
+int ASCIIEsCodigoNoImprimible ( char cVal )
+{
+	int iRes;
 
+	if ( ( ASCIIEsCodigoControl ( cVal ) == 1 ) &&
+		( ASCIIEsCodigoControlImprimible ( cVal ) == 0 ) )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int ASCIIEsCodigoControlImprimible ( char cVal )
+{
+	int iRes; 
+	int iCod;
+
+	iCod = ASCIICodigo ( cVal );	
+	if ( ( iCod == ASCII_TAB ) || 
+		 ( iCod == ASCII_LF ) ||
+		 ( iCod == ASCII_CR ) ||
+		 ( iCod == ASCII_BS ) ||
+		 ( iCod == ASCII_VT ) ||
+		 ( iCod == ASCII_FF ) )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
 int ASCIIEsNUL ( char cVal )
 {
 	int iRes;

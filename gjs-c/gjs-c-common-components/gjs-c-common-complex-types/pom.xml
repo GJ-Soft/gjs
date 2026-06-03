@@ -10,7 +10,6 @@
 
 	<groupId>org.gjs.c.common</groupId>
 	<artifactId>gjs-c-common-complex-types</artifactId>
-	<version>1.0.0-RC.1</version>
 	<packaging>nar</packaging>
 
 	<name>GJS C Common Complex Types Support</name>
@@ -29,6 +28,11 @@
 		<dependency>
 			<groupId>org.gjs.c.common</groupId>
 			<artifactId>gjs-c-common-types</artifactId>
+			<type>nar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.gjs.c.common</groupId>
+			<artifactId>gjs-c-common-time</artifactId>
 			<type>nar</type>
 		</dependency>
     </dependencies>

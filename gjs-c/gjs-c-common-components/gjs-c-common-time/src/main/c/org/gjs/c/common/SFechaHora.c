@@ -28,6 +28,18 @@ SFechaHora * SFecHorCrearFecha ( SFecha * p_fecValor )
 	return ( p_fecObj );
 }
 
+SFechaHora * SFecHorCrearFechaHora ( SFecha * p_fecValor, SHora * p_horValor )
+{
+	SFechaHora * p_fecObj;
+	
+	p_fecObj = (SFechaHora *) MemReservar ( sizeof ( SFechaHora ) );
+	if ( ES_VALIDO ( p_fecObj ) )
+	{
+		SFecHorEstablecer ( p_fecObj, TmpFormConstruir ( SFecValor ( p_fecValor ), SHorValor ( p_horValor ) ) );
+	}
+	return ( p_fecObj );
+}
+
 SFechaHora * SFecHorCrear ( double dValor )
 {
 	SFechaHora * p_fecObj;

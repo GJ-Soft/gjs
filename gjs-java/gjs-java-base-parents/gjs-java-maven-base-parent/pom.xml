@@ -10,7 +10,6 @@
 
     <groupId>org.gjs.java.maven</groupId>
     <artifactId>gjs-java-maven-base-parent</artifactId>
-    <version>1.0.0-RC.1</version>
 	<packaging>pom</packaging>
 
 	<name>GJS Java maven plugins parent</name>

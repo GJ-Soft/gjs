@@ -21,6 +21,7 @@ SCadenaConv * SCadcCrearDef ();
 SCadenaConv * SCadcCrear ( int iLong );
 SCadenaConv * SCadcCrearLit ( const char * p_cValor );
 SCadenaConv * SCadcCrearCad ( SCadena * p_cadValor );
+// NOTA: La encapsula pero la destruye
 SCadenaConv * SCadcEncapsular ( SCadena * p_cadValor );
 
 void SCadcDestruir ( SCadenaConv ** p_p_cadObj );

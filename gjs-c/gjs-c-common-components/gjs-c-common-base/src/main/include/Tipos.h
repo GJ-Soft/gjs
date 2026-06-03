@@ -37,8 +37,8 @@
 #define TIP_BINARIO						6
 
 /* Tipos básicos especiales: */
-#define TIP_FECHA						7
-#define TIP_OBJETO						8
+#define TIP_OBJETO						7
+#define TIP_TIEMPO						8
 
 /* Subtipos numéricos: */
 #define TIP_NUMERO_NATURAL				10
@@ -47,10 +47,15 @@
 #define TIP_NUMERO_HEXADECIMAL			13
 
 /* Subtipos binarios: */
-#define TIP_BINARIO_16					20
-#define TIP_BINARIO_32					21
-#define TIP_BINARIO_64					22
-#define TIP_BINARIO_128					23
+#define TIP_BINARIO_16					60
+#define TIP_BINARIO_32					61
+#define TIP_BINARIO_64					62
+#define TIP_BINARIO_128					63
+
+/* Subtipos fecha: */
+#define TIP_TIEMPO_FECHA				80
+#define TIP_TIEMPO_HORA					81
+#define TIP_TIEMPO_FECHA_HORA			82
 
 
 
@@ -61,7 +66,7 @@
 #define TIP_TXT_BYTE					"Byte"
 #define TIP_TXT_CADENA					"Cadena"
 #define TIP_TXT_BOOLEANO				"Booleano"
-#define TIP_TXT_FECHA					"Fecha"
+#define TIP_TXT_TIEMPO					"Tiempo"
 #define TIP_TXT_BINARIO					"Binario"
 #define TIP_TXT_OBJETO					"Objeto"
 #define TIP_TXT_NUMERO_NATURAL			"Natural"
@@ -72,6 +77,9 @@
 #define TIP_TXT_BINARIO_32				"DWord"
 #define TIP_TXT_BINARIO_64				"QWord"
 #define TIP_TXT_BINARIO_128				"OWord"
+#define TIP_TXT_TIEMPO_FECHA			"Fecha"
+#define TIP_TXT_TIEMPO_HORA				"Hora"
+#define TIP_TXT_TIEMPO_FECHA_HORA		"FechaHora"
 
 
 
@@ -93,11 +101,16 @@ int TipEsByte ( int iCod );
 int TipEsFecha ( int iCod );
 int TipEsBinario ( int iCod );
 int TipEsObjeto ( int iCod );
+int TipEsTiempo ( int iCod );
 
 int TipEsNatural ( int iCod );
 int TipEsEntero ( int iCod );
 int TipEsReal ( int iCod );
 int TipEsHexadecimal ( int iCod );
+
+int TipEsFecha ( int iCod );
+int TipEsHora ( int iCod );
+int TipEsFechaHora ( int iCod );
 
 int TipEsDeTamVariable ( int iCod );
 int TipTam ( int iCod );

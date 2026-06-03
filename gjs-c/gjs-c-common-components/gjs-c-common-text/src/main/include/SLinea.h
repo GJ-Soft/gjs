@@ -47,7 +47,7 @@ void SLinSig ( SLinea * p_linObj );
 void SLinAnt ( SLinea * p_linObj );
 void SLinMover ( SLinea * p_linObj, int iPos );
 
-int SVaciar ( SLinea * p_linObj );
+int SLinVaciar ( SLinea * p_linObj );
 
 int SLinPuedeInsertar ( SLinea * p_linObj, SCadena * p_cadValor );
 int SLinPuedeInsertarLiteral ( SLinea * p_linObj, const char * p_cValor );

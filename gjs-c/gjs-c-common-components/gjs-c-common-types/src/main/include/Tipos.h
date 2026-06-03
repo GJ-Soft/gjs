@@ -97,6 +97,7 @@
 #include <STablaEnteros.h>
 #include <SPilaLiterales.h>
 #include <SPilaEnteros.h>
+#include <SConjuntoLiterales.h>
 #include <SArbolEnteros.h>
 #include <SArbolBinEnteros.h>
 #include <SArbolLiterales.h>

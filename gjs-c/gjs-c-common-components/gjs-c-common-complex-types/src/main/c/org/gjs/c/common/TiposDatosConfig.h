@@ -12,6 +12,7 @@
 
 #include <Tipos.h>
 #include <Texto.h>
+#include <Tiempo.h>
 
 
 

@@ -77,11 +77,7 @@ int PatEstablecerCaracter ( char * p_cPatron, int iCar, char cValor )
 {
 	int iRes;
 
-	if ( ( TipCarEsDigito ( cValor ) == 1 ) || 
-		 ( TipCarEsLetra ( cValor ) == 1 ) ||	
-		 ( TipCarEsLetraDigito ( cValor ) == 1 ) ||
-		 ( TipCarEsAlfanumerico ( cValor ) == 1 ) ||
-		 ( TipCarEsCualquiera ( cValor ) == 1 ) )
+	if ( TipCarEsValido ( cValor ) == 1 )
 	{
 		iRes = CadEstablecerCaracter ( p_cPatron, iCar, cValor );
 	}
@@ -362,7 +358,7 @@ int PatIncrementarValorDesde ( const char * p_cPatron, char * p_cCadena, int iPo
 			iAcarreo = 1;
 			iRes = 1;
 			iCar = iPos;
-			while ( ( iRes == 1 ) && ( iCar > 0 ) && ( iAcarreo == 1 ) )
+			while ( ( iRes == 1 ) && ( iCar >= 0 ) && ( iAcarreo == 1 ) )
 			{
 				if ( ASCIIPerteneceAlJuegoPrincipal ( p_cCadena [ iCar ] ) == 1 )
 				{
@@ -398,7 +394,7 @@ int PatIncrementarValorDesde ( const char * p_cPatron, char * p_cCadena, int iPo
 					{
 						if ( TipCarEsDigito ( p_cPatron [ iCar ] ) == 0 )
 						{
-							if ( ( p_cCadena [ iCar ] != 'Z' ) || 
+							if ( ( p_cCadena [ iCar ] != 'Z' ) && 
 								 ( p_cCadena [ iCar ] != 'z' ) )
 							{
 								iAcarreo = 0;
@@ -457,7 +453,7 @@ int PatDecrementarValorDesde ( const char * p_cPatron, char * p_cCadena, int iPo
 			iAcarreo = 1;
 			iRes = 1;
 			iCar = iPos;
-			while ( ( iRes == 1 ) && ( iCar > 0 ) && ( iAcarreo == 1 ) )
+			while ( ( iRes == 1 ) && ( iCar >= 0 ) && ( iAcarreo == 1 ) )
 			{
 				if ( ASCIIPerteneceAlJuegoPrincipal ( p_cCadena [ iCar ] ) == 1 )
 				{
@@ -493,7 +489,7 @@ int PatDecrementarValorDesde ( const char * p_cPatron, char * p_cCadena, int iPo
 					{
 						if ( TipCarEsDigito ( p_cPatron [ iCar ] ) == 0 )
 						{
-							if ( ( p_cCadena [ iCar ] != 'a' ) || 
+							if ( ( p_cCadena [ iCar ] != 'a' ) && 
 								 ( p_cCadena [ iCar ] != 'A' ) )
 							{
 								iAcarreo = 0;

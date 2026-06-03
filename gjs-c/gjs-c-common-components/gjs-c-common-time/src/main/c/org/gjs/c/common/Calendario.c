@@ -13,9 +13,9 @@
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
+#include "TiempoConfig.h"
 #include "Calendario.h"
 #include "SistemasHorarios.h"
-#include "TiempoConfig.h"
 
 
 
@@ -57,6 +57,10 @@ int CalendEsValido ( int iA, int iM, int iD )
 				else if ( ( iD > 0 ) && ( iD <= 31 ) )
 				{
 					iRes = 1;
+				} 
+				else
+				{
+					iRes = 0;
 				}
 			}
 			else if ( ( iD > 0 ) && ( iD <= CalendDiasMes ( iA, iM ) ) )

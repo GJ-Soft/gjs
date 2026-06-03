@@ -16,7 +16,7 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-	int iRes = 1;
+	int iRes = 0;
 	InicializarBase();
 	// TODO
 	return ( iRes );

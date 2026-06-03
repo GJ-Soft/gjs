@@ -10,7 +10,6 @@
 
 	<groupId>org.gjs.c.common</groupId>
 	<artifactId>gjs-cpp-common-support</artifactId>
-	<version>1.0.0-RC.1</version>
 	<packaging>nar</packaging>
 
 	<name>GJS C++ Common Support</name>

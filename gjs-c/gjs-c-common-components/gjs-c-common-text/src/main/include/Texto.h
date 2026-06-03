@@ -39,7 +39,7 @@
 #include <SNombre.h>
 #include <SDescripcion.h>
 
-
+#include <SDivisor.h>
 
 #endif
 

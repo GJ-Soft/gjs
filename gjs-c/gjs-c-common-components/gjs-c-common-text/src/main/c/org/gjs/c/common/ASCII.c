@@ -15,6 +15,7 @@
 /******************************************************************************/
 
 #include "ASCII.h"
+#include <ASCIIEstandar.h>
 
 
 
@@ -38,7 +39,7 @@ int ASCIIPerteneceAlJuegoPrincipal ( char cVal )
 	int iCod;
 
 	iCod = ASCIICodigo ( cVal );	
-	if ( ( iCod <= 127 ) ) 
+	if ( ( iCod >= 0 ) && ( iCod <= 127 ) ) 
 	{
 		iRes = 1;
 	}
@@ -277,13 +278,11 @@ int ASCIIEsConsonanteMin ( char cVal )
 		 ( iCod == ASCII_L_MIN ) ||
 		 ( iCod == ASCII_M_MIN ) ||
 		 ( iCod == ASCII_N_MIN ) ||
-		 ( iCod == ASCII_O_MIN ) ||
 		 ( iCod == ASCII_P_MIN ) ||
 		 ( iCod == ASCII_Q_MIN ) ||
 		 ( iCod == ASCII_R_MIN ) ||
 		 ( iCod == ASCII_S_MIN ) ||
 		 ( iCod == ASCII_T_MIN ) ||
-		 ( iCod == ASCII_U_MIN ) ||
 		 ( iCod == ASCII_V_MIN ) ||
 		 ( iCod == ASCII_W_MIN ) ||
 		 ( iCod == ASCII_X_MIN ) ||
@@ -320,13 +319,11 @@ int ASCIIEsConsonanteMay ( char cVal )
 		 ( iCod == ASCII_L_MAY ) ||
 		 ( iCod == ASCII_M_MAY ) ||
 		 ( iCod == ASCII_N_MAY ) ||
-		 ( iCod == ASCII_O_MAY ) ||
 		 ( iCod == ASCII_P_MAY ) ||
 		 ( iCod == ASCII_Q_MAY ) ||
 		 ( iCod == ASCII_R_MAY ) ||
 		 ( iCod == ASCII_S_MAY ) ||
 		 ( iCod == ASCII_T_MAY ) ||
-		 ( iCod == ASCII_U_MAY ) ||
 		 ( iCod == ASCII_V_MAY ) ||
 		 ( iCod == ASCII_W_MAY ) ||
 		 ( iCod == ASCII_X_MAY ) ||
@@ -410,7 +407,7 @@ int ASCIIEsLetraAcentuada ( char cVal )
 	int iRes;
 
 	if ( ( ASCIIEsLetraMinAcentuada ( cVal ) == 1 ) || 
-		 ( ASCIIEsLetraMinAcentuada ( cVal ) == 1 ) )
+		 ( ASCIIEsLetraMayAcentuada ( cVal ) == 1 ) )
 	{
 		iRes = 1;
 	}
@@ -1945,30 +1942,6 @@ int ASCIIEsSignoMoneda ( char cVal )
 	return ( iRes );
 }
 
-
-int ASCIIEsCodigoControlImprimible ( char cVal )
-{
-	int iRes; 
-	int iCod;
-
-	iCod = ASCIICodigo ( cVal );	
-	if ( ( iCod == ASCII_TAB ) || 
-		 ( iCod == ASCII_LF ) ||
-		 ( iCod == ASCII_CR ) ||
-		 ( iCod == ASCII_BS ) ||
-		 ( iCod == ASCII_VT ) ||
-		 ( iCod == ASCII_FF ) )
-	{
-		iRes = 1;
-	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
-}
-
-
 int ASCIIEsImprimible ( char cVal )
 {
 	int iRes; 
@@ -2010,7 +1983,7 @@ int ASCIIEsValidoToken ( char cVal )
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -2032,7 +2005,7 @@ int ASCIIEsValidoInicioToken ( char cVal )
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

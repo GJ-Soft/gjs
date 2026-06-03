@@ -11,7 +11,6 @@
 
 	<groupId>org.gjs.maven.extensions</groupId>
 	<artifactId>pyz-maven-extension</artifactId>
-	<version>1.0.0-RC.1</version>
 	<packaging>jar</packaging>
 
 	<name>PYZ Maven Plugin</name>

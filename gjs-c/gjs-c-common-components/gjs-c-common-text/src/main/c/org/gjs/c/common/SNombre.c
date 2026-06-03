@@ -42,7 +42,7 @@ SNombre * SNomCrear ( int iMaxTam )
 }
 
 
-void SNomDetruir ( SNombre ** p_p_nomObj )
+void SNomDestruir ( SNombre ** p_p_nomObj )
 {
 	SNombre * p_nomObj;
 	

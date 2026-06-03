@@ -11,7 +11,6 @@
 
     <groupId>org.gjs.java.common</groupId>
     <artifactId>gjs-java-common-test-support</artifactId>
-    <version>1.0.0-RC.1</version>
     <packaging>jar</packaging>
 
 	<name>Gjs Java test support</name>

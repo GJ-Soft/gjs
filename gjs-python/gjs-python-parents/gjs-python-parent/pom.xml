@@ -10,7 +10,6 @@
 
     <groupId>org.gjs.python</groupId>
     <artifactId>gjs-python-parent</artifactId>
-    <version>1.0.0-RC.1</version>
 	<packaging>pom</packaging>
 
 	<name>GJS common Python base parent</name>

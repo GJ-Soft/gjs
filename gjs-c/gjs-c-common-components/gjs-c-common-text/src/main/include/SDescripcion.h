@@ -37,7 +37,7 @@ typedef struct
 SDescripcion * SDescCrearDef ();
 SDescripcion * SDescCrear ( int iMaxTam );
 
-void SDescDetruir ( SDescripcion ** p_p_descObj );
+void SDescDestruir ( SDescripcion ** p_p_descObj );
 
 int SDescMaxLongitud ( SDescripcion * p_descObj );
 int SDescLongitud ( SDescripcion * p_descObj );

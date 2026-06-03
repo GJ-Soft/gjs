@@ -8,9 +8,7 @@
 		<relativePath>../gjs-java-web-parent</relativePath>
 	</parent>	
 
-    <groupId>org.gjs.java</groupId>
     <artifactId>gjs-java-war-parent</artifactId>
-    <version>1.0.0-RC.1</version>
 	<packaging>pom</packaging>
 
 	<name>GJS Java web artifacts parent</name>

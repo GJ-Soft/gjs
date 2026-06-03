@@ -8,9 +8,7 @@
 		<relativePath>../gjs-python-parent</relativePath>
 	</parent>	
 
-    <groupId>org.gjs.python</groupId>
     <artifactId>gjs-python-exe-parent</artifactId>
-    <version>1.0.0-RC.1</version>
 	<packaging>pom</packaging>
 
 	<name>GJS common Python Exe parent</name>

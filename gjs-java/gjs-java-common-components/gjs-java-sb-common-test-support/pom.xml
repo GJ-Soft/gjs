@@ -11,8 +11,7 @@
 
     <groupId>org.gjs.java.common</groupId>
     <artifactId>gjs-java-sb-common-test-support</artifactId>
-    <version>1.0.0-RC.1</version>
-    <packaging>jar</packaging>
+	<packaging>jar</packaging>
 
 	<name>Gjs Java test support for Spring Boot</name>
 	<description>Auxiliar classes and resources for testing</description>

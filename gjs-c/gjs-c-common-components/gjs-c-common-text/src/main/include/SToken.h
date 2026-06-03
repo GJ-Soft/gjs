@@ -43,7 +43,7 @@ void STokDestruir ( SToken ** p_p_tokObj );
 int STokInicializar ( SToken * p_tokObj, int iLong ); 
 int STokVaciar ( SToken * p_tokObj );
 
-int STokEsNulo ( SToken * p_tokObj );
+int STokEstaVacio ( SToken * p_tokObj );
 
 SCadena * STokCadena ( SToken * p_tokObj );
 char * STokValor ( SToken * p_tokObj );

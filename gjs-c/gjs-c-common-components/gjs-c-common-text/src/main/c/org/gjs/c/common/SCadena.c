@@ -16,7 +16,7 @@
 #include "SCadena.h"
 
 
-#include <Cadenas.h>
+#include "Cadenas.h"
 
 
 #include "TextoConfig.h"
@@ -478,6 +478,7 @@ int SCadCopiarCaracter ( SCadena * p_cadObj, char cValor )
 			p_cadObj->p_cValor = CadCrear ( p_cadObj->iMaxTam );
 		}
 		p_cadObj->p_cValor [ 0 ] = cValor;
+		iRes = 1;
 	}
 	else
 	{
@@ -503,8 +504,8 @@ int SCadConcatenarCaracter ( SCadena * p_cadObj, char cValor )
 			if ( iLong < p_cadObj->iMaxTam ) 
 			{
 				p_cadObj->p_cValor [ iLong ] = cValor;
+				p_cadObj->p_cValor [ iLong + 1 ] = (char) 0;
 			}
-			p_cadObj->p_cValor [ iLong + 1 ] = (char) 0;
 		}
 	}
 	else
@@ -522,7 +523,7 @@ int SCadCopiarConFormato ( SCadena * p_cadObj, const char * p_cFormato, ... )
 	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cFormato ) )
 	{
 		va_start ( valArgumentos,  p_cFormato );
-		iRes = SCadCopiarConFormato ( p_cadObj, p_cFormato, valArgumentos );
+		iRes = SCadCopiarConFormatoExt ( p_cadObj, p_cFormato, valArgumentos );
 		va_end ( valArgumentos );
 	}
 	else
@@ -572,7 +573,7 @@ int SCadConcatenarConFormato ( SCadena * p_cadObj, const char * p_cFormato, ... 
 	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cFormato ) )
 	{
 		va_start ( valArgumentos,  p_cFormato );
-		iRes = SCadConcatenarConFormato ( p_cadObj, p_cFormato, valArgumentos );
+		iRes = SCadConcatenarConFormatoExt ( p_cadObj, p_cFormato, valArgumentos );
 		va_end ( valArgumentos );
 	}
 	else
@@ -2258,8 +2259,7 @@ int SCadAcabaPorLiteral ( SCadena * p_cadObj, const char * p_cValor )
 				iCar1 = iCar1 - 1;
 				iCar2 = iCar2 - 1;
 			}
-			if ( ( iCar2 < 0 ) && 
-				 ( p_cadObj->p_cValor [ iCar1 - 1 ] == p_cValor [ 0 ] ) )
+			if ( iCar2 < 0 )
 			{
 				iRes = 1;
 			}
@@ -2278,8 +2278,7 @@ int SCadAcabaPorLiteral ( SCadena * p_cadObj, const char * p_cValor )
 				iCar1 = iCar1 - 1;
 				iCar2 = iCar2 - 1;
 			}
-			if ( ( iCar2 < 0 ) && 
-				 ( ASCIILetraMinAMay ( p_cadObj->p_cValor [ iCar1 - 1 ] ) == ASCIILetraMinAMay ( p_cValor [ 0 ] ) ) )
+			if ( iCar2 < 0 )
 			{
 				iRes = 1;
 			}

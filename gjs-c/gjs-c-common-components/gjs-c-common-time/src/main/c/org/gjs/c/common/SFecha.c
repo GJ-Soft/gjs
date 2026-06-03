@@ -183,7 +183,7 @@ double SFecValorNumerico ( SFecha * p_fecObj )
 
 char * SFecFecha ( SFecha * p_fecObj )
 {
-	return ( SFecFechaForm ( p_fecObj, FEC_TAM_FECHA_FORMATO_DEF ) );
+	return ( SFecFechaForm ( p_fecObj, FEC_FORMATO_NORMAL ) );
 }
 
 char * SFecFechaForm ( SFecha * p_fecObj, int iFormato )

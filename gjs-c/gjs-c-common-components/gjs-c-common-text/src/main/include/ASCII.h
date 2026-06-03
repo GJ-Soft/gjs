@@ -125,7 +125,6 @@ int ASCIIEsSignoEsp ( char cVal );
 int ASCIIEsSignoModif ( char cVal );
 int ASCIIEsSignoMoneda ( char cVal );
 
-int ASCIIEsCodigoControlImprimible ( char cVal );
 int ASCIIEsImprimible ( char cVal );
 int ASCIIEsValidoToken ( char cVal );
 int ASCIIEsValidoInicioToken ( char cVal );

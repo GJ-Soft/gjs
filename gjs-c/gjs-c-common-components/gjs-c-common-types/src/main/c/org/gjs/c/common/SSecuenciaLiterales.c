@@ -93,42 +93,20 @@ char * SSecLitElemento ( SSecuenciaLiterales * p_secObj, int iElem )
 	return ( p_cRes );
 }
 
-int SSecLitInsertar ( SSecuenciaLiterales * p_secObj,  char * p_cDatos )
-{
-	int	iRes;
-
-	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_cDatos ) )
-	{
-		iRes = SSecpInsertar ( p_secObj->p_secDatos, (byte *) p_cDatos );
-	}
-	else
-	{
-		iRes = -1;
-	}
-	return ( iRes );
-}
-
-int SSecLitInsertarDup ( SSecuenciaLiterales * p_secObj, const char * p_cDatos )
+int SSecLitInsertar ( SSecuenciaLiterales * p_secObj, const char * p_cDatos )
 {
 	int		iRes;
 	char *	p_cElem;
-	int		iActLib;
 
 	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_cDatos ) )
 	{
 		p_cElem = CadDuplicar ( p_cDatos );
 		if ( ES_VALIDO ( p_cElem ) )
 		{
-			iActLib = SSecpLiberacionMemoriaActivada ( p_secObj->p_secDatos );
-			SSecpActivarLiberacionMemoria ( p_secObj->p_secDatos );
 			iRes = SSecpInsertar ( p_secObj->p_secDatos, (byte *) p_cElem );
 			if ( iRes != 1 )
 			{
 				MemLiberar ( (void **) &p_cElem );
-			}
-			if ( iActLib == 0 )
-			{
-				SSecpDesactivarLiberacionMemoria ( p_secObj->p_secDatos );
 			}
 		}
 		else
@@ -173,37 +151,6 @@ int SSecLitVaciar ( SSecuenciaLiterales * p_secObj )
 	return ( iRes );
 }
 
-int	SSecLitLiberacionMemoriaActivada ( SSecuenciaLiterales * p_secObj )
-{
-	int	iRes;
-
-	if ( ES_VALIDO ( p_secObj ) ) 
-	{
-		iRes = SSecpLiberacionMemoriaActivada ( p_secObj->p_secDatos );
-	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
-}
-
-void SSecLitActivarLiberacionMemoria ( SSecuenciaLiterales * p_secObj )
-{
-	if ( ES_VALIDO ( p_secObj ) ) 
-	{
-		SSecpActivarLiberacionMemoria ( p_secObj->p_secDatos );
-	}
-}
-
-void SSecLitDesactivarLiberacionMemoria ( SSecuenciaLiterales * p_secObj )
-{
-	if ( ES_VALIDO ( p_secObj ) ) 
-	{
-		SSecpDesactivarLiberacionMemoria ( p_secObj->p_secDatos );
-	}
-}
-
 int SSecLitExiste ( SSecuenciaLiterales * p_secObj, const char * p_cDato )
 {
 	int iRes;
@@ -225,6 +172,31 @@ int SSecLitExiste ( SSecuenciaLiterales * p_secObj, const char * p_cDato )
 	else
 	{
 		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SSecLitBuscar ( SSecuenciaLiterales * p_secObj, const char * p_cDato )
+{
+	int iRes;
+	int iElem;
+
+	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_cDato )  ) 
+	{
+		iRes = -1;
+		iElem = 0;
+		while ( ( iElem < SSecLitNumElementos ( p_secObj ) ) && ( iRes < 0 ) )
+		{
+			if ( CadComparar ( SSecLitElemento ( p_secObj, iElem ), p_cDato ) == 1 )
+			{
+				iRes = iElem;
+			}
+			iElem = iElem + 1;
+		}
+	}
+	else
+	{
+		iRes = -1;
 	}
 	return ( iRes );
 }
