@@ -1,6 +1,6 @@
 # GJS Java exe artifact Archetype
 
-Project Archetype in java language.
+Project Archetype for application in java language.
 
 
 ## Description

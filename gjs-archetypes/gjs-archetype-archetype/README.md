@@ -1,6 +1,6 @@
-## Archetype
+# Gjs archetype's archetype.
 
-GJS archetype's archetype.
+GJS archetype for archetypes.
 
 
 ## Descripción

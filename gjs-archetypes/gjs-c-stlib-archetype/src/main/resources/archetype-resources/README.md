@@ -2,7 +2,7 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 #set( $capitalizedName = $shortName.substring(0,1).toUpperCase() + $shortName.substring(1))
-${symbol_pound}${symbol_pound} ${capitalizedName} project
+${symbol_pound} ${capitalizedName} project
 
 Project ${shortName}
 

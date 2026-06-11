@@ -1,6 +1,7 @@
-## Gjs project
+# Gjs project
 
 Project Gjs
+
 
 ## Description
 
@@ -8,45 +9,37 @@ Maven parent poms, Maven arquetypes, Maven plugins and basic support libraries f
 
 Supported Languages:
 	
-	C
-	C++
-	Java
-	Python
-	Typescript
+* C
+* C++
+* Java
+* Python
+* Typescript
 	
 
 ## Requirements
 
-* Maven 3.9.x
+* C			c2x
+* C++		c++20	
+* Java 		21
+* Maven 	3.9.x
+* Python 	3.14.x
 
 
-## Configuration
+## Git
 
-* Settings.xml:
+https://github.com/GJ-Soft/gjs.git
 
-		<pluginGroups>
-			<pluginGroup>org.gjs.maven.plugins</pluginGroup>
-			<pluginGroup>org.sonarsource.scanner.maven</pluginGroup>
-		</pluginGroups>
 
+## Índice de la Wiki
 
       
-## Installation
-    
-    mvn clean install
+* [Guía de Preparación del Entorno de Desarrollo](docs/entorno.md)
+* [Guía de Instalación y Configuración](docs/instalacion.md)
+* [Arquitectura del Sistema y Módulos](docs/arquitectura.md)
+* [Ciclo de Vida del Software y Despliegue](docs/ciclo-vida.md)
 
-
-## Security
-    
-    
-## Audit
-
-    
-## To start
-
-    
-## Common mistakes
-
+---
+Para reportar fallos o proponer cambios en la documentación, por favor abre un Issue en este repositorio.
 
     
 ## References

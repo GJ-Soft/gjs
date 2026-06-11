@@ -1,6 +1,6 @@
-# Gjs Cpp-exe Archetype
+# Gjs C Exe Archetype
 
-Project Archetype in c++ language.
+Project Archetype for a application in c language.
 
 
 ## Description

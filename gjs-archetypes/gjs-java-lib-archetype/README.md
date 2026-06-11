@@ -1,6 +1,6 @@
 # GJS Java lib artifact Archetype
 
-Project Archetype in java language.
+Project Archetype for single library in java language.
 
 
 ## Description

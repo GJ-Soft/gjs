@@ -1,0 +1,3 @@
+# Guía de instalación
+
+Esta sección describe la instalación...  

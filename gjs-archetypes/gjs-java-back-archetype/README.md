@@ -1,6 +1,6 @@
-# GJS Java artifact Archetype
+# GJS Java back artifact Archetype
 
-Project Archetype in java language.
+Project Archetype for single Spring Boot back artifact in java language.
 
 
 ## Description

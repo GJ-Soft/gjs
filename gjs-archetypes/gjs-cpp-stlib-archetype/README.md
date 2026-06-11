@@ -1,6 +1,6 @@
-# Gjs Cpp-stlib Archetype
+# Gjs Cpp Static Lib Archetype
 
-Project Archetype in c++ language.
+Project Archetype for a single static library in c++ language.
 
 
 ## Description

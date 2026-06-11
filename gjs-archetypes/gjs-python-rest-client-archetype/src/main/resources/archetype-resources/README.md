@@ -5,7 +5,7 @@
 #set( $infoGroup = $groupId)
 #set( $infoArtifact = $artifactId)
 #set( $infoVersion = $version)
-${symbol_pound}${symbol_pound} ${capitalizedName} project
+${symbol_pound} ${capitalizedName} project
 
 Project ${capitalizedName}
 

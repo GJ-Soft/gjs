@@ -1,6 +1,6 @@
-# Gjs Cpp-lib Archetype
+# Gjs Cpp Lib Archetype
 
-Project Archetype in c++ language.
+Project Archetype for a single library  in c++ language.
 
 
 ## Description

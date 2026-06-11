@@ -1,4 +1,4 @@
-# Gjs Cpp-exe Archetype
+# Gjs Cpp Exe Archetype
 
 Project Archetype in c++ language.
 
