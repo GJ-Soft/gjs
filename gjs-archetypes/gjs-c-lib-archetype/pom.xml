@@ -12,7 +12,7 @@
     <artifactId>gjs-c-lib-archetype</artifactId>    
     <packaging>maven-archetype</packaging>    
     
-    <name>C-lib Maven archetype</name>    
+    <name>GJS C Library Maven archetype</name>    
     <description>    
       
   --------------------------------------------------------    

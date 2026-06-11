@@ -12,7 +12,7 @@
     <artifactId>gjs-c-exe-archetype</artifactId>    
     <packaging>maven-archetype</packaging>    
     
-    <name>C-exe Maven archetype</name>    
+    <name>GJS C Executable Maven archetype</name>    
     <description>    
       
   --------------------------------------------------------    

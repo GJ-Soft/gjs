@@ -8,6 +8,7 @@
 		<relativePath>../../../gjs-no-java-parent</relativePath>
 	</parent>	
 
+	<groupId>org.gjs.npm</groupId>
     <artifactId>gjs-npm-parent</artifactId>
 	<packaging>pom</packaging>
 

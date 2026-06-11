@@ -12,7 +12,7 @@
     <artifactId>gjs-maven-extension-archetype</artifactId>    
     <packaging>maven-archetype</packaging>    
     
-    <name>gjs-maven-extension-archetype</name>    
+    <name>GJS Maven Extension archetype</name>    
     <description>    
       
   --------------------------------------------------------    

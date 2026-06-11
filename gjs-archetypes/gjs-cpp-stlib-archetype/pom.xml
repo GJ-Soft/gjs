@@ -12,7 +12,7 @@
     <artifactId>gjs-cpp-stlib-archetype</artifactId>    
     <packaging>maven-archetype</packaging>    
     
-    <name>Cpp-stlib Maven archetype</name>    
+    <name>GJS C++ Static Library Maven archetype</name>    
     <description>    
       
   --------------------------------------------------------    
