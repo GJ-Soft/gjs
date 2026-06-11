@@ -11,11 +11,11 @@ ${symbol_pound}
 import sys
 import platform
 
-def saludar():
-    print("¡Hola! Este es un ejecutable Python (.pyz)")
+def inicializar(applicationProperties):
+    print(f"Este es el ejecutable {applicationProperties.app_name}-{applicationProperties.app_version} ")
     print(f"Sistema operativo: {platform.system()}")
     print(f"Versión de Python: {platform.python_version()}")
-    
+        
     if len(sys.argv) > 1:
         print(f"\nArgumentos recibidos: {sys.argv[1:]}")
     else:
@@ -23,7 +23,16 @@ def saludar():
 
 def main():
     try:
-        saludar()
+        from org.gjs.python.common.properties import applicationProperties
+
+        inicializar(applicationProperties)
+        
+    except ImportError:
+        print("\nNo se han encontrado las propiedades de la aplicación.")
+        sys.exit(1)
+    except ValueError as e:
+        print(f"\nConfiguración de base de datos inválida: {e}")
+        sys.exit(1)
     except KeyboardInterrupt:
         print("\nPrograma finalizado por el usuario.")
         sys.exit(0)

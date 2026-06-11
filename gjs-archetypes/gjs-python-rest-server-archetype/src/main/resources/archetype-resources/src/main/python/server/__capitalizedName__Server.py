@@ -4,11 +4,13 @@ import uvicorn
 from fastapi import FastAPI
 from datetime import datetime, timezone
 
+from org.gjs.python.common.properties import ApplicationProperties, applicationProperties
+
 # Inyectar ruta de modelos generados
 from ${package}.models.Models import ServerStatus
 
 class ${capitalizedName}Server:
-    def __init__(self, host="0.0.0.0", port=${port}):
+    def __init__(self, host="0.0.0.0", port=applicationProperties.app_port):
         self.host = host
         self.port = port
         self.app = FastAPI()

@@ -21,8 +21,8 @@
         <module>gjs-archetype-parent</module>
         <module>gjs-archetype-archetype</module>
         <module>gjs-java-artifact-archetype</module>
-        <module>gjs-plugin-archetype</module>
-        <module>gjs-extension-archetype</module>
+        <module>gjs-maven-plugin-archetype</module>
+        <module>gjs-maven-extension-archetype</module>
         <module>gjs-c-lib-archetype</module>
         <module>gjs-c-stlib-archetype</module>
         <module>gjs-c-exe-archetype</module>

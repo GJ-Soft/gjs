@@ -21,17 +21,56 @@
 	</properties>
 
 	<build>
+		<!-- Los proyectos que no son Java y no tienen classpath necesitan tener
+		     todo los recursos copiados para los test -->
+		<testResources>
+            <testResource>
+                <directory>${project.basedir}/src/main/resources</directory>
+				<includes>
+                    <include>**/**</include>
+                </includes>
+                <excludes>
+                    <exclude>bin/**</exclude>
+                    <exclude>data/**</exclude>
+                    <exclude>cacerts/**</exclude>
+                </excludes>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>bin/**</include>
+                    <include>data/**</include>
+                    <include>cacerts/**</include>
+                </includes>
+                <filtering>false</filtering>
+            </testResource>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+                <excludes>
+                    <exclude>bin/**</exclude>
+                    <exclude>data/**</exclude>
+                    <exclude>cacerts/**</exclude>
+                </excludes>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+                <includes>
+                    <include>bin/**</include>
+                    <include>data/**</include>
+                    <include>cacerts/**</include>
+                </includes>
+                <filtering>false</filtering>
+            </testResource>
+		</testResources>
+
 		<pluginManagement>
 			<plugins>
 				<!-- Apache Maven plugins -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<configuration>
-						<!-- Esto evita que el plugin intente leer descriptores de módulos -->
-						<useModulePath>false</useModulePath>
-					</configuration>
-				</plugin>				
                  <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>

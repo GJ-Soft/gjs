@@ -5,12 +5,10 @@ import java.io.File;
 import javax.inject.Inject;
 
 import org.apache.maven.AbstractMavenLifecycleParticipant;
-import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.logging.Logger;
-
 
 public class TgzArtifactExtension extends AbstractMavenLifecycleParticipant {
 
@@ -25,19 +23,14 @@ public class TgzArtifactExtension extends AbstractMavenLifecycleParticipant {
 
 		for (MavenProject project : session.getProjects()) {
 
-			File tgz = new File(project.getBuild().getDirectory(), project.getBuild().getFinalName() + ".tgz");
-
-			if (!tgz.exists()) {
-				tgz = new File(project.getBuild().getDirectory(), project.getBuild().getFinalName() + ".tgz");
-			}
-
-			if (!tgz.exists()) {
+			if (!"tgz".equals(project.getPackaging())) {
 				continue;
 			}
 
+			File tgz = new File(project.getBuild().getDirectory(), project.getBuild().getFinalName() + ".tgz");
+
 			project.getArtifact().setFile(tgz);
-			project.getArtifact().setArtifactHandler(new DefaultArtifactHandler("tgz"));
-			projectHelper.attachArtifact(project, "tgz", null, tgz);
+			project.getArtifact().setArtifactHandler(new TgzArtifactHandler());
 
 			if (logger != null) {
 				logger.info("[tgz-extension] Artifact reemplazado por: " + tgz.getAbsolutePath());

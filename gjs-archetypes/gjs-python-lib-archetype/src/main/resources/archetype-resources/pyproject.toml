@@ -11,12 +11,12 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 testpaths = ["src/test/python/${packagePath}"]
 pythonpath  = [
-    "src/main/python/${packagePath}",
-    "src/test/python/${packagePath}",
+    "src/main/python",
+    "src/test/python",
 ]
 
 python_files = ["*Test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 
-cache_dir = "target/test-classes/.pytest_cache"
+cache_dir = ".pytest_cache"

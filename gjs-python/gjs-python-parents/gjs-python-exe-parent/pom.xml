@@ -21,9 +21,32 @@
 		<gjs.python.artifact.src.path>.</gjs.python.artifact.src.path>
 		<gjs.python.artifact.main>Main:main</gjs.python.artifact.main>
 		
+		<!-- Gjs Python commom libraries -->
+		<gjs-python-common.version>1.0.0-RC.1</gjs-python-common.version>
+
 		<!-- Extensions versions -->
+		<whl-maven-extension.version>1.0.0-RC.1</whl-maven-extension.version>
 		<pyz-maven-extension.version>1.0.0-RC.1</pyz-maven-extension.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.gjs.python.common</groupId>
+				<artifactId>gjs-python-common</artifactId>
+				<version>${gjs-python-common.version}</version>
+				<type>whl</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.gjs.python.common</groupId>
+			<artifactId>gjs-python-common</artifactId>
+			<type>whl</type>
+		</dependency>
+	</dependencies>
 	
 	<build>
 		<pluginManagement>
@@ -32,6 +55,20 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
 					<executions>
+						<execution>
+							<id>python-include-dependencies</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<executable>python</executable>
+								<arguments>
+									<argument>-c</argument>
+									<argument>import zipfile,pathlib,subprocess,sys,shutil;t=pathlib.Path(r'${gjs.python.dir.src}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);[zipfile.ZipFile(w).extractall(t) for w in pathlib.Path(r'${gjs.python.dir.libs}').glob('*.whl')];r=pathlib.Path(r'${project.basedir}/requirements.txt');subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),'-r',str(r)]) if r.exists() else None;[shutil.rmtree(d) for d in t.glob('*.dist-info')]</argument>
+								</arguments>
+							</configuration>
+						</execution>
 						<execution>
 							<id>python-package</id>
 							<phase>package</phase>
@@ -62,6 +99,11 @@
 				<groupId>org.gjs.maven.extensions</groupId>
 				<artifactId>pyz-maven-extension</artifactId>
 				<version>${pyz-maven-extension.version}</version>
+			</extension>
+			<extension>
+				<groupId>org.gjs.maven.extensions</groupId>
+				<artifactId>whl-maven-extension</artifactId>
+				<version>${whl-maven-extension.version}</version>
 			</extension>
 		</extensions>
 	</build>

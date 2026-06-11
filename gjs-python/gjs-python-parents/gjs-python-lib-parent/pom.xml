@@ -3,9 +3,9 @@
 
 	<parent>
 		<groupId>org.gjs.python</groupId>
-		<artifactId>gjs-python-parent</artifactId>
+		<artifactId>gjs-python-lib-base-parent</artifactId>
 		<version>1.0.0-RC.1</version>
-		<relativePath>../gjs-python-parent</relativePath>
+		<relativePath>../gjs-python-lib-base-parent</relativePath>
 	</parent>	
 
     <artifactId>gjs-python-lib-parent</artifactId>
@@ -17,7 +17,26 @@
 	</description>
 
 	<properties>
-		<gjs.python.artifact.ext>whl</gjs.python.artifact.ext>
+		<!-- Gjs Python commom libraries -->
+		<gjs-python-common.version>1.0.0-RC.1</gjs-python-common.version>
 	</properties>
-	
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.gjs.python.common</groupId>
+				<artifactId>gjs-python-common</artifactId>
+				<version>${gjs-python-common.version}</version>
+				<type>whl</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.gjs.python.common</groupId>
+			<artifactId>gjs-python-common</artifactId>
+			<type>whl</type>
+		</dependency>
+	</dependencies>
 </project>

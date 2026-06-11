@@ -19,6 +19,7 @@
      
     <modules>
         <module>gjs-python-parents</module>
+        <module>gjs-python-common-components</module>
     </modules>
     
  </project>

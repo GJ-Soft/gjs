@@ -48,7 +48,7 @@
 										<copy file="${project.basedir}/src/main/resources/open-api.json" 
 											tofile="${project.build.directory}/resources/open-api.json" 
 											overwrite="true"/>	
-										</target>
+									</target>
 								</configuration>
 							</execution>
 						</executions>
@@ -119,7 +119,7 @@
 						</configuration>
                         <executions>
                             <execution>
-                                <id>upgrade-tools</id>
+                                <id>upgrade-rest-tools</id>
                                 <phase>initialize</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -131,11 +131,7 @@
 										<argument>pip</argument>
 										<argument>install</argument>
 										<argument>--upgrade</argument>
-										<argument>pip</argument>
 										<argument>datamodel-code-generator</argument>
-										<argument>fastapi</argument>
-										<argument>uvicorn</argument>
-										<argument>httpx</argument>
 									</arguments>
                                 </configuration>
                             </execution>

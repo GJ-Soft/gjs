@@ -13,7 +13,7 @@ test_sample.py - Tests para las funciones sumar y es_par usando pytest
 """
 
 import pytest
-from Sample import sumar, es_par
+from ${package}.Sample import sumar, es_par
 
 
 class TestSumar:

@@ -17,11 +17,32 @@ if user_site not in sys.path:
 
 
 from ${package}.server.${capitalizedName}Server import ${capitalizedName}Server
-    
+ 
+def inicializar(applicationProperties):
+    print(f"Se inicia el ejecutable {applicationProperties.app_name}-{applicationProperties.app_version} ")
+    print(f"Sistema operativo: {platform.system()}")
+    print(f"Versión de Python: {platform.python_version()}")
+
+    if len(sys.argv) > 1:
+        print(f"\nArgumentos recibidos: {sys.argv[1:]}")
+    else:
+        print("\nNo se pasaron argumentos adicionales.")
+ 
 def main():
     try:
+        from org.gjs.python.common.properties import applicationProperties
+
+        inicializar(applicationProperties)
+        
         server = ${capitalizedName}Server()
         server.start()
+        
+    except ImportError:
+        print("\nNo se han encontrado las propiedades de la aplicación.")
+        sys.exit(1)
+    except ValueError as e:
+        print(f"\nConfiguración de base de datos inválida: {e}")
+        sys.exit(1)
     except KeyboardInterrupt:
         print("\nPrograma finalizado por el usuario.")
         sys.exit(0)

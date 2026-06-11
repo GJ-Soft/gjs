@@ -16,7 +16,7 @@
 	<description>
 		Maven Python general parent pom.
 		
-		Fase Maven			Comando npm equivalente
+		Fase Maven			Comando python equivalente
 		initialize			
 		compile				pip install
 		test				python -m pytest
@@ -27,6 +27,7 @@
 		* upgrade	
 		
 		Install libraries:
+			mvn clean initialize -Pupgrade
 			mvn exec:exec@upgrade-tools -Pupgrade
 	</description>
 
@@ -36,10 +37,13 @@
 		<gjs.source.extension>py</gjs.source.extension>
 		
 		<!-- Python/Pip configuration -->
-		<gjs.python.dir.build>${project.build.directory}/python-build</gjs.python.dir.build>
+		<gjs.python.subdir.source>src/main/python</gjs.python.subdir.source>
+		<gjs.python.subdir.source.test>src/test/python</gjs.python.subdir.source.test>
+
+		<gjs.python.dir.src>${project.build.outputDirectory}</gjs.python.dir.src>
+		<gjs.python.dir.test>${project.build.testOutputDirectory}</gjs.python.dir.test>
+		<gjs.python.dir.libs>${project.build.directory}/python-libs</gjs.python.dir.libs>
 		<gjs.python.dir.eggs>${project.build.directory}/python-eggs</gjs.python.dir.eggs>
-		<gjs.python.dir.src>${project.build.directory}/python-src</gjs.python.dir.src>
-		<gjs.python.artifact.ext>tar.gz</gjs.python.artifact.ext>
 		<gjs.python.artifact.src.package.path>org/gjs/python</gjs.python.artifact.src.package.path>
 	</properties>
 	
@@ -47,12 +51,34 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>copy-whl-dependencies</id>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${gjs.python.dir.libs}</outputDirectory>
+								<includeTypes>whl</includeTypes>
+								<stripVersion>false</stripVersion>
+								<useBaseVersion>false</useBaseVersion>
+								<overWriteReleases>true</overWriteReleases>
+								<overWriteSnapshots>true</overWriteSnapshots>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
 					<artifactId>maven-resources-plugin</artifactId>
 					<executions>
 						<execution>
 							<id>copy-python-sources</id>
 							<phase>generate-resources</phase>
-							<goals><goal>copy-resources</goal></goals>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
 							<configuration>
 								<outputDirectory>${gjs.python.dir.src}</outputDirectory>
 								<resources>
@@ -63,24 +89,51 @@
 											<include>pyproject.toml</include>
 											<include>setup.py</include>
 										</includes>
+										<excludes>
+											<exclude>src/test/**</exclude>
+											<exclude>src/main/resources/**</exclude>
+										</excludes>
 									</resource>
 								</resources>
 							</configuration>
 						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<executions>
 						<execution>
-							<phase>initialize</phase>
+							<id>copy-python-test-sources</id>
+							<phase>generate-test-resources</phase>
 							<goals>
-								<goal>run</goal>
+								<goal>copy-resources</goal>
 							</goals>
 							<configuration>
-								<target>
-									<mkdir dir="${gjs.python.dir.src}"/>
-								</target>
+								<outputDirectory>${gjs.python.dir.test}</outputDirectory>
+								<resources>
+									<resource>
+										<directory>${gjs.python.dir.src}</directory>
+										<includes>
+											<include>**/**</include>
+										</includes>
+										<excludes>
+											<exclude>build/**</exclude>
+										</excludes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+						<execution>
+							<id>copy-python-test-resources</id>
+							<phase>generate-test-resources</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${gjs.python.dir.test}</outputDirectory>
+								<resources>
+									<resource>
+										<directory>${project.basedir}</directory>
+										<includes>
+											<include>src/test/**</include>
+										</includes>
+									</resource>
+								</resources>
 							</configuration>
 						</execution>
 					</executions>
@@ -90,8 +143,8 @@
 					<artifactId>exec-maven-plugin</artifactId>
 					<executions>
 						<execution>
-							<id>python-clean</id>
-							<phase>clean</phase>
+							<id>python-rename-whl-dependencies</id>
+							<phase>process-sources</phase>
 							<goals>
 								<goal>exec</goal>
 							</goals>
@@ -99,22 +152,56 @@
 								<executable>python</executable>
 								<arguments>
 									<argument>-c</argument>
-									<argument>import shutil, os; [shutil.rmtree(d) for d in ['dist', 'build', 'target'] if os.path.exists(d)]</argument>
-								</arguments>
+									<argument>import glob, os, re; [os.rename(w, os.path.join(os.path.dirname(w), re.sub(r'^(.+?)-(\d+.*)\.whl$', lambda m: m.group(1).replace('-','_') + '-' + m.group(2).replace('-SNAPSHOT','.dev0').replace('-RC.','rc').replace('-','.') + '-py3-none-any', os.path.basename(w)) + '.whl')) for w in glob.glob(r'${gjs.python.dir.libs}/*.whl') if not os.path.basename(w).endswith('none-any.whl')]</argument>								</arguments>
 							</configuration>
 						</execution>
 						<execution>
-							<id>python-setup</id>
+							<id>python-compile</id>
 							<phase>compile</phase>
 							<goals>
 								<goal>exec</goal>
 							</goals>
 							<configuration>
-								<executable>pip</executable>
+								<executable>python</executable>
 								<workingDirectory>${gjs.python.dir.src}</workingDirectory>
 								<arguments>
-									<argument>install</argument>
+								<!--
+								    TODO: Hay un bug en 3.14.2 con compileall 
+									<argument>-m</argument>
+									<argument>compileall</argument>
 									<argument>.</argument>
+									-->
+									<argument>-c</argument>
+									<argument>import compileall, sys; [compileall.compile_file(f, force=True, quiet=1) for f in __import__('pathlib').Path(sys.argv[1]).rglob('*.py')]</argument>
+									<argument>${gjs.python.dir.src}</argument>
+								</arguments>
+							</configuration>
+						</execution>
+						<execution>
+							<id>python-test-source-dependencies</id>
+							<phase>process-test-sources</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<executable>python</executable>
+								<arguments>
+									<argument>-c</argument>
+									<argument>import zipfile,pathlib,shutil;t=pathlib.Path(r'${gjs.python.dir.test}/${gjs.python.subdir.source}');[zipfile.ZipFile(w).extractall(t) for w in pathlib.Path(r'${gjs.python.dir.libs}').glob('*.whl')];[shutil.rmtree(d) for d in t.glob('*.dist-info')]</argument>
+								</arguments>
+							</configuration>
+						</execution>
+						<execution>
+							<id>python-test-dependencies</id>
+							<phase>process-test-sources</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<executable>python</executable>
+								<arguments>
+									<argument>-c</argument>
+									<argument>import pathlib,subprocess,sys,shutil;t=pathlib.Path(r'${gjs.python.dir.test}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);r=pathlib.Path(r'${project.basedir}/requirements-test.txt');subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),'-r',str(r)]) if r.exists() else None;[shutil.rmtree(d) for d in t.glob('*.dist-info')]</argument>
 								</arguments>
 							</configuration>
 						</execution>
@@ -125,13 +212,17 @@
 								<goal>exec</goal>
 							</goals>
 							<configuration>
+								<skip>${skipTests}</skip>
 								<executable>python</executable>
-								<workingDirectory>${gjs.python.dir.src}</workingDirectory>
+								<workingDirectory>${gjs.python.dir.test}</workingDirectory>
 								<arguments>
 									<argument>-m</argument>
 									<argument>pytest</argument>
-									<argument>--junitxml=../target/surefire-reports/python-tests.xml</argument>
+									<argument>--junitxml=${project.build.directory}/surefire-reports/python-tests.xml</argument>
 								</arguments>
+								<environmentVariables>
+									<MAVEN_TEST_PHASE>true</MAVEN_TEST_PHASE>
+								</environmentVariables>
 							</configuration>
 						</execution>
 						<execution>
@@ -153,41 +244,62 @@
 						</execution>
 					</executions>
 				</plugin>
-				<!--
 				<plugin>
-					<artifactId>maven-antrun-plugin</artifactId>
+					<groupId>org.codehaus.gmavenplus</groupId>
+					<artifactId>gmavenplus-plugin</artifactId>
 					<executions>
 						<execution>
-							<id>python-rename-package</id>
-							<phase>package</phase>
+							<phase>initialize</phase>
 							<goals>
-								<goal>run</goal>
+								<goal>execute</goal>
 							</goals>
 							<configuration>
-								<target>
-									<move todir="${project.build.directory}">
-										<fileset dir="${project.build.directory}">
-											<include name="*.${gjs.python.artifact.ext}" />
-										</fileset>
-										<mapper type="glob" from="*.${gjs.python.artifact.ext}" to="${project.build.finalName}.${gjs.python.artifact.ext}" />
-									</move>
-									<echo level="info" message="Package created: ${project.build.finalName}.${gjs.python.artifact.ext}" />
-								</target>
+								<scripts>
+									<script><![CDATA[
+										// Control skipTests:
+										// 1. Leemos los valores actuales (vengan del padre o de la consola)
+										def skipGlobal = project.properties['skip.if.not.source'] ?: 'false'
+										def skipTests = session.userProperties['skipTests'] ?: project.properties['skipTests'] ?: 'false'
+
+										// 2. Aplicamos tu regla: si skipSource es true, eso va a misa
+										if (skipGlobal == 'true') {
+											log.info("[INPUT] skip.if.not.source es TRUE. Forzando skip de tests.")
+											project.properties['maven.test.skip'] = 'true'
+											project.properties['skipTests'] = 'true'
+										} else if (skipTests == 'true') {
+											// Si skipSource es false, respetamos lo que pida skipTests
+											log.info("[INPUT] skipTests es TRUE. Saltando tests de forma normal.")
+											project.properties['skipTests'] = 'true'
+										}
+
+										// 3. Adaptacion de finalName si es necesario
+										if (skipGlobal == 'false') { 
+											// Final name:
+											def artifactId = project.artifactId
+											def version = project.version
+
+											project.properties['gjs.python.finalName.artifact'] = artifactId.replace('-', '_')
+											project.properties['gjs.python.finalName.version'] = version
+												.replace('-SNAPSHOT', '.dev0')
+												.replace('-RC.', 'rc')
+												.replace('-', '.')
+										}
+									]]></script>
+								</scripts>
 							</configuration>
 						</execution>
 					</executions>
 				</plugin>
-				-->
 			</plugins>
 		</pluginManagement>		
 
 		<plugins>
 			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
+				<artifactId>maven-dependency-plugin</artifactId>
 				<configuration>
 					<skip>${skip.if.not.source}</skip>
 				</configuration>
-            </plugin>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -203,6 +315,10 @@
 						<phase>none</phase>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.gmavenplus</groupId>
+				<artifactId>gmavenplus-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
@@ -237,6 +353,42 @@
 										<argument>wheel</argument>
 										<argument>build</argument>
 										<argument>pytest</argument>
+									</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>upgrade-requirements</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>python</executable>
+                                    <arguments>
+										<argument>-m</argument>
+										<argument>pip</argument>
+										<argument>install</argument>
+										<argument>-r</argument>
+										<argument>requirements.txt</argument>
+										<argument>--upgrade</argument>
+									</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>upgrade-requirements-test</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>python</executable>
+                                    <arguments>
+										<argument>-m</argument>
+										<argument>pip</argument>
+										<argument>install</argument>
+										<argument>-r</argument>
+										<argument>requirements-test.txt</argument>
+										<argument>--upgrade</argument>
 									</arguments>
                                 </configuration>
                             </execution>

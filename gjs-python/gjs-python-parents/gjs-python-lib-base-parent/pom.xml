@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.gjs.python</groupId>
+		<artifactId>gjs-python-parent</artifactId>
+		<version>1.0.0-RC.1</version>
+		<relativePath>../gjs-python-parent</relativePath>
+	</parent>	
+
+    <artifactId>gjs-python-lib-base-parent</artifactId>
+	<packaging>pom</packaging>
+
+	<name>GJS common Python Lib base parent</name>
+	<description>
+		Maven GJS Python for Common Libraries parent
+	</description>
+
+	<properties>
+		<!-- Python/Pip configuration -->
+		<gjs.python.artifact.ext>whl</gjs.python.artifact.ext>
+		
+		<!-- Extensions versions -->
+		<whl-maven-extension.version>1.0.0-RC.1</whl-maven-extension.version>
+	</properties>
+	
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>python-uninstall-old</id>
+							<phase>initialize</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<executable>pip</executable>
+								<workingDirectory>${gjs.python.dir.src}</workingDirectory>
+								<arguments>
+									<argument>uninstall</argument>
+									<argument>-y</argument>
+									<argument>${project.artifactId}</argument>
+								</arguments>
+							</configuration>
+						</execution>
+						<execution>
+							<id>python-install</id>
+							<phase>install</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<executable>pip</executable>
+								<workingDirectory>${gjs.python.dir.src}</workingDirectory>
+								<arguments>
+									<argument>install</argument>
+									<argument>.</argument>
+								</arguments>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>		
+
+		<extensions>
+			<extension>
+				<groupId>org.gjs.maven.extensions</groupId>
+				<artifactId>whl-maven-extension</artifactId>
+				<version>${whl-maven-extension.version}</version>
+			</extension>
+		</extensions>
+	</build>
+</project>

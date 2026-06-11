@@ -10,7 +10,7 @@ ${symbol_pound} Program modules
 ${symbol_pound}
 ${symbol_pound} Program Rest Server ${capitalizedName} 
 ${symbol_pound}
-from .Main import main
+
 
 __version__ = "${pythonVersion}"
 

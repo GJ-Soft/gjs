@@ -12,7 +12,7 @@
     <artifactId>gjs-java-lib-archetype</artifactId>    
     <packaging>maven-archetype</packaging>    
     
-    <name>GJS Java Lib Artifact Archatype</name>    
+    <name>GJS Java Lib Artifact archetype</name>    
     <description>    
       
   --------------------------------------------------------    

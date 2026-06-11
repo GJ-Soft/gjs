@@ -4,7 +4,7 @@
 #set( $capitalizedName = $shortName.substring(0,1).toUpperCase() + $shortName.substring(1))
 from unittest.mock import patch, MagicMock
 
-from ${package} import Main
+from ${package}.Main import main
 
 def test_main_ok(capsys):
     fake_result = {"status": "OK"}
@@ -13,7 +13,7 @@ def test_main_ok(capsys):
         instance = MockClient.return_value
         instance.get_server_status.return_value = fake_result
 
-        Main.main()
+        main()
 
     captured = capsys.readouterr()
     assert "Respuesta recibida" in captured.out
@@ -25,7 +25,7 @@ def test_main_error(capsys):
         instance = MockClient.return_value
         instance.get_server_status.side_effect = Exception("boom")
 
-        Main.main()
+        main()
 
     captured = capsys.readouterr()
     assert "Error en la llamada" in captured.out

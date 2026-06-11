@@ -5,7 +5,6 @@ import java.io.File;
 import javax.inject.Inject;
 
 import org.apache.maven.AbstractMavenLifecycleParticipant;
-import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
@@ -24,19 +23,14 @@ public class PyzArtifactExtension extends AbstractMavenLifecycleParticipant {
 
 		for (MavenProject project : session.getProjects()) {
 
-			File pyz = new File(project.getBuild().getDirectory(), project.getBuild().getFinalName() + ".pyz");
-
-			if (!pyz.exists()) {
-				pyz = new File(project.getBuild().getDirectory(), project.getBuild().getFinalName() + ".pyz");
-			}
-
-			if (!pyz.exists()) {
+			if (!"pyz".equals(project.getPackaging())) {
 				continue;
 			}
 
+			File pyz = new File(project.getBuild().getDirectory(), project.getBuild().getFinalName() + ".pyz");
+
 			project.getArtifact().setFile(pyz);
-			project.getArtifact().setArtifactHandler(new DefaultArtifactHandler("pyz"));
-			projectHelper.attachArtifact(project, "pyz", null, pyz);
+			project.getArtifact().setArtifactHandler(new PyzArtifactHandler());
 
 			if (logger != null) {
 				logger.info("[pyz-extension] Artifact reemplazado por: " + pyz.getAbsolutePath());

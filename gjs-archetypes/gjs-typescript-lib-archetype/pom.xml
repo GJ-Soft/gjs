@@ -12,7 +12,7 @@
     <artifactId>gjs-typescript-lib-archetype</artifactId>    
     <packaging>maven-archetype</packaging>    
     
-    <name>GJS Typescript Library Archatype</name>    
+    <name>GJS Typescript Library archetype</name>    
     <description>    
       
   --------------------------------------------------------    

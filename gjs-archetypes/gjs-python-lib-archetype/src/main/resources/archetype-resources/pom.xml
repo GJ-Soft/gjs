@@ -14,12 +14,13 @@
     <groupId>${groupId}</groupId>
     <artifactId>${artifactId}</artifactId>
     <version>${version}</version>
-    <packaging>jar</packaging>
+	<packaging>whl</packaging>	
 	
     <name>${capitalizedName}</name>
     <description>Project ${capitalizedName} in language python</description>
 
     <properties>
+		<!-- Python/Pip configuration -->
 		<gjs.python.artifact.src.package.path>${packagePath}</gjs.python.artifact.src.package.path>
     </properties>
 	

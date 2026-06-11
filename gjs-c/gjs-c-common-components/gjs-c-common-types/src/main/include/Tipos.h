@@ -28,6 +28,7 @@
 #include <SDatos.h>
 
 #include <SContador.h>
+#include <SRango.h>
 #include <SCursor.h>
 #include <SIndicador.h>
 #include <SIndicador2D.h>

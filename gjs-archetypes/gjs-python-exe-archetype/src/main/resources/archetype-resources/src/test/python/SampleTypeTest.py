@@ -8,7 +8,7 @@ ${symbol_pound} Test for Module SampleType.py
 ${symbol_pound}
 
 import pytest
-from SampleType import SampleType
+from ${package}.SampleType import SampleType
 
 
 class TestSampleTypeInit:

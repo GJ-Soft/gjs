@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">    
+    <modelVersion>4.0.0</modelVersion>    
+    
+	<parent>
+		<groupId>org.gjs.maven.archetypes</groupId>    
+		<artifactId>gjs-archetype-parent</artifactId>    
+		<version>1.0.0-RC.1</version>    
+		<relativePath>../gjs-archetype-parent</relativePath>
+	</parent>	
+
+    <artifactId>gjs-maven-extension-archetype</artifactId>    
+    <packaging>maven-archetype</packaging>    
+    
+    <name>gjs-maven-extension-archetype</name>    
+    <description>    
+      
+  --------------------------------------------------------    
+  Project gjs-maven-extension-archetype    
+  --------------------------------------------------------    
+    
+  Archetype for generating the basic structure of a Maven extension.
+  Example of use: This command generates the test-project project:    
+     
+    mvn archetype:generate \
+		-DarchetypeGroupId=org.gjs.maven.archetypes \
+		-DarchetypeArtifactId=gjs-maven-extension-archetype \
+		-DarchetypeVersion=1.0.0-SNAPSHOT \
+		-DshortName=test -Dextension=tgz \
+		-Dversion=1.0.0-SNAPSHOT
+    
+  ====================================================================================    
+	Archetype Parameters:
+
+	* shortName: Name of the maven extension. Always lowercase. Allows two words separated by a hyphen.
+
+	* extension: Extension or packaging to manage. Always lowercase. Allows two words separated by a hyphen.
+
+	* groupId: The group of the project artifact. 
+
+	* artifactId: The name of the project artifact. Default is extension. Not required.
+
+	* package: The project packaging of the source code. Default is org.gjs.maven.archetypes. Not required.
+
+	* version: The project version. Default is 1.0.0-SNAPSHOT. Not required.
+                 
+  ====================================================================================    
+      
+    </description>    
+      
+    <properties>    
+	</properties>    
+    
+    <build>    
+    </build>    
+    	
+</project>    

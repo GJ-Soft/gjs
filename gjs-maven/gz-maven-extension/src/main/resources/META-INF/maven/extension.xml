@@ -1,0 +1,8 @@
+<extension>
+	<exportedPackages>
+		<exportedPackage>org.gjs.maven.extensions.gz</exportedPackage>
+	</exportedPackages>
+	<exportedArtifacts>
+		<exportedArtifact>org.gjs.maven.extensions:gz-maven-extension</exportedArtifact>
+	</exportedArtifacts>
+</extension>

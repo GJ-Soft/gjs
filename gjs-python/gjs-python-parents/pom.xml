@@ -18,6 +18,7 @@
      
     <modules>
         <module>gjs-python-parent</module>
+        <module>gjs-python-lib-base-parent</module>
         <module>gjs-python-lib-parent</module>
         <module>gjs-python-exe-parent</module>
         <module>gjs-python-rest-parent</module>

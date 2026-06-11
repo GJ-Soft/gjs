@@ -12,7 +12,7 @@
     <artifactId>gjs-python-lib-archetype</artifactId>    
     <packaging>maven-archetype</packaging>    
     
-    <name>GJS Python Library Archatype</name>    
+    <name>GJS Python Library archetype</name>    
     <description>    
       
   --------------------------------------------------------    

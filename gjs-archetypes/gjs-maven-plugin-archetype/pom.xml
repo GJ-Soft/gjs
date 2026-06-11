@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">    
+    <modelVersion>4.0.0</modelVersion>    
+    
+	<parent>
+		<groupId>org.gjs.maven.archetypes</groupId>    
+		<artifactId>gjs-archetype-parent</artifactId>    
+		<version>1.0.0-RC.1</version>    
+		<relativePath>../gjs-archetype-parent</relativePath>
+	</parent>	
+
+    <artifactId>gjs-maven-plugin-archetype</artifactId>    
+    <packaging>maven-archetype</packaging>    
+    
+    <name>gjs-maven-plugin-archetype</name>    
+    <description>    
+      
+  --------------------------------------------------------    
+  Project gjs-maven-plugin-archetype    
+  --------------------------------------------------------    
+    
+  Archetype for generating the basic structure of a Maven plugin.
+  Example of use: This command generates the test-project project:    
+     
+    mvn archetype:generate \
+		-DarchetypeGroupId=org.gjs.maven.archetypes \
+		-DarchetypeArtifactId=gjs-maven-plugin-archetype \
+		-DarchetypeVersion=1.0.0-SNAPSHOT \
+		-DshortName=test -Drule=test -Dphase=VALIDATE \
+		-Dversion=1.0.0-SNAPSHOT
+    
+  ====================================================================================    
+	Archetype Parameters:
+
+	* shortName: Name of the maven plugin. Always lowercase. Allows two words separated by a hyphen.
+
+	* rule: Name of the sample rule. Always lowercase. Allows two words separated by a hyphen.
+
+	* phase: Phase of the Maven LifeCycle. Always lowercase. Allows two words separated by a hyphen. By default is none. Not required.
+			Posible values: 
+				validate|initialize|generate-sources|process-sources|
+				generate-resources|process-resources|compile|process-classes|
+				generate-test-sources|process-test-sources|generate-test-resources|
+				process-test-resources|test-compile|process-test-classes|test|
+				prepare-package|package|pre-integration-test|integration-test|
+				post-integration-test|verify|install|deploy|pre-clean|clean|
+				post-clean|pre-site|site|post-site|site-deploy|none
+
+	* groupId: The group of the project artifact. 
+
+	* artifactId: The name of the project artifact. Default is plugin. Not required.
+
+	* package: The project packaging of the source code. Default is org.gjs.maven.archetypes. Not required.
+
+	* version: The project version. Default is 1.0.0-SNAPSHOT. Not required.
+                 
+  ====================================================================================    
+      
+    </description>    
+      
+    <properties>    
+	</properties>    
+    
+    <build>    
+    </build>    
+    	
+</project>    

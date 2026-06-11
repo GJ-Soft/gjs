@@ -12,7 +12,7 @@
     <artifactId>gjs-python-rest-client-archetype</artifactId>    
     <packaging>maven-archetype</packaging>    
     
-    <name>GJS Python Rest Client Archatype</name>    
+    <name>GJS Python Rest Client archetype</name>    
     <description>    
       
   --------------------------------------------------------    

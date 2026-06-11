@@ -13,12 +13,33 @@ import platform
 
 from ${package}.client.${capitalizedName}Client import ${capitalizedName}Client
 
+def inicializar(applicationProperties):
+    print(f"Se inicia el ejecutable {applicationProperties.app_name}-{applicationProperties.app_version} ")
+    print(f"Sistema operativo: {platform.system()}")
+    print(f"Versión de Python: {platform.python_version()}")
+        
+    if len(sys.argv) > 1:
+        print(f"\nArgumentos recibidos: {sys.argv[1:]}")
+    else:
+        print("\nNo se pasaron argumentos adicionales.")
 
 def main():
-    client = ${capitalizedName}Client()
     try:
+        from org.gjs.python.common.properties import applicationProperties
+
+        inicializar(applicationProperties)
+        
+        client = ${capitalizedName}Client()
+
         resultado = client.get_server_status()
         print(f"Respuesta recibida: {resultado}")
+        
+    except ImportError:
+        print("\nNo se han encontrado las propiedades de la aplicación.")
+        sys.exit(1)
+    except ValueError as e:
+        print(f"\nConfiguración de base de datos inválida: {e}")
+        sys.exit(1)
     except Exception as e:
         print(f"Error en la llamada: {e}")
         

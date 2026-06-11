@@ -19,12 +19,12 @@ Archetype to generate the basic structure of a project in c++ language.
     mvn archetype:generate \
 		-DarchetypeGroupId=org.gjs.maven.archetypes \
 		-DarchetypeArtifactId=gjs-cpp-lib-archetype \
-		-DarchetypeVersion=1.0.0-SNAPSHOT 
+		-DarchetypeVersion=1.0.0-RC.1 
 
     mvn archetype:generate \
 		-DarchetypeGroupId=org.gjs.maven.archetypes \
 		-DarchetypeArtifactId=gjs-cpp-lib-archetype \
-		-DarchetypeVersion=1.0.0-SNAPSHOT \
+		-DarchetypeVersion=1.0.0-RC.1 \
 		-DshortName=test-project \ 
 		-DgroupId=org.gjs.test 
     

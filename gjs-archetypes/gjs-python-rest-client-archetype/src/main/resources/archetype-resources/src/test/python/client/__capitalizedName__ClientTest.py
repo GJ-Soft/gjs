@@ -12,7 +12,7 @@ from ${package}.models.Models import ServerStatus
 
 
 def test_get_server_status_ok():
-    client = ${capitalizedName}Client(base_url="http://${host}:${port}")
+    client = ${capitalizedName}Client(protocol="http", hostname="localhost", port="8000")
 
     fake_json = {
         "status": "OK",

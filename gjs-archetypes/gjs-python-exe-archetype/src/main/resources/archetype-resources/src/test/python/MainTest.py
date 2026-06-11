@@ -1,5 +1,5 @@
 # test_main.py
-from Main import main
+from ${package}.Main import main
 import pytest
 
 
@@ -10,6 +10,6 @@ def test_main_ejecucion(capsys):
     captured = capsys.readouterr()
     
     # Verificamos que aparezcan las frases que REALMENTE están en tu Main.py
-    assert "Este es un ejecutable Python (.pyz)" in captured.out
+    assert "Este es el ejecutable" in captured.out
     assert "Sistema operativo:" in captured.out
     assert "Versión de Python:" in captured.out

@@ -19,12 +19,12 @@ Archetype to generate the basic structure of a basic project in java language.
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjs.maven.archetypes \
 							-DarchetypeArtifactId=gjs-java-artifact-archetype \
-							-DarchetypeVersion=1.0.0-SNAPSHOT 
+							-DarchetypeVersion=1.0.0-RC.1 
 
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjs.maven.archetypes \
 							-DarchetypeArtifactId=gjs-java-artifact-archetype \
-							-DarchetypeVersion=1.0.0-SNAPSHOT \
+							-DarchetypeVersion=1.0.0-RC.1 \
 							-DshortName=test \ 
 							-DgroupId=org.gjs.test 
     

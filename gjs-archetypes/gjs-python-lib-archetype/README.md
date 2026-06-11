@@ -18,13 +18,13 @@ Archetype to generate the basic structure of a basic project in python language.
 
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjs.maven.archetypes \
-							-DarchetypeArtifactId=gjs-pyhton-lib-archetype \
-							-DarchetypeVersion=1.0.0-SNAPSHOT 
-
+							-DarchetypeArtifactId=gjs-python-lib-archetype \
+							-DarchetypeVersion=1.0.0-RC.1
+							
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjs.maven.archetypes \
-							-DarchetypeArtifactId=gjs-pyhton-lib-archetype \
-							-DarchetypeVersion=1.0.0-SNAPSHOT \
+							-DarchetypeArtifactId=gjs-python-lib-archetype \
+							-DarchetypeVersion=1.0.0-RC.1 \
 							-DshortName=test \ 
 							-DgroupId=org.gjs.test \
   							-Dauthor="GJ Software" \

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.pytest.ini_options]
+testpaths = ["src/test/python/org/gjs/python/common"]
+pythonpath  = [
+    "src/main/python",
+    "src/test/python",
+]
+
+python_files = ["*Test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+cache_dir = ".pytest_cache"

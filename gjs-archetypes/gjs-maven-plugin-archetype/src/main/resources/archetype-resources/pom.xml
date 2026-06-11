@@ -1,0 +1,65 @@
+#set( $capitalizedName = $shortName.substring(0,1).toUpperCase() + $shortName.substring(1))
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+		<groupId>org.gjs.java.maven</groupId>
+		<artifactId>gjs-java-maven-parent</artifactId>
+		<version>1.0.0-RC.1</version>
+        <relativePath />
+    </parent>
+
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${version}</version>
+    <packaging>maven-plugin</packaging>
+	
+    <name>GJS Maven ${capitalizedName} plugin </name>
+    <description>Maven plugin ${capitalizedName} 
+  --------------------------------------------------------    
+  Maven plugin ${capitalizedName}
+  --------------------------------------------------------    
+    
+  Maven plugin ${shortName} to (TODO)
+  Lifecycle Phase: ${phase}
+
+  Pom plugin definition:
+
+
+		groupId      : ${groupId}
+		artifactId   : ${artifactId}
+		version      : ${version}
+		configuration:
+			skip     : false
+			fail     : true
+
+  Use
+
+	mvn ${shortName}:${rule}    
+	</description>
+
+    <properties>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<configuration>
+					<goalPrefix>${shortName}</goalPrefix>
+				</configuration>
+			</plugin>
+		</plugins>
+    </build>
+
+    <profiles>
+    </profiles>
+
+</project>
