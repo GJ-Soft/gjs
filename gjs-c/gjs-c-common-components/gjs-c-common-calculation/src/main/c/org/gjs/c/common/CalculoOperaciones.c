@@ -50,7 +50,7 @@ int MatEnteroEsImpar ( long lValor )
 {
 	int iRes;
 
-	if ( lValor % 2 == 1 )
+	if ( lValor % 2 != 0 )
 	{
 		iRes = 1;
 	}
@@ -116,11 +116,18 @@ long MatModulo ( long lValor, long lModulo )
 unsigned long MatFactorial ( unsigned long ulValor )
 {
 	unsigned long ulRes;
-	ulRes = ulValor;
-	while ( ulValor > 1 )
+	if ( ulValor == 0 )
 	{
-		ulValor = ulValor - 1;
-		ulRes = ulRes * ulValor;
+		ulRes = 1;
+	}
+	else
+	{
+		ulRes = ulValor;
+		while ( ulValor > 1 )
+		{
+			ulValor = ulValor - 1;
+			ulRes = ulRes * ulValor;
+		}
 	}
 	return ( ulRes );
 }
@@ -203,7 +210,7 @@ double MatDividirRealDoble ( double dDividendo, double dDivisor, int * p_iIndete
 	}
 	else if ( dDividendo < 0.0 )
 	{
-		dRes = DBL_MIN;
+		dRes = -DBL_MAX;
 	}
 	else
 	{
@@ -234,7 +241,7 @@ float MatDividir ( float fDividendo, float fDivisor, int * p_iIndeterminacion )
 	}
 	else if ( fDividendo < 0.0 )
 	{
-		fRes = FLT_MIN;
+		fRes = -FLT_MAX;
 	}
 	else
 	{
@@ -257,7 +264,7 @@ int MatEsMaximoRealDoble ( double dValor )
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -272,7 +279,7 @@ int MatEsMinimoRealDoble ( double dValor )
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -287,7 +294,7 @@ int MatEsMaximo ( float fValor )
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -302,7 +309,7 @@ int MatEsMinimo ( float fValor )
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -935,44 +942,13 @@ double MatExcentricidad ( double dSemiejeMayor, double dSemiejeMenor )
 	return ( dRes );
 }
 
-double MatExcentricidad2 ( double dSemiejeMayor, double dSemiejeMenor )
-{
-	double dRes;
-
-	if ( dSemiejeMenor != 0  )
-	{
-		dRes = sqrt ( ( (dSemiejeMayor * dSemiejeMayor) - (dSemiejeMenor * dSemiejeMenor) ) / (dSemiejeMenor * dSemiejeMenor) );
-	}
-	else 
-	{
-		dRes = -1.0;
-	}
-	return ( dRes );
-}
-
 double MatExcentricidadCuadrada ( double dSemiejeMayor, double dSemiejeMenor )
 {
 	double dRes;
 
 	if ( dSemiejeMayor != 0  )
 	{
-		dRes = (dSemiejeMayor * dSemiejeMayor) - (dSemiejeMenor * dSemiejeMenor) / (dSemiejeMayor * dSemiejeMayor);
-	}
-	else 
-	{
-		dRes = -1.0;
-	}
-	return ( dRes );
-}
-
-
-double MatExcentricidad2Cuadrada ( double dSemiejeMayor, double dSemiejeMenor )
-{
-	double dRes;
-
-	if ( dSemiejeMenor != 0  )
-	{
-		dRes = (dSemiejeMayor * dSemiejeMayor) - (dSemiejeMenor * dSemiejeMenor) / (dSemiejeMenor * dSemiejeMenor);
+		dRes = ( (dSemiejeMayor * dSemiejeMayor) - (dSemiejeMenor * dSemiejeMenor) ) / (dSemiejeMayor * dSemiejeMayor);
 	}
 	else 
 	{
@@ -1014,7 +990,7 @@ double MatRadioCurvaturaEsfereoidalPerpendicular ( double dSemiejeMayor, double 
 	dDenom = sqrt ( 1.0 - dE2 * dSenLat * dSenLat );
 	if ( dDenom != 0 )
 	{
-		dRes = dSemiejeMayor * ( 1.0 - dE2 ) / dDenom;
+		dRes = dSemiejeMayor / dDenom;
 	}
 	else 
 	{

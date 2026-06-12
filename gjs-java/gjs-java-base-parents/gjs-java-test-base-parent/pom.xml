@@ -11,8 +11,16 @@
     <artifactId>gjs-java-test-base-parent</artifactId>
  	<packaging>pom</packaging>
 
-	<name>GJS common Java base parent</name>
+	<name>GJS common test Java base parent</name>
 	<description>
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.		└── gjs-java-base-parent
+		.			   └── gjs-java-test-base-parent
+		.						└── gjs-java-test-parent
+		.
 	</description>
 
 	<properties>

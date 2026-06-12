@@ -15,7 +15,15 @@
 	<name>GJS Npm</name>
 	<description>
 		GJS Npm integration with Maven.
-		
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.	   └── gjs-no-java-parent
+		.			   └── gjs-npm-parent
+		.						├── gjs-npm-typescript-parentt
+		.						└── gjs-npm-front-parent
+		.
 		Fase Maven			Comando npm equivalente
 		initialize			npm install
 		process-sources		npm run lint (opcional)
@@ -287,6 +295,12 @@
 	</build>
 
     <profiles>
+		<profile>
+			<id>npm</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
         <!-- Desarrollo -->
         <profile>
             <id>dev</id>

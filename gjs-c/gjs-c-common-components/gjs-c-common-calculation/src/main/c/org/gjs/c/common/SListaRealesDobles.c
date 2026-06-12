@@ -92,12 +92,12 @@ double SLisRealdElemento ( SListaRealesDobles * p_lisObj, int iElem )
 		}
 		else
 		{
-			dRes = -1;
+			dRes = 0;
 		}
 	}
 	else
 	{
-		dRes = -1;
+		dRes = 0;
 	}
 	return ( dRes );
 }
@@ -355,7 +355,7 @@ int SLisRealdInsertarDelante ( SListaRealesDobles * p_lisObj, double dDato )
 	}
 	else
 	{
-		iRes = 0;
+		iRes = -1;
 	}
 	return ( iRes );
 }
@@ -390,7 +390,7 @@ int SLisRealdInsertarDetras ( SListaRealesDobles * p_lisObj, double dDato )
 	}
 	else
 	{
-		iRes = 0;
+		iRes = -1;
 	}
 	return ( iRes );
 }

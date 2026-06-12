@@ -21,8 +21,7 @@
 	</properties>
 
 	<build>
-		<!-- Los proyectos que no son Java y no tienen classpath necesitan tener
-		     todo los recursos copiados para los test -->
+		<!-- Non-Java projects without a classpath need to have all resources copied for testing. -->
 		<testResources>
             <testResource>
                 <directory>${project.basedir}/src/main/resources</directory>

@@ -12,9 +12,23 @@
 	<packaging>pom</packaging>
 	
 	<name>Maven C NAR Parent Pom</name>
-	<description>Parent pom for C projects using the nar-maven-plugin.
-	C files must always have the .c extension.
-	To compile C files with the C++ compiler, you can use the .cc extension.
+	<description>
+		Parent pom for C projects using the nar-maven-plugin.
+		C files must always have the .c extension.
+		To compile C files with the C++ compiler, you can use the .cc extension.
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.	   └── gjs-no-java-parent
+		.				└── gjs-c-common-parent
+		.						   └── gjs-c-nar-extension-parent
+		.									└── gjs-c-nar-parent
+		.											   └── gjs-c-parent
+		.											              ├── gjs-c-lib-parent
+		.											              ├── gjs-c-stlib-parent
+		.											              └── gjs-c-exe-parent
+		.
 	</description>
 	<properties>	
 		<!-- Language features -->

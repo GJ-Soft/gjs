@@ -20,51 +20,39 @@
 		.
 		.	Pom organization:
 		.
-		.	/gjs-parent
-		.		|
-		.		|--/gjs-java-base-parent
-		.	   			|
-		.				|--/gjs-java-parent
-		.				|			 |
-		.		     	|			 |--/gjs-java-artifact-parent
-		.				|			 |
-		.				|			 |--/gjs-java-web-parent
-		.				|			        |
-		.				|			        |--/gjs-java-war-parent
-		.	  	 		|			 		|
-		.				|			 		|--/gjs-springboot-parent
-		.				|			               |
-		.				|			               |--/gjs-java-sb-artifact-parent
-		.	  	 		|			 		       |
-		.				|			 	     	   |--/gjs-java-sb-war-parent
-		.		     	|
-		.				|--/gjs-java-maven-base-parent
-		.		     	|				|
-		.				|				|--/gjs-java-maven-parent
-		.		     	|
-		.				|--/gjs-java-test-base-parent
-		.		     					|
-		.								|--/gjs-java-test-parent
-		.		     					|
-		.								|--/gjs-java-sb-test-parent
+		.	gjs-parent
+		.		└── gjs-java-base-parent
+		.			   ├── gjs-java-parent
+		.			   │        └── gjs-java-artifact-parent
+		.			   │                   └── gjs-java-web-parent
+		.			   │                              ├── gjs-java-war-parent
+		.			   │                              ├── gjs-java-springboot-parent
+		.			   │                              │           ├── gjs-java-sb-artifact-parent
+		.			   │                              │           └── gjs-java-sb-war-parent
+		.			   │                              └── gjs-java-sb-test-parent
+		.			   ├── gjs-java-maven-base-parent
+		.			   │        └── gjs-java-maven-parent
+		.			   └── gjs-java-test-base-parent
+		.						└── gjs-java-test-parent
 		.
-		
 		Maven quality, format and documentation commads provided:
 			* mvn checkstyle:check 
-			* mvn javadoc:javadoc		Generar javadoc site
-			* mvn javadoc:fix   		Añade o corrige Javadoc en src/main/java
-			* mvn javadoc:test-fix 		Añade o corrige Javadoc en src/test/java
+			* mvn javadoc:javadoc		Generate javadoc site
+			* mvn javadoc:fix   		Add or correct Javadoc in src/main/java
+			* mvn javadoc:test-fix 		Add or correct Javadoc in src/test/java
 			* mvn formatter:format	-Dformatter.file=file-eclipse-likely.xml
 			* mvn fmt:format -Dcode.line.max.length=100	
-			* mvn spotless:apply   		Aplica cambios (organiza imports)
-			* mvn spotless:check   		Solo verifica
+			* mvn spotless:apply   		Apply changes (organize imports)
+			* mvn spotless:check   		Just check
 			* mvn pmd:check
 			* mvn spotbugs:spotbugs
 			* mvn spotbugs:check		
 			
 		Profiles:
-			* attach-sources			
-			* attach-javadoc
+			* java                  			         : It is automatically setted
+			* attach-sources                	         : Generates sources jar
+			* attach-javadoc	            	         : Generates javadoc jar
+			* jdk-8 | jdk-11 | jdk-17 | jdk-21 | jdk-25  : Java version
 
 		
 		Needs profile cpp with special properties in settings.xml file: 

@@ -14,7 +14,7 @@
 	
     <name>GJS Java</name>
     <description>
-		Pom grouper for Java
+		Pom grouper for Java: parent poms and common components
 	</description>
      
     <modules>

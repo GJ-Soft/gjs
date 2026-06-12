@@ -77,7 +77,7 @@ double GradObtenerAngulo ( int iGrad, int iMin, int iSeg )
 
 	if ( GradEsValido ( iGrad, iMin, iSeg ) == 1 )
 	{
-		dRes = iGrad + (iMin/60) + (iSeg/3600);
+		dRes = iGrad + (iMin/60.0) + (iSeg/3600.0);
 	}
 	else
 	{
@@ -269,13 +269,23 @@ int GradNormalizar ( int * p_iGrad, int * p_iMin, int * p_iSeg )
 	{
 		if ( GradEsValido ( *p_iGrad, *p_iMin, *p_iSeg ) == 1 ) 
 		{
-			if ( *p_iGrad < 0 )
-			{
-				*p_iSeg = 60 - *p_iSeg;
-				*p_iMin = 60 - *p_iMin - 1;
-				*p_iGrad = *p_iGrad - 1;
-			}
-			*p_iGrad = *p_iGrad % 360;
+           // Convertir todo a segundos totales
+            long lTotalSegs = (long)(*p_iGrad) * 3600
+                            + (long)(*p_iMin)  * 60
+                            + (long)(*p_iSeg);
+
+            // Normalizar al rango [0, 360°) en segundos
+            long lCirculoSegs = 360L * 3600L;
+            lTotalSegs = lTotalSegs % lCirculoSegs;
+            if ( lTotalSegs < 0 )
+            {
+                lTotalSegs += lCirculoSegs;
+            }
+
+            // Descomponer de vuelta a grados, minutos, segundos
+            *p_iGrad = (int)( lTotalSegs / 3600 );
+            *p_iMin  = (int)( ( lTotalSegs % 3600 ) / 60 );
+            *p_iSeg  = (int)( lTotalSegs % 60 );
 			iRes = 1;
 		}
 		else

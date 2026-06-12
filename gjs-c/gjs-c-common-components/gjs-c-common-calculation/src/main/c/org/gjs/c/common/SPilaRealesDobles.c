@@ -92,12 +92,12 @@ double SPilRealdPrimero ( SPilaRealesDobles * p_pilObj )
 		}
 		else
 		{
-			dRes = -1;
+			dRes = 0;
 		}
 	}
 	else
 	{
-		dRes = -1;
+		dRes = 0;
 	}
 	return ( dRes );
 }
@@ -117,12 +117,12 @@ double SPilRealdDesapilar ( SPilaRealesDobles * p_pilObj )
 		}
 		else
 		{
-			dRes = -1;
+			dRes = 0;
 		}
 	}
 	else
 	{
-		dRes = -1;
+		dRes = 0;
 	}
 	return ( dRes );
 }

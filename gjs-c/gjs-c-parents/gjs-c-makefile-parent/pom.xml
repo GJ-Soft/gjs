@@ -29,22 +29,65 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
 					<executions>
+						<!-- mvn clean -->
 						<execution>
-							<id>mk-build</id>
+							<id>make-clean</id>
+							<phase>clean</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<executable>${gjs.tool.makefile}</executable>
+								<arguments>
+									<argument>clean</argument>
+								</arguments>
+							</configuration>
+						</execution>
+
+						<!-- mvn compile -->
+						<execution>
+							<id>make-compile</id>
 							<phase>compile</phase>
 							<goals>
 								<goal>exec</goal>
 							</goals>
 							<configuration>
 								<executable>${gjs.tool.makefile}</executable>
-								<workingDirectory>${basedir}/src/main/c++/com/compname/smtp/logview/</workingDirectory>
 								<arguments>
-									<argument>clean</argument>
 									<argument>all</argument>
 								</arguments>
 							</configuration>
 						</execution>
 
+						<!-- mvn test -->
+						<execution>
+							<id>make-test</id>
+							<phase>test</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<executable>${gjs.tool.makefile}</executable>
+								<arguments>
+									<argument>test</argument>
+								</arguments>
+							</configuration>
+						</execution>
+
+						<!-- mvn install -->
+						<execution>
+							<id>make-install</id>
+							<phase>install</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<executable>${gjs.tool.makefile}</executable>
+								<arguments>
+									<argument>install</argument>
+								</arguments>
+							</configuration>
+						</execution>
 					</executions>
 				</plugin>
 			</plugins>

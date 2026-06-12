@@ -3,6 +3,17 @@
 Project Gjs
 
 
+## General information
+
+| Element  | Link                                    |
+|----------|-----------------------------------------|
+| Git      | https://github.com/GJ-Soft/gjs.git      |
+| Wiki     | -                                       |
+| Issues   | https://github.com/GJ-Soft/gjs/issues   |
+| Releases | -                                       |
+
+
+
 ## Description
 
 Maven parent poms, Maven arquetypes, Maven plugins and basic support libraries for the arquetypes.
@@ -25,15 +36,37 @@ Supported Languages:
 * Python 	3.14.x
 
 
-## Git
-
-https://github.com/GJ-Soft/gjs.git
+## Roadmap
 
 
-## Índice de la Wiki
+### Current version
+
+- 1.0.0-RC.1
+
+
+### Under Development
+
+- C/C++  
+- 
+
+### Next version (1.0.0)
+
+- ...
+- ...
+
+### Future versions
+
+
+## License
+
+GNU GENERAL PUBLIC LICENSE.
+
+
+## Wiki index
 
       
-* [Guía de Preparación del Entorno de Desarrollo](docs/entorno.md)
+* [Conventions](docs/conventions.md)
+* [Development Environment Setup Guide](docs/environment.md)
 * [Guía de Instalación y Configuración](docs/instalacion.md)
 * [Arquitectura del Sistema y Módulos](docs/arquitectura.md)
 * [Ciclo de Vida del Software y Despliegue](docs/ciclo-vida.md)

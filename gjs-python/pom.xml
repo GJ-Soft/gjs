@@ -14,7 +14,7 @@
 	
     <name>GJS Python</name>
     <description>
-		Pom grouper for Python
+		Pom grouper for Python: parent poms and common components
 	</description>
      
     <modules>

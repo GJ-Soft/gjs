@@ -12,7 +12,26 @@
 	<packaging>pom</packaging>
 
 	<name>Maven C/C++ NAR Exrension Parent Pom</name>
-	<description>Parent pom for define nar packaging extension in Maven.</description>
+	<description>
+		Parent pom for define nar packaging extension in Maven.
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.	   └── gjs-no-java-parent
+		.				└── gjs-c-common-parent
+		.						   └── gjs-c-nar-extension-parent
+		.									└── gjs-c-nar-parent
+		.											   ├── gjs-c-parent
+		.											   │          ├── gjs-c-lib-parent
+		.											   │          ├── gjs-c-stlib-parent
+		.											   │          └── gjs-c-exe-parent
+		.											   └── gjs-cpp-parent
+		.														  ├── gjs-cpp-lib-parent
+		.														  ├── gjs-cpp-stlib-parent
+		.													  	  └── gjs-cpp-exe-parent
+		.
+	</description>
 	
 	<properties>
 		<!-- NAR -->

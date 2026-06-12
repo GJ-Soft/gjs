@@ -14,7 +14,7 @@
 	
     <name>GJS Maven extensions</name>
     <description>
-		Pom grouper for Maven extensions and tools
+		Pom grouper for Maven extensions to handle alternative packaging
 	</description>
      
     <modules>

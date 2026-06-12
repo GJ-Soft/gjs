@@ -14,8 +14,17 @@
 	<name>GJS Npm</name>
 	<description>
 		GJS Npm front integration with Maven.
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.	   └── gjs-no-java-parent
+		.			   └── gjs-npm-parent
+		.						└── gjs-npm-front-parent
+		.
+
 		Profiles:
-		* angular (default) | react | vue   
+			* angular (default) | react | vue   
 	</description>
 
 	<properties>

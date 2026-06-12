@@ -14,6 +14,16 @@
 	<name>GJS Java web artifacts parent</name>
 	<description>
 		Maven parent pom for general Java web artifacts (war).
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.		└── gjs-java-base-parent
+		.			   └── gjs-java-parent
+		.			            └── gjs-java-artifact-parent
+		.			                       └── gjs-java-web-parent
+		.			                                  └── gjs-java-war-parent
+		.
 	</description>
 
 	<properties>

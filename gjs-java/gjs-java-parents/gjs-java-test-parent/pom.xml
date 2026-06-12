@@ -13,6 +13,14 @@
 
 	<name>GJS common Java test parent</name>
 	<description>
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.		└── gjs-java-base-parent
+		.			   └── gjs-java-test-base-parent
+		.						└── gjs-java-test-parent
+		.
 	</description>
 
 	<properties>

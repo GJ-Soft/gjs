@@ -12,7 +12,20 @@
 	<packaging>pom</packaging>
 
 	<name>Maven C++ Library Parent Pom</name>
-	<description>Parent pom for generate a C++ dynamic library using the nar-maven-plugin.</description>
+	<description>
+		Parent pom for generate a C++ dynamic library using the nar-maven-plugin.
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.	   └── gjs-no-java-parent
+		.				└── gjs-c-common-parent
+		.						   └── gjs-c-nar-extension-parent
+		.									└── gjs-c-nar-parent
+		.											   └── gjs-cpp-parent
+		.														  └── gjs-cpp-lib-parent
+		.
+	</description>
 	
 	<properties>
 		<finalPrefix>${libFinalPrefix}</finalPrefix>

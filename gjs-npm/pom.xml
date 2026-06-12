@@ -14,7 +14,7 @@
 	
     <name>GJS Npm</name>
     <description>
-		Pom grouper for Npm
+		Pom grouper for Npm: parent poms and common components
 	</description>
      
     <modules>

@@ -118,7 +118,7 @@ double SExdRValor ( SExtremoDominioReal * p_exdObj )
 		}
 		else if ( p_exdObj->iInfinito == -1 )
 		{
-			dRes = DBL_MIN;
+			dRes = -DBL_MAX;
 		}
 		else
 		{

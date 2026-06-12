@@ -14,7 +14,7 @@
 	
     <name>GJS C/C++</name>
     <description>
-		Pom grouper for C/C++
+		Pom grouper for C/C++: parent poms and common components 
 	</description>
      
     <modules>

@@ -8,7 +8,7 @@ SIntervalo * SIntvCrear ( double dMin, double dMax )
 {
 	SIntervalo * p_intvObj;
 	
-	if ( dMin >= dMax )
+	if ( dMin <= dMax )
 	{
 		p_intvObj= (SIntervalo *) MemReservar ( sizeof ( SIntervalo ) );
 		if ( ES_VALIDO ( p_intvObj ) )
@@ -72,10 +72,6 @@ SIntervalo * SIntvCrearExt ( double dMin, double dMax, int iValores, ... )
 				SIntvDestruir ( &p_intvObj );
 			}
 			va_end ( valDivisiones );
-		}
-		else
-		{
-			SIntvDestruir ( &p_intvObj );
 		}
 	}
 	return ( p_intvObj );
@@ -319,7 +315,7 @@ int SIntvEsValido ( SIntervalo * p_intvObj )
 
 	if ( ES_VALIDO ( p_intvObj ) )
 	{
-		if ( ( p_intvObj->dMin >= p_intvObj->dMax ) &&
+		if ( ( p_intvObj->dMin <= p_intvObj->dMax ) &&
 			 ( ( ( p_intvObj->iNumDivisiones > 0 ) && ES_VALIDO ( p_intvObj->p_dDivisiones ) ) || 
 			   ( ( p_intvObj->iNumDivisiones == 0 ) && ES_NULO ( p_intvObj->p_dDivisiones ) ) ) )
 		{
@@ -405,14 +401,14 @@ SIntervalo * SIntvSubintervalo ( SIntervalo * p_intvObj, int iSubintervalo )
 
 	if ( SIntvEsValido ( p_intvObj ) == 1 )
 	{
-		if ( ( iSubintervalo >= 0 ) && ( iSubintervalo < p_intvObj->iNumDivisiones ) )
+		if ( ( iSubintervalo >= 0 ) && ( iSubintervalo <= p_intvObj->iNumDivisiones ) )
 		{
 			if ( iSubintervalo == 0 )
 			{
 				dMin = p_intvObj->dMin;
 				dMax = p_intvObj->p_dDivisiones [ 0 ];
 			}
-			else if ( iSubintervalo == 0 )
+			else if ( iSubintervalo == p_intvObj->iNumDivisiones )
 			{
 				dMin = p_intvObj->p_dDivisiones [ iSubintervalo - 1 ];
 				dMax = p_intvObj->p_dDivisiones [ iSubintervalo ];
@@ -540,7 +536,7 @@ int SIntvBuscarIntervalo ( SIntervalo * p_intvObj, double dValor )
 
 	if ( SIntvEsValido ( p_intvObj ) == 1 )
 	{
-		if ( ( dValor >= p_intvObj->dMax ) && ( dValor <= p_intvObj->dMax ) )
+		if ( ( dValor >= p_intvObj->dMin ) && ( dValor <= p_intvObj->dMax ) )
 		{
 			iRes = -1;
 			iSubintervalo = 0;

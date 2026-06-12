@@ -14,6 +14,15 @@
 	<name>GJS common Python Exe parent</name>
 	<description>
 		Maven Python general parent for executables pom.
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.	   └── gjs-no-java-parent
+		.				└── gjs-python-parent
+		.					   └── gjs-python-exe-parent
+		.							   └── gjs-python-rest-parent
+		.
 	</description>
 
 	<properties>

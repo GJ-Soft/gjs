@@ -15,6 +15,14 @@
 	<name>GJS Java maven plugins parent</name>
 	<description>
 		Maven parent pom for Maven plugins.
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.		└── gjs-java-base-parent
+		.			   ├── gjs-java-maven-base-parent
+		.			            └── gjs-java-maven-parent
+		.
 	</description>
 
 	<properties>

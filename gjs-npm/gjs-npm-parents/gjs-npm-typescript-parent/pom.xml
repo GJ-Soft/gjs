@@ -14,6 +14,14 @@
 	<name>GJS Npm Typescript</name>
 	<description>
 		GJS Npm Typescript integration with Maven.
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.	   └── gjs-no-java-parent
+		.			   └── gjs-npm-parent
+		.						└── gjs-npm-typescript-parentt
+		.
 	</description>
 
 	<properties>

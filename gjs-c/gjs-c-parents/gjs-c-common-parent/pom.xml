@@ -18,29 +18,19 @@
 		.
 		.	Pom organization:
 		.
-		.	/gjs-parent/gjs-no-java-parent
-		.		|
-		.		|--/gjs-c-common-parent
-		.		        |
-		.		        |--/gjs-c-nar-extension-parent
-		.		                |
-		.		                |--/gjs-c-nar-parent
-		.	  	 			        	|
-		.					        	|--/gjs-c-parent
-		.					        	|   	|
-		.							    |   	|--/gjs-c-lib-parent
-		.						        |   	|
-		.						        |   	|--/gjs-c-stlib-parent
-		.						        |   	|
-		.						        |   	|--/gjs-c-exe-parent
-		.					        	|
-		.					        	|--/gjs-cpp-parent
-		.					        			|
-		.					        			|--/gjs-cpp-lib-parent
-		.					                		|
-		.						        		|--/gjs-cpp-stlib-parent
-		.						        		|
-		.							        	|--/gjs-cpp-exe-parent
+		.	gjs-parent
+		.	   └── gjs-no-java-parent
+		.				└── gjs-c-common-parent
+		.						   └── gjs-c-nar-extension-parent
+		.									└── gjs-c-nar-parent
+		.											   ├── gjs-c-parent
+		.											   │          ├── gjs-c-lib-parent
+		.											   │          ├── gjs-c-stlib-parent
+		.											   │          └── gjs-c-exe-parent
+		.											   └── gjs-cpp-parent
+		.														  ├── gjs-cpp-lib-parent
+		.														  ├── gjs-cpp-stlib-parent
+		.													  	  └── gjs-cpp-exe-parent
 		.
 		Needs profile cpp with special properties in settings.xml file: 
 		

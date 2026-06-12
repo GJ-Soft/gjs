@@ -96,7 +96,7 @@ SFuncionReal * SFunRFuncionInterior ( SFuncionReal * p_funObj )
 
 	if ( ES_VALIDO ( p_funObj ) )
 	{
-		p_funRes = SFunRFuncionInterior ( p_funObj );
+		p_funRes = (SFuncionReal *) p_funObj->p_funInterior;
 	}
 	else
 	{
@@ -164,7 +164,7 @@ SFuncionReal * SFunRDuplicar ( SFuncionReal * p_funObj )
 
 	if ( ES_VALIDO ( p_funObj ) )
 	{
-		p_funRes = SFunRCrearComposicion ( p_funObj->p_fCalculo, SFunRFuncionInterior ( p_funObj ) );
+		p_funRes = SFunRCrearComposicion ( p_funObj->p_fCalculo, SFunRDuplicar ( SFunRFuncionInterior ( p_funObj ) ) );
 	}
 	else 
 	{

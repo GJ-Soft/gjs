@@ -15,7 +15,17 @@
 	<name>GJS common Python base parent</name>
 	<description>
 		Maven Python general parent pom.
-		
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.	   └── gjs-no-java-parent
+		.				└── gjs-python-parent
+		.					   ├── gjs-python-lib-base-parent
+		.					   │       └── gjs-python-lib-parent
+		.					   └── gjs-python-exe-parent
+		.							   └── gjs-python-rest-parent
+		.
 		Fase Maven			Comando python equivalente
 		initialize			
 		compile				pip install
@@ -324,6 +334,12 @@
 	</build>
 
     <profiles>
+		<profile>
+			<id>python</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
 		<profile>
             <id>upgrade</id>
             <build>

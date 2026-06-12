@@ -100,9 +100,7 @@ double MatAnguloTrianguloSuperficieEsfera ( double dLado1, double dLado2, double
 // Excentricidad y esferoidales:
 int MatExcentricidadEsValida ( double dValor );
 double MatExcentricidad ( double dSemiEje1, double dSemiEje2 );
-double MatExcentricidad2 ( double dSemiEje1, double dSemiEje2 );
 double MatExcentricidadCuadrada ( double dSemiEje1, double dSemiEje2 );
-double MatExcentricidad2Cuadrada ( double dSemiEje1, double dSemiEje2 );
 double MatRadioCurvaturaEsfereoidal ( double dSemiejeMayor, double dSemiejeMenor, double dLatitud );
 double MatRadioCurvaturaEsfereoidalPerpendicular ( double dSemiejeMayor, double dSemiejeMenor, double dLatitud );
 double MatArcoMeridional ( double dSemiejeMayor, double dSemiejeMenor, double dLatitud );

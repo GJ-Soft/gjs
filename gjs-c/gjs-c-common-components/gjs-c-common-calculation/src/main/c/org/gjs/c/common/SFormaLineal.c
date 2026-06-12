@@ -20,9 +20,16 @@ SFormaLineal * SFrmLinCrear ( int iNumVariables )
 		{
 			p_frmlinObj->iNumVariables = iNumVariables;
 			p_frmlinObj->p_dCoeficientes = (double *) MemReservar ( iNumVariables * sizeof ( double ) );
-			for ( iCoef = 0; iCoef < p_frmlinObj->iNumVariables; iCoef = iCoef + 1 )
+			if ( ES_VALIDO ( p_frmlinObj->p_dCoeficientes ) )
 			{
-				p_frmlinObj->p_dCoeficientes [ iCoef ] = 0.0;
+				for ( iCoef = 0; iCoef < p_frmlinObj->iNumVariables; iCoef = iCoef + 1 )
+				{
+					p_frmlinObj->p_dCoeficientes [ iCoef ] = 0.0;
+				}
+			}
+			else
+			{
+				MemLiberar ( (void **) &p_frmlinObj );
 			}
 		}
 	}
@@ -79,7 +86,7 @@ SFormaLineal * SFrmLinCrear2 ( double dCoef1, double dCoef2 )
 {
 	SFormaLineal * p_frmlinObj;
 
-	p_frmlinObj= SFrmLinCrear ( 1 );
+	p_frmlinObj= SFrmLinCrear ( 2 );
 	if ( ES_VALIDO ( p_frmlinObj ) )
 	{
 		p_frmlinObj->p_dCoeficientes [ 0 ] = dCoef1;
@@ -92,7 +99,7 @@ SFormaLineal * SFrmLinCrear3 ( double dCoef1, double dCoef2, double dCoef3 )
 {
 	SFormaLineal * p_frmlinObj;
 
-	p_frmlinObj= SFrmLinCrear ( 1 );
+	p_frmlinObj= SFrmLinCrear ( 3 );
 	if ( ES_VALIDO ( p_frmlinObj ) )
 	{
 		p_frmlinObj->p_dCoeficientes [ 0 ] = dCoef1;
@@ -223,6 +230,13 @@ double * SFrmLinVectorValores ( SFormaLineal * p_frmlinObj )
 	if ( SFrmLinEsValido ( p_frmlinObj ) == 1 )
 	{
 		p_dRes = (double *) MemReservar ( p_frmlinObj->iNumVariables * sizeof ( double ) );
+		if ( ES_VALIDO ( p_dRes ) )
+		{
+			for ( int i = 0; i < p_frmlinObj->iNumVariables; i = i + 1 )
+			{
+				p_dRes [ i ] = 0.0;
+			}
+		}
 	}
 	else
 	{
@@ -287,6 +301,7 @@ int SFrmLinMultiplicar ( SFormaLineal * p_frmlinObj, double dValor )
 		{
 			p_frmlinObj->p_dCoeficientes [ iCoef ] = p_frmlinObj->p_dCoeficientes [ iCoef ] * dValor;
 		}
+		iRes = 1;
 	}
 	else
 	{
@@ -306,6 +321,7 @@ int SFrmLinSumar ( SFormaLineal * p_frmlinObj, SFormaLineal * p_frmlinValor )
 		{
 			p_frmlinObj->p_dCoeficientes [ iCoef ] = p_frmlinObj->p_dCoeficientes [ iCoef ] + SFrmLinCoeficiente ( p_frmlinValor, iCoef );
 		}
+		iRes = 1;
 	}
 	else
 	{
@@ -319,13 +335,17 @@ SFormaLineal * SFrmLinDuplicar  ( SFormaLineal * p_frmlinObj )
 	SFormaLineal *	p_frmlinRes;
 	int				iCoef;
 
-	p_frmlinRes = SFrmLinCrear ( p_frmlinObj->iNumVariables );
 	if ( ES_VALIDO ( p_frmlinObj ) )
 	{
+		p_frmlinRes = SFrmLinCrear ( p_frmlinObj->iNumVariables );
 		for ( iCoef = 0; iCoef < p_frmlinObj->iNumVariables; iCoef = iCoef + 1 )
 		{
 			SFrmLinEstablecerCoeficiente ( p_frmlinRes, iCoef, p_frmlinObj->p_dCoeficientes [ iCoef ] );
 		}
+	}
+	else
+	{
+		p_frmlinRes = NULL;
 	}
 	return ( p_frmlinRes );
 }

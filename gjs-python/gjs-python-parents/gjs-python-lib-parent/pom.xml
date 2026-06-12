@@ -14,6 +14,15 @@
 	<name>GJS common Python Lib parent</name>
 	<description>
 		Maven GJS common Python for Libraries parent
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.	   └── gjs-no-java-parent
+		.				└── gjs-python-parent
+		.					   └── gjs-python-lib-base-parent
+		.					           └── gjs-python-lib-parent
+		.
 	</description>
 
 	<properties>
