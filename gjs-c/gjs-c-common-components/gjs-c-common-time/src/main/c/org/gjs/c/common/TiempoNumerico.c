@@ -55,39 +55,39 @@ unsigned long TiempoNumSegundos ( int iD, int iH, int iMi, int iS )
 long HorFormSolarEsp ( long lFecha, long lHora )
 {
 	long	lRes;
-	long	iD;
-	long	iM;
-	long	iA;
-	long	lH;
-	long	iMi;
-	long	lS;
+	int		iD;
+	int		iM;
+	int		iA;
+	int		iH;
+	int		iMi;
+	int		iS;
 
 	if ( ( FecFormEsValida ( lFecha ) == 1 ) && ( HorFormEsValida ( lHora ) == 1 ) )
 	{
 		iD = MatEnteroAbsoluto ( lFecha ) % 100;
 		iM = ( MatEnteroAbsoluto ( lFecha ) / 100 ) % 100;
 		iA = lFecha / 10000;
-		lS = lHora % 100;
+		iS = lHora % 100;
 		iMi = ( lHora / 100 ) % 100;
-		lH = lHora / 10000;
+		iH = lHora / 10000;
 
 		if ( CalendAplicarUnaHoraMas ( iA, iM, iD ) == 1 )
 		{
-			lH = lH - 1;
-			if ( lH < 0 )
+			iH = iH - 1;
+			if ( iH < 0 )
 			{
-				lH = 23;
+				iH = 23;
 			}
 		}
 		if ( CalendSistemaHorarioUTC ( iA, iM, iD ) == 1 )
 		{
-			lH = lH - 1;
-			if ( lH < 0 )
+			iH = iH - 1;
+			if ( iH < 0 )
 			{
-				lH = 23;
+				iH = 23;
 			}
 		}
-		lRes = lH * 10000 + iMi * 100 + lS;
+		lRes = iH * 10000 + iMi * 100 + iS;
 	}
 	else
 	{
@@ -117,7 +117,7 @@ double TmpFormConstruirExt ( int iA, int iM, int iD, int iH, int iMi, int iS )
 	long	lHora;
 	long	lFecha;
 
-	lFecha = FecFormConstruir ( iM, iM, iD );
+	lFecha = FecFormConstruir ( iA, iM, iD );
 	lHora = HorFormConstruir ( iH, iMi, iS );
 	dRes = TmpFormConstruir ( lFecha, lHora );
 	return ( dRes );
@@ -203,7 +203,7 @@ double TmpFormObtenerValor ( double dTiempo )
 	int		iA;
 	int		iM;
 	int		iD;
-	//int		iH;
+	int		iH;
 
 	lFecha =  ConvRealDobleAEnteroLargo ( dTiempo / 1000000, 1 );
 	lHora = MatEnteroAbsoluto ( ConvRealDobleAEnteroLargo ( dTiempo - (double) ( lFecha ) * 1000000, 1 ) );
@@ -215,38 +215,38 @@ double TmpFormObtenerValor ( double dTiempo )
 		dHora = HorFormObtenerValor ( lHora );
 
 		dHorasAno = CalendDiasAno ( iA ) * 24.0;
-		//if ( CalendAplicarUnaHoraMas ( iA, iM, iD ) == 1 )
-		//{
-		//	iH = HorFormHora ( lHora );
-		//	if ( CalendEsDiaCambioAHorarioInvierno ( iA, iM, iD ) == 1 )
-		//	{
-		//		// Caso imposible: el tiempo entre las 2 y las 3 se repite dos veces.
-		//		if ( lH >= 2 )
-		//		{
-		//			dHora = dHora + 1.0;
-		//		}
-		//	}
-		//	else if ( CalendEsDiaCambioAHorarioVerano ( iA, iM, iD ) == 1 )
-		//	{
-		//		if ( lH < 3 )
-		//		{
-		//			dHora = dHora + 1.0;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		dHora = dHora + 1.0;
-		//	}
-		//}
+		if ( CalendAplicarUnaHoraMas ( iA, iM, iD ) == 1 )
+		{
+			iH = HorFormHoras ( lHora );
+			if ( CalendEsDiaCambioAHorarioInvierno ( iA, iM, iD ) == 1 )
+			{
+				// Caso imposible: el tiempo entre las 2 y las 3 se repite dos veces.
+				if ( iH >= 2 )
+				{
+					dHora = dHora + 1.0;
+				}
+			}
+			else if ( CalendEsDiaCambioAHorarioVerano ( iA, iM, iD ) == 1 )
+			{
+				if ( iH < 3 )
+				{
+					dHora = dHora + 1.0;
+				}
+			}
+			else
+			{
+				dHora = dHora + 1.0;
+			}
+		}
 
-		//if ( CalendSistemaHorarioUTC ( iA, iM, iD ) == 1 )
-		//{
-		//	dHora = dHora - 1.0 + TIEMPO_DIFERENCIA_MMT_GMT;
-		//}
-		//else if ( CalendSistemaHorarioGMT ( iA, iM, iD ) == 1 )
-		//{
-		//	dHora = dHora + TIEMPO_DIFERENCIA_MMT_GMT; 
-		//}
+		if ( CalendSistemaHorarioUTC ( iA, iM, iD ) == 1 )
+		{
+			dHora = dHora - 1.0 + TIEMPO_DIFERENCIA_MMT_GMT;
+		}
+		else if ( CalendSistemaHorarioGMT ( iA, iM, iD ) == 1 )
+		{
+			dHora = dHora + TIEMPO_DIFERENCIA_MMT_GMT; 
+		}
 
 		dRes = dFecha + dHora / dHorasAno;
 	}
@@ -262,17 +262,11 @@ double TmpFormEstablecerValor ( double dValor )
 	double	dRes;
 	double	dFecha;
 	double	dHora;
-	double	dHorasAno;
 	long	lFecha;
 	long	lHora;
-	int		iA;
 
-	iA = ConvRealDobleAEnteroLargo ( dValor, 1 );
-	dHorasAno = CalendDiasAno ( iA ) * 24.0;
-
-	dHora = fmod ( dValor, dHorasAno );
-	dFecha = dValor - dHora;
-	
+	dFecha = floor ( dValor / 1000000 ); 
+	dHora  = fmod  ( dValor, 1000000 ); 
 	lFecha = FecFormEstablecerValor ( dFecha );
 	lHora = HorFormEstablecerValor ( dHora );
 	

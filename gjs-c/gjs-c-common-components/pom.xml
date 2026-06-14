@@ -22,7 +22,6 @@
 		<module>gjs-c-common-types</module>
 		<module>gjs-c-common-text</module>
 		<module>gjs-c-common-calculation</module>
-		<module>gjs-c-common-codes</module>
 		<module>gjs-c-common-time</module>
 		<module>gjs-c-common-complex-types</module>
 		<module>gjs-c-common-io</module>

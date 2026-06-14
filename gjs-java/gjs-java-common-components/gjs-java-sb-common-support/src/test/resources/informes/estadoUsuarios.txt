@@ -1,0 +1,27 @@
+Tarea       : ${name}
+Descripcion : ${description}
+
+Inicio      : ${begin}
+Fin         : ${end}
+Duracion    : ${duration}
+
+Resumen     :
+
+    Procesados :  ${processed}
+    Correctos  :  ${completed}
+    Erroneos   :  ${errors}
+    
+    
+Resultado   :
+
+    Inactivos                   :  ${inactivos}
+    Con credenciales caducados  :  ${credencialesCaducados}
+    Cesados                     :  ${debaja}
+       
+
+Detalle    :
+
+${content}
+     
+    
+     

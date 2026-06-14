@@ -42,11 +42,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.gjs.c.common</groupId>
-			<artifactId>gjs-c-common-codes</artifactId>
-			<type>nar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.gjs.c.common</groupId>
 			<artifactId>gjs-c-common-time</artifactId>
 			<type>nar</type>
 		</dependency>

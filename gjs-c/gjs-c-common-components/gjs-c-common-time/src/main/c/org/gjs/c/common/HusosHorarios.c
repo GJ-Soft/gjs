@@ -9,7 +9,7 @@ int HusEsValido ( int iHuso )
 {
 	int iRes;
 
-	if ( ( iHuso >= 0 ) && ( iHuso < 24 ) )
+	if ( ( iHuso >= 0 ) && ( iHuso < 25 ) )
 	{
 		iRes = 1;
 	}
@@ -33,7 +33,7 @@ int HusId ( int iGrad, int iMin, int iSeg )
 	}
 	else
 	{
-		iRes = 0;
+		iRes = -1;
 	}
 	return ( iRes );
 }

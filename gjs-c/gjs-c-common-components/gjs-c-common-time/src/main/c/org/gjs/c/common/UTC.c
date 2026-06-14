@@ -40,7 +40,7 @@ long UTCObtenerHoraLocal ( long lHora, int iZona )
 		else
 		{
 			iMin = iHor * 60 + iMin;
-			iMin = iMin + ZnhDiferenciaHorasUTC ( iZona );
+			iMin = iMin + ZnhDiferenciaMinutosUTC ( iZona );
 			iHor = ( iMin / 60 ) % 24;
 			iMin = iMin % 60;
 		}
@@ -50,16 +50,6 @@ long UTCObtenerHoraLocal ( long lHora, int iZona )
 	{
 		lRes = -1;
 	}
-	return ( lRes );
-}
-
-long UTCObtenerHoraLocalExt ( long lHora, int iPais )
-{
-	long	lRes;
-	int		iZona;
-
-	iZona = ZnhAsociadaAlPais ( iPais );
-	lRes = UTCObtenerHoraLocal ( lHora, iZona );
 	return ( lRes );
 }
 
@@ -95,14 +85,5 @@ long UTCEstablecerHoraLocal ( long lHora, int iZona )
 	return ( lRes );
 }
 
-long UTCEstablecerHoraLocalExt ( long lHora, int iPais ) 
-{
-	long	lRes;
-	int		iZona;
-
-	iZona = ZnhAsociadaAlPais ( iPais );
-	lRes = UTCEstablecerHoraLocal ( lHora, iZona );
-	return ( lRes );
-}
 
 

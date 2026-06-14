@@ -34,6 +34,7 @@
 #define GEO_HUS_315						21
 #define GEO_HUS_330						22
 #define GEO_HUS_345						23
+#define GEO_HUS_360						24
 
 
 

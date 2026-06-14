@@ -23,9 +23,10 @@
  		<module>gjs-java-common</module>
  		<module>gjs-java-common-test-mocks</module>
   		<module>gjs-java-common-test</module>
+		<module>gjs-java-sb-common-support</module>
 		<module>gjs-java-sb-common-test-support</module>
- 		<module>gjs-java-sb-common</module>
  		<module>gjs-java-sb-common-test-mocks</module>
+ 		<module>gjs-java-sb-common</module>
   		<module>gjs-java-sb-common-test</module>
 	</modules>
     

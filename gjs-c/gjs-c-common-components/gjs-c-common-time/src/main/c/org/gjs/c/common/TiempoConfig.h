@@ -28,7 +28,6 @@
 
 #include <Texto.h>
 #include <Calculo.h>
-#include <Codigos.h>
 
 
 #if ( !defined ( WIN ) )

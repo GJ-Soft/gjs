@@ -1,0 +1,7 @@
+"ID","SAMPLE_ID","NOMBRE","DESCRIPCION","FECHA_ALTA","FECHA_BAJA","ACTIVO"
+1,1,"ADM_SEMILLA2","Administrador de semilla.",06/11/23,null,1
+2,1,"CON_SEMILLA2","Consulta semilla.",06/11/23,null,1
+3,1,"ANONIMO2","Rol provisional para los usuarios que se autentican sin estar registrados en el sistema.",06/11/23,null,1
+4,2,"prueba_jlm","Rol prueba",06/11/23,null,1
+5,1,"SUPERADMINISTRADOR","Superadministrador de semilla.",06/11/23,null,1
+6,2,"PRUEBA_JLM","PRUEBA_JLM descripción",15/12/23,null,1

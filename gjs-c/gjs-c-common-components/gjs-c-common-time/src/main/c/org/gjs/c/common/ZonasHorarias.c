@@ -69,22 +69,6 @@ int ZnhHuso ( int iZona )
 	return ( iRes );
 }
 
-// PENDIENTE:
-int ZnhAsociadaAlPais ( int iPais )
-{
-	int iRes;
-
-	if ( PaisEsValido ( iPais ) == 1 ) 
-	{
-		iRes = 0;
-	}
-	else
-	{
-		iRes = -1;
-	}
-	return ( iRes );
-}
-
 int ZnhEsUTCMas ( int iZona )
 {
 	int iRes;
@@ -118,7 +102,8 @@ int ZnhEsUTCMenos ( int iZona )
 	int iRes;
 
 	iZona = iZona % 100;
-	if ( ( iZona == ZNH_UTC_M11 ) ||				
+	if ( ( iZona == ZNH_UTC_M12 ) ||				
+		 ( iZona == ZNH_UTC_M11 ) ||				
 		 ( iZona == ZNH_UTC_M10 ) ||					
 		 ( iZona == ZNH_UTC_M9 ) ||				
 		 ( iZona == ZNH_UTC_M8 ) ||				
@@ -166,7 +151,7 @@ int ZnhDiferenciaHorasUTC ( int iZona )
 	}
 	else if ( iZona == ZNH_UTC_1)						
 	{
-		iRes = ZNH_DIF_UTC;
+		iRes = ZNH_DIF_UTC_1;
 	}
 	else if ( iZona == ZNH_UTC_2 )				
 	{
@@ -190,7 +175,7 @@ int ZnhDiferenciaHorasUTC ( int iZona )
 	}
 	else if ( iZona == ZNH_UTC_7 )		
 	{
-		iRes = ZNH_DIF_UTC;
+		iRes = ZNH_DIF_UTC_7;
 	}
 	else if ( iZona == ZNH_UTC_8 )		
 	{
@@ -211,6 +196,10 @@ int ZnhDiferenciaHorasUTC ( int iZona )
 	else if ( iZona == ZNH_UTC_12 )
 	{
 		iRes = ZNH_DIF_UTC_12;
+	}
+	else if ( iZona == ZNH_UTC_M12 )				
+	{
+		iRes = ZNH_DIF_UTC_M12;
 	}
 	else if ( iZona == ZNH_UTC_M11 )				
 	{
@@ -298,7 +287,7 @@ int ZnhDiferenciaMinutos ( int iZona1, int iZona2 )
 {
 	int	iRes;
 
-	iRes = ZnhDiferenciaMinutosUTC ( iZona2 ) - ZnhDiferenciaHorasUTC ( iZona1 );
+	iRes = ZnhDiferenciaMinutosUTC ( iZona2 ) - ZnhDiferenciaMinutosUTC ( iZona1 );
 	return ( iRes );
 }
 

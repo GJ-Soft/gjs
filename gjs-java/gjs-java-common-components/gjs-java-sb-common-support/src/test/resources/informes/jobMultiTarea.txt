@@ -1,0 +1,11 @@
+Proceso   : ${name}
+
+Inicio    : ${begin}
+Fin       : ${end}
+Duracion  : ${duration}
+
+
+Tareas  
+---------------------------------------------------------
+
+${content}

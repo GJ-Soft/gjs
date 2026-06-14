@@ -22,9 +22,7 @@
 
 
 long UTCObtenerHoraLocal ( long lHora, int iZona ); 
-long UTCObtenerHoraLocalExt ( long lHora, int iPais ); 
 long UTCEstablecerHoraLocal ( long lHora, int iZona ); 
-long UTCEstablecerHoraLocalExt ( long lHora, int iPais ); 
 
 
 

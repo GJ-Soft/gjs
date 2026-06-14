@@ -27,7 +27,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.gjs.c.common</groupId>
-			<artifactId>gjs-c-common-codes</artifactId>
+			<artifactId>gjs-c-common-text</artifactId>
 			<type>nar</type>
 		</dependency>
     </dependencies>

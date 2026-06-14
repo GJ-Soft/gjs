@@ -18,14 +18,14 @@ SReloj * SRljCrearDef ()
 	return ( p_rljObj );
 }
 
-SReloj * SRljCrear ( int iHora )
+SReloj * SRljCrear ( long lHora )
 {
 	SReloj * p_rljObj;
 	
 	p_rljObj = SRljCrearDef ();
 	if ( ES_VALIDO ( p_rljObj ) )
 	{
-		SRljEstablecer ( p_rljObj, iHora );
+		SRljEstablecer ( p_rljObj, lHora );
 	}
 	return ( p_rljObj );
 }
@@ -87,7 +87,7 @@ long SRljHH ( SReloj * p_rljObj )
 
 	if ( ES_VALIDO ( p_rljObj ) )
 	{
-		lRes = HorFormHoras ( TiempoAhora () );
+		lRes = HorFormHoras ( SRljHora ( p_rljObj ) );
 	}
 	else
 	{
@@ -102,7 +102,7 @@ long SRljMI ( SReloj * p_rljObj )
 
 	if ( ES_VALIDO ( p_rljObj ) )
 	{
-		lRes = HorFormMinutos ( TiempoAhora () );
+		lRes = HorFormMinutos ( SRljHora ( p_rljObj ) );
 	}
 	else
 	{
@@ -117,7 +117,7 @@ long SRljSS ( SReloj * p_rljObj )
 
 	if ( ES_VALIDO ( p_rljObj ) )
 	{
-		lRes = HorFormSegundos ( TiempoAhora () );
+		lRes = HorFormSegundos ( SRljHora ( p_rljObj ) );
 	}
 	else
 	{
@@ -126,16 +126,16 @@ long SRljSS ( SReloj * p_rljObj )
 	return ( lRes );
 }
 
-void SRljEstablecer (  SReloj * p_rljObj, int iHora )
+void SRljEstablecer (  SReloj * p_rljObj, long lHora )
 {
 	double dHoraSis;
 
 	if ( ES_VALIDO ( p_rljObj ) )
 	{
-		if ( HorFormEsValida ( iHora ) == 1 )
+		if ( HorFormEsValida ( lHora ) == 1 )
 		{
 			dHoraSis = HorFormObtenerValor ( TiempoAhora () );
-			p_rljObj->dDesplazamiento = HorFormObtenerValor ( iHora ) - dHoraSis;
+			p_rljObj->dDesplazamiento = HorFormObtenerValor ( lHora ) - dHoraSis;
 		}
 	}
 }
@@ -167,13 +167,13 @@ void SRljSincronizarConSistema ( SReloj * p_rljObj )
 	}
 }
 
-void SRljSincronizarConSistemaExt ( SReloj * p_rljObj, int iHoraSis, int iHora )
+void SRljSincronizarConSistemaExt ( SReloj * p_rljObj, long lHoraSis, long lHora )
 {
 	if ( ES_VALIDO ( p_rljObj ) )
 	{
-		if ( ( HorFormEsValida ( iHora ) == 1 ) && ( HorFormEsValida ( iHoraSis ) == 1 ) )
+		if ( ( HorFormEsValida ( lHora ) == 1 ) && ( HorFormEsValida ( lHoraSis ) == 1 ) )
 		{
-			p_rljObj->dDesplazamiento = HorFormObtenerValor ( iHora ) - HorFormObtenerValor ( iHoraSis );
+			p_rljObj->dDesplazamiento = HorFormObtenerValor ( lHora ) - HorFormObtenerValor ( lHoraSis );
 		}
 	}
 }

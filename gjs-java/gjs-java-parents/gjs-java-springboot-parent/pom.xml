@@ -34,6 +34,7 @@
 		<gjs-java-sb-common-test-support.version>1.0.0-RC.1</gjs-java-sb-common-test-support.version>
 		<gjs-java-sb-common-test-mocks.version>1.0.0-RC.1</gjs-java-sb-common-test-mocks.version>
 		<gjs-java-sb-common.version>1.0.0-RC.1</gjs-java-sb-common.version>
+		<gjs-java-sb-common-support.version>1.0.0-RC.1</gjs-java-sb-common-support.version>
 		<gjs-java-sb-common-test.version>1.0.0-RC.1</gjs-java-sb-common-test.version>
 
 		<!-- Spring framework -->
@@ -59,6 +60,11 @@
 				<groupId>org.gjs.java.common</groupId>
 				<artifactId>gjs-java-sb-common</artifactId>
 				<version>${gjs-java-sb-common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.gjs.java.common</groupId>
+				<artifactId>gjs-java-sb-common-support</artifactId>
+				<version>${gjs-java-sb-common-support.version}</version>
 			</dependency>
 
 			<!-- Model mapper -->

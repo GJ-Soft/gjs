@@ -50,7 +50,6 @@
 		<gjs-c-common-types.version>1.0.0-RC.1</gjs-c-common-types.version>
 		<gjs-c-common-text.version>1.0.0-RC.1</gjs-c-common-text.version>
 		<gjs-c-common-calculation.version>1.0.0-RC.1</gjs-c-common-calculation.version>
-		<gjs-c-common-codes.version>1.0.0-RC.1</gjs-c-common-codes.version>
 		<gjs-c-common-time.version>1.0.0-RC.1</gjs-c-common-time.version>
 		<gjs-c-common-complex-types.version>1.0.0-RC.1</gjs-c-common-complex-types.version>
 		<gjs-c-common-io.version>1.0.0-RC.1</gjs-c-common-io.version>
@@ -85,12 +84,6 @@
 				<groupId>org.gjs.c.common</groupId>
 				<artifactId>gjs-c-common-calculation</artifactId>
 				<version>${gjs-c-common-calculation.version}</version>
-				<type>nar</type>
-			</dependency>
-			<dependency>
-				<groupId>org.gjs.c.common</groupId>
-				<artifactId>gjs-c-common-codes</artifactId>
-				<version>${gjs-c-common-codes.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>

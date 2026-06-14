@@ -20,7 +20,7 @@
         <!-- Gjs -->
         <dependency>
             <groupId>org.gjs.java.common</groupId>
-            <artifactId>gjs-java-common-support</artifactId>
+            <artifactId>gjs-java-sb-common-support</artifactId>
         </dependency>
         <dependency>
             <groupId>org.gjs.java.common</groupId>

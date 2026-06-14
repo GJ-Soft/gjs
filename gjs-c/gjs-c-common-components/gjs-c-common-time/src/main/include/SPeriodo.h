@@ -40,6 +40,7 @@ long SPerdFechaOcurrencia ( SPeriodo * p_perdObj );
 long SPerdFechaProximaOcurrencia ( SPeriodo * p_perdObj );
 int SPerdOcurreHastaFecha ( SPeriodo * p_perdObj, long lFecha );
 int SPerdVecesQueOcurreHastaFecha ( SPeriodo * p_perdObj, long lFecha );
+int SPerdVecesQueHaOcurrido ( SPeriodo * p_perdObj );
 
 void SPerdIniciar ( SPeriodo * p_perdObj, long lFechaInicial );
 int SPerdActualizarHastaFecha ( SPeriodo * p_perdObj, long lFecha ); 

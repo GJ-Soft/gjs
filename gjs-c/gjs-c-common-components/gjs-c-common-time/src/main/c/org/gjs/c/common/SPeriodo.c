@@ -135,7 +135,6 @@ int SPerdEsSemanal ( SPeriodo * p_perdObj )
 	if ( ES_VALIDO ( p_perdObj ) )
 	{
 		iRes =  TipPeriodEsSemanal ( p_perdObj->iPeriodicidad );
-	;
 	}
 	else
 	{
@@ -243,11 +242,11 @@ int SPerdOcurreHastaFecha ( SPeriodo * p_perdObj, long lFecha )
 				}
 				else if ( FecFormAnos ( lFecha ) - FecFormAnos ( p_perdObj->lFechaOcurrencia ) == 1 ) 
 				{
-					if ( 12 - FecFormMeses ( lFecha ) + FecFormMeses ( p_perdObj->lFechaOcurrencia ) > 3 )
+					if ( 12 + FecFormMeses ( lFecha ) - FecFormMeses ( p_perdObj->lFechaOcurrencia ) > 3 )
 					{
 						iRes = 1;
 					}
-					else if ( 12 - FecFormMeses ( lFecha ) + FecFormMeses ( p_perdObj->lFechaOcurrencia ) == 3 )
+					else if ( 12 + FecFormMeses ( lFecha ) - FecFormMeses ( p_perdObj->lFechaOcurrencia ) == 3 )
 					{
 						if ( FecFormDias ( lFecha ) >= FecFormDias ( p_perdObj->lFechaOcurrencia ) )
 						{
@@ -347,7 +346,8 @@ int SPerdOcurreHastaFecha ( SPeriodo * p_perdObj, long lFecha )
 			}
 			else if ( TipPeriodEsSemanal ( p_perdObj->iPeriodicidad ) == 1 )
 			{
-				if ( FecFormRestar ( lFecha, p_perdObj->lFechaOcurrencia ) >= 7 ) 
+				
+				if ( FecFormDiferencia ( lFecha, p_perdObj->lFechaOcurrencia ) >= 7 ) 
 				{
 					iRes = 1;
 				}
@@ -358,7 +358,7 @@ int SPerdOcurreHastaFecha ( SPeriodo * p_perdObj, long lFecha )
 			}
 			else if ( TipPeriodEsDiario ( p_perdObj->iPeriodicidad ) == 1 )
 			{
-				if ( FecFormRestar ( lFecha, p_perdObj->lFechaOcurrencia ) >= 1 ) 
+				if ( FecFormDiferencia ( lFecha, p_perdObj->lFechaOcurrencia ) >= 1 ) 
 				{
 					iRes = 1;
 				}
@@ -388,16 +388,14 @@ int SPerdVecesQueOcurreHastaFecha ( SPeriodo * p_perdObj, long lFecha )
 {
 	int 	iRes;
 	long 	lSigFecha;
-	long	lAhora;
 	
 	if ( ES_VALIDO ( p_perdObj ) )
 	{
 		if ( FecFormEsValida ( p_perdObj->lFechaOcurrencia ) == 1 ) 
 		{
-			lAhora = FecFormEstablecerValor ( TiempoHoyAhora () );
 			lSigFecha = FechaSigOcurrencia ( p_perdObj->iPeriodicidad, p_perdObj->lFechaOcurrencia );
 			iRes = 0;
-			while ( lAhora - lSigFecha > 0 )
+			while ( lFecha - lSigFecha > 0 )
 			{
 				iRes = iRes + 1;
 				lSigFecha = FechaSigOcurrencia ( p_perdObj->iPeriodicidad, lSigFecha );
@@ -413,6 +411,11 @@ int SPerdVecesQueOcurreHastaFecha ( SPeriodo * p_perdObj, long lFecha )
 		iRes = 0;
 	}
 	return ( iRes );
+}
+
+int SPerdVecesQueHaOcurrido ( SPeriodo * p_perdObj )
+{
+	return ( SPerdVecesQueOcurreHastaFecha ( p_perdObj, TiempoHoyAhora () ) );
 }
 
 int SPerdActualizarHastaFecha ( SPeriodo * p_perdObj, long lFecha )
@@ -452,7 +455,7 @@ void SPerdIniciar ( SPeriodo * p_perdObj, long lFechaInicial )
 {
 	if ( ES_VALIDO ( p_perdObj ) )
 	{
-		if ( lFechaInicial < 0 )
+		if ( lFechaInicial <= 0 )
 		{
 			p_perdObj->lFechaOcurrencia = FecFormEstablecerValor ( TiempoHoyAhora () );
 		}

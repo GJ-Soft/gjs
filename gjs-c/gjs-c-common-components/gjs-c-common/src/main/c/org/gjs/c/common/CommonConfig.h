@@ -26,7 +26,6 @@
 #include <Tipos.h>
 #include <TiposDatos.h>
 
-#include <Codigos.h>
 #include <Texto.h>
 #include <Tiempo.h>
 #include <Ficheros.h>

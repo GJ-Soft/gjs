@@ -142,13 +142,13 @@ int HorSumar ( int * p_iH, int * p_iM, int * p_iS, int iH, int iM, int iS )
 		if ( ( HorEsValida ( *p_iH, *p_iM, *p_iS ) == 1 ) && ( HorEsValida ( iH, iM, iS ) == 1 ) )
 		{
 			*p_iS = *p_iS + iS;
-			if ( *p_iS > 60 )
+			if ( *p_iS >= 60 )
 			{
 				*p_iS = *p_iS - 60;
 				*p_iM = *p_iM + 1;
 			}
 			*p_iM = *p_iM + iM;
-			if ( *p_iM > 60 )
+			if ( *p_iM >= 60 )
 			{
 				*p_iM = *p_iM - 60;
 				*p_iH = *p_iH + 1;
@@ -188,13 +188,13 @@ int HorRestar ( int * p_iH, int * p_iM, int * p_iS, int iH, int iM, int iS )
 			*p_iS = *p_iS - iS;
 			if ( *p_iS < 0 )
 			{
-				*p_iS = 60 - *p_iS;
+				*p_iS = 60 + *p_iS;
 				*p_iM = *p_iM - 1;
 			}
 			*p_iM = *p_iM - iM;
 			if ( *p_iM < 0 )
 			{
-				*p_iM = 60 - *p_iM;
+				*p_iM = 60 + *p_iM;
 				*p_iH = *p_iH - 1;
 			}
 			*p_iH = *p_iH - iH;
@@ -202,7 +202,7 @@ int HorRestar ( int * p_iH, int * p_iM, int * p_iS, int iH, int iM, int iS )
 			{
 				// Acarreo:
 				iRes = 2;
-				*p_iH = 24 - *p_iH;
+				*p_iH = 24 + *p_iH;
 			}
 			else
 			{
@@ -288,7 +288,7 @@ double HorObtenerValor ( int iH, int iM, int iS )
 
 	if ( HorEsValida ( iH, iM, iS ) == 1 )
 	{
-		dRes = iH * 1.0 + iM/60 + iS/3600;
+		dRes = iH * 1.0 + iM/60.0 + iS/3600.0;
 	}
 	else
 	{

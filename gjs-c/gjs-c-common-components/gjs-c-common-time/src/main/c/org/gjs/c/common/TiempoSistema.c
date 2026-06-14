@@ -145,7 +145,7 @@ double TiempoHoyAhora ()
 	lHora = TiempoAhora ();
 	lFecha = TiempoHoy ();
 
-	if ( ( lFecha > 0 ) && ( lHora > 0 ) )
+	if ( ( lFecha >= 0 ) && ( lHora >= 0 ) )
 	{
 		dRes = (double) ( lFecha + lSumF ) * lMulF + 
 				(double) ( lHora + lSumH ) * lMulH;
@@ -176,7 +176,7 @@ llong TiempoHoyAhoraLL ()
 
 	lHora = TiempoAhora ();
 	lFecha = TiempoHoy ();
-	if ( lHora > 0 )
+	if ( lHora >= 0 )
 	{
 		llRes = ((llong)( lFecha + lSumF )) * lMulF + 
 				((llong)( lHora + lSumH )) * lMulH;

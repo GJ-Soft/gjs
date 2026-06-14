@@ -68,7 +68,7 @@ double SCronComputo ( SCronometro * p_cronObj )
 		if ( p_cronObj->dTiempoIni > 0 )
 		{
 			dTiempoFin = TiempoHoyAhora ();
-			dRes = TmpFormObtenerValor ( p_cronObj->dTiempoIni ) - TmpFormObtenerValor ( dTiempoFin );
+			dRes = TmpFormObtenerValor ( dTiempoFin ) - TmpFormObtenerValor ( p_cronObj->dTiempoIni );
 		} 
 		else
 		{

@@ -25,17 +25,18 @@
 #define ZNH_UTC_10					GEO_HUS_150					
 #define ZNH_UTC_11					GEO_HUS_165					
 #define ZNH_UTC_12					GEO_HUS_180					
-#define ZNH_UTC_M11					GEO_HUS_195					
-#define ZNH_UTC_M10					GEO_HUS_210					
-#define ZNH_UTC_M9					GEO_HUS_225					
-#define ZNH_UTC_M8					GEO_HUS_240					
-#define ZNH_UTC_M7					GEO_HUS_255						
-#define ZNH_UTC_M6					GEO_HUS_270						
-#define ZNH_UTC_M5					GEO_HUS_285					
-#define ZNH_UTC_M4					GEO_HUS_300					
-#define ZNH_UTC_M3					GEO_HUS_315					
-#define ZNH_UTC_M2					GEO_HUS_330					
-#define ZNH_UTC_M1					GEO_HUS_345					
+#define ZNH_UTC_M12					GEO_HUS_195					
+#define ZNH_UTC_M11					GEO_HUS_210					
+#define ZNH_UTC_M10					GEO_HUS_225					
+#define ZNH_UTC_M9					GEO_HUS_240					
+#define ZNH_UTC_M8					GEO_HUS_255					
+#define ZNH_UTC_M7					GEO_HUS_270						
+#define ZNH_UTC_M6					GEO_HUS_285						
+#define ZNH_UTC_M5					GEO_HUS_300					
+#define ZNH_UTC_M4					GEO_HUS_315					
+#define ZNH_UTC_M3					GEO_HUS_330					
+#define ZNH_UTC_M2					GEO_HUS_345					
+#define ZNH_UTC_M1					GEO_HUS_360					
 
 
 
@@ -86,6 +87,7 @@
 #define ZNH_DIF_UTC_10				10					
 #define ZNH_DIF_UTC_11				11					
 #define ZNH_DIF_UTC_12				12					
+#define ZNH_DIF_UTC_M12				-12					
 #define ZNH_DIF_UTC_M11				-11					
 #define ZNH_DIF_UTC_M10				-10					
 #define ZNH_DIF_UTC_M9				-9					
@@ -104,7 +106,6 @@ int ZnhEsValida ( int iZona );
 int ZnhId ( int iGrad, int iMin, int iSeg );
 int ZnhIdAng ( double dAng );
 int ZnhHuso ( int iZona );
-int ZnhAsociadaAlPais ( int iPais );
 int ZnhEsUTCMas ( int iZona );
 int ZnhEsUTCMenos ( int iZona );
 int ZnhDiferenciaHorasUTCExacta ( int iZona );
