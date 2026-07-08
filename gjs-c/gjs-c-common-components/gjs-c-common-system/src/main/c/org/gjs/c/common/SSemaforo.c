@@ -18,28 +18,29 @@ SSemaforo * SSemCrearExt ( const char * p_cNombre, long lValorMaximo )
 	{
 		p_semObj->iAlta = 0;
 		p_semObj->iCreado = 0;
-#	 if ( defined ( UNIX ) || defined ( LINUX ) )
-        if ( CadEmpiezaPor ( p_cNombre,  "/" ) == 0 )
+#	 if ( defined ( POSIX ) )
+        if ( ( CadLongitud ( p_cNombre ) > 0 ) && ( CadEmpiezaPor ( p_cNombre,  "/" ) == 0 ) )
         {
-                p_semObj->p_cNombre = CadCrear ( CadLongitud ( p_cNombre ) + 1 );
-                CadCopiarConFormato ( p_semObj->p_cNombre, "/%s", p_cNombre);
+			p_semObj->p_cNombre = CadCrear ( CadLongitud ( p_cNombre ) + 1 );
+			CadCopiarConFormato ( p_semObj->p_cNombre, "/%s", p_cNombre);
         }
 		else
 		{
 			p_semObj->p_cNombre = CadDuplicar ( p_cNombre );
 		}
 #	 else
-			p_semObj->p_cNombre = CadDuplicar ( p_cNombre );
+		p_semObj->p_cNombre = CadDuplicar ( p_cNombre );
 # 	 endif
 		if ( CadLongitud ( p_semObj->p_cNombre ) > 0 )
 		{
 #	 if ( defined ( WIN ) )
 			p_semObj->hSemaforo = OpenSemaphore ( SYNCHRONIZE, 0, p_semObj->p_cNombre );
-			if ( p_semObj->hSemaforo != NULL )
+			if ( ES_VALIDO ( p_semObj->hSemaforo ) )
 			{
-				ReleaseSemaphore ( p_semObj->hSemaforo, 0, &lValorMaximo );
+				long lContador;
+				ReleaseSemaphore ( p_semObj->hSemaforo, 0, (LPLONG) &lContador );
 			}
-#	 elif ( defined ( UNIX ) || defined ( LINUX ) )
+#	 elif ( defined ( POSIX ) )
 			p_semObj->p_semObj = sem_open ( p_semObj->p_cNombre, 0 );
 			if ( p_semObj->p_semObj == SEM_FAILED )
 			{
@@ -56,12 +57,25 @@ SSemaforo * SSemCrearExt ( const char * p_cNombre, long lValorMaximo )
 				p_semObj->lValMax = lValorMaximo;
 #	 if ( defined ( WIN ) )
 				p_semObj->hSemaforo = CreateSemaphore ( NULL, p_semObj->lValMax, p_semObj->lValMax, p_semObj->p_cNombre );
+#	 elif ( defined ( POSIX ) )
+				//  Al ser anónimo, necesitamos reservar memoria para el propio sem_t interno
+				p_semObj->p_semObj = (sem_t *) MemReservar ( sizeof ( sem_t ) );
+				if ( ES_VALIDO ( p_semObj->p_semObj ) )
+				{
+					// Inicializamos el semáforo. Usamos '0' asumiendo que es para hilos mutuos.
+					// Si requieres que sea entre procesos distintos, este parámetro debe ser 1.
+					if ( sem_init ( p_semObj->p_semObj, 0, p_semObj->lValMax ) != 0 )
+					{
+						MemLiberar ( (void **) &(p_semObj->p_semObj) );
+					}
+				}
+#    else
 #    endif
 
 #	 if ( defined ( WIN ) )
-				if ( p_semObj->hSemaforo != NULL )
-#	 elif ( defined ( UNIX ) || defined ( LINUX ) )
-				if ( p_semObj->p_semObj != NULL )
+				if ( ES_VALIDO ( p_semObj->hSemaforo ) )
+#	 elif ( defined ( POSIX ) )
+				if ( ES_VALIDO ( p_semObj->p_semObj ) )
 #    else
 				if ( p_semObj->iSemaforo > 0 )
 #    endif
@@ -74,7 +88,7 @@ SSemaforo * SSemCrearExt ( const char * p_cNombre, long lValorMaximo )
 				p_semObj->lValMax = 0;
 #	 if ( defined ( WIN ) )
 				p_semObj->hSemaforo = NULL;
-#	 elif ( defined ( UNIX ) || defined ( LINUX ) )
+#	 elif ( defined ( POSIX ) )
 				p_semObj->p_semObj = NULL;
 #    else
 				p_semObj->iSemaforo = -1;
@@ -99,11 +113,11 @@ void SSemDestruir ( SSemaforo ** p_p_semObj )
 		if ( ES_VALIDO ( p_semObj ) )
 		{
 #		 if ( defined ( WIN ) )
-			if (  p_semObj->hSemaforo > 0 )
+			if ( ES_VALIDO ( p_semObj->hSemaforo ) )
 			{
 				CloseHandle ( p_semObj->hSemaforo );
 			}
-#		 elif ( defined ( UNIX ) || defined ( LINUX ) )
+#		 elif ( defined ( POSIX ) )
 			if ( p_semObj->p_semObj != NULL )
 			{
 				sem_close ( p_semObj->p_semObj );
@@ -144,8 +158,8 @@ int SSemEsValido ( SSemaforo * p_semObj )
 	if ( ES_VALIDO ( p_semObj ) )
 	{
 #	 if ( defined ( WIN ) )
-		if ( p_semObj->hSemaforo > 0 )
-#	 elif ( defined ( UNIX ) || defined ( LINUX ) )
+		if ( ES_VALIDO ( p_semObj->hSemaforo ) )
+#	 elif ( defined ( POSIX ) )
 		// NOTA: Es una dirección de un espacio reservado del sistema:
 		if ( p_semObj->p_semObj != NULL )
 #	 else
@@ -206,12 +220,13 @@ int SSemAbrir ( SSemaforo * p_semObj )
 		if ( CadLongitud ( p_semObj->p_cNombre ) > 0 )
 		{
 #		  if ( defined ( WIN ) )
-			if ( p_semObj->hSemaforo != NULL )
+			if ( ES_NULO ( p_semObj->hSemaforo ) )
 			{
 				p_semObj->hSemaforo = OpenSemaphore ( SYNCHRONIZE, 0, p_semObj->p_cNombre );
-				if ( p_semObj->hSemaforo != NULL )
+				if ( ES_VALIDO ( p_semObj->hSemaforo ) )
 				{
-					ReleaseSemaphore ( p_semObj->hSemaforo, 0, &(p_semObj->lValMax) );
+					long lContador;
+					ReleaseSemaphore ( p_semObj->hSemaforo, 0, (LPLONG) &lContador );
 					iRes = 1;
 				}
 				else
@@ -223,7 +238,7 @@ int SSemAbrir ( SSemaforo * p_semObj )
 			{
 				iRes = 0;
 			}
-#		  elif ( defined ( UNIX ) || defined ( LINUX ) )
+#		  elif ( defined ( POSIX ) )
 			p_semObj->p_semObj = sem_open ( p_semObj->p_cNombre, 0x0 );
 			if ( p_semObj->p_semObj == SEM_FAILED )
 			{
@@ -264,10 +279,10 @@ int SSemInicializar ( SSemaforo * p_semObj )
 		if ( CadLongitud ( p_semObj->p_cNombre ) > 0 )
 		{
 #		  if ( defined ( WIN ) )
-			if ( p_semObj->hSemaforo != NULL ) 
+			if ( ES_NULO ( p_semObj->hSemaforo ) ) 
 			{
 				p_semObj->hSemaforo = CreateSemaphore ( NULL, p_semObj->lValMax, p_semObj->lValMax, p_semObj->p_cNombre );
-				if ( p_semObj->hSemaforo != NULL )
+				if ( ES_VALIDO ( p_semObj->hSemaforo ) )
 				{
 					p_semObj->iCreado = 1;
 					iRes = 1;
@@ -281,18 +296,24 @@ int SSemInicializar ( SSemaforo * p_semObj )
 			{
 				iRes = 0;
 			}
-#		  elif ( defined ( UNIX ) || defined ( LINUX ) )
+#		  elif ( defined ( POSIX ) )
 			p_semObj->p_semObj = sem_open ( p_semObj->p_cNombre, O_CREAT, 0777, p_semObj->lValMax );
 			if ( p_semObj->p_semObj == SEM_FAILED )
 			{
 				p_semObj->p_semObj = NULL;
 			}
-			if ( p_semObj->p_semObj != NULL )
+			if ( ES_VALIDO  ( p_semObj->p_semObj ) )
 			{
 				p_semObj->iCreado = 1;
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
 			}
 #		  else
 			p_semObj->iSemaforo = -1;
+			iRes = 0;
 #		  endif
 		}
 		else
@@ -334,7 +355,7 @@ int SSemAlta ( SSemaforo * p_semObj, int iEsperar )
 			{
 				iRes = 0;
 			}
-#         elif ( defined ( UNIX ) || defined ( LINUX ) )
+#         elif ( defined ( POSIX ) )
 			if ( iEsperar == 0 )
 			{
 				if ( sem_trywait ( p_semObj->p_semObj ) == 0 )
@@ -384,11 +405,13 @@ int SSemBaja ( SSemaforo * p_semObj )
 		else 
 		{
 #		  if ( defined ( WIN ) )
-			if ( ReleaseSemaphore ( p_semObj->hSemaforo, 1, &lValor ) != 0 )
-#		  elif ( defined ( UNIX ) || defined ( LINUX ) )
+			long lValor;
+		
+			if ( ReleaseSemaphore ( p_semObj->hSemaforo, 1, (LPLONG) &lValor ) != 0 )
+#		  elif ( defined ( POSIX ) )
 			if ( sem_post ( p_semObj->p_semObj ) == 0 )
 #		  else
-			if ( true )
+			if ( 1 )
 #		  endif
 			{
 				iRes = 1;

@@ -1,6 +1,7 @@
 #include "CommonTypesConfig.h"
 #include "StringStreamOut.h"
 
+using namespace std;
 
 namespace org
 {

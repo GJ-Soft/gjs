@@ -27,6 +27,6 @@ word DWordWordSuperior ( dword dwDato )
 
 dword DWordComponer ( word wSup, word wInf )
 {
-	return ( (dword) ( ( ( wSup & DWORD_MASC_WORD_SUP ) * DWORD_DESP_WORD_SUP ) | ( wInf & DWORD_MASC_WORD_INF ) ) );
+	return ( (dword) ( ( ( (dword) wSup & DWORD_MASC_WORD_INF ) * DWORD_DESP_WORD_SUP ) | ( (dword) wInf & DWORD_MASC_WORD_INF ) ) );
 }
 

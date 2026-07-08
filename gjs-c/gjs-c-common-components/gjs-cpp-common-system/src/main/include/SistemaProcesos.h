@@ -23,17 +23,13 @@
 #define _ORG_GJS_C_CC_CPP_SISTEMAPROCESOS_H
 
 
-#include <Precompilacion.h>
+#include <BaseConfig.h>
 
 #include <string>
 #include <list>
 
 
 
-
-
-
-using namespace std;
 
 namespace org
 {
@@ -61,7 +57,7 @@ typedef unsigned long	thread_id;
 // PENDIENTE: PASAR Long a unsigned long para PID y TID (en UNIX es necesario)
 
 #if ( !defined ( WIN ) )
-void SisProcInicializar ( const string & sNomProceso );
+void SisProcInicializar ( const std::string & sNomProceso );
 void SisProcFinalizar ();
 #endif
 
@@ -69,12 +65,12 @@ void SisProcFinalizar ();
 
 /* Proceso actual: */
 long SisPID ();
-string SisPIDCadena ();
-string SisNombreProceso ();
-string SisRutaEjecutable ();
-string SisDirectorioEjecutable ();
-string SisFicheroEjecutable ();
-string SisTituloProceso ();
+std::string SisPIDCadena ();
+std::string SisNombreProceso ();
+std::string SisRutaEjecutable ();
+std::string SisDirectorioEjecutable ();
+std::string SisFicheroEjecutable ();
+std::string SisTituloProceso ();
 
 #if ( defined ( WIN ) )
 HINSTANCE SisWinIdProceso ();
@@ -86,12 +82,12 @@ HINSTANCE SisWinIdProceso ();
 
 /* Hilo actual: */
 thread_id SisTID ();
-string SisTIDCadena ();
+std::string SisTIDCadena ();
 
 /* Subprocesos: */
 int SisNumSubprocesos ();
 long SisCrearSubproceso ( int iHeredarDescriptores = 0, int iCerrarConsola = 0 );
-long SisCrearSubproceso ( const string & sEjecutable, const string  & sParametros, int iHeredarDescriptores = 0, int iCerrarConsola = 0 );
+long SisCrearSubproceso ( const std::string & sEjecutable, const std::string  & sParametros, int iHeredarDescriptores = 0, int iCerrarConsola = 0 );
 bool SisExisteSubproceso ( long lPID );
 bool SisFinalizarSubproceso ( long lPID );
 
@@ -111,12 +107,12 @@ int SisHiloPrioridad ( thread_id thTID );
 /* Sistema global de procesos: */
 int SisNumProcesos ();
 
-list<long> * SisListaProcesos ();
+std::list<long> * SisListaProcesos ();
 
 bool SisExisteProceso ( long lPID );
 bool SisProcesoEnEjecucion ( long lPID );
-bool SisProgramaEnEjecucion ( const string p_cEjecutable );
-long SisProcesoPID ( const string p_cEjecutable );
+bool SisProgramaEnEjecucion ( const std::string p_cEjecutable );
+long SisProcesoPID ( const std::string p_cEjecutable );
 unsigned long SisProcesoTiempoCPU ( long lPID ); 
 unsigned long SisProcesoTiempoCPUModoNucleo ( long lPID ); 
 unsigned long SisProcesoTiempoCPUModoUsuario ( long lPID ); 
@@ -126,6 +122,9 @@ unsigned long SisProcesoTiempoCPUModoUsuario ( long lPID );
 //unsigned long SisProcesoHoraCreacion ( long lPID ); 
 //#endif
 bool SisFinalizarProceso ( long lPID );
+
+thread_id SisLanzarHiloVigilanciaPadre ();
+
 
 
  			}

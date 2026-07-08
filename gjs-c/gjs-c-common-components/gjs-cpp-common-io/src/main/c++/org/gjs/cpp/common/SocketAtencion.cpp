@@ -5,6 +5,7 @@
 
 
 
+using namespace std;
 using namespace org::gjs::cpp::common;
 
 
@@ -63,18 +64,32 @@ bool SocketAtencion::Cerrar()
 
 SocketAtencion & SocketAtencion::operator << ( const string & sMensaje )
 {
+	int iError = 0;
+	
 	if ( Socket::Enviar( sMensaje ) != sMensaje.length() )
 	{
-		throw SocketExcepcion( "SocketAtencion", "operator<<", errno );
+#	 if ( defined ( WIN ) )
+		iError = WSAGetLastError();
+#	 else
+		iError = errno;
+#	 endif
+		throw SocketExcepcion( "SocketAtencion", "operator<<", iError );
 	}
 	return( *this );
 }
 
 SocketAtencion & SocketAtencion::operator >> ( string & sMensaje )
 {
+	int iError = 0;
+	
 	if ( Socket::Recibir( sMensaje ) < 0 )
 	{
-		throw SocketExcepcion( "SocketAtencion", "operator>>", errno );
+#	 if ( defined ( WIN ) )
+		iError = WSAGetLastError();
+#	 else
+		iError = errno;
+#	 endif
+		throw SocketExcepcion( "SocketAtencion", "operator>>", iError );
 	}
 	return( *this );
 }

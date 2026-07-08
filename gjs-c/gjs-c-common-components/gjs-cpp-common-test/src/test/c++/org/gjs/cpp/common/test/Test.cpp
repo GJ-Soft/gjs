@@ -3,6 +3,7 @@
 #include <iostream>
 
 
+using namespace std;
 using namespace org::gjs::cpp::common;
 
 
@@ -14,7 +15,7 @@ extern bool TestBancoTests ();
 
 
 
-int main( int argc, char * argv[] )
+int main ( int argc, char * argv[] )
 {
 	InicializarBase();
 	int iRes = 0;
@@ -27,7 +28,7 @@ int main( int argc, char * argv[] )
 	mapTests[ "UtilesTest" ] = TestUtilesTest;
 	mapTests[ "BancoTests" ] = TestBancoTests;
 
-	string sTest( "null" );
+	string sTest ( "null" );
 	if ( argc > 1 )
 	{
 		sTest = argv[1];
@@ -37,7 +38,7 @@ int main( int argc, char * argv[] )
 		if ( mapTests.find( sTest ) != mapTests.end() )
 		{
 			FUNCION_BOOL fTest = mapTests[ sTest ];
-			if( !fTest() )
+			if( !fTest () )
 			{
 				iRes = -1;
 			}
@@ -57,5 +58,6 @@ int main( int argc, char * argv[] )
 	{
 		iRes = -1;
 	}
+	fflush ( stdout );
 	return ( iRes );
 }

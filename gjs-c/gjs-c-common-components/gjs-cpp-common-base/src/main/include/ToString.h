@@ -13,7 +13,6 @@
 
 
 
-using namespace std;
 
 
 namespace org
@@ -25,44 +24,44 @@ namespace org
             namespace common
             {
 
-			string ToString ( long t );
-			string ToString ( bool t );
-			string ToString ( wstring t );
-			string ToString ( wchar_t * t );
-			string ToString ( const wchar_t * t );
-			string ToString ( const unsigned char t[] );
-			string ToString ( const tm * t );
+			std::string ToString ( long t );
+			std::string ToString ( bool t );
+			std::string ToString ( std::wstring t );
+			std::string ToString ( wchar_t * t );
+			std::string ToString ( const wchar_t * t );
+			std::string ToString ( const unsigned char t[] );
+			std::string ToString ( const tm * t );
 
-			string ToString ( IToString & t );
-			string ToString ( IToString * t );
+			std::string ToString ( IToString & t );
+			std::string ToString ( IToString * t );
 
-			string ToTimeString ( time_t t );
+			std::string ToTimeString ( time_t t );
 
-			template <typename T> string ToString ( list<T> & lista );
-			template <typename T> string ToString ( list<T> * lista );
-			template <typename T> string ToString ( vector<T> & vector );
-			template <typename T> string ToString ( vector<T> * vector );
-			template <typename T> string ToString ( map<string, T> & mapa );
-			template <typename T> string ToString ( map<string, T> * mapa );
+			template <typename T> std::string ToString ( std::list<T> & lista );
+			template <typename T> std::string ToString ( std::list<T> * lista );
+			template <typename T> std::string ToString ( std::vector<T> & vector );
+			template <typename T> std::string ToString ( std::vector<T> * vector );
+			template <typename T> std::string ToString ( std::map<std::string, T> & mapa );
+			template <typename T> std::string ToString ( std::map<std::string, T> * mapa );
 
-            string ToString ( short );
-            string ToString ( int );
-            string ToString ( long );
-            string ToString ( long long );
-            string ToString ( unsigned short );
-            string ToString ( unsigned int );
-            string ToString ( unsigned long );
-            string ToString ( unsigned long long );
-            string ToString ( float );
-            string ToString ( double );
-            string ToString ( long double );
-            string ToString ( char );
-            string ToString ( unsigned char );
-            string ToString ( char * );
-            string ToString ( const char * );
+            std::string ToString ( short );
+            std::string ToString ( int );
+            std::string ToString ( long );
+            std::string ToString ( long long );
+            std::string ToString ( unsigned short );
+            std::string ToString ( unsigned int );
+            std::string ToString ( unsigned long );
+            std::string ToString ( unsigned long long );
+            std::string ToString ( float );
+            std::string ToString ( double );
+            std::string ToString ( long double );
+            std::string ToString ( char );
+            std::string ToString ( unsigned char );
+            std::string ToString ( char * );
+            std::string ToString ( const char * );
 	
 			// Pendiente de test
-			template<typename... Args> string ToString ( const string & sFormato, Args&&... argumentos );
+			template<typename... Args> std::string ToString ( const std::string & sFormato, Args&&... argumentos );
 
 			}
 		}

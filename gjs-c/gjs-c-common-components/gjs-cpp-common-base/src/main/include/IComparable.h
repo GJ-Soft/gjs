@@ -7,7 +7,7 @@
 #include <IToString.h>
 
 
-using namespace std;
+
 using namespace org::gjs::cpp::common;
 
 
@@ -31,7 +31,7 @@ namespace org
 				virtual long getHash() const = 0;
 
 			public:
-				virtual string toString() override;
+				virtual std::string toString() override;
 
 				bool esIgual( IComparable & obj );
 				bool esIgual( IComparable * obj );

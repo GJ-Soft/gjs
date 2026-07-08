@@ -72,7 +72,7 @@ void STmpEsperarDef ( STemporizador * p_tmpObj )
 	#		if ( defined ( WIN ) )
 				Sleep ( (DWORD) p_tmpObj->iMiliSegs );
 	#		else
-				sleep ( p_tmpObj->iMiliSegs / 1000 );
+				usleep( p_tmpObj->iMiliSegs * 1000) ;
 	#		endif
 		}
 	}

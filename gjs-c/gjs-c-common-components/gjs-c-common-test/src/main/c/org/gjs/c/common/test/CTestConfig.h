@@ -11,4 +11,6 @@
 #include <errno.h>
 
 
+#define TEST_MSJ_FINALIZADO   "Un proceso de test ha finalizado.\n"
+
 #endif

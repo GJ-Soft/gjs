@@ -91,17 +91,19 @@ int ConDepEscribir ( const char * p_cTexto, ... )
 {
 	int			iRes;
 	char *		p_cValor;
+	int			iAncho;
 	va_list		valArgumentos;
 
 	if ( EntEstaEnModoTest () == 1 )
 	{
 		if ( ( g_iConsolaDepuracionDisponible == 1 ) && ES_VALIDO ( p_cTexto ) )
 		{
-			p_cValor = CadCrear ( AplicConAncho () );
+			iAncho = AplicConAncho ();
+			p_cValor = CadCrear ( iAncho );
 			if ( ES_VALIDO ( p_cValor ) )
 			{
 				va_start ( valArgumentos, p_cTexto );
-				if ( FrmCadena ( p_cValor, p_cTexto, valArgumentos, AplicConAncho () ) == 1 )
+				if ( FrmCadena ( p_cValor, p_cTexto, valArgumentos, iAncho ) == 1 )
 				{
 					iRes = 1;			
 					printf ( p_cValor ); 
@@ -110,8 +112,8 @@ int ConDepEscribir ( const char * p_cTexto, ... )
 				{
 					iRes = 0;
 				}
-				MemLiberar ( (void **) &p_cValor );
 				va_end ( valArgumentos );
+				MemLiberar ( (void **) &p_cValor );
 				fflush ( stdout );
 			}
 			else
@@ -135,17 +137,19 @@ int ConDepEscribirLinea ( const char * p_cTexto, ... )
 {
 	int			iRes;
 	char *		p_cValor;
+	int			iAncho;
 	va_list		valArgumentos;
 
 	if ( EntEstaEnModoTest () == 1 )
 	{
 		if ( g_iConsolaDepuracionDisponible == 1 )
 		{
-			p_cValor = CadCrear ( AplicConAncho () );
+			iAncho = AplicConAncho ();
+			p_cValor = CadCrear ( iAncho );
 			if ( ES_VALIDO ( p_cValor ) )
 			{
 				va_start ( valArgumentos, p_cTexto );
-				if ( FrmCadena ( p_cValor, p_cTexto, valArgumentos, AplicConAncho () ) == 1 )
+				if ( FrmCadena ( p_cValor, p_cTexto, valArgumentos, iAncho ) == 1 )
 				{
 					iRes = 1;			
 					printf ( p_cValor ); 
@@ -155,8 +159,8 @@ int ConDepEscribirLinea ( const char * p_cTexto, ... )
 				{
 					iRes = 0;
 				}
-				MemLiberar ( (void **) &p_cValor );
 				va_end ( valArgumentos );
+				MemLiberar ( (void **) &p_cValor );
 				fflush ( stdout );
 			}
 			else

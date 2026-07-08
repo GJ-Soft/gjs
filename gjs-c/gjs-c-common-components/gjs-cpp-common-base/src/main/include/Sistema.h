@@ -6,7 +6,6 @@
 #include <thread>
 
 
-using namespace std;
 
 
 namespace org
@@ -21,7 +20,7 @@ namespace org
 
 			typedef void (*SIGNAL_HANDLER)( int );
 
-			string NombreSistema ();
+			std::string NombreSistema ();
 			bool EsWindows ();
 			bool EsCygwin ();
 			bool EsMinGW ();
@@ -29,16 +28,16 @@ namespace org
 			bool EsUnix ();
 			bool EsMac ();
 
-			string DirectorioActual ();
-			string ResolverDirectorioRelativo ( string sRutaBase, string sRutaRelativa );
-			void EstablecerDirectorio( const string & sRuta );
+			std::string DirectorioActual ();
+			std::string ResolverDirectorioRelativo ( std::string sRutaBase, std::string sRutaRelativa );
+			void EstablecerDirectorio( const std::string & sRuta );
 
-			bool ExisteFichero ( const string & sRuta );
-			bool ExisteDirectorio ( const string & sRuta );
+			bool ExisteFichero ( const std::string & sRuta );
+			bool ExisteDirectorio ( const std::string & sRuta );
 
-			string VariableEntorno ( const string & sNombre );
-			void EstablecerVariableEntorno ( const string & sNombre, const string & sValor );
-			void EliminarVariableEntorno ( const string & sNombre );
+			std::string VariableEntorno ( const std::string & sNombre );
+			void EstablecerVariableEntorno ( const std::string & sNombre, const std::string & sValor );
+			void EliminarVariableEntorno ( const std::string & sNombre );
 
 			void Esperar ( long lMiliseg );
 
@@ -53,9 +52,9 @@ namespace org
 			void InicializarBase();
 			bool PuedeLiberarse ( const void * ptr );
 
-			int ResolverIP( const string & sIP );
+			int ResolverIP( const std::string & sIP );
 
-			string EjecutarComando ( const string & sComando );
+			std::string EjecutarComando ( const std::string & sComando );
 
             }
 		}

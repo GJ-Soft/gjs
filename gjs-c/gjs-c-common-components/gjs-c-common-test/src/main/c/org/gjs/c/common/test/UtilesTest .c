@@ -2,6 +2,11 @@
 #include "CTestConfig.h"
 
 
+int LanzarEjecutable ( const char * p_cExe, const char * p_cParametros )
+{
+	return ( SisEjecutarComando ( p_cExe, p_cParametros, 0 ) );
+}
+
 void VerificarValorLit ( const char * p_cInfoCaso, const char * p_cResultado, const char * p_cEsperado, int * iRes )
 {
 	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%s]", p_cInfoCaso, p_cResultado );
@@ -10,7 +15,7 @@ void VerificarValorLit ( const char * p_cInfoCaso, const char * p_cResultado, co
 		AplicLogAnotarError ( "    -> longitud incorrecta (esperada %d)", CadLongitud ( p_cEsperado ) );
 		*iRes = 0;
 	}	
-	if ( p_cResultado != p_cEsperado )
+	if ( CadComparar ( p_cResultado, p_cEsperado ) == COMP_IGUAL )
 	{
 		AplicLogAnotarError ( "    -> valor inesperado (esperado [%s]", p_cEsperado );
 		*iRes = 0;
@@ -35,7 +40,7 @@ void VerificarValorEntero ( const char * p_cInfoCaso, int iResultado, int iEsper
 void VerificarValorRealDoble ( const char * p_cInfoCaso, double dResultado, double dEsperado, int * iRes )
 {
 	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%lf]", p_cInfoCaso, dResultado );
-	if ( dResultado != dEsperado )
+	if ( MatEsIgual ( dResultado, dEsperado ) == 0 )
 	{
 		AplicLogAnotarError ( "    -> valor inesperado" );
 		*iRes = 0;
@@ -69,7 +74,7 @@ void VerificarEsFalso ( const char * p_cInfoCaso, int iResultado, int * iRes )
 
 void VerificarEsNulo ( const char * p_cInfoCaso, void * p_vResultado, int * iRes )
 {
-	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%s]", p_cInfoCaso, (char *) p_vResultado );
+	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%ld]", p_cInfoCaso, p_vResultado );
 	if ( p_vResultado != NULL ) 
 	{
 		AplicLogAnotarError ( "    -> valor inesperado (esperado [NULO])"  );
@@ -79,7 +84,7 @@ void VerificarEsNulo ( const char * p_cInfoCaso, void * p_vResultado, int * iRes
 
 void VerificarNoEsNulo ( const char * p_cInfoCaso, void * p_vResultado, int * iRes )
 {
-	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%s]", p_cInfoCaso, p_vResultado );
+	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%ld]", p_cInfoCaso, p_vResultado );
 	if ( p_vResultado == NULL ) 
 	{
 		AplicLogAnotarError ( "    -> valor inesperado (esperado [NO NULO])" );

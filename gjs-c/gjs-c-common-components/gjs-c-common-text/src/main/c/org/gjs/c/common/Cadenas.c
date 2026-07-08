@@ -341,7 +341,7 @@ int CadCopiarCaracterExt ( char * p_cAsciiz1, char cVal, int iMax1 )
 	int iLong1;
 
 	iLong1 = CadLongitudSeg ( p_cAsciiz1, iMax1 ); 
-	if ( iLong1 >= 1 ) 
+	if ( iLong1 >= 0 ) 
 	{
 		p_cAsciiz1 [ 0 ] = cVal;
 		iRes = 1;
@@ -1549,7 +1549,7 @@ char * CadExtraerExt ( const char * p_cAsciiz, int iPos, int iTam, int iMax )
 		{
 			iTam = iLong - iPos;
 		}
-		if ( iTam > 0 )
+		if ( iTam >= 0 )
 		{
 			p_cRes = CadCrear ( iTam );
 			if ( ES_VALIDO ( p_cRes ) )
@@ -1851,10 +1851,9 @@ int CadCompararParcialExt ( const char * p_cAsciiz1, const char * p_cAsciiz2, in
 		}
 		else
 		{
-			iNumCars = MIN ( iLong1, iLong2 );
+			iNumCars = iMinCars;
 			iRes = 1;
 		}
-
 		iCar = 0; 
 		while ( ( iCar < iNumCars ) && ( iRes == 1 ) )  
 		{
@@ -1887,7 +1886,7 @@ int CadEsIgualExt ( const char * p_cAsciiz1, const char * p_cAsciiz2, int iMax1,
 {
 	int iRes;
 
-	if ( CadCompararExt ( p_cAsciiz1, p_cAsciiz2, iMax1, iMax2 ) == 1 )
+	if ( CadCompararExt ( p_cAsciiz1, p_cAsciiz2, iMax1, iMax2 ) == COMP_IGUAL )
 	{
 		iRes = 1;
 	}
@@ -1902,7 +1901,7 @@ int CadEsMenorExt ( const char * p_cAsciiz1, const char * p_cAsciiz2, int iMax1,
 {
 	int iRes;
 
-	if ( CadCompararExt ( p_cAsciiz1, p_cAsciiz2, iMax1, iMax2 ) == 2 )
+	if ( CadCompararExt ( p_cAsciiz1, p_cAsciiz2, iMax1, iMax2 ) == COMP_MENOR )
 	{
 		iRes = 1;
 	}
@@ -1917,7 +1916,7 @@ int CadEsMayorExt ( const char * p_cAsciiz1, const char * p_cAsciiz2, int iMax1,
 {
 	int iRes;
 
-	if ( CadCompararExt ( p_cAsciiz1, p_cAsciiz2, iMax1, iMax2 ) == 3 )
+	if ( CadCompararExt ( p_cAsciiz1, p_cAsciiz2, iMax1, iMax2 ) == COMP_MAYOR )
 	{
 		iRes = 1;
 	}
@@ -2336,6 +2335,9 @@ int CadReemplazarExt ( char * p_cAsciiz1, const char * p_cAsciiz2, const char * 
 	char *	p_cNueva;
 	char *	p_cParteCop;
 
+//printf ( "                  ## 1: %s\n", p_cAsciiz1);
+//printf ( "                  ## 2: %s\n", p_cAsciiz2);
+//printf ( "                  ## 3: %s\n", p_cAsciiz3);
 	iLong1 = CadLongitudSeg ( p_cAsciiz1, iMax1 ); 
 	iLong2 = CadLongitudSeg ( p_cAsciiz2, iMax2 ); 
 	iLong3 = CadLongitudSeg ( p_cAsciiz3, iMax3 ); 
@@ -2356,10 +2358,13 @@ int CadReemplazarExt ( char * p_cAsciiz1, const char * p_cAsciiz2, const char * 
 					p_cParteCop = CadExtraerExt ( p_cAsciiz1, iPosAnt, iPos - iPosAnt, iMax1 );
 					if ( ES_VALIDO ( p_cParteCop ) )
 					{
+						//printf ( "                  PARTE A COPIAR: %s\n", p_cParteCop);
 						if ( CadConcatenarExt ( p_cNueva, p_cParteCop, iMax1, iPos - iPosAnt ) == 1 )
 						{
+						//printf ( "                  NUEVA 1: %s\n", p_cNueva);
 							if ( CadConcatenarExt ( p_cNueva, p_cAsciiz3, iMax1, iMax3 ) == 1 )
 							{
+						//printf ( "                  NUEVA CONCATENADA 3: %s\n", p_cNueva);
 								iPos = iPos + iLong2; 
 								iTot = iTot + 1;
 							}
@@ -2380,17 +2385,13 @@ int CadReemplazarExt ( char * p_cAsciiz1, const char * p_cAsciiz2, const char * 
 					}
 				}
 			}
-			if ( ( iRes == 1 ) && ( iPos < iLong1 ) )
+			if ( ( iRes == 1 ) && ( ( iPos >= 0 ) || ( iTot > 0 ) ) && ( iPos < iLong1 ) )
 			{
-				p_cParteCop = CadExtraerUltimosExt ( p_cAsciiz1, iLong1 - iPos, iMax1 );
+				p_cParteCop = CadExtraerUltimosExt ( p_cAsciiz1, iLong1 - iPosAnt, iMax1 );
 				if ( ES_VALIDO ( p_cParteCop ) )
 				{
-					if ( CadConcatenarExt ( p_cNueva, p_cParteCop, iMax1, iLong1 - iPos ) == 1 )
-					{
-						CadLimpiarExt ( p_cAsciiz1, ' ', iMax1);
-						CadCopiarExt ( p_cAsciiz1, p_cNueva, iMax1, iLong1 );
-					}
-					else
+						//printf ( "                  PARTE FINAL A COPIAR: %s\n", p_cParteCop);
+					if ( CadConcatenarExt ( p_cNueva, p_cParteCop, iMax1, iLong1 - iPosAnt ) == 0 )
 					{
 						iRes = 0;
 					}
@@ -2403,7 +2404,14 @@ int CadReemplazarExt ( char * p_cAsciiz1, const char * p_cAsciiz2, const char * 
 			}
 			if ( ( iRes == 1 ) && ( iTot > 0 ) )
 			{
-				CadCopiar ( p_cAsciiz1, p_cNueva );
+				//printf ( "                  ASCII: %s\n", p_cAsciiz1);
+				fflush(stdout);
+				CadLimpiarExt ( p_cAsciiz1, ' ', iMax1);
+				//printf ( "                  ASCII: %s\n", p_cAsciiz1);
+				fflush(stdout);
+				CadCopiarExt ( p_cAsciiz1, p_cNueva, iMax1, CadLongitud ( p_cNueva ) );
+				//printf ( "                  RESULT: %s\n", p_cAsciiz1);
+				fflush(stdout);
 			}
 			MemLiberar ( (void **) &p_cNueva );
 		}
@@ -3001,7 +3009,7 @@ int CadNumPalabrasSepExt ( const char * p_cAsciiz, char cSep, int iSepararSignos
 		iCar = 0;
 		while ( iCar < iLong )
 		{
-			if ( p_cAsciiz [ iCar ] == cSep )
+			if ( ( p_cAsciiz [ iCar ] == cSep ) && ( iCar > 0 ) )
 			{
 				iRes = iRes + 1;
 			}
@@ -3026,13 +3034,13 @@ int CadNumPalabrasSepExt ( const char * p_cAsciiz, char cSep, int iSepararSignos
 char * CadPalabraSepExt ( const char * p_cAsciiz, int iPalabra, char cSep, int iSepararSignos, int iMax )
 {
 	char *	p_cRes;
-	int			iLong;
-	int			iCar;
-	int			iCont;
-	int			iPosIni;
-	int			iPosFin;
-	int			iEnc;
-	int			iCambio;
+	int		iLong;
+	int		iCar;
+	int		iCont;
+	int		iPosIni;
+	int		iPosFin;
+	int		iEnc;
+	int		iCambio;
 
 	iLong = CadLongitudSeg ( p_cAsciiz, iMax ); 
 	if ( ( iLong > 0 ) && ( iPalabra >= 0 ) && ( cSep != (char) 0 ) ) 
@@ -3047,7 +3055,14 @@ char * CadPalabraSepExt ( const char * p_cAsciiz, int iPalabra, char cSep, int i
 			iCambio = 0;
 			if ( p_cAsciiz [ iCar ] == cSep )
 			{
-				iCambio = 1;
+				if ( iCar > 0 )
+				{
+					iCambio = 1;
+				}
+				else
+				{
+					iPosIni = 1;
+				}
 			}
 			else if ( ( iSepararSignos == 1 ) && ( ASCIIEsSigno ( p_cAsciiz [ iCar ] ) == 1 ) )
 			{
@@ -3082,12 +3097,12 @@ char * CadPalabraSepExt ( const char * p_cAsciiz, int iPalabra, char cSep, int i
 			}
 			else
 			{
-				p_cRes = NULL ;
+				p_cRes = NULL;
 			}
 		}
 		else
 		{
-			p_cRes = NULL ;
+			p_cRes = NULL;
 		}
 	}
 	else

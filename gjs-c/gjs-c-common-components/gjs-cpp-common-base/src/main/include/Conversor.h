@@ -21,7 +21,6 @@
 #include <string>
 
 
-using namespace std;
 
 
 
@@ -48,7 +47,7 @@ private:
 	float			    fValor;
 	double			    dValor;
 	long double			ldValor;
-	string			    sValor;
+	std::string			    sValor;
 
 	bool				bConvValida;
 
@@ -63,8 +62,8 @@ public:
 	Conversor ( float fValor );
 	Conversor ( double dValor );
 	Conversor ( long double ldValor );
-	Conversor ( string & sValor );
-	Conversor ( const string & sValor );
+	Conversor ( std::string & sValor );
+	Conversor ( const std::string & sValor );
 	Conversor ( char * p_cValor );
 	Conversor ( const char * p_cValor );
 
@@ -79,8 +78,8 @@ public:
 	float Real ();
 	double RealDoble ();
 	long double RealDobleLargo ();
-	const string & Cadena ();
-	string CadenaHex ();
+	const std::string & Cadena ();
+	std::string CadenaHex ();
 
 	void EstablecerValor ( int iValor );
 	void EstablecerValor ( long lValor );
@@ -91,12 +90,12 @@ public:
 	void EstablecerValor ( float fValor );
 	void EstablecerValor ( double dValor );
 	void EstablecerValor ( long double ldValor );
-	void EstablecerValor ( string & sValor );
-	void EstablecerValor ( const string & sValor );
+	void EstablecerValor ( std::string & sValor );
+	void EstablecerValor ( const std::string & sValor );
 	void EstablecerValor ( char * p_cValor );
 	void EstablecerValor ( const char * p_cValor );
-	void EstablecerValorHex ( string & sValor );
-	void EstablecerValorHex ( const string & sValor );
+	void EstablecerValorHex ( std::string & sValor );
+	void EstablecerValorHex ( const std::string & sValor );
 	void EstablecerValorHex ( char * p_cValor );
 	void EstablecerValorHex ( const char * p_cValor );
 

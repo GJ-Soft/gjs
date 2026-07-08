@@ -13,10 +13,11 @@
 
 typedef struct
 {
-	PPRCV 		fAlarma;
-	long		lHoraAlarma;
-	SReloj *	p_rljObj;
-	int	*		p_iParar;
+	PPRCV 			fAlarma;
+	long			lHoraAlarma;
+	SReloj *		p_rljObj;
+	int volatile *	p_iParar;
+	int 			iSaltado;
 	
 } TSRelojProgramableParamHilo;
 
@@ -69,6 +70,7 @@ void SRljPrgDestruir ( SRelojProgramable ** p_p_rljprgObj )
 		if ( ES_VALIDO ( p_rljprgObj ) )
 		{
 			SRljPrgDesactivarAlarma ( p_rljprgObj );
+			SRljDestruir ( &(p_rljprgObj->p_rljObj) );
 			MemLiberar ( (void **) p_p_rljprgObj );
 		}
 	}
@@ -104,7 +106,7 @@ PPRCV SRljPrgProcedimientoAlarma ( SRelojProgramable * p_rljprgObj )
 	return ( fRes );
 }
 
-void SRljPrgEstablecerAlarma (  SRelojProgramable * p_rljprgObj, long lHoraAlarma, PPRCV fAlarma )
+void SRljPrgEstablecerAlarma ( SRelojProgramable * p_rljprgObj, long lHoraAlarma, PPRCV fAlarma )
 {
 	if ( ES_VALIDO ( p_rljprgObj ) )
 	{
@@ -153,7 +155,7 @@ int SRljPrgActivarAlarma ( SRelojProgramable * p_rljprgObj )
 				p_parhInfo->lHoraAlarma = p_rljprgObj->lHoraAlarma;
 				p_parhInfo->p_rljObj = p_rljprgObj->p_rljObj;
 				p_parhInfo->p_iParar = &(p_rljprgObj->iParar);
-
+				p_parhInfo->iSaltado = 0;
 				p_rljprgObj->p_vParams = (void *) p_parhInfo;
 
 				p_rljprgObj->thTID = SisCrearHilo ( SRelojProgramableCuerpoHilo, (void *) p_parhInfo, 0 );
@@ -228,6 +230,7 @@ static void * SRelojProgramableCuerpoHilo ( void * p_vDatos )
 {
 	long							lHora;
 	int								iRes;
+	int								iSaltar;
 #  if ( !defined ( WIN ) )
 	void *							p_vRes;
 #  endif
@@ -240,43 +243,31 @@ static void * SRelojProgramableCuerpoHilo ( void * p_vDatos )
 			 ES_VALIDO ( p_parhInfo->fAlarma ) && ( *p_parhInfo->p_iParar == 0 ) )
 		{
 			iRes = 1;
-
+			
 			while ( ( iRes == 1 ) && ( *p_parhInfo->p_iParar == 0 ) )
 			{
+				iSaltar = 0;
 				lHora = SRljHora ( p_parhInfo->p_rljObj );
-				if ( lHora > p_parhInfo->lHoraAlarma )
+				if ( p_parhInfo->iSaltado == 1 )
 				{
-					while ( ( lHora > p_parhInfo->lHoraAlarma ) && ( iRes == 1 ) && ( *p_parhInfo->p_iParar == 0 ) )
+					if ( lHora <= p_parhInfo->lHoraAlarma )
 					{
-						SisEsperar ( 100 );
-						if ( ES_VALIDO ( p_parhInfo->p_rljObj ) )
-						{
-							lHora = SRljHora ( p_parhInfo->p_rljObj );
-						}
-						else
-						{
-							iRes = 0;
-						}
+						p_parhInfo->iSaltado = 0;
 					}
 				}
-				
-				while ( ( lHora < p_parhInfo->lHoraAlarma ) && ( iRes == 1 ) && ( *p_parhInfo->p_iParar == 0 ) )
+				if ( p_parhInfo->iSaltado == 0 ) 
 				{
-					SisEsperar ( 100 );
-					if ( ES_VALIDO ( p_parhInfo->p_rljObj ) )
-					{
-						lHora = SRljHora ( p_parhInfo->p_rljObj );
-					}
-					else
-					{
-						iRes = 0;
+					if ( lHora >= p_parhInfo->lHoraAlarma )
+					{ 
+						iSaltar = 1;
 					}
 				}
 
-				if ( ( iRes == 1 ) && ( *p_parhInfo->p_iParar == 0 ) )
+				if ( ( iSaltar == 1) && ( iRes == 1 ) && ( *p_parhInfo->p_iParar == 0 ) )
 				{
 					if ( ES_VALIDO ( p_parhInfo->fAlarma ) )
 					{
+						p_parhInfo->iSaltado = 1;
 						p_parhInfo->fAlarma ();
 					}
 					else
@@ -296,8 +287,14 @@ static void * SRelojProgramableCuerpoHilo ( void * p_vDatos )
 				*p_parhInfo->p_iParar = 0;
 			}
 		}
-
-		MemLiberar ( (void **) &p_parhInfo );
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
 	}
 #  if ( !defined ( WIN ) )
 	p_vRes = NULL;

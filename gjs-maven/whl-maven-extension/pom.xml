@@ -4,7 +4,7 @@
 
      <parent>
 		<groupId>org.gjs.java.maven</groupId>
-		<artifactId>gjs-java-maven-base-parent</artifactId>
+		<artifactId>gjs-java-maven-extension-parent</artifactId>
 		<version>1.0.0-RC.1</version>
         <relativePath />
     </parent>
@@ -13,7 +13,7 @@
 	<artifactId>whl-maven-extension</artifactId>
 	<packaging>jar</packaging>
 
-	<name>WHL Maven Plugin</name>
+	<name>WHL Maven Extension</name>
     <description>Maven extension WHL 
   --------------------------------------------------------    
   Maven extension for WHL packaging

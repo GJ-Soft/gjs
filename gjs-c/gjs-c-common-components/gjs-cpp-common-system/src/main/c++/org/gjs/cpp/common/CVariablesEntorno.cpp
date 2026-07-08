@@ -13,9 +13,9 @@
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
-#include "CVariablesEntorno.h"
-
 #include "CommonSystemConfig.h"
+
+#include "CVariablesEntorno.h"
 
 
 

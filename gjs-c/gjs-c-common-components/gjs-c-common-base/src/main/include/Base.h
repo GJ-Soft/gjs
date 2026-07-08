@@ -21,7 +21,6 @@
 #include <BaseConfig.h>
 
 #include <ConstantesBase.h>
-#include <Punteros.h>
 #include <TerminalANSI.h>
 #include <Bits.h>
 #include <Nibble.h>

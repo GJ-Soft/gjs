@@ -5,7 +5,6 @@
 #include <IToString.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -46,7 +45,7 @@ namespace org
 				NodoBin * PrimeroPostorden ();
 				NodoBin * PrimeroInorden ();
 
-				virtual string toString() override;
+				virtual std::string toString() override;
 
 			};
 

@@ -36,9 +36,12 @@ void SConCicIniciar ( SContadorCiclos * p_concicObj )
 {
 	if ( ES_VALIDO ( p_concicObj ) )
 	{
-		p_concicObj->iIniciado = 1;
-		p_concicObj->ui64CicloIni = SisCiclosCPU ();
-		p_concicObj->ui64NumCiclos = 0;
+		if ( p_concicObj->iIniciado == 0 )
+		{
+			p_concicObj->ui64NumCiclos = 0;
+			p_concicObj->ui64CicloIni = SisCiclosCPU ();
+			p_concicObj->iIniciado = 1;
+		}
 	}
 
 }

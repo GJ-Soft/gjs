@@ -4,6 +4,7 @@
 
 
 
+using namespace std;
 using namespace org::gjs::cpp::common;
 
 
@@ -38,7 +39,22 @@ bool Socket::EstaConectado()
 	if( EsValido() ) 
 	{
 		char buffer;
-		bRes = ( recv( iSocket, &buffer, 1, MSG_PEEK | MSG_DONTWAIT ) == 0 );
+#if ( defined ( WIN ) )
+		fd_set fds;
+		FD_ZERO ( &fds );
+		FD_SET ( iSocket, &fds );
+
+		TIMEVAL tv;
+		tv.tv_sec = 0;
+		tv.tv_usec = 0;
+
+		if ( select ( 0, &fds, NULL, NULL, &tv ) > 0 )
+		{
+			bRes = (recv(iSocket, &buffer, 1, MSG_PEEK) == 0);
+		}
+#else
+		bRes = ( recv ( iSocket, &buffer, 1, MSG_PEEK | MSG_DONTWAIT ) == 0 );
+#endif
 	}
 	return( bRes );
 }
@@ -48,9 +64,13 @@ bool Socket::AceptaConexiones()
 	bool bRes = false;
 	if( EsValido() ) 
 	{
-		int valor = 0;
 		socklen_t lon = sizeof( int );
-		if ( getsockopt( iSocket, SOL_SOCKET, SO_ACCEPTCONN, &valor, &lon ) == 0 )
+		int valor = 0;
+#if ( defined ( WIN ) )
+		if ( getsockopt ( iSocket, SOL_SOCKET, SO_ACCEPTCONN, (char *) &valor, &lon ) == 0 )
+#else
+		if ( getsockopt ( iSocket, SOL_SOCKET, SO_ACCEPTCONN, &valor, &lon ) == 0 )
+#endif
 		{
 			bRes = ( valor == 1 );
 		}
@@ -104,8 +124,12 @@ bool Socket::Crear()
 	iSocket = socket( PF_INET, SOCK_STREAM, 0 );
 	if( EsValido() ) 
 	{
-		int valor = 1;		
+		int valor = 1;	
+#if ( defined ( WIN ) )
+		bRes = ( setsockopt( iSocket, SOL_SOCKET, SO_REUSEADDR, (const char *)&valor, sizeof( int ) ) == 0 );
+#else	
 		bRes = ( setsockopt( iSocket, SOL_SOCKET, SO_REUSEADDR, &valor, sizeof( int ) ) == 0 );
+#endif
 	}
 	return( bRes );
 }
@@ -196,7 +220,7 @@ bool Socket::Cerrar()
 	bool bRes = false;
 	if( EsValido() )
 	{
-		bRes = ( close( iSocket ) == 0 );
+		bRes = ( closesocket ( iSocket ) == 0 );
 		iSocket = -1;
 	}
 	return( bRes );

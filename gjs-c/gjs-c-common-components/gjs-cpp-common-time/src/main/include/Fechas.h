@@ -3,8 +3,6 @@
 
 
 
-using namespace std;
-
 namespace org
 {
 	namespace gjs

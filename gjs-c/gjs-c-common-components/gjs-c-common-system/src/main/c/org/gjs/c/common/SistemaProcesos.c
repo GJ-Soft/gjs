@@ -34,14 +34,14 @@
 
 
 
-#if ( defined ( UNIX ) || defined ( LINUX ) )
+#if ( defined ( POSIX ) )
 #	define _DISP_TMP_INFO_PROCESOS					"/dev/ps"
 #endif
 
 
 
 # if ( ! defined ( WIN ) || ! defined ( _PSAPI_H_ ) )
-static char * g_p_cSisNomProceso = NULL;
+char * _g_p_sSisNomProceso = NULL;
 #endif
 
 
@@ -51,13 +51,13 @@ void SisProcInicializar ( const char * p_cNomProceso )
 {
 	if ( ES_VALIDO ( p_cNomProceso ) )
 	{
-		g_p_cSisNomProceso = CadDuplicar ( p_cNomProceso );
+		_g_p_sSisNomProceso = CadDuplicar ( p_cNomProceso );
 	}
 }
 
 void SisProcFinalizar ()
 {
-	MemLiberar ( (void **) &g_p_cSisNomProceso );
+	MemLiberar ( (void **) &_g_p_sSisNomProceso );
 }
 #endif
 
@@ -103,8 +103,6 @@ char * SisNombreProceso ()
 	HMODULE		hModulo;
     DWORD		dwTam;
 	SBuffer	*	p_bufDatos;
-//# elif ( defined ( LINUX ) )
-//	struct task_struct * p_tskProceso;
 # endif
 
 # if ( ( defined ( WIN ) ) && ( defined ( _PSAPI_H_ ) ) )
@@ -112,9 +110,9 @@ char * SisNombreProceso ()
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
 		hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, GetCurrentProcessId () );
-		if ( hProceso != NULL )
+		if ( ES_VALIDO ( hProceso ) )
 		{
-			if ( EnumProcessModules ( hProceso, &hModulo, sizeof ( hModulo ), &dwTam ) != 0 )
+			if ( EnumProcessModules ( hProceso, &hModulo, sizeof ( hModulo ), (LPDWORD) &dwTam ) != 0 )
 			{
 				if ( GetModuleBaseName ( hProceso, hModulo, (LPSTR) SBufDireccion ( p_bufDatos ), ((DWORD) SBufTam ( p_bufDatos )) / sizeof ( char ) ) > 0 )
 				{
@@ -143,7 +141,7 @@ char * SisNombreProceso ()
 	}
 # else
 	// PENDIENTE: Mejorar para obtenerlo dinámicamente:
-	p_cRes = CadDuplicar ( g_p_cSisNomProceso );
+	p_cRes = CadDuplicar ( _g_p_sSisNomProceso );
 # endif
 	return ( p_cRes );
 }
@@ -164,7 +162,7 @@ char * SisRutaEjecutable ()
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
 		hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, GetCurrentProcessId () );
-		if ( hProceso != NULL )
+		if ( ES_VALIDO ( hProceso ) )
 		{
 			iTam = (int) GetModuleFileNameEx ( hProceso, NULL, (LPTSTR) SBufDireccion ( p_bufDatos ), (DWORD) SBufTam ( p_bufDatos ) );
 			if ( iTam > 0 )
@@ -190,11 +188,11 @@ char * SisRutaEjecutable ()
 # elif ( defined ( GNU ) )
 	p_cDir = NULL;
 	p_cRes = NULL;
-	if ( ES_VALIDO ( g_p_cSisNomProceso ) )
+	if ( ES_VALIDO ( _g_p_sSisNomProceso ) )
 	{
-		if ( SisEsRutaValida ( g_p_cSisNomProceso ) == 1 )
+		if ( SisEsRutaValida ( _g_p_sSisNomProceso ) == 1 )
 		{
-			p_cRes = CadDuplicar ( g_p_cSisNomProceso );
+			p_cRes = CadDuplicar ( _g_p_sSisNomProceso );
 		}
 		else
 		{
@@ -206,7 +204,7 @@ char * SisRutaEjecutable ()
 					p_cDir = SBufDuplicarCadena ( p_bufDatos );
 					if ( ES_VALIDO ( p_cDir ) )
 					{
-						p_cRes = SisComponerRuta ( p_cDir, g_p_cSisNomProceso, 0 );
+						p_cRes = SisComponerRuta ( p_cDir, _g_p_sSisNomProceso, 0 );
 						MemLiberar ( ( void ** ) &p_cDir );
 					}
 					else
@@ -236,7 +234,7 @@ char * SisRutaEjecutable ()
 				p_cDir = SBufDuplicarCadena ( p_bufDatos );
 				if ( ES_VALIDO ( p_cDir ) )
 				{
-					p_cRes = SisComponerRuta ( p_cDir, g_p_cSisNomProceso, 0 );
+					p_cRes = SisComponerRuta ( p_cDir, _g_p_sSisNomProceso, 0 );
 					MemLiberar ( ( void ** ) &p_cDir );
 				}
 				else
@@ -251,11 +249,6 @@ char * SisRutaEjecutable ()
 			SBufDestruir ( &p_bufDatos );
 		}
 	}
-	if ( ES_NULO ( p_cRes ) && ES_VALIDO ( p_cDir ) )
-	{
-		p_cRes = SisComponerRuta ( p_cDir, g_p_cSisNomProceso, 0 );
-		MemLiberar ( (void **) &p_cDir );
-	}
 # else
  	p_bufDatos = SBufCrear ( MAXPATHLEN );
 	if ( ES_VALIDO ( p_bufDatos ) )
@@ -265,7 +258,7 @@ char * SisRutaEjecutable ()
 			p_cDir = SBufDuplicarCadena ( p_bufDatos );
 			if ( ES_VALIDO ( p_cDir ) )
 			{
-				p_cRes = SisComponerRuta ( p_cDir, g_p_cSisNomProceso, 0 );
+				p_cRes = SisComponerRuta ( p_cDir, _g_p_sSisNomProceso, 0 );
 				MemLiberar ( (void **) &p_cDir );
 			}
 			else
@@ -454,7 +447,7 @@ int SisNumSubprocesos ()
 			while ( iFinal == 0 )
 			{
 				hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) pe32Datos.th32ProcessID );
-				if ( hProceso != NULL )
+				if ( ES_VALIDO ( hProceso ) )
 				{
 					iRes = iRes + 1;
 					CloseHandle ( hProceso );
@@ -491,18 +484,18 @@ long SisCrearSubproceso ( const char * p_cEjecutable, const char * p_cParametros
 	STARTUPINFO			stupintDatos;
 	BOOL				bHeredar;
 	DWORD				dwFlags;
-	char *			p_cComando;
+	char *				p_cComando;
 	int					iTam;
 # else
 	pid_t				pidRes;
 	int					iUltDescrip;
 	int					iDescrip;
 #  if ( defined ( GNU ) )
-	char **			p_p_cArgv;
-	char *			p_cArg;
-	int				iNumArgs;
-	int				iArg;
-	int				iError;
+	char **				p_p_cArgv;
+	char *				p_cArg;
+	int					iNumArgs;
+	int					iArg;
+	int					iError;
 #  endif
 #endif
 
@@ -645,14 +638,17 @@ long SisCrearSubproceso ( const char * p_cEjecutable, const char * p_cParametros
 						}
 					}
 				}
-				else if ( execl ( p_cEjecutable, p_cEjecutable, NULL ) < 0 )
+				else 
+				{
+					if ( execl ( p_cEjecutable, p_cEjecutable, NULL ) < 0 )
 #			  else
 				// PENDIENTE: Hacer lo mismo para el paso como cadenas:
-				if ( execv ( p_cEjecutable, p_cParametros ) < 0 )
+					if ( execv ( p_cEjecutable, p_cParametros ) < 0 )
 #			  endif
-				{
-					// Error: Destruir el hijo;
-					exit ( -1 );
+					{
+						// Error: Destruir el hijo;
+						exit ( -1 );
+					}
 				}
 			}
 			else
@@ -668,7 +664,7 @@ long SisCrearSubproceso ( const char * p_cEjecutable, const char * p_cParametros
 	return ( lPID );
 }
 
-// PENDIUENTE: Determinar que sea un proceso hijo
+// PENDIUENTE: Dque sea un proceso hijo
 int SisExisteSubproceso ( long lPID )
 {
 	int	iRes;
@@ -677,7 +673,7 @@ int SisExisteSubproceso ( long lPID )
 	HANDLE hProceso;
 	// Se supone que sobre los subprocesos se tiene acceso total:
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( hProceso != NULL )
+	if ( ES_VALIDO ( hProceso ) )
 	{
 		iRes = 1;
 		CloseHandle ( hProceso );
@@ -703,7 +699,7 @@ int SisFinalizarSubproceso ( long lPID )
 		HANDLE hProceso;
 		
 		hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-		if ( hProceso != NULL )
+		if ( ES_VALIDO ( hProceso ) )
 		{
 			if ( TerminateProcess ( hProceso, 0 ) != 0 )
 			{
@@ -764,7 +760,6 @@ int SisNumHilos ()
 	return ( iRes );
 }
 
-// PENDIENTE: GetThreadId sólo funciona en VISTA:
 thread SisCrearHilo ( PTR_FUNCION_HILO p_funCodigo, void * p_vParam, int iSuspender )
 {
 	thread			thHilo;
@@ -844,20 +839,17 @@ int SisExisteHilo ( thread thTID )
 	}
 #  else
 	{
-	/*
 		PFUNHNDDWBDW p_fOpenThread;
 
 		p_fOpenThread = (PFUNHNDDWBDW) SisLibPrimitiva ( "kernel32", "OpenThread" );
 		if ( ES_VALIDO ( p_fOpenThread ) )
 		{
-			hHilo = p_fOpenThread ( SYNCHRONIZE, FALSE, thTID );
+			hHilo = p_fOpenThread ( SYNCHRONIZE | THREAD_QUERY_INFORMATION, FALSE, thTID );
 		}
 		else
 		{
 			hHilo = NULL;
 		}
-	*/
-		hHilo = NULL;
 	}
 #  endif
 	if ( ES_VALIDO ( hHilo ) )
@@ -881,6 +873,7 @@ int SisExisteHilo ( thread thTID )
 		iRes = 0;
 	}
 #  else
+	// TODO
 	iRes = 0;
 #  endif
 # endif
@@ -1069,7 +1062,7 @@ int SisCambiarASiguienteHilo ()
 
 # if ( defined ( WIN ) )
 	//if ( SwitchToThread () != 0 )
-	if ( false )
+	if ( 0 )
 	{
 		iRes = 1;
 	}
@@ -1509,7 +1502,7 @@ int SisExisteProceso ( long lPID )
 	HANDLE hProceso;
 	// Se supone que sobre los subprocesos se tiene acceso total:
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( hProceso != NULL )
+	if ( ES_VALIDO ( hProceso ) )
 	{
 		iRes = 1;
 		CloseHandle ( hProceso );
@@ -1534,9 +1527,9 @@ int SisProcesoEnEjecucion ( long lPID )
 	DWORD	dwCodFin;
 
 	hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION, FALSE, (DWORD) lPID );
-	if ( hProceso != NULL )
+	if ( ES_VALIDO ( hProceso ) )
 	{
-		if ( GetExitCodeProcess ( hProceso, &dwCodFin ) != 0 )
+		if ( GetExitCodeProcess ( hProceso, (LPDWORD) &dwCodFin ) != 0 )
 		{
 			if ( dwCodFin == STILL_ACTIVE )
 			{
@@ -1551,12 +1544,12 @@ int SisProcesoEnEjecucion ( long lPID )
 		{
 			iRes = 0;
 		}
+		CloseHandle ( hProceso );
 	}
 	else
 	{
 		iRes = 0;
 	}
-	CloseHandle ( hProceso );
 # else
 	int 		iEstado;
 	long		lResSis;
@@ -1611,7 +1604,7 @@ int SisProgramaEnEjecucion ( const char * p_cEjecutable )
 					iRes = 0;
 					while ( ( iFinal == 0 ) && ( iRes == 0 ) )
 					{
-						if ( SCadLiteralEsIgual ( p_cadNombre, pe32Datos.szExeFile ) == 1 )
+						if ( SCadEsIgualLiteral ( p_cadNombre, pe32Datos.szExeFile ) == 1 )
 						{
 							iRes = 1;
 						}
@@ -1675,7 +1668,7 @@ long SisProcesoPID ( const char * p_cEjecutable )
 					lRes = -1;
 					while ( ( iFinal == 0 ) && ( lRes < 0 ) )
 					{
-						if ( SCadLiteralEsIgual ( p_cadNombre, pe32Datos.szExeFile ) == 1 )
+						if ( SCadEsIgualLiteral ( p_cadNombre, pe32Datos.szExeFile ) == 1 )
 						{
 							lRes = pe32Datos.th32ProcessID;
 						}
@@ -1729,7 +1722,7 @@ unsigned long SisProcesoTiempoCPU ( long lPID )
 	HANDLE		hProceso;
 		
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( hProceso != NULL )
+	if ( ES_VALIDO ( hProceso ) )
 	{
 		if ( GetProcessTimes ( hProceso, &ftimCreacion, &ftimFinalizacion, 
 								&ftimSistema, &ftimUsuario ) != 0 )
@@ -1790,7 +1783,7 @@ unsigned long SisProcesoTiempoCPUModoNucleo ( long lPID )
 	HANDLE		hProceso;
 		
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( hProceso != NULL )
+	if ( ES_VALIDO ( hProceso ) )
 	{
 		if ( GetProcessTimes ( hProceso, &ftimCreacion, &ftimFinalizacion, 
 								&ftimSistema, &ftimUsuario ) != 0 )
@@ -1837,7 +1830,7 @@ unsigned long SisProcesoTiempoCPUModoUsuario ( long lPID )
 	HANDLE		hProceso;
 		
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( hProceso != NULL )
+	if ( ES_VALIDO ( hProceso ) )
 	{
 		if ( GetProcessTimes ( hProceso, &ftimCreacion, &ftimFinalizacion, 
 								&ftimSistema, &ftimUsuario ) != 0 )
@@ -1886,7 +1879,7 @@ llong SisProcesoHoraCreacion ( long lPID )
 	HANDLE		hProceso;
 		
 	hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION, FALSE, (DWORD) lPID );
-	if ( hProceso != NULL )
+	if ( ES_VALIDO ( hProceso ) )
 	{
 		if ( GetProcessTimes ( hProceso, &ftimCreacion, &ftimFinalizacion, 
 								&ftimSistema, &ftimUsuario ) != 0 )
@@ -1931,7 +1924,7 @@ unsigned long SisProcesoHoraCreacion ( long lPID )
 	HANDLE		hProceso;
 		
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( hProceso != NULL )
+	if ( ES_VALIDO ( hProceso ) )
 	{
 		if ( GetProcessTimes ( hProceso, &ftimCreacion, &ftimFinalizacion, 
 								&ftimSistema, &ftimUsuario ) != 0 )
@@ -1975,7 +1968,7 @@ int SisFinalizarProceso ( long lPID )
 		HANDLE hProceso;
 		
 		hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-		if ( hProceso != NULL )
+		if ( ES_VALIDO ( hProceso ) )
 		{
 			if ( TerminateProcess ( hProceso, 0 ) != 0 )
 			{
@@ -1999,7 +1992,7 @@ int SisFinalizarProceso ( long lPID )
 # else
 	int iEstado;
 
-	if ( kill  ( lPID, SIGKILL ) == 0 )
+	if ( kill ( lPID, SIGKILL ) == 0 )
 	{
 		waitpid ( lPID, &iEstado, WNOHANG );
 		iRes = 1;
@@ -2012,3 +2005,89 @@ int SisFinalizarProceso ( long lPID )
 	return ( iRes );
 }
 
+
+ # if ( defined ( WIN ) )
+int _HiloVigilarPadre ( void * p_arg )
+# else
+void * _HiloVigilarPadre ( void * p_arg )
+# endif
+{
+# if ( defined ( WIN ) ) 
+    DWORD       pidPadre;
+    HANDLE      hPadre;
+    HANDLE      hSnap;
+    PROCESSENTRY32 pe;
+    DWORD       pidPropio;
+# else
+	pid_t pidPadre;
+# endif
+
+# if ( defined ( WIN ) )
+	pidPadre = 0;
+	hPadre  = NULL;
+
+    hSnap = CreateToolhelp32Snapshot ( TH32CS_SNAPPROCESS, 0 );
+    if ( hSnap != INVALID_HANDLE_VALUE ) 
+	{
+        pe.dwSize = sizeof(pe);
+        pidPropio = GetCurrentProcessId ();
+
+        if ( Process32First( hSnap, &pe ) ) 
+		{
+            do {
+                if ( pe.th32ProcessID == pidPropio ) 
+				{
+                    pidPadre = pe.th32ParentProcessID;
+                    break;
+                }
+            } while ( Process32Next( hSnap, &pe ) );
+        }
+        CloseHandle ( hSnap );
+    }
+
+    /* Abrir handle al padre para poder vigilarlo */
+    if ( pidPadre != 0 ) 
+	{
+        hPadre = OpenProcess ( SYNCHRONIZE, FALSE, pidPadre );
+    }
+# else
+	pidPadre = getppid ();
+# endif
+	SisConAsincEscribir ( "El HILO SE HA ARRANCADO\n" );
+
+    while ( 1 )
+    {
+# if ( defined ( WIN ) )
+		Sleep(1000);  /* milisegundos en Windows */
+
+        if ( ES_NULO ( hPadre ) || ( WaitForSingleObject ( hPadre, 0 ) == WAIT_OBJECT_0 ) )
+		{
+            /* El padre ha muerto, el hijo se autotermina */
+            if ( ES_VALIDO ( hPadre ) ) 
+			{
+				CloseHandle(hPadre);
+			}
+            ExitProcess(1);
+        }
+# else
+        sleep( 1 );
+	SisConAsincEscribirConFormato ( "BUCLE HILO %lu/%lu\n",  getppid (), pidPadre );
+        if ( getppid () != pidPadre )
+        {
+			SisConAsincEscribir ( "EL PADRE HA MUERTO!!!!\n" );
+            /* El padre ha muerto, el hijo se autotermina */
+            raise ( SIGTERM );
+        }
+# endif
+    }
+# if ( defined ( WIN ) )
+	return ( 0 );
+# else
+    return ( NULL );
+# endif
+}
+
+thread SisLanzarHiloVigilanciaPadre ()
+{
+	return ( SisCrearHilo ( _HiloVigilarPadre, NULL, 0 ) );
+}

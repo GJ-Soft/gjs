@@ -414,12 +414,14 @@ int SLisRealdExiste ( SListaRealesDobles * p_lisObj, double dDato )
 {
 	int iRes;
 	int iElem;
+	int iNumElems;
 
 	if ( ES_VALIDO ( p_lisObj ) ) 
 	{
 		iRes = 0;
 		iElem = 0;
-		while ( ( iElem < SLisRealdNumElementos ( p_lisObj ) ) && ( iRes == 0 ) )
+		iNumElems = SLisRealdNumElementos ( p_lisObj );
+		while ( ( iElem < iNumElems ) && ( iRes == 0 ) )
 		{
 			if ( MatEsIgual ( SLisRealdElemento ( p_lisObj, iElem ), dDato ) == 1 )
 			{
@@ -439,12 +441,14 @@ int SLisRealdBuscar ( SListaRealesDobles * p_lisObj, double dDato )
 {
 	int iRes;
 	int iElem;
+	int iNumElems;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		iRes = -1;
 		iElem = 0;
-		while ( ( iElem < SLisRealdNumElementos ( p_lisObj ) ) && ( iRes == -1 ) )
+		iNumElems = SLisRealdNumElementos ( p_lisObj );
+		while ( ( iElem < iNumElems ) && ( iRes == -1 ) )
 		{
 			if ( MatEsIgual ( SLisRealdElemento ( p_lisObj, iElem ), dDato ) == 1 )
 			{

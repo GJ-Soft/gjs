@@ -18,7 +18,7 @@ SMemoriaCompartida * SMemCmpCrear ( const char * p_cNombre, int iTam )
 		if ( SMtxEsValido ( p_memcObj->p_mutexObj ) == 1 )
 		{
 	#	  if ( defined ( WIN ) )
-			p_memcObj->hFichero = 0;
+			p_memcObj->hFichero = NULL;
 	#	  else
 			p_memcObj->iFichero = 0;
 	#	  endif
@@ -141,10 +141,11 @@ int SMemCmpAbrir ( SMemoriaCompartida * p_memcObj )
 				p_cRuta = SisComponerRuta ( SisDirectorioTemporal (), SMtxNombre ( p_memcObj->p_mutexObj ), 0 );
 				if ( ES_VALIDO ( p_cRuta ) )
 				{
+					iRes = 1;
 					iCreado = 0;
 		#		  if ( defined ( WIN ) )
 					p_memcObj->hFichero = CreateFileMapping ( (HANDLE) 0xFFFFFFFF, NULL, PAGE_READWRITE, 0, (DWORD) p_memcObj->iNumBytes, (LPSTR) p_cRuta );
-					if ( p_memcObj->hFichero > 0 )
+					if ( ES_VALIDO ( p_memcObj->hFichero ) )
 					{
 						iCreado = 1;
 					}
@@ -152,9 +153,21 @@ int SMemCmpAbrir ( SMemoriaCompartida * p_memcObj )
 					{
 						p_memcObj->hFichero = OpenFileMapping ( FILE_MAP_ALL_ACCESS, FALSE, (LPSTR) p_cRuta );
 					}
-					if ( p_memcObj->hFichero == 0 )
+					if ( ES_NULO ( p_memcObj->hFichero ) )
+		#		  elif ( defined ( POSIX ) )
+					p_memcObj->iFichero = shm_open( SMtxNombre ( p_memcObj->p_mutexObj ), O_CREAT | O_EXCL | O_RDWR, 0660 );
+					if ( p_memcObj->iFichero >= 0 )
+					{
+						iCreado = 1;
+						ftruncate ( p_memcObj->iFichero, p_memcObj->iNumBytes );
+					}
+					else
+					{
+						p_memcObj->iFichero = shm_open( SMtxNombre ( p_memcObj->p_mutexObj ), O_RDWR, 0 );
+					}
+					if ( p_memcObj->iFichero < 0 )
 		#		  else
-					p_memcObj->iFichero = open ( p_cRuta, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP ) ;
+					p_memcObj->iFichero = open ( p_cRuta, O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP );
 					if ( p_memcObj->iFichero >= 0 )
 					{
 						iCreado = 1;
@@ -164,7 +177,7 @@ int SMemCmpAbrir ( SMemoriaCompartida * p_memcObj )
 					}
 					else
 					{
-						p_memcObj->iFichero = open ( p_cRuta, O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP ) ;
+						p_memcObj->iFichero = open ( p_cRuta, O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP );
 					}
 					if ( lseek ( p_memcObj->iFichero, 0, SEEK_END ) < p_memcObj->iNumBytes )
 					{
@@ -181,26 +194,30 @@ int SMemCmpAbrir ( SMemoriaCompartida * p_memcObj )
 					{
 		#		  if ( defined ( WIN ) )
 						p_memcObj->p_vDatos = (void *) MapViewOfFile ( p_memcObj->hFichero, FILE_MAP_WRITE, 0, 0, (DWORD) p_memcObj->iNumBytes );
+						if ( p_memcObj->p_vDatos == NULL ) {
 		#		  else
-						p_memcObj->p_vDatos = (void *) mmap( 0, p_memcObj->iNumBytes, PROT_READ | PROT_WRITE, MAP_SHARED, -1, 0 );
-		#		  endif
+						p_memcObj->p_vDatos = (void *) mmap( 0, p_memcObj->iNumBytes, PROT_READ | PROT_WRITE, MAP_SHARED, p_memcObj->iFichero, 0 );
+		#			if ( defined ( POSIX ) )
 						if ( p_memcObj->p_vDatos == MAP_FAILED ) {
+		#			else		
+						if ( p_memcObj->p_vDatos == NULL ) {
+		#			endif		
+		#		  endif
 							p_memcObj->p_vDatos = NULL;
 						}
-						if ( ES_VALIDO ( p_memcObj->p_vDatos ) )
-						{
-							iRes = 1;
-						}
-						else
+						if ( ES_NULO ( p_memcObj->p_vDatos ) )
 						{
 							iRes = 0;
 							SMtxDejarLibre ( p_memcObj->p_mutexObj );
 		#		  if ( defined ( WIN ) )
 							CloseHandle ( p_memcObj->hFichero );
-							p_memcObj->hFichero = 0;
+							p_memcObj->hFichero = NULL;
 		#		  else
 							close ( p_memcObj->iFichero );
 							p_memcObj->iFichero = -1;
+		#		  	if ( defined ( POSIX ) )
+							shm_unlink ( SMtxNombre ( p_memcObj->p_mutexObj ) );
+		#			endif
 		#		  endif
 						}
 					}
@@ -260,12 +277,16 @@ void SMemCmpCerrar ( SMemoriaCompartida * p_memcObj )
 #	  if ( defined ( WIN ) )
 		UnmapViewOfFile ( (LPVOID) p_memcObj->p_vDatos );
 		CloseHandle ( p_memcObj->hFichero );
-		p_memcObj->hFichero = 0;
+		p_memcObj->hFichero = NULL;
 #	  else
 		munmap ( p_memcObj->p_vDatos, p_memcObj->iNumBytes );
 		close ( p_memcObj->iFichero );
 		p_memcObj->iFichero = -1;
+#	   if ( defined ( POSIX ) )
+		shm_unlink ( SMtxNombre ( p_memcObj->p_mutexObj ) );
+#	   endif
 #	  endif
+		p_memcObj->p_vDatos = NULL;
 	}
 }
 

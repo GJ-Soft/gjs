@@ -6,7 +6,7 @@
 #include <vector>
 
 
-using namespace std;
+
 
 namespace org
 {
@@ -20,11 +20,11 @@ namespace org
 			class CaptorSalida
 			{
 			private:
-				streambuf * p_bufViejo = NULL;
-				stringstream ssContenido;
+				std::streambuf * 			p_bufViejo = NULL;
+				std::stringstream 			ssContenido;
 
-				bool bActivado = false;
-				vector<string> vecLineas;
+				bool 						bActivado = false;
+				std::vector<std::string> 	vecLineas;
 
 			public:
 				CaptorSalida ();
@@ -34,7 +34,7 @@ namespace org
 				void Fin ();
 				bool EstaActivado ();
 
-				vector<string> getLineas ();
+				std::vector<std::string> getLineas ();
 			};
 
  			}

@@ -26,8 +26,6 @@
 
 
 
-using namespace std;
-
 
 
 namespace org
@@ -45,7 +43,7 @@ namespace org
 class  Mensajes 
 {
 private:
-	map<int, string>  mapMensajes;
+	std::map<int, std::string>  mapMensajes;
 	
 	
 public:
@@ -53,16 +51,16 @@ public:
 
 	virtual ~Mensajes ();
 
-	bool Insertar ( int iCodigo, const string & sTexto );
+	bool Insertar ( int iCodigo, const std::string & sTexto );
 
 	bool ExisteCodigo ( int iCodigo ) const;
 	int NumMensajes () const;
-	const string Texto ( int iCodigo ) const;
+	const std::string Texto ( int iCodigo ) const;
 
 	void Limpiar ();
-	bool Cargar ( const string & sFichero );
+	bool Cargar ( const std::string & sFichero );
 
-    string operator [] ( int iCodigo ) const;
+    std::string operator [] ( int iCodigo ) const;
 };
 
 

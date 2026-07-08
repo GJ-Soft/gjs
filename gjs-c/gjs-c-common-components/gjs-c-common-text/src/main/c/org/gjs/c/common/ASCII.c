@@ -1733,6 +1733,74 @@ int ASCIIEsGuionBajo ( char cVal )
 	return ( iRes );
 }
 
+int ASCIIEsPunto ( char cVal )
+{
+	int iRes; 
+	int iCod;
+
+	iCod = ASCIICodigo ( cVal );	
+	if ( iCod == ASCII_PUNTO )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int ASCIIEsComa ( char cVal )
+{
+	int iRes; 
+	int iCod;
+
+	iCod = ASCIICodigo ( cVal );	
+	if ( iCod == ASCII_COMA )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int ASCIIEsPuntoComa ( char cVal )
+{
+	int iRes; 
+	int iCod;
+
+	iCod = ASCIICodigo ( cVal );	
+	if ( iCod == ASCII_PUNTO_COMA )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int ASCIIEsDosPuntos ( char cVal )
+{
+	int iRes; 
+	int iCod;
+
+	iCod = ASCIICodigo ( cVal );	
+	if ( iCod == ASCII_DOS_PUNTOS )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int ASCIIEsSigno ( char cVal )
 {
 	int iRes; 
@@ -1972,7 +2040,9 @@ int ASCIIEsValidoToken ( char cVal )
 	{
 		if ( ( ASCIIEsLetra ( cVal ) == 1 ) ||
 			 ( ASCIIEsDigito ( cVal ) == 1 ) ||
-			 ( ASCIIEsGuionBajo ( cVal ) == 1 ) )
+			 ( ASCIIEsGuion ( cVal ) == 1 ) ||
+			 ( ASCIIEsGuionBajo ( cVal ) == 1 ) ||
+			 ( ASCIIEsPunto ( cVal ) == 1 ) )
 		{
 			iRes = 1;
 		}

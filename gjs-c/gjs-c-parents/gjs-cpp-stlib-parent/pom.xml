@@ -13,7 +13,7 @@
 
 	<properties>
 		<finalPrefix>${libFinalPrefix}</finalPrefix>
-		<checkSeverity>style</checkSeverity>	
+		<cpp.check.severity>style</cpp.check.severity>	
 	</properties>
 	
 	<name>Maven C++ Static Library Parent Pom</name>

@@ -31,6 +31,7 @@
 
 
 using namespace std;
+
 namespace fs = std::filesystem;
 
 namespace org
@@ -859,13 +860,13 @@ bool SisRutaDesactivarModoSoloLectura ( const string & sRuta )
 	DWORD		dwAtributos;
 	DWORD		dwMascara;
 
-	dwAtributos = GetFileAttributes ( sRuta );
+	dwAtributos = GetFileAttributes ( sRuta.c_str() );
 	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
 	{
 		dwMascara = FILE_ATTRIBUTE_READONLY;
 		dwMascara = 0xFFFFFFFF ^ dwMascara;
 		dwAtributos = dwAtributos & dwMascara;
-		if ( SetFileAttributes ( sRuta, dwAtributos ) != 0 )
+		if ( SetFileAttributes ( sRuta.c_str(), dwAtributos ) != 0 )
 		{
 			bRes = true;
 		}

@@ -23,8 +23,6 @@
 
 
 
-
-
 int SisEsDirectorioValido ( const char * p_cDirectorio );
 int SisEsSubdirectorioValido ( const char * p_cSubdirectorio );
 int SisEsFicheroValido ( const char * p_cFichero );
@@ -47,9 +45,17 @@ char * SisRutaSubdirectorioExt ( const char * p_cRuta, int iNivel );
 char * SisComponerRuta ( const char * p_cDirectorio, const char * p_cFichero, int iDirActualPorDef );
 char * SisComponerRutaExt ( const char * p_cDirectorio, const char * p_cSubdirectorio, const char * p_cFichero, int iDirActualPorDef );
 
-int SisNormalizarRuta ( char * p_cRuta );
+void SisNormalizarRutaWindows ( char * p_cRuta );
+void SisNormalizarRuta ( char * p_cRuta );
 
 int SisEsRutaValida ( const char * p_cRuta );
+int SisEsRutaValidaSistema ( const char * p_cRuta );
+int SisRutaEsEstiloWindows ( const char * p_cRuta );
+char * SisRutaEstiloWindows ( const char * p_cRuta );
+char * SisRutaEstiloWindowsExt ( const char * p_cRuta, char cUnidad );
+char * SisRutaEstiloUnix ( const char * p_cRuta );
+char * SisRutaEstiloCygwin ( const char * p_cRuta );
+char * SisRutaEstiloSistema ( const char * p_cRuta );
 
 
 char * SisDirectorioActual ();
@@ -104,6 +110,13 @@ int SisEsFicheroSHP ( const char * p_cRuta );
 int SisEsFicheroDBF ( const char * p_cRuta );
 
 char * SisResolverDirectorioRelativo ( const char * p_cRutaBase, const char * p_cRutaRelativa );
+
+const char * SisDirectorioRaiz ();
+#if ( defined ( WIN ) )
+const char * SisDirectorioRaizExt ( char cUnidad );
+#endif
+char SisSeparadorRutaFicheros ();
+
 
 
 #endif

@@ -14,7 +14,7 @@
 
 
 /* Ficheros de cabecera de C particulares de cada entorno: */
-#if ( defined ( UNIX ) || defined ( LINUX ) ) 
+#if ( defined ( POSIX ) ) 
 
 #	include <sys/param.h>
 #	include <sys/dir.h>
@@ -22,23 +22,12 @@
 	
 #else
 
-#	if ( defined ( WIN ) )
-#		include <winnt.h>
-#	endif
+#	include <windef.h>
+#	include <winnt.h>
+#	include <io.h>
 
 #endif
 
-
-
-
-/* Compatibilización de constantes que son diferentes entre los diferentes entornos: */
-#if ( !defined ( MAXPATHLEN ) )
-#	if ( defined ( PATH_MAX ) )
-#		define MAXPATHLEN					PATH_MAX
-#	else
-#		define MAXPATHLEN					512
-#	endif
-#endif
 
 #if ( defined ( WIN ) )
 #	if ( !defined ( INVALID_FILE_ATTRIBUTES ) )
@@ -58,6 +47,8 @@
 #define FIC_ESTR_NUM_MAG	0xDADADA00
 
 
+
+
 #define SF_DIR_ACTUAL				"."
 #define SF_DIR_PADRE				".."
 #define SF_DIR_SEPARADOR			'/'
@@ -65,15 +56,20 @@
 #define SF_UNI_SEPARADOR			':'
 #define SF_FIC_SEPARADOR			'.'
 
-#define SF_PATRON_RUTA				"/(?*/)?*"
-#define SF_PATRON_RUTA_REL			"./(?*/)?*"		
-#define SF_PATRON_RUTA_REL_2		"../(?*/)?*"		
-#define SF_PATRON_RUTA_WIN			"?:\\(?*\\)?*.?*"
-#define SF_PATRON_RUTA_WIN_2		"?:/(?*/)?*.?*"	
-#define SF_PATRON_RUTA_REL_WIN		".\\(?*\\)?*.?*"		
-#define SF_PATRON_RUTA_REL_WIN_2	"..\\(?*\\)?*.?*"	
-#define SF_PATRON_RUTA_REL_WIN_3	"./(?*/)?*.?*"		
-#define SF_PATRON_RUTA_REL_WIN_4	"../(?*/)?*.?*"	
+
+#if ( defined ( WIN ) )
+#	define SIS_SEPARADOR_PATH		SF_DIR_SEPARADOR_WIN
+#else
+#	define SIS_SEPARADOR_PATH		SF_DIR_SEPARADOR
+#endif
+
+
+#define SF_PATRON_RUTA				"/(?*/)(?*)"
+#define SF_PATRON_RUTA_REL			".(/?*)"		
+#define SF_PATRON_RUTA_REL_2		"..(/?*)"		
+#define SF_PATRON_RUTA_WIN			"?:\\(?*\\)(?*)"
+#define SF_PATRON_RUTA_REL_WIN		".(\\?*)"		
+#define SF_PATRON_RUTA_REL_WIN_2	"..(\\?*)"	
 #define SF_PATRON_DIRECTORIO		"/?*(/?*)"
 #define SF_PATRON_DIRECTORIO_WIN	"?:\\?*(\\?*)"
 #define SF_PATRON_DIRECTORIO_WIN_2	"?:/?*(/?*)"

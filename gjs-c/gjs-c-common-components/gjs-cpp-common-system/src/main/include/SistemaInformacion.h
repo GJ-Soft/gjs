@@ -18,7 +18,7 @@
 
 
 
-#include <Precompilacion.h>
+#include <BaseConfig.h>
 #include <TiposSistema.h>
 #include <Sistemas.h>
 #include <Procesadores.h>
@@ -27,7 +27,7 @@
 
 #include <string>
 
-using namespace std;
+
 
 namespace org
 {
@@ -45,8 +45,7 @@ double SisVersion ();
 
 bool SisEsDos ();
 bool SisEsWindows ();
-bool SisEsLinux ();
-bool SisEsUnix ();
+bool SisEsPosix ();
 bool SisEsMackintosh ();
 
 bool SisIntegraGUI ();
@@ -71,13 +70,13 @@ unsigned long SisMemTamBloqueMinimo ();
 void * SisMemAplicDireccionMinima ();
 void * SisMemAplicDireccionMaxima ();
 
-#if ( defined ( WIN ) || defined ( DOS ) )
-string * SisDirectorioSistema ();
+#if ( defined ( WIN ) )
+std::string * SisDirectorioSistema ();
 #endif
-string * SisDirectorioTemporal ();
+std::string * SisDirectorioTemporal ();
 
 void SisInicializarDirectorios ( const char * p_cDirTemporal );
-void SisInicializarDirectorios ( const string &sDirTemporal );
+void SisInicializarDirectorios ( const std::string &sDirTemporal );
 
 double SisVelocidadCPU ();
     

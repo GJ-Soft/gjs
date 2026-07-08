@@ -1,5 +1,5 @@
 /******************************************************************************/
-/*                            SistemaLibrerias.cpp                            */
+/*                            SistemaLibrerias.c                              */
 /*----------------------------------------------------------------------------*/
 /* Librería:  Sistema                                                         */
 /* Versión:   3.0.0                                                           */
@@ -97,7 +97,8 @@ int SisLibEstaCargada ( const char * p_cLibreria )
 		hmodLib = GetModuleHandle ( p_cLibreria );
 		if ( hmodLib != NULL )
 		{
-			FreeLibrary ( hmodLib );
+			// GetModuleHandle no incrementa el contador de referencias de la libreria
+			// No hace falta liberar
 			iRes = 1;
 		}
 		else
@@ -131,8 +132,9 @@ void * SisLibPrimitiva ( const char * p_cLibreria, const char * p_cPrimitiva )
 		hmodLib = GetModuleHandle ( p_cLibreria );
 		if ( hmodLib != NULL )
 		{
+			// GetModuleHandle no incrementa el contador de referencias de la libreria
+			// No hace falta liberar
 			p_vRes = (void *) GetProcAddress ( hmodLib, p_cPrimitiva );
-			FreeLibrary ( hmodLib );
 		}
 		else
 		{
@@ -150,98 +152,95 @@ void * SisLibPrimitiva ( const char * p_cLibreria, const char * p_cPrimitiva )
 	return ( p_vRes );
 }
 
-#if ( defined ( CPP ) )
-CListaCadenas * SisLibCargadas ()
+SListaLiterales * SisLibCargadas ()
 {
-	CListaCadenas *	p_liscadLibrerias;
- 	SBuffer	*		p_bufLibrerias;
- 	SBuffer	*		p_bufNombre;
+	SListaLiterales *	p_lisLibrerias;
+ 	SBuffer	*			p_bufLibrerias;
+ 	SBuffer	*			p_bufNombre;
 
 # if ( ( defined ( WIN ) ) && ( defined ( _PSAPI_H_ ) ) )
-	int				iError;
-	int				iNumLibs;
-	int				iLib;
-	char *		p_cNombre;
-	HANDLE			hProceso;
-	HMODULE *		p_hmodLib;
-	DWORD			dwTamOcupado;
+	int					iError;
+	int					iNumLibs;
+	int					iLib;
+	char *				p_cNombre;
+	HANDLE				hProceso;
+	HMODULE *			p_hmodLib;
+	DWORD				dwTamOcupado;
 #endif
 
+	p_lisLibrerias = SLisLitCrear ();
  	p_bufLibrerias = SBufCrear ( SIS_SO_MAX_TAM_BUFFER );
  	p_bufNombre = SBufCrear ( MAXPATHLEN );
-	if ( ES_VALIDO ( p_bufLibrerias ) && ES_VALIDO ( p_bufNombre ) )
+	if ( ES_VALIDO ( p_bufLibrerias ) && ES_VALIDO ( p_bufNombre ) && ES_VALIDO ( p_lisLibrerias ) )
 	{
 # if ( ( defined ( WIN ) ) && ( defined ( _PSAPI_H_ ) ) )
 		hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, GetCurrentProcessId () );
 		if ( hProceso != NULL )
 		{
-			p_hmodLib = (HMODULE *) p_bufLibrerias->Direccion ();
+			p_hmodLib = (HMODULE *) SBufDireccion ( p_bufLibrerias );
 			// PENDIENTE: Puede ser que sea necesario más tamaño (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
-			if ( EnumProcessModules ( hProceso, p_hmodLib, (DWORD) p_bufLibrerias->Tam (), &dwTamOcupado ) != 0 )
+			if ( EnumProcessModules ( hProceso, p_hmodLib, (DWORD) SBufTam ( p_bufLibrerias ), (LPDWORD) &dwTamOcupado ) != 0 )
 			{
-				iNumLibs = dwTamOcupado / sizeof ( DWORD );
+				iNumLibs = dwTamOcupado / sizeof ( HMODULE );
 				iLib = 0;
 				iError = 0;
-				p_liscadLibrerias = new CListaCadenas ();
-				if ( ES_VALIDO ( p_liscadLibrerias ) )
+				while ( ( iLib < iNumLibs ) && ( iError == 0 ) )
 				{
-					while ( ( iLib < iNumLibs ) && ( iError == 0 ) )
+					if ( p_hmodLib [ iLib ] != 0 )
 					{
-						if ( p_hmodLib [ iLib ] != 0 )
+						SBufLimpiar ( p_bufNombre );
+						if ( GetModuleBaseName ( hProceso, p_hmodLib [ iLib ], (LPTSTR)SBufDireccion ( p_bufNombre ), (DWORD) SBufTam ( p_bufNombre ) / sizeof ( char ) ) > 0 )
 						{
-							p_bufNombre->Limpiar ();
-							if ( GetModuleBaseName ( hProceso, p_hmodLib [ iLib ], (LPTSTR)p_bufNombre->Direccion (), (DWORD) (p_bufNombre->Tam ()) / sizeof ( char ) ) > 0 )
+							p_cNombre = SBufDuplicarCadena ( p_bufNombre );
+							if ( ES_VALIDO  ( p_cNombre ) )
 							{
-								p_cNombre = p_bufNombre->DuplicarCadena ();
-								if ( ES_VALIDO  ( p_cNombre ) )
-								{
-									if ( p_liscadLibrerias->Insertar ( p_cNombre ) == 0 )
-									{
-										iError = 1;
-									}
-								}
-								else
+								if ( SLisLitInsertarAlFinal ( p_lisLibrerias, p_cNombre ) == 0 )
 								{
 									iError = 1;
 								}
+								MemLiberar ( (void **) &p_cNombre );
 							}
 							else
 							{
 								iError = 1;
 							}
 						}
-						iLib = iLib + 1;
+						else
+						{
+							iError = 1;
+						}
 					}
-					if ( iError == 1 )
-					{
-						DESTRUIR ( CListaCadenas, p_liscadLibrerias );
-					}
+					iLib = iLib + 1;
+				}
+				if ( iError == 1 )
+				{
+					SLisLitVaciar ( p_lisLibrerias );
 				}
 			}
 			else
 			{
-				p_liscadLibrerias = NULL;
+				p_lisLibrerias = NULL;
 			}
 			CloseHandle ( hProceso );
 		}
 		else
 		{
-			p_liscadLibrerias = NULL;
+			p_lisLibrerias = NULL;
 		}
 # else
 		// PENDIENTE:
-		p_liscadLibrerias = NULL;
+		p_lisLibrerias = NULL;
 # endif
 	}
 	else
 	{
-		p_liscadLibrerias = NULL;
+		p_lisLibrerias = NULL;
 	}
 	SBufDestruir ( &p_bufLibrerias );
 	SBufDestruir ( &p_bufNombre );
-	return ( p_liscadLibrerias );
+	return ( p_lisLibrerias );
 }
-#endif
+
 
 char * SisLibRutaFichero ( const char * p_cLibreria )
 {
@@ -293,7 +292,6 @@ char * SisLibRutaFichero ( const char * p_cLibreria )
 			{
 				p_cRes = NULL;
 			}
-			FreeLibrary ( hmodLib );
 	# else
 		// PENDIENTE:
 			p_cRes = NULL;
@@ -314,7 +312,7 @@ char * SisLibRutaFichero ( const char * p_cLibreria )
 
 char * SisLibDirectorioFichero ( const char * p_cLibreria )
 {
-	const char * p_cRuta;
+	char * p_cRuta;
 	char * p_cRes;
 
 	p_cRuta = SisLibRutaFichero ( p_cLibreria );
@@ -354,9 +352,9 @@ void * SisLibRutinaPuntoDeEntrada ( const char * p_cLibreria )
 	int			iLibOk;
 
 # if ( ( defined ( WIN ) ) && ( defined ( _PSAPI_H_ ) ) )
-	HMODULE		hmodLib;
-	_MODULEINFO modinfLib;
-	HANDLE		hProceso;
+	HMODULE				hmodLib;
+	struct _MODULEINFO 	modinfLib;
+	HANDLE				hProceso;
 # endif
 
 	if ( ES_VALIDO ( p_cLibreria ) )
@@ -388,7 +386,7 @@ void * SisLibRutinaPuntoDeEntrada ( const char * p_cLibreria )
 		hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, GetCurrentProcessId () );
 		if ( hProceso != NULL )
 		{
-			if ( GetModuleInformation ( hProceso, hmodLib, &modinfLib, sizeof ( _MODULEINFO ) ) != 0 )
+			if ( GetModuleInformation ( hProceso, hmodLib, &modinfLib, sizeof ( struct _MODULEINFO ) ) != 0 )
 			{
 				p_vRes = modinfLib.EntryPoint;
 			}
@@ -402,7 +400,6 @@ void * SisLibRutinaPuntoDeEntrada ( const char * p_cLibreria )
 		{
 			p_vRes = NULL;
 		}
-		FreeLibrary ( hmodLib );
 	# else
 		// PENDIENTE:
 			p_vRes = NULL;
@@ -421,9 +418,9 @@ void * SisLibDireccionMemoria ( const char * p_cLibreria )
 	int			iLibOk;
 
 # if ( ( defined ( WIN ) ) && ( defined ( _PSAPI_H_ ) ) )
-	HMODULE		hmodLib;
-	_MODULEINFO modinfLib;
-	HANDLE		hProceso;
+	HMODULE				hmodLib;
+	struct _MODULEINFO 	modinfLib;
+	HANDLE				hProceso;
 # endif
 
 	if ( ES_VALIDO ( p_cLibreria ) )
@@ -455,7 +452,7 @@ void * SisLibDireccionMemoria ( const char * p_cLibreria )
 		hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, GetCurrentProcessId () );
 		if ( hProceso != NULL )
 		{
-			if ( GetModuleInformation ( hProceso, hmodLib, &modinfLib, sizeof ( _MODULEINFO ) ) != 0 )
+			if ( GetModuleInformation ( hProceso, hmodLib, &modinfLib, sizeof ( struct _MODULEINFO ) ) != 0 )
 			{
 				p_vRes = modinfLib.lpBaseOfDll;
 			}
@@ -469,7 +466,6 @@ void * SisLibDireccionMemoria ( const char * p_cLibreria )
 		{
 			p_vRes = NULL;
 		}
-		FreeLibrary ( hmodLib );
 #	  else
 		// PENDIENTE:
 			p_vRes = NULL;
@@ -488,9 +484,9 @@ unsigned long SisLibTamMemoria ( const char * p_cLibreria )
 	int				iLibOk;
 
 # if ( ( defined ( WIN ) ) && ( defined ( _PSAPI_H_ ) ) )
-	HMODULE		hmodLib;
-	_MODULEINFO modinfLib;
-	HANDLE		hProceso;
+	HMODULE				hmodLib;
+	struct _MODULEINFO 	modinfLib;
+	HANDLE				hProceso;
 # endif
 
 	if ( ES_VALIDO ( p_cLibreria ) )
@@ -522,7 +518,7 @@ unsigned long SisLibTamMemoria ( const char * p_cLibreria )
 		hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, GetCurrentProcessId () );
 		if ( hProceso != NULL )
 		{
-			if ( GetModuleInformation ( hProceso, hmodLib, &modinfLib, sizeof ( _MODULEINFO ) ) != 0 )
+			if ( GetModuleInformation ( hProceso, hmodLib, &modinfLib, sizeof ( struct _MODULEINFO ) ) != 0 )
 			{
 				ulRes = (unsigned long) modinfLib.SizeOfImage;
 			}
@@ -536,7 +532,6 @@ unsigned long SisLibTamMemoria ( const char * p_cLibreria )
 		{
 			ulRes = 0;
 		}
-		FreeLibrary ( hmodLib );
 	# else
 		// PENDIENTE:
 			ulRes = 0;
@@ -628,7 +623,10 @@ int SisLibVersion ( const char * p_cLibreria, int * p_iVersion, int * p_iSubvers
 				{
 		            *p_iRevision = (int) dllverinfDatos.dwBuildNumber;
 				}
-				//iCorreccion = (int) dllverinfDatos.dw
+				if ( ES_VALIDO ( p_iBug ) )
+				{
+		            *p_iBug = (int) dllverinfDatos.dwBuildNumber;
+				}
 				iRes = 1;
             }
             else
@@ -640,7 +638,6 @@ int SisLibVersion ( const char * p_cLibreria, int * p_iVersion, int * p_iSubvers
 		{
 			iRes = 0;
 	    } 
-		FreeLibrary ( hmodLib );
 	# else
 		// PENDIENTE:
 		iRes = 0;

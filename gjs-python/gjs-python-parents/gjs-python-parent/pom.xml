@@ -337,7 +337,10 @@
 		<profile>
 			<id>python</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<!-- Activo siempre -->
+				<file>
+					<exists>${basedir}/pom.xml</exists>
+				</file>
 			</activation>
 		</profile>
 		<profile>

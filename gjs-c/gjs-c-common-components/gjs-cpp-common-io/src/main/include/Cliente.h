@@ -2,14 +2,13 @@
 #define _ORG_GJS_C_CC_CPP_CLIENTE_H
 
 
-
+#include <string>
 
 #include <SocketCliente.h>
 
 
 
 
-using namespace std;
 
 
 namespace org
@@ -24,22 +23,22 @@ namespace org
 			class Cliente : private SocketCliente
 			{
 			public:
-				Cliente( const string & sIP, int iPuerto );
+				Cliente( const std::string & sIP, int iPuerto );
 				virtual ~Cliente();
 				
 				int getPuerto();
-				string getHost();
+				std::string getHost();
 				
 				virtual bool EsValido();
 
-				virtual void EnviarMensaje( const string & sMensaje, string & sRespuesta );
-				virtual void EnviarMensaje( const string & sMensaje );
+				virtual void EnviarMensaje( const std::string & sMensaje, std::string & sRespuesta );
+				virtual void EnviarMensaje( const std::string & sMensaje );
 
 			protected:
-				int Recibir( string & sMensaje, int iMaxTam = 2048 );
+				int Recibir( std::string & sMensaje, int iMaxTam = 2048 );
 				
 			private:
-				virtual void ExcepcionProducida( const exception & ex ) = 0;
+				virtual void ExcepcionProducida( const std::exception & ex ) = 0;
 
 			};
 

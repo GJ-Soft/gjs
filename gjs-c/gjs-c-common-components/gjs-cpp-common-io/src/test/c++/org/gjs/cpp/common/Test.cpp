@@ -1,6 +1,9 @@
 #include <CppBase.h>
 #include "CppCommonIo.h"
 
+using namespace std;
+
+
 extern bool TestSocketExcepcion ();
 extern bool TestSocket();
 extern bool TestGestorUsuarios();
@@ -18,12 +21,12 @@ extern bool TestClienteServidorHTTP ();
 
 
 
-int main( int argc, char * argv[] )
+int main ( int argc, char * argv[] )
 {
 	InicializarBase();
 	int iRes = 0;
 
-	map<string, FUNCION_BOOL> mapTests;
+	map<std::string, FUNCION_BOOL> mapTests;
 	mapTests[ "SocketExcepcion" ] = TestSocketExcepcion;
 	mapTests[ "Socket" ] = TestSocket;
 	mapTests[ "GestorUsuarios" ] = TestGestorUsuarios;
@@ -39,7 +42,7 @@ int main( int argc, char * argv[] )
 	mapTests[ "URI" ] = TestURI;
 	mapTests[ "ClienteServidorHTTP" ] = TestClienteServidorHTTP;
 
-	string sTest( "null" );
+	std::string sTest ( "null" );
 	if ( argc > 1 )
 	{
 		sTest = argv[1];
@@ -49,7 +52,7 @@ int main( int argc, char * argv[] )
 		if ( mapTests.find( sTest ) != mapTests.end() )
 		{
 			FUNCION_BOOL fTest = mapTests[ sTest ];
-			if( !fTest() )
+			if( !fTest () )
 			{
 				iRes = -1;
 			}
@@ -79,5 +82,6 @@ int main( int argc, char * argv[] )
 	{
 		iRes = -1;
 	}
+	fflush ( stdout );
 	return ( iRes );
 }

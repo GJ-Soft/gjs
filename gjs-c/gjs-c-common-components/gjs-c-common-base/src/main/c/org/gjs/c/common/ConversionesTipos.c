@@ -518,14 +518,14 @@ char * ConvEnteroLargoACadena ( long lVal )
 	iOrden = NumDigitosEnteroLargo ( lVal );
 	if ( lVal < 0 )
 	{
-		iTam = iOrden + 1;	
+		iTam = iOrden + 2;
 	}
 	else
 	{
-		iTam = iOrden;
+		iTam = iOrden + 1;
 	}
 	iDec = 0;
-	p_cRes = CadCrear ( iTam );
+	p_cRes = CadCrear ( iTam - 1 );
 	if ( ES_VALIDO ( p_cRes ) )
 	{
 		if ( lVal < 0 )
@@ -877,8 +877,8 @@ char * ConvRealACadena ( float fVal )
 								}
 								else
 								{
-									// Error de tamaño por acarreo:
-									//printf ( "ACARREO MáXIMO!\n" );
+									// Error de tama?o por acarreo:
+									//printf ( "ACARREO M?XIMO!\n" );
 								}
 							}
 							iPos = iTam - 1;
@@ -1028,8 +1028,8 @@ char * ConvRealDobleACadena ( double dVal )
 								}
 								else
 								{
-									// Error de tamaño por acarreo:
-									//printf ( "ACARREO MáXIMO!\n" );
+									// Error de tama?o por acarreo:
+									//printf ( "ACARREO M?XIMO!\n" );
 								}
 							}
 							iPos = iTam - 1;
@@ -1199,7 +1199,5 @@ llong ConvCadenaHexAEnteroDobleLargo( const char * p_cVal )
 	return ( (llong) ConvCadenaHexAEnteroLargoSinSigno ( p_cVal ) );
 }
 #endif
-
-
 
 

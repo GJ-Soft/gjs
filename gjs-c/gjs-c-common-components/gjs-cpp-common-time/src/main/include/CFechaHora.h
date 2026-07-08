@@ -24,11 +24,6 @@
 
 
 
-
-using namespace std;
-
-
-
 namespace org
 {
 	namespace gjs
@@ -45,31 +40,31 @@ namespace org
 class CFechaHora
 {
 private:
-	chrono::system_clock::time_point tpFechaHora;
+	std::chrono::system_clock::time_point tpFechaHora;
 
 public:
 	CFechaHora ();
 	CFechaHora ( long long llValor );
-	CFechaHora ( const string & sValor );
+	CFechaHora ( const std::string & sValor );
 	CFechaHora ( long lFecha, long lHora );
 	CFechaHora ( int iA, int iM, int iD, int iHH, int iMI, int iSS );
-	CFechaHora ( const chrono::system_clock::time_point & tp );
+	CFechaHora ( const std::chrono::system_clock::time_point & tp );
 	CFechaHora ( CFecha & fecFecha, CHora & horHora );
-	CFechaHora ( const chrono::year_month_day & ymd, const chrono::hh_mm_ss<chrono::seconds> & hms );
-	CFechaHora ( const chrono::year & y, const chrono::month & m, const chrono::day & d,
-                const chrono::hours & hh, const chrono::minutes & mi, const chrono::seconds & ss );
+	CFechaHora ( const std::chrono::year_month_day & ymd, const std::chrono::hh_mm_ss<std::chrono::seconds> & hms );
+	CFechaHora ( const std::chrono::year & y, const std::chrono::month & m, const std::chrono::day & d,
+                const std::chrono::hours & hh, const std::chrono::minutes & mi, const std::chrono::seconds & ss );
 
 	~CFechaHora();
 
 	void Establecer ( long long llValor );
-	void Establecer ( const string & sValor );
+	void Establecer ( const std::string & sValor );
 	void Establecer ( long lFecha, long lHora );
 	void Establecer ( int iA, int iM, int iD, int iHH, int iMI, int iSS );
-	void Establecer ( const chrono::system_clock::time_point & tp );
+	void Establecer ( const std::chrono::system_clock::time_point & tp );
 	void Establecer ( CFecha & fecFecha, CHora & horHora );
-	void Establecer ( const chrono::year_month_day & ymd, const chrono::hh_mm_ss<chrono::seconds> & hms );
-	void Establecer ( const chrono::year & y, const chrono::month & m, const chrono::day & d,
-                const chrono::hours & hh, const chrono::minutes & mi, const chrono::seconds & ss );
+	void Establecer ( const std::chrono::year_month_day & ymd, const std::chrono::hh_mm_ss<std::chrono::seconds> & hms );
+	void Establecer ( const std::chrono::year & y, const std::chrono::month & m, const std::chrono::day & d,
+                const std::chrono::hours & hh, const std::chrono::minutes & mi, const std::chrono::seconds & ss );
 
 	bool EsValida ();
 
@@ -83,8 +78,8 @@ public:
 	long ValorFecha ();
 	long ValorHora ();
 	long long Valor ();
-	string * ValorCadena ();
-	string * Cadena ( const string & formato );
+	std::string * ValorCadena ();
+	std::string * Cadena ( const std::string & formato );
 
 	CFecha * Fecha ();
 	CHora * Hora ();
@@ -99,10 +94,10 @@ public:
 	bool EsMenor ( CFechaHora * p_horValor );
 	bool EsMayor ( CFechaHora * p_horValor );
 	bool EsDiferente ( CFechaHora * p_horValor );
-	bool EsIgual ( const string & sValor );
-	bool EsMenor ( const string & sValor );
-	bool EsMayor ( const string & sValor );
-	bool EsDiferente ( const string & sValor );
+	bool EsIgual ( const std::string & sValor );
+	bool EsMenor ( const std::string & sValor );
+	bool EsMayor ( const std::string & sValor );
+	bool EsDiferente ( const std::string & sValor );
 	bool EsIgual ( long long llValor );
 	bool EsMenor ( long long llValor );
 	bool EsMayor ( long long llValor );
@@ -110,7 +105,7 @@ public:
 
 	long Diferencia ( CFechaHora & fechValor );
 	long Diferencia ( CFechaHora * p_horValor );
-	long Diferencia ( const string & sValor );
+	long Diferencia ( const std::string & sValor );
 	long Diferencia ( long long llValor );
 
 public:
@@ -126,12 +121,12 @@ public:
 	bool operator >= ( CFechaHora * p_horValor );
 	bool operator < ( CFechaHora * p_horValor );
 	bool operator <= ( CFechaHora * p_horValor );
-	bool operator == ( const string & sValor );
-	bool operator != ( const string & sValor );
-	bool operator > ( const string & sValor );
-	bool operator >= ( const string & sValor );
-	bool operator < ( const string & sValor );
-	bool operator <= ( const string & sValor );
+	bool operator == ( const std::string & sValor );
+	bool operator != ( const std::string & sValor );
+	bool operator > ( const std::string & sValor );
+	bool operator >= ( const std::string & sValor );
+	bool operator < ( const std::string & sValor );
+	bool operator <= ( const std::string & sValor );
 	bool operator == ( long long llValor );
 	bool operator != ( long long llValor );
 	bool operator > ( long long llValor );
@@ -141,7 +136,7 @@ public:
 
 	long operator - ( CFechaHora & fechValor );
 	long operator - ( CFechaHora * fechValor );
-	long operator - ( const string & sValor );
+	long operator - ( const std::string & sValor );
 	long operator - ( long long llValor );
 
 };

@@ -75,7 +75,7 @@ int EntInicializarExt ( int iConsola, const char * p_cNombre, int iVersion, int 
 			//{
 			//	// PENDIENTE: Tratar el error:
 			//}
-#		  elif ( ( defined ( UNIX ) ) || ( defined ( LINUX ) ) )
+#		  else
 			//signal ( SIGPIPE, sigpipe_handle );
 #		  endif
 
@@ -114,8 +114,11 @@ void EntFinalizar ()
 {
 	if ( g_iEntInicializado == 1 )
 	{
+		MemLiberarCadena ( &g_p_cEntDirSeguridad );
+		MemLiberarCadena ( &g_p_cEntDirLog );
 		MemLiberarCadena ( &g_p_cEntDirDatos );
 		AplicFinalizar ();
+
 
 #	  if ( defined ( WIN )  )
 		//_WinSckFinalizar ();
@@ -126,7 +129,8 @@ void EntFinalizar ()
 		g_iEntInicializado = 0;
 
 #	 if ( defined ( MODO_DEPURACION_2 ) || defined ( MODO_DEPURACION ) )
-		char cVal;
+		char 	cVal;
+		int		iParar;
 
 #	  if ( defined ( MODO_DEPURACION_2 ) )
 		// TODO: Esto todavia no se ha pasado a lo nuevo

@@ -23,7 +23,6 @@
 
 
 
-using namespace std;
 
 
 
@@ -38,7 +37,7 @@ namespace org
 
 
 
-bool AplicLogInicializar ( const string & sRutaFicheroCfg );
+bool AplicLogInicializar ( const std::string & sRutaFicheroCfg );
 
 bool AplicLogEstaInicializado ();
 
@@ -49,17 +48,17 @@ bool AplicLogActivado ();
 int AplicLogNivel ();
 bool AplicLogEstablecerNivel ( int iNivel );
 
-template<typename... Args> bool AplicLogAnotar ( const string & sTexto, Args&&... argumentos );
-template<typename... Args> bool AplicLogAnotarDepuracion ( const string & sTexto, Args&&... argumentos );
-template<typename... Args> bool AplicLogAnotarAviso ( const string & sTexto, Args&&... argumentos );
-template<typename... Args> bool AplicLogAnotarError ( const string & sTexto, Args&&... argumentos );
+template<typename... Args> bool AplicLogAnotar ( const std::string & sTexto, Args&&... argumentos );
+template<typename... Args> bool AplicLogAnotarDepuracion ( const std::string & sTexto, Args&&... argumentos );
+template<typename... Args> bool AplicLogAnotarAviso ( const std::string & sTexto, Args&&... argumentos );
+template<typename... Args> bool AplicLogAnotarError ( const std::string & sTexto, Args&&... argumentos );
 
 
 void AplicLogActivarSalidaPorConsola ();
 void AplicLogDesactivarSalidaPorConsola ();
 bool  AplicLogSalidaPorConsolaActivada ();
 
-void AplicLogFinalizar ( const string & sMensaje );
+void AplicLogFinalizar ( const std::string & sMensaje );
 
 
 

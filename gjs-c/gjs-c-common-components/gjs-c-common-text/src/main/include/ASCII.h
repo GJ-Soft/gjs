@@ -115,6 +115,10 @@ int ASCIIEsDigito ( char cVal );
 int ASCIIEsEspacio ( char cVal );
 int ASCIIEsGuion ( char cVal );
 int ASCIIEsGuionBajo ( char cVal );
+int ASCIIEsPunto ( char cVal );
+int ASCIIEsComa ( char cVal );
+int ASCIIEsPuntoComa ( char cVal );
+int ASCIIEsDosPuntos ( char cVal );
 
 int ASCIIEsSigno ( char cVal );
 int ASCIIEsSignoPunt ( char cVal );

@@ -23,13 +23,13 @@ static bool TestFicheroFormateado01 ()
 			cout << "Error caso 1" << endl;
 			bRes = false;
 		}
-		fichero->Cargar( "../resources/data/valores-vacio.tsv" ); 
+		fichero->Cargar( "../../test-classes/data/valores-vacio.tsv" ); 
 		if ( fichero->NumLineas() != 0 ) 
 		{
 			cout << "Error caso 2" << endl;
 			bRes = false;
 		}
-		fichero->Cargar( "../resources/data/valores.tsv" ); 
+		fichero->Cargar( "../../test-classes/data/valores.tsv" ); 
 		if ( fichero->NumLineas() != 3 ) 
 		{
 			cout << "Error caso 3: Lineas=" << fichero->NumLineas() << endl;
@@ -191,13 +191,13 @@ static bool TestFicheroFormateado02 ()
 			cout << "Error caso 1" << endl;
 			bRes = false;
 		}
-		fichero->Cargar( "../resources/data/valores-vacio.csv" ); 
+		fichero->Cargar( "../../test-classes/data/valores-vacio.csv" ); 
 		if ( fichero->NumLineas() != 0 ) 
 		{
 			cout << "Error caso 2" << endl;
 			bRes = false;
 		}
-		fichero->Cargar( "../resources/data/valores.csv" ); 
+		fichero->Cargar( "../../test-classes/data/valores.csv" ); 
 		if ( fichero->NumLineas() != 3 ) 
 		{
 			cout << "Error caso 3: Lineas=" << fichero->NumLineas() << endl;
@@ -359,7 +359,7 @@ static bool TestFicheroFormateado03 ()
 	try
 	{
 		fichero = new FicheroTSV();
-		fichero->Cargar( "../resources/data/valores2.tsv" ); 
+		fichero->Cargar( "../../test-classes/data/valores2.tsv" ); 
 		if ( fichero->NumLineas() != 3 ) 
 		{
 			cout << "Error caso 3: Lineas=" << fichero->NumLineas() << endl;

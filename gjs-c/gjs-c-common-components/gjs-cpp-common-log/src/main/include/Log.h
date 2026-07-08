@@ -15,9 +15,10 @@
 #define LOG_VAR_DIRECTORIO				"LOG_DIR"
 
 
+#ifdef ERROR
+#	undef ERROR
+#endif
 
-
-using namespace std;
 
 
 
@@ -45,14 +46,14 @@ namespace org
             };
 
 
-            map<string, string> LogPropiedadesDefecto ( string sNombreFichero = "", string sDirectorio = "" );
+            std::map<std::string, std::string> LogPropiedadesDefecto ( std::string sNombreFichero = "", std::string sDirectorio = "" );
 
             bool LogIni ();
-            bool LogIni ( const string & sRutaFicheroCfg );
+            bool LogIni ( const std::string & sRutaFicheroCfg );
 
             // TODO: Por un bug en log4cxx no funciona la substitucion de propiedades y no se pueden usar xml de configuración customizados
-            bool LogIni ( map<string, string> & mapPropiedades );
-            bool LogIni ( const string & sRutaFicheroCfg, map<string, string> & mapPropiedades );
+            bool LogIni ( std::map<std::string, std::string> & mapPropiedades );
+            bool LogIni ( const std::string & sRutaFicheroCfg, std::map<std::string, std::string> & mapPropiedades );
 
 			bool LogActivado ();
 			void LogActivar ();
@@ -65,27 +66,27 @@ namespace org
 			void LogActivarConsola ();
             void LogDesactivarConsola ();
 			
-            bool LogIniFichero ( const string & sFicLog, bool consola = false );
+            bool LogIniFichero ( const std::string & sFicLog, bool consola = false );
 
             void LogFin ();
 
-            void LogInfo ( const string & sMensaje );
-            void LogDepuracion ( const string & sMensaje );
-            void LogTraza ( const string & sMensaje );
-            void LogAviso ( const string & sMensaje );
-            void LogError ( const string & sMensaje );
-            void LogFatal ( const string & sMensaje );
-            void LogErrorEx ( const string & sMensaje, const exception & exInfo );
-            void LogFatalEx ( const string & sMensaje, const exception & exInfo );
-            void LogError ( const exception & exInfo );
-            void LogFatal ( const exception & exInfo );
+            void LogInfo ( const std::string & sMensaje );
+            void LogDepuracion ( const std::string & sMensaje );
+            void LogTraza ( const std::string & sMensaje );
+            void LogAviso ( const std::string & sMensaje );
+            void LogError ( const std::string & sMensaje );
+            void LogFatal ( const std::string & sMensaje );
+            void LogErrorEx ( const std::string & sMensaje, const std::exception & exInfo );
+            void LogFatalEx ( const std::string & sMensaje, const std::exception & exInfo );
+            void LogError ( const std::exception & exInfo );
+            void LogFatal ( const std::exception & exInfo );
 
-            template<typename... Args> void LogInfo ( const string & sFormato, Args&&... argumentos );
-            template<typename... Args> void LogDepuracion ( const string & sFormato, Args&&... argumentos );
-            template<typename... Args> void LogTraza ( const string & sFormato, Args&&... argumentos );
-            template<typename... Args> void LogAviso ( const string & sFormato, Args&&... argumentos );
-            template<typename... Args> void LogError ( const string & sFormato, Args&&... argumentos );
-            template<typename... Args> void LogFatal ( const string & sFormato, Args&&... argumentos );
+            template<typename... Args> void LogInfo ( const std::string & sFormato, Args&&... argumentos );
+            template<typename... Args> void LogDepuracion ( const std::string & sFormato, Args&&... argumentos );
+            template<typename... Args> void LogTraza ( const std::string & sFormato, Args&&... argumentos );
+            template<typename... Args> void LogAviso ( const std::string & sFormato, Args&&... argumentos );
+            template<typename... Args> void LogError ( const std::string & sFormato, Args&&... argumentos );
+            template<typename... Args> void LogFatal ( const std::string & sFormato, Args&&... argumentos );
 
             Nivel LogGetNivel ();
             void LogSetNivel ( Nivel nivel );

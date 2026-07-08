@@ -46,6 +46,7 @@ int main ()
 	AplicLogInicializar ( EntDirectorioLog (), "${capitalizedName}.log" );
 #end                                               
 
+	iRes = EXIT_SUCCESS;
 #if( $parameters > 0 )
 	p_argParametros = SArgCrear ( iNumArgs, p_p_cArgs );
 	if ( ES_VALIDO ( p_argParametros ) )
@@ -58,7 +59,7 @@ int main ()
 				{
 					printf ( "Invalid argument %d (Value=%s).\n", iArg,  
 							SArgArgumento ( p_argParametros, iArg ) ); 
-					iRes = 0;
+					iRes = EXIT_FAILURE;
 				}
 			}
 		}
@@ -67,7 +68,7 @@ int main ()
 			printf ( "Invalid number of arguments.\n" );
 			//TODO
 			printf ( "Use: ${shortName} <Param1> ...\n" );
-			iRes = 0;
+			iRes = EXIT_FAILURE;
 		}
 
 		SArgDestruir (  &p_argParametros );
@@ -75,11 +76,11 @@ int main ()
 	else
 	{
 		printf ( "Se han producido un error al procesar los parametros.\n" );
-		iRes = 0;
+		iRes = EXIT_FAILURE;
 	}
 #end
 
-	if ( iRes == 1 )
+	if ( iRes == EXIT_SUCCESS )
 	{
 		// TODO: Add source main code
 	}

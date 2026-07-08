@@ -298,14 +298,19 @@
 		<profile>
 			<id>npm</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<!-- Activo siempre -->
+				<file>
+					<exists>${basedir}/pom.xml</exists>
+				</file>
 			</activation>
 		</profile>
         <!-- Desarrollo -->
         <profile>
             <id>dev</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>!perfil.alternativo</name> 
+				</property>
 			</activation>
             <properties>
                 <node.env>development</node.env>

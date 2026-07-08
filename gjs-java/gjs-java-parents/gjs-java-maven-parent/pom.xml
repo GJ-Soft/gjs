@@ -20,8 +20,9 @@
 		.
 		.	gjs-parent
 		.		└── gjs-java-base-parent
-		.			   ├── gjs-java-maven-base-parent
-		.			   │        └── gjs-java-maven-parent
+		.			   └── gjs-java-maven-base-parent
+		.			            └── gjs-java-maven-parent
+		.	   		                        └── gjs-java-maven-extension-parent
 		.
 	</description>
 

@@ -31,8 +31,7 @@ double SisVersion ();
 
 int SisEsDos ();
 int SisEsWindows ();
-int SisEsLinux ();
-int SisEsUnix ();
+int SisEsPosix ();
 int SisEsMackintosh ();
 
 int SisIntegraGUI ();
@@ -57,7 +56,7 @@ unsigned long SisMemTamBloqueMinimo ();
 void * SisMemAplicDireccionMinima ();
 void * SisMemAplicDireccionMaxima ();
 
-#if ( defined ( WIN ) || defined ( DOS ) )
+#if ( defined ( WIN ) )
 const char * SisDirectorioSistema ();
 #endif
 const char * SisDirectorioTemporal ();

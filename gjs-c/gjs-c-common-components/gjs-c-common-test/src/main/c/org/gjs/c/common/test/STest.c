@@ -1,32 +1,12 @@
 #include "STest.h"
+#include "ContextoTests.h"
 #include "CTestConfig.h"
 
 #include <signal.h>
 
 
-extern void _PrepararContexto();
-extern void _LiberarContexto();
 
 
-// TODO: No probado		
-static void SignalHandler( int signal )
-{
-    printf ( "RECIBIDA INTERRUPCION = %d", signal );
-	exit ( -1 );
-}		
-
-static int _iEntornoTestInicializado = 0;
-
-static void InicializarEntorno()
-{
-	if ( _iEntornoTestInicializado == 0 )
-	{
-		SisEstablecerManejadorInterrupciones( SignalHandler );
-		_PrepararContexto();
-		_iEntornoTestInicializado = 1;
-	}
-}
-	
 static void _Nada ()
 {
 }	
@@ -48,12 +28,28 @@ STest * STestCrearExt ( const char * p_cNombre, PPRCV procInicializar, PPRCV pro
 		// TODO: Establecer metodología estándar de definición de Log en test: 1) buscar un xml de definicion en un /config...
 		//AplicLogActivarSalidaPorConsola ();
 		p_testObj->p_cNombreTest = CadDuplicar ( p_cNombre );
-		p_testObj->p_lisCasos = SLispCrear ();
-		p_testObj->procInicializarTest = procInicializar;
-		p_testObj->procFinalizarTest = procFinalizar;
-		p_testObj->procInicializarCasoTest = procInicializarCaso;
-		p_testObj->procFinalizarCasoTest = procFinalizarCaso;
-		p_testObj->p_cDirInicial = NULL;
+		if ( ES_VALIDO ( p_testObj->p_cNombreTest ) )
+		{
+			p_testObj->p_lisCasos = SLispCrear ();
+			if ( ES_VALIDO ( p_testObj->p_lisCasos ) )
+			{
+				SLispDesactivarLiberacionMemoria ( p_testObj->p_lisCasos );
+				p_testObj->procInicializarTest = procInicializar;
+				p_testObj->procFinalizarTest = procFinalizar;
+				p_testObj->procInicializarCasoTest = procInicializarCaso;
+				p_testObj->procFinalizarCasoTest = procFinalizarCaso;
+				p_testObj->p_cDirInicial = NULL;
+			}
+			else
+			{
+				MemLiberar ( (void **) &(p_testObj->p_cNombreTest) );
+				MemLiberar ( (void **) &p_testObj );
+			}
+		}
+		else
+		{
+			MemLiberar ( (void **) &p_testObj );
+		}
 	}
 	return ( p_testObj );
 }
@@ -61,22 +57,24 @@ STest * STestCrearExt ( const char * p_cNombre, PPRCV procInicializar, PPRCV pro
 void STestDestruir ( STest ** p_p_testObj ) 
 {
 	STest * p_testObj;
+	int		iNumCasos;
 
 	if ( ES_VALIDO ( p_p_testObj ) )
 	{
 		p_testObj = *p_p_testObj;
 		if ( ES_VALIDO ( p_testObj ) )
 		{
-			for ( int i = 0; i < SLispNumElementos ( p_testObj->p_lisCasos ); i = i + 1 )
+			iNumCasos = SLispNumElementos ( p_testObj->p_lisCasos );
+			for ( int i = 0; i < iNumCasos; i = i + 1 )
 			{
-	printf ( "TEST CDESTRUIR %d \n", i);
 				SCasoTest * p_caststObj = (SCasoTest *) SLispElemento ( p_testObj->p_lisCasos, i );
+				printf ( "CASO TEST=%s\n", SCasTstObtenerId ( p_caststObj ) );
 				SCasTstDestruir ( &p_caststObj );
 			}
 			SLispDestruir ( &( p_testObj->p_lisCasos ) );
-			MemLiberar ( (void *) &( p_testObj->p_cNombreTest) );
+			MemLiberar ( (void **) &( p_testObj->p_cNombreTest) );
+			MemLiberar ( (void **) p_p_testObj );
 		}
-		*p_p_testObj = NULL;
 	}
 	//AplicLogFinalizar ( "Test finalizado." );
 }
@@ -85,10 +83,11 @@ void STestInicializar ( STest * p_testObj )
 {
 	if ( ES_VALIDO ( p_testObj ) )
 	{
+		printf ( "%sInicializando Test %s%s\n", ANSI_MAGENTA, p_testObj->p_cNombreTest, ANSI_RESETEAR );
+		InicializarEntorno();
 		//AplicLogAnotar ( "" );
 		//AplicLogAnotar ( "* Iniciando test %s:", p_testObj->p_cNombreTest );
 		p_testObj->p_cDirInicial = SisDirectorioActual ();
-		printf( "***** 2 %s\n", p_testObj->p_cDirInicial );
 		if ( ES_VALIDO ( p_testObj->procInicializarTest ) )
 		{
 			p_testObj->procInicializarTest ();
@@ -105,7 +104,7 @@ void STestFinalizar ( STest * p_testObj )
 			p_testObj->procFinalizarTest ();
 		}
 		SisEstDirectorioActual ( p_testObj->p_cDirInicial );
-		//_LiberarContexto ();
+		FinalizarEntorno ();
 		//AplicLogAnotar ( "" );
 		//AplicLogAnotar ( "* Test %s finalizado.", p_testObj->p_cNombreTest );
 	}
@@ -137,7 +136,7 @@ void STestNuevoCaso( STest * p_testObj, const char * p_cNombre, PFUNINTV p_fTest
 {
 	if ( ES_VALIDO ( p_testObj ) )
 	{
-		SLispInsertar ( p_testObj->p_lisCasos, (byte *) SCasTstCrear ( p_cNombre, p_fTest ) );
+		SLispInsertar ( p_testObj->p_lisCasos, (byte *) SCasTstCrearSimple ( p_cNombre, p_fTest ) );
 	}
 }
 
@@ -145,7 +144,7 @@ void STestNuevoCasoAislado( STest * p_testObj, const char * p_cNombre, PFUNINTV 
 {
 	if ( ES_VALIDO ( p_testObj ) )
 	{
-		SLispInsertar ( p_testObj->p_lisCasos, ( byte * ) SCasTstaCrear ( p_cNombre, p_fTest, iCodigoEsperado ) );
+		SLispInsertar ( p_testObj->p_lisCasos, (byte *) SCasTstCrearAislado ( p_cNombre, p_fTest, iCodigoEsperado ) );
 	}
 }
 
@@ -169,6 +168,7 @@ int STestEjecutar( STest * p_testObj )
 {
 	int iRes;
 	int iResCaso;
+	int iNumCasos;
 
 	if ( ES_VALIDO ( p_testObj ) )
 	{
@@ -179,15 +179,15 @@ int STestEjecutar( STest * p_testObj )
 		p_testObj->iFallidos = 0;
 		iRes = 1;
 		printf ( "%s[Test %s]%s\n", ANSI_AMARILLO, p_testObj->p_cNombreTest, ANSI_RESETEAR );
-		STestInicializar( p_testObj );
-		for ( int i = 0; i < SLispNumElementos ( p_testObj->p_lisCasos ); i = i + 1 )
+		STestInicializar ( p_testObj );
+		iNumCasos = SLispNumElementos ( p_testObj->p_lisCasos );
+		for ( int i = 0; i < iNumCasos; i = i + 1 )
 		{
 			SCasoTest * p_caststObj = (SCasoTest *) SLispElemento ( p_testObj->p_lisCasos, i );
 			//AplicLogAnotar ( "" );
 			STestInicializarCaso ( p_testObj, SCasTstObtenerId ( p_caststObj )  );
 			iResCaso = SCasTstEjecutar ( p_caststObj );
 			STestFinalizarCaso ( p_testObj, SCasTstObtenerId ( p_caststObj ) );
-			iResCaso = 0;
 			p_testObj->iEjecutados = p_testObj->iEjecutados + 1;
 			if ( iResCaso == RESULTADO_CASO_TEST_OK )
 			{
@@ -207,6 +207,7 @@ int STestEjecutar( STest * p_testObj )
 				iRes = 0;
 			}
 		}
+		p_testObj->iResultado = iRes;
 		STestFinalizar ( p_testObj );
 		printf ( "%s[Fin]%s\n", ANSI_AMARILLO, ANSI_RESETEAR );
 		
@@ -214,7 +215,6 @@ int STestEjecutar( STest * p_testObj )
 		//AplicLogAnotar ( "Ejecutados = %d/%d; Correctos = %d; Erroneos = %d; Fallidos = %d", 
 		//	p_testObj->iEjecutados, p_testObj->iCorrectos, p_testObj->iErroneos, p_testObj->iFallidos );
 		//AplicLogAnotar ( "" );
-		printf( "FALIIDOS=%d\n",p_testObj->iFallidos);
 		printf ( "%sCasos Ejecutados = %d; Correctos = %d; Erroneos = %d; Fallidos = %d %s\n", ANSI_AMARILLO, 
 				p_testObj->iEjecutados, p_testObj->iCorrectos, p_testObj->iErroneos, p_testObj->iFallidos, ANSI_RESETEAR );
 	}
@@ -234,7 +234,6 @@ int STestEjecutar( STest * p_testObj )
 		printf ( "%sTest terminado con errores%s\n", ANSI_ROJO, ANSI_RESETEAR );
 	}
 	//AplicLogAnotar ( "" );
-	p_testObj->iResultado = iRes;
 	return( iRes );
 }		
 

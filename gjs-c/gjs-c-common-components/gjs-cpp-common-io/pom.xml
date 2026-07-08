@@ -17,6 +17,7 @@
 	<description>Base IO components for C++ project archetypes</description>
 
 	<properties>
+		<runtime>${environment.style}</runtime>
 		<checkSeverity>style</checkSeverity>	
 	</properties>
 
@@ -27,4 +28,91 @@
 			<type>nar</type>
 		</dependency>
     </dependencies>
+	
+	<profiles>
+		<profile>
+		<!--
+			<id>win</id>
+			<activation>
+                <property>
+					<name>!env.CYGWIN</name>
+				</property>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+		-->	
+			<id>runtime-win</id>
+			<activation>
+                <property>
+					<name>environment.style</name>
+					<value>windows</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.maven-nar</groupId>
+						<artifactId>nar-maven-plugin</artifactId>
+						<configuration>
+							<cpp>
+								<includePaths combine.children="append">
+									<includePath>
+										<path>${cpp.dir.include.system}</path>
+									</includePath>
+								</includePaths>						
+							</cpp>
+							<linker>
+								<libs combine.children="append">
+									<lib>
+										<name>Ws2_32</name>
+										<type>shared</type>
+										<directory>${cpp.dir.lib.system}</directory>
+									</lib>
+								</libs>					
+							</linker>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<!--
+		<profile>
+			<id>cygwin-win</id>
+			<activation>
+				<property>
+					<name>cygwin.style</name>
+					<value>windows</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.maven-nar</groupId>
+						<artifactId>nar-maven-plugin</artifactId>
+						<configuration>
+							<cpp>
+								<includePaths combine.children="append">
+									<includePath>
+										<path>${cpp.dir.include.system}</path>
+									</includePath>
+								</includePaths>						
+							</cpp>
+							<linker>
+								<libs combine.children="append">
+									<lib>
+										<name>Ws2_32</name>
+										<type>shared</type>
+										<directory>${cpp.dir.lib.system}</directory>
+									</lib>
+								</libs>					
+							</linker>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		-->
+	</profiles>
+	
 </project>

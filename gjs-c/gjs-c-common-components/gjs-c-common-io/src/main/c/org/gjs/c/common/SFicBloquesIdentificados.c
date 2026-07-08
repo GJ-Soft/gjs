@@ -7,12 +7,13 @@
 
 #define FIC_BLOQID_TAM_INFO_CABECERA			(2 * sizeof ( unsigned long ) )
 #define FIC_BLOQID_POS_MIN_ID					0
-#define FIC_BLOQID_POS_MAX_ID					(FIC_BLOQID_IDNULO - 1)
+#define FIC_BLOQID_POS_MAX_ID					sizeof(unsigned long)
 
 
 
-static int SFicBloqIdActualizarInfoCabecera ( SFicBloquesIdentificados * p_ficObj ); 
-static int SFicBloqIdCargarInfoCabecera ( SFicBloquesIdentificados * p_ficObj );
+int _SFicBloqIdActualizarInfoCabecera ( SFicBloquesIdentificados * p_ficObj ); 
+int _SFicBloqIdCargarInfoCabecera ( SFicBloquesIdentificados * p_ficObj );
+int _SFicBloqIdActualizarValores ( SFicBloquesIdentificados * p_ficObj );
 
 
 
@@ -45,7 +46,7 @@ SFicBloquesIdentificados * SFicBloqIdAsignar ( const char * p_cRuta )
 		p_ficObj->p_ficObj = SFicBloqAsignar ( p_cRuta );
 		if ( ES_VALIDO ( p_ficObj->p_ficObj ) )
 		{
-			if ( SFicBloqIdCargarInfoCabecera ( p_ficObj ) == 0 )
+			if ( _SFicBloqIdCargarInfoCabecera ( p_ficObj ) == 0 )
 			{
 				SFicBloqIdDestruir ( &p_ficObj );
 			}
@@ -86,10 +87,42 @@ SFicBloquesIdentificados * SFicBloqIdAsignarExt ( const char * p_cDir, const cha
 		p_ficObj->p_ficObj = SFicBloqAsignarExt ( p_cDir, p_cFic, iNumMagico );
 		if ( ES_VALIDO ( p_ficObj->p_ficObj ) )
 		{
-			if ( SFicBloqIdCargarInfoCabecera ( p_ficObj ) == 0 )
+			if ( _SFicBloqIdCargarInfoCabecera ( p_ficObj ) == 0 )
 			{
 				SFicBloqIdDestruir ( &p_ficObj );
 			}
+		}
+	}
+	else
+	{
+		p_ficObj = NULL;
+	}
+	return ( p_ficObj );
+}
+
+SFicBloquesIdentificados * SFicBloqIdCrearRuta ( SRuta * p_rutRuta, unsigned long ulTamDatosBloque, unsigned long ulTamDatosCab )
+{
+	SFicBloquesIdentificados *	p_ficObj;
+	char *						p_cRuta;
+	
+	if ( SRutEsValida ( p_rutRuta ) == 1 )
+	{
+		if ( SRutEsFichero ( p_rutRuta ) == 1 )
+		{
+			p_cRuta = SRutRutaAbsolutaLit ( p_rutRuta );
+			if ( SRutExiste ( p_rutRuta ) == 1 )
+			{
+				p_ficObj = SFicBloqIdAsignar ( p_cRuta );
+			}
+			else
+			{
+				p_ficObj = SFicBloqIdCrear ( p_cRuta, ulTamDatosBloque, ulTamDatosCab );
+			}
+			MemLiberar ( (void **) &p_cRuta );
+		}
+		else
+		{
+			p_ficObj = NULL;
 		}
 	}
 	else
@@ -358,11 +391,11 @@ int SFicBloqIdAbrirExt ( SFicBloquesIdentificados * p_ficObj, int iVaciar )
 			{
 				p_ficObj->ulMaxId = 0;
 				p_ficObj->ulMinId = 0;
-				iRes = SFicBloqIdActualizarInfoCabecera ( p_ficObj );
+				iRes = _SFicBloqIdActualizarInfoCabecera ( p_ficObj );
 			}
 			else
 			{
-				iRes = SFicBloqIdCargarInfoCabecera ( p_ficObj );
+				iRes = _SFicBloqIdCargarInfoCabecera ( p_ficObj );
 			}
 		}
 		else
@@ -828,7 +861,7 @@ int SFicBloqIdLeerExt ( SFicBloquesIdentificados * p_ficObj, unsigned long ulId,
 
 					if ( ( iError == 0 ) && ( iEnc == 1 ) )
 					{
-						MemCopiar ( &p_byContenido, &(p_byBloque [ FIC_BLOQID_TAM_ID ]), SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
+						MemCopiar ( p_byContenido, &(p_byBloque [ FIC_BLOQID_TAM_ID ]), SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
 						iRes = 1;
 					}
 					else
@@ -902,7 +935,7 @@ int SFicBloqIdModificar ( SFicBloquesIdentificados * p_ficObj, unsigned long ulI
 
 					if ( ( iError == 0 ) && ( iEnc == 1 ) )
 					{
-						MemCopiar ( &(p_byBloque [ FIC_BLOQID_TAM_ID ]), &p_byContenido, SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
+						MemCopiar ( &(p_byBloque [ FIC_BLOQID_TAM_ID ]), p_byContenido, SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
 						iRes = SFicBloqEscribir ( p_ficObj->p_ficObj, ulBloque, p_byBloque );
 					}
 					else
@@ -981,11 +1014,11 @@ int SFicBloqIdInsertar ( SFicBloquesIdentificados * p_ficObj, unsigned long ulId
 				if ( ( iError == 0 ) && ( iEnc == 0 ) )
 				{
 					MemCopiar ( &(p_byBloque [ 0 ]), (void *) &ulId, FIC_BLOQID_TAM_ID );
-					MemCopiar ( &(p_byBloque [ FIC_BLOQID_TAM_ID ]), &p_byContenido, SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
+					MemCopiar ( &(p_byBloque [ FIC_BLOQID_TAM_ID ]), p_byContenido, SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
 
 					if ( ulPrimerNulo == FIC_BLOQID_IDNULO )
 					{
-						ulBloque = SFicBloqNumBloques ( p_ficObj->p_ficObj ) + 1;
+						ulBloque = SFicBloqNumBloques ( p_ficObj->p_ficObj );
 					}
 					else
 					{
@@ -1010,6 +1043,7 @@ int SFicBloqIdInsertar ( SFicBloquesIdentificados * p_ficObj, unsigned long ulId
 								p_ficObj->ulMaxId = ulId;
 							}
 						}
+						iRes = 1;
 					}
 					else
 					{
@@ -1086,6 +1120,20 @@ int SFicBloqIdSuprimir ( SFicBloquesIdentificados * p_ficObj, unsigned long ulId
 						MemLimpiar ( p_byBloque, SFicBloqTamBloque ( p_ficObj->p_ficObj ) );
 						MemCopiar ( p_byBloque, &ulIdBloq, FIC_BLOQID_TAM_ID );
 						iRes = SFicBloqEscribir ( p_ficObj->p_ficObj, ulBloque, p_byBloque );
+						if ( iRes == 1 )
+						{
+							if ( ( ulId == p_ficObj->ulMinId ) || ( ulId == p_ficObj->ulMaxId ) )
+							{
+								if ( _SFicBloqIdActualizarValores ( p_ficObj ) == 1 )
+								{
+									iRes = _SFicBloqIdActualizarInfoCabecera ( p_ficObj ); 
+								}
+								else
+								{
+									iRes = 0;
+								}
+							}
+						}
 					}
 					else
 					{
@@ -1126,9 +1174,9 @@ byte * SFicBloqIdLeerBloque ( SFicBloquesIdentificados * p_ficObj, unsigned long
 		if ( ES_VALIDO ( p_byBloque ) )
 		{
 			p_byContenido = (byte *) MemReservar ( SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
-			if ( ES_VALIDO ( p_byBloque ) )
+			if ( ES_VALIDO ( p_byContenido ) )
 			{
-				MemCopiar ( &p_byContenido, &(p_byBloque [ FIC_BLOQID_TAM_ID ]), SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
+				MemCopiar ( p_byContenido, &(p_byBloque [ FIC_BLOQID_TAM_ID ]), SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
 			}
 			MemLiberar ( (void **) &p_byBloque );
 		}
@@ -1158,7 +1206,7 @@ int SFicBloqIdLeerBloqueExt ( SFicBloquesIdentificados * p_ficObj, unsigned long
 			if ( ES_VALIDO ( p_byContenido ) )
 			{
 				MemCopiar ( (void *) p_ulId, &(p_byBloque [ 0 ]), FIC_BLOQID_TAM_ID );
-				MemCopiar ( &p_byContenido, &(p_byBloque [ FIC_BLOQID_TAM_ID ]), SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
+				MemCopiar ( p_byContenido, &(p_byBloque [ FIC_BLOQID_TAM_ID ]), SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
 				iRes = 1;
 			}
 			MemLiberar ( (void **) &p_byBloque );
@@ -1187,7 +1235,7 @@ int SFicBloqIdEscribirBloque ( SFicBloquesIdentificados * p_ficObj, unsigned lon
 			p_byBloque = SFicBloqLeer ( p_ficObj->p_ficObj, ulBloque );
 			if ( ES_VALIDO ( p_byBloque ) )
 			{
-				MemCopiar ( &(p_byBloque [ FIC_BLOQID_TAM_ID ]), &p_byContenido, SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
+				MemCopiar ( &(p_byBloque [ FIC_BLOQID_TAM_ID ]), p_byContenido, SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID );
 				iRes = SFicBloqEscribir ( p_ficObj->p_ficObj, ulBloque, p_byBloque );
 				MemLiberar ( (void **) &p_byBloque );
 			}
@@ -1208,7 +1256,7 @@ int SFicBloqIdEscribirBloque ( SFicBloquesIdentificados * p_ficObj, unsigned lon
 	return ( iRes );
 }
 
-static int SFicBloqIdActualizarInfoCabecera ( SFicBloquesIdentificados * p_ficObj )
+int _SFicBloqIdActualizarInfoCabecera ( SFicBloquesIdentificados * p_ficObj )
 {
 	int		iRes;
 	byte *	p_byCabecera;	
@@ -1236,7 +1284,7 @@ static int SFicBloqIdActualizarInfoCabecera ( SFicBloquesIdentificados * p_ficOb
 	return ( iRes );
 }
 
-static int SFicBloqIdCargarInfoCabecera ( SFicBloquesIdentificados * p_ficObj )
+int _SFicBloqIdCargarInfoCabecera ( SFicBloquesIdentificados * p_ficObj )
 {
 	int		iRes;
 	byte *	p_byCabecera;	
@@ -1264,3 +1312,56 @@ static int SFicBloqIdCargarInfoCabecera ( SFicBloquesIdentificados * p_ficObj )
 	return ( iRes );
 }
 
+int _SFicBloqIdActualizarValores ( SFicBloquesIdentificados * p_ficObj )
+{
+	int				iRes;
+	byte *			p_byBloque;
+	int				iError;
+	unsigned long	ulBloque;
+	unsigned long	ulIdBloq;
+
+	if ( ES_VALIDO ( p_ficObj ) )
+	{
+		p_byBloque = (byte *) MemReservar ( SFicBloqTamBloque ( p_ficObj->p_ficObj ) );
+		if ( ES_VALIDO ( p_byBloque ) )
+		{
+			p_ficObj->ulMinId = FIC_BLOQID_IDNULO;
+			p_ficObj->ulMaxId = 0;
+			iError = 0;
+			ulBloque = 0;
+			while ( ( iError == 0 ) && ( ulBloque < SFicBloqNumBloques ( p_ficObj->p_ficObj ) ) )
+			{
+				if ( SFicBloqLeerExt ( p_ficObj->p_ficObj, ulBloque, p_byBloque ) == 1 )
+				{
+					MemCopiar ( &ulIdBloq, p_byBloque, FIC_BLOQID_TAM_ID );
+					if ( ulIdBloq != FIC_BLOQID_IDNULO )
+					{
+						if ( p_ficObj->ulMinId > ulIdBloq )
+						{
+							p_ficObj->ulMinId = ulIdBloq;
+						}
+						if ( p_ficObj->ulMaxId < ulIdBloq )
+						{
+							p_ficObj->ulMaxId = ulIdBloq;
+						}
+					}
+				}
+				else
+				{
+					iError = 1;
+				}
+				ulBloque = ulBloque + 1;
+			}
+			MemLiberar ( (void **) &p_byBloque );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}

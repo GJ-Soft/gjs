@@ -10,8 +10,6 @@
 
 
 
-
-using namespace std;
 using namespace org::gjs::cpp::common;
 
 
@@ -37,10 +35,10 @@ namespace org
 
 				public:
 
-					void NuevoTest ( const string & sNombre, FUNCION_BOOL funcion );
+					void NuevoTest ( const std::string & sNombre, FUNCION_BOOL funcion );
 					int NumTests ();
 
-					int Ejecutar ( const string & sTest = "" );
+					int Ejecutar ( const std::string & sTest = "" );
 					int Ejecutar ( int argc, char * argv[] );
 
 			};

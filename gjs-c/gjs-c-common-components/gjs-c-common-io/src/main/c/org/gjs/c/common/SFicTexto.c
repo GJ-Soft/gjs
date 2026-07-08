@@ -70,6 +70,32 @@ SFicTexto * SFicTxtCrearExt ( const char * p_cDir, const char * p_cFic, int iEst
 	return ( p_ficObj );
 }
 
+SFicTexto * SFicTxtCrearRuta ( SRuta * p_rutRuta  )
+{
+	SFicTexto *	p_ficObj;
+	char *		p_cRuta;
+	
+	if ( SRutEsValida ( p_rutRuta ) == 1 )
+	{
+		if ( SRutEsFichero ( p_rutRuta ) == 1 )
+		{
+			p_cRuta = SRutRutaAbsolutaLit ( p_rutRuta );
+			p_ficObj = SFicTxtCrear ( p_cRuta );
+			MemLiberar ( (void **) &p_cRuta );
+		}
+		else
+		{
+			p_ficObj = NULL;
+		}
+	}
+	else
+	{
+		p_ficObj = NULL;
+	}
+	return ( p_ficObj );
+}
+
+
 void SFicTxtDestruir ( SFicTexto ** p_p_ficObj )
 {
 	SFicTexto * p_ficObj;
@@ -187,7 +213,17 @@ int SFicTxtEstablecerRuta ( SFicTexto * p_ficObj, const char * p_cRuta )
 
 int SFicTxtEstablecerRutaExt ( SFicTexto * p_ficObj, const char * p_cDir, const char * p_cFic )
 {
-	return ( SFicTxtEstablecerRuta ( p_ficObj, SisComponerRuta ( p_cDir, p_cFic, 0 ) ) );
+	int iRes;
+
+	if ( ES_VALIDO ( p_ficObj ) )
+	{
+		iRes = SFicSecEstablecerRutaExt ( p_ficObj->p_ficObj, p_cDir, p_cFic );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
 int SFicTxtEstilo ( SFicTexto * p_ficObj )
@@ -421,19 +457,23 @@ char * SFicTxtLeerLinea ( SFicTexto * p_ficObj )
 							{
 								iSalto = 1;
 							}
-							else 
+							else if ( cVal != (char) 0x0A )
 							{
-								if ( cVal != (char) 0x0A )
-								{
-									p_cAux [ iCar ] = cVal;
-									iCar = iCar + 1;
-								}
+								p_cAux [ iCar ] = cVal;
+								iCar = iCar + 1;
 							}
 						}
 					}
 				}
 
-				p_cRes = CadDuplicar ( p_cAux );
+				if ( ( iFinal == 0 ) || ( iCar > 0 ) )
+				{
+					p_cRes = CadDuplicar ( p_cAux );
+				}
+				else
+				{
+					p_cRes = NULL;
+				}
 				MemLiberar ( (void **) &p_cAux );
 			}
 			else
@@ -518,9 +558,9 @@ int SFicTxtEscribirLinea ( SFicTexto * p_ficObj, const char * p_cLinea )
 				}
 				else
 				{
-					if ( SFicSecEscribir ( p_ficObj->p_ficObj, 0x0A ) == 1 )
+					if ( SFicSecEscribir ( p_ficObj->p_ficObj, 0x0D ) == 1 )
 					{
-						iRes = SFicSecEscribir ( p_ficObj->p_ficObj, 0x0D );
+						iRes = SFicSecEscribir ( p_ficObj->p_ficObj, 0x0A );
 					}
 					else
 					{

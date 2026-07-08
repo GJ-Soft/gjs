@@ -6,14 +6,14 @@
 
 extern int TestSId ();
 
-char ** testArrayInit()
+char ** testArrayInit ()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *));
     p_p_cTests[ 0 ] = CadDuplicar ( "SId" );
     return p_p_cTests;
 }
 
-PFUNINTV * functionArrayInit()
+PFUNINTV * functionArrayInit ()
 {
     PFUNINTV* p_fTests = (PFUNINTV *) MemReservar ( NUM_TESTS * sizeof( PFUNINTV ));
     p_fTests[ 0 ] = TestSId;
@@ -23,19 +23,19 @@ PFUNINTV * functionArrayInit()
 void freeArrays( char ** p_p_cTests, PFUNINTV* p_fTests )
 {
     for ( int i = 0; i < NUM_TESTS; i = i + 1 ) {
-        MemLiberar( (void **) p_p_cTests[ i ]);
+        MemLiberar ( (void **) &(p_p_cTests[ i ]) );
     }
-    MemLiberar( (void **) p_p_cTests );
-    MemLiberar( (void **) p_fTests );
+    MemLiberar ( (void **) p_p_cTests );
+    MemLiberar ( (void **) &p_fTests );
 }
 
-int findTest( char ** p_p_cTests, char * p_cTest )
+int findTest ( char ** p_p_cTests, char * p_cTest )
 {
     int iIndex = -1;
     int i = 0;
     while ( ( i < NUM_TESTS) && ( iIndex < 0 ) )
     {
-        if ( strcmp ( p_p_cTests[ i ], p_cTest ) == 0 )
+        if ( CadComparar ( p_p_cTests[ i ], p_cTest ) == COMP_IGUAL )
         {
             iIndex = i;
         }
@@ -44,12 +44,12 @@ int findTest( char ** p_p_cTests, char * p_cTest )
     return ( iIndex );
 }
 
-int main( int argc, char * argv[] )
+int main ( int argc, char * argv[] )
 {
 	int iRes = 0;
 
-	char ** p_p_cTests = testArrayInit();
-    PFUNINTV * p_fTests = functionArrayInit();
+	char ** p_p_cTests = testArrayInit ();
+    PFUNINTV * p_fTests = functionArrayInit ();
 
 	char * p_cTest = 0x0;
 	if ( argc > 1 )
@@ -58,11 +58,11 @@ int main( int argc, char * argv[] )
 	}
 	if ( CadLongitud ( p_cTest ) > 0 )
 	{
-	    int iTest = findTest( p_p_cTests, p_cTest );
+	    int iTest = findTest ( p_p_cTests, p_cTest );
 		if ( iTest >= 0 )
 		{
 			PFUNINTV fTest = p_fTests[ iTest ];
-			if( fTest() != 1 )
+			if( fTest () != 1 )
 			{
 				iRes = -1;
 			}
@@ -75,10 +75,15 @@ int main( int argc, char * argv[] )
 		return( iRes );
 	}
 
-	if ( BOOL_ES_FALSO ( TestSId () ) )
+	for ( int iTest = 0; iTest < NUM_TESTS; iTest = iTest + 1 )
 	{
-		iRes = -1;
+		PFUNINTV fTest = p_fTests[ iTest ];
+		if( fTest () != 1 )
+		{
+			iRes = -1;
+		}
 	}
-	freeArrays( p_p_cTests, p_fTests );
+	freeArrays ( p_p_cTests, p_fTests );
+	fflush ( stdout );
 	return ( iRes );
 }

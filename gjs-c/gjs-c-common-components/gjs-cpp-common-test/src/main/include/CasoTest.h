@@ -8,7 +8,6 @@
 
 
 
-using namespace std;
 using namespace org::gjs::cpp::common;
 
 
@@ -26,16 +25,16 @@ namespace org
 			class CasoTest
 			{
 				private:
-					string sIdCaso = "Caso";
+					std::string sIdCaso = "Caso";
 					FUNCION_BOOL funcionCaso = NULL;
 					bool bEsperaExcepcion = false;
 					
 				public:
-					CasoTest ( const string & sId, FUNCION_BOOL funcion, bool bEsperaExcep = false );
+					CasoTest ( const std::string & sId, FUNCION_BOOL funcion, bool bEsperaExcep = false );
 					virtual ~CasoTest () {};
 					
 				public:
-					string getId();
+					std::string getId();
 					virtual ResultadoCasoTest Ejecutar (); 
 			};
 

@@ -26,7 +26,6 @@
 #include <ArgumentoInvalidoExcepcion.h>
 
 
-using namespace std;
 
 
 
@@ -42,8 +41,8 @@ namespace org
 class Argumentos
 {
 private:
-	vector<string> 		vecArgumentos;
-	int			        iNumArgumentos;
+	std::vector<std::string> 	vecArgumentos;
+	int			        		iNumArgumentos;
 
 public:
 # if ( defined ( WIN ) )
@@ -54,7 +53,7 @@ public:
 	~Argumentos ();
 
 	int NumArgumentos () const;
-	string Argumento ( int iArg ) const;
+	std::string Argumento ( int iArg ) const;
 	bool EsArgumentoNumerico ( int iArg ) const;
 	int ArgumentoEntero ( int iArg ) const;
 	long ArgumentoEnteroLargo ( int iArg ) const;

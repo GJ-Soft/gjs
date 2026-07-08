@@ -26,13 +26,9 @@
 
 const char * TipSisNombre ( int iId )
 {
-	if ( iId == TIP_SIS_UNIX )
+	if ( iId == TIP_SIS_POSIX )
 	{
-		return ( TIP_SIS_TXT_UNIX );
-	}
-	else if ( iId == TIP_SIS_LINUX )	
-	{
-		return ( TIP_SIS_TXT_LINUX );
+		return ( TIP_SIS_TXT_POSIX );
 	}
 	else if ( iId == TIP_SIS_DOS )	
 	{
@@ -58,23 +54,19 @@ int TipSisId ( const char * p_cNombre )
 
 	if ( ES_VALIDO ( p_cNombre ) )
 	{
-		if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, TIP_SIS_TXT_UNIX ) == 1 )
+		if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, TIP_SIS_TXT_POSIX ) == COMP_IGUAL )
 		{
-			iTipo = TIP_SIS_UNIX;
+			iTipo = TIP_SIS_POSIX;
 		}
-		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, TIP_SIS_TXT_LINUX ) == 1 )	
-		{
-			iTipo = TIP_SIS_LINUX;
-		}
-		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, TIP_SIS_TXT_DOS ) == 1 )	
+		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, TIP_SIS_TXT_DOS ) == COMP_IGUAL )	
 		{
 			iTipo = TIP_SIS_DOS;
 		}
-		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, TIP_SIS_TXT_WINDOWS ) == 1 )
+		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, TIP_SIS_TXT_WINDOWS ) == COMP_IGUAL )
 		{
 			iTipo = TIP_SIS_WINDOWS;
 		}
-		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, TIP_SIS_TXT_MACKINTOSH ) == 1 )
+		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, TIP_SIS_TXT_MACKINTOSH ) == COMP_IGUAL )
 		{
 			iTipo = TIP_SIS_MACKINTOSH;
 		}
@@ -95,8 +87,7 @@ int TipSisEsValido ( int iId )
 {
 	int iRes; 
 
-	if ( ( iId == TIP_SIS_UNIX ) ||
- 		 ( iId == TIP_SIS_LINUX ) || 
+	if ( ( iId == TIP_SIS_POSIX ) ||
 		 ( iId == TIP_SIS_DOS ) ||
 		 ( iId == TIP_SIS_WINDOWS ) ||
 		 ( iId == TIP_SIS_MACKINTOSH ) )
@@ -125,26 +116,11 @@ int TipSisEsDesconocido ( int iId )
 	return ( iRes );
 }
 
-int TipSisEsUnix ( int iId )
+int TipSisEsPosix ( int iId )
 {
 	int iRes;
 
-	if ( iId == TIP_SIS_UNIX ) 
-	{
-		iRes = 1;
-	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
-}
-
-int TipSisEsLinux ( int iId )
-{
-	int iRes;
-
-	if ( iId == TIP_SIS_LINUX ) 
+	if ( iId == TIP_SIS_POSIX )  
 	{
 		iRes = 1;
 	}

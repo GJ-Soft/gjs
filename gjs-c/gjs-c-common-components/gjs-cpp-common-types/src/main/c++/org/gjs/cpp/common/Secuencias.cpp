@@ -2,6 +2,7 @@
 #include "Secuencias.h"
 
 
+using namespace std;
 
 namespace org
 {

@@ -9,8 +9,6 @@
 
 
 
-using namespace std;
-
 
 namespace org
 {
@@ -28,22 +26,22 @@ namespace org
 			
 			public:
 				SocketCliente( int iIP, int iPuerto );
-				SocketCliente( const string & sIP, int iPuerto );
+				SocketCliente( const std::string & sIP, int iPuerto );
 				virtual ~SocketCliente();
 				
 				int getId();
 				int getPuerto();
-				string getHost();
+				std::string getHost();
 				
 				bool EsValido();
 				bool EstaConectado();
 
-				int Enviar( const string & sMensaje );
-				int Recibir( string & sMensaje, int iMaxTam = 2048 );
+				int Enviar( const std::string & sMensaje );
+				int Recibir( std::string & sMensaje, int iMaxTam = 2048 );
 				bool Cerrar();
 				
-				SocketCliente & operator << ( const string & sMensaje );
-				SocketCliente & operator >> ( string & sMensaje );
+				SocketCliente & operator << ( const std::string & sMensaje );
+				SocketCliente & operator >> ( std::string & sMensaje );
 
 			};
 

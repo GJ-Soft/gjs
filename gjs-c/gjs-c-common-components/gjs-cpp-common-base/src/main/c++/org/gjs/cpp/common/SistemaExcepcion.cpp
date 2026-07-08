@@ -1,9 +1,10 @@
 #include "BaseConfig.h"
 
 #include "SistemaExcepcion.h"
-#include <string.h>
 
 
+
+using namespace std;
 
 namespace org
 {

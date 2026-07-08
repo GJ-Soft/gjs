@@ -20,8 +20,6 @@
 
 
 
-using namespace std;
-
 namespace org
 {
 	namespace gjs
@@ -30,16 +28,6 @@ namespace org
 		{
             namespace common
             {
-
-
-
-
-
-
-
-
-
-
 
 bool CalendEsValido ( int iA, int iM, int iD );
 

@@ -10,6 +10,7 @@
 #include <ModosApertura.h>
 #include <SFicSecuencial.h>
 #include <SBuffer.h>
+#include <SRuta.h>
 
 
 
@@ -29,6 +30,7 @@ typedef struct
 
 SFicSecuencialBuffer * SFicSecBufCrear ( const char * p_cRuta, unsigned long ulTamBuf ); 
 SFicSecuencialBuffer * SFicSecBufCrearExt ( const char * p_cDir, const char * p_cFic, unsigned long ulTamBuf );
+SFicSecuencialBuffer * SFicSecBufCrearRuta ( SRuta * p_rutRuta, unsigned long ulTamBuf ); 
 
 void SFicSecBufDestruir ( SFicSecuencialBuffer ** p_p_ficObj );
 void SFicSecBufEliminar ( SFicSecuencialBuffer ** p_p_ficObj );

@@ -6,7 +6,6 @@
 #include <initializer_list>
 
 
-using namespace std;
 
 
 
@@ -19,9 +18,9 @@ namespace org
             namespace common
             {
 
-			string Concatenar ( const initializer_list<string> & args );
-			string Concatenar ( const list<string> & args );
-			template<typename... Types> string Concatenar ( Types... args );
+			std::string Concatenar ( const std::initializer_list<std::string> & args );
+			std::string Concatenar ( const std::list<std::string> & args );
+			template<typename... Types> std::string Concatenar ( Types... args );
 
  			}
 		}

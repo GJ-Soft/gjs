@@ -16,13 +16,15 @@
 	Common parent pom for all kind of projects and archetypes.
 	
 	Profiles:
-		* win | linux           : It is automatically selected based on the operating system
-		
-		* cygwin                : It is activated if the operating system is Windows and the CYGWIN environment variable has been defined.
+		* win-base              : It is automatically selected based on the operating system is Windows
+		* win | unix | cygwin   : It is automatically selected based on the operating system
+								  cygwin is activated if the operating system is Windows and the CYGWIN environment variable has been defined.
+		* linux 	            : It is automatically selected based on the operating system. If is selected unix profile is also active.
 	
 		* debug		            : It is activated if the DEBUG porperty has been defined
 
-		* pom | source | plugin : It is automatically selected when the project has packaging pom, maven-plugin or not 
+		* pom | source 			: It is automatically selected when the project has packaging pom or not 
+		* plugin 				: It is automatically selected when the project has packaging maven-plugin 
 
 		* eclipse               : It is automatically selected when Maven is executed from Eclipse IDE
 	
@@ -92,6 +94,10 @@
 		<platformOptions></platformOptions>
 		<platformLinkOptions></platformLinkOptions>
 		
+		<!-- Resources -->
+		<resources.dir>${project.basedir}/src/main/resources</resources.dir>
+		<testResources.dir>${project.basedir}/src/test/resources</testResources.dir>
+		
 		<!-- Maven plugins -->
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 		<maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
@@ -135,7 +141,7 @@
 		<defaultGoal>install</defaultGoal>
         <resources>
             <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
+                <directory>${resources.dir}</directory>
 				<includes>
                     <include>**/**</include>
                 </includes>
@@ -147,7 +153,7 @@
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
+                <directory>${resources.dir}</directory>
                 <includes>
                     <include>bin/**</include>
                     <include>data/**</include>
@@ -158,7 +164,7 @@
         </resources>
         <testResources>
             <testResource>
-                <directory>${project.basedir}/src/test/resources</directory>
+                <directory>${testResources.dir}</directory>
                 <includes>
                     <include>**/**</include>
                 </includes>
@@ -170,7 +176,7 @@
                 <filtering>true</filtering>
             </testResource>
             <testResource>
-                <directory>${project.basedir}/src/test/resources</directory>
+                <directory>${testResources.dir}</directory>
                 <includes>
                     <include>bin/**</include>
                     <include>data/**</include>
@@ -438,6 +444,36 @@
 							<fail>true</fail>
 						</configuration>
 					</execution>
+					<execution>
+						<id>enforce-kind-of-module-profile</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireActiveProfile>
+									<profiles>pom,source</profiles>
+									<all>false</all>
+								</requireActiveProfile>
+							</rules>
+							<fail>true</fail>
+						</configuration>
+					</execution>
+					<execution>
+						<id>enforce-environment-profile</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireActiveProfile>
+									<profiles>win,cygwin,linux</profiles>
+									<all>false</all>
+								</requireActiveProfile>
+							</rules>
+							<fail>true</fail>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>  
 		    <plugin>
@@ -476,6 +512,21 @@
 
 	<profiles>
 		<profile>
+			<id>win-base</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+            <properties>
+				<windows.sdk.runtime>ucrt</windows.sdk.runtime>
+				<windows.sdk.version>10</windows.sdk.version>		
+				<windows.sdk.architecture>x64</windows.sdk.architecture>		
+                <osFamily>windows</osFamily>
+                <osName>Windows</osName>
+            </properties>
+		</profile>
+		<profile>
 			<id>win</id>
 			<activation>
                 <property>
@@ -486,11 +537,11 @@
 				</os>
 			</activation>
             <properties>
-                <osFamily>windows</osFamily>
-                <osName>Windows</osName>
+				<environment>windows-${windows.sdk.runtime}</environment>
+				<environment.style>windows</environment.style>
                 <console>cmd</console>
                 <consoleArgs>/c</consoleArgs>
-				<platformOptions>-DWINDOWS</platformOptions>
+				<platformOptions>-DWIN</platformOptions>
 				<platformLinkOption>-Wl,-mwindows</platformLinkOption>
 				<exeFinalExtension>.exe</exeFinalExtension>
 				<rootDir></rootDir>
@@ -498,6 +549,35 @@
 				<noLdLibraryPath>true</noLdLibraryPath>
             </properties>
 		</profile>
+		<profile>
+			<id>unix</id>
+			<activation>
+				<os>
+					<family>Unix</family>
+				</os>
+			</activation>
+            <properties>
+				<environment>unix</environment>
+				<environment.style>posix</environment.style>
+                <osFamily>unix</osFamily>
+                <osName>Unix</osName>
+				<!--
+                <console>${env.BASH}</console>
+				-->
+				<console>bash</console>
+                <consoleArgs>-c</consoleArgs>
+				<platformOptions>-DPOSIX</platformOptions>
+				<exeFinalExtension></exeFinalExtension>
+				<rootDir></rootDir>
+				<cygwin>false</cygwin>
+				<!-- Esta propiedad se genera para windows -->
+				<!--
+				<projectDir>${project.basedir}</projectDir>
+				-->
+				<noLdLibraryPath>false</noLdLibraryPath>
+            </properties>
+		</profile>
+		<!-- Perfil adicional: siempre estara activado unix -->
 		<profile>
 			<id>linux</id>
 			<activation>
@@ -508,19 +588,6 @@
             <properties>
                 <osFamily>linux</osFamily>
                 <osName>Linux</osName>
-				<!--
-                <console>${env.BASH}</console>
-				-->
-				<console>bash</console>
-                <consoleArgs>-c</consoleArgs>
-				<exeFinalExtension></exeFinalExtension>
-				<rootDir></rootDir>
-				<cygwin>false</cygwin>
-				<!-- Esta propiedad se genera para windows -->
-				<!--
-				<projectDir>${project.basedir}</projectDir>
-				-->
-				<noLdLibraryPath>false</noLdLibraryPath>
             </properties>
 		</profile>
 		<profile>
@@ -534,8 +601,10 @@
 				</os>
 			</activation>
             <properties>
-                <osFamily>windows</osFamily>
-                <osName>Windows</osName>
+				<!-- Posix / Windows -->
+				<cygwin.style>posix</cygwin.style>
+				<environment>cygwin-${cygwin.style}</environment>
+				<environment.style>${cygwin.style}</environment.style>
 				<!--
                 <console>${env.SHELL}</console>
 				-->

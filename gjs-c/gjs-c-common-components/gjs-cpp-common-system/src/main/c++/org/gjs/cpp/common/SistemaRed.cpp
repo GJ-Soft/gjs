@@ -14,13 +14,13 @@
 /******************************************************************************/
 
 
+#include "CommonSystemConfig.h"
+
 
 #include "SistemaRed.h"
 
-
-#include "CommonSystemConfig.h"
-
 #include <vector>
+
 
 using namespace std;
 
@@ -34,68 +34,76 @@ namespace org
 			{
 
 
-string SisRedNombreOrdenador ()
+wstring SisRedNombreOrdenador ()
 {
-	string sRes = "";
-	vector<char> buffer = vector<char> ( SIS_SO_MAX_TAM_BUFFER );
+	wstring sRes = L"";
 # if ( defined ( WIN ) )
+	vector<wchar_t> buffer = vector<wchar_t> ( SIS_SO_MAX_TAM_BUFFER );
 	DWORD			dwTam;
 # else
+	vector<char> 	buffer = vector<char> ( SIS_SO_MAX_TAM_BUFFER );
 	int				iTam;
 # endif	
 
 # if ( defined ( WIN ) )
 	dwTam = (DWORD) buffer.size();
 	if ( GetComputerName ( (LPTSTR) buffer.data(), ( LPDWORD ) &dwTam) > 0 )
-# else
-	// TODO:
-	iTam = buffer.size ();
-	//if ( gethostname ( (char *) buffer.data (), iTam ) == 0 )
-	if ( false )
-# endif
 	{
-		sRes = string ( buffer.data() );
+		sRes = wstring ( buffer.data() );
 	}
+# else
+	iTam = buffer.size();
+	// TODO: No lo coge en este punto
+	//if ( gethostname ( (char *) buffer.data(), iTam ) == 0 )
+	if ( false )
+	{
+		sRes = Utf8AUnicode ( buffer.data() );
+	}
+# endif
 	return ( sRes );
 }
 
-string SisRedNombreDNSOrdenador ()
+wstring SisRedNombreDNSOrdenador ()
 {
-	string sRes = "";
-	vector<char> buffer = vector<char> ( SIS_SO_MAX_TAM_BUFFER );
+	wstring sRes = L"";
 # if ( defined ( WIN ) )
+	vector<wchar_t> buffer = vector<wchar_t> ( SIS_SO_MAX_TAM_BUFFER );
 	DWORD			dwTam;
+# else
+	vector<char> 	buffer = vector<char> ( SIS_SO_MAX_TAM_BUFFER );
+	int				iTam;
 # endif	
 # if ( defined ( WIN ) )
-	// PENDIENTE:
-	dwTam = (DWORD) buffer.size ();
-	//if ( GetComputerNameEx ( ComputerNameDnsHostname, (LPTSTR) buffer.data(), (LPDWORD) &dwTam ) > 0 )
-	if ( false )
-# else
-	// PENDIENTE:
-	if ( false )
-#	 endif
+	dwTam = (DWORD) buffer.size();
+	if ( GetComputerNameEx ( ComputerNameDnsFullyQualified, (LPTSTR) buffer.data(), (LPDWORD) &dwTam ) > 0 )
 	{
-		sRes = string ( buffer.data () );
+		sRes = wstring ( buffer.data () );
 	}
+# else
+	iTam = (int) buffer.size();
+	// TODO: No lo coge en este punto
+	// if ( gethostname ( (char *) buffer.data(), iTam ) == 0 )
+	if ( false )
+	{
+		sRes = Utf8AUnicode ( buffer.data() );
+	}
+# endif
 	return ( sRes );
 }
 
 // PENDIENTE: La siguiente rutina no parce funcionar.
-bool SisRedEnviarMensaje ( const string & sDestino, const string & sOrigen, const string & sMensaje )
+bool SisRedEnviarMensaje ( const wstring & sDestino, const wstring & sOrigen, const string & sMensaje )
 {
 	bool	bRes = false;
 # if ( defined ( WIN ) )
-	DWORD		dwTam;
-	DWORD		dwRes;
+	DWORD	dwTam;
+	DWORD	dwRes;
 # endif	
 	if ( !sDestino.empty() && ! sOrigen.empty () && ! sMensaje.empty () )
 	{
 #	 if ( defined ( WIN ) )
-		wstring wsDestUnicode = Utf8AUnicode ( sDestino );
-		wstring wsOrigUnicode = Utf8AUnicode ( sOrigen );
 		dwTam = (DWORD) sMensaje.length();
-		dwRes = NetMessageBufferSend ( (LPCWSTR) NULL, (LPCWSTR) wsDestUnicode.c_str(), ( LPCWSTR ) wsOrigUnicode.c_str (), ( LPBYTE ) sMensaje.c_str (), dwTam);
+		dwRes = NetMessageBufferSend ( (LPCWSTR) NULL, (LPCWSTR) sDestino.c_str(), ( LPCWSTR ) sOrigen.c_str (), ( LPBYTE ) sMensaje.c_str (), dwTam);
 		if ( dwRes == 0 ) // NERR_Success )
 #	 else
 		// PENDIENTE:
@@ -108,28 +116,53 @@ bool SisRedEnviarMensaje ( const string & sDestino, const string & sOrigen, cons
 	return ( bRes );
 }
 
-list<string> * SisRedOrdenadoresAccesibles ()
+list<wstring> * SisRedOrdenadoresAccesibles ()
 {
-	// TODO
-	return ( NULL );
+	list<wstring> * 		p_lisOrdenadores = new list<wstring>;
+# if ( defined ( WIN ) )
+	DWORD 				dwRead;
+	DWORD 				dwTotal;
+	SERVER_INFO_100 *   p_srvInfo;
+# endif
+
+# if ( defined ( WIN ) )
+	if ( NetServerEnum( NULL, 100, (LPBYTE *) &p_srvInfo, MAX_PREFERRED_LENGTH, 
+					(LPDWORD) &dwRead, (LPDWORD) &dwTotal, SV_TYPE_ALL, NULL, NULL ) == NERR_Success )
+	{
+		for ( unsigned int i = 0; i < dwRead; i = i + 1 )
+		{
+			wstring wsNombre = wstring ( p_srvInfo[ i ].sv100_name );
+			p_lisOrdenadores->add ( wsNombre );
+		}
+	}
+	if ( ES_VALIDO ( p_srvInfo ) )
+	{
+		NetApiBufferFree( p_srvInfo );
+	}
+# else
+# endif
+	return ( p_lisOrdenadores );
 }
 
-bool SisRedServidorEsAccesible ( const string & sServidor )
+bool SisRedServidorEsAccesible ( const wstring & sServidor )
 {
 	bool	bRes = false;
 # if ( defined ( WIN ) )
-	SERVER_INFO_100		srvinfDatos;
+	SERVER_INFO_100	*	p_srvinfDatos;
 	DWORD				dwRes;
 # endif	
 	if ( ! sServidor.empty () )
 	{
 #	 if ( defined ( WIN ) )
-		wstring wsOrdUnicode = = Utf8AUnicode ( sServidor );
 #	  if ( _MSC_VER < 1600 )
-		dwRes = NetServerGetInfo ( (char *) wsOrdUnicode.c_str(), ( DWORD ) 100, ( LPBYTE * ) &srvinfDatos);
+		dwRes = NetServerGetInfo ( (char *) sServidor.c_str(), ( DWORD ) 100, ( LPBYTE * ) &p_srvinfDatos);
 #	  else
-		dwRes = NetServerGetInfo ( (LPWSTR) wsOrdUnicode.c_str (), (DWORD) 100, (LPBYTE *) &srvinfDatos );
+		dwRes = NetServerGetInfo ( (LPWSTR) sServidor.c_str (), (DWORD) 100, (LPBYTE *) &p_srvinfDatos );
 #	  endif
+		if ( ES_VALIDO ( p_srvinfDatos ) )
+		{
+			NetApiBufferFree( p_srvinfDatos );
+		}
 		if ( dwRes == 0 ) // NERR_Success )
 #	 else
 		// PENDIENTE:
@@ -141,22 +174,25 @@ bool SisRedServidorEsAccesible ( const string & sServidor )
 	}
 	return ( bRes );
 }
-bool SisRedEstacionEsAccesible ( const string & sEstacion )
+bool SisRedEstacionEsAccesible ( const wstring & sEstacion )
 {
 	bool	bRes = false;
 # if ( defined ( WIN ) )
-	WKSTA_INFO_100	estinfDatos;
-	DWORD			dwRes;
+	WKSTA_INFO_100	* 	p_estinfDatos;
+	DWORD				dwRes;
 # endif	
 	if ( ! sEstacion.empty () )
 	{
 #	 if ( defined ( WIN ) )
-		wstring wsOrdUnicode = = Utf8AUnicode ( sExtacion );
 #	  if ( _MSC_VER < 1600 )
-		dwRes = NetWkstaGetInfo ( (char *) wsOrdUnicode.c_str(), ( DWORD ) 100, ( LPBYTE * ) &estinfDatos);
+		dwRes = NetWkstaGetInfo ( (char *) sEstacion.c_str(), ( DWORD ) 100, ( LPBYTE * ) &p_estinfDatos);
 #	  else
-		dwRes = NetWkstaGetInfo ( (LPWSTR) wsOrdUnicode.c_str (), (DWORD) 100, (LPBYTE *) &estinfDatos );
+		dwRes = NetWkstaGetInfo ( (LPWSTR) sEstacion.c_str (), (DWORD) 100, (LPBYTE *) &p_estinfDatos );
 #	  endif
+		if ( ES_VALIDO ( p_estinfDatos ) )
+		{
+			NetApiBufferFree( p_estinfDatos );
+		}
 		if ( dwRes == 0 ) // NERR_Success )
 #	 else
 		// PENDIENTE:

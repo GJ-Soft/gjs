@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-using namespace std;
+
 
 
 namespace org
@@ -16,13 +16,13 @@ namespace org
             namespace common
             {
 
-			vector<string> LeerFichero ( const string & sRuta );
-			void GuardarFichero ( const string & sRuta, const vector<string> & vecLineas );
-			void GuardarFichero ( const string & sRuta, const string & sContenido );
-			void ImprimirFichero ( const string & sRuta );
-			void EliminarFichero ( const string & sRuta );
+			std::vector<std::string> LeerFichero ( const std::string & sRuta );
+			void GuardarFichero ( const std::string & sRuta, const std::vector<std::string> & vecLineas );
+			void GuardarFichero ( const std::string & sRuta, const std::string & sContenido );
+			void ImprimirFichero ( const std::string & sRuta );
+			void EliminarFichero ( const std::string & sRuta );
 
-			bool FicherosIguales ( const string & sRuta1, const string & sRuta2 );
+			bool FicherosIguales ( const std::string & sRuta1, const std::string & sRuta2 );
 
             }
 		}

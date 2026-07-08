@@ -3,8 +3,9 @@
 
 
 
-static int EsPropiedad( char * p_cLinea );
-static int ParsearPropiedad( char * p_cLinea, char ** p_p_cClave, char ** p_p_cValor );
+int _EsPropiedad ( char * p_cLinea );
+int _ParsearPropiedad ( char * p_cLinea, char ** p_p_cClave, char ** p_p_cValor );
+
 
 SPropiedades * SPropCrearDef ()
 {
@@ -46,7 +47,7 @@ void SPropDestruir ( SPropiedades ** p_p_propObj )
 		if ( ES_VALIDO ( p_propObj ) )
 		{
 			SLisLitDestruir ( &(p_propObj->p_lislitClaves) );
-			SLisEtrDestruir ( &(p_propObj->p_lisentPropiedades) );
+			//SLisEtrDestruir ( &(p_propObj->p_lisentPropiedades) );
 			MemLiberar ( (void **) p_p_propObj );
 		}
 	}
@@ -59,11 +60,12 @@ const char * SPropObtPropiedad ( SPropiedades * p_propObj, const char * p_cClave
 
 const char * SPropObtPropiedadExt ( SPropiedades * p_propObj, const char * p_cClave, const char * p_cValorDef )
 {
-	const char * p_cRes;
+	SEntrada * 		p_etrObj;
+	const char * 	p_cRes;
 	
 	if ( ES_VALIDO ( p_propObj ) && ES_VALIDO ( p_cClave ) )
 	{	
-		SEntrada * p_etrObj = SLisEtrBuscar ( p_propObj->p_lisentPropiedades, p_cClave );
+		p_etrObj = SLisEtrBuscar ( p_propObj->p_lisentPropiedades, p_cClave );
 		if ( ES_VALIDO ( p_etrObj ) )
 		{
 			p_cRes = SEtrDefinicion ( p_etrObj );
@@ -80,24 +82,45 @@ const char * SPropObtPropiedadExt ( SPropiedades * p_propObj, const char * p_cCl
     return ( p_cRes );
 }
 
-void SPropEstPropiedad ( SPropiedades * p_propObj, const char * p_cClave, const char * p_cValor )
+int SPropEstPropiedad ( SPropiedades * p_propObj, const char * p_cClave, const char * p_cValor )
 {
+	SEntrada * 	p_etrObj;
+	int 		iRes;
+	
 	if ( ES_VALIDO ( p_propObj ) && ES_VALIDO ( p_cClave ) && ES_VALIDO ( p_cValor ) )
 	{	
-		SEntrada * p_etrObj = SLisEtrBuscar ( p_propObj->p_lisentPropiedades, p_cClave );
+		p_etrObj = SLisEtrBuscar ( p_propObj->p_lisentPropiedades, p_cClave );
 		if ( ES_VALIDO ( p_etrObj ) )
 		{
-			SEtrEstablecerDefinicion ( p_etrObj, p_cValor );
+			iRes = SEtrEstablecerDefinicion ( p_etrObj, p_cValor );
 		}
 		else
 		{
 			p_etrObj = SEtrCrearExt ( p_cClave, p_cValor );
-			if ( SLisEtrInsertar ( p_propObj->p_lisentPropiedades, p_etrObj ) == 1 )
+			if ( ES_VALIDO ( p_etrObj ) )
 			{
-				SLisLitInsertarDupAlFinal ( p_propObj->p_lislitClaves, p_cClave );
+				if ( SLisEtrInsertar ( p_propObj->p_lisentPropiedades, p_etrObj ) == 1 )
+				{
+					SLisLitInsertarDupAlFinal ( p_propObj->p_lislitClaves, p_cClave );
+					iRes = 1;
+				} 
+				else
+				{
+					SEtrDestruir ( &p_etrObj );
+					iRes = 0;
+				}
+			}
+			else
+			{
+				iRes = 0;
 			}
 		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
 SListaLiterales * SPropPropiedades ( SPropiedades * p_propObj )
@@ -157,7 +180,7 @@ void SPropEliminarPropiedad ( SPropiedades * p_propObj, const char * p_cClave )
 }
 
 
-static int EsPropiedad ( char * p_cLinea )
+int _EsPropiedad ( char * p_cLinea )
 {
 	int iRes;
 	int iPos;
@@ -175,7 +198,7 @@ static int EsPropiedad ( char * p_cLinea )
     return ( iRes );
 }
 
-static int ParsearPropiedad ( char * p_cLinea, char ** p_p_cClave, char ** p_p_cValor )
+int _ParsearPropiedad ( char * p_cLinea, char ** p_p_cClave, char ** p_p_cValor )
 {
 	int iRes;
 	int iPos;
@@ -220,20 +243,23 @@ int SPropCargar ( SPropiedades * p_propObj, const char * p_cRuta )
 			{
 				iNumLinea = 0;
 				iRes = 1;
+				p_cClave = NULL;
+				p_cValor = NULL;
+				p_cLinea = NULL;
 				while ( SFicTxtEstaEnFinal ( p_ficProp ) == 0 )
 				{
+					MemLiberarCadena ( &p_cLinea );
 					p_cLinea = SFicTxtLeerLinea ( p_ficProp );
 					if ( ES_VALIDO ( p_cLinea ) )
 					{
-						CadLimpiar ( p_cLinea );
-						if ( EsPropiedad ( p_cLinea ) == 1 )
+						if ( _EsPropiedad ( p_cLinea ) == 1 )
 						{
-							p_cClave = NULL;
-							p_cValor = NULL;
-							if ( ParsearPropiedad ( p_cLinea, &p_cClave, &p_cValor ) == 1 )
+							if ( _ParsearPropiedad ( p_cLinea, &p_cClave, &p_cValor ) == 1 )
 							{
 								SPropEstPropiedad ( p_propObj, p_cClave, p_cValor );
 							}
+							MemLiberar ( (void **) &p_cClave );
+							MemLiberar ( (void **) &p_cValor );
 						}
 						iNumLinea = iNumLinea + 1;
 					}
@@ -242,6 +268,7 @@ int SPropCargar ( SPropiedades * p_propObj, const char * p_cRuta )
 			}
 			else
 			{
+				ERROR_ESTABLECER ( ERR_IMPOSIBLE_ABRIR_FICHERO );
 				iRes = 0;
 			}
 		}
@@ -252,6 +279,7 @@ int SPropCargar ( SPropiedades * p_propObj, const char * p_cRuta )
 	}
 	else
 	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
 		iRes = 0;
 	}
 	return ( iRes );
@@ -266,6 +294,7 @@ int SPropGuardar ( SPropiedades * p_propObj, const char * p_cRuta )
 	char *		p_cClave;
 	char *		p_cValor;
 	int			iLiberar;
+	int			iNumElems;
 
 	if ( ES_VALIDO ( p_propObj ) )
 	{
@@ -274,7 +303,9 @@ int SPropGuardar ( SPropiedades * p_propObj, const char * p_cRuta )
 		{
 			if ( SFicTxtAbrir ( p_ficProp, MOD_APR_REESCRITURA ) == 1 )
 			{
-				for ( int iElem = 0; iElem < SLisEtrNumElementos ( p_propObj->p_lisentPropiedades ); iElem = iElem + 1 )
+				iRes = 1;
+				iNumElems = SLisEtrNumElementos ( p_propObj->p_lisentPropiedades );
+				for ( int iElem = 0; iElem < iNumElems; iElem = iElem + 1 )
 				{
 					iLiberar = 0;
 					p_etrObj = SLisEtrElemento ( p_propObj->p_lisentPropiedades, iElem );
@@ -286,17 +317,17 @@ int SPropGuardar ( SPropiedades * p_propObj, const char * p_cRuta )
 							( CadAcabaPorCaracter ( p_cValor, ' ' ) == 1 ) )
 						{
 							iLiberar = 1;
-							p_cValor = CadEnvolver ( p_cValor, '\\' );
+							p_cValor = CadEnvolver ( p_cValor, '"' );
 						}
 						p_cLinea = CadComponer ( p_cClave, p_cValor, '=' );
 						if ( SFicTxtEscribirLinea ( p_ficProp, p_cLinea ) == 0 )
 						{
 							iRes = 0;
 						}
-						MemLiberar ( ( void ** ) p_cLinea );
+						MemLiberar ( ( void ** ) &p_cLinea );
 						if ( iLiberar == 1 )
 						{
-							MemLiberar ( ( void ** ) p_cValor );
+							MemLiberar ( ( void ** ) &p_cValor );
 						}
 					}
 					else

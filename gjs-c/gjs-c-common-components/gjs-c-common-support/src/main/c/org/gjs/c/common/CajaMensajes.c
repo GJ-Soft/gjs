@@ -32,7 +32,7 @@
 
 
 
-int CajMsjMostrar ( int iTipo,const char * p_cTitulo, const char * p_cMensaje )
+int CajMsjMostrar ( int iTipo, const char * p_cTitulo, const char * p_cMensaje )
 {
 	int		iRes;
 	UINT	uiFlags;
@@ -94,11 +94,11 @@ int CajMsjMostrar ( int iTipo,const char * p_cTitulo, const char * p_cMensaje )
 			uiFlags = MB_ICONERROR | MB_ABORTRETRYIGNORE;
 		}
 		uiFlags = uiFlags | MB_APPLMODAL;
-		//hVentana = ExeVentanaPrincipal ();
-		//if ( ES_NULO ( hVentana ) )
-		//{
 		hVentana = GetActiveWindow ();
-		//}
+		if ( ES_NULO ( p_cTitulo ) )
+		{
+			p_cTitulo = "";
+		}
 		iRes = MessageBox ( hVentana, p_cMensaje, p_cTitulo, uiFlags );
 	}
 	else
@@ -119,9 +119,9 @@ int CajMsjMostrarConFormato ( int iTipo, const char * p_cTitulo, const char * p_
 	{
 		va_start ( valArgumentos, p_cFormato );
 		SCadCopiarConFormato ( p_cadMensaje, p_cFormato, valArgumentos );
+		va_end ( valArgumentos );
 		iRes = CajMsjMostrar ( iTipo, p_cTitulo, SCadValorConstante ( p_cadMensaje ) );
 		SCadDestruir ( &p_cadMensaje );
-		va_end ( valArgumentos );
 	}
 	else
 	{
@@ -138,12 +138,16 @@ int CajMsjMostrar ( int iTipo,const char * p_cTitulo, const char * p_cMensaje )
 	char __attribute__ ( ( unused ) )	cVal;
 	if ( ES_VALIDO ( p_cMensaje ) && ( TipCajMsjEsValido ( iTipo ) == 1 ) )
 	{
+		if ( ES_NULO ( p_cTitulo ) )
+		{
+			p_cTitulo = "";
+		}
 		printf ( "\n" );
 		printf ( "********************************************************************************************\n" );
-		printf ( "*  %86s  *\n", p_cTitulo );
+		printf ( "*  %.86s  *\n", p_cTitulo );
 		printf ( "*------------------------------------------------------------------------------------------*\n" );
 		printf ( "*                                                                                          *\n" );
-		printf ( "*  %86s  *\n", p_cMensaje );
+		printf ( "*  %.86s  *\n", p_cMensaje );
 		printf ( "*                                                                                          *\n" );
 		printf ( "*                        Pulsa <retorno> para continuar...                                 *\n" );
 		printf ( "********************************************************************************************\n" );

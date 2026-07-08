@@ -4,8 +4,7 @@
 #include "SistemaConfig.h"
 
 
-#if (defined (UNIX) || defined (LINUX) )
-
+#if ( defined ( POSIX ) )
 
 
 static void SGesSigInicializar ( SGestorSignals * p_gesigObj );
@@ -16,8 +15,8 @@ static void _SisSigRutinaAtencionGeneral ( int iCod );
 
 
 // NOTA: Si un proceso crea un gestor de signals y ya existe otro, se encadenan el uno al otro:
-static SGestorSignals * p_gsigActivo = NULL;
-static int				g_iSisGesSigEsperar = 0;
+static SGestorSignals * 		p_gsigActivo = NULL;
+static volatile sig_atomic_t	g_iSisGesSigEsperar = 0;
 
 
 
@@ -33,7 +32,7 @@ SGestorSignals * SGesSigCrear ( PPRCI fRutExterna )
 		SGesSigEstablecerRutinaExterna ( p_gesigObj, fRutExterna );
 		if ( ES_VALIDO ( p_gsigActivo ) )
 		{
-			p_gesigObj->p_gesigSiguiente = (struct SGestorSignals *) p_gsigActivo;
+			p_gesigObj->p_gesigSiguiente = (struct _SGestorSignals *) p_gsigActivo;
 		}
 		else
 		{
@@ -421,9 +420,15 @@ static void SGesSigFinalizar ( SGestorSignals * p_gesigObj )
 				signal ( iCod, SIG_DFL );
 			}
 		}
-		if ( p_gsigActivo == p_gesigObj )
+		// Recorrer la lista buscando el nodo anterior a p_gesigObj
+		SGestorSignals * p_gesigAnterior = p_gsigActivo;
+		while ( ES_VALIDO ( p_gesigAnterior ) && ( p_gesigAnterior->p_gesigSiguiente != (struct _SGestorSignals *) p_gesigObj ) )
 		{
-			p_gsigActivo = ( SGestorSignals * ) ( p_gesigObj->p_gesigSiguiente );
+			p_gesigAnterior = p_gesigAnterior->p_gesigSiguiente;
+		}
+		if ( ES_VALIDO ( p_gesigAnterior ) )
+		{
+			p_gesigAnterior->p_gesigSiguiente = p_gesigObj->p_gesigSiguiente;
 		}
 	}
 }

@@ -27,12 +27,10 @@
 #if ( defined ( MODO_DEPURACION ) )
 
 
-
-/* Variables y tipos globales que podrán servir el el futuro para controlar la utilización de memoria: */
-static unsigned long g_ulNumBloquesReservados = 0;
-static unsigned long g_ulNumBloquesLiberados = 0;
-static unsigned long g_ulNumBloques = 0;
-static unsigned long g_ulTamBloques = 0;
+unsigned long g_ulNumBloquesReservados = 0;
+unsigned long g_ulNumBloquesLiberados = 0;
+unsigned long g_ulNumBloques = 0;
+unsigned long g_ulTamBloques = 0;
 
 
 #if ( defined ( MODO_DEPURACION_2 ) )
@@ -49,8 +47,8 @@ static unsigned long g_ulTamBloques = 0;
 	} _SMemBloque;
 
 
-	static _SMemBloque _g_p_mblqTabla [ _MEM_MAX_BLOQUES ]; 
-	static int _g_iNumBloques;
+	_SMemBloque _g_p_mblqTabla [ _MEM_MAX_BLOQUES ]; 
+	int _g_iNumBloques;
 
 	void _GesMemInicializar ();
 	int _GesMemBuscar ( void * p_vDir );
@@ -74,7 +72,7 @@ unsigned long MemReservadaBloques ()
 
 unsigned long MemReservadaTotal ()
 {
-	return ( g_ulTamBloques + g_ulTamObjetos );
+	return ( g_ulTamBloques );
 }
 
 unsigned long MemNumBloquesReservados ()

@@ -47,8 +47,7 @@ int SSisSistema ( SSistema * p_sisObj );
 
 int SSisEsDos ( SSistema * p_sisObj );
 int SSisEsWindows ( SSistema * p_sisObj );
-int SSisEsLinux ( SSistema * p_sisObj );
-int SSisEsUnix ( SSistema * p_sisObj );
+int SSisEsPosix ( SSistema * p_sisObj );
 int SSisEsMackintosh ( SSistema * p_sisObj );
 
 /*

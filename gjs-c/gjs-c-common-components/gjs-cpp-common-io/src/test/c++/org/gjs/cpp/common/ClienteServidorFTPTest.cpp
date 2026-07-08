@@ -8,9 +8,9 @@ using namespace std;
 using namespace org::gjs::cpp::common;
 
 
-static const string DIR_RECURSOS = "../resources";
-static const string FICHERO_USUARIO = "../resources/data/usuarios.info";
-static const string DIR_SERVIDOR_FTP = "../resources/servidorFTP";
+static const string DIR_RECURSOS = "../../test-classes";
+static const string FICHERO_USUARIO = "../../test-classes/data/usuarios.info";
+static const string DIR_SERVIDOR_FTP = "../../test-classes/servidorFTP";
 static const string DIR_CLIENTE_FTP = "../results";
 
 static string sDirTest;
@@ -127,7 +127,7 @@ static void Cliente1()
 			cout << "{CLIENTE1} Sesion abierta" << endl;
 			string sDir = cliente->DirectorioRemoto();
 			cout << "{CLIENTE1} Directorio remoto: [" << sDir << "]" << endl;
-			if ( !TerminaPor( sDir, "/resources/servidorFTP" ) )
+			if ( !TerminaPor( sDir, "/test-classes/servidorFTP" ) )
 			{
 				cout << "Directorio erroneo:[" <<  sDir << "]" << endl;
 				bRes = false;

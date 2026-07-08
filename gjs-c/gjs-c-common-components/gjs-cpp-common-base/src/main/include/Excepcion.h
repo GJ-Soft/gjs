@@ -5,7 +5,6 @@
 #include <stdexcept>
 
 
-using namespace std;
 
 
 namespace org
@@ -17,26 +16,26 @@ namespace org
             namespace common
             {
 
-			class Excepcion : public runtime_error
+			class Excepcion : public std::runtime_error
 			{
 			private:
-				string sModulo;
-				string sRutina;
-				string sMensaje;
+				std::string sModulo;
+				std::string sRutina;
+				std::string sMensaje;
 
 			public:
-				Excepcion ( const string & _sModulo, const string & _sRutina, const string & _sMensaje );
-				Excepcion ( const string & _sModulo, const string & _sRutina, const string & _sMensaje, const exception & ex );
-				Excepcion ( const string & _sModulo, const string & _sRutina, const exception & ex );
+				Excepcion ( const std::string & _sModulo, const std::string & _sRutina, const std::string & _sMensaje );
+				Excepcion ( const std::string & _sModulo, const std::string & _sRutina, const std::string & _sMensaje, const std::exception & ex );
+				Excepcion ( const std::string & _sModulo, const std::string & _sRutina, const std::exception & ex );
 
-				string getModulo () const;
-				string getRutina () const;
-				string getMensaje () const;
+				std::string getModulo () const;
+				std::string getRutina () const;
+				std::string getMensaje () const;
 
 				const char * what () const noexcept;
-				string whatExt () const;
+				std::string whatExt () const;
 
-				exception & toException();
+				std::exception & toException();
 
 			};
 

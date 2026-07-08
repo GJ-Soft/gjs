@@ -4,6 +4,7 @@
 
 
 
+using namespace std;
 using namespace org::gjs::cpp::common;
 
 namespace org
@@ -24,19 +25,31 @@ SocketServidor::SocketServidor( int iPuerto ) : Socket ()
 		{
 			if ( ! Socket::Escuchar() )
 			{
+#			 if ( defined ( WIN ) )
+				iError = WSAGetLastError();
+#			 else
 				iError = errno;
+#			 endif
 				Socket::Cerrar();			
 			}
 		}
 		else
 		{
+#		 if ( defined ( WIN ) )
+			iError = WSAGetLastError();
+#		 else
 			iError = errno;
+#		 endif
 			Socket::Cerrar();
 		}
 	}
 	else
 	{
+#	 if ( defined ( WIN ) )
+		iError = WSAGetLastError();
+#	 else
 		iError = errno;
+#	 endif
 	}
 	if ( iError != 0 )
 	{
@@ -91,18 +104,32 @@ bool SocketServidor::Cerrar()
 
 SocketServidor & SocketServidor::operator << ( const string & sMensaje )
 {
+	int iError = 0;
+	
 	if ( Socket::Enviar( sMensaje ) != sMensaje.length() )
 	{
-		throw SocketExcepcion( "SocketServidor", "operator<<", errno );
+#	 if ( defined ( WIN ) )
+		iError = WSAGetLastError();
+#	 else
+		iError = errno;
+#	 endif
+		throw SocketExcepcion( "SocketServidor", "operator<<", iError );
 	}
 	return( *this );
 }
 
 SocketServidor & SocketServidor::operator >> ( string & sMensaje )
 {
+	int iError = 0;
+	
 	if ( Socket::Recibir( sMensaje ) < 0 )
 	{
-		throw SocketExcepcion( "SocketServidor", "operator>>", errno );
+#	 if ( defined ( WIN ) )
+		iError = WSAGetLastError();
+#	 else
+		iError = errno;
+#	 endif
+		throw SocketExcepcion( "SocketServidor", "operator>>", iError );
 	}
 	return( *this );
 }

@@ -4,6 +4,7 @@
 #include "FinExcepcion.h"
 #include <stdlib.h>
 
+using namespace std;
 
 using namespace org::gjs::cpp::common;
 

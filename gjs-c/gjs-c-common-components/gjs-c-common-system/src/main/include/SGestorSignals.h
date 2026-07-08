@@ -3,24 +3,24 @@
 
 
 
-#include <Precompilacion.h>
+#include <BaseConfig.h>
 
 
 #include <SistemaSignals.h>
 
 
-#if (defined (UNIX) || defined (LINUX) )
+#if ( defined ( POSIX ) )
 
-typedef struct 
+typedef struct _SGestorSignals
 {
-	PPRCI					fRutAtencion;
-	PPRCI					fRutExterna;			
-	PPRCV					p_fRutSignals [ SIS_NUM_SIGNALS ];
-	PPRCI					p_fRutDefSignals [ SIS_NUM_SIGNALS ];
-	int						p_iActSignals [ SIS_NUM_SIGNALS ];
+	PPRCI						fRutAtencion;
+	PPRCI						fRutExterna;			
+	PPRCV						p_fRutSignals [ SIS_NUM_SIGNALS ];
+	PPRCI						p_fRutDefSignals [ SIS_NUM_SIGNALS ];
+	int							p_iActSignals [ SIS_NUM_SIGNALS ];
 
-	int						iCorrecto;
-	struct SGestorSignals *	p_gesigSiguiente;
+	int							iCorrecto;
+	struct _SGestorSignals *	p_gesigSiguiente;
 } SGestorSignals;
 
 

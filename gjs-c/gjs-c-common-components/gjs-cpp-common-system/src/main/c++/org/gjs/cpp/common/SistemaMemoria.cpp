@@ -13,50 +13,10 @@
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
-#include "SistemaMemoria.h"
-
 
 #include "CommonSystemConfig.h"
 
-
-
-/*
-getrlimit y setrlimit devuelve / establece el límite de recursos, respectivamente. resource debería ser uno de los siguientes: 
-RLIMIT_CPU // tiempo de CPU en segundos 
-RLIMIT_FSIZE // tamaño Máximo de fichero
-RLIMIT_DATA // tamaño máximo de los datos 
-RLIMIT_STACK // tamaño máximo de la pila
-RLIMIT_CORE // tamaño máximo del fichero del núcleo 
-RLIMIT_RSS // tamaño máximo de la parte 
-                   residente (fija) 
-RLIMIT_NPROC // núero máximo de procesos
-RLIMIT_NOFILE // número máximo de ficheros abiertos 
-RLIMIT_MEMLOCK // máximo espacio de direcciones fijado 
-                   en memoria 
-RLIMIT_AS // límite del espacio de direcciones 
-(memoria virtual) 
-
-struct rusage {
-    struct timeval ru_utime; // user time used 
-    struct timeval ru_stime; // system time used 
-    long   ru_maxrss;        // maximum resident set size 
-    long   ru_ixrss;         // integral shared memory size 
-    long   ru_idrss;         // integral unshared data size 
-    long   ru_isrss;         // integral unshared stack size 
-    long   ru_minflt;        // page reclaims 
-    long   ru_majflt;        // page faults 
-    long   ru_nswap;         // swaps 
-    long   ru_inblock;       // block input operations 
-    long   ru_oublock;       // block output operations 
-    long   ru_msgsnd;        // messages sent 
-    long   ru_msgrcv;        // messages received 
-    long   ru_nsignals;      // signals received 
-    long   ru_nvcsw;         // voluntary context switches 
-    long   ru_nivcsw;        // involuntary context switches 
-};
-
-*/
-
+#include "SistemaMemoria.h"
 
 
 
@@ -76,92 +36,120 @@ namespace org
 
 
 
-unsigned long SisMemoriaTotal ()
+unsigned long long SisMemoriaTotal ()
 {
-	unsigned long ulRes = 0;
+	unsigned long long ullRes;
 
 # if ( defined ( WIN ) )
-	LPMEMORYSTATUS lpmemstatInfo;
+	MEMORYSTATUSEX memstatInfo;
 
-	lpmemstatInfo = (LPMEMORYSTATUS) HeapAlloc ( GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof ( MEMORYSTATUS ) );
-	if ( ES_VALIDO ( lpmemstatInfo ) )
+	memstatInfo.dwLength = sizeof ( memstatInfo );
+	if ( GlobalMemoryStatusEx ( &memstatInfo ) )
 	{
-		GlobalMemoryStatus ( lpmemstatInfo );
-		ulRes = (unsigned long) lpmemstatInfo->dwTotalVirtual;
-		HeapFree ( GetProcessHeap(), 0, lpmemstatInfo );
+		ullRes = (unsigned long long) memstatInfo.ullTotalVirtual;
+	}
+	else
+	{
+		// Error:
+		ullRes = 0;
 	}
 # else
 	struct rlimit	rlimInfo; 
 	//struct rusage 	rusgInfo; 
 
-	if ( getrlimit ( RLIMIT_DATA, &rlimInfo ) == 0 )
+	if ( getrlimit ( RLIMIT_AS, &rlimInfo ) == 0 )
 	{
-		ulRes = rlimInfo.rlim_cur; 
+		ullRes = rlimInfo.rlim_cur; 
+	}
+	else
+	{
+		// Error:
+		ullRes = 0;
 	}
 # endif
 
-	return ( ulRes );
+	return ( ullRes );
 }
 
-unsigned long SisMemoriaDisponible ()
+unsigned long long SisMemoriaDisponible ()
 {
-	unsigned long ulRes = 0;
+	unsigned long long ullRes;
 
 # if ( defined ( WIN ) )
-	LPMEMORYSTATUS lpmemstatInfo;
+	MEMORYSTATUSEX memstatInfo;
 
-	lpmemstatInfo = (LPMEMORYSTATUS) HeapAlloc ( GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof ( MEMORYSTATUS ) );
-	if ( ES_VALIDO ( lpmemstatInfo ) )
+	memstatInfo.dwLength = sizeof ( memstatInfo );
+	if ( GlobalMemoryStatusEx ( &memstatInfo ) )
 	{
-		GlobalMemoryStatus ( lpmemstatInfo );
-		ulRes = (unsigned long) lpmemstatInfo->dwAvailVirtual;
-		HeapFree ( GetProcessHeap(), 0, lpmemstatInfo );
+		ullRes = (unsigned long long) memstatInfo.ullAvailVirtual;
+	}
+	else
+	{
+		// Error:
+		ullRes = 0;
 	}
 # else
-	struct rlimit	rlimInfo; 
-	struct rusage 	rusgInfo; 
-
-	if ( ( getrusage ( RUSAGE_SELF, &rusgInfo ) == 0 ) &&
-		 ( getrlimit ( RLIMIT_DATA, &rlimInfo ) == 0 ) )
-	{
-		ulRes = rlimInfo.rlim_cur - ( rusgInfo.ru_idrss + rusgInfo.ru_ixrss + rusgInfo.ru_isrss ); 
-	}
+	ullRes = SisMemoriaTotal () - SisMemoriaOcupada();
 # endif
 
-	return ( ulRes );
+	return ( ullRes );
 }
 
-unsigned long SisMemoriaOcupada ()
+unsigned long long SisMemoriaOcupada ()
 {
-	unsigned long ulRes = 0;
+	unsigned long long ullRes;
 
 # if ( defined ( WIN ) )
-	LPMEMORYSTATUS lpmemstatInfo;
+	MEMORYSTATUSEX memstatInfo;
 
-	lpmemstatInfo = (LPMEMORYSTATUS) HeapAlloc ( GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof ( MEMORYSTATUS ) );
-	if ( ES_VALIDO ( lpmemstatInfo ) )
+	memstatInfo.dwLength = sizeof ( memstatInfo );
+	if ( GlobalMemoryStatusEx ( &memstatInfo ) )
 	{
-		GlobalMemoryStatus ( lpmemstatInfo );
-		ulRes = (unsigned long) (lpmemstatInfo->dwTotalVirtual - lpmemstatInfo->dwAvailVirtual);
-		HeapFree ( GetProcessHeap(), 0, lpmemstatInfo );
+		ullRes = (unsigned long long) (memstatInfo.ullTotalVirtual - memstatInfo.ullAvailVirtual);
+	}
+	else
+	{
+		// Error:
+		ullRes = 0;
 	}
 # else
-	struct rusage 	rusgInfo; 
-
-	if ( getrusage ( RUSAGE_SELF, &rusgInfo ) == 0 ) 
+    FILE * 	fProc;
+	long	lPaginas;
+	long 	lTamPagina;
+	
+	// Abrimos el archivo de estado de memoria del propio proceso
+    fProc = fopen( "/proc/self/statm", "r" );
+    if ( ES_VALIDO ( fProc ) )
+    {
+        // El primer valor es el tamaño de la memoria virtual en páginas
+        if ( fscanf ( fProc, "%ld", &lPaginas ) == 1 )
+        {
+            // Obtenemos cuántos bytes mide una página en esta arquitectura (ej. 4096 bytes)
+            lTamPagina = sysconf( _SC_PAGESIZE );
+            
+            // Páginas ocupadas * Bytes por página = Total de bytes virtuales ocupados
+            ullRes = (unsigned long long) lPaginas * lTamPagina;
+        }
+		else
+		{
+			ullRes = 0;
+		}
+        fclose(fProc);
+    }
+	else
 	{
-		ulRes = rusgInfo.ru_idrss + rusgInfo.ru_ixrss + rusgInfo.ru_isrss; 
+		ullRes = 0;
 	}
 # endif
 
-	return ( ulRes );
+	return ( ullRes );
 }
 
 double SisMemoriaDisponiblePorc ()
 {
-	double			dRes;
-	unsigned long   ulMemDisp;
-	unsigned long   ulMemTotal;
+	double				 dRes;
+	unsigned long long   ulMemDisp;
+	unsigned long long   ulMemTotal;
 
 	ulMemDisp = SisMemoriaDisponible ();
 	ulMemTotal = SisMemoriaTotal ();
@@ -172,8 +160,8 @@ double SisMemoriaDisponiblePorc ()
 double SisMemoriaOcupadaPorc ()
 {
 	double			dRes;
-	unsigned long   ulMemOcup;
-	unsigned long   ulMemTotal;
+	unsigned long long   ulMemOcup;
+	unsigned long long   ulMemTotal;
 
 	ulMemOcup = SisMemoriaOcupada ();
 	ulMemTotal = SisMemoriaTotal ();
@@ -181,151 +169,293 @@ double SisMemoriaOcupadaPorc ()
 	return ( dRes );
 }	
 
-unsigned long SisMemoriaFisicaTotal ()
+unsigned long long SisMemoriaFisicaTotal ()
 {
-	unsigned long ulRes = 0;
+	unsigned long long ullRes;
 
 # if ( defined ( WIN ) )
-	LPMEMORYSTATUS lpmemstatInfo;
+	MEMORYSTATUSEX memstatInfo;
 
-	lpmemstatInfo = (LPMEMORYSTATUS) HeapAlloc ( GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof ( MEMORYSTATUS ) );
-	if ( ES_VALIDO ( lpmemstatInfo ) )
+	memstatInfo.dwLength = sizeof ( memstatInfo );
+	if ( GlobalMemoryStatusEx ( &memstatInfo ) )
 	{
-		GlobalMemoryStatus ( lpmemstatInfo );
-		ulRes = (unsigned long) lpmemstatInfo->dwTotalPhys;
-		HeapFree ( GetProcessHeap(), 0, lpmemstatInfo );
+		ullRes = (unsigned long long) memstatInfo.ullTotalPhys;
+	}
+	else
+	{
+		// Error:
+		ullRes = 0;
 	}
 # else
-	struct rlimit	rlimInfo; 
-	//struct rusage 	rusgInfo; 
+	struct sysinfo info;
 
-	if ( getrlimit ( RLIMIT_DATA, &rlimInfo ) == 0 )
+    // sysinfo devuelve 0 si tiene éxito, -1 si falla
+    if ( sysinfo( &info ) == 0 ) 
+    {
+		// totalram (páginas/bloques de hardware) * mem_unit (bytes por bloque)
+        ullRes = (unsigned long long)info.totalram * info.mem_unit;
+	}	
+	else
 	{
-		ulRes = rlimInfo.rlim_cur; 
+		// Error:
+		ullRes = 0;
 	}
 # endif
 
-	return ( ulRes );
+	return ( ullRes );
 }
 
-unsigned long SisMemoriaFisicaDisponible ()
+unsigned long long SisMemoriaFisicaDisponible ()
 {
-	unsigned long ulRes = 0;
+	unsigned long long ullRes;
 
 # if ( defined ( WIN ) )
-	LPMEMORYSTATUS lpmemstatInfo;
+	MEMORYSTATUSEX memstatInfo;
 
-	lpmemstatInfo = (LPMEMORYSTATUS) HeapAlloc ( GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof ( MEMORYSTATUS ) );
-	if ( ES_VALIDO ( lpmemstatInfo ) )
+	memstatInfo.dwLength = sizeof ( memstatInfo );
+	if ( GlobalMemoryStatusEx ( &memstatInfo ) )
 	{
-		GlobalMemoryStatus ( lpmemstatInfo );
-		ulRes = (unsigned long) lpmemstatInfo->dwAvailPhys;
-		HeapFree ( GetProcessHeap(), 0, lpmemstatInfo );
+		ullRes = (unsigned long long) memstatInfo.ullAvailPhys;
+	}
+	else
+	{
+		// Error:
+		ullRes = 0;
 	}
 # else
-	struct rlimit	rlimInfo; 
-	struct rusage 	rusgInfo; 
+	struct sysinfo info;
 
-	if ( ( getrusage ( RUSAGE_SELF, &rusgInfo ) == 0 ) &&
-		 ( getrlimit ( RLIMIT_DATA, &rlimInfo ) == 0 ) )
+    // sysinfo devuelve 0 si tiene éxito, -1 si falla
+    if ( sysinfo( &info ) == 0 ) 
+    {
+		// Versión optimizada (Memoria libre + memoria de intercambio rápido)
+		ullRes = ((unsigned long long)info.freeram + info.bufferram) * info.mem_unit;
+	}	
+	else
 	{
-		ulRes = rlimInfo.rlim_cur - ( rusgInfo.ru_idrss + rusgInfo.ru_ixrss ); 
+		// Error:
+		ullRes = 0;
 	}
 # endif
 
-	return ( ulRes );
+	return ( ullRes );
 }
 
-unsigned long SisMemoriaFisicaOcupada ()
+unsigned long long SisMemoriaFisicaOcupada ()
 {
-	unsigned long ulRes = 0;
+	unsigned long long ullRes;
 
 # if ( defined ( WIN ) )
-	LPMEMORYSTATUS lpmemstatInfo;
+	MEMORYSTATUSEX memstatInfo;
 
-	lpmemstatInfo = (LPMEMORYSTATUS) HeapAlloc ( GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof ( MEMORYSTATUS ) );
-	if ( ES_VALIDO ( lpmemstatInfo ) )
+	memstatInfo.dwLength = sizeof ( memstatInfo );
+	if ( GlobalMemoryStatusEx ( &memstatInfo ) )
 	{
-		GlobalMemoryStatus ( lpmemstatInfo );
-		ulRes = (unsigned long) (lpmemstatInfo->dwTotalPhys - lpmemstatInfo->dwAvailPhys);
-		HeapFree ( GetProcessHeap(), 0, lpmemstatInfo );
+		ullRes = (unsigned long long) (memstatInfo.ullTotalPhys - memstatInfo.ullAvailPhys);
+	}
+	else
+	{
+		// Error:
+		ullRes = 0;
 	}
 # else
-	struct rusage 	rusgInfo; 
+	struct sysinfo info;
 
-	if ( getrusage ( RUSAGE_SELF, &rusgInfo ) == 0 ) 
+    // sysinfo devuelve 0 si tiene éxito, -1 si falla
+    if ( sysinfo( &info ) == 0 ) 
+    {
+		ullRes = ((unsigned long long)info.totalram - ((unsigned long long)info.freeram + info.bufferram)) * info.mem_unit;
+	}	
+	else
 	{
-		ulRes = rusgInfo.ru_idrss + rusgInfo.ru_ixrss; 
+		// Error:
+		ullRes = 0;
 	}
 # endif
 
-	return ( ulRes );
+	return ( ullRes );
 }
 
-unsigned long SisMemoriaFicPaginacionTotal ()
+unsigned long long SisMemoriaFicPaginacionTotal ()
 {
-	unsigned long ulRes = 0;
+	unsigned long long ullRes;
 
 # if ( defined ( WIN ) )
-	LPMEMORYSTATUS lpmemstatInfo;
+	MEMORYSTATUSEX memstatInfo;
 
-	lpmemstatInfo = (LPMEMORYSTATUS) HeapAlloc ( GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof ( MEMORYSTATUS ) );
-	if ( ES_VALIDO ( lpmemstatInfo ) )
+	memstatInfo.dwLength = sizeof ( memstatInfo );
+	if ( GlobalMemoryStatusEx ( &memstatInfo ) )
 	{
-		GlobalMemoryStatus ( lpmemstatInfo );
-		ulRes = (unsigned long) lpmemstatInfo->dwTotalPageFile;
-		HeapFree ( GetProcessHeap(), 0, lpmemstatInfo );
+		ullRes = (unsigned long long) memstatInfo.ullTotalPageFile;
+	}
+	else
+	{
+		// Error:
+		ullRes = 0;
 	}
 # else
-	//PENDIENTE:
+	struct sysinfo info;
+
+    // sysinfo devuelve 0 si tiene éxito, -1 si falla
+    if ( sysinfo( &info ) == 0 ) 
+    {
+		// Equivalente estricto al "Commit Limit" de Windows (RAM Total + SWAP Total)
+		ullRes = ((unsigned long long)info.totalram + info.totalswap) * info.mem_unit;
+    }	
+	else
+	{
+		// Error:
+		ullRes = 0;
+	}
 # endif
 
-	return ( ulRes );
+	return ( ullRes );
 }
 
-unsigned long SisMemoriaFicPaginacionDisponible ()
+unsigned long long SisMemoriaFicPaginacionDisponible ()
 {
-	unsigned long ulRes = 0;
+	unsigned long long ullRes;
 
 # if ( defined ( WIN ) )
-	LPMEMORYSTATUS lpmemstatInfo;
+	MEMORYSTATUSEX memstatInfo;
 
-	lpmemstatInfo = (LPMEMORYSTATUS) HeapAlloc ( GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof ( MEMORYSTATUS ) );
-	if ( ES_VALIDO ( lpmemstatInfo ) )
+	memstatInfo.dwLength = sizeof ( memstatInfo );
+	if ( GlobalMemoryStatusEx ( &memstatInfo ) )
 	{
-		GlobalMemoryStatus ( lpmemstatInfo );
-		ulRes = (unsigned long) lpmemstatInfo->dwAvailPageFile;
-		HeapFree ( GetProcessHeap(), 0, lpmemstatInfo );
+		ullRes = (unsigned long long) memstatInfo.ullAvailPageFile;
+	}
+	else
+	{
+		// Error:
+		ullRes = 0;
 	}
 # else
-	//PENDIENTE:
+	struct sysinfo info;
+
+    // sysinfo devuelve 0 si tiene éxito, -1 si falla
+    if ( sysinfo( &info ) == 0 ) 
+    {
+		// Equivalente estricto al espacio total comprometible libre (RAM Libre + SWAP Libre)
+		ullRes = ((unsigned long long)info.freeram + info.freeswap) * info.mem_unit;
+    }	
+	else
+	{
+		// Error:
+		ullRes = 0;
+	}
 # endif
 
-	return ( ulRes );
+	return ( ullRes );
 }
 
-unsigned long SisMemoriaFicPaginacionOcupada ()
+unsigned long long SisMemoriaFicPaginacionOcupada ()
 {
-	unsigned long ulRes = 0;
+	unsigned long long ullRes;
 
 # if ( defined ( WIN ) )
-	LPMEMORYSTATUS lpmemstatInfo;
+	MEMORYSTATUSEX memstatInfo;
 
-	lpmemstatInfo = (LPMEMORYSTATUS) HeapAlloc ( GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof ( MEMORYSTATUS ) );
-	if ( ES_VALIDO ( lpmemstatInfo ) )
+	memstatInfo.dwLength = sizeof ( memstatInfo );
+	if ( GlobalMemoryStatusEx ( &memstatInfo ) )
 	{
-		GlobalMemoryStatus ( lpmemstatInfo );
-		ulRes = (unsigned long) (lpmemstatInfo->dwTotalPageFile - lpmemstatInfo->dwAvailPageFile);
-		HeapFree ( GetProcessHeap(), 0, lpmemstatInfo );
+		ullRes = (unsigned long long) (memstatInfo.ullTotalPageFile - memstatInfo.ullAvailPageFile);
+	}
+	else
+	{
+		// Error:
+		ullRes = 0;
 	}
 # else
-	//PENDIENTE:
+	struct sysinfo info;
+
+    // sysinfo devuelve 0 si tiene éxito, -1 si falla
+    if ( sysinfo( &info ) == 0 ) 
+    {
+		// Equivalente estricto al "Commit Limit" de Windows (RAM Total + SWAP Total)
+		ullRes = (((unsigned long long)info.totalram + info.totalswap) - ((unsigned long long)info.freeram + info.freeswap) ) * info.mem_unit;
+    }	
+	else
+	{
+		// Error:
+		ullRes = 0;
+	}
 # endif
 
-	return ( ulRes );
+	return ( ullRes );
 }
 
+unsigned long long SisMemoriaHeapTotal ()
+{
+	return ( SisMemoriaHeapMax () - SisMemoriaHeapMin () );
+}
 
+unsigned long long SisMemoriaHeapMin ()
+{
+	unsigned long long ullRes;
+
+# if ( defined ( WIN ) )
+	// Error:
+	ullRes = 0;
+# else
+    FILE * 				fProc;
+	unsigned long long  ullMin;
+	unsigned long long  ullMax;
+	
+    fProc = fopen( "/proc/self/maps", "r" );
+    if ( ES_VALIDO ( fProc ) )
+    {
+        if ( fscanf ( fProc, "%llx-%llx", &ullMin, &ullMax ) == 2 )
+		{
+			ullRes = ullMin;
+		}
+		else
+		{
+			ullRes = 0;
+		}
+        fclose(fProc);
+    }
+	else
+	{
+		ullRes = 0;
+	}
+# endif
+
+	return ( ullRes );
+}
+
+unsigned long long SisMemoriaHeapMax ()
+{
+	unsigned long long ullRes;
+
+# if ( defined ( WIN ) )
+	// Error:
+	ullRes = 0;
+# else
+    FILE * 				fProc;
+	unsigned long long  ullMin;
+	unsigned long long  ullMax;
+	
+    fProc = fopen( "/proc/self/maps", "r" );
+    if ( ES_VALIDO ( fProc ) )
+    {
+        if ( fscanf ( fProc, "%llx-%llx", &ullMin, &ullMax ) == 2 )
+		{
+			ullRes = ullMax;
+		}
+		else
+		{
+			ullRes = 0;
+		}
+        fclose(fProc);
+    }
+	else
+	{
+		ullRes = 0;
+	}
+# endif
+
+	return ( ullRes );
+}
 
 			}
 		}

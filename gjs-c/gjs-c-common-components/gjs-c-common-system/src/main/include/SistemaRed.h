@@ -19,7 +19,7 @@
 
 
 
-#include <SListaCadenas.h>
+#include <SListaLiterales.h>
 
 
 
@@ -30,7 +30,7 @@ int SisRedEnviarMensaje ( const char * p_cDestino, const char * p_cOrigen, const
 
 
 
-SListaCadenas * SisRedOrdenadoresAccesibles ();
+SListaLiterales * SisRedOrdenadoresAccesibles ();
 
 int SisRedServidorEsAccesible ( const char * p_cServidor );
 int SisRedEstacionEsAccesible ( const char * p_cEstacion );

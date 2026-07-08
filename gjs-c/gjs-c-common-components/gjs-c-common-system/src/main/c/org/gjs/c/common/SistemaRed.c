@@ -1,5 +1,5 @@
 /******************************************************************************/
-/*                               SistemaRed.cpp                               */
+/*                               SistemaRed.c                                 */
 /*----------------------------------------------------------------------------*/
 /* Librería:  Sistema                                                         */
 /* Versión:   3.0.0                                                           */
@@ -65,22 +65,39 @@ char * SisRedNombreDNSOrdenador ()
 	char *		p_cRes;
 	SBuffer	*	p_bufDatos;
 # if ( defined ( WIN ) )
-	DWORD			dwTam;
+	DWORD		dwTam;
+# else 
+	int 		iTam;
 # endif	
 	p_bufDatos = SBufCrear ( SIS_SO_MAX_TAM_BUFFER );
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
 #	 if ( defined ( WIN ) )
-		// PENDIENTE:
 		dwTam = (DWORD) SBufTam ( p_bufDatos );
-		//if ( GetComputerNameEx ( ComputerNameDnsHostname, (LPTSTR) SBufDireccion ( p_bufDatos ), (LPDWORD) &dwTam ) > 0 )
-		if ( 0 )
+		if ( GetComputerNameEx ( ComputerNameDnsFullyQualified, (LPTSTR) SBufDireccion ( p_bufDatos ), (LPDWORD) &dwTam ) > 0 )
 #	 else
-		// PENDIENTE:
-		if ( 0 )
+		iTam = (int) SBufTam ( p_bufDatos );
+		if ( gethostname( (char *) SBufDireccion ( p_bufDatos ), iTam ) == 0 )
 #	 endif
 		{
 			p_cRes = SBufDuplicarCadena ( p_bufDatos );
+			
+#	 if ( !defined ( WIN ) )
+			struct addrinfo hints;
+			struct addrinfo *res;
+			MemLimpiar ( (void *) &hints, sizeof( hints ) );
+			hints.ai_flags = AI_CANONNAME;
+
+			if ( getaddrinfo( p_cRes, NULL, &hints, &res ) == 0 )
+			{
+				if ( ES_VALIDO ( res->ai_canonname ) )
+				{
+					MemLiberar ( (void **) p_cRes );
+					p_cRes = CadDuplicar ( res->ai_canonname );
+				}
+				freeaddrinfo( res );
+			}
+#	 endif
 		}
 		else
 		{
@@ -112,7 +129,7 @@ int SisRedEnviarMensaje ( const char * p_cDestino, const char * p_cOrigen, const
 		p_cOrigUnicode = CadAsciizAUnicode ( p_cOrigen );
 		if ( ES_VALIDO ( p_cDestUnicode ) && ES_VALIDO ( p_cOrigUnicode ) )
 		{
-			dwTam = (DWORD) CadLongitud ( p_cMensaje );
+			dwTam = (DWORD) CadLongitud ( p_cMensaje ) + 1;
 			dwRes = NetMessageBufferSend ( (LPCWSTR) NULL, (LPCWSTR) p_cDestUnicode, (LPCWSTR) p_cOrigUnicode, (LPBYTE) p_cMensaje, dwTam );
 			if ( dwRes == 0 ) // NERR_Success )
 			{
@@ -127,9 +144,8 @@ int SisRedEnviarMensaje ( const char * p_cDestino, const char * p_cOrigen, const
 		{
 			iRes = 0;
 		}
-		//PENDIENTE: Las cadenas UNICODE no se liberan bien:
-		//MemLiberarUnicode ( &p_cDestUnicode );
-		//MemLiberarUnicode ( &p_cOrigUnicode );
+		MemLiberarUnicode ( (unichar **) &p_cDestUnicode );
+		MemLiberarUnicode ( (unichar **) &p_cOrigUnicode );
 #	 else
 		// PENDIENTE:
 		iRes = 0;
@@ -142,35 +158,63 @@ int SisRedEnviarMensaje ( const char * p_cDestino, const char * p_cOrigen, const
 	return ( iRes );
 }
 
-SListaCadenas * SisRedOrdenadoresAccesibles ()
+SListaLiterales * SisRedOrdenadoresAccesibles ()
 {
-	return ( NULL );
-}
+	SListaLiterales * 	p_lisOrdenadores;
+# if ( defined ( WIN ) )
+	DWORD 				dwRead;
+	DWORD 				dwTotal;
+	SERVER_INFO_100 *   p_srvInfo;
+# endif
 
+	p_lisOrdenadores = SLisLitCrear ();	
+	
+# if ( defined ( WIN ) )
+	if ( NetServerEnum( NULL, 100, (LPBYTE *) &p_srvInfo, MAX_PREFERRED_LENGTH, 
+					(LPDWORD) &dwRead, (LPDWORD) &dwTotal, SV_TYPE_ALL, NULL, NULL ) == NERR_Success )
+	{
+		for ( int i = 0; i < dwRead; i = i + 1 )
+		{
+			char * p_cNombre = CadUnicodeAAsciiz ( p_srvInfo[ i ].sv100_name );
+			SLisLitInsertarAlFinal ( p_lisOrdenadores, p_cNombre );
+		}
+	}
+	if ( ES_VALIDO ( p_srvInfo ) )
+	{
+		NetApiBufferFree( p_srvInfo );
+	}
+# else
+# endif
+	return ( p_lisOrdenadores );
+}
 
 int SisRedServidorEsAccesible ( const char * p_cServidor )
 {
 	int					iRes;
 # if ( defined ( WIN ) )
-	unichar *			p_cOrdUnicode;
-	SERVER_INFO_100		srvinfDatos;
+	unichar *			p_ucOrdUnicode;
+	LPSERVER_INFO_100 	p_srvinfDatos;
 	DWORD				dwRes;
 # endif	
 	if ( ES_VALIDO ( p_cServidor ) )
 	{
 #	 if ( defined ( WIN ) )
-		p_cOrdUnicode = CadAsciizAUnicode ( p_cServidor );
-		if ( ES_VALIDO ( p_cOrdUnicode ) )
+		p_ucOrdUnicode = CadAsciizAUnicode ( p_cServidor );
+		if ( ES_VALIDO ( p_ucOrdUnicode ) )
 		{
-#		  if ( _MSC_VER < 1600 )
-			dwRes = NetServerGetInfo ( (char *) p_cOrdUnicode, (DWORD) 100, (LPBYTE *) &srvinfDatos );
-#		  else
-			dwRes = NetServerGetInfo ( (LPWSTR) p_cOrdUnicode, (DWORD) 100, (LPBYTE *) &srvinfDatos );
-#		  endif
+			dwRes = NetServerGetInfo ( (LMSTR) p_ucOrdUnicode, (DWORD) 100, (LPBYTE *) &p_srvinfDatos );
 			if ( dwRes == 0 ) // NERR_Success )
 			{
-				//PENDIENTE: Las cadenas UNICODE no se liberan bien:
-				//MemLiberarUnicode ( &p_cOrdUnicode );
+				iRes = 0;
+			}
+			else
+			{
+				iRes = 1;
+			}
+			MemLiberarUnicode ( &p_ucOrdUnicode );
+			if ( ES_VALIDO ( p_srvinfDatos ) )
+			{
+				NetApiBufferFree( p_srvinfDatos );
 			}
 		}
 		else
@@ -193,22 +237,17 @@ int SisRedEstacionEsAccesible ( const char * p_cEstacion )
 {
 	int				iRes;
 # if ( defined ( WIN ) )
-	unichar *			p_cOrdUnicode;
-	WKSTA_INFO_100	estinfDatos;
-	DWORD			dwRes;
+	unichar *			p_ucOrdUnicode;
+	WKSTA_INFO_100 *	p_estinfDatos;
+	DWORD				dwRes;
 # endif	
 	if ( ES_VALIDO ( p_cEstacion ) )
 	{
 #	 if ( defined ( WIN ) )
-		p_cOrdUnicode = CadAsciizAUnicode ( p_cEstacion );
-		if ( ES_VALIDO ( p_cOrdUnicode ) )
+		p_ucOrdUnicode = CadAsciizAUnicode ( p_cEstacion );
+		if ( ES_VALIDO ( p_ucOrdUnicode ) )
 		{
-#		  if ( _MSC_VER < 1600 )
-			dwRes = NetWkstaGetInfo ( (char *) p_cOrdUnicode, (DWORD) 100, (LPBYTE *) &estinfDatos );
-#		  else
-
-			dwRes = NetWkstaGetInfo ( (LPWSTR) p_cOrdUnicode, (DWORD) 100, (LPBYTE *) &estinfDatos );
-#		  endif
+			dwRes = NetWkstaGetInfo ( (LMSTR) p_ucOrdUnicode, (DWORD) 100, (LPBYTE *) &p_estinfDatos );
 			if ( dwRes == 0 ) // NERR_Success )
 			{
 				iRes = 1;
@@ -217,8 +256,11 @@ int SisRedEstacionEsAccesible ( const char * p_cEstacion )
 			{
 				iRes = 0;
 			}
-			//PENDIENTE: Las cadenas UNICODE no se liberan bien:
-			//MemLiberarUnicode ( &p_cOrdUnicode );
+			MemLiberarUnicode ( &p_ucOrdUnicode );
+			if ( ES_VALIDO ( p_estinfDatos ) )
+			{
+				NetApiBufferFree( p_estinfDatos );
+			}
 		}
 		else
 		{
@@ -240,7 +282,7 @@ int SisRedEstacionEsAccesible ( const char * p_cEstacion )
 /*
 #include <lm.h>
 
-int wmain(int argc, wchar_t *argv[])
+int wmain (int argc, wchar_t *argv[])
 {
    DWORD dwLevel = 101;
    LPSERVER_INFO_101 pBuf = NULL;
@@ -292,7 +334,7 @@ int wmain(int argc, wchar_t *argv[])
 }
 */
 /*
-int main( int argc, char *argv[] )
+int main ( int argc, char *argv[] )
 {
 	DWORD rc;
 	wchar_t server[MAXLEN], name[MAXLEN], from[MAXLEN], msg[MAXLEN];
@@ -341,36 +383,5 @@ int main( int argc, char *argv[] )
 }
 
 
-
-void enum_names( const wchar_t *server )
-{
-	MSG_INFO_1 *buf, *cur;
-	DWORD read, total, resumeh, rc, i;
-
-	printf( "\nAvailable message-names on server %S:\n", server );
-	resumeh = 0;
-	do
-	{
-		buf = NULL;
-		rc = NetMessageNameEnum( server, 1, (BYTE **) &buf,
-			512, &read, &total, &resumeh );
-		if ( rc != ERROR_MORE_DATA && rc != ERROR_SUCCESS )
-			break;
-
-		for ( i = 0, cur = buf; i < read; ++ i, ++ cur )
-		{
-			// Note: the capital S in the format string will expect Unicode
-			// strings, as this is a program written/compiled for ANSI.
-			printf( "%S\n", cur->msgi1_name );
-		}
-
-		if ( buf != NULL )
-			NetApiBufferFree( buf );
-
-	} while ( rc == ERROR_MORE_DATA );
-
-	if ( rc != ERROR_SUCCESS )
-		printf( "NMNE() returned %lu\n", rc );
-}
 
 */

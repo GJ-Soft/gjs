@@ -2009,11 +2009,25 @@ int SCadEsIgualLiteral ( SCadena * p_cadObj, const char * p_cValor )
 	{
 		if ( p_cadObj->iDistincionTipoLetra == 1 )
 		{
-			iRes = CadCompararExt ( p_cadObj->p_cValor, p_cValor, p_cadObj->iMaxTam, -1 );
+			if ( CadCompararExt ( p_cadObj->p_cValor, p_cValor, p_cadObj->iMaxTam, -1 ) == COMP_IGUAL )
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
 		}
 		else
 		{
-			iRes = CadCompararSinDistinguirTipoLetraExt ( p_cadObj->p_cValor, p_cValor, p_cadObj->iMaxTam, -1 );
+			if ( CadCompararSinDistinguirTipoLetraExt ( p_cadObj->p_cValor, p_cValor, p_cadObj->iMaxTam, -1 ) == COMP_IGUAL )
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
 		}
 	}
 	else

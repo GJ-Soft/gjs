@@ -26,7 +26,7 @@
 
 
 #define _ENTORNO_FORM_EST_VARIABLE		"%s=%s"
-#define _ENTORNO_MAX_TAM_CAD_DEF		SIS_MAX_TAM_VARIABLE + SIS_MAX_TAM_VALOR + 1
+#define _ENTORNO_MAX_TAM_CAD_DEF		( SIS_MAX_TAM_VARIABLE + SIS_MAX_TAM_VALOR + 1 )
 
 
 
@@ -78,11 +78,11 @@ int VarEntEstValor ( const char * p_cVariable, const char * p_cValor )
 		{
 			if ( ES_NULO ( p_cValor ) )
 			{
-				sprintf ( (char *) SBufDireccion ( p_bufCadDef ), _ENTORNO_FORM_EST_VARIABLE, p_cVariable, "" );
+				snprintf ( (char *) SBufDireccion ( p_bufCadDef ), _ENTORNO_MAX_TAM_CAD_DEF, _ENTORNO_FORM_EST_VARIABLE, p_cVariable, "" );
 			}
 			else
 			{
-				sprintf ( (char *) SBufDireccion ( p_bufCadDef ), _ENTORNO_FORM_EST_VARIABLE, p_cVariable, p_cValor );
+				snprintf ( (char *) SBufDireccion ( p_bufCadDef ), _ENTORNO_MAX_TAM_CAD_DEF, _ENTORNO_FORM_EST_VARIABLE, p_cVariable, p_cValor );
 			}
 			
 			if ( putenv ( (char *) SBufDireccion ( p_bufCadDef ) ) == 0 )
@@ -110,10 +110,13 @@ int VarEntEstValor ( const char * p_cVariable, const char * p_cValor )
 
 int  VarEntExiste ( const char * p_cVariable )
 {
-	int iRes;
+	int 	iRes;
+	char *	p_cValor;
 
-	if ( ES_VALIDO ( VarEntObtValor ( p_cVariable ) ) )
+	p_cValor = VarEntObtValor ( p_cVariable );
+	if ( ES_VALIDO ( p_cValor ) )
 	{
+		MemLiberar ( (void **) &p_cValor );
 		iRes = 1;
 	}
 	else

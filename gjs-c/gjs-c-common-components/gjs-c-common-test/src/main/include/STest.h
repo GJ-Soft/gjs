@@ -6,7 +6,6 @@
 
 #include <SCasoTest.h>
 #include <SCasoTestAislado.h>
-#include <ContextoTest.h>
 #include <UtilesTest.h>
 #include <STest.h>
 

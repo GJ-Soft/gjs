@@ -27,7 +27,6 @@
 
 
 
-using namespace std;
 
 namespace org
 {
@@ -41,13 +40,13 @@ namespace org
 // Pendeitne añadir cadena fecha y info del nombre
 
 
-bool AplicInicializar ( const string & sNombre, int iVersion, int iSubversion, int iRevision = 0, long lFecha = 0, int iConsola = 0 );
+bool AplicInicializar ( const std::string & sNombre, int iVersion, int iSubversion, int iRevision = 0, long lFecha = 0, int iConsola = 0 );
 
-string AplicNombre ();
+std::string AplicNombre ();
 int AplicVersion ();
 int AplicSubversion ();
 int AplicRevision ();
-string AplicCadenaVersion ();
+std::string AplicCadenaVersion ();
 Fecha AplicFechaVersion ();
 
 long AplicValorFechaVersion ();

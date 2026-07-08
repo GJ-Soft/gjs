@@ -24,26 +24,6 @@
 
 
 
-// NOTA: Se fuerza a que la versión sea como mínimo la 5.0:
-#if ( defined ( WIN ) )
-#	if ( defined ( WINVER ) )
-#		if ( WINVER < 0x0500 )
-#			undef WINVER
-#			define WINVER					0x0500
-#		endif
-#	else
-#		define WINVER						0x0500
-#	endif
-#	if ( defined ( _WIN32_WINNT ) )
-#		if ( _WIN32_WINNT < 0x0500 )
-#			undef _WIN32_WINNT
-#			define _WIN32_WINNT				0x0500
-#		endif
-#	else
-#		define _WIN32_WINNT					0x0500
-#	endif
-#endif
-
 
 
 /* Ficheros de cabecera de C particulares de cada entorno: */
@@ -58,59 +38,24 @@
 #	include <math.h>
 #	include <float.h>
 
-#elif ( defined ( VC ) )  // Asociado a WIN o DOS:
-
-#	if ( defined ( WIN ) )
+#elif ( defined ( VC ) )  // Asociado a WIN:
 
 #	if ( _MSC_VER >= 1600 )     // Si fuese necesario hay que incluirlo antes del windows.h
 #		include <winsock2.h>
 #		include <ws2tcpip.h>
 #	endif
 
-#		include	<windows.h>
-#		undef RGB
-#		include <stdio.h>
-#		include <stdarg.h>
-#		include <limits.h>
-#		include <math.h>
-#		include <float.h>
-
-#	else   // Caso por defecto (DOS):
-
-#		include <stdio.h>
-#		include <stdlib.h>
-#		include <string.h>
-#		include <stdarg.h>
-#		include <limits.h>
-#		include <time.h>
-#		include <fcntl.h>
-#		include <io.h>
-#		include <math.h>
-#		include <float.h>
-
-#	endif
+#	include	<windows.h>
+#	undef RGB
+#	include <stdio.h>
+#	include <stdarg.h>
+#	include <limits.h>
+#	include <math.h>
+#	include <float.h>
 
 #else // GNU:
 
-#	if ( defined ( UNIX ) )
-
-#		include <stdio.h>
-#		include <stdlib.h>
-#		include <string.h>
-#		include <stdarg.h>
-#		include <limits.h>
-#		include <time.h>
-#		include <fcntl.h>
-#	if ( ! defined ( CYGWIN ) )
-#		include <sys/io.h>
-#		include <mcheck.h>
-#   else
-#		include <io.h>
-#	endif
-#		include <math.h>
-#		include <float.h>
-
-#	elif ( defined ( LINUX ) )
+#	if ( defined ( POSIX ) )
 
 #		if ( defined ( IA64 ) )
 #			if ( !defined ( __x86_64__ ) )
@@ -122,29 +67,6 @@
 #			endif
 #		endif
 
-#		include <malloc.h>
-#		include <string.h>
-#		include <linux/limits.h>
-#		include <linux/types.h>
-#		include <linux/time.h>
-#		include <linux/fcntl.h>
-#		include <mcheck.h>
-#		include <math.h>
-#		include <float.h>
-
-#	elif ( defined ( WIN ) )
-
-//		Esto es por si se está utilizano el compilador GJGPP (preparado para DOS):
-#		include	<windows.h>
-#		undef RGB
-#		include <stdio.h>
-#		include <stdarg.h>
-#		include <limits.h>
-#		include <math.h>
-#		include <float.h>
-
-#	else   // Caso por defecto (DOS):
-
 #		include <stdio.h>
 #		include <stdlib.h>
 #		include <string.h>
@@ -152,7 +74,24 @@
 #		include <limits.h>
 #		include <time.h>
 #		include <fcntl.h>
+#		include <unistd.h>
+#	if ( ! defined ( CYGWIN ) )
+#		include <sys/io.h>
+#   else
 #		include <io.h>
+#	endif
+#		include <math.h>
+#		include <float.h>
+
+#	else // Caso por defecto  ( defined ( WIN ) )
+
+#		include	<windows.h>
+#		undef RGB
+#		include	<windows.h>
+#		undef RGB
+#		include <stdio.h>
+#		include <stdarg.h>
+#		include <limits.h>
 #		include <math.h>
 #		include <float.h>
 
@@ -182,15 +121,15 @@
 #endif
 
 #if ( !defined ( MAKEWORD ) )
-#	define MAKEWORD(a, b)						((WORD)(((BYTE)(a)) | ((WORD)((BYTE)(b))) << 8))
+#	define MAKEWORD(a, b)					((WORD)(((BYTE)(a)) | ((WORD)((BYTE)(b))) << 8))
 #endif
 
 #if ( !defined ( LOBYTE ) )
-#	define LOBYTE(w)							((BYTE)(w))
+#	define LOBYTE(w)						((BYTE)(w))
 #endif
 
 #if ( !defined ( HIBYTE ) )
-#	define HIBYTE(w)							((BYTE)(((WORD)(w) >> 8) & 0xFF))
+#	define HIBYTE(w)						((BYTE)(((WORD)(w) >> 8) & 0xFF))
 #endif
 
 

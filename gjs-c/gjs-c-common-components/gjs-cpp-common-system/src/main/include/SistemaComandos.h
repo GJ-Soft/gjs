@@ -21,7 +21,6 @@
 #include <string>
 
 
-using namespace std;
 
 namespace org
 {
@@ -34,7 +33,7 @@ namespace org
 
 
 
-bool SisEjecutarComando ( const string & sComando, const string & sParametros = "", int iSegundoPlano = 0 );
+bool SisEjecutarComando ( const std::string & sComando, const std::string & sParametros = "", int iSegundoPlano = 0 );
 
 
 

@@ -7,7 +7,6 @@
 #include <Ocurrencia.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -21,7 +20,7 @@ namespace org
 			class Tabla : public Entidad 
 			{
 			private:
-				vector<Ocurrencia *>	vecContenido;
+				std::vector<Ocurrencia *>	vecContenido;
 				
 			public:
 				explicit Tabla ( Entidad * entidad );
@@ -36,7 +35,7 @@ namespace org
 				void Eliminar ( int iIndice );
 				void Vaciar ();
 				
-				virtual string toString () override;
+				virtual std::string toString () override;
 				
 			};
 		

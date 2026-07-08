@@ -22,7 +22,6 @@
 #include <string>
 
 
-using namespace std;
 
 namespace org
 {
@@ -34,78 +33,78 @@ namespace org
             {
 
 
-bool SisEsDirectorioValido ( const string & sDirectorio );
-bool SisEsSubdirectorioValido ( const string & sSubdirectorio );
-bool SisEsFicheroValido ( const string & sFichero );
-int SisFicheroTieneExtension ( const string & sFichero );
+bool SisEsDirectorioValido ( const std::string & sDirectorio );
+bool SisEsSubdirectorioValido ( const std::string & sSubdirectorio );
+bool SisEsFicheroValido ( const std::string & sFichero );
+int SisFicheroTieneExtension ( const std::string & sFichero );
 
-int SisDirectorioNumSubdirectorios ( const string & sDirectorio );
-string SisDirectorioSubdirectorio ( const string & sDirectorio, int iNivel = -1 );
-string SisDirectorioSuperior ( const string & sDirectorio );
+int SisDirectorioNumSubdirectorios ( const std::string & sDirectorio );
+std::string SisDirectorioSubdirectorio ( const std::string & sDirectorio, int iNivel = -1 );
+std::string SisDirectorioSuperior ( const std::string & sDirectorio );
 
-string SisFicheroExtension ( const string & sFichero );
-string SisFicheroNombre ( const string & sFichero );
-string SisComponerFichero ( const string & sNombre, const string & sExtension );
+std::string SisFicheroExtension ( const std::string & sFichero );
+std::string SisFicheroNombre ( const std::string & sFichero );
+std::string SisComponerFichero ( const std::string & sNombre, const std::string & sExtension );
 
-string SisRutaDirectorio ( const string & sRuta );
-string SisRutaFichero ( const string & sRuta );
-int SisRutaNumSubdirectorios ( const string & sRuta );
-string SisRutaSubdirectorio ( const string & sRuta, int iNivel = -1 );
-string SisComponerRuta ( const string & sDirectorio, const string & sFichero, int iDirActualPorDef = 1 );
-string SisComponerRutaExt ( const string & sDirectorio, const string & sSubdirectorio, const string & sFichero, int iDirActualPorDef = 1 );
+std::string SisRutaDirectorio ( const std::string & sRuta );
+std::string SisRutaFichero ( const std::string & sRuta );
+int SisRutaNumSubdirectorios ( const std::string & sRuta );
+std::string SisRutaSubdirectorio ( const std::string & sRuta, int iNivel = -1 );
+std::string SisComponerRuta ( const std::string & sDirectorio, const std::string & sFichero, int iDirActualPorDef = 1 );
+std::string SisComponerRutaExt ( const std::string & sDirectorio, const std::string & sSubdirectorio, const std::string & sFichero, int iDirActualPorDef = 1 );
 
-string SisNormalizarRuta ( string & sRuta );
+std::string SisNormalizarRuta ( std::string & sRuta );
 
-bool SisEsRutaValida ( const string & sRuta );
-
-
-string SisDirectorioActual ();
-bool SisEstDirectorioActual ( const string & sDirectorio );
-
-string SisCadenaDirectorioSistema ();
-
-bool SisExisteFichero ( const string & sRuta );
-bool SisExisteFicheroExt ( const string & sDirectorio, const string & sFichero );
-bool SisExisteDirectorio ( const string & sRuta );
-bool SisExisteDirectorioExt ( const string & sDirectorio, const string & sSubdirectorio );
-
-bool SisCrearFichero ( const string & sRuta );
-bool SisCrearFicheroExt ( const string & sDirectorio, const string & sFichero );
-bool SisCrearDirectorio ( const string & sDirectorio );
-bool SisCrearDirectorioExt ( const string & sDirectorio, const string & sSubdirectorio );
-
-bool SisEliminarFichero ( const string & sRuta );
-bool SisEliminarFicheroExt ( const string & sDirectorio, const string & sFichero );
-string SisMascaraBusquedaEnDirectorio ( const string & sDirectorio );
-bool SisEliminarDirectorio ( const string & sDirectorio );
-bool SisEliminarDirectorioExt ( const string & sDirectorio, const string & sSubdirectorio );
-bool SisVaciarDirectorio ( const string & sDirectorio );
-bool SisVaciarDirectorioExt ( const string & sDirectorio, const string & sSubdirectorio );
-bool SisCopiarFichero ( const string & sRutaOrig, const string & sRutaDest, bool bEliminar = 1 );
-bool SisCopiarFicheroExt ( const string & sDirOrig, const string & sFicOrig, const string & sDirDest, const string & sFicDest = NULL, bool bEliminar = 1 );
-bool SisMoverFichero ( const string & sRutaOrig, const string & sRutaDest, bool bEliminar = 1 );
-bool SisMoverFicheroExt ( const string & sDirOrig, const string & sFicOrig, const string & sDirDest, const string & sFicDest = NULL, bool bEliminar = 1 );
-
-bool SisRutaComprimida ( const string & sRuta );
-bool SisRutaEncriptada ( const string & sRuta );
-bool SisRutaOculta ( const string & sRuta );
-bool SisFicheroEsAccesible ( const string & sRuta );
-bool SisRutaDeSoloLectura ( const string & sRuta );
-bool SisRutaDelSistema ( const string & sRuta );
-bool SisFicheroEsTemporal ( const string & sRuta );
-bool SisFicheroAsociadoAAplicacion ( const string & sRuta );
-bool SisFicheroConOptimizacionEspacial ( const string & sRuta );
-
-bool SisRutaDesactivarModoSoloLectura ( const string & sRuta );
+bool SisEsRutaValida ( const std::string & sRuta );
 
 
-bool SisEsFicheroC ( const string & sRuta );
-bool SisEsFicheroCodigoC ( const string & sRuta );
-bool SisEsFicheroCabeceraC ( const string & sRuta );
-bool SisEsFicheroXML ( const string & sRuta );
-bool SisEsFicheroHTML ( const string & sRuta );
-bool SisEsFicheroSHP ( const string & sRuta );
-bool SisEsFicheroDBF ( const string & sRuta );
+std::string SisDirectorioActual ();
+bool SisEstDirectorioActual ( const std::string & sDirectorio );
+
+std::string SisCadenaDirectorioSistema ();
+
+bool SisExisteFichero ( const std::string & sRuta );
+bool SisExisteFicheroExt ( const std::string & sDirectorio, const std::string & sFichero );
+bool SisExisteDirectorio ( const std::string & sRuta );
+bool SisExisteDirectorioExt ( const std::string & sDirectorio, const std::string & sSubdirectorio );
+
+bool SisCrearFichero ( const std::string & sRuta );
+bool SisCrearFicheroExt ( const std::string & sDirectorio, const std::string & sFichero );
+bool SisCrearDirectorio ( const std::string & sDirectorio );
+bool SisCrearDirectorioExt ( const std::string & sDirectorio, const std::string & sSubdirectorio );
+
+bool SisEliminarFichero ( const std::string & sRuta );
+bool SisEliminarFicheroExt ( const std::string & sDirectorio, const std::string & sFichero );
+std::string SisMascaraBusquedaEnDirectorio ( const std::string & sDirectorio );
+bool SisEliminarDirectorio ( const std::string & sDirectorio );
+bool SisEliminarDirectorioExt ( const std::string & sDirectorio, const std::string & sSubdirectorio );
+bool SisVaciarDirectorio ( const std::string & sDirectorio );
+bool SisVaciarDirectorioExt ( const std::string & sDirectorio, const std::string & sSubdirectorio );
+bool SisCopiarFichero ( const std::string & sRutaOrig, const std::string & sRutaDest, bool bEliminar = 1 );
+bool SisCopiarFicheroExt ( const std::string & sDirOrig, const std::string & sFicOrig, const std::string & sDirDest, const std::string & sFicDest = NULL, bool bEliminar = 1 );
+bool SisMoverFichero ( const std::string & sRutaOrig, const std::string & sRutaDest, bool bEliminar = 1 );
+bool SisMoverFicheroExt ( const std::string & sDirOrig, const std::string & sFicOrig, const std::string & sDirDest, const std::string & sFicDest = NULL, bool bEliminar = 1 );
+
+bool SisRutaComprimida ( const std::string & sRuta );
+bool SisRutaEncriptada ( const std::string & sRuta );
+bool SisRutaOculta ( const std::string & sRuta );
+bool SisFicheroEsAccesible ( const std::string & sRuta );
+bool SisRutaDeSoloLectura ( const std::string & sRuta );
+bool SisRutaDelSistema ( const std::string & sRuta );
+bool SisFicheroEsTemporal ( const std::string & sRuta );
+bool SisFicheroAsociadoAAplicacion ( const std::string & sRuta );
+bool SisFicheroConOptimizacionEspacial ( const std::string & sRuta );
+
+bool SisRutaDesactivarModoSoloLectura ( const std::string & sRuta );
+
+
+bool SisEsFicheroC ( const std::string & sRuta );
+bool SisEsFicheroCodigoC ( const std::string & sRuta );
+bool SisEsFicheroCabeceraC ( const std::string & sRuta );
+bool SisEsFicheroXML ( const std::string & sRuta );
+bool SisEsFicheroHTML ( const std::string & sRuta );
+bool SisEsFicheroSHP ( const std::string & sRuta );
+bool SisEsFicheroDBF ( const std::string & sRuta );
 
 
 		

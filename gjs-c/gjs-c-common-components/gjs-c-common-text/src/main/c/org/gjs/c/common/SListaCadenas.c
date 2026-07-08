@@ -13,6 +13,14 @@ SListaCadenas * SLisCadCrear ()
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		p_lisObj->p_lisDatos = SLispCrear ();
+		if ( ES_VALIDO ( p_lisObj->p_lisDatos ) )
+		{
+			SLispDesactivarLiberacionMemoria ( p_lisObj->p_lisDatos );
+		}
+		else
+		{
+			MemLiberar ( (void **) &p_lisObj );
+		}
 	}
 	return ( p_lisObj );
 }
@@ -96,18 +104,25 @@ SCadena * SLisCadElemento ( SListaCadenas * p_lisObj, int iElem )
 
 int SLisCadEstablecerElem ( SListaCadenas * p_lisObj, int iElem, SCadena * p_cadDatos )
 {
-	int		iRes;
-	SCadena *	p_cAnt;	
+	int			iRes;
+	SCadena *	p_cadAnt;	
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		p_cAnt = (SCadena *) SLispElemento ( p_lisObj->p_lisDatos, iElem );
-		MemLiberar ( (void **) &p_cAnt );
-		iRes = SLispEstablecerElem ( p_lisObj->p_lisDatos, iElem, (byte *) p_cadDatos );
+		p_cadAnt = (SCadena *) SLispElemento ( p_lisObj->p_lisDatos, iElem );
+		if ( SLispEstablecerElem ( p_lisObj->p_lisDatos, iElem, (byte *) p_cadDatos ) == 1 )
+		{
+			iRes = 1;
+			SCadDestruir ( &p_cadAnt );
+		}
+		else
+		{
+			iRes = 0;
+		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -122,7 +137,7 @@ int SLisCadInsertarElem ( SListaCadenas * p_lisObj, int iPosAnt, SCadena * p_cad
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -142,56 +157,39 @@ int SLisCadInsertarAlFinal ( SListaCadenas * p_lisObj, SCadena * p_cadDatos )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
 
 int SLisCadEstablecerElemDup ( SListaCadenas * p_lisObj, int iElem, SCadena * p_cadDatos )
 {
-	SCadena *	p_cadAnt;
 	SCadena *	p_cadElem;
 	int			iRes;
-	int			iActLib;
 
-	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cadDatos ) )
+	if ( ES_VALIDO ( p_cadDatos ) )
 	{
-		p_cadAnt = SLisCadElemento ( p_lisObj, iElem );
-		if ( ES_VALIDO ( p_cadAnt ) )
+		p_cadElem = SCadDuplicar ( p_cadDatos );
+		if ( ES_VALIDO ( p_cadElem ) )
 		{
-			p_cadElem = SCadDuplicar ( p_cadDatos );
-			if ( ES_VALIDO ( p_cadElem ) )
+			if ( SLispEstablecerElem ( p_lisObj->p_lisDatos, iElem, (byte *) p_cadElem ) == 1 )
 			{
-				iActLib = SLispLiberacionMemoriaActivada ( p_lisObj->p_lisDatos );
-				if ( iActLib == 1 ) 
-				{
-					SCadDestruir ( &p_cadAnt );
-				}
-				SLispDesactivarLiberacionMemoria ( p_lisObj->p_lisDatos );
-				iRes = SLispEstablecerElem ( p_lisObj->p_lisDatos, iElem, (byte *) p_cadElem );
-				if ( iActLib == 1 )
-				{
-					SLispActivarLiberacionMemoria ( p_lisObj->p_lisDatos );
-				}
-
-				if ( iRes != 1 )
-				{
-					SCadDestruir ( &p_cadElem );
-				}
+				iRes = 1;
 			}
 			else
 			{
-				iRes = -1;
+				SCadDestruir ( &p_cadElem );
+				iRes = 0;
 			}
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -201,13 +199,12 @@ int SLisCadInsertarElemDup ( SListaCadenas * p_lisObj, int iPosAnt, SCadena * p_
 	SCadena *	p_cadElem;
 	int			iRes;
 
-	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cadDatos ) )
+	if ( ES_VALIDO ( p_cadDatos ) )
 	{
 		p_cadElem = SCadDuplicar ( p_cadDatos );
 		if ( ES_VALIDO ( p_cadElem ) )
 		{
-			iRes = SLispInsertarElem ( p_lisObj->p_lisDatos, iPosAnt, (byte *) p_cadElem );
-
+			iRes = SLisCadEstablecerElem ( p_lisObj, iPosAnt, p_cadElem );
 			if ( iRes != 1 )
 			{
 				SCadDestruir ( &p_cadElem );
@@ -215,12 +212,12 @@ int SLisCadInsertarElemDup ( SListaCadenas * p_lisObj, int iPosAnt, SCadena * p_
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -243,12 +240,12 @@ int SLisCadInsertarDupAlInicio ( SListaCadenas * p_lisObj, SCadena * p_cadDatos 
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -273,12 +270,12 @@ int SLisCadInsertarDupAlFinal ( SListaCadenas * p_lisObj, SCadena * p_cadDatos )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -287,29 +284,26 @@ int SLisCadEliminarElem ( SListaCadenas * p_lisObj, int iElem )
 {
 	int 		iRes;
 	SCadena * 	p_cadObj;
-	int			iActLib;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		iActLib = SLisCadLiberacionMemoriaActivada ( p_lisObj );
-		if ( iActLib == 1 ) 
+		p_cadObj = SLisCadElemento ( p_lisObj, iElem );
+		if ( ES_VALIDO ( p_cadObj ) ) 
 		{
-			p_cadObj = SLisCadElemento ( p_lisObj, iElem );
-			if ( ES_VALIDO ( p_cadObj ) ) 
+			iRes = SLispEliminarElem ( p_lisObj->p_lisDatos, iElem );
+			if ( iRes == 1 ) 
 			{
 				SCadDestruir ( &p_cadObj );	
 			}
 		}
-		SLispDesactivarLiberacionMemoria ( p_lisObj->p_lisDatos );	
-		iRes = SLispEliminarElem ( p_lisObj->p_lisDatos, iElem );
-		if ( iActLib == 1 )
+		else
 		{
-			SLispActivarLiberacionMemoria ( p_lisObj->p_lisDatos );
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -318,29 +312,21 @@ int SLisCadVaciar ( SListaCadenas * p_lisObj )
 {
 	int 		iRes;
 	SCadena * 	p_cadObj;
-	int			iActLib;
+	int			iNumElems;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		iActLib = SLisCadLiberacionMemoriaActivada ( p_lisObj );
-		if ( iActLib == 1 ) 
+		iNumElems = SLisCadNumElementos ( p_lisObj );
+		for ( int iElem = 0; iElem < iNumElems; iElem = iElem + 1 )
 		{
-			for ( int iElem = 0; iElem < SLisCadNumElementos ( p_lisObj ); iElem = iElem + 1 )
-			{
-				p_cadObj = SLisCadElemento ( p_lisObj, iElem );
-				SCadDestruir ( &p_cadObj );
-			}
+			p_cadObj = SLisCadElemento ( p_lisObj, iElem );
+			SCadDestruir ( &p_cadObj );
 		}
-		SLispDesactivarLiberacionMemoria( p_lisObj->p_lisDatos );
 		iRes = SLispVaciar ( p_lisObj->p_lisDatos );
-		if ( iActLib == 1 )
-		{
-			SLispActivarLiberacionMemoria ( p_lisObj->p_lisDatos );
-		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -470,14 +456,17 @@ int SLisCadEstaEnInicio ( SListaCadenas * p_lisObj )
 
 int SLisCadEstablecer ( SListaCadenas * p_lisObj, SCadena * p_cadDatos )
 {
-	SCadena *	p_cAnt;  
-	int		iRes;
+	SCadena *	p_cadAnt;  
+	int			iRes;
 
 	if ( ES_VALIDO ( p_lisObj ) ) 
 	{
-		p_cAnt = (SCadena *) SLispActual ( p_lisObj->p_lisDatos );
-		MemLiberar ( (void **) &p_cAnt );
+		p_cadAnt = (SCadena *) SLispActual ( p_lisObj->p_lisDatos );
 		iRes = SLispEstablecer ( p_lisObj->p_lisDatos, (byte *) p_cadDatos );
+		if ( iRes != 1 )
+		{
+			SCadDestruir ( &p_cadAnt );
+		}
 	}
 	else
 	{
@@ -524,39 +513,18 @@ int SLisCadInsertarDetras ( SListaCadenas * p_lisObj, SCadena * p_cadDatos )
 
 int SLisCadEstablecerDup ( SListaCadenas * p_lisObj, SCadena * p_cadDatos )
 {
-	SCadena *	p_cadAnt;
 	SCadena *	p_cadElem;
 	int			iRes;
-	int			iActLib;
 
-	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cadDatos ) )
+	if ( ES_VALIDO ( p_cadDatos ) )
 	{
-		p_cadAnt = SLisCadActual ( p_lisObj );
-		if ( ES_VALIDO ( p_cadAnt ) )
+		p_cadElem = SCadDuplicar ( p_cadDatos );
+		if ( ES_VALIDO ( p_cadElem ) )
 		{
-			p_cadElem = SCadDuplicar ( p_cadDatos );
-			if ( ES_VALIDO ( p_cadElem ) )
+			iRes = SLisCadEstablecer ( p_lisObj, p_cadElem );
+			if ( iRes != 1 )
 			{
-				iActLib = SLispLiberacionMemoriaActivada ( p_lisObj->p_lisDatos );
-				if ( iActLib == 1 ) 
-				{
-					SCadDestruir ( &p_cadAnt );
-				}
-				SLispDesactivarLiberacionMemoria ( p_lisObj->p_lisDatos );
-				iRes = SLispEstablecer ( p_lisObj->p_lisDatos, (byte *) p_cadElem );
-				if ( iActLib == 1 )
-				{
-					SLispActivarLiberacionMemoria ( p_lisObj->p_lisDatos );
-				}
-
-				if ( iRes != 1 )
-				{
-					SCadDestruir ( &p_cadElem );
-				}
-			}
-			else
-			{
-				iRes = 0;
+				SCadDestruir ( &p_cadElem );
 			}
 		}
 		else
@@ -595,12 +563,12 @@ int SLisCadInsertarDupDelante ( SListaCadenas * p_lisObj, SCadena * p_cadDatos )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -624,12 +592,12 @@ int SLisCadInsertarDupDetras ( SListaCadenas * p_lisObj, SCadena * p_cadDatos )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -638,23 +606,16 @@ int SLisCadEliminar ( SListaCadenas * p_lisObj )
 {
 	int 		iRes;
 	SCadena * 	p_cadAnt;
-	int			iActLib;
 
 	if ( ES_VALIDO ( p_lisObj ) ) 
 	{
 		p_cadAnt = SLisCadActual ( p_lisObj );
 		if ( ES_VALIDO ( p_cadAnt ) )
 		{
-			iActLib = SLispLiberacionMemoriaActivada ( p_lisObj->p_lisDatos );
-			if ( iActLib == 1 ) 
+			iRes = SLispEliminar ( p_lisObj->p_lisDatos );
+			if ( iRes == 1 )
 			{
 				SCadDestruir ( &p_cadAnt );
-			}
-			SLispDesactivarLiberacionMemoria ( p_lisObj->p_lisDatos );
-			iRes = SLispEliminar ( p_lisObj->p_lisDatos );
-			if ( iActLib == 1 )
-			{
-				SLispActivarLiberacionMemoria ( p_lisObj->p_lisDatos );
 			}
 		}
 		else
@@ -673,12 +634,14 @@ int SLisCadExiste ( SListaCadenas * p_lisObj, SCadena * p_cadDatos )
 {
 	int iRes;
 	int iElem;
+	int	iNumElems;
 
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cadDatos )  ) 
 	{
 		iRes = 0;
 		iElem = 0;
-		while ( ( iElem < SLisCadNumElementos ( p_lisObj ) ) && ( iRes == 0 ) )
+		iNumElems = SLisCadNumElementos ( p_lisObj );
+		while ( ( iElem < iNumElems ) && ( iRes == 0 ) )
 		{
 			if ( SCadEsIgual ( SLisCadElemento ( p_lisObj, iElem ), p_cadDatos ) == 1 )
 			{
@@ -698,12 +661,14 @@ int SLisCadBuscar ( SListaCadenas * p_lisObj, SCadena * p_cadDatos )
 {
 	int iRes;
 	int iElem;
+	int	iNumElems;
 
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cadDatos ) )
 	{
 		iRes = -1;
 		iElem = 0;
-		while ( ( iElem < SLisCadNumElementos ( p_lisObj ) ) && ( iRes == -1 ) )
+		iNumElems = SLisCadNumElementos ( p_lisObj );
+		while ( ( iElem < iNumElems ) && ( iRes == -1 ) )
 		{
 			if ( SCadEsIgual ( SLisCadElemento ( p_lisObj, iElem ), p_cadDatos ) == 1 )
 			{
@@ -723,12 +688,14 @@ int SLisCadBuscarExt ( SListaCadenas * p_lisObj, const char * p_cDatos )
 {
 	int iRes;
 	int iElem;
+	int	iNumElems;
 
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cDatos ) )
 	{
 		iRes = -1;
 		iElem = 0;
-		while ( ( iElem < SLisCadNumElementos ( p_lisObj ) ) && ( iRes == -1 ) )
+		iNumElems = SLisCadNumElementos ( p_lisObj );
+		while ( ( iElem < iNumElems ) && ( iRes == -1 ) )
 		{
 			if ( SCadEsIgualLiteral ( SLisCadElemento ( p_lisObj, iElem ), p_cDatos ) == 1 )
 			{
@@ -742,37 +709,6 @@ int SLisCadBuscarExt ( SListaCadenas * p_lisObj, const char * p_cDatos )
 		iRes = -1;
 	}
 	return ( iRes );
-}
-
-int	SLisCadLiberacionMemoriaActivada ( SListaCadenas * p_lisObj )
-{
-	int	iRes;
-
-	if ( ES_VALIDO ( p_lisObj ) ) 
-	{
-		iRes = SLispLiberacionMemoriaActivada ( p_lisObj->p_lisDatos );
-	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
-}
-
-void SLisCadActivarLiberacionMemoria ( SListaCadenas * p_lisObj )
-{
-	if ( ES_VALIDO ( p_lisObj ) ) 
-	{
-		SLispActivarLiberacionMemoria ( p_lisObj->p_lisDatos );
-	}
-}
-
-void SLisCadDesactivarLiberacionMemoria ( SListaCadenas * p_lisObj )
-{
-	if ( ES_VALIDO ( p_lisObj ) ) 
-	{
-		SLispDesactivarLiberacionMemoria ( p_lisObj->p_lisDatos );
-	}
 }
 
 

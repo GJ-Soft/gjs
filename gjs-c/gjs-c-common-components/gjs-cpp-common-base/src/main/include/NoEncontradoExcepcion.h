@@ -5,7 +5,6 @@
 #include <Excepcion.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -20,7 +19,7 @@ namespace org
 			{
 
 			public:
-				NoEncontradoExcepcion ( const string & sModulo, const string & sRutina, const string & sTipo, const string & sObjeto );
+				NoEncontradoExcepcion ( const std::string & sModulo, const std::string & sRutina, const std::string & sTipo, const std::string & sObjeto );
 			};
 
             }

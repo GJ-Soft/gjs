@@ -309,7 +309,7 @@ bool TestVerificarFichero01 ()
 	bool bRes = true;
 	try
 	{
-		string sDir = DirectorioActual() + "/../resources/data";
+		string sDir = DirectorioActual() + "/../../test-classes/data";
 		bool bRes1 = true;
 		string sFic = sDir + "/noexiste.txt";
 		VerificarExistenciaFichero ( sFic, bRes1 );
@@ -346,7 +346,7 @@ bool TestVerificarFichero02 ()
 	bool bRes = true;
 	try
 	{
-		string sDir = DirectorioActual() + "/../resources/data";
+		string sDir = DirectorioActual() + "/../../test-classes/data";
 		bool bRes1 = true;
 		string sFic = sDir + "/test1.txt";
 		VerificarFichero ( sFic, 0, bRes1 );
@@ -390,7 +390,7 @@ bool TestVerificarFichero03 ()
 	bool bRes = true;
 	try
 	{
-		string sDir = DirectorioActual() + "/../resources/data";
+		string sDir = DirectorioActual() + "/../../test-classes/data";
 		bool bRes1 = true;
 		string sFic = sDir + "/test1.txt";
 		vector<string> vecLineas;
@@ -438,7 +438,7 @@ bool TestVerificarFichero04 ()
 	bool bRes = true;
 	try
 	{
-		string sDir = DirectorioActual() + "/../resources/data";
+		string sDir = DirectorioActual() + "/../../test-classes/data";
 		bool bRes1 = true;
 		string sFic = sDir + "/test1.txt";
 		VerificarFichero ( sFic, "", bRes1 );

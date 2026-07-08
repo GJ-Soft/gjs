@@ -22,7 +22,7 @@ void VerificarNoEsNulo ( const char * p_cInfoCaso, void * p_vResultado, int & iR
 
 void VerificarExistenciaFichero ( const char * p_cRuta, int & iRes );
 void VerificarFichero ( const char * p_cRuta, int iLineasEsperadas, int & iRes );
-void VerificarFichero ( const char * p_cRuta, vector<string> & vecLineas, int & iRes );
+void VerificarFichero ( const char * p_cRuta, std::vector<std::string> & vecLineas, int & iRes );
 void VerificarFichero ( const char * p_cRuta, const char * p_cEsperado, int & iRes );
 void VerificarFichero ( const char * p_cRuta, const char * p_cRutaEsperado, int & iRes );
 

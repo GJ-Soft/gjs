@@ -5,10 +5,6 @@
 
 
 
-using namespace std;
-
-
-
 namespace org
 {
 	namespace gjs
@@ -28,7 +24,7 @@ namespace org
 
 			};
 
-			string ToString( TipoDatos tipo );
+			std::string ToString( TipoDatos tipo );
 
  			}
 		}

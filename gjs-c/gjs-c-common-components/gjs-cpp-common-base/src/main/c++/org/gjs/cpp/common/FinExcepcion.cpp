@@ -6,6 +6,8 @@
 #define MENSAJE_EXCEPCION		"Se ha llamado exit() con codigo: "
 
 
+using namespace std;
+
 
 namespace org
 {

@@ -23,7 +23,7 @@ void FinTest()
 */
 __attribute__((destructor)) void Finalizacion () 
 {
-	printf ( "Un proceso de test ha finalizado.\n" );
+	SisConAsincEscribir ( TEST_MSJ_FINALIZADO );
 	/*
 	if ( __bEjecutandoTest )
 	{

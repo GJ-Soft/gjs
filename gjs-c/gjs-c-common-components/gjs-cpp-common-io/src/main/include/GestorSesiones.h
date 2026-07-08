@@ -6,7 +6,6 @@
 #include <ControlConcurrencia.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -21,8 +20,8 @@ namespace org
 			class GestorSesiones : private ControlConcurrencia
 			{
 			private:
-				map<string, pair<time_t, time_t>>	mapSesiones;
-				map<thread::id, string> 			mapHilos;
+				std::map<std::string, std::pair<time_t, time_t>>	mapSesiones;
+				std::map<std::thread::id, std::string> 				mapHilos;
 				
 			public:
 				GestorSesiones ();
@@ -30,26 +29,26 @@ namespace org
 				
 			public:
 				int NumSesiones ();
-				bool Preparar( const string & sUsuario );
-				bool Abrir( const string & sUsuario );
-				void Cerrar( const string & sUsuario );				
-				void Actividad( const string & sUsuario );	
+				bool Preparar( const std::string & sUsuario );
+				bool Abrir( const std::string & sUsuario );
+				void Cerrar( const std::string & sUsuario );				
+				void Actividad( const std::string & sUsuario );	
 				void Cerrar();				
 				void Actividad();	
 				
-				bool EstaAbierta( const string & sUsuario );
+				bool EstaAbierta( const std::string & sUsuario );
 				bool EstaAbierta();
-				time_t TiempoInicio( const string & sUsuario );
-				time_t TiempoTranscurrido( const string & sUsuario );
-				time_t TiempoActividad( const string & sUsuario );
+				time_t TiempoInicio( const std::string & sUsuario );
+				time_t TiempoTranscurrido( const std::string & sUsuario );
+				time_t TiempoActividad( const std::string & sUsuario );
 				time_t TiempoInicio();
 				time_t TiempoTranscurrido();
 				time_t TiempoActividad();
 
-				string getUsuario( thread::id idHilo );
-				string getUsuario();
-				void setUsuario( string sValor, thread::id idHilo );
-				void setUsuario( string sValor );
+				std::string getUsuario( std::thread::id idHilo );
+				std::string getUsuario();
+				void setUsuario( std::string sValor, std::thread::id idHilo );
+				void setUsuario( std::string sValor );
 
 				void Limpiar ();
 				

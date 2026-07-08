@@ -40,7 +40,7 @@ namespace org
             namespace common
             {
 
-			const string CADENA_VACIA( "" );
+			const std::string CADENA_VACIA( "" );
 
 			template<typename Base, typename T>	inline bool instanceof(const T *ptr)
 			{

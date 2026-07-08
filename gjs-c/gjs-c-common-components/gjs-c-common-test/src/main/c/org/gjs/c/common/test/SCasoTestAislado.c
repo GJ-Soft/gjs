@@ -6,50 +6,73 @@
 #include <sys/wait.h>
 #include <unistd.h>
 // #include <fcntl.h>
-                                                            
+      
+
+	  
 
 SCasoTestAislado * SCasTstaCrear ( const char * p_cId, PFUNINTV p_fTest, int iCodigoEsperado )
 {
-	SCasoTestAislado * p_caststObj;
+	SCasoTestAislado * p_caststaObj;
 
 	if ( CadEsToken ( p_cId ) && ES_VALIDO ( p_fTest ) )
 	{
-		p_caststObj = ( SCasoTestAislado * ) MemReservar ( sizeof ( SCasoTestAislado ) );
-		if ( ES_VALIDO ( p_caststObj ) )
+		p_caststaObj = ( SCasoTestAislado * ) MemReservar ( sizeof ( SCasoTestAislado ) );
+		if ( ES_VALIDO ( p_caststaObj ) )
 		{
-			p_caststObj->p_caststObj = SCasTstCrear ( p_cId, p_fTest );
-			p_caststObj->iCodigo = iCodigoEsperado;
+			p_caststaObj->p_caststsObj = SCasTstsCrear ( p_cId, p_fTest );
+			if ( ES_VALIDO ( p_caststaObj->p_caststsObj ) )
+			{
+				p_caststaObj->iCodigo = iCodigoEsperado;
+			}
+			else
+			{
+				MemLiberar ( (void **) &p_caststaObj );
+			}
 		}
 	}
 	else
 	{
-		p_caststObj = NULL;
+		p_caststaObj = NULL;
 	}
-	return ( p_caststObj );
+	return ( p_caststaObj );
 }
 
 
-void SCasTstaDestruir ( SCasoTestAislado ** p_p_caststObj )
+void SCasTstaDestruir ( SCasoTestAislado ** p_p_caststaObj )
 {
-	SCasoTestAislado * p_caststObj;
+	SCasoTestAislado * p_caststaObj;
 
-	if ( ES_VALIDO ( p_p_caststObj ) )
+	if ( ES_VALIDO ( p_p_caststaObj ) )
 	{
-		p_caststObj = *p_p_caststObj;
-		if ( ES_VALIDO ( p_caststObj ) )
+		p_caststaObj = *p_p_caststaObj;
+		if ( ES_VALIDO ( p_caststaObj ) )
 		{
-			SCasTstDestruir ( &(p_caststObj->p_caststObj) );
+			SCasTstsDestruir ( &(p_caststaObj->p_caststsObj) );
+			MemLiberar ( (void **) p_p_caststaObj );
 		}
-		*p_p_caststObj = NULL;
 	}
 }
 
+const char * SCasTstaObtenerId ( SCasoTestAislado * p_caststaObj )
+{
+	const char * p_cRes;
 
-int SCasTstaEjecutar ( SCasoTestAislado * p_caststObj )
+	if ( ES_VALIDO ( p_caststaObj ) )
+	{
+		p_cRes = SCasTstsObtenerId ( p_caststaObj->p_caststsObj );
+	}
+	else
+	{
+		p_cRes = NULL;
+	}
+	return ( p_cRes );
+}
+
+int SCasTstaEjecutar ( SCasoTestAislado * p_caststaObj )
 {
 	int iRes;
 
-	if ( ES_VALIDO ( p_caststObj ) )
+	if ( ES_VALIDO ( p_caststaObj ) )
 	{
 		pid_t pid = fork ();
 		if ( pid == -1 )
@@ -64,7 +87,7 @@ int SCasTstaEjecutar ( SCasoTestAislado * p_caststObj )
 			// sigaddset( &set, SIGUSR1 );                                               
 			// sigwait( &set );
 
-			iRes = SCasTstEjecutar ( p_caststObj->p_caststObj );
+			iRes = SCasTstsEjecutar ( p_caststaObj->p_caststsObj );
 			AplicLogAnotarAviso ( "El codigo del test ha terminado normalmente: puede que haya que implementarlo como CasoTest normal" );
 			if ( iRes == RESULTADO_CASO_TEST_OK )
 			{
@@ -81,14 +104,15 @@ int SCasTstaEjecutar ( SCasoTestAislado * p_caststObj )
 			// kill( pid, SIGUSR1 );
 			waitpid ( pid, &iCodigoRecibido, 0 );
 			AplicLogAnotar ( "Proceso terminado con %s", WEXITSTATUS ( iCodigoRecibido ) );
-			if ( WEXITSTATUS ( iCodigoRecibido ) == p_caststObj->iCodigo )
+			if ( WEXITSTATUS ( iCodigoRecibido ) == p_caststaObj->iCodigo )
 			{
+				iRes = RESULTADO_CASO_TEST_OK;
 				AplicLogAnotar ( "Caso terminado correctamente" );
 			}
 			else
 			{
 				iRes = RESULTADO_CASO_TEST_KO;
-				AplicLogAnotarError ( "Caso terminado con error: se esperaba %d", p_caststObj->iCodigo );
+				AplicLogAnotarError ( "Caso terminado con error: se esperaba %d", p_caststaObj->iCodigo );
 			}
 		}
 	}

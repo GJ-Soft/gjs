@@ -12,7 +12,6 @@
 #include <BancoTests.h>
 
 
-using namespace std;
 using namespace org::gjs::cpp::common;
 
 
@@ -31,17 +30,17 @@ namespace org
 			class Test
 			{
 				private:
-					string 				sNombreTest = "Test";
+					std::string 		sNombreTest = "Test";
 					PROCEDIMIENTO		procInicializarTest = NULL;
 					PROCEDIMIENTO		procFinalizarTest = NULL;
 					PROCEDIMIENTO_1CAD	procInicializarCasoTest = NULL;
 					PROCEDIMIENTO_1CAD	procFinalizarCasoTest = NULL;
 
-					list<CasoTest *> 	listCasos;
+					std::list<CasoTest *> 	listCasos;
 
 					//Simbolos		parametros;
 
-					string				sDirInicial;
+					std::string			sDirInicial;
 					bool 				bResultado = false;
 					int 				iEjecutados = 0;
 					int 				iCorrectos = 0;
@@ -49,23 +48,23 @@ namespace org
 					int 				iFallidos = 0;
 
 				public:
-					Test ( const string & sNombre, PROCEDIMIENTO procInicializar = NULL, PROCEDIMIENTO procFinalizar = NULL, PROCEDIMIENTO_1CAD procInicializarCaso = NULL, PROCEDIMIENTO_1CAD procFinalizarCaso = NULL );
+					Test ( const std::string & sNombre, PROCEDIMIENTO procInicializar = NULL, PROCEDIMIENTO procFinalizar = NULL, PROCEDIMIENTO_1CAD procInicializarCaso = NULL, PROCEDIMIENTO_1CAD procFinalizarCaso = NULL );
 					~Test ();
 
 				private:
 					void Inicializar ();
 					void Finalizar ();
-					void InicializarCaso ( const string & sId );
-					void FinalizarCaso ( const string & sId );
+					void InicializarCaso ( const std::string & sId );
+					void FinalizarCaso ( const std::string & sId );
 
 				public:
-					//void EstablecerParametros ( const initializer_list<string> & args );
-					//void EstablecerParametros ( const list<string> & args );
-					//void EstablecerParametros ( const vector<string> & args );
-					//void EstablecerParametro ( string sParametro );
+					//void EstablecerParametros ( const std::initializer_list<std::string> & args );
+					//void EstablecerParametros ( const std::list<std::string> & args );
+					//void EstablecerParametros ( const std::vector<std::string> & args );
+					//void EstablecerParametro ( std::string sParametro );
 
-					void NuevoCaso ( const string & sNombre, FUNCION_BOOL funcion );
-					void NuevoCasoAislado ( const string & sNombre, FUNCION_BOOL funcion, int iCodigoEsperado = 0 );
+					void NuevoCaso ( const std::string & sNombre, FUNCION_BOOL funcion );
+					void NuevoCasoAislado ( const std::string & sNombre, FUNCION_BOOL funcion, int iCodigoEsperado = 0 );
 					int NumCasos ();
 
 					bool Ejecutar ();

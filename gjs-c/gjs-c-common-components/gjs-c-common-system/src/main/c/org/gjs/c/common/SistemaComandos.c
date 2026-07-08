@@ -30,9 +30,9 @@ int SisEjecutarComando ( const char * p_cComando, const char * p_cParametros, in
 #  if ( defined ( WIN ) )
 	HINSTANCE	hinsExec;
 	HWND		hwndProceso;
-#  else //( defined ( DOS ) || defined ( UNIX ) || defined ( LINUX )
+#  else 
 	int			iResSys;
-	char *	p_cOrden;
+	char *		p_cOrden;
 #  endif
 
 	if ( ES_VALIDO ( p_cComando ) )
@@ -47,7 +47,7 @@ int SisEjecutarComando ( const char * p_cComando, const char * p_cParametros, in
 		//hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, NULL, NULL, SW_SHOW );
 		//hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, p_cParametros, NULL, SW_SHOW );
 		hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, p_cParametros, NULL, SW_HIDE );
-		if ( hinsExec > 0 )
+		if ( (INT_PTR)hinsExec > 32 )
 		{
 			SisEsperar ( 10 );
 			iRes = 1;
@@ -56,7 +56,7 @@ int SisEjecutarComando ( const char * p_cComando, const char * p_cParametros, in
 		{
 			iRes = 0;
 		}
-#	  else //( defined ( DOS ) || defined ( UNIX ) || defined ( LINUX )
+#	  else 
 		if ( ES_VALIDO ( p_cParametros ) )
 		{
 			p_cOrden = CadCrear ( CadLongitud ( p_cComando ) + CadLongitud ( p_cParametros ) + 3 );
@@ -120,23 +120,32 @@ int SisEjecutarComando ( const char * p_cComando, const char * p_cParametros, in
 		{
 			errno = 0;
 			iResSys = system ( p_cOrden );
-			if ( iResSys > 0 ) 
+			if ( iResSys == - 1 ) 
+			{
+				iRes = 0;
+			}
+			else
 			{
 				if ( iSegundoPlano == 1 )
 				{
 					SisEsperar ( 1000 );
 				}
-				iRes = 1;
-			}
-			else // 0, -1 y negativos
-			{	
-				if ( errno == 0 )
+				// Comprobamos si el comando terminó correctamente
+				if ( WIFEXITED ( iResSys ) )
 				{
-					iRes = 1;
+					int iCodigoSalida = WEXITSTATUS ( iResSys );
+					if ( iCodigoSalida == 0 )
+					{
+						iRes = 1; // El comando se ejecutó y devolvió ÉXITO (0)
+					}
+					else
+					{
+						iRes = 0; // El comando se ejecutó pero devolvió un código de ERROR (ej. 1, 2, 5...)
+					}
 				}
 				else
 				{
-					iRes = 0;
+					iRes = 0; // El proceso no terminó normalmente (ej. fue matado por una señal)
 				}
 			}
 		}

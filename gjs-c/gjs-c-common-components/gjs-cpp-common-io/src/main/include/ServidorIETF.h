@@ -10,7 +10,6 @@
 #include <initializer_list>
 
 
-using namespace std;
 
 
 namespace org
@@ -25,39 +24,39 @@ namespace org
 			class ServidorIETF : public ServidorSesion
 			{
 			private:
-				set<string> * 	setComandos = NULL;
+				std::set<std::string> * setComandos = NULL;
 			
 			public:
-				ServidorIETF( int iPuerto, const string & sRutaUsuarios = "", const string & sRutaContexto = "", bool _bPermiteAnonimo = false );
-				ServidorIETF( int iPuerto, const list<string> & lisComandos, const string & sRutaUsuarios = "", const string & sRutaContexto = "",
+				ServidorIETF( int iPuerto, const std::string & sRutaUsuarios = "", const std::string & sRutaContexto = "", bool _bPermiteAnonimo = false );
+				ServidorIETF( int iPuerto, const std::list<std::string> & lisComandos, const std::string & sRutaUsuarios = "", const std::string & sRutaContexto = "",
 								bool _bPermiteAnonimo = false );
-				ServidorIETF( int iPuerto, const initializer_list<string> & lisComandos, const string & sRutaUsuarios = "", const string & sRutaContexto = "",
+				ServidorIETF( int iPuerto, const std::initializer_list<std::string> & lisComandos, const std::string & sRutaUsuarios = "", const std::string & sRutaContexto = "",
 								bool _bPermiteAnonimo = false );
 				virtual ~ServidorIETF();
 			
-				void addComando( const string & sComando );
-				void addComandos( const list<string> & lisComandos );
-				void addComandos( const initializer_list<string> & lisComandos );
-				bool isComando( const string & sComando );
+				void addComando( const std::string & sComando );
+				void addComandos( const std::list<std::string> & lisComandos );
+				void addComandos( const std::initializer_list<std::string> & lisComandos );
+				bool isComando( const std::string & sComando );
 
 			protected:
-				string MensajeOk();
+				std::string MensajeOk();
 				
 				virtual bool EsComandoValido( Comando & comando );
 				
 			private:
-				string MensajeComandoFin();
-				string MensajeComandoInvalido();
-				string MensajeErrorSintactico();
-				string MensajeSesionAbierta();
-				string MensajeSesionCerrada();
-				string MensajeFaltaClave();
-				string MensajeImposibleAperturaSesion();
-				string MensajeUsuarioInvalido();
-				string MensajeSesionNoAbierta();
+				std::string MensajeComandoFin();
+				std::string MensajeComandoInvalido();
+				std::string MensajeErrorSintactico();
+				std::string MensajeSesionAbierta();
+				std::string MensajeSesionCerrada();
+				std::string MensajeFaltaClave();
+				std::string MensajeImposibleAperturaSesion();
+				std::string MensajeUsuarioInvalido();
+				std::string MensajeSesionNoAbierta();
 
 				bool EsComandoFin( Comando & comando, bool & bResponder );
-				bool EsComandoInicioSesion( Comando & comando, string & sUsuario, string & sClave );
+				bool EsComandoInicioSesion( Comando & comando, std::string & sUsuario, std::string & sClave );
 				bool EsComandoFinSesion( Comando & comando );				
 			};
 

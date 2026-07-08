@@ -3,6 +3,8 @@
 
 #include "Concatenar.h"
 
+using namespace std;
+
 
 namespace org
 {

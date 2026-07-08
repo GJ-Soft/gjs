@@ -8,6 +8,7 @@
 
 
 #include <Base.h>
+#include <SRuta.h>
 
 
 
@@ -15,7 +16,7 @@
 
 typedef struct
 {
-	const char *	p_cRuta;	
+	char *			p_cRuta;	
 	int				iAbierto;
 	FILE *			p_fObj;
 } SFicAleatorio;
@@ -27,6 +28,7 @@ typedef struct
 
 SFicAleatorio * SFicAlCrear ( const char * p_cRuta ); 
 SFicAleatorio * SFicAlCrearExt ( const char * p_cDir, const char * p_cFic );
+SFicAleatorio * SFicAlCrearRuta ( SRuta * p_rutRuta ); 
 
 void SFicAlDestruir ( SFicAleatorio ** p_p_ficObj );
 void SFicAlEliminar ( SFicAleatorio ** p_p_ficObj );

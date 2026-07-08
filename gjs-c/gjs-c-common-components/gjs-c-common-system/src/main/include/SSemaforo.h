@@ -2,12 +2,12 @@
 #define _ORG_GJS_C_CC_SSEMAFORO_H
 
 
-#include <Precompilacion.h>
+#include <BaseConfig.h>
 
 
 # if ( defined ( WIN ) )
 #	include <winnt.h>
-# elif ( defined ( UNIX ) || defined ( LINUX ) )
+# else
 #	include <semaphore.h>
 # endif
 
@@ -18,7 +18,7 @@ typedef struct
 {
 # if ( defined ( WIN ) )
 	HANDLE	hSemaforo;
-# elif ( defined ( UNIX ) || defined ( LINUX ) )
+# elif ( defined ( POSIX ) )
 	sem_t *	p_semObj;
 # else
 	int		iSemaforo;

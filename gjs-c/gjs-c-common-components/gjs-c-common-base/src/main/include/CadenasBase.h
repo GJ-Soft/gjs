@@ -43,6 +43,7 @@ int CadCompararExt ( const char * p_cAsciiz1, const char * p_cAsciiz2, int iMax1
 int CadEsAlfanumericoValido ( const char * p_cAsciiz );
 int CadEsAlfanumericoValidoExt ( const char * p_cAsciiz, int iMax );
 
+const char * CadValorSeguro ( const char * p_cAsciiz );
 void CadImprimir ( const char * p_cAsciiz );
 void CadImprimirEnLineas ( const char * p_cAsciiz, int iTamLinea );
 

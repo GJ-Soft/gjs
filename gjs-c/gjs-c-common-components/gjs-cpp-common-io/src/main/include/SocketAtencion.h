@@ -10,8 +10,6 @@
 
 
 
-using namespace std;
-
 
 namespace org
 {
@@ -30,16 +28,16 @@ namespace org
 				
 				int getId();
 				int getPuerto();
-				string getHost();
+				std::string getHost();
 				
 				bool EsValido();
 
-				int Enviar( const string & sMensaje );
-				int Recibir( string & sMensaje, int iMaxTam = 2048 );
+				int Enviar( const std::string & sMensaje );
+				int Recibir( std::string & sMensaje, int iMaxTam = 2048 );
 				bool Cerrar();
 				
-				SocketAtencion & operator << ( const string & sMensaje );
-				SocketAtencion & operator >> ( string & sMensaje );
+				SocketAtencion & operator << ( const std::string & sMensaje );
+				SocketAtencion & operator >> ( std::string & sMensaje );
 				
 			};
 

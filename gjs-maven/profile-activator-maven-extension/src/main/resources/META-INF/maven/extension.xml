@@ -1,0 +1,8 @@
+<extension>
+	<exportedPackages>
+		<exportedPackage>org.gjs.maven.extensions.profile</exportedPackage>
+	</exportedPackages>
+	<exportedArtifacts>
+		<exportedArtifact>org.gjs.maven.extensions:profile-activator-maven-extension</exportedArtifact>
+	</exportedArtifacts>
+</extension>

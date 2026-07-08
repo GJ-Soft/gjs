@@ -57,7 +57,7 @@ bool TestContexto01 ()
 		string sDir4 = ReemplazarTodos( DirectorioTestResultados(), '\\', '/' );
 		string sDir5 = ReemplazarTodos( DirectorioTestRecursos(), '\\', '/' );
 		if ( !EmpiezaPor( sDir4, sDir3 ) || !EmpiezaPor( sDir5, sDir3 ) || !TerminaPor( sDir4, "/test-nar/results" ) || 
-				!TerminaPor( sDir4, "/test-nar/resources" ) )
+				!TerminaPor( sDir4, "../test-classes" ) )
 		{
 			cout << "Error: Resultado incorrecto 2" << endl;
 			bRes = false;

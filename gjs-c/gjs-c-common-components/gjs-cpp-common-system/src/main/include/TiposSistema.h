@@ -24,8 +24,7 @@
 #define TIP_SIS_DESCONOCIDO					-1
 
 
-#define TIP_SIS_UNIX						0	
-#define TIP_SIS_LINUX						1
+#define TIP_SIS_POSIX						1	
 #define TIP_SIS_DOS							2
 #define TIP_SIS_WINDOWS						3
 #define TIP_SIS_MACKINTOSH					4
@@ -33,15 +32,12 @@
 
 
 
-#define TIP_SIS_TXT_UNIX					"UNIX"	
-#define TIP_SIS_TXT_LINUX					"LINUX"
+#define TIP_SIS_TXT_POSIX					"POSIX"	
 #define TIP_SIS_TXT_DOS						"DOS"
 #define TIP_SIS_TXT_WINDOWS					"WINDOWS"
 #define TIP_SIS_TXT_MACKINTOSH				"MACKINTOSH"	
 
 
-
-using namespace std;
 
 namespace org
 {
@@ -52,17 +48,12 @@ namespace org
             namespace common
             {
 
-
-
-
-
 const char * TipSisNombre ( int iId );
-int TipSisId ( const string & sNombre );
+int TipSisId ( const std::string & sNombre );
 bool TipSisEsValido ( int iId );
 
 bool TipSisEsDesconocido ( int iId );
-bool TipSisEsUnix ( int iId );
-bool TipSisEsLinux ( int iId );
+bool TipSisEsPosix ( int iId );
 bool TipSisEsDOS ( int iId );
 bool TipSisEsWindows ( int iId );
 bool TipSisEsMacKintosh ( int iId );

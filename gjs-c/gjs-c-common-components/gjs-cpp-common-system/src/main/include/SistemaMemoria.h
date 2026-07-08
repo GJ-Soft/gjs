@@ -19,10 +19,6 @@
 
 
 
-
-
-using namespace std;
-
 namespace org
 {
 	namespace gjs
@@ -34,21 +30,27 @@ namespace org
 
 
 
-unsigned long SisMemoriaTotal ();
-unsigned long SisMemoriaDisponible ();
-unsigned long SisMemoriaOcupada ();
+
+
+
+unsigned long long SisMemoriaTotal ();
+unsigned long long SisMemoriaDisponible ();
+unsigned long long SisMemoriaOcupada ();
 
 double SisMemoriaDisponiblePorc ();
 double SisMemoriaOcupadaPorc ();
 
-unsigned long SisMemoriaFisicaTotal ();
-unsigned long SisMemoriaFisicaDisponible ();
-unsigned long SisMemoriaFisicaOcupada ();
+unsigned long long SisMemoriaFisicaTotal ();
+unsigned long long SisMemoriaFisicaDisponible ();
+unsigned long long SisMemoriaFisicaOcupada ();
 
-unsigned long SisMemoriaFicPaginacionTotal ();
-unsigned long SisMemoriaFicPaginacionDisponible ();
-unsigned long SisMemoriaFicPaginacionOcupada ();
+unsigned long long SisMemoriaFicPaginacionTotal ();
+unsigned long long SisMemoriaFicPaginacionDisponible ();
+unsigned long long SisMemoriaFicPaginacionOcupada ();
 
+unsigned long long SisMemoriaHeapTotal ();
+unsigned long long SisMemoriaHeapMin ();
+unsigned long long SisMemoriaHeapMax ();
 
 
  			}

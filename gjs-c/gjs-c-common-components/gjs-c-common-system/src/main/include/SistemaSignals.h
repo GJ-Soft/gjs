@@ -18,7 +18,7 @@
 #define _ORG_GJS_C_CC_SISTEMASIGNALS_H
 
 
-#include <Precompilacion.h> 
+#include <BaseConfig.h> 
 #include <Funciones.h>
 
 
@@ -51,7 +51,7 @@
 #define SIS_SIG_DEPURACION								13
 #define SIS_SIG_TEMPORIZADOR							14
 
-#if ( defined ( UNIX ) || defined ( LINUX ) )
+#if ( defined ( POSIX ) )
 
 #define SIS_SIG_ERROR_BUS								15
 #define SIS_SIG_ERROR_PILA								16
@@ -79,7 +79,7 @@
 #endif	
 
 
-#if ( defined ( UNIX ) || defined ( LINUX ) )
+#if ( defined ( POSIX ) )
 
 #	define SIS_COD_SIG_ABORTAR							SIGABRT
 #	define SIS_COD_SIG_ALARMA							SIGALRM
@@ -114,26 +114,7 @@
 #	define SIS_COD_SIG_ERROR_REINICIO_SISTEMA			SIGPWR
 #	define SIS_COD_SIG_ERROR_LLAMADA_SISTEMA			SIGSYS
 
-#elif ( defined ( WIN ) )
-
-#	define SIS_COD_SIG_ABORTAR							-1
-#	define SIS_COD_SIG_ALARMA							-1
-#	define SIS_COD_SIG_ERROR_COMA_FLOTANTE				-1
-#	define SIS_COD_SIG_TERMINAL_DESCONECTADO			-1
-#	define SIS_COD_SIG_INSTRUCCION_ILEGAL				-1
-#	define SIS_COD_SIG_INTERRUPCION						-1
-#	define SIS_COD_SIG_FINALIZACION_OBLIGADA			-1
-#	define SIS_COD_SIG_ERROR_TUBERIA					-1
-#	define SIS_COD_SIG_SALIR							-1
-#	define SIS_COD_SIG_REFERENCIA_MEMORIA_INVALIDA		-1
-#	define SIS_COD_SIG_FINALIZACION						-1
-#	define SIS_COD_SIG_USUARIO_1						-1
-#	define SIS_COD_SIG_USUARIO_2						-1
-#	define SIS_COD_SIG_ERROR_BUS						-1
-#	define SIS_COD_SIG_TEMPORIZADOR						-1
-#	define SIS_COD_SIG_DEPURACION						-1
-
-#else // Caso DOS (GNU o VC):
+#else // Caso por defecto ( defined ( WIN ) )
 
 #	if ( defined ( VC ) )
 
@@ -156,64 +137,101 @@
 
 #	else // Caso GNU:
 
-#		define SIS_COD_SIG_ABORTAR							SIGABRT
-#		define SIS_COD_SIG_ALARMA							SIGALRM
-#		define SIS_COD_SIG_ERROR_COMA_FLOTANTE				SIGFPE
-#		define SIS_COD_SIG_TERMINAL_DESCONECTADO			SIGHUP
-#		define SIS_COD_SIG_INSTRUCCION_ILEGAL				SIGILL
-#		define SIS_COD_SIG_INTERRUPCION						SIGINT
-#		define SIS_COD_SIG_FINALIZACION_OBLIGADA			SIGKILL
-#		define SIS_COD_SIG_ERROR_TUBERIA					SIGPIPE
-#		define SIS_COD_SIG_SALIR							SIGQUIT
-#		define SIS_COD_SIG_REFERENCIA_MEMORIA_INVALIDA		SIGSEGV
-#		define SIS_COD_SIG_FINALIZACION						SIGTERM
-#		define SIS_COD_SIG_USUARIO_1						SIGUSR1
-#		define SIS_COD_SIG_USUARIO_2						SIGUSR2
-#		define SIS_COD_SIG_TEMPORIZADOR						SIGPROF
-#		define SIS_COD_SIG_DEPURACION						SIGTRAP
+#		define SIS_COD_SIG_ABORTAR							-1
+#		define SIS_COD_SIG_ALARMA							-1
+#		define SIS_COD_SIG_ERROR_COMA_FLOTANTE				-1
+#		define SIS_COD_SIG_TERMINAL_DESCONECTADO			-1
+#		define SIS_COD_SIG_INSTRUCCION_ILEGAL				-1
+#		define SIS_COD_SIG_INTERRUPCION						-1
+#		define SIS_COD_SIG_FINALIZACION_OBLIGADA			-1
+#		define SIS_COD_SIG_ERROR_TUBERIA					-1
+#		define SIS_COD_SIG_SALIR							-1
+#		define SIS_COD_SIG_REFERENCIA_MEMORIA_INVALIDA		-1
+#		define SIS_COD_SIG_FINALIZACION						-1
+#		define SIS_COD_SIG_USUARIO_1						-1
+#		define SIS_COD_SIG_USUARIO_2						-1
+#		define SIS_COD_SIG_TEMPORIZADOR						-1
+#		define SIS_COD_SIG_DEPURACION						-1
 
 #	endif
 
 #endif
 
 
-#define SIS_SIG_TXT_ABORTAR									"SIGABRT"
-#define SIS_SIG_TXT_ALARMA									"SIGALRM"
-#define SIS_SIG_TXT_ERROR_COMA_FLOTANTE						"SIGFPE"
-#define SIS_SIG_TXT_TERMINAL_DESCONECTADO					"SIGHUP"
-#define SIS_SIG_TXT_INSTRUCCION_ILEGAL						"SIGILL"
-#define SIS_SIG_TXT_INTERRUPCION							"SIGINT"
-#define SIS_SIG_TXT_FINALIZACION_OBLIGADA					"SIGKILL"
-#define SIS_SIG_TXT_ERROR_TUBERIA							"SIGPIPE"
-#define SIS_SIG_TXT_SALIR									"SIGQUIT"
-#define SIS_SIG_TXT_REFERENCIA_MEMORIA_INVALIDA				"SIGSEGV"
-#define SIS_SIG_TXT_FINALIZACION							"SIGTERM"
-#define SIS_SIG_TXT_USUARIO_1								"SIGUSR1"
-#define SIS_SIG_TXT_USUARIO_2								"SIGUSR2"
-#define SIS_SIG_TXT_DEPURACION								"SIGTRAP"
-#define SIS_SIG_TXT_TEMPORIZADOR							"SIGPROF"
+#define SIS_SIG_NOM_ABORTAR									"SIGABRT"
+#define SIS_SIG_NOM_ALARMA									"SIGALRM"
+#define SIS_SIG_NOM_ERROR_COMA_FLOTANTE						"SIGFPE"
+#define SIS_SIG_NOM_TERMINAL_DESCONECTADO					"SIGHUP"
+#define SIS_SIG_NOM_INSTRUCCION_ILEGAL						"SIGILL"
+#define SIS_SIG_NOM_INTERRUPCION							"SIGINT"
+#define SIS_SIG_NOM_FINALIZACION_OBLIGADA					"SIGKILL"
+#define SIS_SIG_NOM_ERROR_TUBERIA							"SIGPIPE"
+#define SIS_SIG_NOM_SALIR									"SIGQUIT"
+#define SIS_SIG_NOM_REFERENCIA_MEMORIA_INVALIDA				"SIGSEGV"
+#define SIS_SIG_NOM_FINALIZACION							"SIGTERM"
+#define SIS_SIG_NOM_USUARIO_1								"SIGUSR1"
+#define SIS_SIG_NOM_USUARIO_2								"SIGUSR2"
+#define SIS_SIG_NOM_DEPURACION								"SIGTRAP"
+#define SIS_SIG_NOM_TEMPORIZADOR							"SIGPROF"
 
-#if ( defined ( UNIX ) || defined ( LINUX ) )
+#if ( defined ( POSIX ) )
 
-#define SIS_SIG_TXT_ERROR_BUS								"SIGBUS"
-#define SIS_SIG_TXT_ERROR_PILA								"SIGSTKFLT"
-#define SIS_SIG_TXT_CAMBIO_ESTADO_HIJO						"SIGCHLD"
-#define SIS_SIG_TXT_CONTINUAR								"SIGCONT"
-#define SIS_SIG_TXT_PARAR									"SIGSTOP"
-#define SIS_SIG_TXT_PARAR_TECLADO							"SIGTSTP"
-#define SIS_SIG_TXT_LECTURA_SEGUNDO_PLANO					"SIGTTIN"
-#define SIS_SIG_TXT_ESCRITURA_SEGUNDO_PLANO					"SIGTTOU"
-#define SIS_SIG_TXT_AVISO_SOCKET							"SIGURG"
-#define SIS_SIG_TXT_ERROR_LIMITE_CPU						"SIGXCPU"
-#define SIS_SIG_TXT_ERROR_TAM_FICHERO						"SIGXFSZ"
-#define SIS_SIG_TXT_TEMPORIZADOR_VIRTUAL					"SIGVTALRM"
-#define SIS_SIG_TXT_CAMBIO_TAM_VENTANA						"SIGWINCH"
-#define SIS_SIG_TXT_EVENTO_ENTRADA_SALIDA					"SIGIO"
-#define SIS_SIG_TXT_ERROR_REINICIO_SISTEMA					"SIGPWR"
-#define SIS_SIG_TXT_ERROR_LLAMADA_SISTEMA					"SIGSYS"
+#define SIS_SIG_NOM_ERROR_BUS								"SIGBUS"
+#define SIS_SIG_NOM_ERROR_PILA								"SIGSTKFLT"
+#define SIS_SIG_NOM_CAMBIO_ESTADO_HIJO						"SIGCHLD"
+#define SIS_SIG_NOM_CONTINUAR								"SIGCONT"
+#define SIS_SIG_NOM_PARAR									"SIGSTOP"
+#define SIS_SIG_NOM_PARAR_TECLADO							"SIGTSTP"
+#define SIS_SIG_NOM_LECTURA_SEGUNDO_PLANO					"SIGTTIN"
+#define SIS_SIG_NOM_ESCRITURA_SEGUNDO_PLANO					"SIGTTOU"
+#define SIS_SIG_NOM_AVISO_SOCKET							"SIGURG"
+#define SIS_SIG_NOM_ERROR_LIMITE_CPU						"SIGXCPU"
+#define SIS_SIG_NOM_ERROR_TAM_FICHERO						"SIGXFSZ"
+#define SIS_SIG_NOM_TEMPORIZADOR_VIRTUAL					"SIGVTALRM"
+#define SIS_SIG_NOM_CAMBIO_TAM_VENTANA						"SIGWINCH"
+#define SIS_SIG_NOM_EVENTO_ENTRADA_SALIDA					"SIGIO"
+#define SIS_SIG_NOM_ERROR_REINICIO_SISTEMA					"SIGPWR"
+#define SIS_SIG_NOM_ERROR_LLAMADA_SISTEMA					"SIGSYS"
 
 #endif
 
+
+#define SIS_SIG_TXT_ABORTAR                     "Terminacion anormal del proceso"
+#define SIS_SIG_TXT_ALARMA                      "Temporizador de tiempo real expirado"
+#define SIS_SIG_TXT_ERROR_COMA_FLOTANTE         "Error aritmetico de coma flotante"
+#define SIS_SIG_TXT_TERMINAL_DESCONECTADO       "Terminal desconectado o proceso lider finalizado"
+#define SIS_SIG_TXT_INSTRUCCION_ILEGAL          "Instruccion de CPU no valida o no soportada"
+#define SIS_SIG_TXT_INTERRUPCION                "Interrupcion desde teclado (Ctrl+C)"
+#define SIS_SIG_TXT_FINALIZACION_OBLIGADA       "Terminacion forzosa no capturable ni ignorable"
+#define SIS_SIG_TXT_ERROR_TUBERIA               "Escritura en tuberia sin lectores activos"
+#define SIS_SIG_TXT_SALIR                       "Salida con volcado de memoria (Ctrl+\\)"
+#define SIS_SIG_TXT_REFERENCIA_MEMORIA_INVALIDA "Acceso a direccion de memoria no valida"
+#define SIS_SIG_TXT_FINALIZACION                "Solicitud de terminacion ordenada del proceso"
+#define SIS_SIG_TXT_USUARIO_1                   "Senal de usuario definida por la aplicacion (1)"
+#define SIS_SIG_TXT_USUARIO_2                   "Senal de usuario definida por la aplicacion (2)"
+#define SIS_SIG_TXT_DEPURACION                  "Punto de ruptura o seguimiento paso a paso"
+#define SIS_SIG_TXT_TEMPORIZADOR               "Temporizador de perfil del proceso expirado"
+
+#if ( defined ( POSIX ) )
+
+#define SIS_SIG_TXT_ERROR_BUS                   "Error de acceso al bus o alineacion de memoria"
+#define SIS_SIG_TXT_ERROR_PILA                  "Error en la pila de la pila de ejecucion"
+#define SIS_SIG_TXT_CAMBIO_ESTADO_HIJO          "Proceso hijo detenido, reanudado o finalizado"
+#define SIS_SIG_TXT_CONTINUAR                   "Reanudar proceso previamente detenido"
+#define SIS_SIG_TXT_PARAR                       "Detencion forzosa no capturable ni ignorable"
+#define SIS_SIG_TXT_PARAR_TECLADO               "Detencion solicitada desde teclado (Ctrl+Z)"
+#define SIS_SIG_TXT_LECTURA_SEGUNDO_PLANO       "Intento de lectura de terminal en segundo plano"
+#define SIS_SIG_TXT_ESCRITURA_SEGUNDO_PLANO     "Intento de escritura a terminal en segundo plano"
+#define SIS_SIG_TXT_AVISO_SOCKET                "Datos urgentes o fuera de banda en socket"
+#define SIS_SIG_TXT_ERROR_LIMITE_CPU            "Limite de tiempo de CPU superado"
+#define SIS_SIG_TXT_ERROR_TAM_FICHERO           "Tamano maximo de fichero superado"
+#define SIS_SIG_TXT_TEMPORIZADOR_VIRTUAL        "Temporizador virtual del proceso expirado"
+#define SIS_SIG_TXT_CAMBIO_TAM_VENTANA          "Cambio de tamano de la ventana de terminal"
+#define SIS_SIG_TXT_EVENTO_ENTRADA_SALIDA       "Evento asincrono de entrada/salida disponible"
+#define SIS_SIG_TXT_ERROR_REINICIO_SISTEMA      "Fallo de alimentacion o reinicio inminente"
+#define SIS_SIG_TXT_ERROR_LLAMADA_SISTEMA       "Llamada al sistema con argumento no valido"
+
+#endif
 
 
 
@@ -224,9 +242,16 @@ int SisSigCodigo ( int iSignal );
 int SisSigId ( int iCod );
 int SisSigEsProgramable ( int iSignal );
 int SisSigEsValida ( int iSignal );
+const char * SisSigNombre ( int iSignal );
 const char * SisSigDescripcion ( int iSignal );
+char * SisSigMensaje ( int iSignal );
 
 #if ( defined ( SIGNALS_PERMITIDOS ) )
+
+int SisSigEstaIgnorada ( int iSignal );
+int SisSigEstaBloqueada ( int iSignal );
+int SisSigTieneManejadorPorDefecto ( int iSignal );
+int SisSigTieneManejadorPropio ( int iSignal );
 
 
 int SisSigEnviar ( long lProceso, int iSignal );

@@ -2,6 +2,24 @@
 #define _ORG_GJS_C_CC_CPP_BASE_CONFIG
 
 
+#include <Precompilacion.h>
+
+
+#if ( defined ( POSIX ) )
+#  if ( defined ( CYGWIN )  )
+#   include <sys/cygwin.h>
+#  endif
+#	include <string.h>
+#	include <unistd.h>
+# else
+#	define NO_STRICT
+#	define WIN32_LEAN_AND_MEAN
+#	define NOMINMAX
+#   include <windows.h>	
+#endif
+
+
+
 #include <string>
 #include <list>
 #include <initializer_list>
@@ -26,7 +44,8 @@
 #include <locale>
 
 
-#include <Precompilacion.h>
+
+
 #include <Memoria.h>
 #include <ExpresionesRegulares.h>
 #include <InfoMemoria.h>

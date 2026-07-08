@@ -43,6 +43,10 @@ SArgumentos * SArgCrearDef ()
 							{
 								MemLiberar ( (void **) &p_cArg );
 							}
+						} 
+						else
+						{
+							MemLiberar ( (void **) &p_cArg );
 						}
 					}
 				}
@@ -86,6 +90,10 @@ SArgumentos * SArgCrear ( int iNumArg, char ** p_p_cArg )
 							{
 								MemLiberar ( (void **) &p_cArg );
 							}
+						}
+						else
+						{
+							MemLiberar ( (void **) &p_cArg );
 						}
 					}
 				}

@@ -13,12 +13,14 @@
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
-#include "SistemaErrores.h"
-
 #include "CommonSystemConfig.h"
 
+
+#include "SistemaErrores.h"
 #include <stack>  
 
+
+using namespace std;
 
 namespace org
 {

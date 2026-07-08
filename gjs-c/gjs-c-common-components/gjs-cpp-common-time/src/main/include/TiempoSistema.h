@@ -25,7 +25,7 @@
 #define _ORG_GJS_C_CC_CPP_TIEMPOSISTEMA_H
 
 
-using namespace std;
+
 
 namespace org
 {

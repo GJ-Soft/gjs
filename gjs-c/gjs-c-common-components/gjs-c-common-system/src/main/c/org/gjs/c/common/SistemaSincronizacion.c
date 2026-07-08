@@ -1,5 +1,5 @@
 /******************************************************************************/
-/*                         SistemaSincronizacion.cpp                          */
+/*                         SistemaSincronizacion.c                            */
 /*----------------------------------------------------------------------------*/
 /* Librería:  Sistema                                                         */
 /* Versión:   3.0.0                                                           */
@@ -54,9 +54,9 @@ int SisActivarVariableSinc ( varsinc * p_vsVariable )
 	{
 #	  if ( defined ( WIN ) )
 #	   if ( defined ( InterlockedCompareExchangePointer ) )
-		if ( InterlockedCompareExchange ( p_vsVariable, 1, 0 ) == 0 )
+		if ( InterlockedCompareExchange ( (LONG volatile *) p_vsVariable, 1, 0 ) == 0 )
 #      else
-		if ( InterlockedCompareExchange ( (PVOID *) p_vsVariable, (PVOID) 1, (PVOID) 0 ) == 0 )
+		if ( InterlockedCompareExchange ( (LONG volatile *) p_vsVariable, 1, 0 ) == 0 )
 #      endif
 #	  else
 		if ( pthread_spin_trylock ( p_vsVariable ) == 0 )
@@ -83,9 +83,10 @@ int SisEsperarYActivarVariableSinc ( varsinc * p_vsVariable )
 	if ( ES_VALIDO ( p_vsVariable ) )
 	{
 #	  if ( defined ( WIN ) )
+		// Bucle de espera activa de alta eficiencia (Spinlock)
 		while ( SisActivarVariableSinc ( p_vsVariable ) == 0 )
 		{
-			SisEsperar ( 1 );
+			YieldProcessor(); // Optimiza el bucle a nivel de hardware
 		}
 		iRes = 1;
 #	  else
@@ -106,7 +107,7 @@ int SisDesactivarVariableSinc ( varsinc * p_vsVariable )
 	if ( ES_VALIDO ( p_vsVariable ) )
 	{
 #	  if ( defined ( WIN ) )
-		InterlockedExchange ( p_vsVariable, 0 );
+		InterlockedExchange ( (LONG volatile *) p_vsVariable, 0 );
 #	  else
 		pthread_spin_unlock ( p_vsVariable );
 #	  endif
@@ -121,30 +122,51 @@ int SisDesactivarVariableSinc ( varsinc * p_vsVariable )
 
 #if ( !defined ( WIN ) )
 
-void SisInicializarVariableSinc ( varsinc * p_vsVariable )
+int SisInicializarVariableSinc ( varsinc * p_vsVariable )
 {
-	if ( ES_VALIDO ( p_vsVariable ) )
+    int iRes;
+	
+    if ( ES_VALIDO ( p_vsVariable ) )
+    {
+        if ( pthread_spin_init ( p_vsVariable, PTHREAD_PROCESS_PRIVATE ) == 0 )
+        {
+            iRes = 1;
+        }
+		else
+		{
+			iRes = 0;
+		}
+    }
+	else
 	{
-		pthread_spin_init ( p_vsVariable, PTHREAD_PROCESS_PRIVATE );
+		iRes = 0;
 	}
+    return ( iRes ); 
 }
 
-void SisFinalizarVariableSinc ( varsinc * p_vsVariable )
+int SisFinalizarVariableSinc ( varsinc * p_vsVariable )
 {
+    int iRes;
+	
 	if ( ES_VALIDO ( p_vsVariable ) )
 	{
-		pthread_spin_destroy ( p_vsVariable );
+		if ( pthread_spin_destroy ( p_vsVariable ) == 0 )
+        {
+            iRes = 1;
+        }
+		else
+		{
+			iRes = 0;
+		}
+    }
+	else
+	{
+		iRes = 0;
 	}
+    return ( iRes ); 
 }
 
 #endif
 
 
-/*
-> read_lock(&tasklist_lock);
-> child = find_task_by_pid(pid);
-> if (child)
-> get_task_struct(child);
-> read_unlock(&tasklist_lock);
-*/
 

@@ -20,35 +20,34 @@
 #include "Errores.h"
 
 
-//PENDIENTE: Adaptar a 64-bits
 
 
+// Limites por defecto (solo se consideran casos 64 y 32 bits):
+#if ( defined ( A64 ) )
+#	if ( defined ( WIN ) )
 
+#		define MEM_LIM_INF							0x0000000000010000ULL
+#		define MEM_LIM_SUP							0x00007FFFFFFFFFFFULL
+												  
+#	else 
 
-// Limites por defecto:
-#if ( defined ( WIN ) )
+#		define MEM_LIM_INF							0x0000000000010000ULL
+#		define MEM_LIM_SUP							0x00007FFFFFFFFFFFULL
 
-#	define MEM_LIM_INF							0x000100000UL
-#	define MEM_LIM_SUP							0x7FFFFFFFFUL
+#	endif
+#else 
+#	if ( defined ( WIN ) )
 
-#elif ( defined ( UNIX ) )
+#		define MEM_LIM_INF							0x00010000UL
+#		define MEM_LIM_SUP							0x7FFFFFFFUL
+												  
+#	else 
 
-#	define MEM_LIM_INF							0x0012D000UL
-#	define MEM_LIM_SUP							0x7FFFFFFFUL
+#		define MEM_LIM_INF							0x00010000UL
+#		define MEM_LIM_SUP							0x7FFFFFFFUL
 
-#elif ( defined ( LINUX ) )
-
-#	define MEM_LIM_INF							0x0012D000UL
-#	define MEM_LIM_SUP							0x7FFFFFFFUL
-
-#else // DOS
-
-#	define MEM_LIM_INF							0x0012D000UL
-#	define MEM_LIM_SUP							0x7FFFFFFFUL
-//#	define MEM_LIM_INF							0x0006000UL (NO SIMULADO)
-
-#endif
-
+#	endif
+#endif	
 
 
 
@@ -60,15 +59,6 @@
 
 
 
-// OJO: Esto es provisional y para linux/unix no fiunciona!!!
-
-static int		g_iBasMemIniciado = 0;
-static void *	p_vBasMemMinDireccionEspProc = NULL;
-static void *	p_vBasMemMaxDireccionEspProc = NULL;
-
-
-
-static void	MemInicializar ();
 
 
 
@@ -100,8 +90,6 @@ void * MemReservar ( int iNumBytes )
 
 	if ( iNumBytes > 0 )
 	{
-		MemInicializar ();
-
 #	  if ( defined ( WIN ) )
 		hMem = GetProcessHeap ();
 		if ( hMem != NULL )
@@ -176,16 +164,55 @@ int MemRedimensionar ( void ** p_p_vBloque, int iNumBytes )
 	iRes = 0;
 	if ( iNumBytes > 0 )
 	{
-		MemInicializar ();
-
 		p_vBloque = *p_p_vBloque;
+		if ( ES_NULO ( p_vBloque ) )
+		{
+			*p_p_vBloque = MemReservar ( iNumBytes );
+			if ( ES_VALIDO ( *p_p_vBloque ) )
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
 
 #	  if ( defined ( WIN ) )
-		hMem = GetProcessHeap ();
-		if ( hMem != NULL )
-		{
-			*p_p_vBloque = (void *) HeapReAlloc ( hMem, HEAP_ZERO_MEMORY, p_vBloque, iNumBytes );
-			if ( ES_VALIDO ( *p_p_vBloque ) )
+			hMem = GetProcessHeap ();
+			if ( hMem != NULL )
+			{
+				*p_p_vBloque = (void *) HeapReAlloc ( hMem, HEAP_ZERO_MEMORY, p_vBloque, iNumBytes );
+				if ( ES_VALIDO ( *p_p_vBloque ) )
+				{
+					iRes = 1;
+#				  if ( defined ( MODO_DEPURACION ) )
+					_MemBloqueReservado ( *p_p_vBloque, (unsigned long) iNumBytes );
+#				  endif
+				}
+				else
+				{
+					if ( HeapValidate ( hMem, 0, NULL ) == FALSE )
+					{
+						// Error grave por heap del proceso corrupto:
+						ERROR_ESTABLECER ( ERR_MEMORIA_INVALIDA );
+						FinalizarEjecucion ( ERR_GRAVE_TXT_MEMORIA );
+					}
+					else
+					{
+						ERROR_ESTABLECER ( ERR_MEMORIA_INSUFICIENTE );
+					}
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_MEMORIA_INVALIDA );
+			}
+#	  else
+			*p_p_vBloque = (void *) realloc ( p_vBloque, iNumBytes );
+			if ( ES_VALIDO ( p_p_vBloque ) )
 			{
 				iRes = 1;
 #			  if ( defined ( MODO_DEPURACION ) )
@@ -194,36 +221,10 @@ int MemRedimensionar ( void ** p_p_vBloque, int iNumBytes )
 			}
 			else
 			{
-				if ( HeapValidate ( hMem, 0, NULL ) == FALSE )
-				{
-					// Error grave por heap del proceso corrupto:
-					ERROR_ESTABLECER ( ERR_MEMORIA_INVALIDA );
-					FinalizarEjecucion ( ERR_GRAVE_TXT_MEMORIA );
-				}
-				else
-				{
-					ERROR_ESTABLECER ( ERR_MEMORIA_INSUFICIENTE );
-				}
+				ERROR_ESTABLECER ( ERR_MEMORIA_INSUFICIENTE );
 			}
-		}
-		else
-		{
-			ERROR_ESTABLECER ( ERR_MEMORIA_INVALIDA );
-		}
-#	  else
-		*p_p_vBloque = (void *) realloc ( p_vBloque, iNumBytes );
-		if ( ES_VALIDO ( p_p_vBloque ) )
-		{
-			iRes = 1;
-#		  if ( defined ( MODO_DEPURACION ) )
-			_MemBloqueReservado ( *p_p_vBloque, (unsigned long) iNumBytes );
-#		  endif
-		}
-		else
-		{
-			ERROR_ESTABLECER ( ERR_MEMORIA_INSUFICIENTE );
-		}
 #	  endif
+		}
 	}
 	else
 	{
@@ -238,15 +239,12 @@ int MemLiberar ( void ** p_p_vBloque )
 	void *			p_vBloque;
 #  if ( defined ( WIN ) )
 	HANDLE			hMem;
-#  elif ( defined ( GNU ) )
-	//mcheck_status	mchkInfo;
 #  endif
 #  if ( defined ( MODO_DEPURACION ) )
 	int				iNumBytes;
 #  endif
 
-
-	if ( ES_VALIDO ( p_p_vBloque ) && ( g_iBasMemIniciado == 1 ) )
+	if ( ES_VALIDO ( p_p_vBloque ) )
 	{
 		p_vBloque = *p_p_vBloque;
 		if ( MemEsValida ( p_vBloque ) == 1 )
@@ -277,27 +275,13 @@ int MemLiberar ( void ** p_p_vBloque )
 #		  if ( defined ( MODO_DEPURACION ) )
 				iNumBytes = malloc_usable_size ( p_vBloque );
 #		  endif
-			//iNumBytes = 0; // _msize ( p_vBloque );
-			// NOTA: Parece que el las primeras versiones de libc.so.6 hay un Bug con
-			// mprobe y mcheck:
-			// mchkInfo = mprobe ( p_vBloque );
-			// if ( mchkInfo == MCHECK_OK )
-			// {
             free ( p_vBloque );
-			// }
-			//else
-			//{
-			//	FILE * f;
-			//	f = fopen ( "aye.dat", "a" );
-			//	fprintf (f, "ERROR DE DIR_MEM mchkInfo=%d\n", mchkInfo );
-			//	fclose ( f );
-			//}
 			*p_p_vBloque = NULL;
 #		  if ( defined ( MODO_DEPURACION ) )
  			_MemBloqueLiberado ( p_vBloque, (unsigned long) iNumBytes );
 #		  endif
 
-#		  else // DOS o UNIX (no GNU):
+#		  else // No GNU:
 			iRes = 1;
 #		  if ( defined ( MODO_DEPURACION ) )
 				iNumBytes = malloc_usable_size ( p_vBloque );
@@ -338,7 +322,7 @@ int MemLiberarUnicode ( unichar ** p_p_cCadena )
 	int		iNumBytes;
 	HANDLE  hMem;
 
-	if ( ES_VALIDO ( p_p_cCadena ) && ( g_iBasMemIniciado == 1 ) )
+	if ( ES_VALIDO ( p_p_cCadena ) )
 	{
 		p_vBloque = (void *) *p_p_cCadena;
 		if ( MemEsValida ( p_vBloque ) == 1 )
@@ -371,7 +355,7 @@ int MemLiberarUnicode ( unichar ** p_p_cCadena )
 					else
 					{
 						iRes = 0;
-						//ERROR_ESTABLECER ( ERR_MEMORIA_INVALIDA );
+						ERROR_ESTABLECER ( ERR_MEMORIA_INVALIDA );
 					}
 				}
 				else
@@ -390,13 +374,13 @@ int MemLiberarUnicode ( unichar ** p_p_cCadena )
 			// Ya es un puntero nulo o no valido:
 			iRes = 1;
 			*p_p_cCadena = NULL;
-			//ERROR_ESTABLECER ( ERR_MEMORIA_INVALIDA );
+			ERROR_ESTABLECER ( ERR_MEMORIA_INVALIDA );
 		}
 	}
 	else
 	{
 		iRes = 0;
-		//ERROR_ESTABLECER ( ERR_PARAMETROS );
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
 	}
 	return ( iRes );
 # else
@@ -442,7 +426,7 @@ void MemLlenar ( void * p_vBloque, byte byValor, int iNumBytes )
 void MemCopiar ( void * p_vDest, void * p_vOrig, int iNumBytes )
 {
 	if ( ( iNumBytes > 0 ) && ES_VALIDO ( p_vDest ) && ES_VALIDO ( p_vOrig ) &&
-		 ( MemEsValida (  p_vDest ) == 1 ) )
+		 ( MemEsValida ( p_vDest ) == 1 ) )
 	{
 #	  if ( defined ( WIN ) )
 		CopyMemory ( (LPVOID) p_vDest, (CONST VOID *) p_vOrig, iNumBytes  );
@@ -456,27 +440,16 @@ void MemCopiar ( void * p_vDest, void * p_vOrig, int iNumBytes )
 	}
 }
 
-// La idea es que retorna cierto si, y solo si, es una direccion del espacio 'heap' del proceso:
+
 int MemEsValida ( void * p_vDireccion )
 {
 	int	iRes;
 
 	if ( ES_VALIDO ( p_vDireccion ) )
 	{
-		if ( ( p_vDireccion >= p_vBasMemMinDireccionEspProc ) && ( p_vDireccion <= p_vBasMemMaxDireccionEspProc ) )
+		if ( ( (uintptr_t) p_vDireccion >= (uintptr_t) MEM_LIM_INF ) && ( (uintptr_t)  p_vDireccion <= (uintptr_t) MEM_LIM_SUP ) )
 		{
 #	  if ( defined ( VC ) )
-			//if ( ( *((unsigned int *)p_vDireccion) != MEM_DIN_LIBERADA_2 ) &&
-			//		( *((unsigned int *)p_vDireccion) != MEM_DIN_LIBERADA ) &&
-			//		( *(((unsigned int *)p_vDireccion)+1) != MEM_DIN_LIBERADA_2 ) &&
-			//		( *(((unsigned int *)p_vDireccion)+1) != MEM_DIN_LIBERADA ) &&
-			//		( *(((unsigned int *)p_vDireccion)+2) != MEM_DIN_LIBERADA_2 ) &&
-			//		( *(((unsigned int *)p_vDireccion)+2) != MEM_DIN_LIBERADA ) )
-			//{
-			//	iRes = 0;
-			//}
-			//else
-			//{
 			if ( IsBadReadPtr ( p_vDireccion, sizeof ( unsigned int ) ) == 0 )
 			{
 				iRes = 1;
@@ -485,11 +458,6 @@ int MemEsValida ( void * p_vDireccion )
 			{
 				iRes = 0;
 			}
-			//}
-			//else
-			//{
-			//	iRes = 0;
-			//}
 #	  else
 			iRes = 1;
 #	  endif
@@ -555,49 +523,6 @@ byte MemValorByte ( unsigned long ulDireccion )
 	return ( byRes );
 }
 */
-
-static void	MemInicializar ()
-{
-#  if ( defined ( WIN ) )
-	SYSTEM_INFO		sysinfDatos;
-#  elif ( ( defined ( UNIX ) || defined ( LINUX ) ) && !defined ( CYGWIN ) )
-	struct rlimit	rlimDatos;
-#  endif
-
-	if ( g_iBasMemIniciado == 0 )
-	{
-#	  if ( defined ( WIN ) )
-
-		GetSystemInfo ( &sysinfDatos );
-		p_vBasMemMinDireccionEspProc = (void *) sysinfDatos.lpMinimumApplicationAddress;
-		p_vBasMemMaxDireccionEspProc = (void *) sysinfDatos.lpMaximumApplicationAddress;
-
-#	  elif (  ( defined ( UNIX ) || defined ( LINUX ) ) && !defined ( CYGWIN ) )
-
-		if ( getrlimit ( RLIMIT_DATA, &rlimDatos ) == 0 )
-		{
-			p_vBasMemMinDireccionEspProc = (void *) rlimDatos.rlim_cur;
-			p_vBasMemMaxDireccionEspProc = (void *) rlimDatos.rlim_max;
-		}
-		else
-		{
-			p_vBasMemMinDireccionEspProc = (void *) MEM_LIM_INF;
-			p_vBasMemMaxDireccionEspProc = (void *) MEM_LIM_SUP;
-		}
-
-#	  else
-
-		p_vBasMemMinDireccionEspProc = (void *) MEM_LIM_INF;
-		p_vBasMemMaxDireccionEspProc = (void *) MEM_LIM_SUP;
-
-#	  endif
-
-		g_iBasMemIniciado = 1;
-	}
-}
-
-
-
 
 
 

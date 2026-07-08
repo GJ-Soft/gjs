@@ -1,6 +1,11 @@
 #ifndef _ORG_GJS_C_CC_CPP_LOG_CONFIG_H
 #define _ORG_GJS_C_CC_CPP_LOG_CONFIG_H
 
+
+
+#include <CppBase.h>
+
+
 //#ifdef LOG4CXX
 #include <log4cxx/log4cxx.h>
 #include <log4cxx/xml/domconfigurator.h>
@@ -13,6 +18,8 @@
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/mdc.h>
+
+
 //#else ifdef LOG4CPP
 //#	include <log4cpp/Category.hh>
 //#	include <log4cpp/Appender.hh>
@@ -29,8 +36,6 @@
 
 #include <iostream>
 #include <sstream>
-
-#include <CppBase.h>
 
 
 

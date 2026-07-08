@@ -12,10 +12,10 @@
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
+#include "CommonSystemConfig.h"
 
 #include "CTemporizador.h"
 
-#include "CommonSystemConfig.h"
 
 
 using namespace std;

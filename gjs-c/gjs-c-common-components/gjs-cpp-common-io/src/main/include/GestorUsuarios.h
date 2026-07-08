@@ -4,7 +4,6 @@
 #include <map>
 
 
-using namespace std;
 
 namespace org
 {
@@ -19,23 +18,23 @@ namespace org
 			class GestorUsuarios 
 			{
 			private:
-				map<string, pair<string, string>>	mapUsuarios;
+				std::map<std::string, std::pair<std::string, std::string>>	mapUsuarios;
 				
 			public:
 				GestorUsuarios ();
-				GestorUsuarios ( const string & sRuta );
+				GestorUsuarios ( const std::string & sRuta );
 				virtual ~GestorUsuarios ();
 				
 			public:
 				int NumUsuarios () const;
-				bool Alta( const string & sUsuario, const string & sClave = "", const string & sSubdirectorio = "" );
-				void Baja( const string & sUsuario );				
-				bool Existe( const string & sUsuario );
-				bool Validar( const string & sUsuario, const string & sClave = "" );
-				string Subdirectorio( const string & sUsuario );	
+				bool Alta( const std::string & sUsuario, const std::string & sClave = "", const std::string & sSubdirectorio = "" );
+				void Baja( const std::string & sUsuario );				
+				bool Existe( const std::string & sUsuario );
+				bool Validar( const std::string & sUsuario, const std::string & sClave = "" );
+				std::string Subdirectorio( const std::string & sUsuario );	
 				void Limpiar ();
 				
-				bool Cargar( const string & sRuta );
+				bool Cargar( const std::string & sRuta );
 				
 			};
 		

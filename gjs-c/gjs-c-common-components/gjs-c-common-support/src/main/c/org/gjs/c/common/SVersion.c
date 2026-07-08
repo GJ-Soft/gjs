@@ -359,10 +359,12 @@ int SVerEstablecer ( SVersion * p_verObj, int iVersion, int iSubversion, int iRe
 {
 	int iRes;
 
-	if ( ( SVerEstablecerVersion ( p_verObj, iVersion ) == 1 ) &&
-		 ( SVerEstablecerSubversion ( p_verObj, iSubversion ) == 1 ) &&
-		 ( SVerEstablecerRevision ( p_verObj, iRevision ) == 1 ) &&
-		 ( SVerEstablecerFechaEnteroLargo ( p_verObj, lFecVersion ) == 1 ) )
+	iRes = SVerEstablecerVersion ( p_verObj, iVersion ) +
+		   SVerEstablecerSubversion ( p_verObj, iSubversion ) +
+		   SVerEstablecerRevision ( p_verObj, iRevision ) +
+		   SVerEstablecerFechaEnteroLargo ( p_verObj, lFecVersion );
+
+	if ( iRes == 4 )
 	{
 		iRes = 1;
 	}
@@ -377,10 +379,12 @@ int SVerEstablecerExt ( SVersion * p_verObj, int iVersion, int iSubversion, int 
 {
 	int iRes;
 
-	if ( ( SVerEstablecerVersion ( p_verObj, iVersion ) == 1 ) &&
-		 ( SVerEstablecerSubversion ( p_verObj, iSubversion ) == 1 ) &&
-		 ( SVerEstablecerRevision ( p_verObj, iRevision ) == 1 ) &&
-		 ( SVerEstablecerFecha ( p_verObj, p_fecVersion ) == 1 ) )
+	iRes = SVerEstablecerVersion ( p_verObj, iVersion ) +
+		   SVerEstablecerSubversion ( p_verObj, iSubversion ) +
+		   SVerEstablecerRevision ( p_verObj, iRevision ) +
+		   SVerEstablecerFecha ( p_verObj, p_fecVersion );
+
+	if ( iRes == 4 )
 	{
 		iRes = 1;
 	}
@@ -401,6 +405,7 @@ void SVerImprimir ( SVersion * p_verObj )
 		if ( ES_VALIDO ( p_cFecha ) )
 		{
 			printf ( VER_FORM_MENSAJE, p_verObj->iVersion, p_verObj->iSubversion,p_verObj-> iRevision, p_cFecha );
+			MemLiberar ( (void **) p_cFecha );
 		}
 		else
 		{

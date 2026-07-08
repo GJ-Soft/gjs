@@ -129,6 +129,7 @@ int AplicLogInicializarExt ( const char * p_cDirectorio, const char * p_cFichero
 			}
 			else
 			{
+				SLogDestruir ( &g_p_logAplicGestor );
 				iRes = 0;
 			}
 		}
@@ -265,6 +266,7 @@ int AplicLogAnotar ( const char * p_cTexto, ... )
 
 	va_start ( valArgumentos, p_cTexto );
 	p_cadValor = SCadGenerarConFormatoExt ( p_cTexto, valArgumentos );
+	va_end ( valArgumentos );
 	if ( ES_VALIDO ( p_cadValor ) )
 	{
 		AplicLogAnotarConNivel ( p_cadValor, LOG_NIVEL_INFORMACION );
@@ -276,7 +278,6 @@ int AplicLogAnotar ( const char * p_cTexto, ... )
 		ERROR_ESTABLECER ( ERR_MEMORIA_INSUFICIENTE );
 		iRes = 0;
 	}
-	va_end ( valArgumentos );
 	return ( iRes );
 }
 
@@ -288,6 +289,7 @@ int AplicLogAnotarForzado ( const char * p_cTexto, ... )
 
 	va_start ( valArgumentos, p_cTexto );
 	p_cadValor = SCadGenerarConFormatoExt ( p_cTexto, valArgumentos );
+	va_end ( valArgumentos );
 	if ( ES_VALIDO ( p_cadValor ) )
 	{
 		AplicLogAnotarConNivel ( p_cadValor, LOG_NIVEL_FORZADO );
@@ -299,7 +301,6 @@ int AplicLogAnotarForzado ( const char * p_cTexto, ... )
 		ERROR_ESTABLECER ( ERR_MEMORIA_INSUFICIENTE );
 		iRes = 0;
 	}
-	va_end ( valArgumentos );
 	return ( iRes );
 }
 
@@ -311,6 +312,7 @@ int AplicLogAnotarDepuracion ( const char * p_cTexto, ... )
 
 	va_start ( valArgumentos, p_cTexto );
 	p_cadValor = SCadGenerarConFormatoExt ( p_cTexto, valArgumentos );
+	va_end ( valArgumentos );
 	if ( ES_VALIDO ( p_cadValor ) )
 	{
 		AplicLogAnotarConNivel ( p_cadValor, LOG_NIVEL_DEPURACION );
@@ -322,7 +324,6 @@ int AplicLogAnotarDepuracion ( const char * p_cTexto, ... )
 		ERROR_ESTABLECER ( ERR_MEMORIA_INSUFICIENTE );
 		iRes = 0;
 	}
-	va_end ( valArgumentos );
 	return ( iRes );
 }
 
@@ -334,6 +335,7 @@ int AplicLogAnotarAviso ( const char * p_cTexto, ... )
 
 	va_start ( valArgumentos, p_cTexto );
 	p_cadValor = SCadGenerarConFormatoExt ( p_cTexto, valArgumentos );
+	va_end ( valArgumentos );
 	if ( ES_VALIDO ( p_cadValor ) )
 	{
 		AplicLogAnotarConNivel ( p_cadValor, LOG_NIVEL_AVISO );
@@ -342,10 +344,9 @@ int AplicLogAnotarAviso ( const char * p_cTexto, ... )
 	}
 	else
 	{
-		ERROR_ESTABLECER ( ERR_PARAMETROS );
+		ERROR_ESTABLECER ( ERR_MEMORIA_INSUFICIENTE );
 		iRes = 0;
 	}
-	va_end ( valArgumentos );
 	return ( iRes );
 }
 
@@ -357,6 +358,7 @@ int AplicLogAnotarError ( const char * p_cTexto, ... )
 
 	va_start ( valArgumentos, p_cTexto );
 	p_cadValor = SCadGenerarConFormatoExt ( p_cTexto, valArgumentos );
+	va_end ( valArgumentos );
 	if ( ES_VALIDO ( p_cadValor ) )
 	{
 		AplicLogAnotarConNivel ( p_cadValor, LOG_NIVEL_ERROR );
@@ -368,7 +370,6 @@ int AplicLogAnotarError ( const char * p_cTexto, ... )
 		ERROR_ESTABLECER ( ERR_MEMORIA_INSUFICIENTE );
 		iRes = 0;
 	}
-	va_end ( valArgumentos );
 	return ( iRes );
 }
 

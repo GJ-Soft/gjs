@@ -13,13 +13,13 @@
 
 typedef struct  
 {
-	SReloj *	p_rljObj;		
-	long		lHoraAlarma;
-	PPRCV		fAlarma;
-	thread 		thTID;
-	void *		p_vParams;
-	int			iAlarma;
-	int			iParar;
+	SReloj *		p_rljObj;		
+	long			lHoraAlarma;
+	PPRCV			fAlarma;
+	thread 			thTID;
+	void *			p_vParams;
+	int				iAlarma;
+	volatile int	iParar;
 	
 } SRelojProgramable;
 

@@ -13,9 +13,9 @@
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
-#include "TiposSistema.h"
-
 #include "CommonSystemConfig.h"
+
+#include "TiposSistema.h"
 
 
 
@@ -34,13 +34,9 @@ namespace org
 
 const char * TipSisNombre ( int iId )
 {
-	if ( iId == TIP_SIS_UNIX )
+	if ( iId == TIP_SIS_POSIX )
 	{
-		return ( TIP_SIS_TXT_UNIX );
-	}
-	else if ( iId == TIP_SIS_LINUX )	
-	{
-		return ( TIP_SIS_TXT_LINUX );
+		return ( TIP_SIS_TXT_POSIX );
 	}
 	else if ( iId == TIP_SIS_DOS )	
 	{
@@ -64,13 +60,9 @@ int TipSisId ( const string & sNombre )
 {
 	int iTipo = TIP_SIS_DESCONOCIDO;
 
-	if ( SonIgualesIn ( sNombre, TIP_SIS_TXT_UNIX ) == 1 )
+	if ( SonIgualesIn ( sNombre, TIP_SIS_TXT_POSIX ) == 1 )
 	{
-		iTipo = TIP_SIS_UNIX;
-	}
-	else if ( SonIgualesIn ( sNombre, TIP_SIS_TXT_LINUX ) == 1 )	
-	{
-		iTipo = TIP_SIS_LINUX;
+		iTipo = TIP_SIS_POSIX;
 	}
 	else if ( SonIgualesIn ( sNombre, TIP_SIS_TXT_DOS ) == 1 )	
 	{
@@ -90,8 +82,7 @@ int TipSisId ( const string & sNombre )
 
 bool TipSisEsValido ( int iId )
 {
-	return ( ( iId == TIP_SIS_UNIX ) ||
-		( iId == TIP_SIS_LINUX ) ||
+	return ( ( iId == TIP_SIS_POSIX ) ||
 		( iId == TIP_SIS_DOS ) ||
 		( iId == TIP_SIS_WINDOWS ) ||
 		( iId == TIP_SIS_MACKINTOSH ) );
@@ -102,14 +93,9 @@ bool TipSisEsDesconocido ( int iId )
 	return ( iId == TIP_SIS_DESCONOCIDO );
 }
 
-bool TipSisEsUnix ( int iId )
+bool TipSisEsPosix ( int iId )
 {
-	return ( iId == TIP_SIS_UNIX );
-}
-
-bool TipSisEsLinux ( int iId )
-{
-	return ( iId == TIP_SIS_LINUX );
+	return ( iId == TIP_SIS_POSIX );
 }
 
 bool TipSisEsDOS ( int iId )

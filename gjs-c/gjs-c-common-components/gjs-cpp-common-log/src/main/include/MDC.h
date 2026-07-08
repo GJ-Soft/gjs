@@ -6,8 +6,6 @@
 
 
 
-using namespace std;
-
 
 
 namespace org
@@ -20,9 +18,9 @@ namespace org
             {
                 namespace MDC
                 {
-			void MDCGuardar ( const string & sClave, const string & sValor );
-			string MDCRecuperar ( const string & sClave );
-			void MDCEliminar ( const string & sClave );
+			void MDCGuardar ( const std::string & sClave, const std::string & sValor );
+			std::string MDCRecuperar ( const std::string & sClave );
+			void MDCEliminar ( const std::string & sClave );
 
 			void MDCLimpiar ();
                 }

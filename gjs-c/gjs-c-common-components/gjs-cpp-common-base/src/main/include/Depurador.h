@@ -13,7 +13,6 @@
 #include <Objeto.h>
 
 
-using namespace std;
 
 
 namespace org
@@ -46,7 +45,7 @@ public:
 
 #  if ( defined ( MODO_DEPURACION ) )
 	bool EsTipo ( const char * p_cNombre );
-	bool EsTipo ( const string & sNombre );
+	bool EsTipo ( const std::string & sNombre );
 
 	int NumObjetos ();
 	void * DireccionObjeto ();
@@ -56,7 +55,7 @@ public:
 	void LimpiarError ();
 
 protected:
-	void ActualizarObjeto ( const string & sNombre, void * p_vDirObj, int iTamObj );
+	void ActualizarObjeto ( const std::string & sNombre, void * p_vDirObj, int iTamObj );
 
 #  endif
 };

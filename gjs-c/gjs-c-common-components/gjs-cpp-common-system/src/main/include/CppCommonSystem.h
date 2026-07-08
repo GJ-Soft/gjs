@@ -21,7 +21,6 @@
 
 
 
-using namespace std;
 
 namespace org
 {
@@ -33,7 +32,7 @@ namespace org
             {
 
 
-void SisInicializar ( const string & sNomProceso = "", const string & sDirTemporal = "" );
+void SisInicializar ( const std::string & sNomProceso = "", const std::string & sDirTemporal = "" );
 void SisFinalizar ();
 
 

@@ -10,7 +10,6 @@
 #include <map>
 
 
-using namespace std;
 
 
 namespace org
@@ -29,21 +28,21 @@ namespace org
 				IToString() {};
 				virtual ~IToString() {};
 
-				virtual string toString() = 0;
+				virtual std::string toString() = 0;
 				virtual IToString & Base() const {
                     return ( (IToString &) *this );
 				};
 
-				friend ostream& operator<< ( ostream & strm, IToString & obj );
+				friend std::ostream& operator<< ( std::ostream & strm, IToString & obj );
 
 			};
 
-			string ToString ( list<IToString *> & lista );
-			string ToString ( list<IToString *> * lista );
-			string ToString ( vector<IToString *> & vector );
-			string ToString ( vector<IToString *> * vector );
-			string ToString ( map<string, IToString *> & mapa );
-			string ToString ( map<string, IToString *> * mapa );
+			std::string ToString ( std::list<IToString *> & lista );
+			std::string ToString ( std::list<IToString *> * lista );
+			std::string ToString ( std::vector<IToString *> & vector );
+			std::string ToString ( std::vector<IToString *> * vector );
+			std::string ToString ( std::map<std::string, IToString *> & mapa );
+			std::string ToString ( std::map<std::string, IToString *> * mapa );
 
 			}
 		}

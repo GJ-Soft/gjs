@@ -2,6 +2,7 @@
 #include "TipoDatos.h"
 
 
+using namespace std;
 
 
 namespace org

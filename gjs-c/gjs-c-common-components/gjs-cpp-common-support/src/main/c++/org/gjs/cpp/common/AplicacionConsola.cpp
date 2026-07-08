@@ -161,10 +161,8 @@ void AplicConLimpiar ()
 		GetConsoleScreenBufferInfo ( hConsola, &csbiObj );
 		FillConsoleOutputCharacter ( hConsola, ' ', csbiObj.dwSize.X * csbiObj.dwSize.Y, coordPos, &dwCont );
 		SetConsoleCursorPosition ( hConsola, coordPos );
-#	  elif ( defined ( LINUX ) || defined ( UNIX ) )
-		printf ( "\e[2J" );
 #	  else
-		clrscr ();
+		printf ( "\e[2J" );
 #	  endif
 	}
 }

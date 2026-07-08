@@ -10,7 +10,6 @@
 #include <filesystem>
 
 
-using namespace std;
 
 
 namespace org
@@ -26,15 +25,15 @@ namespace org
 			class ServidorFTP : private ServidorIETF
 			{
 			private:
-				string 					sDirectorioRaiz;
-				filesystem::path 		pathDirectorioRaiz;
-				bool					bModoBinario = false;
-				int						iPuertoDatos = 0;
+				std::string 				sDirectorioRaiz;
+				std::filesystem::path 		pathDirectorioRaiz;
+				bool						bModoBinario = false;
+				int							iPuertoDatos = 0;
 				common::SocketServidor *	sockDatos = NULL;
 
 			public:
-				ServidorFTP( const string & sDirectorio, const string & sRutaUsuarios = "", const string & sRutaContexto = "" );
-				ServidorFTP( int iPuerto, int iPuertoDatos, const string & sDirectorio, const string & sRutaUsuarios = "", const string & sRutaContexto = "" );
+				ServidorFTP( const std::string & sDirectorio, const std::string & sRutaUsuarios = "", const std::string & sRutaContexto = "" );
+				ServidorFTP( int iPuerto, int iPuertoDatos, const std::string & sDirectorio, const std::string & sRutaUsuarios = "", const std::string & sRutaContexto = "" );
 				virtual ~ServidorFTP();
 
 				int getPuerto();
@@ -48,11 +47,11 @@ namespace org
 			private:
 				void ComandoRecibido( Comando & comando ) = 0;
 				void ComandoProcesado( Comando & comando, bool & bResultado ) = 0;
-				void SesionIniciada( const string & sUsuario ) = 0;
-				void SesionFinalizada( const string & sUsuario ) = 0;
+				void SesionIniciada( const std::string & sUsuario ) = 0;
+				void SesionFinalizada( const std::string & sUsuario ) = 0;
 
 				bool EsComandoValido( Comando & comando );
-				void ProcesarComandoSesion( Comando & comando, bool & bResponder, string & sRespuesta, bool & bResultadoProcesarComandoSesion, SocketAbierto * socket );
+				void ProcesarComandoSesion( Comando & comando, bool & bResponder, std::string & sRespuesta, bool & bResultadoProcesarComandoSesion, SocketAbierto * socket );
 
 			};
 

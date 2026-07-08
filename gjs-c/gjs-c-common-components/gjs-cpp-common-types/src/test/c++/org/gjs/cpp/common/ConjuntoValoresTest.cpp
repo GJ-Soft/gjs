@@ -215,7 +215,7 @@ static bool TestConjuntoValores03 ()
 
 	try
 	{
-		ConjuntoValores * conjunto = new ConjuntoValores( "../resources/data/valores-vacio.tsv" );
+		ConjuntoValores * conjunto = new ConjuntoValores( "../../test-classes/data/valores-vacio.tsv" );
 		if ( conjunto->NumValores() != 0 )
 		{
 			cout << "Error caso 1: NumValores=" << conjunto->NumValores() << endl;
@@ -223,7 +223,7 @@ static bool TestConjuntoValores03 ()
 		}
 		delete conjunto;
 		
-		conjunto = new ConjuntoValores( "../resources/data/valores.tsv" );
+		conjunto = new ConjuntoValores( "../../test-classes/data/valores.tsv" );
 		if ( conjunto->NumValores() != 3 )
 		{
 			cout << "Error caso 2: NumValores=" << conjunto->NumValores() << endl;

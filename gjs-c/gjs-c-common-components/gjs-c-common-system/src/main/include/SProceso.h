@@ -20,7 +20,7 @@
 typedef struct 
 {
 	//int		iPIDProcesoPadre;
-	int		iPID;
+	long			lPID;
 	//int		p_iProcesosHijos [ ENTORNO_MAX_PROCESOS_HIJOS ];
 	//int		iNumProcesosHijos;
 
@@ -34,7 +34,7 @@ SProceso * SPrcCrear ();
 void SPrcDestruir ( SProceso ** p_p_concicObj );
 
 
-int SPrcPID ( SProceso * p_concicObj );
+long SPrcPID ( SProceso * p_concicObj );
 /*int SPrcPIDPadre ( SProceso * p_concicObj );
 //int SPrcNumHijos ( SProceso * p_concicObj );
 int SPrcTienePadre ( SProceso * p_concicObj );

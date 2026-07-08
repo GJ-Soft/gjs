@@ -5,11 +5,17 @@
 #include <CppBase.h>
 #include <CppCommonTypes.h>
 
-#include <sys/types.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <unistd.h>
+#if ( defined ( WIN ) )
+#	include <winsock2.h>
+#	include <ws2tcpip.h>
+#	include <windows.h>
+#else
+#	include <sys/types.h>
+#	include <netdb.h>
+#	include <arpa/inet.h>
+#	include <netinet/in.h>
+#	include <unistd.h>
+#endif
 
 #include <string>
 #include <format>

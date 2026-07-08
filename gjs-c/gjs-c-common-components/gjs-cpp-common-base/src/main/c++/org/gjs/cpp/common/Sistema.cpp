@@ -15,17 +15,16 @@
 #include <arpa/inet.h>
 
 
-#if ( defined ( __CYGWIN__ )  )
-#   include <sys/cygwin.h>
-
-#	include <string.h>
-#	include <unistd.h>
+#if ( defined ( POSIX ) )
 extern char ** environ;
 #endif
 
 
+#if ( defined ( WIN ) )
+#  	define 	MAX_ENV_VALUE 	32767
+#endif
 
-
+using namespace std;
 
 namespace org
 {
@@ -159,11 +158,21 @@ bool ExisteDirectorio ( const string & sRuta )
 string VariableEntorno ( const string & sNombre )
 {
 	string sRes ( "" );
-	char * p_cValor = getenv ( sNombre.c_str () );
+#if ( defined ( POSIX ) )
+	char * p_cValor;
+#endif
+
+#if ( defined ( POSIX ) )
+	p_cValor = getenv ( sNombre.c_str () );
 	if ( p_cValor != NULL )
 	{
 		sRes = string ( p_cValor );
 	}
+#else
+ 	vector<char> buffer ( MAX_ENV_VALUE );
+	GetEnvironmentVariableA ( sNombre.c_str (),  (LPSTR) buffer.data (), (DWORD) buffer.size () );
+	sRes = string ( buffer.data () );
+#endif
 	return ( sRes );
 }
 
@@ -181,7 +190,8 @@ void EstablecerVariableEntorno ( const string & sNombre, const string & sValor )
 {
 	const char * p_cNombre = sNombre.c_str();
 	const char * p_cValor = sValor.c_str();
-#if ( defined ( __CYGWIN__ ) )
+#if ( defined ( POSIX ) )
+#  if  ( defined ( CYGWIN ) )
 	if ( ( p_cNombre != NULL ) && ( p_cValor != NULL ) )
 	{
 		int iTamNombre = strlen( p_cNombre );
@@ -237,18 +247,28 @@ void EstablecerVariableEntorno ( const string & sNombre, const string & sValor )
 	{
 		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", "Imposible establecer la variable de entorno con algun parametro NULO" ) );
 	}
-#else
+#  else
 	if ( setenv ( p_cNombre, p_cValor, 1 ) != 0 )
 	{
 		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
 	}
+#  endif
+#else
+	printf ( "*** SETENVIRONMENT %s=%s\n", p_cNombre, p_cValor);
+	if ( SetEnvironmentVariableA ( p_cNombre, p_cValor ) == 0 )
+	{
+		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( GetLastError() ) ) ) );
+	}
+	printf("RESULT=%s\n", getenv(p_cNombre));
+	fflush(stdout);
 #endif
 }
 
 void EliminarVariableEntorno ( const string & sNombre )
 {
 	const char * p_cNombre = sNombre.c_str();
-#if ( defined ( __CYGWIN__ ) )
+#if ( defined ( POSIX ) )
+#  if  ( defined ( CYGWIN ) )
 	if ( p_cNombre != NULL )
 	{
 		int iTamNombre = strlen( p_cNombre );
@@ -284,8 +304,14 @@ void EliminarVariableEntorno ( const string & sNombre )
 			}
 		}
 }
-#else
+#  else
 	if ( unsetenv ( p_cNombre ) != 0 )
+	{
+		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible eliminar la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
+	}
+# endif
+#else
+	if ( SetEnvironmentVariableA ( p_cNombre, NULL ) == 0 )
 	{
 		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible eliminar la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
 	}

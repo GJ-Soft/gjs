@@ -4,11 +4,11 @@
 
 
 #include <string>
+#include <initializer_list>
 #include <Comando.h>
 #include <ComandoIETF.h>
 
 
-using namespace std;
 
 
 namespace org
@@ -23,18 +23,18 @@ namespace org
 			class ResultadoComando : public Comando
 			{
 			private:
-				string	sRespuesta;
+				std::string	sRespuesta;
 				
 			public:
 				ResultadoComando();
-				ResultadoComando( ComandoIETF & comando, const string & _sRespuesta );
-				ResultadoComando( Comando & comando, const string & _sRespuesta );
-				ResultadoComando( const string & _sComando, const initializer_list<string> & lisArgumentos, const string & _sRespuesta );
-				ResultadoComando( const string & sExpresion, const string & _sRespuesta );
+				ResultadoComando( ComandoIETF & comando, const std::string & _sRespuesta );
+				ResultadoComando( Comando & comando, const std::string & _sRespuesta );
+				ResultadoComando( const std::string & _sComando, const std::initializer_list<std::string> & lisArgumentos, const std::string & _sRespuesta );
+				ResultadoComando( const std::string & sExpresion, const std::string & _sRespuesta );
 				virtual ~ResultadoComando();
 
-				string & getRespuestaEsperada();
-				void setRespuestaEsperada( const string & sValor );
+				std::string & getRespuestaEsperada();
+				void setRespuestaEsperada( const std::string & sValor );
 			};
 
  			}

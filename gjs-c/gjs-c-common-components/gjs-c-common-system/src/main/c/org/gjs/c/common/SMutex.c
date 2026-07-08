@@ -8,8 +8,8 @@
 
 
 
-static void SMtxInicializar ( SMutex * p_mtxObj, int iMaxVal );
-static void SMtxFinalizar ( SMutex * p_mtxObj );
+void _SMtxInicializar ( SMutex * p_mtxObj, int iMaxVal );
+void _SMtxFinalizar ( SMutex * p_mtxObj );
 
 
 
@@ -26,18 +26,20 @@ SMutex * SMtxCrearExt ( const char * p_cNombre, int iMaxVal )
 	p_mtxObj = (SMutex *) MemReservar ( sizeof ( SMutex ) );
 	if ( ES_VALIDO ( p_mtxObj ) )
 	{
-#  if ( defined ( UNIX ) || defined ( LINUX ) )
+#  if ( defined ( POSIX ) )
         if ( CadEmpiezaPor ( p_cNombre,  "/" ) == 0 )
         {
-                p_mtxObj->p_cNombre = CadCrear ( CadLongitud ( p_cNombre ) + 1 );
-                CadCopiarConFormato ( p_mtxObj->p_cNombre, "/%s", p_cNombre);
+			p_mtxObj->p_cNombre = CadCrear ( CadLongitud ( p_cNombre ) + 1 );
+			CadCopiarConFormato ( p_mtxObj->p_cNombre, "/%s", p_cNombre);
         }
 		else
 		{
 			p_mtxObj->p_cNombre = CadDuplicar ( p_cNombre );
 		}
+#  else
+		p_mtxObj->p_cNombre = CadDuplicar ( p_cNombre );
 #  endif
-        SMtxInicializar ( p_mtxObj, iMaxVal );
+        _SMtxInicializar ( p_mtxObj, iMaxVal );
 	}
 	return ( p_mtxObj );
 }
@@ -51,7 +53,7 @@ void SMtxDestruir ( SMutex ** p_p_mtxObj )
 		p_mtxObj = *p_p_mtxObj;
 		if ( ES_VALIDO ( p_mtxObj ) )
 		{
-			SMtxFinalizar (  p_mtxObj );
+			_SMtxFinalizar (  p_mtxObj );
 			MemLiberar ( (void **) &(p_mtxObj->p_cNombre) );
 			MemLiberar ( (void **) p_p_mtxObj );
 		}
@@ -80,8 +82,8 @@ int SMtxEsValido ( SMutex * p_mtxObj )
 	if ( ES_VALIDO ( p_mtxObj ) )
 	{
 #	  if ( defined ( WIN ) )
-		if ( p_mtxObj->hMutex > 0 )
-#	  elif ( defined ( UNIX ) || defined ( LINUX ) )
+		if ( ES_VALIDO ( p_mtxObj->hMutex ) )
+#	  elif ( defined ( POSIX ) )
 		// NOTA: Es una dirección de un espacio reservado del sistema:
 		if ( p_mtxObj->p_semMutex != NULL )
 #	 else
@@ -146,10 +148,10 @@ int SMtxEsperarAcceso ( SMutex * p_mtxObj )
 #		  if ( defined ( WIN ) )
 			dwRes = WaitForSingleObject ( p_mtxObj->hMutex, INFINITE );
 			if ( dwRes == WAIT_OBJECT_0 )
-#		  elif ( defined ( UNIX ) || defined ( LINUX ) )
+#		  elif ( defined ( POSIX ) )
 			if ( sem_wait ( p_mtxObj->p_semMutex ) == 0 )
 #		  else
-			if ( false )
+			if ( 0 )
 #		  endif
 			{
 				p_mtxObj->iAcceso = 1;
@@ -191,10 +193,10 @@ int SMtxAcceder ( SMutex * p_mtxObj )
 #         if ( defined ( WIN ) )
 			dwRes = WaitForSingleObject ( p_mtxObj->hMutex, 1 );
             if ( dwRes == WAIT_OBJECT_0 )
-#         elif ( defined ( UNIX ) || defined ( LINUX ) )
+#         elif ( defined ( POSIX ) )
              if ( sem_trywait ( p_mtxObj->p_semMutex ) == 0 )
 #         else
-			if ( false )
+			if ( 0 )
 #         endif
 			{
 				p_mtxObj->iAcceso = 1;
@@ -236,10 +238,10 @@ int SMtxDejarLibre ( SMutex * p_mtxObj )
 			{
 #			  if ( defined ( WIN ) )
 				if ( ReleaseMutex ( p_mtxObj->hMutex ) != 0 )
-#			  elif ( defined ( UNIX ) || defined ( LINUX ) )
+#			  elif ( defined ( POSIX ) )
 				if ( sem_post ( p_mtxObj->p_semMutex ) == 0 )
 #			  else
-				if ( true )
+				if ( 1 )
 #			  endif
 				{
 					p_mtxObj->iAcceso = 0;
@@ -269,13 +271,13 @@ int SMtxDejarLibre ( SMutex * p_mtxObj )
 	return ( iRes );
 }
 
-static void SMtxInicializar ( SMutex * p_mtxObj, int iMaxVal )
+void _SMtxInicializar ( SMutex * p_mtxObj, int iMaxVal )
 {
 	if ( ES_VALIDO ( p_mtxObj ) )
 	{
 #	 if ( defined ( WIN ) )
 		p_mtxObj->hMutex = NULL;
-#	 elif ( defined ( UNIX ) || defined ( LINUX ) )
+#	 elif ( defined ( POSIX ) )
 		p_mtxObj->p_semMutex = NULL;
 #	 else
 		p_mtxObj->iMutex = -1;
@@ -283,51 +285,62 @@ static void SMtxInicializar ( SMutex * p_mtxObj, int iMaxVal )
 		p_mtxObj->iAcceso = 0;
 		p_mtxObj->iCreado = 0;
 		p_mtxObj->iNivelesAcceso = 0;
-		if ( iMaxVal <= 0 )
-		{
-			p_mtxObj->iNivelesAcceso = 1;
-		}
 
-		if ( CadLongitud ( p_mtxObj->p_cNombre ) > 0 )
+#	  if ( defined ( WIN ) )
+		p_mtxObj->hMutex = OpenMutex ( SYNCHRONIZE, TRUE, p_mtxObj->p_cNombre );
+		if ( ES_NULO ( p_mtxObj->hMutex ) )
 		{
-#		  if ( defined ( WIN ) )
-			p_mtxObj->hMutex = OpenMutex ( SYNCHRONIZE, TRUE, p_mtxObj->p_cNombre );
-			if ( ES_NULO ( p_mtxObj->hMutex ) )
+			p_mtxObj->hMutex = CreateMutex ( NULL, FALSE, p_mtxObj->p_cNombre );
+			if ( ES_VALIDO ( p_mtxObj->hMutex ) )
 			{
-				p_mtxObj->hMutex = CreateMutex ( NULL, FALSE, p_mtxObj->p_cNombre );
-				if ( p_mtxObj->hMutex > 0 )
-				{
-					p_mtxObj->iCreado = 1;
-				}
+				p_mtxObj->iCreado = 1;
 			}
-#		  elif ( defined ( UNIX ) || defined ( LINUX ) )
-			p_mtxObj->p_semMutex = sem_open ( p_mtxObj->p_cNombre, 0x0 );
-			if ( ES_NULO ( p_mtxObj->p_semMutex ) )
-			{
-				p_mtxObj->p_semMutex = sem_open ( p_mtxObj->p_cNombre, O_CREAT, 0777, iMaxVal );
-				if ( p_mtxObj->p_semMutex != NULL )
-				{
-					p_mtxObj->iCreado = 1;
-				}
-			}
-#	  else
-			p_mtxObj->iMutex = -1;
-#	  endif
 		}
+		if ( ES_VALIDO ( p_mtxObj->hMutex ) )
+		{
+			if ( iMaxVal <= 0 )
+			{
+				p_mtxObj->iNivelesAcceso = 1;
+			}
+		}
+#	  elif ( defined ( POSIX ) )
+		p_mtxObj->p_semMutex = sem_open ( p_mtxObj->p_cNombre, 0x0 );
+		if ( p_mtxObj->p_semMutex == SEM_FAILED )
+		{
+			p_mtxObj->p_semMutex = sem_open ( p_mtxObj->p_cNombre, O_CREAT, 0777, iMaxVal );
+			if ( p_mtxObj->p_semMutex == SEM_FAILED )
+			{
+				p_mtxObj->p_semMutex = NULL;
+			}
+			else
+			{
+				p_mtxObj->iCreado = 1;
+			}
+		}
+		if ( ES_VALIDO ( p_mtxObj->p_semMutex ) )
+		{
+			if ( iMaxVal <= 0 )
+			{
+				p_mtxObj->iNivelesAcceso = 1;
+			}
+		}
+#  else
+		p_mtxObj->iMutex = -1;
+#  endif
 	}
 }
 
-static void SMtxFinalizar ( SMutex * p_mtxObj )
+void _SMtxFinalizar ( SMutex * p_mtxObj )
 {
 	if ( ES_VALIDO ( p_mtxObj ) )
 	{
 		SMtxDejarLibre ( p_mtxObj );
 #	  if ( defined ( WIN ) )
-		if (  p_mtxObj->hMutex > 0 )
+		if (ES_VALIDO ( p_mtxObj->hMutex ) )
 		{
 			CloseHandle ( p_mtxObj->hMutex );
 		}
-#	  elif ( defined ( UNIX ) || defined ( LINUX ) )
+#	  elif ( defined ( POSIX ) )
 		if ( p_mtxObj->p_semMutex != NULL )
 		{
 			sem_close ( p_mtxObj->p_semMutex );

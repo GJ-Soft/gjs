@@ -16,7 +16,7 @@
 #define REGEX_URI 			    "([a-z0-9-]+://)?(localhost|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+|[-a-z0-9]+(\\.[-a-z0-9]+)+)(:[0-9]+)?(/([-a-zA-Z0-9_%]+(/[-a-zA-Z0-9_%]+)*)?(\\.[a-zA-Z]+)?)?(\\?(([a-zA-Z0-9-_%]+=[a-zA-Z0-9-_%]+)(&([a-zA-Z0-9-_%]+=[a-zA-Z0-9-_%]+))*))?"
 
 
-using namespace std;
+
 
 namespace org
 {
@@ -28,7 +28,7 @@ namespace org
             {
 
 // TODO: Falta el test
-bool CumpleExpresionRegular( const string & cadena, const string & patron );
+bool CumpleExpresionRegular( const std::string & cadena, const std::string & patron );
 
 	
 

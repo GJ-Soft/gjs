@@ -23,7 +23,6 @@
 
 
 
-using namespace std;
 
 namespace org
 {
@@ -47,7 +46,7 @@ void AplicConLimpiar ();
 
 int AplicConLeerNumero ();
 int AplicConLeerNumeroEntre ( int iMin, int iMax );
-string * AplicConLeerCadena ();
+std::string * AplicConLeerCadena ();
 void AplicConEsperarRetorno ();
 
 bool AplicConDibujarLinea ( char cCar = '-' );

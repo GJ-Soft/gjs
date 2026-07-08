@@ -18,19 +18,14 @@
 #define _ORG_GJS_C_CC_CPP_CGESTORSIGNALS_H
 
 
-#include <Precompilacion.h>
+#include <BaseConfig.h>
 #include <Funciones.h>
 
 
 #include <SistemaSignals.h>
 
 
-#if (defined (UNIX) || defined (LINUX) )
 
-
-
-
-using namespace std;
 
 namespace org
 {
@@ -40,6 +35,11 @@ namespace org
 		{
             namespace common
             {
+
+
+
+#if (defined ( POSIX ) )
+
 
 
 class CGestorSignals 

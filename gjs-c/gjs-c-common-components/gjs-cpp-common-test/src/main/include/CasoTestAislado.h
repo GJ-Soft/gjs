@@ -8,7 +8,6 @@
 #include <cstdlib>
 
 
-using namespace std;
 using namespace org::gjs::cpp::common;
 
 
@@ -29,7 +28,7 @@ namespace org
 					int iCodigo = 0;
 					
 				public:
-					CasoTestAislado ( const string & sId, FUNCION_BOOL funcion, int iCodigoEsperado = EXIT_SUCCESS );
+					CasoTestAislado ( const std::string & sId, FUNCION_BOOL funcion, int iCodigoEsperado = EXIT_SUCCESS );
 					virtual ~CasoTestAislado () {};
 					
 				public:

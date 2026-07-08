@@ -4,7 +4,7 @@
 #include <Excepcion.h>
 
 
-using namespace std;
+
 
 namespace org
 {
@@ -18,7 +18,7 @@ namespace org
 			class ArgumentoInvalidoExcepcion : public Excepcion
 			{
 			public:
-				ArgumentoInvalidoExcepcion( const string & sModulo, const string & sRutina, const string & sArgumento );
+				ArgumentoInvalidoExcepcion( const std::string & sModulo, const std::string & sRutina, const std::string & sArgumento );
 			};
 
             }

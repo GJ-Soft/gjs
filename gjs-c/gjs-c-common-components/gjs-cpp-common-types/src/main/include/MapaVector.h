@@ -9,8 +9,6 @@
 #include <vector>
 
 
-using namespace std;
-
 
 namespace org
 {
@@ -25,8 +23,8 @@ namespace org
 			{
 			private:
 
-				vector<string> 				vecOrden;
-				unordered_map<string, T> 	mapObjetos;
+				std::vector<std::string> 			vecOrden;
+				std::unordered_map<std::string, T> 	mapObjetos;
 
 			public:
 				MapaVector();
@@ -36,21 +34,21 @@ namespace org
 				bool empty() const noexcept;
 				bool isValid() const noexcept;
 
-				bool exists( const string & sClave );
+				bool exists( const std::string & sClave );
 				T& at( size_t pos );
-				T& find( const string & sClave );
-				const vector<string> & getKeys();
+				T& find( const std::string & sClave );
+				const std::vector<std::string> & getKeys();
 
-				void push_back( const string & sClave, const T & obj );
-				void push_back( const string & sClave, T & obj );
+				void push_back( const std::string & sClave, const T & obj );
+				void push_back( const std::string & sClave, T & obj );
 				void pop_back();
 				void erase( size_t pos );
-				void erase( const string & sClave );
+				void erase( const std::string & sClave );
 
 				void clear() noexcept;
 
 				T& operator[]( size_t pos );
-				T& operator[]( const string & sClave );
+				T& operator[]( const std::string & sClave );
 			};
 
  			}

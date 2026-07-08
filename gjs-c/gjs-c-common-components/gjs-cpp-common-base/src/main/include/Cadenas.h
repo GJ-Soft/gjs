@@ -7,8 +7,6 @@
 #include <vector>
 
 
-using namespace std;
-
 
 
 namespace org
@@ -19,81 +17,81 @@ namespace org
 		{
             namespace common
             {
-			string ToLowerCase ( const string & sCadena );
-			string ToUpperCase ( const string & sCadena );
+			std::string ToLowerCase ( const std::string & sCadena );
+			std::string ToUpperCase ( const std::string & sCadena );
 
-            string ReemplazarTodos ( const string & sCadena, char cBuscar, char cReemplazo );
-			string ReemplazarTodos ( const string & sCadena, const string & sBuscar, const string & sReemplazo );
-			string EliminarTodos ( const string & sCadena, char cBuscar );
-			string EliminarTodos ( const string & sCadena, const string & sBuscar );
+            std::string ReemplazarTodos ( const std::string & sCadena, char cBuscar, char cReemplazo );
+			std::string ReemplazarTodos ( const std::string & sCadena, const std::string & sBuscar, const std::string & sReemplazo );
+			std::string EliminarTodos ( const std::string & sCadena, char cBuscar );
+			std::string EliminarTodos ( const std::string & sCadena, const std::string & sBuscar );
 
-            string FormatearBlancos ( const string & sCadena );
+            std::string FormatearBlancos ( const std::string & sCadena );
 
 			// TODO: Falta el test de esta
-			bool ContieneCaracter ( const string & sCadena, char c );
+			bool ContieneCaracter ( const std::string & sCadena, char c );
 			
-            bool ContieneBlancos ( const string & sCadena );
-            bool ContieneTabuladores ( const string & sCadena );
-            bool ContieneCaracteresNoImprimibles ( const string & sCadena );
-            bool ContieneCaracteresNoAlfanumericos ( const string & sCadena );
-            bool ContieneCaracteresNoImprimibles ( const string & sCadena );
-            bool ContieneCaracteresNoEstandar ( const string & sCadena );
+            bool ContieneBlancos ( const std::string & sCadena );
+            bool ContieneTabuladores ( const std::string & sCadena );
+            bool ContieneCaracteresNoImprimibles ( const std::string & sCadena );
+            bool ContieneCaracteresNoAlfanumericos ( const std::string & sCadena );
+            bool ContieneCaracteresNoImprimibles ( const std::string & sCadena );
+            bool ContieneCaracteresNoEstandar ( const std::string & sCadena );
 
-            bool CoherenciaParentesis ( const string & sCadena );
-            bool CoherenciaLlaves ( const string & sCadena );
-            bool CoherenciaCorchetes ( const string & sCadena );
-            bool CoherenciaParejaSignos ( const string & sCadena, char cSigAp, char cSigCl );
+            bool CoherenciaParentesis ( const std::string & sCadena );
+            bool CoherenciaLlaves ( const std::string & sCadena );
+            bool CoherenciaCorchetes ( const std::string & sCadena );
+            bool CoherenciaParejaSignos ( const std::string & sCadena, char cSigAp, char cSigCl );
 
-            string EliminarCaracter ( const string & sCadena, int iCar );
-            string EliminarCaracteres ( const string & sCadena, int iPosIni, int iNumCars );
-            string EliminarPrimerosCaracteres ( const string & sCadena, int iNumCars );
-            string EliminarUltimosCaracteres ( const string & sCadena, int iNumCars );
-            string EliminarApariciones ( const string & sCadena1, const string & sCadena2 );
-            string EliminarBlancos ( const string & sCadena );
-            string EliminarTabuladores ( const string & sCadena );
-            string EliminarCaracteresNoAlfanumericos ( const string & sCadena );
-            string EliminarCaracteresNoImprimibles ( const string & sCadena );
-            string EliminarCaracteresNoEstandar ( const string & sCadena );
-			string Limpiar( const string & sCadena );
+            std::string EliminarCaracter ( const std::string & sCadena, int iCar );
+            std::string EliminarCaracteres ( const std::string & sCadena, int iPosIni, int iNumCars );
+            std::string EliminarPrimerosCaracteres ( const std::string & sCadena, int iNumCars );
+            std::string EliminarUltimosCaracteres ( const std::string & sCadena, int iNumCars );
+            std::string EliminarApariciones ( const std::string & sCadena1, const std::string & sCadena2 );
+            std::string EliminarBlancos ( const std::string & sCadena );
+            std::string EliminarTabuladores ( const std::string & sCadena );
+            std::string EliminarCaracteresNoAlfanumericos ( const std::string & sCadena );
+            std::string EliminarCaracteresNoImprimibles ( const std::string & sCadena );
+            std::string EliminarCaracteresNoEstandar ( const std::string & sCadena );
+			std::string Limpiar( const std::string & sCadena );
 
-			string SubcadenaHasta ( const string & sCadena, char cBuscar );
-			string SubcadenaDesde ( const string & sCadena, char cBuscar );
+			std::string SubcadenaHasta ( const std::string & sCadena, char cBuscar );
+			std::string SubcadenaDesde ( const std::string & sCadena, char cBuscar );
 
-			string LTrim( const string & sCadena );
-			string RTrim( const string & sCadena );
-			string Trim( const string & sCadena );
+			std::string LTrim( const std::string & sCadena );
+			std::string RTrim( const std::string & sCadena );
+			std::string Trim( const std::string & sCadena );
 
-			bool TieneEspacios ( const string & sCadena );
-			bool EmpiezaPor ( const string & sCadena, const string & sPrefijo );
-			bool TerminaPor ( const string & sCadena, const string & sSufijo );
-			bool TerminaEnSaltoLinea ( const string & sCadena );
+			bool TieneEspacios ( const std::string & sCadena );
+			bool EmpiezaPor ( const std::string & sCadena, const std::string & sPrefijo );
+			bool TerminaPor ( const std::string & sCadena, const std::string & sSufijo );
+			bool TerminaEnSaltoLinea ( const std::string & sCadena );
 
-			string EliminarUltimoSaltoLinea( const string & sCadena );
+			std::string EliminarUltimoSaltoLinea( const std::string & sCadena );
 
-			bool SonIgualesIn ( const string & sCadena1, const string & sCadena2 );
+			bool SonIgualesIn ( const std::string & sCadena1, const std::string & sCadena2 );
 
-			bool EsPalabra ( const string & sCadena );
-			bool EsToken ( const string & sCadena );
-			bool EsNombreFichero ( const string & sCadena );
-			bool EsNatural ( const string & sCadena );
-			bool EsEntero ( const string & sCadena );
-			bool EsReal ( const string & sCadena );
-			bool EsBooleano ( const string & sCadena );
-			bool EsURL ( const string & sCadena );
-			bool EsURN ( const string & sCadena );
-			bool EsURI ( const string & sCadena );
+			bool EsPalabra ( const std::string & sCadena );
+			bool EsToken ( const std::string & sCadena );
+			bool EsNombreFichero ( const std::string & sCadena );
+			bool EsNatural ( const std::string & sCadena );
+			bool EsEntero ( const std::string & sCadena );
+			bool EsReal ( const std::string & sCadena );
+			bool EsBooleano ( const std::string & sCadena );
+			bool EsURL ( const std::string & sCadena );
+			bool EsURN ( const std::string & sCadena );
+			bool EsURI ( const std::string & sCadena );
 
-			size_t BuscarPrimero( const string & sCadena, const initializer_list<string> & delimitadores, size_t * tamDelim = NULL, size_t posIni = 0 );
-			size_t BuscarPrimero( const string & sCadena, const list<string> & delimitadores, size_t * tamDelim = NULL, size_t posIni = 0 );
+			size_t BuscarPrimero( const std::string & sCadena, const std::initializer_list<std::string> & delimitadores, size_t * tamDelim = NULL, size_t posIni = 0 );
+			size_t BuscarPrimero( const std::string & sCadena, const std::list<std::string> & delimitadores, size_t * tamDelim = NULL, size_t posIni = 0 );
 			// TODO: Falta el test de esta
-			size_t BuscarDesdeAtrasCaracter( const string & sCadena, char c, size_t desde = string::npos );
+			size_t BuscarDesdeAtrasCaracter( const std::string & sCadena, char c, size_t desde = std::string::npos );
 
-			vector<string> Separar ( string sCadena, const initializer_list<string> & delimitadores = { " " } );
-			vector<string> Separar ( string sCadena, const list<string> & delimitadores );
+			std::vector<std::string> Separar ( std::string sCadena, const std::initializer_list<std::string> & delimitadores = { " " } );
+			std::vector<std::string> Separar ( std::string sCadena, const std::list<std::string> & delimitadores );
 
 			// TODO: Falta el test de estas
-			int NumPalabras( const string & cadena, char delimitador );
-			string ExtraerPalabra( const string & sCadena, int iPos, char cDelimitador ); 
+			int NumPalabras( const std::string & cadena, char delimitador );
+			std::string ExtraerPalabra( const std::string & sCadena, int iPos, char cDelimitador ); 
 		
  			}
 		}

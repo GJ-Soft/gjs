@@ -6,11 +6,11 @@
 
 #include <Cliente.h>
 #include <Comando.h>
-#include <list>
+#include <string>
+#include <initializer_list>
 
 
 
-using namespace std;
 
 
 namespace org
@@ -25,11 +25,11 @@ namespace org
 			class ClienteComandos : public Cliente
 			{
 			public:
-				ClienteComandos( const string & sIP, int iPuerto );
+				ClienteComandos( const std::string & sIP, int iPuerto );
 				virtual ~ClienteComandos();
 				
-				void EnviarComando( Comando & comando, string & sRespuesta );
-				void EnviarComando( string sComando, const initializer_list<string> & lisArgumentos, string & sRespuesta );
+				void EnviarComando( Comando & comando, std::string & sRespuesta );
+				void EnviarComando( std::string sComando, const std::initializer_list<std::string> & lisArgumentos, std::string & sRespuesta );
 				
 			};
 

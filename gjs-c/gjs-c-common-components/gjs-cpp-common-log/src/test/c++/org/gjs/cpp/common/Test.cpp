@@ -10,7 +10,7 @@ extern bool TestMDC ();
 extern bool TestLog ();
 
 
-int main( int argc, char * argv[] )
+int main ( int argc, char * argv[] )
 {
 	InicializarBase();
 	int iRes = 0;
@@ -19,7 +19,7 @@ int main( int argc, char * argv[] )
 	mapTests[ "MDC" ] = TestMDC;
 	mapTests[ "Log" ] = TestLog;
 
-	string sTest( "null" );
+	string sTest ( "null" );
 	if ( argc > 1 )
 	{
 		sTest = argv[1];
@@ -29,7 +29,7 @@ int main( int argc, char * argv[] )
 		if ( mapTests.find( sTest ) != mapTests.end() )
 		{
 			FUNCION_BOOL fTest = mapTests[ sTest ];
-			if( !fTest() )
+			if( !fTest () )
 			{
 				iRes = -1;
 			}
@@ -47,5 +47,6 @@ int main( int argc, char * argv[] )
 	{
 		iRes = -1;
 	}
+	fflush ( stdout );
 	return ( iRes );
 }

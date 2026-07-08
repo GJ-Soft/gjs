@@ -48,15 +48,15 @@ int SisHorId ( const char * p_cNombre )
 
 	if ( ES_VALIDO ( p_cNombre ) )
 	{
-		if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, SIS_HOR_TXT_UTC ) == 1 )
+		if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, SIS_HOR_TXT_UTC ) == COMP_IGUAL )
 		{
 			iTipo = SIS_HOR_UTC;
 		}
-		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, SIS_HOR_TXT_GMT ) == 1 )	
+		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, SIS_HOR_TXT_GMT ) == COMP_IGUAL )	
 		{
 			iTipo = SIS_HOR_GMT;
 		}
-		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, SIS_HOR_TXT_MMT ) == 1 )	
+		else if ( CadCompararSinDistinguirTipoLetra ( p_cNombre, SIS_HOR_TXT_MMT ) == COMP_IGUAL )	
 		{
 			iTipo = SIS_HOR_MMT;
 		}

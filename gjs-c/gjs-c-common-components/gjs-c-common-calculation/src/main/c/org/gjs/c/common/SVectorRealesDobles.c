@@ -154,12 +154,14 @@ int SVecRealdInicializar ( SVectorRealesDobles * p_vecObj )
 {
 	int iRes;
 	int iElem;
+	int iNumElems;
 
 	if ( ES_VALIDO ( p_vecObj ) )
 	{
 		iRes = 1;
 		iElem = 0;
-		while ( ( iElem < SVecRealdNumElementos ( p_vecObj ) ) && ( iRes == 1 ) )
+		iNumElems = SVecRealdNumElementos ( p_vecObj );
+		while ( ( iElem < iNumElems ) && ( iRes == 1 ) )
 		{
 			iRes = SVecRealdAsignar ( p_vecObj, iElem, 0 );
 			iElem = iElem + 1;
@@ -176,12 +178,14 @@ int SVecRealdExiste ( SVectorRealesDobles * p_vecObj, double dDato )
 {
 	int iRes;
 	int iElem;
+	int iNumElems;
 
 	if ( ES_VALIDO ( p_vecObj ) ) 
 	{
 		iRes = 0;
 		iElem = 0;
-		while ( ( iElem < SVecRealdNumElementos ( p_vecObj ) ) && ( iRes == 0 ) )
+		iNumElems = SVecRealdNumElementos ( p_vecObj );
+		while ( ( iElem < iNumElems ) && ( iRes == 0 ) )
 		{
 			if ( MatEsIgual ( SVecRealdElemento ( p_vecObj, iElem ), dDato ) )
 			{

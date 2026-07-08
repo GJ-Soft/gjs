@@ -5,7 +5,6 @@
 #include <SistemaExcepcion.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -20,7 +19,7 @@ namespace org
 			{
 			
 			public:
-				SocketExcepcion ( const string & _sModulo, const string & _sRutina, int _iErrno );				
+				SocketExcepcion ( const std::string & _sModulo, const std::string & _sRutina, int _iErrno );				
 			};
 
  			}

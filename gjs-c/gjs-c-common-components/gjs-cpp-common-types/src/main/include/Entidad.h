@@ -9,7 +9,6 @@
 #include <IComparable.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -23,12 +22,12 @@ namespace org
 			class Entidad : public IComparable
 			{
 			private:
-				string					sNombre;
-				map<string, Atributo *>	mapDefinicion;
+				std::string							sNombre;
+				std::map<std::string, Atributo *>	mapDefinicion;
 
 			public:
 				Entidad ();
-				explicit Entidad ( const string & _sNombre );
+				explicit Entidad ( const std::string & _sNombre );
 				Entidad ( Entidad & obj );
 				explicit Entidad ( Entidad * obj );
 				virtual ~Entidad ();
@@ -37,21 +36,21 @@ namespace org
 				virtual long getHash() const override;
 
 			public:
-				string getNombre () const;
-				void setNombre ( const string & sValor );
+				std::string getNombre () const;
+				void setNombre ( const std::string & sValor );
 
 				virtual bool EsValida () const;
 
 				int NumAtributos ();
-				bool TieneAtributo ( const string & sAtributo );
-				Atributo * getAtributo ( const string & sAtributo );
+				bool TieneAtributo ( const std::string & sAtributo );
+				Atributo * getAtributo ( const std::string & sAtributo );
 				Atributo * getAtributo ( int iIndice );
-				vector<string> * ListaAtributos ();
-				int getIndiceAtributo ( const string & sAtributo );
+				std::vector<std::string> * ListaAtributos ();
+				int getIndiceAtributo ( const std::string & sAtributo );
 				void InsertarAtributo ( Atributo * atributo );
-				void InsertarAtributo ( TipoDatos tipo, const string & sAtributo, bool bAnulable =  true );
-				void InsertarAtributo ( Tipo & tipo, const string & sAtributo, bool bAnulable =  true );
-				void EliminarAtributo ( const string & sAtributo );
+				void InsertarAtributo ( TipoDatos tipo, const std::string & sAtributo, bool bAnulable =  true );
+				void InsertarAtributo ( Tipo & tipo, const std::string & sAtributo, bool bAnulable =  true );
+				void EliminarAtributo ( const std::string & sAtributo );
 				void EliminarAtributo ( int iIndice );
 				void LimpiarAtributos ();
 
@@ -63,7 +62,7 @@ namespace org
 
 				Entidad * Clonar();
 
-				virtual string toString () override;
+				virtual std::string toString () override;
 
 				Entidad & operator=( Entidad & obj );
 				bool operator== ( Entidad & obj );

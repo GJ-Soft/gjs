@@ -25,14 +25,6 @@
 
 
 
-// De momento SistemaLiberías sólo funciona para WIN:
-#if ( defined ( WIN ) )
-#	include "SistemaLibrerias.h"
-#endif
-
-
-
-
 
 #if ( defined ( UNIX ) || defined ( LINUX ) )
 #	define _DISP_TMP_INFO_PROCESOS					"/dev/ps"
@@ -52,7 +44,7 @@ namespace org
 
 
 # if ( ! defined ( WIN ) || ! defined ( _PSAPI_H_ ) )
-static string * g_p_sSisNomProceso = NULL;
+string * _g_p_sSisNomProceso = NULL;
 #endif
 
 
@@ -60,17 +52,17 @@ static string * g_p_sSisNomProceso = NULL;
 #if ( !defined ( WIN ) )
 void SisProcInicializar ( const string & sNomProceso )
 {
-	if ( ES_VALIDO ( g_p_sSisNomProceso ) )
+	if ( ES_VALIDO ( _g_p_sSisNomProceso ) )
 	{
-		delete g_p_sSisNomProceso;
+		delete _g_p_sSisNomProceso;
 	}
-	g_p_sSisNomProceso = new string ( sNomProceso );
+	_g_p_sSisNomProceso = new string ( sNomProceso );
 }
 
 void SisProcFinalizar ()
 {
-	delete g_p_sSisNomProceso;
-	g_p_sSisNomProceso = NULL;
+	delete _g_p_sSisNomProceso;
+	_g_p_sSisNomProceso = NULL;
 }
 #endif
 
@@ -121,9 +113,9 @@ string SisNombreProceso ()
 	}
 # else
 	// PENDIENTE: Mejorar para obtenerlo dinámicamente:
-	if ( ES_VALIDO ( g_p_sSisNomProceso ) )
+	if ( ES_VALIDO ( _g_p_sSisNomProceso ) )
 	{
-		sRes = *g_p_sSisNomProceso;
+		sRes = *_g_p_sSisNomProceso;
 	}
 # endif
 	return ( sRes );
@@ -156,11 +148,11 @@ string SisRutaEjecutable ()
 # elif ( defined ( GNU ) )
 	sDir = "";
 	sRes = "";
-	if ( ES_VALIDO ( g_p_sSisNomProceso ) )
+	if ( ES_VALIDO ( _g_p_sSisNomProceso ) )
 	{
-		if ( SisEsRutaValida ( *g_p_sSisNomProceso ) == 1 )
+		if ( SisEsRutaValida ( *_g_p_sSisNomProceso ) == 1 )
 		{
-			sRes = string ( *g_p_sSisNomProceso );
+			sRes = string ( *_g_p_sSisNomProceso );
 		}
 		else
 		{
@@ -177,14 +169,14 @@ string SisRutaEjecutable ()
 			sDir = string ( buffer.data () );
 		}
 	}
-	sRes = SisComponerRuta ( sDir, *g_p_sSisNomProceso );
+	sRes = SisComponerRuta ( sDir, *_g_p_sSisNomProceso );
 # else
 	if ( getcwd ( (string) buffer.data (), (size_t) buffer.size() () ) != NULL )
 	{
 		sDir = string ( buffer.data() );
 		if ( ES_VALIDO ( sDir ) )
 		{
-			sRes = SisComponerRuta ( sDir, *g_p_sSisNomProceso );
+			sRes = SisComponerRuta ( sDir, *_g_p_sSisNomProceso );
 		}
 	}
 # endif
@@ -365,11 +357,8 @@ long SisCrearSubproceso ( const string & sEjecutable, const string & sParametros
 	int					iUltDescrip;
 	int					iDescrip;
 #  if ( defined ( GNU ) )
-	char **			p_p_cArgv;
 	string			sArg;
 	int				iNumArgs;
-	int				iArg;
-	int				iError;
 #  endif
 #endif
 

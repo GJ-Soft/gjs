@@ -14,13 +14,13 @@
 /******************************************************************************/
 
 
+#include "CommonSystemConfig.h"
 
 #include "SistemaInformacion.h"
 
 #include "SistemaTiempo.h"
 #include "CContadorCiclos.h"
 
-#include "CommonSystemConfig.h"
 
 #	include <unistd.h>
 
@@ -50,10 +50,8 @@ int SisTipo ()
 
 # if ( defined ( WIN ) )
 	iRes = TIP_SIS_WINDOWS;
-# elif ( defined ( UNIX ) )
-	iRes = TIP_SIS_UNIX;
-# elif ( defined ( LINUX ) )
-	iRes = TIP_SIS_LINUX;
+# elif ( defined ( POSIX ) )
+	iRes = TIP_SIS_POSIX;
 # elif ( defined ( MACKINTOSH ) )
 	iRes = TIP_SIS_MACKINTOSH;
 # else // DOS
@@ -192,14 +190,9 @@ bool SisEsWindows ()
 	return ( TipSisEsWindows ( SisTipo () ) );
 }
 
-bool SisEsLinux ()
+bool SisEsPosix ()
 {
-	return ( TipSisEsLinux ( SisTipo () ) );
-}
-
-bool SisEsUnix ()
-{
-	return ( TipSisEsUnix ( SisTipo () ) );
+	return ( TipSisEsPosix ( SisTipo () ) );
 }
 
 bool SisEsMackintosh ()
@@ -214,175 +207,9 @@ bool SisIntegraGUI ()
 
 bool SisPermiteBifurcarProcesos ()
 {
-	return ( SisEsUnix () || SisEsLinux () );
+	return ( SisEsPosix () );
 }
-/* DETERMINAR TIPO GENE¨RICO:
 
- 
-
-
-	iEjecComando = 0;
-
-# else
-#  if ( ! defined ( UNIX ) )
-	struct utsname	utsnInfo;
-#  endif
-	struct tm *		p_tmFecha;
-	time_t			timFecha;
-	int				iSisDetec;
-
-	// Por la fecha se pueden reconocer si es DOS o UNIX, y diferentes versiones de LINUX/UNIX:
-	iOrdenBytes = -1;
-	iAdmiteSubprocesos = 0;
-	iSisDetec = 0;
-	iSistema = SIS_SO_DESCONOCIDO;
-	iTipo = SIS_TIP_SO_DESCONOCIDO;
-
-	timFecha = 0;
-	p_tmFecha = localtime ( &timFecha );
-	lFechaInicial = ( 1900 + p_tmFecha->tm_year ) * 10000 + ( p_tmFecha->tm_mon + 1 ) * 100 + p_tmFecha->tm_mday;
-
-	if ( system ( NULL ) != 0 )
-	{
-		iEjecComando = 1;
-	}
-	else
-	{
-		iEjecComando = 0;
-	}
-
-	if ( lFechaInicial == _CSISTEMA_FEC_INI_MAC )
-	{
-		iTipo = SIS_TIP_SO_MAC;
-		iSistema = SIS_SO_MAC;
-		iSisDetec = 1;
-	}
-	else if ( lFechaInicial == _CSISTEMA_FEC_INI_WIN32 )
-	{
-		iTipo = SIS_TIP_SO_IBM_PC;
-		iSistema = SIS_SO_WINDOWS;
-		iSisDetec = 1;
-	}
-	else if ( lFechaInicial == _CSISTEMA_FEC_INI_DOS )
-	{
-		// Puede ser cualquier DOS o WIN16:
-	}
-	else if ( lFechaInicial == _CSISTEMA_FEC_INI_IBM )
-	{
-		// Puede ser cualquier cosa (OS/2...) y también hay una version de MAC:
-	}
-	else if ( lFechaInicial == _CSISTEMA_FEC_INI_UNIX )
-	{
-		// También puede ser LINUX, el simulador de DOS de las últminas versiones de WINDOWS
-	}
-
-	if ( iSisDetec == 0 )
-	{
-#	  if ( !defined ( UNIX ) )
-		if ( uname ( &utsnInfo ) != -1 )
-		{
-			if ( lFechaInicial == _CSISTEMA_FEC_INI_UNIX )
-			{
-				if ( _EstaEnLista ( utsnInfo.sysname, _p_p_cVersionesDos ) == 1 )
-				{
-					iTipo = SIS_TIP_SO_IBM_PC;
-					iSistema = SIS_SO_DOS;
-				}
-				else
-				{
-					iTipo = SIS_TIP_SO_IBM_PC;
-					iSistema = SIS_SO_WINDOWS;
-				}
-			}
-			else if ( lFechaInicial == _CSISTEMA_FEC_INI_UNIX )
-			{
-				if ( _EstaEnLista ( utsnInfo.sysname, _p_p_cVersionesDos ) == 1 )
-				{
-					iTipo = SIS_TIP_SO_IBM_PC;
-					iSistema = SIS_SO_DOS;
-				}
-				else if ( _EstaEnLista ( utsnInfo.sysname, _p_p_cVersionesLinux ) == 1 )
-				{
-					iTipo = SIS_TIP_SO_IBM_PC;
-					iSistema = SIS_SO_LINUX;
-				}
-				else
-				{
-					iTipo = SIS_TIP_SO_UNIX;
-					iSistema = SIS_SO_UNIX;
-				}
-			}
-			else
-			{
-				if ( _EstaEnLista ( utsnInfo.sysname, _p_p_cVersionesLinux ) == 1 )
-				{
-					iTipo = SIS_TIP_SO_IBM_PC;
-					iSistema = SIS_SO_LINUX;
-				}
-				else if ( _EstaEnLista ( utsnInfo.sysname, _p_p_cVersionesUNIX ) == 1 )
-				{
-					iTipo = SIS_TIP_SO_UNIX;
-					iSistema = SIS_SO_UNIX;
-				}
-			}
-		}
-#	  endif
-*/
-/*
-    DWORD dwActiveProcessorMask;
-    DWORD dwProcessorType;
-Windows NT: 
-This member is no longer relevant, but is retained for compatibility with Windows 95 and previous versions of Windows NT. Use the wProcessorArchitecture, wProcessorLevel, and wProcessorRevision members to determine the type of processor. 
-
-  PROCESSOR_INTEL_386 
-PROCESSOR_INTEL_486 
-PROCESSOR_INTEL_PENTIUM 
-Windows NT: PROCESSOR_MIPS_R4000 
-Windows NT: PROCESSOR_ALPHA_21064 
-
-    WORD wProcessorLevel;
-Windows 95: This member is not used. 
-Windows NT: Specifies the system's architecture-dependent processor level. 
-If wProcessorArchitecture is PROCESSOR_ARCHITECTURE_MIPS, wProcessorLevel is of the form 00xx, where xx is an 8-bit implementation number (bits 8-15 of the PRId register). The member can be the following value: Value Meaning 
-0004 MIPS R4000 
-
-
-
-If wProcessorArchitecture is PROCESSOR_ARCHITECTURE_ALPHA, wProcessorLevel is of the form xxxx, where xxxx is a 16-bit processor version number (the low-order 16 bits of a version number from the firmware). The member can be one of the following values: Decimal Value Meaning 
-21064  Alpha 21064 
-21066 Alpha 21066 
-21164 Alpha 21164 
-
-
-
-If wProcessorArchitecture is PROCESSOR_ARCHITECTURE_PPC, wProcessorLevel is of the form xxxx, where xxxx is a 16-bit processor version number (the high-order 16 bits of the Processor Version Register). The member can be one of the following values: Decimal Value Meaning 
-1  PPC 601 
-3 PPC 603 
-4 PPC 604 
-6 PPC 603+ 
-9 PPC 604+ 
-20 PPC 620 
-
-    WORD wProcessorRevision;
-Windows 95: This member is not used. 
-Windows NT: Specifies an architecture-dependent processor revision. The following table shows how the revision value is assembled for each type of processor architecture. Processor Architecture Value 
-Intel 80386 or 80486 A value of the form xxyz. 
-If xx is equal to 0xFF, y - 0xA is the model number, and z is the stepping identifier. For example, an Intel 80486-D0 system returns 0xFFD0.
-
-If xx is not equal to 0xFF, xx + 'A' is the stepping letter and yz is the minor stepping. 
- 
-Intel Pentium, 
-Cyrix, or 
-NextGen 586 A value of the form xxyy, where xx is the model number and yy is the stepping. For example, a value of 0x0201 indicates Model 2, Stepping 1. 
-MIPS A value of the form 00xx, where xx is the 8-bit revision number of the processor (the low-order 8 bits of the PRId register). 
-ALPHA A value of the form xxyy, where xxyy is the low-order 16 bits of the processor revision number from the firmware. Display this value as follows: 
-Model 'A'+xx, Pass yy
- 
-PPC A value of the form xxyy, where xxyy is the low-order 16 bits of the Processor Version Register. Display this value as a fixed point number:
-xx.yy
- 
-
-*/
 int SisArquitecturaProcesador ()
 {
 	int iRes;

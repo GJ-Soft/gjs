@@ -356,7 +356,7 @@ bool TestLog05 ()
 		// TODO: log4cxx coge las propiedades pero no las encuentra al realizar la sustitucion por un bug
 		//map<string, string> mapPropiedades = LogPropiedadesDefecto ( "TestLog05" );
 		map<string, string> mapPropiedades;
-		if ( ! LogIni ( "../../nar/resources/config/file-log.xml", mapPropiedades ) )
+		if ( ! LogIni ( "../../test-classes/config/file-log.xml", mapPropiedades ) )
 		{
 			cout << "Funcionalidad de log no inicializada" << endl;
 			bRes = false;

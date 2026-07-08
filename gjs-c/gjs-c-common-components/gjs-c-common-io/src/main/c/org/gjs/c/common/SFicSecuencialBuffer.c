@@ -6,8 +6,8 @@
 
 
 
-static int SFicSecBufCargarBuffer ( SFicSecuencialBuffer * p_ficObj );
-static int SFicSecBufGuardarBuffer ( SFicSecuencialBuffer * p_ficObj );
+int _SFicSecBufCargarBuffer ( SFicSecuencialBuffer * p_ficObj );
+int _SFicSecBufGuardarBuffer ( SFicSecuencialBuffer * p_ficObj );
 
 
 
@@ -34,13 +34,38 @@ SFicSecuencialBuffer * SFicSecBufCrearExt ( const char * p_cDir, const char * p_
 {
 	SFicSecuencialBuffer * p_ficObj;
 	
-	p_ficObj= (SFicSecuencialBuffer *) MemReservar ( sizeof ( SFicSecuencial ) );
+	p_ficObj= (SFicSecuencialBuffer *) MemReservar ( sizeof ( SFicSecuencialBuffer ) );
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
 		p_ficObj->p_bufObj = SBufCrear ( ulTamBuf );
 		p_ficObj->p_ficObj = SFicSecCrearExt ( p_cDir, p_cFic );
 		p_ficObj->ulPosBuf = 0;
 		p_ficObj->ulLonBuf = 0;
+	}
+	else
+	{
+		p_ficObj = NULL;
+	}
+	return ( p_ficObj );
+}
+
+SFicSecuencialBuffer * SFicSecBufCrearRuta ( SRuta * p_rutRuta, unsigned long ulTamBuf )
+{
+	SFicSecuencialBuffer *	p_ficObj;
+	char *					p_cRuta;
+	
+	if ( SRutEsValida ( p_rutRuta ) == 1 )
+	{
+		if ( SRutEsFichero ( p_rutRuta ) == 1 )
+		{
+			p_cRuta = SRutRutaAbsolutaLit ( p_rutRuta );
+			p_ficObj = SFicSecBufCrear ( p_cRuta, ulTamBuf );
+			MemLiberar ( (void **) &p_cRuta );
+		}
+		else
+		{
+			p_ficObj = NULL;
+		}
 	}
 	else
 	{
@@ -245,7 +270,7 @@ int SFicSecBufCerrar ( SFicSecuencialBuffer * p_ficObj )
 		{
 			if ( p_ficObj->ulPosBuf > 0 )
 			{
-				if ( SFicSecBufGuardarBuffer ( p_ficObj ) == 1 )
+				if ( _SFicSecBufGuardarBuffer ( p_ficObj ) == 1 )
 				{
 					iRes = SFicSecCerrar ( p_ficObj->p_ficObj );
 				}
@@ -372,7 +397,7 @@ byte SFicSecBufLeer ( SFicSecuencialBuffer * p_ficObj )
 		{
 			if ( ( p_ficObj->ulLonBuf == 0 ) || ( p_ficObj->ulPosBuf == p_ficObj->ulLonBuf ) )
 			{
-				if ( SFicSecBufCargarBuffer ( p_ficObj ) == 1 )
+				if ( _SFicSecBufCargarBuffer ( p_ficObj ) == 1 )
 				{
 					byRes = SBufLeer ( p_ficObj->p_bufObj, p_ficObj->ulPosBuf );
 					p_ficObj->ulPosBuf = p_ficObj->ulPosBuf + 1;
@@ -424,7 +449,7 @@ int SFicSecBufLeerBuffer ( SFicSecuencialBuffer * p_ficObj, byte * p_byContenido
 					{
 						if ( SFicSecEstaEnFinal ( p_ficObj->p_ficObj ) == 0 )
 						{
-							if ( SFicSecBufCargarBuffer ( p_ficObj ) == 0 )
+							if ( _SFicSecBufCargarBuffer ( p_ficObj ) == 0 )
 							{
 								iRes = 0;
 							}
@@ -467,7 +492,7 @@ int SFicSecBufEscribir ( SFicSecuencialBuffer * p_ficObj, byte byValor )
 				p_ficObj->ulPosBuf = p_ficObj->ulPosBuf + 1;
 				if ( p_ficObj->ulPosBuf == SBufTam ( p_ficObj->p_bufObj ) )
 				{
-					if ( SFicSecBufGuardarBuffer ( p_ficObj ) == 1 )
+					if ( _SFicSecBufGuardarBuffer ( p_ficObj ) == 1 )
 					{
 						iRes = 1;
 					}
@@ -550,7 +575,7 @@ int SFicSecBufEscribirBuffer ( SFicSecuencialBuffer * p_ficObj, byte * p_byConte
 	return ( iRes );
 }
 
-static int SFicSecBufCargarBuffer ( SFicSecuencialBuffer * p_ficObj )
+int _SFicSecBufCargarBuffer ( SFicSecuencialBuffer * p_ficObj )
 {
 	int				iRes;
 	unsigned long	ulTam;
@@ -568,6 +593,7 @@ static int SFicSecBufCargarBuffer ( SFicSecuencialBuffer * p_ficObj )
 			{
 				p_ficObj->ulLonBuf = ulTam;
 				p_ficObj->ulPosBuf = 0;
+				iRes = 1;
 			}
 			else
 			{
@@ -586,7 +612,7 @@ static int SFicSecBufCargarBuffer ( SFicSecuencialBuffer * p_ficObj )
 	return ( iRes );
 }
 
-static int SFicSecBufGuardarBuffer ( SFicSecuencialBuffer * p_ficObj )
+int _SFicSecBufGuardarBuffer ( SFicSecuencialBuffer * p_ficObj )
 {
 	int				iRes;
 	unsigned long	ulTam;
@@ -594,7 +620,7 @@ static int SFicSecBufGuardarBuffer ( SFicSecuencialBuffer * p_ficObj )
 
 	if ( ES_VALIDO ( p_ficObj ) ) 
 	{
-		if ( ( p_ficObj->ulPosBuf > 0 ) && ( p_ficObj->ulPosBuf < p_ficObj->ulLonBuf ) )
+		if ( ( p_ficObj->ulPosBuf > 0 ) && ( p_ficObj->ulPosBuf <= p_ficObj->ulLonBuf ) )
 		{
 			ulTam = p_ficObj->ulPosBuf;
 			p_byBuffer = SBufDireccion ( p_ficObj->p_bufObj );
@@ -605,6 +631,7 @@ static int SFicSecBufGuardarBuffer ( SFicSecuencialBuffer * p_ficObj )
 				{
 					SBufLimpiar ( p_ficObj->p_bufObj );
 					p_ficObj->ulPosBuf = 0;
+					iRes = 1;
 				}
 				else
 				{

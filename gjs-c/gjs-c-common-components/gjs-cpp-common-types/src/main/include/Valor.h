@@ -5,8 +5,6 @@
 #include <IComparable.h>
 
 
-using namespace std;
-
 namespace org
 {
 	namespace gjs
@@ -19,12 +17,12 @@ namespace org
 			class Valor : public IComparable
 			{
 			private:
-				string 			sDato;
+				std::string 	sDato;
 				bool			bNulo;
 
 			public:
 				Valor ();
-				explicit Valor ( const string & _sDato );
+				explicit Valor ( const std::string & _sDato );
 				explicit Valor ( const char * p_cValor );
 				explicit Valor ( bool _valor );
 				explicit Valor ( short _valor );
@@ -51,14 +49,14 @@ namespace org
 				bool EsNulo () const;
 				void Anular ();
 
-				string getValor () const;
+				std::string getValor () const;
 				bool getValorBool () const;
 				long getValorEntero () const;
 				long long getValorEnteroLargo () const;
 				double getValorReal () const;
 				long double getValorRealLargo () const;
 
-				void setValor ( const string & sValor );
+				void setValor ( const std::string & sValor );
 				void setValor ( const char * p_cValor );
 				void setValor ( bool _valor );
 				void setValor ( short _valor );
@@ -82,7 +80,7 @@ namespace org
 
 				virtual bool EsValido () const;
 
-				virtual string toString () override;
+				virtual std::string toString () override;
 
 				Valor & operator=( Valor & obj );
 				bool operator== ( Valor & obj );

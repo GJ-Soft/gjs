@@ -10,7 +10,6 @@
 
 
 
-using namespace std;
 
 
 namespace org
@@ -31,7 +30,7 @@ namespace org
 				bool			bPermiteAnonimo = false;
 				
 			public:
-				ServidorSesion( int iPuerto, const string & sRutaUsuarios = "", const string & sRutaContexto = "", bool _bPermiteAnonimo = false );
+				ServidorSesion( int iPuerto, const std::string & sRutaUsuarios = "", const std::string & sRutaContexto = "", bool _bPermiteAnonimo = false );
 				virtual ~ServidorSesion();
 
 				virtual bool EsValido();
@@ -40,20 +39,20 @@ namespace org
 				bool RequiereSesion();
 				
 			private:
-				void ProcesarComando( Comando & comando, bool & bResponder, string & sRespuesta, bool & bResultado, SocketAbierto * socket );
+				void ProcesarComando( Comando & comando, bool & bResponder, std::string & sRespuesta, bool & bResultado, SocketAbierto * socket );
 
-				virtual string MensajeSesionAbierta() = 0;
-				virtual string MensajeSesionCerrada() = 0;
-				virtual string MensajeFaltaClave() = 0;
-				virtual string MensajeImposibleAperturaSesion() = 0;
-				virtual string MensajeUsuarioInvalido() = 0;
-				virtual string MensajeSesionNoAbierta() = 0;
+				virtual std::string MensajeSesionAbierta() = 0;
+				virtual std::string MensajeSesionCerrada() = 0;
+				virtual std::string MensajeFaltaClave() = 0;
+				virtual std::string MensajeImposibleAperturaSesion() = 0;
+				virtual std::string MensajeUsuarioInvalido() = 0;
+				virtual std::string MensajeSesionNoAbierta() = 0;
 				
-				virtual bool EsComandoInicioSesion( Comando & comando, string & sUsuario, string & sClave ) = 0;
+				virtual bool EsComandoInicioSesion( Comando & comando, std::string & sUsuario, std::string & sClave ) = 0;
 				virtual bool EsComandoFinSesion( Comando & comando ) = 0;
-				virtual void SesionIniciada( const string & sUsuario ); 
-				virtual void SesionFinalizada( const string & sUsuario ); 
-				virtual void ProcesarComandoSesion( Comando & comando, bool & bResponder, string & sRespuesta, bool & bResultado, SocketAbierto * socket ) = 0;
+				virtual void SesionIniciada( const std::string & sUsuario ); 
+				virtual void SesionFinalizada( const std::string & sUsuario ); 
+				virtual void ProcesarComandoSesion( Comando & comando, bool & bResponder, std::string & sRespuesta, bool & bResultado, SocketAbierto * socket ) = 0;
 				
 			};
 

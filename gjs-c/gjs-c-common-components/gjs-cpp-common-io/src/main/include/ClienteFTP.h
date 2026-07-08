@@ -2,13 +2,13 @@
 #define _ORG_GJS_C_CC_CPP_CLIENTE_FTP_H
 
 
+#include <string>
 
 #include <ClienteIETF.h>
 #include <SocketCliente.h>
 #include <PuertosIETF.h>
 
 
-using namespace std;
 using namespace org::gjs::cpp::common;
 
 
@@ -29,8 +29,8 @@ namespace org
 				int				iPuertoDatos = 0;
 
 			public:
-				ClienteFTP ( const string & sIP, int iPuerto = IETF_PUERTO_FTP );
-				ClienteFTP ( const string & sIP, int iPuerto, const string & _sUsuario, const string & _sClave = "" );
+				ClienteFTP ( const std::string & sIP, int iPuerto = IETF_PUERTO_FTP );
+				ClienteFTP ( const std::string & sIP, int iPuerto, const std::string & _sUsuario, const std::string & _sClave = "" );
 				virtual ~ClienteFTP ();
 
 				bool EsValido();
@@ -49,24 +49,24 @@ namespace org
 				bool setAscii();
 				bool setBinario();
 
-				bool EstadoServidor( string & sResultado );
+				bool EstadoServidor( std::string & sResultado );
 				bool PingServidor();
-				string InfoSistemaServidor();
+				std::string InfoSistemaServidor();
 
-				string DirectorioRemoto();
-				bool CambiarDirectorioRemoto( const string & sSubdirectorio );
-				bool CrearDirectorioRemoto( const string & sSubdirectorio );
+				std::string DirectorioRemoto();
+				bool CambiarDirectorioRemoto( const std::string & sSubdirectorio );
+				bool CrearDirectorioRemoto( const std::string & sSubdirectorio );
 
-				bool ContenidoDirectorioRemoto( vector<string> & vecContenido );
+				bool ContenidoDirectorioRemoto( std::vector<std::string> & vecContenido );
 
-				bool BajarFichero( const string & sFichero, const string & sRutaLocal );
-				bool SubirFichero( const string & sFichero, const string & sRutaLocal );
+				bool BajarFichero( const std::string & sFichero, const std::string & sRutaLocal );
+				bool SubirFichero( const std::string & sFichero, const std::string & sRutaLocal );
 
 			private:
 				void PrepararSocketDatos();
 				common::SocketCliente * AbrirSocketDatos();
 				void CerrarSocketDatos( common::SocketCliente ** sockDatos );
-				void ExcepcionProducida( const exception & ex );
+				void ExcepcionProducida( const std::exception & ex );
 			};
 
  			}

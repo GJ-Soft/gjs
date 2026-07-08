@@ -99,7 +99,7 @@ int SisSigCodigo ( int iSignal )
 		{
 			iRes = SIS_COD_SIG_DEPURACION;
 		}
-#	  if ( defined ( UNIX ) || defined ( LINUX ) )
+#	  if ( defined ( POSIX ) )
 		else if ( iSignal == SIS_SIG_ERROR_BUS )
 		{
 			iRes = SIS_COD_SIG_ERROR_BUS;
@@ -185,7 +185,7 @@ int SisSigId ( int iCod )
 	{
 		if ( iCod == SIS_COD_SIG_ABORTAR )
 		{
-			iRes = SIS_COD_SIG_ABORTAR;
+			iRes = SIS_SIG_ABORTAR;
 		}
 		else if ( iCod == SIS_COD_SIG_ALARMA )
 		{
@@ -243,7 +243,7 @@ int SisSigId ( int iCod )
 		{
 			iRes = SIS_SIG_DEPURACION;
 		}
-#	  if ( defined ( UNIX ) || defined ( LINUX ) )
+#	  if ( defined ( POSIX ) )
 		else if ( iCod == SIS_COD_SIG_ERROR_BUS )
 		{
 			iRes = SIS_SIG_ERROR_BUS;
@@ -327,7 +327,7 @@ int SisSigEsProgramable ( int iSignal )
 
 	if ( SisSigEstanPermitidos () == 1 )
 	{
-#	  if ( defined ( UNIX ) || defined ( LINUX ) )
+#	  if ( defined ( POSIX ) )
 		if ( ( iSignal == SIS_SIG_FINALIZACION_OBLIGADA ) ||
 			 ( iSignal == SIS_SIG_PARAR ) )
 #	  else
@@ -371,6 +371,141 @@ int SisSigEsValida ( int iSignal )
 	}
 	return ( iRes );
 }
+
+const char * SisSigNombre ( int iSignal )
+{
+	if ( iSignal == SIS_SIG_ABORTAR )
+	{
+		return ( SIS_SIG_NOM_ABORTAR );
+	}
+	else if ( iSignal == SIS_SIG_ALARMA )
+	{
+		return ( SIS_SIG_NOM_ALARMA );
+	}
+	else if ( iSignal == SIS_SIG_ERROR_COMA_FLOTANTE )
+	{
+		return ( SIS_SIG_NOM_ERROR_COMA_FLOTANTE );
+	}
+	else if ( iSignal == SIS_SIG_TERMINAL_DESCONECTADO )
+	{
+		return ( SIS_SIG_NOM_TERMINAL_DESCONECTADO );
+	}
+	else if ( iSignal == SIS_SIG_INSTRUCCION_ILEGAL )
+	{
+		return ( SIS_SIG_NOM_INSTRUCCION_ILEGAL );
+	}
+	else if ( iSignal == SIS_SIG_INTERRUPCION )
+	{
+		return ( SIS_SIG_NOM_INTERRUPCION );
+	}
+	else if ( iSignal == SIS_SIG_FINALIZACION_OBLIGADA )
+	{
+		return ( SIS_SIG_NOM_FINALIZACION_OBLIGADA );
+	}
+	else if ( iSignal == SIS_SIG_ERROR_TUBERIA )
+	{
+		return ( SIS_SIG_NOM_ERROR_TUBERIA );
+	}
+	else if ( iSignal == SIS_SIG_SALIR )
+	{
+		return ( SIS_SIG_NOM_SALIR );
+	}
+	else if ( iSignal == SIS_SIG_REFERENCIA_MEMORIA_INVALIDA )
+	{
+		return ( SIS_SIG_NOM_REFERENCIA_MEMORIA_INVALIDA );
+	}
+	else if ( iSignal == SIS_SIG_FINALIZACION )
+	{
+		return ( SIS_SIG_NOM_FINALIZACION );
+	}
+	else if ( iSignal == SIS_SIG_USUARIO_1 )
+	{
+		return ( SIS_SIG_NOM_USUARIO_1 );
+	}
+	else if ( iSignal == SIS_SIG_USUARIO_2 )
+	{
+		return ( SIS_SIG_NOM_USUARIO_2 );
+	}
+	else if ( iSignal == SIS_SIG_TEMPORIZADOR )
+	{
+		return ( SIS_SIG_NOM_TEMPORIZADOR );
+	}
+	else if ( iSignal == SIS_SIG_DEPURACION )
+	{
+		return ( SIS_SIG_NOM_DEPURACION );
+	}
+#  if ( defined ( POSIX ) )
+	else if ( iSignal == SIS_SIG_ERROR_BUS )
+	{
+		return ( SIS_SIG_NOM_ERROR_BUS );
+	}
+	else if ( iSignal == SIS_SIG_ERROR_PILA	 )
+	{
+		return ( SIS_SIG_NOM_ERROR_PILA );
+	}
+	else if ( iSignal == SIS_SIG_CAMBIO_ESTADO_HIJO )
+	{
+		return ( SIS_SIG_NOM_CAMBIO_ESTADO_HIJO );
+	}
+	else if ( iSignal == SIS_SIG_CONTINUAR )
+	{
+		return ( SIS_SIG_NOM_CONTINUAR );
+	}
+	else if ( iSignal == SIS_SIG_PARAR )
+	{
+		return ( SIS_SIG_NOM_PARAR );
+	}
+	else if ( iSignal == SIS_SIG_PARAR_TECLADO )
+	{
+		return ( SIS_SIG_NOM_PARAR_TECLADO );
+	}
+	else if ( iSignal == SIS_SIG_LECTURA_SEGUNDO_PLANO )
+	{
+		return ( SIS_SIG_NOM_LECTURA_SEGUNDO_PLANO );
+	}
+	else if ( iSignal == SIS_SIG_ESCRITURA_SEGUNDO_PLANO )
+	{
+		return ( SIS_SIG_NOM_ESCRITURA_SEGUNDO_PLANO );
+	}
+	else if ( iSignal == SIS_SIG_AVISO_SOCKET )
+	{
+		return ( SIS_SIG_NOM_AVISO_SOCKET );
+	}
+	else if ( iSignal == SIS_SIG_ERROR_LIMITE_CPU )
+	{
+		return ( SIS_SIG_NOM_ERROR_LIMITE_CPU );
+	}
+	else if ( iSignal == SIS_SIG_ERROR_TAM_FICHERO )
+	{
+		return ( SIS_SIG_NOM_ERROR_TAM_FICHERO );
+	}
+	else if ( iSignal == SIS_SIG_TEMPORIZADOR_VIRTUAL )
+	{
+		return ( SIS_SIG_NOM_TEMPORIZADOR_VIRTUAL );
+	}
+	else if ( iSignal == SIS_SIG_CAMBIO_TAM_VENTANA )
+	{
+		return ( SIS_SIG_NOM_CAMBIO_TAM_VENTANA );
+	}
+	else if ( iSignal == SIS_SIG_EVENTO_ENTRADA_SALIDA )
+	{
+		return ( SIS_SIG_NOM_EVENTO_ENTRADA_SALIDA );
+	}
+	else if ( iSignal == SIS_SIG_ERROR_REINICIO_SISTEMA )
+	{
+		return ( SIS_SIG_NOM_ERROR_REINICIO_SISTEMA );
+	}
+	else if ( iSignal == SIS_SIG_ERROR_LLAMADA_SISTEMA )
+	{
+		return ( SIS_SIG_NOM_ERROR_LLAMADA_SISTEMA );
+	}
+#  endif
+	else
+	{
+		return ( NULL );
+	}
+}
+
 
 const char * SisSigDescripcion ( int iSignal )
 {
@@ -434,7 +569,7 @@ const char * SisSigDescripcion ( int iSignal )
 	{
 		return ( SIS_SIG_TXT_DEPURACION );
 	}
-#  if ( defined ( UNIX ) || defined ( LINUX ) )
+#  if ( defined ( POSIX ) )
 	else if ( iSignal == SIS_SIG_ERROR_BUS )
 	{
 		return ( SIS_SIG_TXT_ERROR_BUS );
@@ -506,8 +641,173 @@ const char * SisSigDescripcion ( int iSignal )
 	}
 }
 
+char * SisSigMensaje ( int iSignal )
+{
+	return ( CadCrearConFormato ( "%s(%d): %s", SisSigNombre ( iSignal ), iSignal, SisSigDescripcion ( iSignal ) ) );
+}
+
 
 #if ( defined ( SIGNALS_PERMITIDOS ) )
+
+int SisSigEstaIgnorada ( int iSignal )
+{
+	struct sigaction 	sa;
+	int 				iRes;
+	int					iCod;
+
+	if ( SisSigEstanPermitidos () == 1 )
+	{
+		iCod = SisSigCodigo ( iSignal );
+		if ( iCod >= 0 )
+		{
+			if ( sigaction ( iCod, NULL, &sa ) == 0 )
+			{
+				if ( sa.sa_handler == SIG_IGN )
+				{
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SisSigEstaBloqueada ( int iSignal )
+{
+	sigset_t 	sigsetInfo;
+	int 		iRes;
+	int			iCod;
+
+	if ( SisSigEstanPermitidos () == 1 )
+	{
+		iCod = SisSigCodigo ( iSignal );
+		if ( iCod >= 0 )
+		{
+			if ( sigprocmask ( SIG_BLOCK, NULL, &sigsetInfo ) == 0 )
+			{
+				if ( sigismember ( &sigsetInfo, iCod ) == 1 )
+				{
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SisSigTieneManejadorPorDefecto ( int iSignal )
+{
+	struct sigaction 	sa;
+	int 				iRes;
+	int					iCod;
+
+	if ( SisSigEstanPermitidos () == 1 )
+	{
+		iCod = SisSigCodigo ( iSignal );
+		if ( iCod >= 0 )
+		{
+			if ( sigaction ( iCod, NULL, &sa ) == 0 )
+			{
+				if ( sa.sa_handler == SIG_DFL )
+				{
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SisSigTieneManejadorPropio ( int iSignal )
+{
+	struct sigaction 	sa;
+	int 				iRes;
+	int					iCod;
+
+	if ( SisSigEstanPermitidos () == 1 )
+	{
+		iCod = SisSigCodigo ( iSignal );
+		if ( iCod >= 0 )
+		{
+			if ( sigaction ( iCod, NULL, &sa ) == 0 )
+			{
+				if ( ( sa.sa_handler != SIG_DFL ) && 
+					( sa.sa_handler != SIG_IGN ) && 
+					( sa.sa_handler != SIG_ERR ) &&
+					( sa.sa_handler != SIG_HOLD ) )		
+				{
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 
 int SisSigEnviar ( long lPID, int iSignal )
 {
@@ -519,8 +819,18 @@ int SisSigEnviar ( long lPID, int iSignal )
 		iCod = SisSigCodigo ( iSignal );
 		if ( ( lPID >= 0 ) && ( iCod >= 0 ) )
 		{
-			kill ( lPID, iCod );
-			iRes = 1;
+			if ( kill ( lPID, iCod ) == 0 )
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
 		}
 	}
 	else
@@ -538,38 +848,11 @@ int SisSigAutoenviar ( int iSignal )
 int SisSigAdmiteEspera ()
 {
 	int			iRes;
-	static int	iPrueba = -1;
-	time_t		tiAntes;
-	time_t		tiDespues;
 
-	if ( SisSigEstanPermitidos () == 1 )
+	if ( ( SisSigEstaIgnorada ( SIS_SIG_ALARMA ) == 0 ) &&
+		 ( SisSigEstaBloqueada ( SIS_SIG_ALARMA ) == 0 ) )
 	{
-		if ( iPrueba < 0 )
-		{
-			time ( &tiAntes );
-			alarm ( 2 );
-			if ( pause () == 0 )
-			{
-				time ( &tiDespues );
-				if ( tiDespues - tiAntes < 1 )
-				{
-					iRes = 0;
-				}
-				else
-				{
-					iRes = 1;
-				}
-			}
-			else 
-			{
-				iRes = 0;
-			}
-			iPrueba = iRes;
-		}
-		else
-		{
-			iRes = iPrueba;
-		}
+		iRes = 1;
 	}
 	else
 	{
@@ -577,7 +860,6 @@ int SisSigAdmiteEspera ()
 	}
 	return ( iRes );
 }
-
 
 int SisDesactivarSignal ( int iSignal, PPRCI * p_p_procRutAnterior )
 {

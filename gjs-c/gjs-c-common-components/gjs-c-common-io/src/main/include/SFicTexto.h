@@ -9,6 +9,7 @@
 
 #include <EstilosFicheroTexto.h>
 #include <SFicSecuencial.h>
+#include <SRuta.h>
 
 
 
@@ -26,6 +27,7 @@ typedef struct
 
 SFicTexto * SFicTxtCrear ( const char * p_cRuta  ); 
 SFicTexto * SFicTxtCrearExt ( const char * p_cDir, const char * p_cFic, int iEstilo );
+SFicTexto * SFicTxtCrearRuta ( SRuta * p_rutRuta  ); 
 
 void SFicTxtDestruir ( SFicTexto ** p_p_ficObj );
 void SFicTxtEliminar ( SFicTexto ** p_p_ficObj );

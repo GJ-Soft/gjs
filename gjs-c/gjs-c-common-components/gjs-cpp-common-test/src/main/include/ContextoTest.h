@@ -6,8 +6,6 @@
 
 
 
-using namespace std;
-
 
 namespace org
 {
@@ -20,11 +18,11 @@ namespace org
 				namespace test
 				{
 
-			string DirectorioProyecto();
-			string DirectorioTrabajo();
-			string DirectorioTest();
-			string DirectorioTestRecursos();
-			string DirectorioTestResultados();
+			std::string DirectorioProyecto();
+			std::string DirectorioTrabajo();
+			std::string DirectorioTest();
+			std::string DirectorioTestRecursos();
+			std::string DirectorioTestResultados();
 
  				}
 			}

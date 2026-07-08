@@ -45,6 +45,31 @@ SFicAleatorio * SFicAlCrearExt ( const char * p_cDir, const char * p_cFic )
 	return ( p_ficObj );
 }
 
+SFicAleatorio * SFicAlCrearRuta ( SRuta * p_rutRuta )
+{
+	SFicAleatorio *	p_ficObj;
+	char *			p_cRuta;
+	
+	if ( SRutEsValida ( p_rutRuta ) == 1 )
+	{
+		if ( SRutEsFichero ( p_rutRuta ) == 1 )
+		{
+			p_cRuta = SRutRutaAbsolutaLit ( p_rutRuta );
+			p_ficObj = SFicAlCrear ( p_cRuta );
+			MemLiberar ( (void **) &p_cRuta );
+		}
+		else
+		{
+			p_ficObj = NULL;
+		}
+	}
+	else
+	{
+		p_ficObj = NULL;
+	}
+	return ( p_ficObj );
+}
+
 void SFicAlDestruir ( SFicAleatorio ** p_p_ficObj )
 {
 	SFicAleatorio * p_ficObj;
@@ -55,6 +80,7 @@ void SFicAlDestruir ( SFicAleatorio ** p_p_ficObj )
 
 		if ( ES_VALIDO ( p_ficObj ) )
 		{
+			SFicAlCerrar ( p_ficObj );
 			MemLiberar ( (void **) &(p_ficObj->p_cRuta) );
 			MemLiberar ( (void **) p_p_ficObj );
 		}
@@ -127,7 +153,7 @@ const char * SFicAlRuta ( SFicAleatorio * p_ficObj )
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		p_cRes = p_ficObj->p_cRuta;
+		p_cRes = (const char *)(p_ficObj->p_cRuta);
 	}
 	else
 	{
@@ -335,17 +361,24 @@ int SFicAlEstaAbierto ( SFicAleatorio * p_ficObj )
 
 unsigned long SFicAlTam  ( SFicAleatorio * p_ficObj )
 {
-	unsigned long  ulRes;
-	unsigned long  ulPos;
+	unsigned long  	ulRes;
+	int				lPos;	
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			ulPos = ftell ( p_ficObj->p_fObj );
-			fseek ( p_ficObj->p_fObj, 0, SEEK_END );
-			ulRes = ftell ( p_ficObj->p_fObj );
-			fseek ( p_ficObj->p_fObj, ulPos, SEEK_SET );
+			lPos = ftell ( p_ficObj->p_fObj );
+			if ( lPos >= 0 )
+			{
+				fseek ( p_ficObj->p_fObj, 0, SEEK_END );
+				ulRes = ftell ( p_ficObj->p_fObj );
+				fseek ( p_ficObj->p_fObj, lPos, SEEK_SET );
+			}
+			else
+			{
+				ulRes = 0;
+			}
 		}
 		else
 		{
@@ -488,7 +521,7 @@ int SFicAlEstaEnFinal ( SFicAleatorio * p_ficObj )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			if ( feof ( p_ficObj->p_fObj ) != 0 )
+			if ( SFicAlPos( p_ficObj ) >= SFicAlTam( p_ficObj )  )
 			{
 				iRes = 1;
 			}

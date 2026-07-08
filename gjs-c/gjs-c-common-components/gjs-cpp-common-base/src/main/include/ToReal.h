@@ -9,7 +9,6 @@
 
 
 
-using namespace std;
 
 namespace org
 {
@@ -20,10 +19,10 @@ namespace org
             namespace common
             {
 
-			double ToDouble ( const string & t );
+			double ToDouble ( const std::string & t );
 			double ToDouble ( char * t );
 			double ToDouble ( const char * t );
-			double ToDouble ( const wstring & t );
+			double ToDouble ( const std::wstring & t );
 			double ToDouble ( wchar_t * t );
 			double ToDouble ( const wchar_t * t );
 

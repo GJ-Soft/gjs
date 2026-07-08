@@ -71,22 +71,12 @@ int SisHayErrorDeMemoriaAgotada ( int iRefrescar )
 #	 endif
 	}
 # if ( defined ( WIN ) )
-	if ( g_iSisUltError == 8 )
-	{
-		iRes = 1;
-	}
-# elif ( defined ( UNIX ) )
-	if ( g_iSisUltError == 12 ) 
-	{
-		iRes = 1;
-	}
-# elif ( defined ( VC ) )
-	if ( g_iSisUltError == 25 )
+	if ( g_iSisUltError == ERROR_NOT_ENOUGH_MEMORY )
 	{
 		iRes = 1;
 	}
 # else
-	if ( g_iSisUltError == 25 )	
+	if ( g_iSisUltError == ENOMEM ) 
 	{
 		iRes = 1;
 	}
@@ -111,22 +101,12 @@ int SisErrTipo ()
 		iTipo = SIS_TIP_ERR_NINGUNO;
 	}
 # if ( defined ( WIN ) )
-	else if ( ( g_iSisUltError == 8 ) || ( g_iSisUltError == 14 ) )
-	{
-		iTipo = SIS_TIP_ERR_MEMORIA;
-	}
-# elif ( defined ( UNIX ) )
-	else if ( ( g_iSisUltError == 12 ) || ( g_iSisUltError == 14 ) || ( g_iSisUltError == 49 ) )
-	{
-		iTipo = SIS_TIP_ERR_MEMORIA;
-	}
-# elif ( defined ( VC ) )
-	else if ( ( g_iSisUltError == 11 ) || ( g_iSisUltError == 25 ) )
+	else if ( ( g_iSisUltError == ERROR_NOT_ENOUGH_MEMORY ) || ( g_iSisUltError == ERROR_OUTOFMEMORY ) )
 	{
 		iTipo = SIS_TIP_ERR_MEMORIA;
 	}
 # else
-	else if ( ( g_iSisUltError == 11 ) || ( g_iSisUltError == 25 ) )
+	else if ( ( g_iSisUltError == ENOMEM ) || ( g_iSisUltError == EFAULT ) )
 	{
 		iTipo = SIS_TIP_ERR_MEMORIA;
 	}
@@ -158,7 +138,8 @@ const char * SisErrDescripcion ()
 
 		FormatMessage ( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, (DWORD) g_iSisUltError,
 						MAKELANGID ( LANG_NEUTRAL, SUBLANG_DEFAULT ), (LPTSTR) &lpMsgBuf, 0, NULL );
-		p_cRes = (const char *) lpMsgBuf;
+		p_cRes = CadDuplicar ( (const char *) lpMsgBuf );
+		LocalFree ( lpMsgBuf );
 
 #     elif ( defined ( GNU ) )
 		p_cRes = (const char *) strerror ( g_iSisUltError );
@@ -167,7 +148,7 @@ const char * SisErrDescripcion ()
 		{
 			if ( ES_VALIDO ( sys_errlist [ g_iSisUltError ] ) )
 			{
-				p_cRes = (const char *) sys_errlist [ g_iSisUltError ] );
+				p_cRes = (const char *) sys_errlist [ g_iSisUltError ];
 			}
 		}
 # endif
@@ -244,8 +225,9 @@ char * SisErrMensajeExt ( const char * p_cModulo, const char * p_cRutina )
 
 void SisErrImprimir ()
 {
-	printf ( SisErrMensaje ( 1 ) );
-	printf ( "\n" );
+	char * p_cMsj = SisErrMensaje ( 1 );
+	printf ( "%s\n", p_cMsj );
+	MemLiberar ( (void **) &p_cMsj );
 }
 
 void SisErrApilar ( const char * p_cModulo, const char * p_cRutina, int iRefrescar )
@@ -257,12 +239,15 @@ void SisErrApilar ( const char * p_cModulo, const char * p_cRutina, int iRefresc
 		if ( ES_NULO ( g_pillitErrores ) )
 		{
 			g_pillitErrores = SPilLitCrear ();
+		}
+		if ( ES_VALIDO ( g_pillitErrores ) )
+		{
 			p_cMsj = SisErrMensajeExt ( p_cModulo, p_cRutina );
 			if ( SPilLitApilar ( g_pillitErrores, p_cMsj ) == 0 )
 			{
 				MemLiberar ( (void **) &p_cMsj );
 			}
-		}	
+		}
 	}
 }
 
@@ -283,7 +268,6 @@ int SisMaxError ()
 # if ( defined ( WIN ) )
 	iMaxError = 16000;
 # elif ( defined ( GNU ) )
-	int			g_iSisUltError;
 	char	*	p_cMsj;
 
 	g_iSisUltError = 1;
@@ -297,8 +281,6 @@ int SisMaxError ()
 	}
 	iMaxError = g_iSisUltError - 1;
 # else
-	int g_iSisUltError;
-
 	g_iSisUltError = 1;
 	while ( ES_VALIDO ( sys_errlist [ g_iSisUltError ] ) &&
 		    ( CadLongitud ( sys_errlist [ g_iSisUltError ] ) > 0 ) )  
@@ -317,8 +299,7 @@ void SisErrImprimirPila ()
 	while ( SPilLitEstaVacia ( g_pillitErrores ) == 0 )
 	{
 		p_cMsj = SPilLitDesapilar ( g_pillitErrores );
-		printf ( p_cMsj );
-		printf ( "\n" );
+		printf ( "%s\n", p_cMsj );
 		MemLiberar ( (void **) &p_cMsj );
 	}
 }

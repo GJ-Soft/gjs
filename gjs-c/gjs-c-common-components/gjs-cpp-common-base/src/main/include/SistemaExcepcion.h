@@ -5,7 +5,6 @@
 #include <Excepcion.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -20,7 +19,7 @@ namespace org
 			{
 
 			public:
-				SistemaExcepcion ( const string & _sModulo, const string & _sRutina, int _iErrno );
+				SistemaExcepcion ( const std::string & _sModulo, const std::string & _sRutina, int _iErrno );
 			};
 
             }

@@ -78,12 +78,12 @@ SFicEstructura * SFicEstAbrir ( const char * p_cRuta )
 			p_ficObj->p_ficDatos = SFicBloqAsignar ( p_cRuta );
 			if ( SFicBloqEsValido ( p_ficObj->p_ficDatos ) == 1 )
 			{
-				if ( SFicBloqNumeroMagico ( p_ficObj->p_ficDatos ) == FIC_ESTR_NUM_MAG ) 
+				p_ficObj->p_blqBufDatos = SBlqCrear ( SFicBloqTamBloque ( p_ficObj->p_ficDatos ) );
+				if ( SBlqEsValido ( p_ficObj->p_blqBufDatos ) == 1 )
 				{
-					p_ficObj->p_blqBufDatos = SBlqCrear ( SFicBloqTamBloque ( p_ficObj->p_ficDatos ) );
-					if ( SBlqEsValido ( p_ficObj->p_blqBufDatos ) == 1 )
+					if ( SFicBloqAbrir ( p_ficObj->p_ficDatos ) == 1 )
 					{
-						if ( SFicBloqAbrir ( p_ficObj->p_ficDatos ) == 1 )
+						if ( SFicBloqNumeroMagico ( p_ficObj->p_ficDatos ) == FIC_ESTR_NUM_MAG ) 
 						{
 							if ( SFicEstCargar ( p_ficObj ) == 1 )
 							{
@@ -143,15 +143,18 @@ SFicEstructura * SFicEstCrearExt ( const char * p_cDir, const char * p_cFic, int
 SFicEstructura * SFicEstAbrirExt ( const char * p_cDir, const char * p_cFic, int * p_iTamElemento )
 {
 	SFicEstructura *	p_ficObj;
-	char *			p_cRuta;
+	char *				p_cRuta;
 
 	if ( ES_VALIDO ( p_cDir ) && ES_VALIDO ( p_cFic ) )
 	{
 		p_cRuta = SisComponerRuta ( p_cDir, p_cFic, 0 );
 		p_ficObj = SFicEstAbrir ( p_cRuta );
-		if ( ES_VALIDO ( p_iTamElemento ) )
+		if ( ES_VALIDO ( p_ficObj ) )
 		{
-			*p_iTamElemento = SFicBloqTamBloque ( p_ficObj->p_ficDatos );
+			if ( ES_VALIDO ( p_iTamElemento ) )
+			{
+				*p_iTamElemento = SFicBloqTamBloque ( p_ficObj->p_ficDatos );
+			}
 		}
 		MemLiberar ( (void **) &p_cRuta );
 	}
@@ -198,6 +201,38 @@ SFicEstructura * SFicEstAbrirOCrearExt ( const char * p_cDir, const char * p_cFi
 			p_ficObj = NULL;
 		}
 		MemLiberar ( (void **) &p_cRuta );
+	}
+	else
+	{
+		p_ficObj = NULL;
+	}
+	return ( p_ficObj );
+}
+
+SFicEstructura * SFicEstCrearRuta ( SRuta * p_rutRuta, int iTamElemento )
+{
+	SFicEstructura *	p_ficObj;
+	char *				p_cRuta;
+	
+	if ( SRutEsValida ( p_rutRuta ) == 1 )
+	{
+		if ( SRutEsFichero ( p_rutRuta ) == 1 )
+		{
+			p_cRuta = SRutRutaAbsolutaLit ( p_rutRuta );
+			if ( SRutExiste ( p_rutRuta ) == 1 )
+			{
+				p_ficObj = SFicEstAbrir ( p_cRuta );
+			}
+			else
+			{
+				p_ficObj = SFicEstCrear ( p_cRuta, iTamElemento );
+			}
+			MemLiberar ( (void **) &p_cRuta );
+		}
+		else
+		{
+			p_ficObj = NULL;
+		}
 	}
 	else
 	{
@@ -352,6 +387,7 @@ int SFicEstAsignar ( SFicEstructura * p_ficObj, SBloque * p_blqObj )
 	if ( SFicEstEsValido ( p_ficObj ) == 1 )
 	{
 		SBlqCopiar ( p_ficObj->p_blqBufDatos, p_blqObj );
+		iRes = 1;
 	}
 	else
 	{
@@ -390,6 +426,7 @@ int SFicEstLimpiar ( SFicEstructura * p_ficObj )
 	if ( SFicEstEsValido ( p_ficObj ) == 1 )
 	{
 		SBlqLimpiar ( p_ficObj->p_blqBufDatos );
+		iRes = 1;
 	}
 	else
 	{
@@ -404,9 +441,16 @@ static int SFicEstCargar ( SFicEstructura * p_ficObj )
 	byte *		p_byBuffer;
 
 	p_byBuffer = SBlqDatos ( p_ficObj->p_blqBufDatos );
-	if ( SFicBloqLeerExt ( p_ficObj->p_ficDatos, 0, p_byBuffer ) == 1 )
+	if ( ES_VALIDO ( p_byBuffer ) )
 	{
-		iRes = 1;
+		if ( SFicBloqLeerExt ( p_ficObj->p_ficDatos, 0, p_byBuffer ) == 1 )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
 	}
 	else
 	{
@@ -421,9 +465,16 @@ static int SFicEstGuardar ( SFicEstructura * p_ficObj )
 	byte *		p_byBuffer;
 
 	p_byBuffer = SBlqDatos ( p_ficObj->p_blqBufDatos );
-	if ( SFicBloqEscribir ( p_ficObj->p_ficDatos, 0, p_byBuffer ) == 1 )
+	if ( ES_VALIDO ( p_byBuffer ) )
 	{
-		iRes = 1;
+		if ( SFicBloqEscribir ( p_ficObj->p_ficDatos, 0, p_byBuffer ) == 1 )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
 	}
 	else
 	{

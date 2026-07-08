@@ -47,6 +47,31 @@ SFicSecuencial * SFicSecCrearExt ( const char * p_cDir, const char * p_cFic )
 	return ( p_ficObj );
 }
 
+SFicSecuencial * SFicSecCrearRuta ( SRuta * p_rutRuta )
+{
+	SFicSecuencial *	p_ficObj;
+	char *			p_cRuta;
+	
+	if ( SRutEsValida ( p_rutRuta ) == 1 )
+	{
+		if ( SRutEsFichero ( p_rutRuta ) == 1 )
+		{
+			p_cRuta = SRutRutaAbsolutaLit ( p_rutRuta );
+			p_ficObj = SFicSecCrear ( p_cRuta );
+			MemLiberar ( (void **) &p_cRuta );
+		}
+		else
+		{
+			p_ficObj = NULL;
+		}
+	}
+	else
+	{
+		p_ficObj = NULL;
+	}
+	return ( p_ficObj );
+}
+
 void SFicSecDestruir ( SFicSecuencial ** p_p_ficObj )
 {
 	SFicSecuencial * p_ficObj;
@@ -57,6 +82,7 @@ void SFicSecDestruir ( SFicSecuencial ** p_p_ficObj )
 
 		if ( ES_VALIDO ( p_ficObj ) )
 		{
+			SFicSecCerrar ( p_ficObj );
 			MemLiberar ( (void **) &(p_ficObj->p_cRuta) );
 			MemLiberar ( (void **) p_p_ficObj );
 		}
@@ -130,7 +156,7 @@ const char * SFicSecRuta ( SFicSecuencial * p_ficObj )
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		p_cRes = p_ficObj->p_cRuta;
+		p_cRes = (const char *)(p_ficObj->p_cRuta);
 	}
 	else
 	{
@@ -254,6 +280,7 @@ int SFicSecAbrirExt ( SFicSecuencial * p_ficObj, int iModo, int iVaciar )
 					if ( ES_VALIDO ( p_ficObj->p_fObj ) )
 					{
 						p_ficObj->iAbierto = 1;
+						p_ficObj->iModo = iModo;
 						iRes = 1;
 					}
 					else
@@ -280,6 +307,7 @@ int SFicSecAbrirExt ( SFicSecuencial * p_ficObj, int iModo, int iVaciar )
 				if ( ES_VALIDO ( p_ficObj->p_fObj ) )
 				{
 					p_ficObj->iAbierto = 1;
+					p_ficObj->iModo = iModo;
 					iRes = 1;
 				}
 				else
@@ -290,7 +318,7 @@ int SFicSecAbrirExt ( SFicSecuencial * p_ficObj, int iModo, int iVaciar )
 		}
 		else
 		{
-			iRes = ModAprEsValido ( iModo );
+			iRes = 1;
 		}
 	}
 	else
@@ -436,6 +464,7 @@ int SFicSecEstaEnFinal ( SFicSecuencial * p_ficObj )
 			}
 			else
 			{
+				// NOTA: feof no retorna algo si no se ha hecho un intento de lectura previo
 				if ( feof ( p_ficObj->p_fObj ) != 0 )
 				{
 					iRes = 1;

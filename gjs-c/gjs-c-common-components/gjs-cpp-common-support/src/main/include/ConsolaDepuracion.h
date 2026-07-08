@@ -16,7 +16,6 @@
 #include <string>
 
 
-using namespace std;
 
 namespace org
 {
@@ -33,8 +32,8 @@ bool ConDepAbrir ();
 void ConDepCerrar ();
 bool ConDepEstaAbierta ();
 
-template<typename... Args> bool ConDepEscribir ( const string & sTexto, Args&&... argumentos );
-template<typename... Args> bool ConDepEscribirLinea ( const string & sTexto, Args&&... argumentos );
+template<typename... Args> bool ConDepEscribir ( const std::string & sTexto, Args&&... argumentos );
+template<typename... Args> bool ConDepEscribirLinea ( const std::string & sTexto, Args&&... argumentos );
 
 
  			}

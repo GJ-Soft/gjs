@@ -15,9 +15,7 @@
 /* rutinas MemReservar y MemLiberar para reservar y liberar espacio de        */
 /* memoria para variables dinámicas, manejadas a traves de punteros. No se    */
 /* debe utilizar el new y el delete para estas variables, salvo cuando se     */
-/* trate de objetos. Así, la utilizacón de la macro PTR_LIBERAR debe ser      */
-/* utilizada exclusivamente con punteros a objetos. El resto de variables  *  */
-/* o son estáticas, o se crean mediante MemReservar.                          */
+/* trate de objetos.                                                          */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -54,7 +52,6 @@
 
 
 
-//NOTA: No utilizar IsBadReadPtr aquí.
 #if ( defined ( VC ) )
 #	if ( defined ( WIN ) )
 #		define ES_VALIDO( p_Obj )	( ( p_Obj != NULL ) && ( (const unsigned long)p_Obj != BAD_PTR ) && ( (const unsigned long)p_Obj != DELETED_PTR ) && ( (const unsigned long)p_Obj != BAD_STACK_PTR ) && ( (const unsigned long)p_Obj != MEM_DIN_LIBERADA ) && ( (const unsigned long)p_Obj != MEM_DIN_LIBERADA_2 ) )
@@ -76,6 +73,7 @@
 #endif
 */
 
+// TODO: MemValida HEAP
 
 
 /* Operaciones basicas de memoria: */
@@ -91,6 +89,7 @@ void MemLimpiar ( void * p_vBloque, int iNumBytes );
 void MemLlenar ( void * p_vBloque, byte byValor, int iNumBytes );
 void MemCopiar ( void * p_vDest, void * p_vOrig, int iNumBytes );
 
+int MemEsValida ( void * p_vDireccion );
 int MemEsValida ( void * p_vDireccion );
 
 

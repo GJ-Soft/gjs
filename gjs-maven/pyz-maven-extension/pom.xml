@@ -4,7 +4,7 @@
 
      <parent>
 		<groupId>org.gjs.java.maven</groupId>
-		<artifactId>gjs-java-maven-base-parent</artifactId>
+		<artifactId>gjs-java-maven-extension-parent</artifactId>
 		<version>1.0.0-RC.1</version>
         <relativePath />
     </parent>
@@ -13,7 +13,7 @@
 	<artifactId>pyz-maven-extension</artifactId>
 	<packaging>jar</packaging>
 
-	<name>PYZ Maven Plugin</name>
+	<name>PYZ Maven Extension</name>
     <description>Maven extension PYZ 
   --------------------------------------------------------    
   Maven extension for PYZ packaging

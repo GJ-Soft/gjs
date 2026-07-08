@@ -10,7 +10,7 @@
 
 
 #include <SFicBloquesIdentificados.h>
-
+#include <SRuta.h>
 
 
 
@@ -28,10 +28,13 @@ typedef struct
 
 
 
+// Crear y CrearExt reinicalizan el fichero. 
+// Si ya existe y se quiere conservar hay que usar Asignar o AsignarExt
 SFicBloquesOrdenados * SFicBloqOrdCrear ( const char * p_cRuta, unsigned long ulTamDatosBloque, unsigned long ulTamDatosCab ); 
 SFicBloquesOrdenados * SFicBloqOrdAsignar ( const char * p_cRuta ); 
 SFicBloquesOrdenados * SFicBloqOrdCrearExt ( const char * p_cDir, const char * p_cFic, unsigned long ulTamDatosBloque, unsigned long ulTamDatosCab, int iNumMagico ); 
 SFicBloquesOrdenados * SFicBloqOrdAsignarExt ( const char * p_cDir, const char * p_cFic, int iNumMagico ); 
+SFicBloquesOrdenados * SFicBloqOrdCrearRuta ( SRuta * p_rutRuta, unsigned long ulTamDatosBloque, unsigned long ulTamDatosCab ); 
 
 void SFicBloqOrdDestruir ( SFicBloquesOrdenados ** p_p_ficObj );
 void SFicBloqOrdEliminar ( SFicBloquesOrdenados ** p_p_ficObj );
@@ -84,7 +87,9 @@ unsigned long  SFicBloqOrdLeerId ( SFicBloquesOrdenados * p_ficObj );
 byte * SFicBloqOrdLeer ( SFicBloquesOrdenados * p_ficObj );
 int SFicBloqOrdLeerExt ( SFicBloquesOrdenados * p_ficObj, byte * p_byContenido );
 int SFicBloqOrdModificar ( SFicBloquesOrdenados * p_ficObj, byte * p_byContenido );
-int SFicBloqOrdInsertar ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, byte * p_byContenido );
+int SFicBloqOrdInsertar ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, byte * p_byContenido, int iDelante );
+int SFicBloqOrdInsertarDetras ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, byte * p_byContenido );
+int SFicBloqOrdInsertarDelante ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, byte * p_byContenido );
 int SFicBloqOrdSuprimir ( SFicBloquesOrdenados * p_ficObj );
 
 byte * SFicBloqOrdLeerPorId ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId );

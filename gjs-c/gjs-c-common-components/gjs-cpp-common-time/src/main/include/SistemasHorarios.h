@@ -42,7 +42,7 @@
 #define SIS_HOR_HOR_INI_GMT			0
 
 
-using namespace std;
+
 
 namespace org
 {
@@ -56,8 +56,8 @@ namespace org
 
 
 
-const string & SisHorNombre ( int iId );
-int SisHorId ( const string & sNombre );
+const std::string & SisHorNombre ( int iId );
+int SisHorId ( const std::string & sNombre );
 bool SisHorEsValido ( int iId );
 
 bool SisHorEsNulo ( int iId );

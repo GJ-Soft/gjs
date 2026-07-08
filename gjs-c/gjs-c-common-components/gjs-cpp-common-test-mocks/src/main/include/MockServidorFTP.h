@@ -10,7 +10,6 @@
 #include <ServidorFTP.h>
 
 
-using namespace std;
 using namespace org::gjs::cpp::common;
 
 
@@ -30,17 +29,17 @@ namespace org
 class MockServidorFTP : public ServidorFTP
 {
 public:
-	MockServidorFTP( int iPuerto, int iPuertoDatos, const string & sSubdirectorioRaiz, const string & sFicheroUsuarios = "usuarios.info" );
+	MockServidorFTP( int iPuerto, int iPuertoDatos, const std::string & sSubdirectorioRaiz, const std::string & sFicheroUsuarios = "usuarios.info" );
 
 	virtual ~MockServidorFTP();
 
 private:
 	void ComandoRecibido( Comando & comando );
 	void ComandoProcesado( Comando & comando, bool & bResultado );
-	void SesionIniciada( const string & sUsuario );
-	void SesionFinalizada( const string & sUsuario );
-	bool ExcepcionProducida( exception & ex );
-	void ExcepcionProducidaEnPeticion( exception & ex );
+	void SesionIniciada( const std::string & sUsuario );
+	void SesionFinalizada( const std::string & sUsuario );
+	bool ExcepcionProducida( std::exception & ex );
+	void ExcepcionProducidaEnPeticion( std::exception & ex );
 
 };
 

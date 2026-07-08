@@ -18,7 +18,7 @@
 #define _ORG_GJS_C_CC_CPP_SISTEMASIGNALS_H
 
 
-#include <Precompilacion.h>
+#include <BaseConfig.h>
 #include <Funciones.h>
 
 #include <string>
@@ -55,7 +55,7 @@
 #define SIS_SIG_DEPURACION								13
 #define SIS_SIG_TEMPORIZADOR							14
 
-#if ( defined ( UNIX ) || defined ( LINUX ) )
+#if ( defined ( POSIX ) )
 
 #define SIS_SIG_ERROR_BUS								15
 #define SIS_SIG_ERROR_PILA								16
@@ -83,7 +83,7 @@
 #endif	
 
 
-#if ( defined ( UNIX ) || defined ( LINUX ) )
+#if ( defined ( POSIX ) )
 
 #	define SIS_COD_SIG_ABORTAR							SIGABRT
 #	define SIS_COD_SIG_ALARMA							SIGALRM
@@ -118,26 +118,7 @@
 #	define SIS_COD_SIG_ERROR_REINICIO_SISTEMA			SIGPWR
 #	define SIS_COD_SIG_ERROR_LLAMADA_SISTEMA			SIGSYS
 
-#elif ( defined ( WIN ) )
-
-#	define SIS_COD_SIG_ABORTAR							-1
-#	define SIS_COD_SIG_ALARMA							-1
-#	define SIS_COD_SIG_ERROR_COMA_FLOTANTE				-1
-#	define SIS_COD_SIG_TERMINAL_DESCONECTADO			-1
-#	define SIS_COD_SIG_INSTRUCCION_ILEGAL				-1
-#	define SIS_COD_SIG_INTERRUPCION						-1
-#	define SIS_COD_SIG_FINALIZACION_OBLIGADA			-1
-#	define SIS_COD_SIG_ERROR_TUBERIA					-1
-#	define SIS_COD_SIG_SALIR							-1
-#	define SIS_COD_SIG_REFERENCIA_MEMORIA_INVALIDA		-1
-#	define SIS_COD_SIG_FINALIZACION						-1
-#	define SIS_COD_SIG_USUARIO_1						-1
-#	define SIS_COD_SIG_USUARIO_2						-1
-#	define SIS_COD_SIG_ERROR_BUS						-1
-#	define SIS_COD_SIG_TEMPORIZADOR						-1
-#	define SIS_COD_SIG_DEPURACION						-1
-
-#else // Caso DOS (GNU o VC):
+#else // Caso por defecto: ( defined ( WIN ) )
 
 #	if ( defined ( VC ) )
 
@@ -197,7 +178,7 @@
 #define SIS_SIG_TXT_DEPURACION								"SIGTRAP"
 #define SIS_SIG_TXT_TEMPORIZADOR							"SIGPROF"
 
-#if ( defined ( UNIX ) || defined ( LINUX ) )
+#if ( defined ( POSIX ) )
 
 #define SIS_SIG_TXT_ERROR_BUS								"SIGBUS"
 #define SIS_SIG_TXT_ERROR_PILA								"SIGSTKFLT"
@@ -220,7 +201,6 @@
 
 
 
-using namespace std;
 
 namespace org
 {
@@ -239,7 +219,7 @@ int SisSigCodigo ( int iSignal );
 int SisSigId ( int iCod );
 bool SisSigEsProgramable ( int iSignal );
 bool SisSigEsValida ( int iSignal );
-string SisSigDescripcion ( int iSignal );
+std::string SisSigDescripcion ( int iSignal );
 
 #if ( defined ( SIGNALS_PERMITIDOS ) )
 

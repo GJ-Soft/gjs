@@ -1,5 +1,5 @@
 /***************************************************************************/
-/*                        SistemaFicheros.cpp                              */
+/*                        SistemaFicheros.c                                */
 /*-------------------------------------------------------------------------*/
 /* Librería: Sistema                                                       */
 /* Versión:  1.1.0                                                         */
@@ -24,12 +24,15 @@
 #include "SistemaFicheros.h"
 
 #include "FicherosConfig.h"
+
 #include <SBuffer.h>
+
+
+
+#define MAX_PARTES 256
 
 // PENDIENTe: En unix/linux SisExisteFichero no distingue entre ficheros y directorios lo que puede
 // llevar a confusión.
-
-
 
 
 int SisEsDirectorioValido ( const char * p_cDirectorio )
@@ -203,9 +206,9 @@ char * SisDirectorioSubdirectorioExt ( const char * p_cDirectorio, int iNivel )
 char * SisDirectorioSuperior ( const char * p_cDirectorio )
 {
 	char *	p_cRes;
-	char		cSep;
-	int			iPos;
-	int			iLong;
+	char	cSep;
+	int		iPos;
+	int		iLong;
 
 	if ( ES_VALIDO ( p_cDirectorio ) )
 	{
@@ -314,8 +317,8 @@ char * SisComponerFichero ( const char * p_cNombre, const char * p_cExtension )
 char * SisRutaDirectorio ( const char * p_cRuta )
 {
 	char *	p_cRes;
-	int			iPos;
-	char		cSep;
+	int		iPos;
+	char	cSep;
 
 	if ( SisEsRutaValida ( p_cRuta ) == 1 ) 
 	{
@@ -466,29 +469,74 @@ char * SisComponerRutaExt ( const char * p_cDirectorio, const char * p_cSubdirec
 	return ( p_cRuta );
 }
 
-int SisNormalizarRuta ( char * p_cRuta )
+
+void SisNormalizarRutaWindows ( char * p_cRuta )
 {
-	return ( CadReemplazarCaracter ( p_cRuta, '\\', '/' ) );
+	CadReemplazarCaracter ( p_cRuta, '/', '\\' );
+	CadReemplazar ( p_cRuta, "\\:", ":" );
+	CadReemplazar ( p_cRuta, "\\\\", "\\" );
+}
+
+void SisNormalizarRuta ( char * p_cRuta )
+{
+	CadReemplazar ( p_cRuta, "\\\\", "/" );
+	CadReemplazarCaracter ( p_cRuta, '\\', '/' );
 }
 
 int SisEsRutaValida ( const char * p_cRuta )
 {
-	int iRes;
-	
-#     if ( defined ( WIN ) )
-	if ( ( CadCumpleExpReg ( p_cRuta, SF_PATRON_RUTA_WIN ) == 1 ) ||  
-		 ( CadCumpleExpReg ( p_cRuta, SF_PATRON_RUTA_WIN_2 ) == 1 ) ||
-		 ( CadCumpleExpReg ( p_cRuta, SF_PATRON_RUTA_REL_WIN ) == 1 ) ||  
-		 ( CadCumpleExpReg ( p_cRuta, SF_PATRON_RUTA_REL_WIN_2 ) == 1 ) ||  
-		 ( CadCumpleExpReg ( p_cRuta, SF_PATRON_RUTA_REL_WIN_3 ) == 1 ) ||  
-		 ( CadCumpleExpReg ( p_cRuta, SF_PATRON_RUTA_REL_WIN_4 ) == 1 ) )  
-#     else
-	if ( ( CadCumpleExpReg ( p_cRuta, SF_PATRON_RUTA ) == 1 ) ||  
-		 ( CadCumpleExpReg ( p_cRuta, SF_PATRON_RUTA_REL ) == 1 ) ||  
-		 ( CadCumpleExpReg ( p_cRuta, SF_PATRON_RUTA_REL_2 ) == 1 ) )  
-#     endif
+	char * 	p_cRutaNorm;
+	int		iWindows;	
+	int 	iRes;
+
+	if ( ES_VALIDO ( p_cRuta ) )
 	{
-		iRes = 1;
+		p_cRutaNorm = CadDuplicar ( p_cRuta );
+		if ( ES_VALIDO ( p_cRutaNorm ) )
+		{
+			if ( ( CadContieneCaracter  ( p_cRuta, '\\' ) == 1 ) ||
+				 ( CadEmpiezaPorCaracter ( p_cRuta, ':' ) == 1 ) )
+			{
+				SisNormalizarRutaWindows ( p_cRutaNorm );
+				iWindows = 1;
+			}
+			else
+			{
+				SisNormalizarRuta ( p_cRutaNorm );
+				iWindows = 0;
+			}
+			if ( iWindows == 0 )
+			{
+				if ( ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA ) == 1 ) ||  
+					 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL ) == 1 ) ||  
+					 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL_2 ) == 1 ) )  
+				{
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
+			}
+			else
+			{
+				if ( ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_WIN ) == 1 ) ||  
+					 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL_WIN ) == 1 ) ||  
+					 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL_WIN_2 ) == 1 ) )  
+				{
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
+			}
+			MemLiberarCadena ( &p_cRutaNorm );
+		}
+		else
+		{
+			iRes = 0;
+		}
 	}
 	else
 	{
@@ -497,15 +545,264 @@ int SisEsRutaValida ( const char * p_cRuta )
 	return ( iRes );
 }
 
+int SisEsRutaValidaSistema ( const char * p_cRuta )
+{
+	char * 	p_cRutaNorm;	
+	int 	iRes;
+
+	p_cRutaNorm = CadDuplicar ( p_cRuta );	
+# if ( defined ( CYGWIN ) )
+	SisNormalizarRuta ( p_cRutaNorm );
+	if ( ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA ) == 1 ) ||  
+		 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL ) == 1 ) ||  
+		 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL_2 ) == 1 ) )  
+# elif ( defined ( WIN ) )
+	SisNormalizarRutaWindows ( p_cRutaNorm );
+	if ( ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_WIN ) == 1 ) ||  
+		 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL_WIN ) == 1 ) ||  
+		 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL_WIN_2 ) == 1 ) )  
+# else
+	SisNormalizarRuta ( p_cRutaNorm );
+	if ( ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA ) == 1 ) ||  
+		 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL ) == 1 ) ||  
+		 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL_2 ) == 1 ) )  
+#     endif
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	MemLiberarCadena ( &p_cRutaNorm );
+	return ( iRes );
+}
+
+int SisRutaEsEstiloWindows ( const char * p_cRuta )
+{
+	int iRes;
+
+	if ( SisEsRutaValida ( p_cRuta ) == 1 )
+	{
+		if ( ( CadContieneCaracter  ( p_cRuta, '\\' ) == 1 ) ||
+			 ( CadEmpiezaPorCaracter ( p_cRuta, ':' ) == 1 ) )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+char * SisRutaEstiloWindows ( const char * p_cRuta )
+{
+	return ( SisRutaEstiloWindowsExt ( p_cRuta, 'C' ) );
+}
+
+char * SisRutaEstiloWindowsExt ( const char * p_cRuta, char cUnidad )
+{
+	char *	p_cResultado;
+	char **	p_p_cPartes;
+	int		iCount;
+	int		iPartes;
+
+	if ( ( SisEsRutaValida ( p_cRuta ) == 1 ) && ( ASCIIEsLetra ( cUnidad ) == 1 ) )
+	{
+		p_cResultado = CadCrear ( MAXPATHLEN - 1 );
+		if ( SisRutaEsEstiloWindows ( p_cRuta ) == 0 )
+		{
+			p_p_cPartes = (char **) MemReservar ( MAX_PARTES * sizeof ( char * ) );
+			iPartes = CadNumPalabrasSep ( p_cRuta, '/' );
+			for ( iCount = 0; iCount < iPartes; iCount = iCount + 1 )
+			{
+				p_p_cPartes [ iCount ] = CadPalabraSep ( p_cRuta, iCount, '/' );
+			}
+				
+			CadConcatenarCaracter ( p_cResultado, ASCIILetraMinAMay ( cUnidad ) );
+			CadConcatenar ( p_cResultado, ":\\" );
+			for ( int i = 0; i < iPartes; i = i + 1 )
+			{
+				CadConcatenarCaracter ( p_cResultado, '\\' );
+				CadConcatenar ( p_cResultado, p_p_cPartes [ i ] );
+				MemLiberar ( ( void ** ) &(p_p_cPartes [ i ]) );
+			}
+			MemLiberar ( ( void ** ) &p_p_cPartes );
+		}
+		else
+		{
+			CadConcatenar ( p_cResultado, p_cRuta );
+		}
+	}
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+		p_cResultado = NULL;
+	}
+	return ( p_cResultado );
+}
+
+char * SisRutaEstiloUnix ( const char * p_cRuta )
+{
+	char *	p_cRutaCopia;
+	char *	p_cResultado;
+	char *  p_cParte;
+	int		iParteIni;
+	int		iEsAbsoluto;
+	int		iPartes;
+
+	if ( SisEsRutaValida ( p_cRuta ) == 1 )
+	{
+		p_cResultado = CadCrear ( MAXPATHLEN - 1 );
+		if ( SisRutaEsEstiloWindows ( p_cRuta ) == 1 )
+		{
+			p_cRutaCopia = CadDuplicar ( p_cRuta );
+			if ( ES_VALIDO ( p_cRutaCopia ) )
+			{
+				CadReemplazarCaracter ( p_cRutaCopia, '/', '\\' );
+				CadReemplazar ( p_cRutaCopia, "\\\\", "\\" );
+				
+				if ( CadCumpleExpReg ( p_cRutaCopia, SF_PATRON_RUTA_WIN ) == 1 )
+				{
+					iParteIni = 1;
+					iEsAbsoluto = 1;
+				}
+				else
+				{
+					iParteIni = 0;
+					iEsAbsoluto = 0;
+				}
+				iPartes = CadNumPalabrasSep ( p_cRutaCopia, '\\' );
+				if ( iEsAbsoluto == 1 )
+				{
+					CadConcatenarCaracter ( p_cResultado, '/' );
+				}
+				for ( int i = iParteIni; i < iPartes; i = i + 1 )
+				{
+					if ( i > iParteIni )
+					{
+						CadConcatenarCaracter ( p_cResultado, '/' );
+					}
+					p_cParte = CadPalabraSep ( p_cRutaCopia, i, '/' );
+					CadConcatenar ( p_cResultado, p_cParte );
+					MemLiberarCadena ( &p_cParte );
+				}
+				MemLiberarCadena ( &p_cRutaCopia );
+			}
+			else
+			{
+				p_cResultado = NULL;
+			}
+		}
+		else
+		{
+			CadConcatenar ( p_cResultado, p_cRuta );
+		}
+	}
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+		p_cResultado = NULL;
+	}
+	return ( p_cResultado );
+}
+
+char * SisRutaEstiloCygwin ( const char * p_cRuta )
+{
+	char *	p_cRutaCopia;
+	char *	p_cResultado;
+	char *  p_cParte;
+	int		iParteIni;
+	int		iEsAbsoluto;
+	int		iPartes;
+	char	cUnidad;
+
+	if ( SisEsRutaValida ( p_cRuta ) == 1 )
+	{
+		p_cResultado = CadCrear ( MAXPATHLEN - 1 );
+		if ( SisRutaEsEstiloWindows ( p_cRuta ) == 1 )
+		{
+			p_cRutaCopia = CadDuplicar ( p_cRuta );
+			if ( ES_VALIDO ( p_cRutaCopia ) )
+			{
+				// Aseguramos que todo esta en Windows
+				SisNormalizarRutaWindows ( p_cRutaCopia );
+				if ( CadCumpleExpReg ( p_cRutaCopia, SF_PATRON_RUTA_WIN ) == 1 ) 
+				{
+					iParteIni = 1;
+					iEsAbsoluto = 1;
+					cUnidad = CadCaracter ( p_cRutaCopia, 0 );
+				}
+				else
+				{
+					iParteIni = 0;
+					iEsAbsoluto = 0;
+				}
+				iPartes = CadNumPalabrasSep ( p_cRutaCopia, '\\' );
+				if ( iEsAbsoluto == 1 )
+				{
+					CadConcatenar ( p_cResultado, "/cygdrive/" );
+					CadConcatenarCaracter ( p_cResultado, ASCIILetraMayAMin ( cUnidad ) );
+				}
+				for ( int i = iParteIni; i < iPartes; i = i + 1 )
+				{
+					if ( i > iParteIni )
+					{
+						CadConcatenarCaracter ( p_cResultado, '/' );
+					}
+					p_cParte = CadPalabraSep ( p_cRutaCopia, i, '\\' );
+					CadConcatenar ( p_cResultado, p_cParte );
+					MemLiberarCadena ( &p_cParte );
+				}
+				MemLiberarCadena ( &p_cRutaCopia );
+			}
+			else
+			{
+				p_cResultado = NULL;
+			}
+		}
+		else
+		{
+			CadConcatenar ( p_cResultado, p_cRuta );
+		}
+	}
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+		p_cResultado = NULL;
+	}
+	return ( p_cResultado );
+}
+
+char * SisRutaEstiloSistema ( const char * p_cRuta )
+{
+	char *	p_cResultado;
+	
+# if ( defined ( CYGWIN ) )
+	p_cResultado = SisRutaEstiloCygwin ( p_cRuta );
+# elif ( defined ( WIN ) )
+	p_cResultado = SisRutaEstiloWindows ( p_cRuta );
+# else
+	p_cResultado = SisRutaEstiloUnix ( p_cRuta );
+# endif	
+	return ( p_cResultado );
+}
+
 char * SisDirectorioActual ()
 {
 	char *		p_cRes;
 	SBuffer	*	p_bufDatos;
-	
-# if ( defined ( WIN ) )
+
 	p_bufDatos = SBufCrear ( SF_MAX_TAM_RUTA );
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
+# if ( defined ( WIN ) )
 		if ( GetCurrentDirectory ( (DWORD) SBufTam ( p_bufDatos ), (LPSTR) SBufDireccion ( p_bufDatos ) ) > 0 )
 		{
 			p_cRes = SBufDuplicarCadena ( p_bufDatos );
@@ -514,12 +811,7 @@ char * SisDirectorioActual ()
 		{
 			p_cRes = NULL;
 		}
-		SBufDestruir ( &p_bufDatos );
-	}
 # else
-	p_bufDatos = SBufCrear ( SF_MAX_TAM_RUTA );
-	if ( ES_VALIDO ( p_bufDatos ) )
-	{
 		if ( getcwd ( (char *) SBufDireccion ( p_bufDatos ), SBufTam ( p_bufDatos ) ) != NULL )
 		{
 			p_cRes = SBufDuplicarCadena ( p_bufDatos );
@@ -528,9 +820,9 @@ char * SisDirectorioActual ()
 		{
 			p_cRes = NULL;
 		}
+# endif
 		SBufDestruir ( &p_bufDatos );
 	}
-# endif
 	else
 	{
 		p_cRes = NULL;
@@ -961,11 +1253,7 @@ int SisVaciarDirectorio ( const char * p_cDirectorio )
 	int					iResBusq;
 # else
    DIR * p_dirInfo;
-#  if ( defined ( UNIX ) )
     struct dirent *		p_directInfo;
-#  else
-    struct dirent *		p_directInfo;
-#  endif
 # endif
 
 	if ( SisExisteDirectorio ( p_cDirectorio ) == 1 )
@@ -1081,14 +1369,22 @@ int SisCopiarFichero ( const char * p_cRutaOrig, const char * p_cRutaDest )
 		FILE *		p_fDest;
 		char		c;
 
-		p_fOrig = fopen ( p_cRutaOrig, "r" );
-		p_fDest = fopen ( p_cRutaDest, "a" );
-		if ( ES_VALIDO ( p_fOrig ) && ES_VALIDO ( p_fOrig ) )
+		p_fOrig = fopen ( p_cRutaOrig, "rb" );
+		p_fDest = fopen ( p_cRutaDest, "wb" );
+		if ( ES_VALIDO ( p_fOrig ) && ES_VALIDO ( p_fDest ) )
 		{
-			while ( feof ( p_fOrig ) == 0 )
+			int iFin = 1;
+			while ( iFin == 0 )
 			{
-				c = fread ( (void *) &c, 1, sizeof ( char ), p_fOrig );
-				fwrite ( (void *) &c, 1, sizeof ( char ), p_fDest );
+				fread ( (void *) &c, 1, sizeof ( char ), p_fOrig );
+				if ( feof ( p_fOrig ) == 0 )
+				{
+					fwrite ( (void *) &c, 1, sizeof ( char ), p_fDest );
+				}
+				else
+				{
+					iFin = 1;
+				}
 			}
 			iRes = 1;
 		}
@@ -1096,9 +1392,14 @@ int SisCopiarFichero ( const char * p_cRutaOrig, const char * p_cRutaDest )
 		{
 			iRes = 0;
 		}
-		fclose ( p_fOrig );
-		fclose ( p_fDest );
-
+		if ( ES_VALIDO ( p_fOrig ) ) 
+		{
+			fclose ( p_fOrig );
+		}
+		if ( ES_VALIDO ( p_fDest ) ) 
+		{
+			fclose ( p_fDest );
+		}
 		if ( iRes == 1 )
 #	  endif
 		{
@@ -1136,6 +1437,10 @@ int SisCopiarFicheroExt ( const char * p_cDirOrig, const char * p_cFicOrig, cons
 		if ( ES_VALIDO ( p_cRutaOrig ) && ES_VALIDO ( p_cRutaDest ) )
 		{
 			iRes = SisCopiarFichero ( p_cRutaOrig, p_cRutaDest );
+			if ( ( iRes == 1 ) && ( iEliminar == 1 ) )
+			{
+				SisEliminarFichero ( p_cRutaOrig );
+			}
 			MemLiberar ( (void **) &p_cRutaOrig );
 			MemLiberar ( (void **) &p_cRutaDest );
 		}
@@ -1486,11 +1791,11 @@ int SisFicheroEsAccesible ( const char * p_cRuta )
 		{
 			if ( ( dwAtributos  & FILE_ATTRIBUTE_OFFLINE ) == FILE_ATTRIBUTE_OFFLINE )
 			{
-				iRes = 1;
+				iRes = 0;
 			}
 			else
 			{
-				iRes = 0;
+				iRes = 1;
 			}
 		}
 	}
@@ -1888,11 +2193,11 @@ int SisEsFicheroC ( const char * p_cRuta )
 	p_cFichero = SisRutaFichero ( p_cRuta );
 	if ( ES_VALIDO ( p_cFichero ) )
 	{
-		p_cExt = SisRutaFichero ( p_cFichero );
+		p_cExt = SisFicheroExtension ( p_cFichero );
 		if ( ES_VALIDO ( p_cExt ) )
 		{
 			if ( ( CadEsIgual ( p_cExt, EXT_FIC_CABECERA_C ) == 1 ) ||
-				 ( CadEsIgual ( p_cExt,  EXT_FIC_CODIGO_C ) == 1 ) ||
+				 ( CadEsIgual ( p_cExt, EXT_FIC_CODIGO_C ) == 1 ) ||
 				 ( CadEsIgual ( p_cExt, EXT_FIC_CODIGO_C_2 ) == 1 ) ||
 				 ( CadEsIgual ( p_cExt, EXT_FIC_CODIGO_C_3 ) == 1 ) ||
 				 ( CadEsIgual ( p_cExt, EXT_FIC_CODIGO_C_4 ) == 1 ) )
@@ -1927,7 +2232,7 @@ int SisEsFicheroCodigoC ( const char * p_cRuta )
 	p_cFichero = SisRutaFichero ( p_cRuta );
 	if ( ES_VALIDO ( p_cFichero ) )
 	{
-		p_cExt = SisRutaFichero ( p_cFichero );
+		p_cExt = SisFicheroExtension ( p_cFichero );
 		if ( ES_VALIDO ( p_cExt ) )
 		{
 			if ( ( CadEsIgual ( p_cExt,  EXT_FIC_CODIGO_C ) == 1 ) ||
@@ -1965,7 +2270,7 @@ int SisEsFicheroCabeceraC ( const char * p_cRuta )
 	p_cFichero = SisRutaFichero ( p_cRuta );
 	if ( ES_VALIDO ( p_cFichero ) )
 	{
-		p_cExt = SisRutaFichero ( p_cFichero );
+		p_cExt = SisFicheroExtension ( p_cFichero );
 		if ( ES_VALIDO ( p_cExt ) )
 		{
 			if ( CadEsIgual ( p_cExt, EXT_FIC_CABECERA_C ) == 1 )
@@ -2000,7 +2305,7 @@ int SisEsFicheroXML ( const char * p_cRuta )
 	p_cFichero = SisRutaFichero ( p_cRuta );
 	if ( ES_VALIDO ( p_cFichero ) )
 	{
-		p_cExt = SisRutaFichero ( p_cFichero );
+		p_cExt = SisFicheroExtension ( p_cFichero );
 		if ( ES_VALIDO ( p_cExt ) )
 		{
 			if ( CadEsIgual ( p_cExt, EXT_FIC_XML ) == 1 ) 
@@ -2035,7 +2340,7 @@ int SisEsFicheroHTML ( const char * p_cRuta )
 	p_cFichero = SisRutaFichero ( p_cRuta );
 	if ( ES_VALIDO ( p_cFichero ) )
 	{
-		p_cExt = SisRutaFichero ( p_cFichero );
+		p_cExt = SisFicheroExtension ( p_cFichero );
 		if ( ES_VALIDO ( p_cExt ) )
 		{
 			if ( ( CadEsIgual ( p_cExt, EXT_FIC_HTML ) == 1 ) ||
@@ -2071,7 +2376,7 @@ int SisEsFicheroSHP ( const char * p_cRuta )
 	p_cFichero = SisRutaFichero ( p_cRuta );
 	if ( ES_VALIDO ( p_cFichero ) )
 	{
-		p_cExt = SisRutaFichero ( p_cFichero );
+		p_cExt = SisFicheroExtension ( p_cFichero );
 		if ( ES_VALIDO ( p_cExt ) )
 		{
 			if ( CadEsIgual ( p_cExt, EXT_FIC_SHAPE ) == 1 )
@@ -2106,7 +2411,7 @@ int SisEsFicheroDBF ( const char * p_cRuta )
 	p_cFichero = SisRutaFichero ( p_cRuta );
 	if ( ES_VALIDO ( p_cFichero ) )
 	{
-		p_cExt = SisRutaFichero ( p_cFichero );
+		p_cExt = SisFicheroExtension ( p_cFichero );
 		if ( ES_VALIDO ( p_cExt ) )
 		{
 			if ( CadEsIgual ( p_cExt, EXT_FIC_DBASE ) == 1 )
@@ -2132,71 +2437,128 @@ int SisEsFicheroDBF ( const char * p_cRuta )
 	return ( iRes );
 }
 
-#define MAX_PARTS 256
-
 char * SisResolverDirectorioRelativo ( const char * p_cRutaBase, const char * p_cRutaRelativa )
 {
+	char *	p_cRutaBaseCopia;
+	char *	p_cRutaRelativaCopia;
 	char *	p_cResultado;
+	char *	p_cRes;
 	char **	p_p_cPartes;
 	char *	p_cToken;
 	int		iCount;
 	int		iCountRel;
 	int		iPartes;
 	int		iPartesRel;
+	int 	iFinBucle;
 
 	if ( ES_VALIDO ( p_cRutaBase ) && ES_VALIDO ( p_cRutaRelativa ) )
 	{
-		p_cResultado = CadCrear ( MAXPATHLEN - 1 );
-		if ( CadEmpiezaPorCaracter ( p_cRutaRelativa, '.' ) == 1 )
+		p_cRutaBaseCopia = SisRutaEstiloUnix ( p_cRutaBase );
+		p_cRutaRelativaCopia = SisRutaEstiloUnix ( p_cRutaRelativa );
+		if ( ES_VALIDO ( p_cRutaBaseCopia ) && ES_VALIDO ( p_cRutaRelativaCopia ) )
 		{
-			p_p_cPartes = (char **) MemReservar ( MAX_PARTS * sizeof ( char * ) );
-			iPartes = CadNumPalabrasSep ( p_cRutaBase, '/' );
-			for ( iCount = 0; iCount < iPartes; iCount = iCount + 1 )
+			if ( ( CadEmpiezaPorCaracter ( p_cRutaBaseCopia, '/' ) == 1 ) &&
+				 ( CadEmpiezaPorCaracter ( p_cRutaRelativaCopia, '.' ) == 1 ) )
 			{
-				p_p_cPartes [iCount] = CadPalabraSep ( p_cRutaBase, iCount, '/' );
-			}
-			
-			iPartesRel = CadNumPalabrasSep ( p_cRutaRelativa, '/' );
-			for ( iCountRel = 0; iCountRel < iPartesRel; iCountRel = iCountRel + 1 )
-			{
-				p_cToken = CadPalabraSep ( p_cRutaRelativa, iCountRel, '/' );
-				if ( CadEsIgual ( p_cToken, ".." ) == 1 )
+				p_cResultado = CadCrear ( MAXPATHLEN - 1 );
+				p_p_cPartes = (char **) MemReservar ( MAX_PARTES * sizeof ( char * ) );
+				iPartes = CadNumPalabrasSep ( p_cRutaBaseCopia, '/' );
+				for ( iCount = 0; iCount < iPartes; iCount = iCount + 1 )
 				{
-					if ( iCount > 0 )
+					p_p_cPartes [ iCount ] = CadPalabraSep ( p_cRutaBaseCopia, iCount, '/' );
+				}
+				
+				iPartesRel = CadNumPalabrasSep ( p_cRutaRelativaCopia, '/' );
+				iCountRel = 1; 
+				iFinBucle = 0;
+				while ( ( iCountRel < iPartesRel ) && ( iFinBucle == 0 ) )
+				{
+					p_cToken = CadPalabraSep ( p_cRutaRelativaCopia, iCountRel, '/' );
+					if ( CadEsIgual ( p_cToken, ".." ) == 1 )
 					{
-						iCount = iCount - 1;
+						if ( iCount > 0 )
+						{
+							iCount = iCount - 1;
+						}
+						iCountRel = iCountRel + 1 ;
+					}
+					else
+					{
+						iFinBucle = 1;
 					}
 					MemLiberar ( ( void ** ) &p_cToken );
 				}
-				else if ( CadEsIgual ( p_cToken, "." ) == 1 )
+				for ( int i = 0; i < iPartes; i = i + 1 )
 				{
-					p_p_cPartes [iCount] = p_cToken;
-					iCount = iCount + 1;
+					if ( i < iCount )
+					{
+						CadConcatenarCaracter ( p_cResultado, '/' );
+						CadConcatenar ( p_cResultado, p_p_cPartes [ i ] );
+					}
+					MemLiberar ( ( void ** ) &(p_p_cPartes [ i ]) );
 				}
+				MemLiberar ( ( void ** ) &p_p_cPartes );
+				while ( iCountRel < iPartesRel )
+				{
+					p_cToken = CadPalabraSep ( p_cRutaRelativaCopia, iCountRel, '/' );
+					CadConcatenarCaracter ( p_cResultado, '/' );
+					CadConcatenar ( p_cResultado, p_cToken );
+					MemLiberar ( ( void ** ) &p_cToken );
+					iCountRel = iCountRel + 1 ;
+				}
+				if ( CadLongitud ( p_cResultado ) == 0 )
+				{
+					CadConcatenarCaracter ( p_cResultado, '/' );
+				}
+				p_cRes = SisRutaEstiloSistema ( p_cResultado ); 
+				MemLiberarCadena ( &p_cResultado );
 			}
-
-			for ( int i = 0; i < iCount; i = i + 1 )
+			else
 			{
-				CadConcatenarCaracter ( p_cResultado, '/' );
-				CadConcatenar ( p_cResultado, p_p_cPartes [i] );
-				MemLiberar ( ( void ** ) &(p_p_cPartes [i]) );
-			}
-			MemLiberar ( ( void ** ) &p_p_cPartes );
-			if ( CadLongitud ( p_cResultado ) == 0 )
-			{
-				CadConcatenarCaracter ( p_cResultado, '/' );
+				ERROR_ESTABLECER ( ERR_PARAMETROS );
+				p_cRes = NULL;
 			}
 		}
 		else
 		{
-			CadCopiar ( p_cResultado, p_cRutaBase );
+			p_cRes = NULL;
 		}
+		MemLiberar ( ( void ** ) &p_cRutaBaseCopia );
+		MemLiberar ( ( void ** ) &p_cRutaRelativaCopia );
 	}
 	else
 	{
-		p_cResultado = NULL;
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+		p_cRes = NULL;
 	}
-	return ( p_cResultado );
+	return ( p_cRes );
 }
 
+
+const char * SisDirectorioRaiz ()
+{
+#if ( defined ( CYGWIN ) )
+	return ( "/" );
+#elif ( defined ( WIN ) )
+	return ( "C:\\" );
+#else
+	return ( "/" );
+#endif
+}
+
+#if ( defined ( WIN ) )
+char * SisDirectorioRaizExt ( char cUnidad )
+{
+#if ( defined ( CYGWIN ) )
+	return ( CadCrearConFormato ( "/cygdrive/%c", cUnidad ) );
+#else
+	return ( CadCrearConFormato ( "%c:\\", cUnidad ) );
+#endif
+}
+#endif
+
+char SisSeparadorRutaFicheros ()
+{
+	return ( SIS_SEPARADOR_PATH );
+}
 

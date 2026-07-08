@@ -13,9 +13,11 @@
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
+#include "CommonSystemConfig.h"
+
 #include "CContadorCiclos.h"
 
-#include "CommonSystemConfig.h"
+
 #include "SistemaTiempo.h"
 
 

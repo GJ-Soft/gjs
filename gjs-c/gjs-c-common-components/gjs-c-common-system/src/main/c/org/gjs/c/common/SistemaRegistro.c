@@ -1,5 +1,5 @@
 /******************************************************************************/
-/*                            SistemaRegistro.cpp                             */
+/*                            SistemaRegistro.c                               */
 /*----------------------------------------------------------------------------*/
 /* Librería:  Sistema                                                         */
 /* Versión:   3.0.0                                                           */
@@ -49,7 +49,7 @@ int SisRegExisteClaveExt ( const char * p_cClave, int iClavePrinc )
 	if ( ES_VALIDO ( p_cClave ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegOpenKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegOpenKeyEx ( hkeyPrinc, p_cClave, &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
 			iRes = 1;
@@ -77,7 +77,7 @@ int SisRegCrearClaveExt ( const char * p_cClave, int iClavePrinc )
 	if ( ES_VALIDO ( p_cClave ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegCreateKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegCreateKeyEx ( hkeyPrinc, p_cClave, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyOpen, NULL )
 		if ( iResWin == ERROR_SUCCESS )
 		{
 			iRes = 1;
@@ -144,7 +144,7 @@ const char * SisRegObtValorCadenaExt ( const char * p_cClave, const char * p_cVa
 	if ( ES_VALIDO ( p_cClave ) && ES_VALIDO ( p_cValor ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegOpenKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegOpenKeyEx ( hkeyPrinc, p_cClave, 0, KEY_ALL_ACCESS, &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
 			dwTipo = REG_SZ;
@@ -152,7 +152,7 @@ const char * SisRegObtValorCadenaExt ( const char * p_cClave, const char * p_cVa
 			p_byBuffer = (byte *) MemReservar ( SIS_MAX_TAM_VALOR_REG + 1 );
 			if ( ES_VALIDO ( p_byBuffer ) )
 			{
-				iResWin = RegQueryValueEx ( hkeyOpen, (LPCTSTR) p_cValor, NULL, &dwTipo, p_byBuffer, &ulTamBuffer );
+				iResWin = RegQueryValueEx ( hkeyOpen, (LPCSTR) p_cValor, NULL, &dwTipo, p_byBuffer, &ulTamBuffer );
 				if ( iResWin == ERROR_SUCCESS )
 				{
 					p_cRes = CadDuplicar ( (char *) p_byBuffer );
@@ -194,13 +194,13 @@ unsigned long SisRegObtValorNumericoExt ( const char * p_cClave, const char * p_
 	if ( ES_VALIDO ( p_cClave ) && ES_VALIDO ( p_cValor ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegOpenKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegOpenKeyEx ( hkeyPrinc, p_cClave, 0, KEY_ALL_ACCESS, &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
 			dwTipo = REG_DWORD;
 			dwBuffer = 0;
 			ulTamBuffer = sizeof ( DWORD );
-			iResWin = RegQueryValueEx ( hkeyOpen, (LPCTSTR) p_cValor, NULL, &dwTipo, (byte *) &dwBuffer, &ulTamBuffer );
+			iResWin = RegQueryValueEx ( hkeyOpen, (LPCSTR) p_cValor, NULL, &dwTipo, (byte *) &dwBuffer, &ulTamBuffer );
 			if ( iResWin == ERROR_SUCCESS )
 			{
 				ulRes = (unsigned long) dwBuffer;
@@ -256,7 +256,7 @@ int SisRegEstValorCadenaExt ( const char * p_cClave, const char * p_cValor, cons
 	if ( ES_VALIDO ( p_cClave ) && ES_VALIDO ( p_cValor ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegOpenKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegOpenKeyEx ( hkeyPrinc, p_cClave, 0, KEY_ALL_ACCESS, &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
 			if ( ES_VALIDO ( p_cDato ) )
@@ -270,7 +270,7 @@ int SisRegEstValorCadenaExt ( const char * p_cClave, const char * p_cValor, cons
 					{
 						MemCopiar ( p_byBuffer, (void *) p_cDato, ulTamBuffer - 1 );
 					}
-					iResWin = RegSetValueEx ( hkeyOpen, (LPCTSTR) p_cValor, NULL, dwTipo, p_byBuffer, ulTamBuffer );
+					iResWin = RegSetValueEx ( hkeyOpen, (LPCSTR) p_cValor, NULL, dwTipo, p_byBuffer, ulTamBuffer );
 					if ( iResWin == ERROR_SUCCESS )
 					{
 						iRes = 1;
@@ -288,7 +288,7 @@ int SisRegEstValorCadenaExt ( const char * p_cClave, const char * p_cValor, cons
 			}
 			else
 			{
-				iResWin = RegDeleteValue ( hkeyOpen, (LPCTSTR) p_cValor );
+				iResWin = RegDeleteValue ( hkeyOpen, (LPCSTR) p_cValor );
 				if ( iResWin == ERROR_SUCCESS )
 				{
 					iRes = 1;
@@ -331,7 +331,7 @@ int SisRegEstValorNumericoExt ( const char * p_cClave, const char * p_cValor, un
 			dwTipo = REG_DWORD;
 			ulTamBuffer = sizeof ( DWORD );
 			dwBuffer = (DWORD) ulDato;
-			iResWin = RegSetValueEx ( hkeyOpen, (LPCTSTR) p_cValor, NULL, dwTipo, (CONST BYTE *) &dwBuffer, ulTamBuffer );
+			iResWin = RegSetValueEx ( hkeyOpen, (LPCSTR) p_cValor, NULL, dwTipo, (CONST BYTE *) &dwBuffer, ulTamBuffer );
 			if ( iResWin == ERROR_SUCCESS )
 			{
 				iRes = 1;
@@ -559,7 +559,7 @@ HKEY SisRegAbrir ( HKEY hkeyPadre, const char * p_cClave )
 
 void SisRegCerrar ( HKEY hkeyClave )
 {
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		RegCloseKey ( hkeyClave );
 	}
@@ -570,7 +570,7 @@ int SisRegEsClaveValida ( HKEY hkeyClave )
 {
 	int iRes;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		iRes = 1;
 	}
@@ -597,7 +597,7 @@ LONG SisRegNumSubclaves ( HKEY hkeyClave )
 	LONG	 lRet;
 	LONG     lRes;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		lRet = RegQueryInfoKey( hkeyClave, NULL, NULL, &dwReservado,             
 								&dwNumSubclaves, &dwMaxTamSubclave, &dwMaxTamClases,         
@@ -636,7 +636,7 @@ int SisRegTieneSubclaves ( HKEY hkeyClave )
 	LONG	 lRet;
 	int	 iRes;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		lRet = RegQueryInfoKey( hkeyClave, NULL, NULL, &dwReservado,             
 								&dwNumSubclaves, &dwMaxTamSubclave, &dwMaxTamClases,         
@@ -681,7 +681,7 @@ LONG SisRegNumValores ( HKEY hkeyClave )
 	LONG	 lRet;
 	LONG     lRes;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		lRet = RegQueryInfoKey( hkeyClave, NULL, NULL, &dwReservado,             
 								&dwNumSubclaves, &dwMaxTamSubclave, &dwMaxTamClases,         
@@ -720,7 +720,7 @@ int SisRegTieneValores ( HKEY hkeyClave )
 	LONG	 lRet;
 	int	 iRes;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		lRet = RegQueryInfoKey( hkeyClave, NULL, NULL, &dwReservado,             
 								&dwNumSubclaves, &dwMaxTamSubclave, &dwMaxTamClases,         
@@ -758,9 +758,9 @@ int SisRegExisteSubclave ( HKEY hkeyClave, const char *p_cSubclave )
 	LONG lRet;
 	int iRes;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
-		hkeyClave = NULL;
+		hkeySubclave = NULL;
 		lRet = RegOpenKeyEx ( hkeyClave, p_cSubclave, 0, KEY_ALL_ACCESS, &hkeySubclave );
 		if ( lRet == ERROR_SUCCESS )
 		{
@@ -781,7 +781,7 @@ int SisRegExisteSubclave ( HKEY hkeyClave, const char *p_cSubclave )
 }
 
 
-int SisRegExisteValor (  HKEY hkeyClave, const char *p_cNomValor )
+int SisRegExisteValor ( HKEY hkeyClave, const char *p_cNomValor )
 {
 	int  iRes;
 	DWORD dwTam;
@@ -789,7 +789,7 @@ int SisRegExisteValor (  HKEY hkeyClave, const char *p_cNomValor )
 	LONG  lRet;
 	DWORD dwTipo;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) )
+	if ( ( ES_VALIDO ( hkeyClave ) ) && ( p_cNomValor != NULL ) )
 	{
 		dwTam = sizeof ( DWORD );
 		lRet = RegQueryValueEx ( hkeyClave, p_cNomValor, 0, &dwTipo, 
@@ -810,11 +810,11 @@ int SisRegExisteValor (  HKEY hkeyClave, const char *p_cNomValor )
 }
 
 
-int SisRegEliminarSubclave (  HKEY hkeyClave, const char * p_cSubclave )
+int SisRegEliminarSubclave ( HKEY hkeyClave, const char * p_cSubclave )
 {
 	int iRes;
 
-	if ( ( hkeyClave != NULL ) && ( p_cSubclave != NULL ) )
+	if ( ( ES_VALIDO ( hkeyClave ) ) && ( ES_VALIDO ( p_cSubclave ) ) )
 	{
 		if ( RegDeleteKey ( hkeyClave, p_cSubclave ) == ERROR_SUCCESS )
 		{
@@ -840,39 +840,40 @@ int SisRegEliminarTodasSubclaves ( HKEY hkeyClave )
 	int iRes;
 	LONG lRet;
 	DWORD dwTamDep;
+	DWORD dwIndex;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		iRes = 1;
 		dwTamDep = REG_MAX_TAM_CLAVE + 1;
-		while ( ( RegEnumKeyEx ( hkeyClave, 0, p_cDeposito, &dwTamDep, NULL, NULL, NULL, NULL ) == ERROR_SUCCESS ) && ( iRes == 1 ) )
+		dwIndex = 0;
+		while ( RegEnumKeyEx ( hkeyClave, dwIndex, p_cDeposito, &dwTamDep, NULL, NULL, NULL, NULL ) == ERROR_SUCCESS )
 		{
-
-			lRet = RegDeleteKey ( hkeyClave, p_cDeposito );
-			if ( lRet != ERROR_SUCCESS )
+			if ( RegDeleteKey ( hkeyClave, p_cDeposito ) != ERROR_SUCCESS )
 			{
 				iRes = 0;
+				// Avanza para evitar bucle infinito si no se puede borrar
+				dwIndex = dwIndex + 1; 
 			}
-			dwTamDep = 256;
+			dwTamDep = REG_MAX_TAM_CLAVE + 1;
 		}
 	}
 	else
 	{
 		iRes = 0;
 	}
-
 	return ( iRes );
 }
 
 
-int SisRegConsultarClave (  HKEY hkeyClave, const char * p_cValor, unsigned int uiMaxTamValor )
+int SisRegConsultarClave ( HKEY hkeyClave, const char * p_cValor, unsigned int uiMaxTamValor )
 {
 	int iRes;
 	LONG lRet;
 	DWORD dwTam;
 	DWORD dwTipo;
 
-	if ( ( hkeyClave != NULL ) && ( p_cValor != NULL ) && ( uiMaxTamValor > 0 ) )
+	if ( ( ES_VALIDO ( hkeyClave ) ) && ( p_cValor != NULL ) && ( uiMaxTamValor > 0 ) )
 	{
 		dwTam = uiMaxTamValor;
 		lRet = RegQueryValueEx ( hkeyClave, NULL, 0,  &dwTipo, 
@@ -896,14 +897,14 @@ int SisRegConsultarClave (  HKEY hkeyClave, const char * p_cValor, unsigned int 
 }
 
 	
-int SisRegConsultarClaveEnt (  HKEY hkeyClave, DWORD * pdwValor )
+int SisRegConsultarClaveEnt ( HKEY hkeyClave, DWORD * pdwValor )
 {
 	int iRes;
 	LONG lRet;
 	DWORD dwTam;
 	DWORD dwTipo;
 
-	if ( ( hkeyClave != NULL ) && ( pdwValor != NULL ) )
+	if ( ( ES_VALIDO ( hkeyClave ) ) && ( pdwValor != NULL ) )
 	{
 		dwTam = sizeof ( DWORD );
 		lRet = RegQueryValueEx ( hkeyClave, NULL, 0, &dwTipo, 
@@ -927,13 +928,13 @@ int SisRegConsultarClaveEnt (  HKEY hkeyClave, DWORD * pdwValor )
 }
 
 	
-int SisRegEstablecerClave (  HKEY hkeyClave, const char * p_cValor )
+int SisRegEstablecerClave ( HKEY hkeyClave, const char * p_cValor )
 {
 	int iRes;
 	LONG lRet;
 	DWORD dwTam;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		dwTam = CadLongitud ( p_cValor ) + 1;
 		lRet = RegSetValueEx ( hkeyClave, NULL, 0, (ULONG) REG_SZ, (BYTE*) p_cValor, dwTam );
@@ -956,15 +957,14 @@ int SisRegEstablecerClave (  HKEY hkeyClave, const char * p_cValor )
 }
 
 
-int SisRegEstablecerClaveEnt (  HKEY hkeyClave, DWORD dwValor )
+int SisRegEstablecerClaveEnt ( HKEY hkeyClave, DWORD dwValor )
 {
 	int iRes;
 	LONG lRet;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		lRet = RegSetValueEx ( hkeyClave, NULL, 0, REG_SZ, (BYTE*) &dwValor, sizeof ( DWORD ) );
-
 		if ( lRet == ERROR_SUCCESS )
 		{
 			iRes = 1;
@@ -983,14 +983,14 @@ int SisRegEstablecerClaveEnt (  HKEY hkeyClave, DWORD dwValor )
 }
 
 
-int SisRegConsultarValor (  HKEY hkeyClave, const char * p_cNomValor, const char * p_cValor, unsigned int uiMaxTamValor )
+int SisRegConsultarValor ( HKEY hkeyClave, const char * p_cNomValor, const char * p_cValor, unsigned int uiMaxTamValor )
 {
 	int iRes;
 	LONG lRet;
 	DWORD dwTam;
 	DWORD dwTipo;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) &&
+	if ( ( ES_VALIDO ( hkeyClave ) ) && ( p_cNomValor != NULL ) &&
 		 ( p_cValor != NULL ) && ( uiMaxTamValor > 0 ) )
 	{
 		dwTam = uiMaxTamValor;
@@ -1015,14 +1015,14 @@ int SisRegConsultarValor (  HKEY hkeyClave, const char * p_cNomValor, const char
 }
 
 	
-int SisRegConsultarValorEnt (  HKEY hkeyClave, const char * p_cNomValor, DWORD * pdwValor )
+int SisRegConsultarValorEnt ( HKEY hkeyClave, const char * p_cNomValor, DWORD * pdwValor )
 {
 	int iRes;
 	LONG lRet;
 	DWORD dwTam;
 	DWORD dwTipo;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) && ( pdwValor != NULL ) )
+	if ( ( ES_VALIDO ( hkeyClave ) ) && ( p_cNomValor != NULL ) && ( pdwValor != NULL ) )
 	{
 		dwTam = sizeof ( DWORD );
 		lRet = RegQueryValueEx ( hkeyClave, p_cNomValor, 0, &dwTipo, 
@@ -1045,13 +1045,13 @@ int SisRegConsultarValorEnt (  HKEY hkeyClave, const char * p_cNomValor, DWORD *
 	return ( iRes );
 }
 	
-int SisRegEstablecerValor (  HKEY hkeyClave, const char * p_cNomValor, const char * p_cValor )
+int SisRegEstablecerValor ( HKEY hkeyClave, const char * p_cNomValor, const char * p_cValor )
 {
 	int iRes;
 	LONG lRet;
 	DWORD dwTam;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) )
+	if ( ( ES_VALIDO ( hkeyClave ) ) && ( p_cNomValor != NULL ) )
 	{
 		dwTam = CadLongitud ( p_cValor ) + 1;
 		lRet = RegSetValueEx ( hkeyClave, p_cNomValor, 0, REG_SZ, (BYTE*) p_cValor, dwTam );
@@ -1073,12 +1073,12 @@ int SisRegEstablecerValor (  HKEY hkeyClave, const char * p_cNomValor, const cha
 	return ( iRes );
 }
 
-int SisRegEstablecerValorEnt (  HKEY hkeyClave, const char * p_cNomValor, DWORD dwValor )
+int SisRegEstablecerValorEnt ( HKEY hkeyClave, const char * p_cNomValor, DWORD dwValor )
 {
 	int iRes;
 	LONG lRet;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) )
+	if ( ( ES_VALIDO ( hkeyClave ) ) && ( p_cNomValor != NULL ) )
 	{
 		lRet = RegSetValueEx ( hkeyClave, p_cNomValor, 0, REG_SZ, (BYTE*) &dwValor, sizeof ( DWORD ) );
 
@@ -1099,11 +1099,11 @@ int SisRegEstablecerValorEnt (  HKEY hkeyClave, const char * p_cNomValor, DWORD 
 	return ( iRes );
 }
 
-int SisRegEliminarValor (  HKEY hkeyClave, const char * p_cNomValor )
+int SisRegEliminarValor ( HKEY hkeyClave, const char * p_cNomValor )
 {
 	int iRes;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) )
+	if ( ( ES_VALIDO ( hkeyClave ) ) && ( p_cNomValor != NULL ) )
 	{
 		if ( RegDeleteValue ( hkeyClave, p_cNomValor ) == ERROR_SUCCESS )
 		{
@@ -1129,7 +1129,7 @@ int SisRegEliminarTodosValores ( HKEY hkeyClave )
 	int iRes;
 	LONG lRet;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		iRes = 1;
 		dwTamDep = REG_MAX_TAM_CLAVE + 1;
@@ -1152,12 +1152,12 @@ int SisRegEliminarTodosValores ( HKEY hkeyClave )
 	return ( iRes );
 }
 
-int SisRegEliminarContenido (  HKEY hkeyClave )
+int SisRegEliminarContenido ( HKEY hkeyClave )
 {
 	int iRes;
 	LONG lRet;
 
-	if ( hkeyClave != NULL )
+	if ( ES_VALIDO ( hkeyClave ) )
 	{
 		lRet = RegSetValueEx ( hkeyClave, NULL, 0, REG_SZ, 
 							  NULL, 0 );
@@ -1207,7 +1207,7 @@ int SisRegExportarFichero ( HKEY hkeyClave, const char * p_cFichero )
 {
 	int iRes;
 
-	if ( ( hkeyClave != NULL ) && ( p_cFichero != NULL ) )
+	if ( ( ES_VALIDO ( hkeyClave ) ) && ( p_cFichero != NULL ) )
 	{
 
 		if ( RegSaveKey ( hkeyClave, p_cFichero, NULL ) == ERROR_SUCCESS )
@@ -1266,29 +1266,27 @@ int SisRegRegistrarModulo ( const GUID guidModulo, const char * p_cFicModulo, co
 
 	hkeyRaiz = HKEY_CLASSES_ROOT;
 
-	lRet = RegCreateKey ( hkeyRaiz, REG_SEC_LIBRERIAS, &hkeyLibs );
+	lRet = RegCreateKeyEx ( hkeyRaiz, REG_SEC_LIBRERIAS, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyLibs, NULL );
 
 	if ( lRet == ERROR_SUCCESS )
 	{
-		lRet = RegCreateKey ( hkeyLibs, p_cGuid, &hkeyModulo );
+		lRet = RegCreateKeyEx ( hkeyLibs, p_cGuid, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyModulo, NULL )
 
 		if ( lRet == ERROR_SUCCESS )
 		{	
-			lRet = RegCreateKey ( hkeyModulo, p_cVersion, &hkeyVersion );
+			lRet = RegCreateKeyEx ( hkeyModulo, p_cVersion, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyVersion, NULL );
 
 			if ( lRet == ERROR_SUCCESS )
 			{
 				RegSetValueEx ( hkeyVersion, NULL, 0, REG_SZ, 
 								(BYTE*) p_cFicModulo, CadLongitud ( p_cFicModulo ) + 1 );
 
-				lRet = RegCreateKey ( hkeyVersion, REG_LIB_REVISION_DEF, 
-									  &hkeyRevision );
+				lRet = RegCreateKeyEx ( hkeyVersion, REG_LIB_REVISION_DEF, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyRevision, NULL );
 
 				if ( lRet == ERROR_SUCCESS )
 				{
 
-					lRet = RegCreateKey ( hkeyRevision, REG_CLV_LIB_FICHERO, 
-										  &hkeyFichero );
+					lRet = RegCreateKeyEx ( hkeyRevision, REG_CLV_LIB_FICHERO, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyFichero, NULL );
 
 					if ( lRet == ERROR_SUCCESS )
 					{
@@ -1303,8 +1301,7 @@ int SisRegRegistrarModulo ( const GUID guidModulo, const char * p_cFicModulo, co
 						iRes = 0;
 					}
 
-					lRet = RegCreateKey ( hkeyRevision, REG_CLV_LIB_ATRIBUTOS, 
-										  &hkeyAtributos );
+					lRet = RegCreateKeyEx ( hkeyRevision, REG_CLV_LIB_ATRIBUTOS, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyAtributos, NULL );
 
 					if ( lRet == ERROR_SUCCESS )
 					{
@@ -1319,8 +1316,7 @@ int SisRegRegistrarModulo ( const GUID guidModulo, const char * p_cFicModulo, co
 						iRes = 0;
 					}
 
-					lRet = RegCreateKey ( hkeyRevision, REG_CLV_LIB_FIC_AYUDA, 
-										  &hkeyFicAyuda );
+					lRet = RegCreateKeyEx ( hkeyRevision, REG_CLV_LIB_FIC_AYUDA, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyFicAyuda, NULL );
 
 					if ( lRet == ERROR_SUCCESS )
 					{
@@ -1428,12 +1424,12 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 			  REG_CLS_VERSION_DEF );
 
 	hkeyRaiz = HKEY_CLASSES_ROOT;
-	lRet = RegCreateKey ( hkeyRaiz, REG_SEC_CLASES, &hkeyClases );
+	lRet = RegCreateKeyEx ( hkeyRaiz, REG_SEC_CLASES, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyClases, NULL );
 
 	if ( lRet == ERROR_SUCCESS )
 	{
 
-		lRet = RegCreateKey ( hkeyClases, p_cGuid, &hkeyClase );
+		lRet = RegCreateKeyEx ( hkeyClases, p_cGuid, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyClase, NULL );
 
 		if ( lRet == ERROR_SUCCESS )
 		{	
@@ -1441,9 +1437,7 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 							(BYTE*) p_cDescripcion, 
 							CadLongitud ( p_cDescripcion ) + 1 );
 
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_CAT_IMP, 
-								  &hkeyCatImp );
+			lRet = RegCreateKeyEx ( hkeyClase, REG_CLV_CLS_CAT_IMP, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyCatImp, NULL );
 
 			if ( lRet == ERROR_SUCCESS )
 			{								
@@ -1458,10 +1452,7 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 				iRes = 0;
 			}
 
-
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_SERVIDOR, 
-								  &hkeyServidor );
+			lRet = RegCreateKeyEx ( hkeyClase, REG_CLV_CLS_SERVIDOR, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyServidor, NULL );
 
 			if ( lRet == ERROR_SUCCESS )
 			{
@@ -1476,9 +1467,7 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 				iRes = 0;
 			}
 
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_PROG_ID, 
-								  &hkeyProgId );
+			lRet = RegCreateKeyEx ( hkeyClase, REG_CLV_CLS_PROG_ID, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyProgId, NULL );
 
 			if ( lRet == ERROR_SUCCESS )
 			{
@@ -1494,9 +1483,7 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 			}
 
 
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_IND_PROG_ID, 
-								  &hkeyProgId );
+			lRet = RegCreateKeyEx ( hkeyClase, REG_CLV_CLS_IND_PROG_ID, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyProgId, NULL );
 
 			if ( lRet == ERROR_SUCCESS )
 			{
@@ -1511,9 +1498,7 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 				iRes = 0;
 			}
 
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_LIBRERIA, 
-								  &hkeyLibreria );
+			lRet = RegCreateKeyEx ( hkeyClase, REG_CLV_CLS_LIBRERIA, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyLibreria, NULL );
 
 			if ( lRet == ERROR_SUCCESS )
 			{
@@ -1528,9 +1513,7 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 				iRes = 0;
 			}
 
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_VERSION, 
-								  &hkeyVerCls );
+			lRet = RegCreateKeyEx ( hkeyClase, REG_CLV_CLS_VERSION, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyVerCls, NULL );
 
 			if ( lRet == ERROR_SUCCESS )
 			{
@@ -1544,20 +1527,16 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 			{
 				iRes = 0;
 			}
-
 			RegCloseKey ( hkeyClase );
 
-
-			lRet = RegCreateKey ( hkeyRaiz, p_cProgId, &hkeyClase );
+			lRet = RegCreateKeyEx ( hkeyRaiz, p_cProgId, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyClase, NULL );
 			if ( lRet == ERROR_SUCCESS )
 			{	
 				RegSetValueEx ( hkeyClase, NULL, 0, REG_SZ, 
 								(BYTE*) p_cDescripcion, 
 								CadLongitud ( p_cDescripcion ) + 1 );
 
-				lRet = RegCreateKey ( hkeyClase, 
-									  REG_CLV_CLS_ID, 
-									  &hkeyClsId );
+				lRet = RegCreateKeyEx ( hkeyClase, REG_CLV_CLS_ID, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyClsId, NULL );
 
 				if ( lRet == ERROR_SUCCESS )
 				{								
@@ -1570,9 +1549,7 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 					iRes = 0;
 				}
 
-				lRet = RegCreateKey ( hkeyClase, 
-									  REG_CLV_VERSION_ACT, 
-									  &hkeyProgIdAct );
+				lRet = RegCreateKeyEx ( hkeyClase, REG_CLV_VERSION_ACT, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyProgIdAct, NULL );
 
 				if ( lRet == ERROR_SUCCESS )
 				{
@@ -1593,7 +1570,7 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 				iRes = 0;
 			}
 
-			lRet = RegCreateKey ( hkeyRaiz, p_cProgIdAct, &hkeyClase );
+			lRet = RegCreateKeyEx ( hkeyRaiz, p_cProgIdAct, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyClase, NULL );
 
 			if ( lRet == ERROR_SUCCESS )
 			{	
@@ -1601,9 +1578,7 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 								(BYTE*) p_cDescripcion, 
 								CadLongitud ( p_cDescripcion ) + 1 );
 
-				lRet = RegCreateKey ( hkeyClase, 
-									  REG_CLV_CLS_ID, 
-									  &hkeyClsId );
+				lRet = RegCreateKeyEx ( hkeyClase, REG_CLV_CLS_ID, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyClsId, NULL );
 
 				if ( lRet == ERROR_SUCCESS )
 				{								
@@ -1632,10 +1607,7 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 	{
 		iRes = 0;
 	}
-
-		
 	CoTaskMemFree ( pswzGuid );
-
 	return ( iRes );
 }
 
@@ -1715,7 +1687,7 @@ void SisRegDesregistrarGUID ( const GUID guidCodigo, const char *p_cNombre )
 	HKEY	hkeyClase;
 	CHAR	p_cGuid		 [ REG_MAX_TAM_CLAVE + 1 ];
 	CHAR	p_cProgId	 [ REG_MAX_TAM_VALOR + 1 ];
-	CHAR	p_cProgIdAct	 [ REG_MAX_TAM_VALOR + 1 ];
+	CHAR	p_cProgIdAct [ REG_MAX_TAM_VALOR + 1 ];
 
 	hkeyRaiz = NULL;
 	hkeyClases = NULL;
@@ -1745,11 +1717,9 @@ void SisRegDesregistrarGUID ( const GUID guidCodigo, const char *p_cNombre )
 
 	if ( lRet == ERROR_SUCCESS )
 	{
-		lRet = RegOpenKeyEx ( hkeyClase, p_cGuid, 0, KEY_WRITE, &hkeyClase );
-
+		lRet = RegOpenKeyEx ( hkeyClases, p_cGuid, 0, KEY_WRITE, &hkeyClase );
 		if ( lRet == ERROR_SUCCESS )
 		{
-
 			RegDeleteKey ( hkeyClase, REG_CLV_CLS_CAT_IMP );
 			RegDeleteKey ( hkeyClase, REG_CLV_CLS_SERVIDOR );
 			RegDeleteKey ( hkeyClase, REG_CLV_CLS_PROG_ID );
@@ -1762,7 +1732,6 @@ void SisRegDesregistrarGUID ( const GUID guidCodigo, const char *p_cNombre )
 		RegCloseKey ( hkeyClases );
 
 		lRet = RegOpenKeyEx ( hkeyRaiz, p_cProgId, 0, KEY_WRITE, &hkeyClase );
-
 		if ( lRet == ERROR_SUCCESS )
 		{	
 			RegDeleteKey ( hkeyClase, REG_CLV_CLS_ID );
@@ -1772,7 +1741,6 @@ void SisRegDesregistrarGUID ( const GUID guidCodigo, const char *p_cNombre )
 		RegDeleteKey ( hkeyRaiz, p_cProgId );
 
 		lRet = RegOpenKeyEx ( hkeyRaiz, p_cProgIdAct, 0, KEY_WRITE, &hkeyClase );
-
 		if ( lRet == ERROR_SUCCESS )
 		{	
 			RegDeleteKey ( hkeyClase, REG_CLV_CLS_ID );

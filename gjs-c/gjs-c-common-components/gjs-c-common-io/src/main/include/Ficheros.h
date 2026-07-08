@@ -8,6 +8,12 @@
 
 
 #include <SistemaFicheros.h>
+#include <EntradaSalida.h>
+
+#include <SRuta.h>
+#include <SDirectorio.h>
+#include <SEntradaDirectorio.h>
+
 
 #include <SFicAleatorio.h>
 #include <SFicSecuencial.h>
@@ -20,6 +26,7 @@
 #include <SFicBloquesOrdenados.h>
 
 #include <SFicEstructura.h>
+
 
 
 #endif

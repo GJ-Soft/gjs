@@ -9,7 +9,6 @@
 #include <filesystem>
 
 
-using namespace std;
 
 
 namespace org
@@ -25,13 +24,13 @@ namespace org
 			{
 			private:
 				// TODO: conjunto de versiones soportadas
-				string 				sVersion;
-				string 				sDirectorioRaiz;
-				filesystem::path 	pathDirectorioRaiz;
+				std::string 			sVersion;
+				std::string 			sDirectorioRaiz;
+				std::filesystem::path 	pathDirectorioRaiz;
 				
 			public:
-				ServidorHTTP( const string & sDirectorio, const string & _sVersion = HTTP_VERSION_1_1, const string & sRutaContexto = "" );
-				ServidorHTTP( int iPuerto, const string & sDirectorio, const string & _sVersion = HTTP_VERSION_1_1, const string & sRutaContexto = "" );
+				ServidorHTTP( const std::string & sDirectorio, const std::string & _sVersion = HTTP_VERSION_1_1, const std::string & sRutaContexto = "" );
+				ServidorHTTP( int iPuerto, const std::string & sDirectorio, const std::string & _sVersion = HTTP_VERSION_1_1, const std::string & sRutaContexto = "" );
 				virtual ~ServidorHTTP();
 				
 				int getPuerto();
@@ -43,11 +42,11 @@ namespace org
 			private:
 				void ComandoRecibido( Comando & comando ) = 0;
 				void ComandoProcesado( Comando & comando, bool & bResultado ) = 0;
-				void SesionIniciada( const string & sUsuario );
-				void SesionFinalizada( const string & sUsuario );
+				void SesionIniciada( const std::string & sUsuario );
+				void SesionFinalizada( const std::string & sUsuario );
 
 				bool EsComandoValido( Comando & comando );
-				void ProcesarComandoSesion( Comando & comando, bool & bResponder, string & sRespuesta, bool & bResultadoProcesarComandoSesion, SocketAbierto * socket );
+				void ProcesarComandoSesion( Comando & comando, bool & bResponder, std::string & sRespuesta, bool & bResultadoProcesarComandoSesion, SocketAbierto * socket );
 				
 			};
 

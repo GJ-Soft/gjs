@@ -58,8 +58,8 @@ void AplicPplesCopiar ( const char * p_cTexto )
 				}
 			}
 		}
+	    CloseClipboard();
 	}
-    CloseClipboard();
 }
 
 const char * AplicPplesContenido ( int iLimpiar )
@@ -93,12 +93,12 @@ const char * AplicPplesContenido ( int iLimpiar )
 		{
 			p_cRes = NULL;
 		}
+		CloseClipboard();
 	}
 	else
 	{
 		p_cRes = NULL;
 	}
-    CloseClipboard();
 	return ( (const char *) p_cRes );
 }
 

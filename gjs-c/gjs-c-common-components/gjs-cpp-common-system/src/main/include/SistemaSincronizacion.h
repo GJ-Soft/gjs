@@ -18,10 +18,9 @@
 #define _ORG_GJS_C_CC_CPP_SISTEMASINCRONIZACION_H
 
 
-#include <Precompilacion.h>
+#include <BaseConfig.h>
 
 
-using namespace std;
 
 namespace org
 {

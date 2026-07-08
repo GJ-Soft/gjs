@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <sys/utsname.h>
 
+using namespace std;
 
 
 

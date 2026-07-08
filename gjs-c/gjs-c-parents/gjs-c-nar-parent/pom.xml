@@ -46,7 +46,7 @@
 		<gjs.nar.openssl.option>-DWITH_OPENSSL</gjs.nar.openssl.option>
 		
 		<!-- Aggregational platform specific compilation options -->
-		<gjs.nar.platform.options></gjs.nar.platform.options>
+		<gjs.nar.platform.options>${platformOptions}</gjs.nar.platform.options>
 		<gjs.nar.platform.link.options></gjs.nar.platform.link.options>
 
 		<!-- Default Compiler options (must be defined in the pom.xml son) -->
@@ -69,16 +69,15 @@
 		<!-- Linker options -->	
 		<gjs.nar.emulation.option>-Wl,-m,${gjs.nar.emulation}</gjs.nar.emulation.option> 
 		
+		<!-- Resources -->
+		<gjs.nar.resources.directory>${project.build.directory}/nar/resources</gjs.nar.resources.directory>
+		<gjs.nar.testResources.directory>${project.build.directory}/test-nar/resources</gjs.nar.testResources.directory>
+		
 		<!-- Naming -->
 		<finalName.prefix.lib>lib</finalName.prefix.lib>
 		<finalName.prefix.exe></finalName.prefix.exe>
 		<finalName.prefix></finalName.prefix>
 		<finalName>${finalName.prefix}${project.artifactId}-${project.version}</finalName>
-			
-		<!-- Opciones cppcheck -->
-		<check.execute>true</check.execute>
-		<check.severity>all</check.severity>	
-		<check.configurations>1</check.configurations>
 			
 		<!-- Includes -->		
 		<includeDir>${project.basedir}/target/nar/include</includeDir>
@@ -98,9 +97,6 @@
 		<dirBinObjTest>${project.basedir}/target/${subdirBinObjTest}</dirBinObjTest>
 		<dirTest>${project.basedir}/target/${subdirTest}</dirTest>
 		<dirStLib>${project.basedir}/target/lib</dirStLib>
-		
-		<!-- Ejecutable de cppcheck -->
-		<cppCheck>${cppCheckDir}/cppcheck</cppCheck>
 		
 		<!-- Ejecutables auxiliares -->
 		<gcovr>/ust/bin/gcovr</gcovr> 
@@ -227,6 +223,8 @@
 								<option>${gjs.nar.platform.link.options}</option>
 								<option>${gjs.nar.threads.option}</option>
 							</testOptions>
+							<libs>
+							</libs>					
 						</linker>
 						
 						<tests>
@@ -256,128 +254,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>				
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<skip>${skip.if.not.source}</skip>
-					<includeEmptyDirs>true</includeEmptyDirs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.basedir}/target/nar/resources</outputDirectory>
-							<overwrite>true</overwrite>
-							<resources>
-								<resource>
-									<directory>${project.basedir}/src/main/resources</directory>
-									<includes>
-										<include>**/**</include>
-									</includes>
-									<excludes>
-										<exclude>**/code/**</exclude>
-									</excludes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>						
-				   <execution>
-						<id>copy-test-resources</id>
-						<phase>generate-test-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.basedir}/target/test-nar/resources</outputDirectory>
-							<overwrite>true</overwrite>
-							<resources>
-								<resource>
-									<directory>${project.basedir}/src/test/resources</directory>
-									<includes>
-										<include>**/**</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>						
-				</executions>
-			</plugin>	
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<configuration>
-					<skip>${skip.if.not.source}</skip>
-				</configuration>
-				<executions>
-					<execution>
-						<id>prepare-tests</id>
-						<phase>generate-test-sources</phase>
-						<configuration>
-							<target name="prepare-context-for-tests">
-								<mkdir dir="${project.basedir}/target/test-nar/results"/>
-								<mkdir dir="${project.basedir}/target/test-nar/internal"/>
-								<propertyfile file="${project.basedir}/target/test-nar/internal/test.properties">
-									<entry key="project.basedir" value="${project.basedir}"/>
-									<entry key="project.build.directory" value="${project.build.directory}"/>
-									<entry key="project.build.testDirectory" value="${project.basedir}/target/test-nar"/>
-								</propertyfile>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					
-					<execution>
-						<id>check</id>
-						<phase>validate</phase>
-						<configuration>
-							<target name="execute-cppcheck" if="${checkExecute}">
-								<mkdir dir="${project.basedir}/target/check"/>
-								<exec executable="${cppCheck}" dir="${project.basedir}/src/main/c++" failonerror="false">
-									<arg value="--language=${gjs.nar.compiler.language}"/>
-									<!-- TODO: Asegurar que cppcheck es la última version -->
-									<!--arg value="++std=${cppOption}"/-->
-									<arg value="--std=${languageStandard}"/>
-									<arg value="--platform=native"/>
-									<arg value="--enable=${checkSeverity}"/>
-									<arg value="--max-configs=${checkConfigurations}"/>
-									<arg value="-I${project.basedir}/src/main/include"/>
-									<arg value="-I${glibDirInclude}"/>
-									<arg value="-I${sslDirInclude}"/>
-									<arg value="-I${oraDirInclude}"/>
-									<arg value="-I${xmlDirInclude}"/>
-									<arg value="-I${log4cxxDirInclude}"/>											
-									<arg value="-I${sysIncDir}"/>
-									<arg value="-I${sysIncDir2}"/>	
-									<arg value="--suppress=virtualCallInConstructor"/>
-									<arg value="--suppress=uninitMemberVar"/>		
-									<arg value="--suppress=useInitializationList"/>		
-									<arg value="--suppress=toomanyconfigs"/>												
-									<arg value="--suppress='*:${sysIncDir2}/*'"/>											
-									<arg value="--suppress='*:${sysIncDir}/*'"/>											
-									<arg value="--suppress='*:${oraDirInclude}/*'"/>											
-									<arg value="--cppcheck-build-dir=${project.basedir}/target/check"/>
-									<!-- arg value="++check-config" /-->
-									<arg value="*.*" />
-								</exec>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 		
 		<directory>${basedir}/target</directory>
 	</build>

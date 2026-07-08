@@ -7,9 +7,9 @@
 #define FIC_ENC_TAM_INFO_CABECERA			sizeof ( unsigned long )
 
 
-static int SFicEncEscribirCabeceraInicial ( SFicEncabezado * p_ficObj, unsigned long ulNumMagico );
-static int SFicEncProcesarCabecera ( SFicEncabezado * p_ficObj );
-static unsigned long SFicEncPosInicialDatos ( SFicEncabezado * p_ficObj );
+int _SFicEncEscribirCabeceraInicial ( SFicEncabezado * p_ficObj, unsigned long ulNumMagico );
+int _SFicEncProcesarCabecera ( SFicEncabezado * p_ficObj );
+unsigned long _SFicEncPosInicialDatos ( SFicEncabezado * p_ficObj );
 
 
 
@@ -55,6 +55,7 @@ SFicEncabezado * SFicEncAsignar ( const char * p_cRuta )
 				ulPos = sizeof ( unsigned long );
 			}
 			ulTam = sizeof ( unsigned long );
+			SFicAlCerrar ( p_ficObj->p_ficObj );
 			if ( SFicAlLeerBufferEn ( p_ficObj->p_ficObj, ulPos, (byte *) &(p_ficObj->ulTamCabecera), &ulTam ) == 0 )
 			{
 				SFicEncDestruir ( &p_ficObj );
@@ -102,11 +103,11 @@ SFicEncabezado * SFicEncAsignarExt ( const char * p_cDir, const char * p_cFic, i
 		{
 			if ( p_ficObj->iNumMagico == 0 )
 			{
-				ulPos = FIC_ENC_TAM_INFO_CABECERA;
+				ulPos = 0;
 			}
 			else
 			{
-				ulPos = FIC_ENC_TAM_INFO_CABECERA + sizeof ( unsigned long );
+				ulPos = sizeof ( unsigned long );
 			}
 			ulTam = sizeof ( unsigned long );
 			if ( SFicAlLeerBufferEn ( p_ficObj->p_ficObj, ulPos, (byte *) &(p_ficObj->ulTamCabecera), &ulTam ) == 0 )
@@ -118,6 +119,38 @@ SFicEncabezado * SFicEncAsignarExt ( const char * p_cDir, const char * p_cFic, i
 		{
 			p_ficObj = NULL;
 		}
+	}
+	return ( p_ficObj );
+}
+
+SFicEncabezado * SFicEncCrearRuta ( SRuta * p_rutRuta, unsigned long ulTamCabecera )
+{
+	SFicEncabezado *	p_ficObj;
+	char *				p_cRuta;
+	
+	if ( SRutEsValida ( p_rutRuta ) == 1 )
+	{
+		if ( SRutEsFichero ( p_rutRuta ) == 1 )
+		{
+			p_cRuta = SRutRutaAbsolutaLit ( p_rutRuta );
+			if ( SRutExiste ( p_rutRuta ) == 1 )
+			{
+				p_ficObj = SFicEncAsignar ( p_cRuta );
+			}
+			else
+			{
+				p_ficObj = SFicEncCrear ( p_cRuta, ulTamCabecera );
+			}
+			MemLiberar ( (void **) &p_cRuta );
+		}
+		else
+		{
+			p_ficObj = NULL;
+		}
+	}
+	else
+	{
+		p_ficObj = NULL;
 	}
 	return ( p_ficObj );
 }
@@ -362,24 +395,23 @@ int SFicEncAbrirExt ( SFicEncabezado * p_ficObj, int iVaciar )
 	{
 		if ( SisExisteFichero ( SFicAlRuta ( p_ficObj->p_ficObj ) ) == 1 )
 		{
-			if ( p_ficObj->iNumMagico == 1 )
-			{
-				ulNumMagico = SFicAlNumeroMagico ( p_ficObj->p_ficObj );
-			}
-			else
-			{
-				ulNumMagico = 0;
-			}
-
 			if ( SFicAlAbrirExt ( p_ficObj->p_ficObj, iVaciar ) == 1 )
 			{
-				if ( iVaciar == 1 )
+				if ( p_ficObj->iNumMagico == 1 )
 				{
-					iRes = SFicEncEscribirCabeceraInicial ( p_ficObj, ulNumMagico );
+					ulNumMagico = SFicAlNumeroMagico ( p_ficObj->p_ficObj );
 				}
 				else
 				{
-					iRes = SFicEncProcesarCabecera ( p_ficObj );
+					ulNumMagico = 0;
+				}
+				if ( iVaciar == 1 )
+				{
+					iRes = _SFicEncEscribirCabeceraInicial ( p_ficObj, ulNumMagico );
+				}
+				else
+				{
+					iRes = _SFicEncProcesarCabecera ( p_ficObj );
 				}
 			}
 			else
@@ -391,7 +423,7 @@ int SFicEncAbrirExt ( SFicEncabezado * p_ficObj, int iVaciar )
 		{
 			if ( SFicAlAbrirExt ( p_ficObj->p_ficObj, 1 ) == 1 )
 			{
-				iRes = SFicEncEscribirCabeceraInicial ( p_ficObj, 0 );
+				iRes = _SFicEncEscribirCabeceraInicial ( p_ficObj, 0 );
 			}
 			else
 			{
@@ -457,7 +489,14 @@ unsigned long SFicEncTamDatos  ( SFicEncabezado * p_ficObj )
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		ulRes = SFicAlTam  ( p_ficObj->p_ficObj ) - SFicEncPosInicialDatos ( p_ficObj );
+		if ( SFicAlTam  ( p_ficObj->p_ficObj ) >= _SFicEncPosInicialDatos ( p_ficObj ) )
+		{
+			ulRes = SFicAlTam  ( p_ficObj->p_ficObj ) - _SFicEncPosInicialDatos ( p_ficObj );
+		}
+		else
+		{
+			ulRes = 0;
+		}
 	}
 	else
 	{
@@ -494,7 +533,14 @@ unsigned long SFicEncPos ( SFicEncabezado * p_ficObj )
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		ulRes = SFicAlPos ( p_ficObj->p_ficObj ) - SFicEncPosInicialDatos ( p_ficObj );
+		if ( SFicAlTam  ( p_ficObj->p_ficObj ) >= _SFicEncPosInicialDatos ( p_ficObj ) )
+		{
+			ulRes = SFicAlTam  ( p_ficObj->p_ficObj ) - _SFicEncPosInicialDatos ( p_ficObj );
+		}
+		else
+		{
+			ulRes = 0;
+		}
 	}
 	else
 	{
@@ -509,7 +555,7 @@ int SFicEncPosicionar ( SFicEncabezado * p_ficObj, unsigned long ulPos )
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		iRes = SFicAlPosicionar ( p_ficObj->p_ficObj, ulPos + SFicEncPosInicialDatos ( p_ficObj ) );
+		iRes = SFicAlPosicionar ( p_ficObj->p_ficObj, ulPos + _SFicEncPosInicialDatos ( p_ficObj ) );
 	}
 	else
 	{
@@ -524,7 +570,7 @@ int SFicEncMoverAInicio ( SFicEncabezado * p_ficObj )
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		iRes = SFicAlPosicionar ( p_ficObj->p_ficObj, SFicEncPosInicialDatos ( p_ficObj ) );
+		iRes = SFicAlPosicionar ( p_ficObj->p_ficObj, _SFicEncPosInicialDatos ( p_ficObj ) );
 	}
 	else
 	{
@@ -693,7 +739,7 @@ byte SFicEncLeer ( SFicEncabezado * p_ficObj )
 		if ( SFicAlEstaAbierto ( p_ficObj->p_ficObj ) == 1 )
 		{
 			ulPos = SFicAlPos ( p_ficObj->p_ficObj );
-			ulPosMin = SFicEncPosInicialDatos ( p_ficObj );
+			ulPosMin = _SFicEncPosInicialDatos ( p_ficObj );
 			if ( ulPos < ulPosMin )
 			{
 				byRes = SFicAlLeerEn ( p_ficObj->p_ficObj, ulPosMin );
@@ -718,7 +764,7 @@ int SFicEncLeerBuffer ( SFicEncabezado * p_ficObj, byte * p_byContenido, unsigne
 		if ( SFicAlEstaAbierto ( p_ficObj->p_ficObj ) == 1 )
 		{
 			ulPos = SFicAlPos ( p_ficObj->p_ficObj );
-			ulPosMin = SFicEncPosInicialDatos ( p_ficObj );
+			ulPosMin = _SFicEncPosInicialDatos ( p_ficObj );
 
 			if ( ulPos < ulPosMin )
 			{
@@ -752,7 +798,7 @@ int SFicEncEscribir ( SFicEncabezado * p_ficObj, byte byValor )
 		if ( SFicAlEstaAbierto ( p_ficObj->p_ficObj ) == 1 )
 		{
 			ulPos = SFicAlPos ( p_ficObj->p_ficObj );
-			ulPosMin = SFicEncPosInicialDatos ( p_ficObj );
+			ulPosMin = _SFicEncPosInicialDatos ( p_ficObj );
 			if ( ulPos < ulPosMin )
 			{
 				iRes = SFicAlEscribirEn ( p_ficObj->p_ficObj, ulPosMin, byValor );
@@ -785,7 +831,7 @@ int SFicEncEscribirBuffer ( SFicEncabezado * p_ficObj, byte * p_byContenido, uns
 		if ( SFicAlEstaAbierto ( p_ficObj->p_ficObj ) == 1 )
 		{
 			ulPos = SFicAlPos ( p_ficObj->p_ficObj );
-			ulPosMin = SFicEncPosInicialDatos ( p_ficObj );
+			ulPosMin = _SFicEncPosInicialDatos ( p_ficObj );
 			if ( ulPos < ulPosMin )
 			{
 				iRes = SFicAlEscribirBufferEn ( p_ficObj->p_ficObj, ulPosMin, p_byContenido, p_ulTam );
@@ -814,7 +860,7 @@ byte SFicEncLeerEn ( SFicEncabezado * p_ficObj, unsigned long ulPos )
 	byRes = 0x00;
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		byRes = SFicAlLeerEn ( p_ficObj->p_ficObj, ulPos + SFicEncPosInicialDatos ( p_ficObj ) );
+		byRes = SFicAlLeerEn ( p_ficObj->p_ficObj, ulPos + _SFicEncPosInicialDatos ( p_ficObj ) );
 	}
 	return ( byRes );
 }
@@ -825,7 +871,7 @@ int SFicEncLeerBufferEn ( SFicEncabezado * p_ficObj, unsigned long ulPos, byte *
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		iRes = SFicAlLeerBufferEn ( p_ficObj->p_ficObj, ulPos + SFicEncPosInicialDatos ( p_ficObj ), p_byContenido, p_ulTam );
+		iRes = SFicAlLeerBufferEn ( p_ficObj->p_ficObj, ulPos + _SFicEncPosInicialDatos ( p_ficObj ), p_byContenido, p_ulTam );
 	}
 	else
 	{
@@ -840,7 +886,7 @@ int SFicEncEscribirEn ( SFicEncabezado * p_ficObj, unsigned long ulPos, byte byV
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		iRes = SFicAlEscribirEn ( p_ficObj->p_ficObj, ulPos + SFicEncPosInicialDatos ( p_ficObj ), byValor );
+		iRes = SFicAlEscribirEn ( p_ficObj->p_ficObj, ulPos + _SFicEncPosInicialDatos ( p_ficObj ), byValor );
 	}
 	else
 	{
@@ -855,7 +901,7 @@ int SFicEncEscribirBufferEn ( SFicEncabezado * p_ficObj, unsigned long ulPos, by
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		iRes = SFicAlEscribirBufferEn ( p_ficObj->p_ficObj, ulPos + SFicEncPosInicialDatos ( p_ficObj ), p_byContenido, p_ulTam );
+		iRes = SFicAlEscribirBufferEn ( p_ficObj->p_ficObj, ulPos + _SFicEncPosInicialDatos ( p_ficObj ), p_byContenido, p_ulTam );
 	}
 	else
 	{
@@ -864,7 +910,7 @@ int SFicEncEscribirBufferEn ( SFicEncabezado * p_ficObj, unsigned long ulPos, by
 	return ( iRes );
 }
 
-static int SFicEncEscribirCabeceraInicial ( SFicEncabezado * p_ficObj, unsigned long ulNumMagico )
+int _SFicEncEscribirCabeceraInicial ( SFicEncabezado * p_ficObj, unsigned long ulNumMagico )
 {
 	int				iRes;
 	byte *			p_byCabecera;
@@ -939,7 +985,7 @@ static int SFicEncEscribirCabeceraInicial ( SFicEncabezado * p_ficObj, unsigned 
 	return ( iRes );
 }
 
-static int SFicEncProcesarCabecera ( SFicEncabezado * p_ficObj )
+int _SFicEncProcesarCabecera ( SFicEncabezado * p_ficObj )
 {
 	int				iRes;
 	unsigned long	ulTam;
@@ -980,7 +1026,7 @@ static int SFicEncProcesarCabecera ( SFicEncabezado * p_ficObj )
 	return ( iRes );
 }
 
-static unsigned long SFicEncPosInicialDatos ( SFicEncabezado * p_ficObj )
+unsigned long _SFicEncPosInicialDatos ( SFicEncabezado * p_ficObj )
 {
 	unsigned long  ulRes;
 

@@ -29,7 +29,7 @@
 	
 	<properties>
 		<finalPrefix>${libFinalPrefix}</finalPrefix>
-		<checkSeverity>style</checkSeverity>	
+		<cpp.check.severity>style</cpp.check.severity>	
 	</properties>
 	
 	<build>

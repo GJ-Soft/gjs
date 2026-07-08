@@ -11,7 +11,7 @@ extern int _is_dos_shell   (const char *_prog);
 
 #define _SSISTEMA_SEG_BASE_DEF			0x01ec0000
 #define _SSISTEMA_SEG_LIMIT_MAX_DEF		0x0010FFFF
-#define _SSISTEMA_SEG_LIMIT_MIN_DEF		0x0010FFFF
+#define _SSISTEMA_SEG_LIMIT_MIN_DEF		0x00000000
 
 
 #define _SSISTEMA_FEC_INI_UNIX			19700101 
@@ -60,17 +60,17 @@ static const char * _p_p_cVersionesDos [] = { "IBMPcDos",
 											"MS-DOS",
 											(char *) NULL };
 
-static const char * _p_p_cVersionesWindows [] = {	"Windows95",
-													"Windows98",
-													"Windows98SE",
-													"WindowsMe",
-													"Windows2000",
-													"WindowsXP",
-													"WindowsXPProfessional",
-													"WindowsNT",
-													"WindowsServer2003",
-													"WindowsVista",
-													(char *) NULL };
+//static const char * _p_p_cVersionesWindows [] = {	"Windows95",
+//													"Windows98",
+//													"Windows98SE",
+//													"WindowsMe",
+//													"Windows2000",
+//													"WindowsXP",
+//													"WindowsXPProfessional",
+//													"WindowsNT",
+//													"WindowsServer2003",
+//													"WindowsVista",
+//													(char *) NULL };
 
 static const char * _p_p_cVersionesLinux [] = { "GNU/Linux",
 												(char *) NULL };
@@ -79,10 +79,10 @@ static const char * _p_p_cVersionesUNIX [] = { "SunOS",
 												"OS/390",
 												(char *) NULL };
 
-static const char * _p_p_cVersionesMac [] = { "MacOS",
-												(char *) NULL };
+//static const char * _p_p_cVersionesMac [] = { "MacOS",
+//												(char *) NULL };
 
-static const char * _p_p_cVariablesEntornoDOS [] = { "%OS%", "%PATH%",  "%HOMEPATH%", "%TEMP%" };
+//static const char * _p_p_cVariablesEntornoDOS [] = { "%OS%", "%PATH%",  "%HOMEPATH%", "%TEMP%" };
 
 
 
@@ -201,35 +201,13 @@ int SSisEsWindows ( SSistema * p_sisObj )
 	return ( iRes );
 }
 
-int SSisEsLinux ( SSistema * p_sisObj )
+int SSisEsPosix ( SSistema * p_sisObj )
 {
 	int iRes;
 
 	if ( ES_VALIDO ( p_sisObj ) )
 	{
-		if ( p_sisObj->iSistema == TIP_SIS_LINUX )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
-	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
-}
-
-int SSisEsUnix ( SSistema * p_sisObj )
-{
-	int iRes;
-
-	if ( ES_VALIDO ( p_sisObj ) )
-	{
-		if ( p_sisObj->iSistema == TIP_SIS_UNIX )
+		if ( p_sisObj->iSistema == TIP_SIS_POSIX )
 		{
 			iRes = 1;
 		}
@@ -483,11 +461,9 @@ int SSisEjecutarComandoExt ( SSistema * p_sisObj, const char * p_cPrograma, cons
 	{
 		if ( ( p_sisObj->iEjecComando == 1 ) && ES_VALIDO ( p_cPrograma ) )
 		{
-#			if ( !defined ( WIN ) && !defined ( UNIX ) )
-				iRes = _shell_command ( p_cPrograma, p_cParametros );
-#			else
-				iRes = -1;
-#			endif
+			char * p_cComando = CadCrearConFormato ( "%s %s", p_cPrograma, p_cParametros );
+			iRes = system( p_cComando );
+			MemLiberarCadena ( &p_cComando );
 		}
 		else
 		{
@@ -508,7 +484,7 @@ int SSisEsEjecutableDOS ( SSistema * p_sisObj, const char * p_cPrograma )
 
 	if ( ES_VALIDO ( p_cPrograma ) )
 	{
-#		if ( !defined ( WIN ) && !defined ( UNIX ) )
+#		if ( !defined ( POSIX ) )
 			if ( _is_dos_shell ( p_cPrograma ) )
 			{
 				iRes = 1;
@@ -534,7 +510,7 @@ int SSisEsEjecutableUNIX ( SSistema * p_sisObj, const char * p_cPrograma )
 
 	if ( ES_VALIDO ( p_cPrograma ) )
 	{
-#		if ( !defined ( WIN ) && !defined ( UNIX ) )
+#		if ( !defined ( POSIX ) )
 			if ( _is_unixy_shell ( p_cPrograma ) )
 			{
 				iRes = 1;
@@ -558,7 +534,7 @@ long SSisTamPagina ( SSistema * p_sisObj )
 {
 	long lRes;
 
-#		if ( !defined ( WIN ) && !defined ( UNIX ) )
+#		if ( !defined ( POSIX ) )
 		lRes = getpagesize ();
 #		else
 			lRes = 0;
@@ -568,7 +544,7 @@ long SSisTamPagina ( SSistema * p_sisObj )
 
 long SSisDirSegmentoCodigo ( SSistema * p_sisObj )
 {
-#		if ( !defined ( WIN ) && !defined ( UNIX ) )
+#		if ( !defined ( POSIX ) )
 		//return ( DirBaseSegmentos () + _my_cs () );
 		return ( _my_cs () );
 #	else
@@ -578,7 +554,7 @@ long SSisDirSegmentoCodigo ( SSistema * p_sisObj )
 
 long SSisDirSegmentoDatos ( SSistema * p_sisObj )
 {
-#		if ( !defined ( WIN ) && !defined ( UNIX ) )
+#		if ( !defined ( POSIX ) )
 		//return ( DirBaseSegmentos () + _my_ds () );
 		return ( _my_ds () );
 #	else
@@ -588,7 +564,7 @@ long SSisDirSegmentoDatos ( SSistema * p_sisObj )
 
 long SSisDirSegmentoPila ( SSistema * p_sisObj )
 {
-#		if ( !defined ( WIN ) && !defined ( UNIX ) )
+#		if ( !defined ( POSIX ) )
 		//return ( DirBaseSegmentos () + _my_ss () );
 		return ( _my_ss () );
 #	else
@@ -701,7 +677,7 @@ int SSisDirAbsPilaValida ( SSistema * p_sisObj, long lDir )
 long SSisMemoriaTotal ( SSistema * p_sisObj )
 {
 	long			lRes;
-#		if ( !defined ( WIN ) && !defined ( UNIX ) )
+#		if ( !defined ( POSIX ) )
 	lRes = 0;
 		struct rlimit	rlimInfo; 
 
@@ -722,7 +698,7 @@ long SSisMemoriaTotal ( SSistema * p_sisObj )
 long SSisMemoriaUtilizada ( SSistema * p_sisObj )
 {
 	long			lRes;
-#		if ( !defined ( WIN ) && !defined ( UNIX ) )
+#		if ( !defined ( POSIX ) )
 		lRes = 0;
 		struct rlimit	rlimInfo; 
 
@@ -743,7 +719,7 @@ long SSisMemoriaUtilizada ( SSistema * p_sisObj )
 long SSisMemoriaDisponible ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 		lRes = 0;
 		struct rlimit	rlimInfo; 
 
@@ -764,7 +740,7 @@ long SSisMemoriaDisponible ( SSistema * p_sisObj )
 long SSisMemoriaDatosTotal ( SSistema * p_sisObj )
 {
 	long			lRes;
-#		if ( !defined ( WIN ) && !defined ( UNIX ) )
+#		if ( !defined ( POSIX ) )
 		lRes = 0;
 		struct rlimit	rlimInfo; 
 
@@ -785,7 +761,7 @@ long SSisMemoriaDatosTotal ( SSistema * p_sisObj )
 long SSisMemoriaDatosUtilizada ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 		struct rusage 	rusgInfo; 
 
 		if ( getrusage ( RUSAGE_SELF, &rusgInfo ) == 0 )
@@ -824,7 +800,7 @@ long SSisMemoriaDatosDisponible ( SSistema * p_sisObj )
 long SSisMemoriaPilaTotal ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 	struct rlimit	rlimInfo; 
 
 	if ( getrlimit ( RLIMIT_STACK, &rlimInfo ) == 0 )
@@ -844,7 +820,7 @@ long SSisMemoriaPilaTotal ( SSistema * p_sisObj )
 long SSisMemoriaPilaUtilizada ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 		struct rusage 	rusgInfo; 
 
 		if ( getrusage ( RUSAGE_SELF, &rusgInfo ) == 0 )
@@ -883,7 +859,7 @@ long SSisMemoriaPilaDisponible ( SSistema * p_sisObj )
 long SSisMemoriaBloqueadaTotal ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 	struct rlimit	rlimInfo; 
 
 	if ( getrlimit ( RLIMIT_MEMLOCK, &rlimInfo ) == 0 )
@@ -903,7 +879,7 @@ long SSisMemoriaBloqueadaTotal ( SSistema * p_sisObj )
 long SSisMemoriaBloqueadaUtilizada ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 		struct rlimit	rlimInfo; 
 
 		if ( getrlimit ( RLIMIT_MEMLOCK, &rlimInfo ) == 0 )
@@ -942,7 +918,7 @@ long SSisMemoriaBloqueadaDisponible ( SSistema * p_sisObj )
 long SSisMemoriaFisica ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 	struct rlimit	rlimInfo; 
 
 	if ( getrlimit ( RLIMIT_RSS, &rlimInfo ) == 0 )
@@ -962,7 +938,7 @@ long SSisMemoriaFisica ( SSistema * p_sisObj )
 long SSisDescriptoresESTotales ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 	struct rlimit	rlimInfo; 
 
 	if ( getrlimit ( RLIMIT_NOFILE, &rlimInfo ) == 0 )
@@ -982,7 +958,7 @@ long SSisDescriptoresESTotales ( SSistema * p_sisObj )
 long SSisDescriptoresESUtilizados ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 	struct rlimit	rlimInfo; 
 
 	if ( getrlimit ( RLIMIT_NOFILE, &rlimInfo ) == 0 )
@@ -1021,7 +997,7 @@ long SSisDescriptoresESDisponibles ( SSistema * p_sisObj )
 long SSisMaxTamFichero ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 		struct rlimit	rlimInfo; 
 
 		if ( getrlimit ( RLIMIT_FSIZE, &rlimInfo ) == 0 )
@@ -1041,7 +1017,7 @@ long SSisMaxTamFichero ( SSistema * p_sisObj )
 long SSisMaxTiempoCPU ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 		struct rlimit	rlimInfo; 
 
 		if ( getrlimit ( RLIMIT_SPU, &rlimInfo ) == 0 )
@@ -1061,7 +1037,7 @@ long SSisMaxTiempoCPU ( SSistema * p_sisObj )
 long SSisMaxNumProcesosPorUsuario ( SSistema * p_sisObj )
 {
 	long			lRes;
-#	if ( !defined ( WIN ) && !defined ( UNIX ) )
+#	if ( !defined ( POSIX ) )
 		struct rlimit	rlimInfo; 
 
 		if ( getrlimit ( RLIMIT_NPROC, &rlimInfo ) == 0 )
@@ -1141,9 +1117,7 @@ static void SSisInicializar ( SSistema * p_sisObj )
 	p_sisObj->iEjecComando = 0;
 
 # else
-#  if ( ! defined ( UNIX ) )
 	struct utsname	utsnInfo;
-#  endif
 	struct tm *		p_tmFecha;
 	time_t			timFecha;
 	int				iSisDetec;
@@ -1153,7 +1127,7 @@ static void SSisInicializar ( SSistema * p_sisObj )
 	p_sisObj->iAdmiteSubprocesos = 0;
 	iSisDetec = 0;
 	p_sisObj->iSistema = SIS_DESCONOCIDO;
-	p_sisObj->iTipo = TIP_SIS_WINDOWS;
+	p_sisObj->iTipo = TIP_SIS_DESCONOCIDO;
 
 	timFecha = 0;
 	p_tmFecha = localtime ( &timFecha );
@@ -1195,7 +1169,6 @@ static void SSisInicializar ( SSistema * p_sisObj )
 
 	if ( iSisDetec == 0 )
 	{
-#	  if ( !defined ( UNIX ) )
 		if ( uname ( &utsnInfo ) != -1 )
 		{
 			if ( p_sisObj->lFechaInicial == _SSISTEMA_FEC_INI_UNIX )
@@ -1211,7 +1184,7 @@ static void SSisInicializar ( SSistema * p_sisObj )
 					p_sisObj->iSistema = SIS_DESCONOCIDO;
 				}
 			}
-			else if ( p_sisObj->lFechaInicial == _SSISTEMA_FEC_INI_UNIX )
+			else if ( p_sisObj->lFechaInicial == _SSISTEMA_FEC_INI_DOS )
 			{
 				if ( _EstaEnLista ( utsnInfo.sysname, _p_p_cVersionesDos ) == 1 )
 				{
@@ -1220,35 +1193,34 @@ static void SSisInicializar ( SSistema * p_sisObj )
 				}
 				else if ( _EstaEnLista ( utsnInfo.sysname, _p_p_cVersionesLinux ) == 1 )
 				{
-					p_sisObj->iTipo = TIP_SIS_LINUX;
+					p_sisObj->iTipo = TIP_SIS_POSIX;
 					p_sisObj->iSistema = SIS_DESCONOCIDO;
 				}
 				else
 				{
-					p_sisObj->iTipo = TIP_SIS_UNIX
-					p_sisObj->iSistema = SIS_DESCONOCIDO ;
+					p_sisObj->iTipo = TIP_SIS_POSIX;
+					p_sisObj->iSistema = SIS_DESCONOCIDO;
 				}
 			}
 			else
 			{
 				if ( _EstaEnLista ( utsnInfo.sysname, _p_p_cVersionesLinux ) == 1 )
 				{
-					p_sisObj->iTipo = TIP_SIS_LINUX;
+					p_sisObj->iTipo = TIP_SIS_POSIX;
 					p_sisObj->iSistema = SIS_DESCONOCIDO ;
 				}
 				else if ( _EstaEnLista ( utsnInfo.sysname, _p_p_cVersionesUNIX ) == 1 )
 				{
-					p_sisObj->iTipo = TIP_SIS_UNIX;
+					p_sisObj->iTipo = TIP_SIS_POSIX;
 					p_sisObj->iSistema = SIS_DESCONOCIDO;
 				}
 			}
 		}
-#	  endif
 	}
 # endif
 
 # if ( defined ( WIN ) )
-	Tchar  p_tcBuffer [ SIS_MAX_TAM_PATH + 1 ];
+	TCHAR  p_tcBuffer [ SIS_MAX_TAM_PATH + 1 ];
 
 	p_sisObj->p_cadDirSistema = NULL;
 	p_sisObj->p_cadDirFuentes = NULL;
@@ -1256,18 +1228,16 @@ static void SSisInicializar ( SSistema * p_sisObj )
 
 	if ( GetSystemDirectory ( p_tcBuffer, SIS_MAX_TAM_PATH + 1 ) > 0 )
 	{
-		p_sisObj->p_cadDirSistema = SCadCrear ( p_tcBuffer );
+		p_sisObj->p_cadDirSistema = SCadGenerar ( p_tcBuffer );
 	}
 
-# elif ( defined ( UNIX ) )
-# else
 # endif
 
 	SSisObtenerOrdenBytes ( p_sisObj );
 	SSisVerificarSubprocesos ( p_sisObj );
 }
 
-void SSisObtenerOrdenBytes ( SSistema * p_sisObj )
+static void SSisObtenerOrdenBytes ( SSistema * p_sisObj )
 {
 	FILE *			p_fPrueba;
 	unsigned int	uiValor;
@@ -1293,7 +1263,7 @@ void SSisObtenerOrdenBytes ( SSistema * p_sisObj )
 		if ( ES_VALIDO ( p_fPrueba ) )
 		{
 			uiValor = 0;
-			fread ( &uiValor, sizeof ( unsigned int ), sizeof ( unsigned int ), p_fPrueba );
+			fread ( &uiValor, sizeof ( unsigned int ), 1, p_fPrueba );
 			if ( uiValor == _SSISTEMA_UINT_PRUEBA )
 			{
 				p_sisObj->iOrdenBytes = 0;
@@ -1303,15 +1273,16 @@ void SSisObtenerOrdenBytes ( SSistema * p_sisObj )
 				p_sisObj->iOrdenBytes = 1;
 			}
 		}
+		fclose ( p_fPrueba );
 		remove ( _SSISTEMA_FIC_PRUEBA );
 	}
 }
 
-void SSisVerificarSubprocesos ( SSistema * p_sisObj )
+static void SSisVerificarSubprocesos ( SSistema * p_sisObj )
 {
 # if ( defined ( WIN ) )
 	// No existe algo parecido a un fork, pero suponemos que funciona la creación de subprocesos:
-	iAdmiteSubprocesos = 1;
+	p_sisObj->iAdmiteSubprocesos = 1;
 # else
     pid_t	pidProc;
 
@@ -1342,7 +1313,7 @@ static int _EstaEnLista ( const char * p_cValor, const char * * p_p_cLista )
 		iRes = 0;
 		while ( ES_VALIDO ( p_cElem ) && ( iRes == 0 ) )
 		{
-			if ( CadCompararSinDistinguirTipoLetra ( p_cValor, p_cElem ) == 1 )
+			if ( CadCompararSinDistinguirTipoLetra ( p_cValor, p_cElem ) == COMP_IGUAL )
 			{
 				iRes = 1;
 			}

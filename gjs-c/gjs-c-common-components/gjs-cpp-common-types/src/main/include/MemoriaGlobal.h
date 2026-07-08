@@ -4,7 +4,7 @@
 #include <string>
 #include <list>
 
-using namespace std;
+
 
 namespace org
 {
@@ -15,10 +15,10 @@ namespace org
             namespace common
             {
 
-			void MemGlobGuardar ( const string & sClave, const string & sValor );
-			string MemGlobRecuperar ( const string & sClave );
-			void MemGlobEliminar ( const string & sClave );
-			bool MemGlobExiste ( const string & sClave );
+			void MemGlobGuardar ( const std::string & sClave, const std::string & sValor );
+			std::string MemGlobRecuperar ( const std::string & sClave );
+			void MemGlobEliminar ( const std::string & sClave );
+			bool MemGlobExiste ( const std::string & sClave );
 
 			void MemGlobLimpiar ();
 

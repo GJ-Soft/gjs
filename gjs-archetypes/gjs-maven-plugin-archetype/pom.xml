@@ -25,7 +25,7 @@
     mvn archetype:generate \
 		-DarchetypeGroupId=org.gjs.maven.archetypes \
 		-DarchetypeArtifactId=gjs-maven-plugin-archetype \
-		-DarchetypeVersion=1.0.0-SNAPSHOT \
+		-DarchetypeVersion=1.0.0-RC.1 \
 		-DshortName=test -Drule=test -Dphase=VALIDATE \
 		-Dversion=1.0.0-SNAPSHOT
     

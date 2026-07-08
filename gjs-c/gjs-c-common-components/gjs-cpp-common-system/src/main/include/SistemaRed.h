@@ -22,7 +22,6 @@
 #include <list>
 
 
-using namespace std;
 
 namespace org
 {
@@ -34,16 +33,16 @@ namespace org
             {
 
 
-string SisRedNombreOrdenador ();
-string SisRedNombreDNSOrdenador ();
+std::wstring SisRedNombreOrdenador ();
+std::wstring SisRedNombreDNSOrdenador ();
 
-bool SisRedEnviarMensaje ( const string & sDestino, const string & sOrigen, const string & sMensaje );
+bool SisRedEnviarMensaje ( const std::wstring & sDestino, const std::wstring & sOrigen, const std::string & sMensaje );
 
 
-list<string> * SisRedOrdenadoresAccesibles ();
+std::list<std::wstring> * SisRedOrdenadoresAccesibles ();
 
-bool SisRedServidorEsAccesible ( const string & sServidor );
-bool SisRedEstacionEsAccesible ( const string & sEstacion );
+bool SisRedServidorEsAccesible ( const std::wstring & sServidor );
+bool SisRedEstacionEsAccesible ( const std::wstring & sEstacion );
 
 
  			}

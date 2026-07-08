@@ -7,7 +7,7 @@
 
 
 
-static void SPrcInicializar ( SProceso * p_prcObj );
+void _SPrcInicializar ( SProceso * p_prcObj );
 
 
 
@@ -18,7 +18,7 @@ SProceso * SPrcCrear ()
 	p_prcObj = (SProceso *) MemReservar ( sizeof ( SProceso ) );
 	if ( ES_VALIDO ( p_prcObj ) )
 	{
-		SPrcInicializar ( p_prcObj );
+		_SPrcInicializar ( p_prcObj );
 	}
 	return ( p_prcObj );
 }
@@ -39,29 +39,29 @@ void SPrcDestruir ( SProceso ** p_p_prcObj )
 
 
 
-int SPrcPID ( SProceso * p_prcObj )
+long SPrcPID ( SProceso * p_prcObj )
 {
-	int iRes;
+	long lRes;
 
 	if ( ES_VALIDO ( p_prcObj ) )
 	{
-		iRes = p_prcObj->iPID;
+		lRes = p_prcObj->lPID;
 	}
 	else
 	{
-		iRes = -1;
+		lRes = -1;
 	}
-	return ( iRes );
+	return ( lRes );
 }
 
-void SPrcInicializar ( SProceso * p_prcObj )
+void _SPrcInicializar ( SProceso * p_prcObj )
 {
 	if ( ES_VALIDO ( p_prcObj ) )
 	{
 # if ( defined ( WIN ) )
-		p_prcObj->iPID = (int) GetCurrentProcessId ();
+		p_prcObj->lPID = (long) GetCurrentProcessId ();
 # else
-		p_prcObj->iPID = getpid ();
+		p_prcObj->lPID = (long) getpid ();
 # endif
 	}
 }

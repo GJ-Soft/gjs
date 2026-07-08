@@ -14,7 +14,7 @@ int   SisUsrActivarRoot ();
 int   SisUsrDesactivarGrupoRoot  ();
 int   SisUsrActivarGrupoRoot ();
 int   SisUsrEstablecerUsuario ( const char * p_cUsuario, const char * p_cGrupo );
-char * SisUsObtenerUsuarioLogin ();
+char * SisUsrObtenerUsuarioLogin ();
 
 
 

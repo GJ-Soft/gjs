@@ -4,7 +4,6 @@
 #include <string>
 
 
-using namespace std;
 
 
 namespace org
@@ -23,7 +22,7 @@ public:
 	virtual ~Objeto ();
 
 public:
-	string getTipo () const;
+	std::string getTipo () const;
 	virtual int hash() const;
 	virtual bool esValido () const ;
 	size_t getTam() const;
@@ -33,7 +32,7 @@ public:
 	virtual bool equals ( Objeto & objeto ) const;
 	virtual bool equals ( Objeto * objeto ) const;
 
-	virtual string toString ();
+	virtual std::string toString ();
 
 protected:
 	virtual void assignar( Objeto & objeto );

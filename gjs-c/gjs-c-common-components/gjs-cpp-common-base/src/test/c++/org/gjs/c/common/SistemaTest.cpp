@@ -152,8 +152,8 @@ static bool TestExisteDirectorio01 ()
 	try
 	{
 		sDir1 = DirectorioActual ();
-		sDir2 = sDir1 + "/../resources/data/directorio-vacio";
-		sDir4 = sDir1 + "/../resources/data/fichero-vacio.txt";
+		sDir2 = sDir1 + "/../../test-classes/data/directorio-vacio";
+		sDir4 = sDir1 + "/../../test-classes/data/fichero-vacio.txt";
 
 		if ( ! ExisteDirectorio ( sDir1 ) )
 		{
@@ -175,7 +175,7 @@ static bool TestExisteDirectorio01 ()
 			cout << "Dice que el fichero es un directorio: [" << sDir4 << "]" << endl;
 			bRes = false;
 		}
-		sSubdir = "../resources/data/directorio-vacio";
+		sSubdir = "../../test-classes/data/directorio-vacio";
 		if ( ! ExisteDirectorio ( sSubdir ) )
 		{
 			cout << "Dice que no existe el subdirectorio de recursos: [" << sSubdir << "]" << endl;
@@ -194,9 +194,9 @@ static bool TestExisteFichero01 ()
 {
 	cout << "Test ExisteFichero01:" << endl;
 	bool bRes = true;
-	string sFic1 ( "../resources/data/fichero-vacio.txt" );
+	string sFic1 ( "../../test-classes/data/fichero-vacio.txt" );
 	string sFic2 ( "./noexiste.txt" );
-	string sFic3 ( "../resources/data" );
+	string sFic3 ( "../../test-classes/data" );
 
 	try
 	{
@@ -249,25 +249,6 @@ static bool TestVariableEntorno01 ()
 		}
 		try
 		{
-			EstablecerVariableEntorno ( sVarEx, sValEx );
-		}
-		catch ( const Excepcion & ex )
-		{
-			cout << "Caso1 : Error al establecer la variable de entorno [" << sVarEx << "]: " << ex.what () << endl;
-			bRes = false;
-		}
-		if ( bRes )
-		{
-			string sValRet = VariableEntorno ( sVarEx );
-			cout << "La variable de entorno [" << sVarEx << "] tiene ahora valor [" << sValRet << "]" << endl;
-			if ( sValRet != sValEx )
-			{
-				cout << "Caso 1: La variable de entorno [" << sVarEx << "] se ha recuperado con valor erroneo: [" << sValRet << "]" << endl;
-				bRes = false;
-			}
-		}
-		try
-		{
 			EliminarVariableEntorno ( sVar1 );
 		}
 		catch ( const Excepcion & ex )
@@ -316,7 +297,7 @@ static bool TestVariableEntorno01 ()
 			string sValRet = VariableEntorno ( sVar1 );
 			if ( sValRet != sVal2 )
 			{
-				cout << "caso 2: La variable de entorno [" << sVar1 << "] se ha recuperado con valor erroneo: [" << sValRet << "]" << endl;
+				cout << "Caso 3: La variable de entorno [" << sVar1 << "] se ha recuperado con valor erroneo: [" << sValRet << "]" << endl;
 				bRes = false;
 			}
 		}

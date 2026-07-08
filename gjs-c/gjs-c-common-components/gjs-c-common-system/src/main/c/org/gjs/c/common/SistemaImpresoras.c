@@ -42,25 +42,45 @@ int SisImprimir ( const char * p_cTexto )
 	DOCINFO		dociObj;
 	HDC			hImpresora; 
 
-	if( PrintDlg ( &prndlgObj ) != 0 )
+	if ( ES_VALIDO ( p_cTexto ) )
 	{
-		hImpresora = prndlgObj.hDC;
+		MemLimpiar ( (void *) &prndlgObj, sizeof ( PRINTDLG ) );
+		prndlgObj.lStructSize = sizeof ( PRINTDLG );
+		// Para que cree el HDC automáticamente, se suele añadir el flag PD_RETURNDC
+		prndlgObj.Flags = PD_RETURNDC;
 
-		MemLimpiar ( (void *) &dociObj, sizeof ( DOCINFO ) );
-		dociObj.cbSize = sizeof ( DOCINFO );
+		if( PrintDlg ( &prndlgObj ) != 0 )
+		{
+			hImpresora = prndlgObj.hDC;
 
-		StartDoc ( hImpresora, &dociObj );
-		StartPage ( hImpresora );
+			MemLimpiar ( (void *) &dociObj, sizeof ( DOCINFO ) );
+			dociObj.cbSize = sizeof ( DOCINFO );
 
-		// SetTextColor( hPrinter, 0x0000FF );
+			StartDoc ( hImpresora, &dociObj );
+			StartPage ( hImpresora );
 
-		TextOut ( hImpresora, 100, 100, p_cTexto, 13 );
+			// SetTextColor( hPrinter, 0x0000FF );
 
-		EndPage ( hImpresora );
-		EndDoc ( hImpresora );
-		DeleteDC ( hImpresora );
+			TextOut ( hImpresora, 100, 100, p_cTexto, CadLongitud ( p_cTexto ) );
 
-		iRes = 1;
+			EndPage ( hImpresora );
+			EndDoc ( hImpresora );
+			DeleteDC ( hImpresora );
+
+			iRes = 1;
+			if ( prndlgObj.hDevMode != NULL )
+			{
+				GlobalFree( prndlgObj.hDevMode );
+			}
+			if ( prndlgObj.hDevNames != NULL )
+			{
+				GlobalFree(prndlgObj.hDevNames);	
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
 	}
 	else
 	{

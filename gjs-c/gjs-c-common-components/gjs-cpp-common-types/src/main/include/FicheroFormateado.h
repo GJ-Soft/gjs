@@ -3,10 +3,10 @@
 
 #include <vector>
 #include <list>
+#include <initializer_list>
 #include <Excepcion.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -21,27 +21,27 @@ namespace org
 			class FicheroFormateado
 			{
 			private:
-				list<string> 			lisSeparadores;
-				string 					sFichero;
-				bool					bCargado = false;
-				vector<vector<string>>	vecContenido;
+				std::list<std::string> 					lisSeparadores;
+				std::string 							sFichero;
+				bool									bCargado = false;
+				std::vector<std::vector<std::string>>	vecContenido;
 
 			public:
-				explicit FicheroFormateado ( const initializer_list<string> & delimitadores );
+				explicit FicheroFormateado ( const std::initializer_list<std::string> & delimitadores );
 				virtual ~FicheroFormateado ();
 
 			public:
-				bool Cargar( const string & sRuta );
+				bool Cargar( const std::string & sRuta );
 				//bool Cargar();
-				//bool Guardar( const string & sRuta );
+				//bool Guardar( const std::string & sRuta );
 				//bool Guardar();
 
-				string getRuta() const;
+				std::string getRuta() const;
 
 				int NumLineas() const;
-				vector<string> & Linea( int iLinea );
+				std::vector<std::string> & Linea( int iLinea );
 				int NumCamposLinea( int iLinea ) const;
-				string Campo( int iLinea, int iCampo );
+				std::string Campo( int iLinea, int iCampo );
 
 			private:
 				void Vaciar();

@@ -11,11 +11,6 @@
 
 
 
-
-
-using namespace std;
-
-
 namespace org
 {
 	namespace gjs
@@ -31,14 +26,14 @@ namespace org
 				Propiedades 						contexto;
 				bool								bEjecucion = false;
 				bool								bParar = false;
-				thread *							thServidor = NULL;
+				std::thread *						thServidor = NULL;
 				
 			public:
-				Servidor( int iPuerto, const string & sRutaContexto = "" );
+				Servidor( int iPuerto, const std::string & sRutaContexto = "" );
 				virtual ~Servidor();
 				
 				int getPuerto();
-				string getHost();
+				std::string getHost();
 				virtual bool EsValido();
 
 				void Iniciar();
@@ -46,7 +41,7 @@ namespace org
 				
 			protected:
 				Propiedades Contexto();
-				int Enviar( const string & sMensaje );
+				int Enviar( const std::string & sMensaje );
 				
 			private:
 				void RutinaAtencion();
@@ -54,11 +49,11 @@ namespace org
 				
 				virtual void PeticionRecibida(); 
 				virtual void PeticionFinalizada( bool bResultado ); 
-				virtual void ProcesarMensaje( const string & sMensaje, bool & bResponder, string & sRespuesta, bool & bResultado, bool & bFin, SocketAtencion * socket ) = 0;
+				virtual void ProcesarMensaje( const std::string & sMensaje, bool & bResponder, std::string & sRespuesta, bool & bResultado, bool & bFin, SocketAtencion * socket ) = 0;
 
 			protected:
-				virtual bool ExcepcionProducida( const exception & ex );
-				virtual void ExcepcionProducidaEnPeticion( const exception & ex );
+				virtual bool ExcepcionProducida( const std::exception & ex );
+				virtual void ExcepcionProducidaEnPeticion( const std::exception & ex );
 				
 			};
 

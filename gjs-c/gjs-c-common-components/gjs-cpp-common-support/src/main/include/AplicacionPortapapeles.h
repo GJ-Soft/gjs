@@ -21,7 +21,6 @@
 #include <string>
 
 
-using namespace std;
 
 namespace org
 {
@@ -42,8 +41,8 @@ namespace org
 
 
 void AplicPplesLimpiar ();
-void AplicPplesCopiar ( const string & sTexto );
-string * AplicPplesContenido ( int iLimpiar = 1 );
+void AplicPplesCopiar ( const std::string & sTexto );
+std::string * AplicPplesContenido ( int iLimpiar = 1 );
 
 
 #endif

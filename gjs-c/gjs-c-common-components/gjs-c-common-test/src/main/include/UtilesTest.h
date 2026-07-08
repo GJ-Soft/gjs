@@ -5,6 +5,10 @@
 #include <SListaCadenas.h>
 
 
+
+int LanzarEjecutable ( const char * p_cExe, const char * p_cParametros );
+
+
 void VerificarValorLit ( const char * p_cInfoCaso, const char * p_cResultado, const char * p_cEsperado, int * iRes );
 void VerificarValorEnteroLargo ( const char * p_cInfoCaso, long lResultado, long lEsperado, int * iRes );			
 void VerificarValorEntero ( const char * p_cInfoCaso, int iResultado, int iEsperado, int * iRes );			

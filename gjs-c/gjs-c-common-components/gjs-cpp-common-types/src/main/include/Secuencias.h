@@ -5,8 +5,6 @@
 #include <list>
 
 
-using namespace std;
-
 namespace org
 {
 	namespace gjs

@@ -6,7 +6,6 @@
 #include <ListaValores.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -40,7 +39,7 @@ namespace org
 				bool EsCompatible ( Ocurrencia & obj );
 				bool EsCompatible ( Ocurrencia * obj );
 
-				Valor * getValor ( const string & sAtributo );
+				Valor * getValor ( const std::string & sAtributo );
 				Valor * getValor ( int iIndice );
 
 				void Asignar ( Ocurrencia & obj );
@@ -48,7 +47,7 @@ namespace org
 
 				Ocurrencia * Clonar();
 
-				virtual string toString () override;
+				virtual std::string toString () override;
 
 				Ocurrencia & operator=( Ocurrencia & obj );
 				bool operator== ( Ocurrencia & obj );

@@ -54,10 +54,13 @@ void SisFinalizar ()
 }
 
 
-void SignalHandlerPorDefecto ( int signal )
+void SignalHandlerPorDefecto ( int iSignal )
 {
-	printf ( "INTERRUPCION RECIBIDA=%d\n", signal );
-	//if ( signal == SIGABRT )
+	char * p_cMsj = SisSigMensaje ( iSignal );	
+	SisConAsincEscribirConFormato ( "%sRecibida interrupcion: %s%s\n", ANSI_ROJO, p_cMsj, ANSI_RESETEAR );
+	MemLiberarCadena ( &p_cMsj );
+	//SisConAsincEscribirConFormato ( "%sRecibida interrupcion: %s(%d)%s\n", ANSI_ROJO, SisSigNombre ( iSignal ), iSignal, ANSI_RESETEAR );
+	//if ( iSignal == SIGABRT )
 	//{
 	//	RetornarAPrograma ();
 	//}
@@ -79,14 +82,22 @@ void SignalHandlerPorDefecto ( int signal )
 //	}
 //}
 
+#if ( defined ( SIGNALS_PERMITIDOS ) )
 void SisEstablecerManejadorInterrupciones ( SIGNAL_HANDLER fManejador )
 {
-	signal( SIGTERM, fManejador );
-	signal( SIGSEGV, fManejador );
-	signal( SIGINT, fManejador );
-	signal( SIGILL, fManejador );
-	signal( SIGABRT, fManejador );
-	signal( SIGFPE, fManejador );
+    struct sigaction stAccion;
+    
+    memset ( &stAccion, 0, sizeof(stAccion) );
+    stAccion.sa_handler = fManejador;
+    sigemptyset ( &stAccion.sa_mask );
+    stAccion.sa_flags = 0;  /* Sin SA_RESTART para que las syscalls fallen con EINTR */
+
+    sigaction ( SIGTERM, &stAccion, NULL );
+    sigaction ( SIGSEGV, &stAccion, NULL );
+    sigaction ( SIGINT,  &stAccion, NULL );
+    sigaction ( SIGILL,  &stAccion, NULL );
+    sigaction ( SIGABRT, &stAccion, NULL );
+    sigaction ( SIGFPE,  &stAccion, NULL );
 }
 
 void SisEstablecerManejadorInterrupcionesDefecto ()
@@ -96,9 +107,9 @@ void SisEstablecerManejadorInterrupcionesDefecto ()
 
 void SisLimpiarManejadorInterrupciones ()
 {
-	SisEstablecerManejadorInterrupciones( NULL );
+	SisEstablecerManejadorInterrupciones( SIG_DFL );
 }
 
-
+#endif
 
 

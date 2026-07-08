@@ -49,7 +49,8 @@ int AplicConAbrir ()
 		_dup2 ( iFilDesc, 0 );
 		_dup2 ( iFilDesc, 1 );
 		_dup2 ( iFilDesc, 2 );
-  
+		close( iFilDesc );
+		
 		stdin = _fdopen ( 0, "r" );
 		stdout = _fdopen ( 1, "w" );
 		stderr = _fdopen ( 2, "w" );
@@ -67,7 +68,8 @@ int AplicConAbrir ()
 		dup2 ( iFilDesc, 0 );
 		dup2 ( iFilDesc, 1 );
 		dup2 ( iFilDesc, 2 );
-
+		close( iFilDesc );
+		
 		//stdin = fdopen ( 0, "r" );
 		//p_fstdout = fdopen ( 1, "w" );
 		//p_fstderr = fdopen ( 2, "w" );
@@ -79,6 +81,7 @@ int AplicConAbrir ()
 		tcsetattr ( iFilDesc, TCSANOW, &trmioConsola ); 
 #	   endif
 #	 endif
+		iRes = 1;
 	}
 	else
 	{
@@ -125,13 +128,14 @@ int AplicConAncho ()
 		GetConsoleScreenBufferInfo ( hConsola, &csbiObj );
 		iRes = csbiObj.dwSize.X;
 
-#	  elif ( defined ( LINUX ) || defined ( UNIX ) )
-		// PENDIENTE
-		iRes = 0;
 #	  else
 		// PENDIENTE
 		iRes = 0;
 #	  endif
+	}
+	else
+	{
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -155,10 +159,8 @@ void AplicConLimpiar ()
 		GetConsoleScreenBufferInfo ( hConsola, &csbiObj );
 		FillConsoleOutputCharacter ( hConsola, ' ', csbiObj.dwSize.X * csbiObj.dwSize.Y, coordPos, &dwCont );
 		SetConsoleCursorPosition ( hConsola, coordPos );
-#	  elif ( defined ( LINUX ) || defined ( UNIX ) )
-		printf ( "\e[2J" );
 #	  else
-		clrscr ();
+		printf ( "\e[2J" );
 #	  endif
 	}
 }
@@ -219,10 +221,10 @@ int AplicConLeerNumeroEntre ( int iMin, int iMax )
 	int iRes;
 
 	iRes = -1;
-	while ( ( iRes < iMin ) && ( iRes > iMax ) )
+	while ( ( iRes < iMin ) || ( iRes > iMax ) )
 	{
 		iRes = AplicConLeerNumero ();
-		if ( ( iRes < iMin ) && ( iRes > iMax ) )
+		if ( ( iRes < iMin ) || ( iRes > iMax ) )
 		{
 			printf ( "\b" );
 		}
@@ -279,8 +281,8 @@ char * AplicConLeerCadena ()
 
 void AplicConEsperarRetorno ()
 {
-	int			iFinal;
 # if ( defined ( VC ) )
+	int			iFinal;
 	int			iValor;
 # endif
 

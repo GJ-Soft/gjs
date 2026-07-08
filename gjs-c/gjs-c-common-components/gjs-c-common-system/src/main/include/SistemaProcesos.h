@@ -113,7 +113,7 @@ unsigned long SisProcesoTiempoCPUModoUsuario ( long lPID );
 //#endif
 int SisFinalizarProceso ( long lPID );
 
-
+thread SisLanzarHiloVigilanciaPadre ();
 
 #endif
 

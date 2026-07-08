@@ -9,7 +9,6 @@
 
 
 
-using namespace std;
 
 
 namespace org
@@ -30,7 +29,7 @@ namespace org
 				SocketAbierto( SocketAtencion * _sockAtencion ); 
 				virtual ~SocketAbierto();
 
-				void Responder( string & sRespuesta );
+				void Responder( std::string & sRespuesta );
 				
 			};
 

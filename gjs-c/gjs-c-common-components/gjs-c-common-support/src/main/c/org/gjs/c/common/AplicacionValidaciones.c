@@ -14,7 +14,7 @@ int AplicCodigoValido ( const char * p_cCod, int iTam )
 	if ( ( iTam > 0 ) && ( iLong == iTam ) )
 	{
 		iRes = 1;
-		iCar = 1; 
+		iCar = 0; 
 		while ( ( iCar < iLong ) && ( iRes == 1 ) )  
 		{
 			if ( ( ASCIIPerteneceAlJuegoPrincipal ( p_cCod [ iCar ] ) == 0 ) ||
@@ -42,7 +42,7 @@ int AplicCodigoUsuarioValido ( const char * p_cCod )
 	if ( ( iLong >= APL_MIN_TAM_COD_USUARIO ) && ( iLong <= APL_MAX_TAM_COD_USUARIO ) )
 	{
 		iRes = 1;
-		iCar = 1; 
+		iCar = 0; 
 		while ( ( iCar < iLong ) && ( iRes == 1 ) )  
 		{
 			if ( ( ASCIIPerteneceAlJuegoPrincipal ( p_cCod [ iCar ] ) == 0 ) ||
@@ -68,10 +68,11 @@ int AplicClaveUsuarioValido ( const char * p_cClave )
 	int iCar;
 
 	iLong = CadLongitud ( p_cClave );
+	// NOTA: Se admite clave vacia
 	if ( iLong <= APL_MAX_TAM_CLV_USUARIO )
 	{
 		iRes = 1;
-		iCar = 1; 
+		iCar = 0; 
 		while ( ( iCar < iLong ) && ( iRes == 1 ) )  
 		{
 			if ( ( ASCIIPerteneceAlJuegoPrincipal ( p_cClave [ iCar ] ) == 0 ) ||

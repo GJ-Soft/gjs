@@ -5,10 +5,9 @@
 
 
 #include <ClienteSesion.h>
+#include <list>
 
 
-
-using namespace std;
 using namespace org::gjs::cpp::common;
 
 
@@ -25,17 +24,17 @@ namespace org
 			class ClienteIETF : public ClienteSesion
 			{
 			private:
-				list<ResultadoComando> comandoApertura;
-				ResultadoComando comandoCierre;
+				std::list<ResultadoComando> comandoApertura;
+				ResultadoComando 			comandoCierre;
 
 			public:
-				ClienteIETF ( const string & sIP, int iPuerto );
-				ClienteIETF ( const string & sIP, int iPuerto, const string & _sUsuario, const string & _sClave = "" );
+				ClienteIETF ( const std::string & sIP, int iPuerto );
+				ClienteIETF ( const std::string & sIP, int iPuerto, const std::string & _sUsuario, const std::string & _sClave = "" );
 				virtual ~ClienteIETF ();
 
 			private:
 				void ModificadoUsuario();
-				list<ResultadoComando> & ComandoInicioSesion();
+				std::list<ResultadoComando> & ComandoInicioSesion();
 				ResultadoComando & ComandoFinSesion();
 
 			};

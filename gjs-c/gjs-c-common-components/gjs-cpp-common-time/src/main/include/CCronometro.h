@@ -22,9 +22,6 @@
 
 
 
-using namespace std;
-
-
 
 namespace org
 {
@@ -40,7 +37,7 @@ namespace org
 class CCronometro
 {
 private:
-	chrono::system_clock::time_point * p_tpTiempoIni;
+	std::chrono::system_clock::time_point * p_tpTiempoIni;
 
 
 public:

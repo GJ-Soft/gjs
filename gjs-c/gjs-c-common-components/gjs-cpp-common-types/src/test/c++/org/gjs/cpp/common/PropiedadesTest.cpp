@@ -112,9 +112,9 @@ static bool TestPropiedades02 ()
 {
 	cout << "Test Propiedades 02:" << endl;
 	bool bRes = true;
-	string sFic1 ( "../resources/data/ejemplo-vacio.properties" );
-	string sFic2 ( "../resources/data/ejemplo.properties" );
-	string sFic3 ( "../resources/data/inexistente.properties" );
+	string sFic1 ( "../../test-classes/data/ejemplo-vacio.properties" );
+	string sFic2 ( "../../test-classes/data/ejemplo.properties" );
+	string sFic3 ( "../../test-classes/data/inexistente.properties" );
 
 	try
 	{

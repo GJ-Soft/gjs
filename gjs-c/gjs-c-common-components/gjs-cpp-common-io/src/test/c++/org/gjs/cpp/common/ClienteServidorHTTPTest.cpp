@@ -8,8 +8,8 @@ using namespace std;
 using namespace org::gjs::cpp::common;
 
 
-static const string DIR_RECURSOS = "../resources";
-static const string DIR_SERVIDOR_HTTP = "../resources/servidorHTTP";
+static const string DIR_RECURSOS = "../../test-classes";
+static const string DIR_SERVIDOR_HTTP = "../../test-classes/servidorHTTP";
 static const string DIR_CLIENTE_HTTP = "../results";
 
 static string sDirRecursos;

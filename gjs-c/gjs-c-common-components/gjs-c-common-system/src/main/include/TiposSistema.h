@@ -25,8 +25,7 @@
 #define TIP_SIS_DESCONOCIDO					-1
 
 
-#define TIP_SIS_UNIX						0	
-#define TIP_SIS_LINUX						1
+#define TIP_SIS_POSIX						1
 #define TIP_SIS_DOS							2
 #define TIP_SIS_WINDOWS						3
 #define TIP_SIS_MACKINTOSH					4
@@ -34,8 +33,7 @@
 
 
 
-#define TIP_SIS_TXT_UNIX					"UNIX"	
-#define TIP_SIS_TXT_LINUX					"LINUX"
+#define TIP_SIS_TXT_POSIX					"POSIX"	
 #define TIP_SIS_TXT_DOS						"DOS"
 #define TIP_SIS_TXT_WINDOWS					"WINDOWS"
 #define TIP_SIS_TXT_MACKINTOSH				"MACKINTOSH"	
@@ -47,8 +45,7 @@ int TipSisId ( const char * p_cNombre );
 int TipSisEsValido ( int iId );
 
 int TipSisEsDesconocido ( int iId );
-int TipSisEsUnix ( int iId );
-int TipSisEsLinux ( int iId );
+int TipSisEsPosix ( int iId );
 int TipSisEsDOS ( int iId );
 int TipSisEsWindows ( int iId );
 int TipSisEsMacKintosh ( int iId );

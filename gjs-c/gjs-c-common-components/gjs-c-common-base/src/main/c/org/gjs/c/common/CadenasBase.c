@@ -32,6 +32,7 @@
 
 
 
+
 char * CadCrear ( int iLong )
 {
 	char *	p_cCad;
@@ -494,6 +495,18 @@ int CadEsAlfanumericoValidoExt ( const char * p_cAsciiz, int iMax )
 		iRes = 0;
 	}
 	return ( iRes );
+}
+
+const char * CadValorSeguro ( const char * p_cAsciiz )
+{
+	if ( ES_VALIDO ( p_cAsciiz ) )
+	{
+		return ( (const char *) p_cAsciiz );
+	}
+	else
+	{
+		return ( VALOR_NULO );
+	}
 }
 
 void CadImprimir ( const char * p_cAsciiz )

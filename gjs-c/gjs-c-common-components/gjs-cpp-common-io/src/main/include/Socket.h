@@ -2,15 +2,20 @@
 #define _ORG_GJS_C_CC_CPP_SOCKET_H
 
 
+#include <BaseConfig.h>
 
 #include <SocketExcepcion.h>
 
 #include <string>
-#include <sys/socket.h>
-#include <netinet/in.h>
+
+#if ( defined ( WIN ) )
+#	include <winsock2.h>
+#else 
+# 	include <sys/socket.h>
+# 	include <netinet/in.h>
+#endif	
 
 
-using namespace std;
 
 
 namespace org
@@ -34,7 +39,7 @@ namespace org
 				
 				int getId();
 				int getPuerto();
-				string getHost();
+				std::string getHost();
 
 			protected:
 				void setId( int valor );
@@ -47,11 +52,11 @@ namespace org
 				bool Crear();
 				bool Enlazar( int iPuerto );
 				bool Conectar( int iIP, int iPuerto );
-				bool Conectar( const string & sIP, int iPuerto );
+				bool Conectar( const std::string & sIP, int iPuerto );
 				bool Escuchar( int iTamCola = SOMAXCONN );
 				int Aceptar();
-				int Enviar( const string & sMensaje );
-				int Recibir( string & sMensaje, int iMaxTam = 2048 );
+				int Enviar( const std::string & sMensaje );
+				int Recibir( std::string & sMensaje, int iMaxTam = 2048 );
 				bool Cerrar();
 			};
 

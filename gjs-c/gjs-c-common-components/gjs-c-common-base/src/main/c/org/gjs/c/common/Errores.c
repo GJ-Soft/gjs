@@ -461,7 +461,6 @@ const char * ErrMensaje ()
 		p_cRes = CadCrear ( 255 );
 		p_cDesc = g_p_cGErrDescripcion; //InfErrDescripcion ( g_iGError );
 		sprintf ( p_cRes, "Error %d - %s (%s:%u)", g_iGError, p_cDesc, g_p_cGErrModulo, g_uiGErrLinea );
-		MemLiberar ( (void **) &p_cDesc );
 	}
 	return ( (const char *) p_cRes );
 }

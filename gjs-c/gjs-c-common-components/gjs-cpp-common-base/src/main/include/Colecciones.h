@@ -5,7 +5,7 @@
 #include <list>
 #include <vector>
 
-using namespace std;
+
 
 
 namespace org
@@ -17,11 +17,11 @@ namespace org
             namespace common
             {
 
-			vector<string> ToVector ( const initializer_list<string> & args );
-			list<string> ToList ( const initializer_list<string> & args );
+			std::vector<std::string> ToVector ( const std::initializer_list<std::string> & args );
+			std::list<std::string> ToList ( const std::initializer_list<std::string> & args );
 
-			bool SonIguales ( list<string> & lisObj1, list<string> & lisObj2 );
-			bool SonIguales ( vector<string> & vecObj1, vector<string> & vecObj2 );
+			bool SonIguales ( std::list<std::string> & lisObj1, std::list<std::string> & lisObj2 );
+			bool SonIguales ( std::vector<std::string> & vecObj1, std::vector<std::string> & vecObj2 );
 
             }
 		}

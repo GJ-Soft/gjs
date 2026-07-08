@@ -9,6 +9,7 @@
 
 
 #include <SFicBloques.h>
+#include <SRuta.h>
 
 
 #define FIC_BLOQID_IDNULO				0xFFFFFFFFUL
@@ -28,11 +29,13 @@ typedef struct
 } SFicBloquesIdentificados;
 
 
-
+// Crear y CrearExt reinicalizan el fichero. 
+// Si ya existe y se quiere conservar hay que usar Asignar o AsignarExt
 SFicBloquesIdentificados * SFicBloqIdCrear ( const char * p_cRuta, unsigned long ulTamDatosBloque, unsigned long ulTamDatosCab ); 
 SFicBloquesIdentificados * SFicBloqIdAsignar ( const char * p_cRuta ); 
 SFicBloquesIdentificados * SFicBloqIdCrearExt ( const char * p_cDir, const char * p_cFic, unsigned long ulTamDatosBloque, unsigned long ulTamDatosCab, int iNumMagico ); 
 SFicBloquesIdentificados * SFicBloqIdAsignarExt ( const char * p_cDir, const char * p_cFic, int iNumMagico ); 
+SFicBloquesIdentificados * SFicBloqIdCrearRuta ( SRuta * p_rutRuta, unsigned long ulTamDatosBloque, unsigned long ulTamDatosCab ); 
 
 void SFicBloqIdDestruir ( SFicBloquesIdentificados ** p_p_ficObj );
 void SFicBloqIdEliminar ( SFicBloquesIdentificados ** p_p_ficObj );

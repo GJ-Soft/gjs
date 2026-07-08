@@ -3,6 +3,7 @@
 #include <Cadenas.h>
 #include <Concatenar.h>
 
+using namespace std;
 
 namespace org
 {

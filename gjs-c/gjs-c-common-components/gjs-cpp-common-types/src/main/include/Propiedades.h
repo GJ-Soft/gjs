@@ -9,8 +9,6 @@
 
 
 
-using namespace std;
-
 namespace org
 {
 	namespace gjs
@@ -23,30 +21,30 @@ namespace org
 			class Propiedades
 			{
 			private:
-				vector<string> vecClaves;
-				map<string, string> mapPropiedades;
+				std::vector<std::string> vecClaves;
+				std::map<std::string, std::string> mapPropiedades;
 
 			public:
 				Propiedades();
-				explicit Propiedades( const string & sRuta );
+				explicit Propiedades( const std::string & sRuta );
 				virtual ~Propiedades();
 
-				string getPropiedad( const string & sClave ) const;
-				string getPropiedad( const string & sClave, const string & sValorDef ) const;
-				void setPropiedad( const string & sClave, const string & sValor );
+				std::string getPropiedad( const std::string & sClave ) const;
+				std::string getPropiedad( const std::string & sClave, const std::string & sValorDef ) const;
+				void setPropiedad( const std::string & sClave, const std::string & sValor );
 
-				vector<string> getPropiedades() const;
-				bool ExistePropiedad( const string & sClave ) const;
+				std::vector<std::string> getPropiedades() const;
+				bool ExistePropiedad( const std::string & sClave ) const;
 				int NumPropiedades() const;
 
-				void EliminarPropiedad( const string& sClave );
+				void EliminarPropiedad( const std::string& sClave );
 
-				bool Cargar( const string & sRuta );
-				bool Guardar(  const string & sRuta );
+				bool Cargar( const std::string & sRuta );
+				bool Guardar(  const std::string & sRuta );
 
 			private:
-				bool EsPropiedad( const string & sLinea );
-				pair<string, string> ParsearPropiedad( const string & sLinea );
+				bool EsPropiedad( const std::string & sLinea );
+				std::pair<std::string, std::string> ParsearPropiedad( const std::string & sLinea );
 
 			};
 

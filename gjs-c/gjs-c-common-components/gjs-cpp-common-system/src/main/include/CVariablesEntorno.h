@@ -23,7 +23,6 @@
 #include <string>
 
 
-using namespace std;
 
 namespace org
 {
@@ -45,10 +44,10 @@ public:
 
 	~CVariablesEntorno ();
 
-	string * ObtValor ( const string & sVariable ) const;
-	bool LimpiarValor ( const string & sVariable );
-	bool EstValor ( const string & sVariable, const string & sValor );
-	bool ExisteVariable ( const string & sVariable );
+	std::string * ObtValor ( const std::string & sVariable ) const;
+	bool LimpiarValor ( const std::string & sVariable );
+	bool EstValor ( const std::string & sVariable, const std::string & sValor );
+	bool ExisteVariable ( const std::string & sVariable );
 };
 
 

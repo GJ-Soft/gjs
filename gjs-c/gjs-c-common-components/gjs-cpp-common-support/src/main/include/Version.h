@@ -18,15 +18,11 @@
 #define _ORG_GJS_C_CC_CPP_VERSION_H
 
 
-
+#include <string>
 #include <Fecha.h>
 
 
 
-
-
-
-using namespace std;
 
 namespace org
 {
@@ -57,7 +53,7 @@ public:
 	int Subver () const;
 	int Rev () const;
 	::org::gjs::cpp::common::Fecha Fecha () const;
-	string CadenaVersion ( int iCorta = 0 );
+	std::string CadenaVersion ( int iCorta = 0 );
 	
 	bool EsValida ();
 

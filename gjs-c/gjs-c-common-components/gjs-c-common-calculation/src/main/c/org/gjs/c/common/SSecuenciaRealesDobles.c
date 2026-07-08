@@ -195,12 +195,14 @@ int SSecRealdExiste ( SSecuenciaRealesDobles * p_secObj, double dDato )
 {
 	int iRes;
 	int iElem;
+	int iNumElems;
 
 	if ( ES_VALIDO ( p_secObj ) ) 
 	{
 		iRes = 0;
 		iElem = 0;
-		while ( ( iElem < SSecRealdNumElementos ( p_secObj ) ) && ( iRes == 0 ) )
+		iNumElems = SSecRealdNumElementos ( p_secObj );
+		while ( ( iElem < iNumElems ) && ( iRes == 0 ) )
 		{
 			if ( MatEsIgual ( SSecRealdElemento ( p_secObj, iElem ), dDato ) == 1 )
 			{

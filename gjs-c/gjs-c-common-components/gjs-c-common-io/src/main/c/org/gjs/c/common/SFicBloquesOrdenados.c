@@ -16,9 +16,9 @@
 
 
 
-static int SFicBloqOrdActualizarInfoCabecera ( SFicBloquesOrdenados * p_ficObj ); 
-static int SFicBloqOrdCargarInfoCabecera ( SFicBloquesOrdenados * p_ficObj );
-static int SFicBloqOrdLeerPunteros ( SFicBloquesOrdenados * p_ficObj, unsigned long ulBloque, unsigned long * p_ulAnt, unsigned long * p_ulSig );
+int _SFicBloqOrdActualizarInfoCabecera ( SFicBloquesOrdenados * p_ficObj ); 
+int _SFicBloqOrdCargarInfoCabecera ( SFicBloquesOrdenados * p_ficObj );
+int _SFicBloqOrdLeerPunteros ( SFicBloquesOrdenados * p_ficObj, unsigned long ulBloque, unsigned long * p_ulAnt, unsigned long * p_ulSig );
 
 
 
@@ -53,7 +53,7 @@ SFicBloquesOrdenados * SFicBloqOrdAsignar ( const char * p_cRuta )
 		p_ficObj->p_ficObj = SFicBloqIdAsignar ( p_cRuta );
 		if ( ES_VALIDO ( p_ficObj->p_ficObj ) )
 		{
-			if ( SFicBloqOrdCargarInfoCabecera ( p_ficObj ) == 1 )
+			if ( _SFicBloqOrdCargarInfoCabecera ( p_ficObj ) == 1 )
 			{
 				p_ficObj->ulActual = p_ficObj->ulPrimero;
 				p_ficObj->ulPosActual = 0;
@@ -101,7 +101,7 @@ SFicBloquesOrdenados * SFicBloqOrdAsignarExt ( const char * p_cDir, const char *
 		p_ficObj->p_ficObj = SFicBloqIdAsignarExt ( p_cDir, p_cFic, iNumMagico );
 		if ( ES_VALIDO ( p_ficObj->p_ficObj ) )
 		{
-			if ( SFicBloqOrdCargarInfoCabecera ( p_ficObj ) == 1 )
+			if ( _SFicBloqOrdCargarInfoCabecera ( p_ficObj ) == 1 )
 			{
 				p_ficObj->ulActual = p_ficObj->ulPrimero;
 				p_ficObj->ulPosActual = 0;
@@ -118,6 +118,39 @@ SFicBloquesOrdenados * SFicBloqOrdAsignarExt ( const char * p_cDir, const char *
 	}
 	return ( p_ficObj );
 }
+
+SFicBloquesOrdenados * SFicBloqOrdCrearRuta ( SRuta * p_rutRuta, unsigned long ulTamDatosBloque, unsigned long ulTamDatosCab )
+{
+	SFicBloquesOrdenados *	p_ficObj;
+	char *					p_cRuta;
+	
+	if ( SRutEsValida ( p_rutRuta ) == 1 )
+	{
+		if ( SRutEsFichero ( p_rutRuta ) == 1 )
+		{
+			p_cRuta = SRutRutaAbsolutaLit ( p_rutRuta );
+			if ( SRutExiste ( p_rutRuta ) == 1 )
+			{
+				p_ficObj = SFicBloqOrdAsignar ( p_cRuta );
+			}
+			else
+			{
+				p_ficObj = SFicBloqOrdCrear ( p_cRuta, ulTamDatosBloque, ulTamDatosCab );
+			}
+			MemLiberar ( (void **) &p_cRuta );
+		}
+		else
+		{
+			p_ficObj = NULL;
+		}
+	}
+	else
+	{
+		p_ficObj = NULL;
+	}
+	return ( p_ficObj );
+}
+
 
 void SFicBloqOrdDestruir ( SFicBloquesOrdenados ** p_p_ficObj )
 {
@@ -365,11 +398,11 @@ int SFicBloqOrdAbrirExt ( SFicBloquesOrdenados * p_ficObj, int iVaciar )
 				p_ficObj->ulUltimo = 0;
 				p_ficObj->ulActual = 0;
 				p_ficObj->ulPosActual = 0;
-				iRes = SFicBloqOrdActualizarInfoCabecera ( p_ficObj );
+				iRes = _SFicBloqOrdActualizarInfoCabecera ( p_ficObj );
 			}
 			else
 			{
-				iRes = SFicBloqOrdCargarInfoCabecera ( p_ficObj );
+				iRes = _SFicBloqOrdCargarInfoCabecera ( p_ficObj );
 				p_ficObj->ulActual = p_ficObj->ulPrimero;
 				p_ficObj->ulPosActual = 0;
 			}
@@ -623,7 +656,7 @@ int SFicBloqOrdMoverASiguiente ( SFicBloquesOrdenados * p_ficObj )
 	{
 		if ( p_ficObj->ulActual != p_ficObj->ulUltimo )
 		{
-			if ( SFicBloqOrdLeerPunteros ( p_ficObj, p_ficObj->ulActual, &ulAnt, &ulSig ) == 1 )
+			if ( _SFicBloqOrdLeerPunteros ( p_ficObj, p_ficObj->ulActual, &ulAnt, &ulSig ) == 1 )
 			{	
 				p_ficObj->ulActual = ulSig;
 				p_ficObj->ulPosActual = p_ficObj->ulPosActual + 1;
@@ -656,7 +689,7 @@ int SFicBloqOrdMoverAAnterior ( SFicBloquesOrdenados * p_ficObj )
 	{
 		if ( p_ficObj->ulActual != p_ficObj->ulPrimero )
 		{
-			if ( SFicBloqOrdLeerPunteros ( p_ficObj, p_ficObj->ulActual, &ulAnt, &ulSig ) == 1 )
+			if ( _SFicBloqOrdLeerPunteros ( p_ficObj, p_ficObj->ulActual, &ulAnt, &ulSig ) == 1 )
 			{	
 				p_ficObj->ulActual = ulAnt;
 				p_ficObj->ulPosActual = p_ficObj->ulPosActual - 1;
@@ -687,32 +720,25 @@ int SFicBloqOrdMoverAId ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId )
 
 	if ( ( SFicBloqIdEstaAbierto ( p_ficObj->p_ficObj ) == 1 ) && ( SFicBloqIdEstaVacio ( p_ficObj->p_ficObj ) == 0 ) )
 	{
-		if ( p_ficObj->ulActual == p_ficObj->ulPrimero )
+		SFicBloqOrdMoverAPrimero ( p_ficObj );
+		iEnc = 0;
+		iRes = 0;
+		while ( ( SFicBloqOrdEstaEnFinal ( p_ficObj ) == 0 ) && ( iEnc == 0 ) )
 		{
-			SFicBloqOrdMoverAPrimero ( p_ficObj );
-			iEnc = 0;
-			iRes = 0;
-			while ( ( SFicBloqOrdEstaEnFinal ( p_ficObj ) == 0 ) && ( iEnc == 0 ) )
+			ulIdAct = SFicBloqOrdLeerId ( p_ficObj );
+			if ( ulIdAct == ulId )
 			{
-				ulIdAct = SFicBloqOrdLeerId ( p_ficObj );
-				if ( ulIdAct == ulId )
-				{
-					iEnc = 1;
-					iRes = 1;
-				}
-				else if ( ulIdAct > ulId )
-				{
-					iEnc = 1;
-				}
-				else
-				{
-					SFicBloqOrdMoverASiguiente ( p_ficObj );
-				}
+				iEnc = 1;
+				iRes = 1;
 			}
-		}
-		else
-		{
-			iRes = 0;
+			else if ( ulIdAct > ulId )
+			{
+				iEnc = 1;
+			}
+			else
+			{
+				SFicBloqOrdMoverASiguiente ( p_ficObj );
+			}
 		}
 	}
 	else
@@ -851,7 +877,7 @@ int SFicBloqOrdExisteId ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId )
 					}
 					else
 					{
-						if ( SFicBloqOrdLeerPunteros ( p_ficObj, p_ficObj->ulActual, &ulAnt, &ulSig ) == 1 )
+						if ( _SFicBloqOrdLeerPunteros ( p_ficObj, ulBloque, &ulAnt, &ulSig ) == 1 )
 						{	
 							ulBloque = ulSig;
 							iRes = 1;
@@ -983,7 +1009,7 @@ int SFicBloqOrdModificar ( SFicBloquesOrdenados * p_ficObj, byte * p_byContenido
 	return ( iRes );
 }
 
-int SFicBloqOrdInsertar ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, byte * p_byContenido )
+int SFicBloqOrdInsertar ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, byte * p_byContenido, int iDelante )
 {
 	int				iRes;
 	byte *			p_byBloque;
@@ -1000,7 +1026,7 @@ int SFicBloqOrdInsertar ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, b
 			iTamBloq = SFicBloqIdTamBloque ( p_ficObj->p_ficObj );
 			iTamCont = iTamBloq - FIC_BLOQORD_TAM_PUNTEROS;
 			p_byBloque = (byte *) MemReservar ( iTamBloq );
-			if ( ES_VALIDO ( p_byContenido ) )
+			if ( ES_VALIDO ( p_byBloque ) )
 			{
 				MemCopiar ( &(p_byBloque [ FIC_BLOQORD_POS_CONTENIDO_BLOQUE ]), p_byContenido, iTamCont );
 
@@ -1010,7 +1036,9 @@ int SFicBloqOrdInsertar ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, b
 					if ( SFicBloqIdInsertar ( p_ficObj->p_ficObj, ulId, p_byBloque ) == 1 )
 					{
 						p_ficObj->ulActual = ulId;
-						iRes = 1;
+						p_ficObj->ulPrimero = ulId;
+						p_ficObj->ulUltimo = ulId;
+						iRes = _SFicBloqOrdActualizarInfoCabecera ( p_ficObj );
 					}
 					else
 					{
@@ -1024,17 +1052,32 @@ int SFicBloqOrdInsertar ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, b
 					{
 						MemCopiar ( &ulAnt, &(p_byBloqueAct [ FIC_BLOQORD_POS_ANT_BLOQUE ]), sizeof ( unsigned long ) ); 
 						MemCopiar ( &ulSig, &(p_byBloqueAct [ FIC_BLOQORD_POS_SIG_BLOQUE ]), sizeof ( unsigned long ) );
-
-						MemCopiar ( &(p_byBloque [ FIC_BLOQORD_POS_ANT_BLOQUE ]), &ulAnt, sizeof ( unsigned long ) ); 
-						MemCopiar ( &(p_byBloque [ FIC_BLOQORD_POS_SIG_BLOQUE ]), &(p_ficObj->ulActual), sizeof ( unsigned long ) );
-						MemCopiar ( &(p_byBloqueAct [ FIC_BLOQORD_POS_ANT_BLOQUE ]), &ulId, sizeof ( unsigned long ) ); 
-
+						if ( iDelante == 1 )
+						{
+							MemCopiar ( &(p_byBloque [ FIC_BLOQORD_POS_ANT_BLOQUE ]), &ulAnt, sizeof ( unsigned long ) ); 
+							MemCopiar ( &(p_byBloque [ FIC_BLOQORD_POS_SIG_BLOQUE ]), &(p_ficObj->ulActual), sizeof ( unsigned long ) );
+							MemCopiar ( &(p_byBloqueAct [ FIC_BLOQORD_POS_ANT_BLOQUE ]), &ulId, sizeof ( unsigned long ) ); 
+						}
+						else
+						{
+							MemCopiar ( &(p_byBloque [ FIC_BLOQORD_POS_ANT_BLOQUE ]), &(p_ficObj->ulActual), sizeof ( unsigned long ) ); 
+							MemCopiar ( &(p_byBloque [ FIC_BLOQORD_POS_SIG_BLOQUE ]), &ulSig, sizeof ( unsigned long ) );
+							MemCopiar ( &(p_byBloqueAct [ FIC_BLOQORD_POS_SIG_BLOQUE ]), &ulId, sizeof ( unsigned long ) ); 
+						}
 						if ( SFicBloqIdModificar ( p_ficObj->p_ficObj, p_ficObj->ulActual, p_byBloqueAct ) == 1 )
 						{
 							if ( SFicBloqIdInsertar ( p_ficObj->p_ficObj, ulId, p_byBloque ) == 1 )
 							{
+								if ( p_ficObj->ulUltimo == p_ficObj->ulActual )
+								{
+									p_ficObj->ulUltimo = ulId;
+									iRes = _SFicBloqOrdActualizarInfoCabecera ( p_ficObj );
+								} 
+								else 
+								{
+									iRes = 1;
+								}
 								p_ficObj->ulActual = ulId;
-								iRes = 1;
 							}
 							else
 							{
@@ -1074,6 +1117,16 @@ int SFicBloqOrdInsertar ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, b
 	return ( iRes );
 }
 
+int SFicBloqOrdInsertarDetras ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, byte * p_byContenido )
+{
+	return ( SFicBloqOrdInsertar ( p_ficObj, ulId, p_byContenido, 0 ) );
+}
+
+int SFicBloqOrdInsertarDelante ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, byte * p_byContenido )
+{
+	return ( SFicBloqOrdInsertar ( p_ficObj, ulId, p_byContenido, 0 ) );
+}
+
 int SFicBloqOrdSuprimir ( SFicBloquesOrdenados * p_ficObj )
 {
 	int				iRes;
@@ -1107,24 +1160,32 @@ int SFicBloqOrdSuprimir ( SFicBloquesOrdenados * p_ficObj )
 			}
 			else
 			{
-				iRes = 0;
+				p_ficObj->ulPrimero = ulSig;
+				iRes = _SFicBloqOrdActualizarInfoCabecera ( p_ficObj );
 			}
 
-			if ( ( ulSig > 0 ) && ( iRes == 1 ) )
+			if ( iRes == 1 )
 			{
-				p_byBloqueSig = SFicBloqIdLeerBloque ( p_ficObj->p_ficObj, ulSig );
-				if ( ES_VALIDO ( p_byBloqueSig ) )
+				if ( ulSig > 0 ) 
 				{
-					MemCopiar ( &(p_byBloqueSig [ FIC_BLOQORD_POS_ANT_BLOQUE ]), &ulAnt, sizeof ( unsigned long ) ); 
-					iRes = SFicBloqIdModificar ( p_ficObj->p_ficObj, ulSig, p_byBloqueSig );
-					MemLiberar ( (void **) &p_byBloqueSig );
+					p_byBloqueSig = SFicBloqIdLeerBloque ( p_ficObj->p_ficObj, ulSig );
+					if ( ES_VALIDO ( p_byBloqueSig ) )
+					{
+						MemCopiar ( &(p_byBloqueSig [ FIC_BLOQORD_POS_ANT_BLOQUE ]), &ulAnt, sizeof ( unsigned long ) ); 
+						iRes = SFicBloqIdModificar ( p_ficObj->p_ficObj, ulSig, p_byBloqueSig );
+						MemLiberar ( (void **) &p_byBloqueSig );
+					}
+					else
+					{
+						iRes = 0;
+					}
 				}
 				else
 				{
-					iRes = 0;
+					p_ficObj->ulUltimo = ulAnt;
+					iRes = _SFicBloqOrdActualizarInfoCabecera ( p_ficObj );
 				}
 			}
-
 			if ( iRes == 1 )
 			{
 				if ( SFicBloqIdSuprimir ( p_ficObj->p_ficObj, p_ficObj->ulActual ) == 1 )
@@ -1203,7 +1264,7 @@ int SFicBloqOrdModificarPorId ( SFicBloquesOrdenados * p_ficObj, unsigned long u
 	return ( iRes );
 }
 
-static int SFicBloqOrdActualizarInfoCabecera ( SFicBloquesOrdenados * p_ficObj )
+int _SFicBloqOrdActualizarInfoCabecera ( SFicBloquesOrdenados * p_ficObj )
 {
 	int		iRes;
 	byte *	p_byCabecera;	
@@ -1231,7 +1292,7 @@ static int SFicBloqOrdActualizarInfoCabecera ( SFicBloquesOrdenados * p_ficObj )
 	return ( iRes );
 }
 
-static int SFicBloqOrdCargarInfoCabecera ( SFicBloquesOrdenados * p_ficObj )
+int _SFicBloqOrdCargarInfoCabecera ( SFicBloquesOrdenados * p_ficObj )
 {
 	int		iRes;
 	byte *	p_byCabecera;	
@@ -1259,7 +1320,7 @@ static int SFicBloqOrdCargarInfoCabecera ( SFicBloquesOrdenados * p_ficObj )
 	return ( iRes );
 }
 
-static int SFicBloqOrdLeerPunteros ( SFicBloquesOrdenados * p_ficObj, unsigned long ulBloque, unsigned long * p_ulAnt, unsigned long * p_ulSig )
+int _SFicBloqOrdLeerPunteros ( SFicBloquesOrdenados * p_ficObj, unsigned long ulBloque, unsigned long * p_ulAnt, unsigned long * p_ulSig )
 {
 	int		iRes;
 	byte *	p_byBloque;	

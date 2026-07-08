@@ -79,7 +79,18 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>		
-		
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>none</phase> 
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>	
 	</build>
 
 </project>

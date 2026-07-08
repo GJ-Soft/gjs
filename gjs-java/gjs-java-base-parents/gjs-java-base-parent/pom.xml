@@ -484,7 +484,10 @@
         <profile>
             <id>java</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+				<!-- Activo siempre -->
+				<file>
+					<exists>${basedir}/pom.xml</exists>
+				</file>
             </activation>
             <build>
                 <plugins>
@@ -508,7 +511,7 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>enforce-profiles-ok</id>
+                                <id>enforce-jdk-profiles</id>
                                 <goals>
                                     <goal>enforce</goal>
                                 </goals>
@@ -579,7 +582,7 @@
         <profile>
             <id>jdk-21</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+				<jdk>[21.0,)</jdk>
             </activation>
             <properties>
                 <!-- Compilation config -->
@@ -590,6 +593,9 @@
         </profile>
         <profile>
             <id>jdk-17</id>
+            <activation>
+				<jdk>[27.0,21.0)</jdk>
+            </activation>
             <properties>
                 <!-- Compilation config -->
                 <java.version>17</java.version>
@@ -599,6 +605,9 @@
         </profile>
         <profile>
             <id>jdk-11</id>
+            <activation>
+				<jdk>[11.0,17.0)</jdk>
+            </activation>
             <properties>
                 <!-- Compilation config -->
                 <java.version>11</java.version>
@@ -608,6 +617,9 @@
         </profile>
         <profile>
             <id>jdk-8</id>
+            <activation>
+				<jdk>[8.0,11.0)</jdk>
+            </activation>
             <properties>
                 <!-- Compilation config -->
                 <java.version>8</java.version>

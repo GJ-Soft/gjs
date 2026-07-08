@@ -2,6 +2,9 @@
 #include "ArbolBin.h"
 
 
+using namespace std;
+
+
 
 namespace org
 {

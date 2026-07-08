@@ -5,8 +5,6 @@
 #include <iostream>
 
 
-using namespace std;
-
 namespace org
 {
 	namespace gjs
@@ -16,7 +14,7 @@ namespace org
             namespace common
             {
 
-			class StringStreamOut : public stringstream
+			class StringStreamOut : public std::stringstream
 			{
 
 			public:
@@ -24,20 +22,20 @@ namespace org
 				~StringStreamOut ();
 
 				StringStreamOut& put ( char c );
-				StringStreamOut& write ( const char * s, streamsize n );
+				StringStreamOut& write ( const char * s, std::streamsize n );
 
 				template<typename T> StringStreamOut& operator<< ( T val )
 				{
-					cout << val;
+					std::cout << val;
 					static_cast<std::ostream&>( *this ) << val;
 					return( *this );
 				}
 
-				StringStreamOut& operator<< ( const string & val );
-				StringStreamOut& operator<< ( streambuf * sb );
-				StringStreamOut& operator<< ( ostream& (*pf)(ostream&) );
-				StringStreamOut& operator<< ( ios& (*pf)(ios&) );
-				StringStreamOut& operator<< ( ios_base& (*pf)(ios_base&) );
+				StringStreamOut& operator<< ( const std::string & val );
+				StringStreamOut& operator<< ( std::streambuf * sb );
+				StringStreamOut& operator<< ( std::ostream& (*pf)(std::ostream&) );
+				StringStreamOut& operator<< ( std::ios& (*pf)(std::ios&) );
+				StringStreamOut& operator<< ( std::ios_base& (*pf)(std::ios_base&) );
 
 			};
 

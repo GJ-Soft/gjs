@@ -24,7 +24,6 @@
 
 
 
-using namespace std;
 
 namespace org
 {
@@ -40,8 +39,8 @@ namespace org
 
 
 
-int CajMsjMostrar ( int iTipo, const string & sTitulo, const string & sMensaje );
-template<typename... Args> int CajMsjMostrarConFormato ( int iTipo, const string & sTitulo, const string & sFormato, Args&&... argumentos );
+int CajMsjMostrar ( int iTipo, const std::string & sTitulo, const std::string & sMensaje );
+template<typename... Args> int CajMsjMostrarConFormato ( int iTipo, const std::string & sTitulo, const std::string & sFormato, Args&&... argumentos );
 
 
 

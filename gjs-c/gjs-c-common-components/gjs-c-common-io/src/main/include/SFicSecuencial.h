@@ -9,12 +9,13 @@
 
 #include <Base.h>
 #include <ModosApertura.h>
+#include <SRuta.h>
 
 
 
 typedef struct
 {
-	const char *	p_cRuta;	
+	char *			p_cRuta;	
 	int				iAbierto;
 	int				iModo;
 	FILE *			p_fObj;
@@ -27,6 +28,7 @@ typedef struct
 
 SFicSecuencial * SFicSecCrear ( const char * p_cRuta ); 
 SFicSecuencial * SFicSecCrearExt ( const char * p_cDir, const char * p_cFic );
+SFicSecuencial * SFicSecCrearRuta ( SRuta * p_rutRuta ); 
 
 void SFicSecDestruir ( SFicSecuencial ** p_p_ficObj );
 void SFicSecEliminar ( SFicSecuencial ** p_p_ficObj );

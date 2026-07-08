@@ -3,17 +3,27 @@
 
 
 
-SCasoTest * SCasTstCrear ( const char * p_cId, PFUNINTV p_fTest )
+SCasoTest * SCasTstCrearSimple ( const char * p_cId, PFUNINTV p_fTest )
+{
+	return ( SCasTstEncapsularSimple ( SCasTstsCrear ( p_cId, p_fTest ) ) );
+}
+
+SCasoTest * SCasTstCrearAislado ( const char * p_cId, PFUNINTV p_fTest, int iCodigoEsperado )
+{
+	return ( SCasTstEncapsularAislado ( SCasTstaCrear ( p_cId, p_fTest, iCodigoEsperado ) ) );
+}
+
+SCasoTest * SCasTstEncapsularSimple ( SCasoTestSimple * p_caststsObj )
 {
 	SCasoTest * p_caststObj;
 
-	if ( CadEsToken ( p_cId ) && ES_VALIDO ( p_fTest ) )
+	if ( ES_VALIDO ( p_caststsObj ) )
 	{
 		p_caststObj = ( SCasoTest * ) MemReservar ( sizeof ( SCasoTest ) );
 		if ( ES_VALIDO ( p_caststObj ) )
 		{
-			p_caststObj->p_cIdCaso = CadDuplicar ( p_cId );
-			p_caststObj->p_fTestCaso = p_fTest;
+			p_caststObj->iTipo = 0;
+			p_caststObj->p_caststsObj = p_caststsObj;
 		}
 	}
 	else
@@ -23,6 +33,25 @@ SCasoTest * SCasTstCrear ( const char * p_cId, PFUNINTV p_fTest )
 	return ( p_caststObj );
 }
 
+SCasoTest * SCasTstEncapsularAislado ( SCasoTestAislado * p_caststaObj )
+{
+	SCasoTest * p_caststObj;
+
+	if ( ES_VALIDO ( p_caststaObj ) )
+	{
+		p_caststObj = ( SCasoTest * ) MemReservar ( sizeof ( SCasoTest ) );
+		if ( ES_VALIDO ( p_caststObj ) )
+		{
+			p_caststObj->iTipo = 1;
+			p_caststObj->p_caststaObj = p_caststaObj;
+		}
+	}
+	else
+	{
+		p_caststObj = NULL;
+	}
+	return ( p_caststObj );
+}
 
 void SCasTstDestruir ( SCasoTest ** p_p_caststObj )
 {
@@ -33,19 +62,45 @@ void SCasTstDestruir ( SCasoTest ** p_p_caststObj )
 		p_caststObj = *p_p_caststObj;
 		if ( ES_VALIDO ( p_caststObj ) )
 		{
-			MemLiberar ( ( void ** ) &( p_caststObj->p_cIdCaso ) );
+			if ( p_caststObj->iTipo == 0 )
+			{
+				printf ( "DESTRUYENDO CASO TEST TIPO 0\n" );
+				fflush(stdout);
+				SCasTstsDestruir ( &(p_caststObj->p_caststsObj) );
+			}
+			else if ( p_caststObj->iTipo == 1 )
+			{
+				printf ( "DESTRUYENDO CASO TEST TIPO 1\n" );
+				fflush(stdout);
+				SCasTstaDestruir ( &(p_caststObj->p_caststaObj) );
+			}
+			printf ( "LIBERANDO CASO TEST\n" );
+			fflush(stdout);
+			MemLiberar ( (void **) p_p_caststObj );
+			printf ( "LIBERADO CASO TEST!\n" );
+			fflush(stdout);
 		}
-		*p_p_caststObj = NULL;
 	}
 }
 
-char * SCasTstObtenerId ( SCasoTest * p_caststObj ) 
+const char * SCasTstObtenerId ( SCasoTest * p_caststObj ) 
 {
-	char * p_cRes;
+	const char * p_cRes;
 
 	if ( ES_VALIDO ( p_caststObj ) )
 	{
-		p_cRes = p_caststObj->p_cIdCaso;
+		if ( p_caststObj->iTipo == 0 )
+		{
+			p_cRes = SCasTstsObtenerId ( p_caststObj->p_caststsObj );
+		}
+		else if ( p_caststObj->iTipo == 1 )
+		{
+			p_cRes = SCasTstaObtenerId ( p_caststObj->p_caststaObj );
+		}
+		else
+		{
+			p_cRes = NULL;
+		}
 	}
 	else
 	{
@@ -60,28 +115,19 @@ int SCasTstEjecutar ( SCasoTest * p_caststObj )
 
 	if ( ES_VALIDO ( p_caststObj ) )
 	{
-		iRes = RESULTADO_CASO_TEST_OK;
-		//AplicLogAnotar( "" );
-		//AplicLogAnotar ( "-Caso %s:", p_caststObj->p_cIdCaso );
-		printf ( "  [Caso %s]\n", p_caststObj->p_cIdCaso );
-		if ( ES_VALIDO ( p_caststObj->p_fTestCaso ) )
+		if ( p_caststObj->iTipo == 0 )
 		{
-			if ( p_caststObj->p_fTestCaso() == 1 ) 
-			{
-				printf ("%s   Resultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
-			}
-			else
-			{
-				iRes = RESULTADO_CASO_TEST_KO;
-				printf ("%s    Resultado: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
-			}
+			iRes = SCasTstsEjecutar ( p_caststObj->p_caststsObj );
+		}
+		else if ( p_caststObj->iTipo == 1 )
+		{
+			iRes = SCasTstaEjecutar ( p_caststObj->p_caststaObj );
 		}
 		else
 		{
-			//AplicLogAnotarError ( "Funcion no definida para el caso" );
-			iRes = RESULTADO_CASO_TEST_FAIL;
+			iRes = RESULTADO_CASO_TEST_KO;
+			printf ("%s    Caso mal definido%s\n", ANSI_ROJO, ANSI_RESETEAR );
 		}
-		printf ("  [Fin %s]\n", p_caststObj->p_cIdCaso );
 	}
 	else
 	{
@@ -89,3 +135,93 @@ int SCasTstEjecutar ( SCasoTest * p_caststObj )
 	}
 	return ( iRes );
 }		
+
+int SCasTstEsCasoSimple ( SCasoTest * p_caststObj )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_caststObj ) )
+	{
+		if ( p_caststObj->iTipo == 0 )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}		
+
+int SCasTstEsCasoAislado ( SCasoTest * p_caststObj )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_caststObj ) )
+	{
+		if ( p_caststObj->iTipo == 1 )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}		
+
+SCasoTestSimple * SCasTstCasoSimple ( SCasoTest * p_caststObj )
+{
+	SCasoTestSimple * p_caststsRes;
+
+	if ( ES_VALIDO ( p_caststObj ) )
+	{
+		if ( p_caststObj->iTipo == 0 )
+		{
+			p_caststsRes = p_caststObj->p_caststsObj;
+		}
+		else
+		{
+			p_caststsRes = NULL;
+		}
+	}
+	else
+	{
+		p_caststsRes = NULL;
+	}
+	return ( p_caststsRes );
+}		
+
+SCasoTestAislado * SCasTstCasoAislado ( SCasoTest * p_caststObj )
+{
+	SCasoTestAislado * p_caststaRes;
+
+	if ( ES_VALIDO ( p_caststObj ) )
+	{
+		if ( p_caststObj->iTipo == 1 )
+		{
+			p_caststaRes = p_caststObj->p_caststaObj;
+		}
+		else
+		{
+			p_caststaRes = NULL;
+		}
+	}
+	else
+	{
+		p_caststaRes = NULL;
+	}
+	return ( p_caststaRes );
+}		
+
+

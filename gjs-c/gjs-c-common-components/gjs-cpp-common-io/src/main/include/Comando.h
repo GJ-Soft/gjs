@@ -2,12 +2,10 @@
 #define _ORG_GJS_C_CC_CPP_COMANDO_H
 
 
-
+#include <initializer_list>
 #include <string>
 #include <vector>
 
-
-using namespace std;
 
 
 namespace org
@@ -22,31 +20,31 @@ namespace org
 			class Comando
 			{
 			private:
-				string 			sComando;
-				vector<string>	vecArgumentos;
+				std::string 				sComando;
+				std::vector<std::string>	vecArgumentos;
 				
 			public:
 				Comando();
-				Comando( const string & _sComando, const initializer_list<string> & lisArgumentos );
-				Comando( const string & sExpresion );
+				Comando( const std::string & _sComando, const std::initializer_list<std::string> & lisArgumentos );
+				Comando( const std::string & sExpresion );
 				virtual ~Comando();
 
 				virtual bool EsValido();
 				
-				const string & getComando();
-				void setComando( const string & sValor );
-				bool isComando( const string & sValor );
+				const std::string & getComando();
+				void setComando( const std::string & sValor );
+				bool isComando( const std::string & sValor );
 				
 				int NumArgumentos() const;
-				const string & getArgumento( int iArg );
-				void addArgumento( const string & sArgumento );
+				const std::string & getArgumento( int iArg );
+				void addArgumento( const std::string & sArgumento );
 				
 				void Inicializar();
 				void InicializarArgumentos();
-				void Asignar( const string & _sComando, const initializer_list<string> & lisArgumentos );
-				void Procesar( const string & sExpresion );
+				void Asignar( const std::string & _sComando, const std::initializer_list<std::string> & lisArgumentos );
+				void Procesar( const std::string & sExpresion );
 				
-				virtual string toString();
+				virtual std::string toString();
 
 			};
 

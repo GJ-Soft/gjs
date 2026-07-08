@@ -1,32 +1,32 @@
 #include "Base.h"
 
-// TODO
+
 
 #define NUM_TESTS        1
 
-extern int TestSId ();
+extern int TestSError ();
 
 char ** testArrayInit()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *));
-    p_p_cTests[ 0 ] = CadDuplicar ( "SId" );
+    p_p_cTests[ 0 ] = CadDuplicar ( "SError" );
     return p_p_cTests;
 }
 
 PFUNINTV * functionArrayInit()
 {
     PFUNINTV* p_fTests = (PFUNINTV *) MemReservar ( NUM_TESTS * sizeof( PFUNINTV ));
-    p_fTests[ 0 ] = TestSId;
+    p_fTests[ 0 ] = TestSError;
     return p_fTests;
 }
 
 void freeArrays( char ** p_p_cTests, PFUNINTV* p_fTests )
 {
     for ( int i = 0; i < NUM_TESTS; i = i + 1 ) {
-        MemLiberar( (void **) p_p_cTests[ i ]);
+        MemLiberar( (void **) &(p_p_cTests[ i ]) );
     }
     MemLiberar( (void **) p_p_cTests );
-    MemLiberar( (void **) p_fTests );
+    MemLiberar( (void **) &p_fTests );
 }
 
 int findTest( char ** p_p_cTests, char * p_cTest )
@@ -35,7 +35,7 @@ int findTest( char ** p_p_cTests, char * p_cTest )
     int i = 0;
     while ( ( i < NUM_TESTS) && ( iIndex < 0 ) )
     {
-        if ( strcmp ( p_p_cTests[ i ], p_cTest ) == 0 )
+        if ( CadComparar ( p_p_cTests[ i ], p_cTest ) == COMP_IGUAL )
         {
             iIndex = i;
         }
@@ -51,6 +51,7 @@ int main( int argc, char * argv[] )
 	char ** p_p_cTests = testArrayInit();
     PFUNINTV * p_fTests = functionArrayInit();
 
+	printf ( "%s[Inicio de los test]%s\n", ANSI_AZUL, ANSI_RESETEAR );
 	char * p_cTest = 0x0;
 	if ( argc > 1 )
 	{
@@ -69,16 +70,30 @@ int main( int argc, char * argv[] )
 		}
 		else
 		{
-			printf( "Test [%s] no encontrado.", p_cTest );
+			printf ( "%sTest [%s] no encontrado.%s\n", ANSI_ROJO, p_cTest, ANSI_RESETEAR );
 			iRes = -1;
 		}
 		return( iRes );
 	}
 
-	if ( BOOL_ES_FALSO ( TestSId () ) )
+	for ( int iTest = 0; iTest < NUM_TESTS; iTest = iTest + 1 )
 	{
-		iRes = -1;
+		PFUNINTV fTest = p_fTests[ iTest ];
+		if( fTest() != 1 )
+		{
+			iRes = -1;
+		}
 	}
 	freeArrays( p_p_cTests, p_fTests );
+	printf ( "%s[Fin de los test]%s\n", ANSI_AZUL, ANSI_RESETEAR );
+	if ( iRes == 0 )
+	{
+		printf ("%sResultado global: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
+	}
+	else
+	{
+		printf ("%sResultado global: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
+	}
+	fflush ( stdout );
 	return ( iRes );
 }

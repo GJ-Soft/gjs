@@ -4,7 +4,7 @@
 
 #include <string>
 
-using namespace std;
+
 
 
 namespace org
@@ -19,7 +19,7 @@ namespace org
 			typedef void (*PROCEDIMIENTO)();
 			typedef bool (*FUNCION_BOOL)();
 
-			typedef void (*PROCEDIMIENTO_1CAD)( const string & );
+			typedef void (*PROCEDIMIENTO_1CAD)( const std::string & );
 			typedef void (*PROCEDIMIENTO_1ENT)( long );
 
             }

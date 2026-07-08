@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+	<parent>
+		<groupId>org.gjs.java.maven</groupId>
+		<artifactId>gjs-java-maven-parent</artifactId>
+		<version>1.0.0-RC.1</version>    
+		<relativePath>../..gjs-java-maven-parent</relativePath>
+	</parent>	
+
+    <artifactId>gjs-java-maven-extension-parent</artifactId>
+	<packaging>pom</packaging>
+
+	<name>GJS Java maven extension parent</name>
+	<description>
+		Maven parent pom for Maven plugins.
+		.
+		.	Pom organization:
+		.
+		.	gjs-parent
+		.		└── gjs-java-base-parent
+		.			   └── gjs-java-maven-base-parent
+		.			            └── gjs-java-maven-parent
+		.	   		                        └── gjs-java-maven-extension-parent
+		.
+	</description>
+
+	<properties>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<configuration>
+					<skip>${skip.if.not.source}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>copy-to-maven-ext</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<copy file="${project.build.directory}/${project.build.finalName}.jar"
+									todir="${env.MAVEN_HOME}/lib/ext"
+									overwrite="true"/>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>

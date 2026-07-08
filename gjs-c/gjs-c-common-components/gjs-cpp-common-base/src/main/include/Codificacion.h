@@ -5,8 +5,6 @@
 
 
 
-using namespace std;
-
 
 
 namespace org
@@ -22,11 +20,11 @@ namespace org
 // Utf 16x -> utf8
 // Utf 16x -> ascii
 
-			string UnicodeAUtf8 ( const wstring & valor );
-			string UnicodeAUtf16 ( const wstring & valor );
+			std::string UnicodeAUtf8 ( const std::wstring & valor );
+			std::string UnicodeAUtf16 ( const std::wstring & valor );
 
-			wstring Utf8AUnicode ( const string & valor );
-			wstring Utf16AUnicode ( const string & valor );
+			std::wstring Utf8AUnicode ( const std::string & valor );
+			std::wstring Utf16AUnicode ( const std::string & valor );
 
 			}
 		}

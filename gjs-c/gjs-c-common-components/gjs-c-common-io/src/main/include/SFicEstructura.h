@@ -7,6 +7,7 @@
 
 #include <SFicBloques.h>
 #include <SBloque.h>
+#include <SRuta.h>
 
 
 
@@ -27,6 +28,7 @@ SFicEstructura * SFicEstCrearExt ( const char * p_cDir, const char * p_cFic, int
 SFicEstructura * SFicEstAbrirExt ( const char * p_cDir, const char * p_cFic, int * p_iTamElemento );
 SFicEstructura * SFicEstAbrirOCrear ( const char * p_cRuta, int iTamElemento );
 SFicEstructura * SFicEstAbrirOCrearExt ( const char * p_cDir, const char * p_cFic, int * p_iTamElemento );
+SFicEstructura * SFicEstCrearRuta ( SRuta * p_rutRuta, int iTamElemento );
 
 void SFicEstDestruir ( SFicEstructura ** p_p_ficObj );
 void SFicEstEliminar ( SFicEstructura ** p_p_ficObj );

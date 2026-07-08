@@ -21,6 +21,7 @@
         <module>gjs-java-test-parent</module>
 		<module>gjs-java-artifact-parent</module>
         <module>gjs-java-maven-parent</module>
+        <module>gjs-java-maven-extension-parent</module>
 		<module>gjs-java-web-parent</module>
 		<module>gjs-java-war-parent</module>
 		<module>gjs-java-springboot-parent</module>

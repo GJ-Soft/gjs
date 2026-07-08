@@ -7,7 +7,7 @@ using namespace std;
 using namespace org::gjs::cpp::common;
 
 
-static const string FICHERO_USUARIO = "../resources/data/usuarios.info";
+static const string FICHERO_USUARIO = "../../test-classes/data/usuarios.info";
 
 
 static bool _bResTestSesionCliente1 = false;

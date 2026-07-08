@@ -16,9 +16,11 @@
 #if ( defined ( WIN ) )
 
 
-#include "SistemaRegistro.h"
 #include "CommonSystemConfig.h"
 
+#include "SistemaRegistro.h"
+
+using namespace std;
 
 
 static HKEY SisRegClavePrincipal ( int iClavePrinc );

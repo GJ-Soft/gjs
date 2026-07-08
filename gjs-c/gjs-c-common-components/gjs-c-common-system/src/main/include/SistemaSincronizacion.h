@@ -22,7 +22,7 @@
 
 
 #if ( defined ( WIN ) )
-typedef long varsinc;
+typedef long volatile varsinc;
 #else
 #	include <pthread.h>
 typedef pthread_spinlock_t varsinc;
@@ -34,8 +34,8 @@ int SisEsperarYActivarVariableSinc ( varsinc * p_vslVariable );
 int SisDesactivarVariableSinc ( varsinc * p_vsVariable );
 
 #if ( !defined ( WIN ) )
-void SisInicializarVariableSinc ( varsinc * p_vsVariable ); 
-void SisFinalizarVariableSinc ( varsinc * p_vsVariable ); 
+int SisInicializarVariableSinc ( varsinc * p_vsVariable ); 
+int SisFinalizarVariableSinc ( varsinc * p_vsVariable ); 
 #endif
 
 

@@ -6,7 +6,7 @@
 #include <Valor.h>
 
 
-using namespace std;
+
 
 namespace org
 {
@@ -22,13 +22,13 @@ namespace org
 			{
 			private:
 				TipoDatos		tipo;
-				string 			sNombre;
+				std::string 	sNombre;
 				bool			bAnulable;
 
 			public:
 				Atributo ();
-				Atributo ( TipoDatos _tipo, const string & _sNombre, bool _bAnulable =  true );
-				Atributo ( Tipo & _tipo, const string & _sNombre, bool _bAnulable =  true );
+				Atributo ( TipoDatos _tipo, const std::string & _sNombre, bool _bAnulable =  true );
+				Atributo ( Tipo & _tipo, const std::string & _sNombre, bool _bAnulable =  true );
 				Atributo ( Atributo & atributo );
 				explicit Atributo ( Atributo * atributo );
 				virtual ~Atributo ();
@@ -37,8 +37,8 @@ namespace org
 				virtual long getHash() const override;
 
 			public:
-				string getNombre () const;
-				void setNombre ( const string & sValor );
+				std::string getNombre () const;
+				void setNombre ( const std::string & sValor );
 
 				bool isAnulable () const;
 				void setAnulable ( bool bValor );
@@ -55,7 +55,7 @@ namespace org
 				bool EsCompatible ( Valor & valor ) const;
 				bool EsCompatible ( Valor * valor ) const;
 
-				virtual string toString () override;
+				virtual std::string toString () override;
 
 				Atributo & operator=( Atributo & atributo );
 				bool operator== ( Atributo & obj );

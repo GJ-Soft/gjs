@@ -8,38 +8,57 @@
 /*----------------------------------------------------------------------------*/
 /* Descripción:                                                               */
 /* Fichero de cabecera que contiene los prototipos de las rutinas tas y       */
-/* tar, para los casos en que no vengan en las librerías del compilador.   */ */
+/* tar, para los casos en que no vengan en las librerías del compilador.      */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
-#ifndef _ORG_GJS_C_CC_CPP_COMMON_TESTANDSET_H
-#define _ORG_GJS_C_CC_CPP_COMMON_TESTANDSET_H
+#ifndef _ORG_GJS_C_CC_CPP_TESTANDSET_H
+#define _ORG_GJS_C_CC_CPP_TESTANDSET_H
+
+
 
 
 #include <Precompilacion.h>
 
 
-#if ( defined ( LINUX ) )
 
-#if ( !defined ( tas ) )
+#if ( defined ( WIN ) )
 
+#	if ( !defined ( tas ) )
+#		define tas(ptr) (InterlockedExchange((ptr), 1))
+#		define tar(ptr) (InterlockedExchange((ptr), 0))
+#	endif
 
-#if ( defined ( xchg ) )
+#elif ( defined ( POSIX ) )
 
-#define tas(ptr) (xchg((ptr),1))
-#define tas(ptr) (xchg((ptr),1))
+#	if ( !defined ( tas ) )
+
+#		if ( defined ( xchg ) )
+#			define tas(ptr) (xchg((ptr),1))
+#			define tar(ptr) (xchg((ptr),0))
+#		else
+	
+static inline int _tas_impl(volatile int *ptr, int val) {
+    int result;
+    __asm__ __volatile__(
+        "xchgl %0, %1"
+        : "=r" (result), "+m" (*ptr)
+        : "0" (val)
+        : "memory"
+    );
+    return result;
+}
+
+#			define tas(ptr) (_tas_impl((ptr), 1))
+#			define tar(ptr) (_tas_impl((ptr), 0))
+
+#		endif
+
+#	endif
 
 #else
-
-// PENDIENTE:
-#endif
-
-
-
-
-#endif
-
+	// TODO
 #endif
 
 #endif

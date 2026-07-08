@@ -1,5 +1,5 @@
 /******************************************************************************/
-/*                             SistemaTiempo.cpp                              */
+/*                             SistemaTiempo.c                               */
 /*----------------------------------------------------------------------------*/
 /* Librería:  Sistema                                                         */
 /* Versión:   3.0.0                                                           */
@@ -24,33 +24,42 @@
 
 void SisEsperar ( int iMiliSegs )
 {
-	//timeval timeRetardo;
-	
 	if ( iMiliSegs > 0 )
 	{
 #  	  if ( defined ( WIN ) )
 		Sleep ( (DWORD) iMiliSegs );
 #	  else
-		if ( iMiliSegs > 500 )
-		{
-			sleep ( iMiliSegs / 1000 + 1 );
-		}
-		else
-		{
+		struct timespec ts;
 
-		}
+        ts.tv_sec  = iMiliSegs / 1000;
+        ts.tv_nsec = ( iMiliSegs % 1000 ) * 1000000L;
+
+        nanosleep ( &ts, NULL );
 # 	  endif
-		//timeRetardo.tv_sec = 0;
-		//timeRetardo.tv_usec = iMiliSegs;
-
-		//select ( 0, 0, 0, 0, &timeRetardo );
 	}
 }
 
 
 
+#if ( defined ( VC ) )
+	
+#include <intrin.h>
+
 uint64_t SisCiclosCPU ()
 {
+    int dummy[4];
+
+    __cpuid(dummy, 0);
+    return __rdtsc();
+}
+
+#else
+
+uint64_t SisCiclosCPU ()
+{
+	uint64_t uiCiclos;
+
+# if ( defined(__i386__) || defined(__x86_64__) )
 	unsigned int uiLow;
 	unsigned int uiHigh;
 
@@ -61,8 +70,29 @@ uint64_t SisCiclosCPU ()
 		:
 		: "%rbx", "%rcx"
 		);
+	uiCiclos = ( ( uint64_t ) uiHigh << 32 ) | uiLow;	
+# elif defined(__aarch64__)
+	asm volatile(
+		"mrs %0, cntvct_el0"
+		: "=r"(uiCiclos)
+);
+# elif defined(__riscv)
+	asm volatile(
+		"rdcycle %0"
+		: "=r"(uiCiclos)
+	);
+# else
+    struct timespec ts;
 
-	return ( ( uint64_t ) uiHigh << 32 ) | uiLow;
+    clock_gettime( CLOCK_MONOTONIC, &ts );
+
+    uiCiclos = (uint64_t)ts.tv_sec * 1000000000ULL +
+           (uint64_t)ts.tv_nsec;
+# endif
+	return ( uiCiclos );
 }
+
+#endif
+
 
 

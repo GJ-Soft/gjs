@@ -1,11 +1,9 @@
 #ifndef _ORG_GJS_C_CC_CPP_CALCULO_H
 #define _ORG_GJS_C_CC_CPP_CALCULO_H
 
-#include <string>
 
 
 
-using namespace std;
 
 namespace org
 {

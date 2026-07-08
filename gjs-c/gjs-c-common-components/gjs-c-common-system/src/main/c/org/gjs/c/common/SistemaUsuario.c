@@ -12,7 +12,7 @@
 
 char * SisUsrObtenerNombre (unsigned int uiId)
 {
-#   if (defined (UNIX) || defined (LINUX))
+#   if ( defined ( POSIX ) )
     static struct uids {                /*  Table of cached uids             */
         unsigned int id;
         char  *name;
@@ -27,25 +27,33 @@ char * SisUsrObtenerNombre (unsigned int uiId)
 
     /*  First, look for uiId in cache                                         */
     for (cache_scan = 0; cache_scan < cache_size; cache_scan++)
+	{
         if (cache [cache_scan].id == uiId)
+		{
             return (cache [cache_scan].name);
+		}
+	}
 
     /*  Add new name to cache: if cache was full, kick-out oldest entry      */
     if (cache_size == UID_CACHE_MAX)
-      {
+    {
         cache_scan = cache_oldest++;
         cache_oldest %= UID_CACHE_MAX;
         free (cache [cache_scan].name);
-      }
+    }
     else
+	{
         cache_scan = cache_size++;
-
+	}
     cache [cache_scan].id = uiId;
-    if ((passwd_entry = getpwuid (uiId)) == NULL)
-        cache [cache_scan].name = "<none>";
+    if ((passwd_entry = getpwuid (uiId)) == NULL )
+	{
+        cache [cache_scan].name = CadDuplicar ( "<none>" );
+	}
     else
-        cache [cache_scan].name = strdup (passwd_entry-> pw_name);
-
+	{
+        cache [cache_scan].name = CadDuplicar ( passwd_entry-> pw_name );
+	}
     return (cache [cache_scan].name);
 
 #   else
@@ -58,7 +66,7 @@ char * SisUsrObtenerNombre (unsigned int uiId)
 
 char * SisUsrObtenerNombreGrupo (unsigned int uiIdGrupo)
 {
-#   if (defined (UNIX) || defined (LINUX))
+#   if ( defined ( POSIX ))
     static struct gids {                /*  Table of cache'd gids            */
         unsigned int id;
         char  *name;
@@ -73,27 +81,36 @@ char * SisUsrObtenerNombreGrupo (unsigned int uiIdGrupo)
 
     /*  First, look for uiIdGrupo in cache                                         */
     for (cache_scan = 0; cache_scan < cache_size; cache_scan++)
+	{
         if (cache [cache_scan].id == uiIdGrupo)
+		{
             return (cache [cache_scan].name);
+		}
+	}
 
     /*  Add new name to cache: if cache was full, kick-out oldest entry      */
     if (cache_size == GID_CACHE_MAX)
-      {
+    {
         cache_scan = cache_oldest++;
         cache_oldest %= GID_CACHE_MAX;
         free (cache [cache_scan].name);
-      }
+    }
     else
+	{
         cache_scan = cache_size++;
-
+	}
     cache [cache_scan].id = uiIdGrupo;
 #   if (defined (__VMS__))
-        cache [cache_scan].name = "<none>";
+    cache [cache_scan].name = CadDuplicar ( "<none>" );
 #   else
     if ((group_entry = getgrgid (uiIdGrupo)) == NULL)
-        cache [cache_scan].name = "<none>";
+	{
+        cache [cache_scan].name = CadDuplicar ( "<none>" );
+	}
     else
-        cache [cache_scan].name = strdup (group_entry-> gr_name);
+	{
+        cache [cache_scan].name = CadDuplicar ( group_entry-> gr_name );
+	}
 #   endif
 
     return (cache [cache_scan].name);
@@ -107,7 +124,7 @@ char * SisUsrObtenerNombreGrupo (unsigned int uiIdGrupo)
 
 int SisUsrDesactivarRoot ()
 {
-#if (defined (UNIX) || defined (LINUX))
+#if (defined (POSIX))
 #   if (defined (__UTYPE_HPUX) || defined (__UTYPE_BEOS))
     return (setuid (SisUsrObtenerUsuario (REAL_ID)));
 #   elif (defined (__OS2__))            /*  OS/2 only supports one UID       */
@@ -125,7 +142,7 @@ int SisUsrDesactivarRoot ()
 
 int SisUsrActivarRoot ()
 {
-#if (defined (UNIX) || defined (LINUX))
+#if (defined (POSIX))
 #   if (defined (__UTYPE_HPUX) || defined (__UTYPE_BEOS))
     return (setuid (SisUsrObtenerUsuario (EFFECTIVE_ID)));
 #   elif (defined (__OS2__))            /*  OS/2 only supports one UID       */
@@ -144,7 +161,7 @@ int SisUsrActivarRoot ()
 
 unsigned int SisUsrObtenerUsuario (int type)
 {
-#if (defined (UNIX) || defined (LINUX) )
+#if (defined (POSIX) )
     static int
         ruid = -1,
         euid = -1;
@@ -174,15 +191,15 @@ unsigned int SisUsrObtenerUsuario (int type)
 
 int SisUsrDesactivarGrupoRoot ()
 {
-#if (defined (UNIX) || defined (LINUX))
+#if (defined (POSIX))
 #   if (defined (__UTYPE_HPUX) || defined (__UTYPE_BEOS))
-    return (setgid (getgid (REAL_ID)));
+    return (setgid (getgid ()));
 #   elif (defined (__OS2__))            /*  OS/2 only supports one UID       */
     return ( 0 );
 #   elif (defined (__VMS__))            /*  No setgid under OpenVMS          */
     return ( 0 );
 #   else
-        struct group * grp = getgrgid ( REAL_ID );
+        struct group * grp = getgrgid ( SisUsrObtenerGrupo ( REAL_ID ) );
         if ( ES_VALIDO ( grp ) )
         {
             return ( setegid ( grp->gr_gid ) );
@@ -199,15 +216,15 @@ int SisUsrDesactivarGrupoRoot ()
 
 int SisUsrActivarGrupoRoot ()
 {
-#if (defined (UNIX) || defined (LINUX))
+#if (defined (POSIX))
 #   if (defined (__UTYPE_HPUX) || defined (__UTYPE_BEOS))
-    return (setgid (get_gid (EFFECTIVE_ID)));
+    return (setgid (getgid ()));
 #   elif (defined (__OS2__))            /*  OS/2 only supports one UID       */
     return ( 0 );
 #   elif (defined (__VMS__))            /*  No setgid under OpenVMS          */
     return ( 0 );
 #   else
-    struct group * grp = getgrgid ( EFFECTIVE_ID );
+    struct group * grp = getgrgid ( SisUsrObtenerGrupo ( EFFECTIVE_ID ) );
     if ( ES_VALIDO ( grp ) )
     {
         return ( setegid ( grp->gr_gid ) );
@@ -226,7 +243,7 @@ int SisUsrActivarGrupoRoot ()
 
 unsigned int SisUsrObtenerGrupo ( int type )
 {
-#if (defined (UNIX) || defined (LINUX) )
+#if (defined (POSIX) )
     static int
         rgid = -1,
         egid = -1;
@@ -255,7 +272,7 @@ unsigned int SisUsrObtenerGrupo ( int type )
 
 int SisUsrEstablecerUsuario ( const char *p_cUsuario, const char *p_cGrupo )
 {
-#if (defined (UNIX) || defined (LINUX))
+#if (defined (POSIX))
     struct passwd
         *pwdbuf;
     struct group
@@ -282,22 +299,23 @@ int SisUsrEstablecerUsuario ( const char *p_cUsuario, const char *p_cGrupo )
     return ( 0 );
 }
 
-char * SisUsObtenerUsuarioLogin ()
+char * SisUsrObtenerUsuarioLogin ()
 {
 #if (defined (WIN))
 #   if (defined (WIN32))
-    ULONG
-        user_name_max = 255;
+    DWORD user_name_max = 255;
     static char
         user_name [256];
 
-    if (!GetUserName (user_name, &user_name_max))
+    if ( !GetUserName (user_name, (LPDWORD) &user_name_max) )
+	{
         strncpy (user_name, "unknown", sizeof (user_name));
-    return (user_name);
+	}
+    return ( CadDuplicar ( user_name ) );
 #   else
-    return ("none");
+    return ( CadDuplicar ( "none" ) );
 #   endif
-#elif ( defined (UNIX) || defined (LINUX) )
-    return (getlogin ());
+#else
+    return ( CadDuplicar (  getlogin () ) );
 #endif
 }

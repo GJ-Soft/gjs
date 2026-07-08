@@ -12,8 +12,8 @@ static bool TestLeerFichero01 ()
 {
 	cout << "Test LeerFichero01:" << endl;
 	bool bRes = true;
-	string sFic1 ( "../resources/data/fichero-vacio.txt" );
-	string sFic2 ( "../resources/data/fichero-lineas.txt" );
+	string sFic1 ( "../../test-classes/data/fichero-vacio.txt" );
+	string sFic2 ( "../../test-classes/data/fichero-lineas.txt" );
 
 	try
 	{
@@ -65,7 +65,7 @@ static bool TestImprimirFichero01 ()
 {
 	cout << "Test ImprimirFichero01:" << endl;
 	bool bRes = true;
-	string sFic ( "../resources/data/fichero-lineas.txt" );
+	string sFic ( "../../test-classes/data/fichero-lineas.txt" );
 
 	try
 	{
@@ -190,11 +190,11 @@ static bool TestFicherosIguales01 ()
 {
 	bool bRes = true;
 	cout << "Test FicherosIguales01:" << endl;
-	string sFic1 ( "../resources/data/fichero-ejemplo-1.txt" );
-	string sFic2 ( "../resources/data/fichero-ejemplo-2.txt" );
-	string sFic3 ( "../resources/data/fichero-ejemplo-3.txt" );
-	string sFic4 ( "../resources/data/fichero-vacio.txt" );
-	string sFic5 ( "../resources/data/fichero-vacio-copia.txt" );
+	string sFic1 ( "../../test-classes/data/fichero-ejemplo-1.txt" );
+	string sFic2 ( "../../test-classes/data/fichero-ejemplo-2.txt" );
+	string sFic3 ( "../../test-classes/data/fichero-ejemplo-3.txt" );
+	string sFic4 ( "../../test-classes/data/fichero-vacio.txt" );
+	string sFic5 ( "../../test-classes/data/fichero-vacio-copia.txt" );
 	try
 	{
 		if ( !FicherosIguales ( sFic4, sFic5 ) )
@@ -240,8 +240,8 @@ static bool TestEliminarFichero01 ()
 {
 	cout << "Test EliminarFichero01:" << endl;
 	bool bRes = true;
-	string sFic1 ( "../resources/data/fichero-eliminar.txt" );
-	string sFic2 ( "../resources/data/fichero-noexiste.txt" );
+	string sFic1 ( "../../test-classes/data/fichero-eliminar.txt" );
+	string sFic2 ( "../../test-classes/data/fichero-noexiste.txt" );
 
 	try
 	{

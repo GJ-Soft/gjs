@@ -27,7 +27,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.gjs.c.common</groupId>
-			<artifactId>gjs-c-common-types</artifactId>
+			<artifactId>gjs-c-common-base-types</artifactId>
 			<type>nar</type>
 		</dependency>
 		<dependency>

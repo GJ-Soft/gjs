@@ -911,9 +911,9 @@ void SLogAnotarConFormato ( SLog * p_logObj, const char * p_cFormato, ... )
 	{
 		va_start ( valArgumentos, p_cFormato );
 		SCadCopiarConFormato ( p_cadValor, p_cFormato, valArgumentos );
+		va_end ( valArgumentos );
 		SLogAnotar ( p_logObj, p_cadValor );
 		SCadDestruir ( &p_cadValor );
-		va_end ( valArgumentos );
 	}
 }
 
@@ -927,9 +927,9 @@ void SLogAnotarNivelConFormato ( SLog * p_logObj, int iNivel, const char * p_cFo
 	{
 		va_start ( valArgumentos, p_cFormato );
 		SCadCopiarConFormato ( p_cadValor, p_cFormato, valArgumentos );
+		va_end ( valArgumentos );
 		SLogAnotarNivel ( p_logObj, iNivel, p_cadValor );
 		SCadDestruir ( &p_cadValor );
-		va_end ( valArgumentos );
 	}
 }
 
@@ -943,9 +943,9 @@ void SLogAnotarForzadoConFormato ( SLog * p_logObj, const char * p_cFormato, ...
 	{
 		va_start ( valArgumentos, p_cFormato );
 		SCadCopiarConFormato ( p_cadValor, p_cFormato, valArgumentos );
+		va_end ( valArgumentos );
 		SLogAnotarNivel ( p_logObj, LOG_NIVEL_FORZADO, p_cadValor );
 		SCadDestruir ( &p_cadValor );
-		va_end ( valArgumentos );
 	}
 }
 
@@ -959,9 +959,9 @@ void SLogAnotarAvisoConFormato ( SLog * p_logObj, const char * p_cFormato, ... )
 	{
 		va_start ( valArgumentos, p_cFormato );
 		SCadCopiarConFormato ( p_cadValor, p_cFormato, valArgumentos );
+		va_end ( valArgumentos );
 		SLogAnotarNivel ( p_logObj, LOG_NIVEL_AVISO, p_cadValor );
 		SCadDestruir ( &p_cadValor );
-		va_end ( valArgumentos );
 	}
 }
 
@@ -975,9 +975,9 @@ void SLogAnotarErrorConFormato ( SLog * p_logObj, const char * p_cFormato, ... )
 	{
 		va_start ( valArgumentos, p_cFormato );
 		SCadCopiarConFormato ( p_cadValor, p_cFormato, valArgumentos );
+		va_end ( valArgumentos );
 		SLogAnotarNivel ( p_logObj, LOG_NIVEL_ERROR, p_cadValor );
 		SCadDestruir ( &p_cadValor );
-		va_end ( valArgumentos );
 	}
 }
 

@@ -36,7 +36,7 @@
 		
 			* cygwinDir : Directory of Cygwin installation (from gjs-parent)
 
-			* cygwinUser : Username for Cygwin (indirectly, only for cygwin profile)
+			* systemUser : Username for Cygwin, or Linux/Unix system
 						
 			* oracleDir : Directory of Oracle installation
 			
@@ -48,37 +48,92 @@
 		<gjs.source.language>c</gjs.source.language>
 		<gjs.source.extension>c</gjs.source.extension>
 
-		<!-- Java compiler  -->
-		<maven.compiler.source>21</maven.compiler.source>
-		<maven.compiler.target>21</maven.compiler.target>
-
 		<!-- Binary prefixes -->
 		<exeFinalPrefix></exeFinalPrefix>
 		<libFinalPrefix>lib</libFinalPrefix>
-
-		<!-- User home -->
-		<homeDir>${cygwinDir}/home/${cygwinUser}</homeDir>		
+		
+		<!-- Windows parameters -->
+		<!-- SDK -->
+		<windows.dir.sdk>C:\Program Files (x86)\Windows Kits\${windows.sdk.version}</windows.dir.sdk>		
 
 		<!-- External installed libs -->
-		<externalLibDir>${homeDir}/lib</externalLibDir>		
+		<windows.dir.lib.custom>C:\CustomLibs</windows.dir.lib.custom>		
 		
 		<!-- System Libraries directories -->
-		<sysLibDir1>${cygwinDir}/lib</sysLibDir1>		
-		<sysLibDir2>${cygwinDir}/usr/local/lib</sysLibDir2>
-		<sysIncDir>${cygwinDir}/usr/include</sysIncDir>
-		<sysIncDir2>${cygwinDir}/usr/local/include</sysIncDir2>
+		<windows.dir.lib>${windows.dir.sdk}\Lib\10.0.26100.0</windows.dir.lib>		
+		<windows.dir.include>${windows.dir.sdk}\Include\10.0.26100.0</windows.dir.include>		
+		<windows-crt.dir.lib.runtime>${windows.dir.lib}\ucrt\${windows.sdk.architecture}</windows-crt.dir.lib.runtime>		
+		<windows-crt.dir.lib.system>${windows.dir.lib}\um\${windows.sdk.architecture}</windows-crt.dir.lib.system>		
+		<windows-crt.dir.lib.installed></windows-crt.dir.lib.installed>		
+		<windows-crt.dir.include.additional>${windows.dir.include}\shared</windows-crt.dir.include.additional>		
+		<windows-crt.dir.include.runtime>${windows.dir.include}\ucrt</windows-crt.dir.include.runtime>		
+		<windows-crt.dir.include.system>${windows.dir.include}\um</windows-crt.dir.include.system>		
+		<windows-winrt.dir.lib.runtime>${windows.dir.lib}\ucrt\${windows.sdk.architecture}</windows-winrt.dir.lib.runtime>		
+		<windows-winrt.dir.lib.system>${windows.dir.lib}\um\${windows.sdk.architecture}</windows-winrt.dir.lib.system>		
+		<windows-crt.dir.lib.installed></windows-crt.dir.lib.installed>		
+		<windows-winrt.dir.include.additional>${windows.dir.include}\shared</windows-winrt.dir.include.additional>		
+		<windows-winrt.dir.include.runtime>${windows.dir.include}\ucrt</windows-winrt.dir.include.runtime>		
+		<windows-winrt.dir.include.runtime>${windows.dir.include}\winrt</windows-winrt.dir.include.runtime>		
+		<windows-winrt.dir.include.system>${windows.dir.include}\um</windows-winrt.dir.include.system>		
+		<windows-cppwinrt.dir.lib.runtime>${windows.dir.lib}\ucrt\${windows.sdk.architecture}</windows-cppwinrt.dir.lib.runtime>		
+		<windows-cppwinrt.dir.lib.system>${windows.dir.lib}\um\${windows.sdk.architecture}</windows-cppwinrt.dir.lib.system>		
+		<windows-cppwinrt.dir.include.additional>${windows.dir.include}\shared</windows-cppwinrt.dir.include.additional>		
+		<windows-cppwinrt.dir.include.runtime>${windows.dir.include}\ucrt</windows-cppwinrt.dir.include.runtime>		
+		<windows-cppwinrt.dir.include.cpp.runtime>${windows.dir.include}\cppwinrt</windows-cppwinrt.dir.include.cpp.runtime>		
+		<windows-cppwinrt.dir.lib.system>${windows.dir.lib}\um\${windows.sdk.architecture}</windows-cppwinrt.dir.lib.system>		
+
+		<!-- Cygwin parameters -->
+		<!-- User home -->
+		<cygwin.home>${cygwinDir}/home/${systemUser}</cygwin.home>		
+
+		<!-- External installed libs -->
+		<cygwin.dir.lib.custom>${cygwin.home}/lib</cygwin.dir.lib.custom>		
 		
-		<!-- Visual Studio Libraries directories -->
-		<vcLibDir>${visualStudioVCDir}/lib</vcLibDir>		
-		<vcIncDir1>${visualStudioVCDir}/include/ucrt</vcIncDir1>
-		<vcIncDir2>${visualStudioVCDir}/include/shared</vcIncDir2>
-		<vcIncDir3>${visualStudioVCDir}/include/um</vcIncDir3>
+		<!-- System Libraries directories -->
+		<cygwin-posix.dir.lib.runtime></cygwin-posix.dir.lib.runtime>
+		<cygwin-posix.dir.lib.system>${cygwinDir}/usr/x86_64-w64-mingw32/sys-root/mingw/bin</cygwin-posix.dir.lib.system>		
+		<cygwin-posix.dir.lib.system.additional>${cygwinDir}/lib</cygwin-posix.dir.lib.system.additional>		
+		<cygwin-posix.dir.lib.installed>${cygwinDir}/usr/local/share</cygwin-posix.dir.lib.installed>
+		<cygwin-posix.dir.include.system>${cygwinDir}/usr/include</cygwin-posix.dir.include.system>
+		<cygwin-posix.dir.include.installed>${cygwinDir}/usr/local/include</cygwin-posix.dir.include.installed>
+		<cygwin-posix.dir.include.additional></cygwin-posix.dir.include.additional>
+		<cygwin-windows.dir.lib.runtime></cygwin-windows.dir.lib.runtime>
+		<cygwin-windows.dir.lib.system>${cygwinDir}/usr/x86_64-w64-mingw32/sys-root/mingw/bin</cygwin-windows.dir.lib.system>		
+		<cygwin-windows.dir.lib.system.additional>${cygwinDir}/lib</cygwin-windows.dir.lib.system.additional>		
+		<cygwin-windows.dir.lib.installed>${cygwinDir}/usr/local/share</cygwin-windows.dir.lib.installed>
+		<cygwin-windows.dir.include.system>${cygwinDir}/usr/include</cygwin-windows.dir.include.system>
+		<cygwin-windows.dir.include.installed>${cygwinDir}/usr/local/include</cygwin-windows.dir.include.installed>
+		<cygwin-windows.dir.include.additional></cygwin-windows.dir.include.additional>
+		<!--
+		<cygwin-windows.dir.lib.runtime>${windows-crt.dir.lib.runtime}</cygwin-windows.dir.lib.runtime>
+		<cygwin-windows.dir.lib.system>${windows-crt.dir.lib.system}</cygwin-windows.dir.lib.system>		
+		<cygwin-windows.dir.lib.system.additional></cygwin-windows.dir.lib.system.additional>
+		<cygwin-windows.dir.lib.installed>${cygwinDir}/usr/local/lib</cygwin-windows.dir.lib.installed>
+		<cygwin-windows.dir.include.system>${windows-crt.dir.include.system}</cygwin-windows.dir.include.system>
+		<cygwin-windows.dir.include.installed>${cygwinDir}/usr/local/include</cygwin-windows.dir.include.installed>
+		<cygwin-windows.dir.include.additional>${windows-crt.dir.include.additional}</cygwin-windows.dir.include.additional>
+		-->
+		<!-- Unix / Linux parameters -->
+		<!-- User home -->
+		<unix.home>/home/${systemUser}</unix.home>		
+
+		<!-- External installed libs -->
+		<unix.dir.lib.custom>${unix.home}/lib</unix.dir.lib.custom>		
+		
+		<!-- System Libraries directories -->
+		<unix.dir.lib.runtime></unix.dir.lib.runtime>		
+		<unix.dir.lib.system>${cygwinDir}/lib</unix.dir.lib.system>		
+		<unix.dir.lib.system.additional></unix.dir.lib.system.additional>
+		<unix.dir.lib.installed>${cygwinDir}/usr/local/lib</unix.dir.lib.installed>
+		<unix.dir.include.system>${cygwinDir}/usr/include</unix.dir.include.system>
+		<unix.dir.include.installed>${cygwinDir}/usr/local/include</unix.dir.include.installed>
+		<unix.dir.include.additional></unix.dir.include.additional>
 		
 		<!-- CppCheck Tool directory -->
-		<cppCheckDir>${cygwinDir}/bin</cppCheckDir>
+		<cpp.checkDir>${cygwinDir}/bin</cpp.checkDir>
 		
 		<!-- Apache Log4cxx directory -->
-		<log4cxxDir>${externalLibDir}/log4cxx</log4cxxDir>
+		<log4cxxDir>${cygwin.dir.lib.custom}/log4cxx</log4cxxDir>
 		<log4cxxDirInclude>${log4cxxDir}/include</log4cxxDirInclude>
 		<log4cxxDirLib>${log4cxxDir}/lib</log4cxxDirLib>
 	
@@ -97,6 +152,13 @@
 		<!-- Oracle client directory -->
 		<oraClientDir>${oraDir}/instantclient_19_12</oraClientDir>
 		<oraDirInclude>${oraDir}/sdk/include</oraDirInclude>
+		
+		<!-- Checkstyle -->
+		<cpp.check>${cpp.checkDir}/cppcheck</cpp.check>
+		<cpp.check.execute>false</cpp.check.execute>
+		<cpp.check.severity>all</cpp.check.severity>	
+		<cpp.check.configurations>1</cpp.check.configurations>
+
 	</properties>
 
 	<build>
@@ -125,6 +187,11 @@
 		</pluginManagement>		
 
 		<extensions>
+			<extension>
+				<groupId>org.gjs.maven.extensions</groupId>
+				<artifactId>profile-activator-maven-extension</artifactId>
+				<version>1.0.0-RC.1</version>
+			</extension>
 			<!--
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
@@ -146,15 +213,168 @@
 				  <skip>true</skip>
 			   </configuration>
 			</plugin>		
+			<plugin>
+				<groupId>org.codehaus.gmavenplus</groupId>
+				<artifactId>gmavenplus-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>prepare-compile</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<scripts>
+								<script><![CDATA[
+									if ( ! "true".equals( project.properties.get("skip.if.not.source") ) ) { 
+									// 1. Obtener la variable 'environment' del build (ej: "dev")
+									def env = project.properties['environment']
+									
+									// 2. Resolver dinámicamente el valor de las propiedades anidadas
+									def dirRuntime   = project.properties["${env}.dir.lib.runtime"]
+									def dirSystem    = project.properties["${env}.dir.lib.system"]
+									def dirSystemAdd    = project.properties["${env}.dir.lib.system.additional"]
+									def dirInst    = project.properties["${env}.dir.lib.installed"]
+									def includeSys   = project.properties["${env}.dir.include.system"]
+									def includeInst   = project.properties["${env}.dir.include.installed"]
+									def includeAdd   = project.properties["${env}.dir.include.additional"]
+									
+									// 3. Crear el directorio destino (Equivalente al <mkdir>)
+									def customDir = new File(project.build.directory, "custom")
+									if (!customDir.exists()) customDir.mkdirs()
+									
+									// 4. Se definen las propiedades generales independientes del entorno
+									project.properties["cpp.dir.lib.runtime"] = dirRuntime ?: ""
+									project.properties["cpp.dir.lib.system"] = dirSystem ?: ""
+									project.properties["cpp.dir.lib.system.addtional"] = dirSystemAdd ?: ""
+									project.properties["cpp.dir.lib.installed"] = dirInst ?: ""
+									project.properties["cpp.dir.include.system"] = includeSys ?: ""
+									project.properties["cpp.dir.include.installed"] = includeInst ?: ""
+									project.properties["cpp.dir.include.additional"] = includeAdd ?: ""
+									
+									// 5. Usar el AntBuilder nativo de GMaven para escribir el archivo de propiedades
+									ant.propertyfile(file: "${customDir.absolutePath}/compile-context.properties") {
+										entry(key: "cpp.dir.lib.runtime", value: dirRuntime ?: "")
+										entry(key: "cpp.dir.lib.system", value: dirSystem ?: "")
+										entry(key: "cpp.dir.lib.system.additional", value: dirSystemAdd ?: "")
+										entry(key: "cpp.dir.lib.installed", value: dirInst ?: "")
+										entry(key: "cpp.dir.include.system", value: includeSys ?: "")
+										entry(key: "cpp.dir.include.installed", value: includeInst ?: "")
+										entry(key: "cpp.dir.include.additional", value: includeAdd ?: "")
+									}
+									
+									log.info "Contexto de C/C++ generado exitosamente en Groovy para el entorno: ${env}"
+									} else {
+										log.info ( "Skipping the execution.\n" )
+									}
+								]]></script>
+							</scripts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<configuration>
+					<skip>${skip.if.not.source}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-tests</id>
+						<phase>generate-test-sources</phase>
+						<configuration>
+							<target name="prepare-context-for-tests">
+								<mkdir dir="${project.basedir}/target/test-nar/results"/>
+								<mkdir dir="${project.basedir}/target/test-nar/internal"/>
+								<propertyfile file="${project.basedir}/target/test-nar/internal/test.properties">
+									<entry key="project.basedir" value="${project.basedir}"/>
+									<entry key="project.build.directory" value="${project.build.directory}"/>
+									<entry key="project.build.testDirectory" value="${dirTest}"/>
+								</propertyfile>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					
+					<execution>
+						<id>check</id>
+						<phase>validate</phase>
+						<configuration>
+							<target name="execute-cppcheck" if="${cpp.check.execute}">
+								<mkdir dir="${project.basedir}/target/check"/>
+								<exec executable="${cpp.check}" dir="${project.basedir}/src/main/${gjs.source.language}" failonerror="false">
+									<arg value="--language=${gjs.nar.compiler.language}"/>
+									<!-- TODO: Asegurar que cppcheck es la última version -->
+									<!--arg value="++std=${cppOption}"/-->
+									<arg value="--std=${languageStandard}"/>
+									<arg value="--platform=native"/>
+									<arg value="--enable=${cpp.check.severity}"/>
+									<arg value="--max-configs=${cpp.check.configurations}"/>
+									<arg value="-I${project.basedir}/src/main/include"/>
+									<arg value="-I${glibDirInclude}"/>
+									<arg value="-I${sslDirInclude}"/>
+									<arg value="-I${oraDirInclude}"/>
+									<arg value="-I${xmlDirInclude}"/>
+									<arg value="-I${log4cxxDirInclude}"/>											
+									<arg value="-I${cygwin.dir.include.system}"/>
+									<arg value="-I${cygwin.dir.include.installed}"/>	
+									<arg value="--suppress=virtualCallInConstructor"/>
+									<arg value="--suppress=uninitMemberVar"/>		
+									<arg value="--suppress=useInitializationList"/>		
+									<arg value="--suppress=toomanyconfigs"/>												
+									<arg value="--suppress='*:${cygwin.dir.include.installed}/*'"/>											
+									<arg value="--suppress='*:${cygwin.dir.include.system}/*'"/>											
+									<arg value="--suppress='*:${oraDirInclude}/*'"/>											
+									<arg value="--cppcheck-build-dir=${project.basedir}/target/check"/>
+									<!-- arg value="++check-config" /-->
+									<arg value="*.*" />
+								</exec>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-		
 	<profiles>
 		<profile>
 			<id>cpp</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<!-- Activo siempre -->
+				<file>
+					<exists>${basedir}/pom.xml</exists>
+				</file>
 			</activation>
+		</profile>
+		<profile>
+			<id>cygwin-posix</id>
+			<activation>
+				<property>
+					<name>cygwin.style</name>
+					<value>!windows</value>
+				</property>
+			</activation>
+			<properties>
+				<platformOptions>-DCYGWIN_POSIX</platformOptions>
+			</properties>
+		</profile>
+		<profile>
+			<id>cygwin-win</id>
+			<activation>
+				<property>
+					<name>cygwin.style</name>
+					<value>windows</value>
+				</property>
+			</activation>
+			<properties>
+				<platformOptions>-DCYGWIN_WIN</platformOptions>
+			</properties>
 		</profile>
 	</profiles>
 </project>

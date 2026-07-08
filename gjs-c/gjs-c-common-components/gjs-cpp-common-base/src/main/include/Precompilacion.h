@@ -13,10 +13,12 @@
 /* El sistema de constantes de pre-compilación es el siguiente:               */
 /*                                                                            */
 /*  Nivel Máquina:          A64 | A32 | A16 | A8                              */
-/*  Nivel Sistema/Entorno:  UNIX |LINUX | WIN | DOS	                          */
-/*  Nivel Compilador:       GNU | CC | VC				                                 */
+/*  Nivel Sistema/Entorno:  POSIX | WIN                                       */
+/*							CYGWIN (adicional)                                */
+/*  Nivel Compilador:       GNU | CC | VC				                      */
+/*  Estilo:  				POSIX | WIN                                       */
 /*                                                                            */
-/*  Depuración:             MODO_DEPURACION ( & MODO_DEPURACION_2 )           */
+/*  Depuración:             MODO_DEPURACION                                   */
 /*                          MODO_DEPURACION, MODO_DEPURACION_2                */
 /*                                                                            */
 /*  Errores:                ALM_ERRORES                                       */
@@ -26,75 +28,86 @@
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
-#ifndef _PRECOMPILACION_H
-#define _PRECOMPILACION_H
+#ifndef _ORG_GJS_C_CC_CPP_PRECOMPILACION_H
+#define _ORG_GJS_C_CC_CPP_PRECOMPILACION_H
 
 
- //PENDIENTE: distinguir consola| no consola en caso WIN
-
-#if ( !defined ( CYGWIN ) && defined ( __CYGWIN__ ) )
-#	define	UNIX
-#	define	CYGWIN
-#endif
-
-/* Por defecto se compila como DOS: */ 
-#if ( !defined ( DOS ) && !defined ( WIN ) && !defined ( UNIX )  && !defined ( LINUX ) )
-#	define DOS
-#endif
-
-/* Por defecto se considera una arquitectura de 32 bits: */
-#if ( !defined ( A8 ) && !defined ( A16 ) && !defined ( A32 ) && !defined ( A64 ) )
-#	if ( defined ( WIN64 ) || defined ( _WIN64 ) )
-#		define	A64
-#	elif ( defined ( WIN32 ) || defined ( _WIN32 ) )
-#		define	A32
-#	elif ( defined ( WIN ) )
-#		define	A16
-#	elif ( defined ( _INTEGRAL_MAX_BITS ) )
-#		if ( _INTEGRAL_MAX_BITS >= 64 )
-#			define	A64
-#		elif ( _INTEGRAL_MAX_BITS == 32 )
-#			define	A32
-#		elif ( _INTEGRAL_MAX_BITS == 16 )
-#			define	A16
-#		elif 
-#			define	A8
-#		endif
-#	else
-#		define A32
+#if ( defined ( __CYGWIN__ ) )
+#	if ( defined ( CYGWIN_WIN ) || defined ( CYGWIN_POSIX ) )
+#		define CYGWIN
 #	endif
 #endif
+
+
+
+/* Por defecto se compila como WIN: */ 
+#if ( !defined ( CYGWIN ) && !defined ( WIN ) && !defined ( POSIX ) )
+#	define WIN
+#endif
+
+/* Aquí se decide si para CYGWIN se usa estilo POSIX o Windos: */
+#if ( defined ( CYGWIN ) )
+#	if ( defined ( CYGWIN_WIN ) )
+#		define WIN
+#	else
+#		define POSIX
+#	endif
+#endif
+
+
+#include <stdint.h>
+
+
+#if ( INTPTR_MAX == INT64_MAX )
+#	define A64
+#elif ( INTPTR_MAX == INT32_MAX )
+#	define A32
+#elif ( INTPTR_MAX == INT16_MAX )
+#	define A16
+#elif ( INTPTR_MAX == INT8_MAX )
+#	define A8
+#else
+#	error Tamaño de puntero no soportado
+#endif
+
+
 
 /* Por defecto se considera que se compila con GNU: */
 #if ( !defined ( GNU ) && !defined ( CC ) && !defined ( VC ) )
 #	define	GNU
-#else // Para CC sólo se permite UNIX y para VC sólo se permite DOS o WIN:
+#else // Para CC sólo se permite UNIX y para VC sólo se permite WIN:
 #	if ( defined ( CC ) )
-#		undef DOS
+#		undef CYGWIN
 #		undef WIN
-#		define UNIX
+#		define POSIX
 #	elif ( defined ( VC ) )
-#		if ( defined ( UNIX ) )
-#			undef UNIX
-#			define DOS
-#		elif ( defined ( LINUX ) )
-#			undef LINUX
-#			define DOS
-#		endif
+#		undef CYGWIN
+#		undef POSIX
+#		define WIN
 #	endif
 #endif
 
-/* Versión de Windows a utilizar: */
+
+
+/* Versión de Windows a utilizar: se fuerza a que la versión sea como mínimo la 5.0: */
 #if ( defined ( WIN ) )
 #	if ( defined ( WINVER ) )
-#		undef WINVER
+#		if ( WINVER < 0x0500 )
+#			undef WINVER
+#			define WINVER					0x0500
+#		endif
+#	else
+#		define WINVER						0x0500
 #	endif
-#	define WINVER			0x0500   // version 5.0
 #	if ( defined ( _WIN32_WINNT ) )
-#		undef _WIN32_WINNT
+#		if ( _WIN32_WINNT < 0x0500 )
+#			undef _WIN32_WINNT
+#			define _WIN32_WINNT				0x0500
+#		endif
+#	else
+#		define _WIN32_WINNT					0x0500
 #	endif
-#	define _WIN32_WINNT		0x0500   // version 5.0
-#endif 
+#endif
 
 
 /* Modos de depuración: */

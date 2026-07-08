@@ -5,13 +5,13 @@
 
 
 
-#include <Precompilacion.h>
+#include <BaseConfig.h>
 
 
 
 # if ( defined ( WIN ) )
 #	include <winnt.h>
-# elif ( defined ( UNIX ) || defined ( LINUX ) )
+# else
 #	include <semaphore.h>
 # endif
 
@@ -26,7 +26,7 @@ typedef struct
 	char *	p_cNombre; 
 # if ( defined ( WIN ) )
 	HANDLE	hMutex;
-# elif ( defined ( UNIX ) || defined ( LINUX ) )
+# elif ( defined ( POSIX ) )
 	sem_t *	p_semMutex;
 # else
 	int		iMutex;

@@ -5,7 +5,6 @@
 #include <thread>
 
 
-using namespace std;
 
 namespace org
 {
@@ -19,8 +18,8 @@ namespace org
 			class ControlConcurrencia
 			{
 			private:
-				mutex 			mtxAcceso;
-				thread::id * 	idBloqueante = nullptr;
+				std::mutex 			mtxAcceso;
+				std::thread::id * 	idBloqueante = nullptr;
 
 			public:
 				ControlConcurrencia ();

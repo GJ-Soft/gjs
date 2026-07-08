@@ -2,6 +2,7 @@
 
 #include <map>
 
+using namespace std;
 
 //extern bool TestToString ();
 
@@ -41,5 +42,6 @@ int main( int argc, char * argv[] )
 	{
 		iRes = -1;
 	}
+	fflush ( stdout );
 	return ( iRes );
 }

@@ -50,6 +50,7 @@ int main ()
 	LogIni( "/log4cxx.xml" );
 #end
 
+	iRes = EXIT_SUCCESS;
 #if( $parameters > 0 )
 	p_argParametros = new Argumentos ( iNumArgs, p_p_cArgs );
 	if ( ES_VALIDO ( p_argParametros ) )
@@ -62,7 +63,7 @@ int main ()
 				{
 					cout << format( "Invalid argument {} (Value={}).", iArg,  
 							p_argParametros->Argumento ( iArg ) ) << endl; 
-					iRes = 0;
+					iRes = EXIT_FAILURE;
 				}
 			}
 		}
@@ -71,7 +72,7 @@ int main ()
 			cout << "Invalid number of arguments." << endl;
 			//TODO
 			cout << "Use: ${shortName} <Param1> ..." << endl;
-			iRes = 0;
+			iRes = EXIT_FAILURE;
 		}
 
 		delete p_argParametros;
@@ -79,11 +80,11 @@ int main ()
 	else
 	{
 		cout << "Se han producido un error al procesar los parametros." << endl;
-		iRes = 0;
+		iRes = EXIT_FAILURE;
 	}
 #end
 
-	if ( iRes == 1 )
+	if ( iRes == EXIT_SUCCESS )
 	{
 		// TODO: Add source main code
 	}

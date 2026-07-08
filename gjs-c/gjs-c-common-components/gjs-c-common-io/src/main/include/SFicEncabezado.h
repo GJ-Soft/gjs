@@ -8,6 +8,7 @@
 
 
 #include <SFicAleatorio.h>
+#include <SRuta.h>
 
 
 
@@ -29,6 +30,7 @@ SFicEncabezado * SFicEncCrear ( const char * p_cRuta, unsigned long ulTamCabecer
 SFicEncabezado * SFicEncAsignar ( const char * p_cRuta ); 
 SFicEncabezado * SFicEncCrearExt ( const char * p_cDir, const char * p_cFic, unsigned long ulTamCabecera, int iNumMagico ); 
 SFicEncabezado * SFicEncAsignarExt ( const char * p_cDir, const char * p_cFic, int iNumMagico ); 
+SFicEncabezado * SFicEncCrearRuta ( SRuta * p_rutRuta, unsigned long ulTamCabecera ); 
 
 void SFicEncDestruir ( SFicEncabezado ** p_p_ficObj );
 void SFicEncEliminar ( SFicEncabezado ** p_p_ficObj );

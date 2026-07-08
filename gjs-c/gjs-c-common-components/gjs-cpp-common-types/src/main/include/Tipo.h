@@ -6,7 +6,6 @@
 #include <IComparable.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -49,9 +48,9 @@ namespace org
 
 				bool EsCompatible ( Tipo & _tipo ) const;
 				bool EsCompatible ( Tipo * _tipo ) const;
-				bool EsCompatible ( const string & sValor ) const;
+				bool EsCompatible ( const std::string & sValor ) const;
 
-				virtual string toString () override;
+				virtual std::string toString () override;
 
 				Tipo & operator=( Tipo & _tipo );
 				bool operator== ( Tipo & obj );

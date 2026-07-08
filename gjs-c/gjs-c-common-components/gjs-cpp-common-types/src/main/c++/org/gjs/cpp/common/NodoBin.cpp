@@ -4,6 +4,7 @@
 #include <ToString.h>
 #include <Sistema.h>
 
+using namespace std;
 
 
 namespace org

@@ -9,7 +9,6 @@
 #include <SistemaTiposErrores.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -24,15 +23,15 @@ bool SisHayError ( int iRefrescar = 1 );
 bool SisHayErrorDeMemoriaAgotada ( int iRefrescar = 1 );
 int SisErrTipo ();
 int SisErrCodigo ();
-string SisErrDescripcion (); // int iError = 0 );
-string SisErrMensaje ( int iMostrarCodigo = 0 ); 
-string SisErrMensajeExt ( const string & sModulo = "", const string & sRutina = "" ); 
+std::string SisErrDescripcion (); // int iError = 0 );
+std::string SisErrMensaje ( int iMostrarCodigo = 0 ); 
+std::string SisErrMensajeExt ( const std::string & sModulo = "", const std::string & sRutina = "" ); 
 void SisErrImprimir (); 
 void SisErrLimpiar ();
 
 int SisMaxError ();
 
-void SisErrApilar ( const string & sModulo = "", const string & sRutina = "", int iRefrescar = 1 );
+void SisErrApilar ( const std::string & sModulo = "", const std::string & sRutina = "", int iRefrescar = 1 );
 void SisErrImprimirPila ();
 void SisErrLimpiarPila ();
 

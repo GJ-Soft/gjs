@@ -3,6 +3,7 @@
 #include <Sistema.h>
 
 
+using namespace std;
 
 namespace org
 {

@@ -15,8 +15,8 @@ namespace org
             {
 
 
-			const string HTTP_VERSION_1_1 			= "1.1";
-			const string HTTP_VERSION_2_0 			= "2.0";
+			const std::string HTTP_VERSION_1_1 			= "1.1";
+			const std::string HTTP_VERSION_2_0 			= "2.0";
 
  			}
 		}

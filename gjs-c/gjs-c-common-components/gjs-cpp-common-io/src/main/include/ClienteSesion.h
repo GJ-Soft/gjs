@@ -6,11 +6,11 @@
 
 #include <ClienteComandos.h>
 #include <ResultadoComando.h>
+#include <string>
 #include <list>
 
 
 
-using namespace std;
 
 
 namespace org
@@ -26,18 +26,18 @@ namespace org
 			class ClienteSesion : public ClienteComandos
 			{
 			private:
-				string 	sUsuario;
-				string 	sClave;
-				bool 	bSesionNecesaria = true;
-				bool	bSesionAbierta = false;
+				std::string sUsuario;
+				std::string sClave;
+				bool 		bSesionNecesaria = true;
+				bool		bSesionAbierta = false;
 				
 			public:
-				ClienteSesion( const string & sIP, int iPuerto, const string & _sUsuario = "", const string & _sClave = "" );
+				ClienteSesion( const std::string & sIP, int iPuerto, const std::string & _sUsuario = "", const std::string & _sClave = "" );
 				virtual ~ClienteSesion();
 				
-				string getUsuario();
-				string getClave();
-				void setUsuario( const string & _sUsuario, const string & _sClave = "" );
+				std::string getUsuario();
+				std::string getClave();
+				void setUsuario( const std::string & _sUsuario, const std::string & _sClave = "" );
 				void setUsuarioAnonimo();
 				
 				bool EsValido();
@@ -46,15 +46,15 @@ namespace org
 				bool AbrirSesion();
 				void CerrarSesion();
 				
-				void EnviarComando( Comando & comando, string & sRespuesta );
-				void EnviarComando( string sComando, const initializer_list<string> & lisArgumentos, string & sRespuesta );
-				void EnviarMensaje( const string & sMensaje, string & sRespuesta );
-				void EnviarMensaje( const string & sMensaje );
+				void EnviarComando( Comando & comando, std::string & sRespuesta );
+				void EnviarComando( std::string sComando, const std::initializer_list<std::string> & lisArgumentos, std::string & sRespuesta );
+				void EnviarMensaje( const std::string & sMensaje, std::string & sRespuesta );
+				void EnviarMensaje( const std::string & sMensaje );
 
 			private:
-				void EstablecerUsuario( const string & _sUsuario, const string & _sClave, bool bConstructor );
+				void EstablecerUsuario( const std::string & _sUsuario, const std::string & _sClave, bool bConstructor );
 				virtual void ModificadoUsuario() = 0; 
-				virtual list<ResultadoComando> & ComandoInicioSesion() = 0;
+				virtual std::list<ResultadoComando> & ComandoInicioSesion() = 0;
 				virtual ResultadoComando & ComandoFinSesion() = 0;
 
 			};

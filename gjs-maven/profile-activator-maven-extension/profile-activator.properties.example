@@ -1,0 +1,17 @@
+# profile-activator.properties (ejemplo)
+#
+# Copiar a $MAVEN_HOME/conf/profile-activator.properties
+# o indicar la ruta con -Dprofile-activator.config=<ruta>.
+#
+# Formato: clave = expresion   (una por linea; # para comentarios)
+# Las lineas se evaluan en orden; una puede usar propiedades calculadas antes.
+#
+# Referencias: env.X = variable de entorno; el resto = propiedad existente.
+# Operadores: ?: || && == != ~ (contiene, insensible a mayusculas) ! ( )
+# Verdad: solo null y 'false' son falso (cadena vacia = definida = verdad).
+
+# Estilo Cygwin: posix por defecto; -Dcygwin.style=windows lo fuerza y se respeta.
+cygwin.style      = env.CYGWIN ? 'posix' : cygwin.style
+
+# windows en Windows nativo o Cygwin en modo windows; posix en el resto.
+environment.style = (os.name ~ 'windows' && !env.CYGWIN) || (env.CYGWIN && cygwin.style == 'windows') ? 'windows' : 'posix'

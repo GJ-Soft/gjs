@@ -11,8 +11,8 @@
 
 
 
-static int SFicBloqActualizarInfoCabecera ( SFicBloques * p_ficObj ); 
-static int SFicBloqCargarInfoCabecera ( SFicBloques * p_ficObj );
+int _SFicBloqActualizarInfoCabecera ( SFicBloques * p_ficObj ); 
+int _SFicBloqCargarInfoCabecera ( SFicBloques * p_ficObj );
 
 
 
@@ -29,9 +29,9 @@ SFicBloques * SFicBloqCrear ( const char * p_cRuta, unsigned long ulTamBloque, u
 		p_ficObj->p_ficObj = SFicEncCrear ( p_cRuta, ulTamDatosCab + FIC_BLOQ_TAM_INFO_CABECERA );
 		if ( ES_VALIDO ( p_ficObj->p_ficObj ) )
 		{
-			if ( SFicEncAbrir ( p_ficObj->p_ficObj ) == 1 )
+			if ( SFicEncAbrirExt ( p_ficObj->p_ficObj, 1 ) == 1 )
 			{
-				if ( SFicBloqActualizarInfoCabecera ( p_ficObj ) == 1 )
+				if ( _SFicBloqActualizarInfoCabecera ( p_ficObj ) == 1 )
 				{
 					SFicEncCerrar ( p_ficObj->p_ficObj );
 				}
@@ -63,7 +63,7 @@ SFicBloques * SFicBloqAsignar ( const char * p_cRuta )
 		p_ficObj->p_ficObj = SFicEncAsignar ( p_cRuta );
 		if ( ES_VALIDO ( p_ficObj->p_ficObj ) )
 		{
-			if ( SFicBloqCargarInfoCabecera ( p_ficObj ) == 0 )
+			if ( _SFicBloqCargarInfoCabecera ( p_ficObj ) == 0 )
 			{
 				SFicBloqDestruir ( &p_ficObj );
 			}
@@ -104,10 +104,42 @@ SFicBloques * SFicBloqAsignarExt ( const char * p_cDir, const char * p_cFic, int
 		p_ficObj->p_ficObj = SFicEncAsignarExt ( p_cDir, p_cFic, iNumMagico );
 		if ( ES_VALIDO ( p_ficObj->p_ficObj ) )
 		{
-			if ( SFicBloqCargarInfoCabecera ( p_ficObj ) == 0 )
+			if ( _SFicBloqCargarInfoCabecera ( p_ficObj ) == 0 )
 			{
 				SFicBloqDestruir ( &p_ficObj );
 			}
+		}
+	}
+	else
+	{
+		p_ficObj = NULL;
+	}
+	return ( p_ficObj );
+}
+
+SFicBloques * SFicBloqCrearRuta ( SRuta * p_rutRuta, unsigned long ulTamBloque, unsigned long ulTamDatosCab )
+{
+	SFicBloques *	p_ficObj;
+	char *			p_cRuta;
+	
+	if ( SRutEsValida ( p_rutRuta ) == 1 )
+	{
+		if ( SRutEsFichero ( p_rutRuta ) == 1 )
+		{
+			p_cRuta = SRutRutaAbsolutaLit ( p_rutRuta );
+			if ( SRutExiste ( p_rutRuta ) == 1 )
+			{
+				p_ficObj = SFicBloqAsignar ( p_cRuta );
+			}
+			else
+			{
+				p_ficObj = SFicBloqCrear ( p_cRuta, ulTamBloque, ulTamDatosCab );
+			}
+			MemLiberar ( (void **) &p_cRuta );
+		}
+		else
+		{
+			p_ficObj = NULL;
 		}
 	}
 	else
@@ -375,11 +407,11 @@ int SFicBloqAbrirExt ( SFicBloques * p_ficObj, int iVaciar )
 			if ( iVaciar == 1 )
 			{
 				p_ficObj->ulNumBloques = 0;
-				iRes = SFicBloqActualizarInfoCabecera ( p_ficObj );
+				iRes = _SFicBloqActualizarInfoCabecera ( p_ficObj );
 			}
 			else
 			{
-				iRes = SFicBloqCargarInfoCabecera ( p_ficObj );
+				iRes = _SFicBloqCargarInfoCabecera ( p_ficObj );
 			}
 		}
 		else
@@ -672,7 +704,7 @@ int SFicBloqEscribir ( SFicBloques * p_ficObj, unsigned long ulBloque, byte * p_
 					if ( ulBloque >= p_ficObj->ulNumBloques ) 
 					{
 						p_ficObj->ulNumBloques = ulBloque + 1;
-						if ( SFicBloqActualizarInfoCabecera ( p_ficObj ) == 0 )
+						if ( _SFicBloqActualizarInfoCabecera ( p_ficObj ) == 0 )
 						{
 							iRes = 0;
 						}
@@ -758,7 +790,7 @@ int SFicBloqLeerParte ( SFicBloques * p_ficObj, unsigned long ulBloque, unsigned
 	if ( ES_VALIDO ( p_ficObj ) && ES_VALIDO ( p_byContenido ) )
 	{
 		if ( ( ulBloque < p_ficObj->ulNumBloques ) && ( SFicEncEstaAbierto ( p_ficObj->p_ficObj ) == 1 ) &&
-			 ( ulDespl + ulTam < p_ficObj->ulTamBloque ) )
+			 ( ulDespl + ulTam <= p_ficObj->ulTamBloque ) )
 		{
 			ulPos = ulBloque * p_ficObj->ulTamBloque + ulDespl;
 			if ( SFicEncLeerBufferEn ( p_ficObj->p_ficObj, ulPos, p_byContenido, &ulTam ) == 1 )
@@ -790,7 +822,7 @@ int SFicBloqEscribirParte ( SFicBloques * p_ficObj, unsigned long ulBloque, unsi
 	if ( ES_VALIDO ( p_ficObj ) && ES_VALIDO ( p_byContenido ) )
 	{
 		if ( ( ulBloque < p_ficObj->ulNumBloques ) && ( SFicEncEstaAbierto ( p_ficObj->p_ficObj ) == 1 ) &&
-			 ( ulDespl + ulTam < p_ficObj->ulTamBloque ) )
+			 ( ulDespl + ulTam <= p_ficObj->ulTamBloque ) )
 		{
 			ulPos = ulBloque * p_ficObj->ulTamBloque + ulDespl;
 			if ( SFicEncEscribirBufferEn ( p_ficObj->p_ficObj, ulPos, p_byContenido, &ulTam ) == 1 )
@@ -814,7 +846,7 @@ int SFicBloqEscribirParte ( SFicBloques * p_ficObj, unsigned long ulBloque, unsi
 	return ( iRes );
 }
 
-static int SFicBloqActualizarInfoCabecera ( SFicBloques * p_ficObj )
+int _SFicBloqActualizarInfoCabecera ( SFicBloques * p_ficObj )
 {
 	int		iRes;
 	byte *	p_byCabecera;	
@@ -842,7 +874,7 @@ static int SFicBloqActualizarInfoCabecera ( SFicBloques * p_ficObj )
 	return ( iRes );
 }
 
-static int SFicBloqCargarInfoCabecera ( SFicBloques * p_ficObj )
+int _SFicBloqCargarInfoCabecera ( SFicBloques * p_ficObj )
 {
 	int		iRes;
 	byte *	p_byCabecera;	

@@ -6,7 +6,6 @@
 #include <IToString.h>
 
 
-using namespace std;
 
 namespace org
 {
@@ -20,8 +19,8 @@ namespace org
 			class ListaValores : public IToString
 			{
 			private:
-				vector<Valor *>	vecValores;
-				bool 			bPermiteInsercion = true;
+				std::vector<Valor *>	vecValores;
+				bool 					bPermiteInsercion = true;
 
 			public:
 				ListaValores ();
@@ -35,7 +34,7 @@ namespace org
 				int NumValores () const;
 				Valor * getValor ( int iIndice );
 				void InsertarValor ( Valor * valor );
-				void InsertarValor ( const string & sValor );
+				void InsertarValor ( const std::string & sValor );
 				void InsertarValor ( const char * p_cValor );
 				void InsertarValor ( bool _valor );
 				void InsertarValor ( short _valor );
@@ -56,7 +55,7 @@ namespace org
 
 				virtual bool EsValida ();
 
-				virtual string toString () override;
+				virtual std::string toString () override;
 
 			};
 

@@ -1,4 +1,5 @@
 #include "SBancoTests.h"
+#include "ContextoTests.h"
 #include "CTestConfig.h"
 
 
@@ -14,6 +15,10 @@ SBancoTests * SBanTstCrear ()
 	if ( ES_VALIDO ( p_bantstObj ) )
 	{
 		p_bantstObj->p_lisTests = SLisRefCrear ();
+		if ( ES_NULO ( p_bantstObj->p_lisTests ) )
+		{
+			MemLiberar ( (void **) &p_bantstObj );
+		}
 	}
 	return ( p_bantstObj );
 }
@@ -28,9 +33,15 @@ void SBanTstDestruir ( SBancoTests ** p_p_bantstObj )
 		p_bantstObj = *p_p_bantstObj;
 		if ( ES_VALIDO ( p_bantstObj ) )
 		{
+			printf ( "DESTRUYENDO LISREF\n");
+			fflush(stdout);
 			SLisRefDestruir ( &( p_bantstObj->p_lisTests ) );
+			printf ( "DESTRUYENDO BANCO\n");
+			fflush(stdout);
+			MemLiberar ( (void **) p_p_bantstObj );
+			printf ( "DESTRUIDO\n");
+			fflush(stdout);
 		}
-		*p_p_bantstObj = NULL;
 	}
 }
 
@@ -61,26 +72,39 @@ int SBanTstEjecutar ( SBancoTests * p_bantstObj )
 {
 	int iRes;
 	int iTest;
+	int iNumTests;
 
 	if ( ES_VALIDO ( p_bantstObj ) )
 	{
 		printf ( "%s[Inicio de los test]%s\n", ANSI_AZUL, ANSI_RESETEAR );
+		printf ( "%sInicializando Entorno de Test%s\n", ANSI_MAGENTA, ANSI_RESETEAR );
+		InicializarEntorno ();
 		iRes = 1;
 		iTest = 0;
-		while ( iTest < SLisRefNumElementos ( p_bantstObj->p_lisTests ) )
+		iNumTests = SLisRefNumElementos ( p_bantstObj->p_lisTests );
+		while ( iTest < iNumTests )
 		{
 			PFUNINTV fTest = (PFUNINTV) SLisRefDatosElemento ( p_bantstObj->p_lisTests, iTest );
-			if ( fTest() == 1 )
+			if ( ES_VALIDO ( fTest ) )
 			{
-				printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
+				if ( fTest () == 1 )
+				{
+					printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
+				}
+				else
+				{
+					printf ( "%sResultado: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
+					iRes = 0;
+				}
 			}
 			else
 			{
-				printf ( "%sResultado: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
+				printf ( "%sEl test esta mal definido: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
 				iRes = 0;
 			}
 			iTest = iTest + 1;
 		}
+		FinalizarEntorno ();
 		printf ( "%s[Fin de los test]%s\n", ANSI_AZUL, ANSI_RESETEAR );
 	}
 	else
@@ -96,7 +120,7 @@ int SBanTstEjecutarTest ( SBancoTests * p_bantstObj, const char * p_cTest )
 
 	if ( ES_VALIDO ( p_bantstObj ) )
 	{
-		if ( ( CadLongitud ( p_cTest ) > 0 ) && ( CadComparar ( p_cTest, "null" ) != 0 ) )
+		if ( CadLongitud ( p_cTest ) > 0 )
 		{
 			SReferencia * p_refObj = SLisRefBuscar ( p_bantstObj->p_lisTests, p_cTest );
 			if ( ES_VALIDO ( p_refObj ) )

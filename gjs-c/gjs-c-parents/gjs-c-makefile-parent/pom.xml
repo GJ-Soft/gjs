@@ -118,7 +118,7 @@
 									<overwrite>true</overwrite>
 									<resources>
 										<resource>
-											<directory>${project.basedir}/src/main/resources</directory>
+											<directory>${resources.dir}</directory>
 											<includes>
 												<include>**/**</include>
 											</includes>
@@ -140,7 +140,7 @@
 									<overwrite>true</overwrite>
 									<resources>
 										<resource>
-											<directory>${project.basedir}/src/test/resources</directory>
+											<directory>${testResources.dir}</directory>
 											<includes>
 												<include>**/**</include>
 											</includes>

@@ -13,10 +13,10 @@
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
+#include "CommonSystemConfig.h"
 #include "SistemaSignals.h"
 
 
-#include "CommonSystemConfig.h"
 #include "SistemaProcesos.h"
 
 

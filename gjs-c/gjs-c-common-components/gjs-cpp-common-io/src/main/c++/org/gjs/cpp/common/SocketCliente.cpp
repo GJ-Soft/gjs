@@ -19,17 +19,26 @@ namespace org
 SocketCliente::SocketCliente( int iIP, int iPuerto ) : Socket ()
 {
 	int iError = 0;
+	
 	if ( Socket::Crear () )
 	{
 		if ( !Socket::Conectar( iIP, iPuerto ) )
 		{
+#		 if ( defined ( WIN ) )
+			iError = WSAGetLastError();
+#		 else
 			iError = errno;
+#		 endif
 			Socket::Cerrar();
 		}
 	}
 	else
 	{
+#	 if ( defined ( WIN ) )
+		iError = WSAGetLastError();
+#	 else
 		iError = errno;
+#	 endif
 	}
 	if ( iError != 0 )
 	{
@@ -41,17 +50,26 @@ SocketCliente::SocketCliente( int iIP, int iPuerto ) : Socket ()
 SocketCliente::SocketCliente( const string & sIP, int iPuerto ) : Socket ()
 {
 	int iError = 0;
+	
 	if ( Socket::Crear () )
 	{
 		if ( !Socket::Conectar( sIP, iPuerto ) )
 		{
+#		 if ( defined ( WIN ) )
+			iError = WSAGetLastError();
+#		 else
 			iError = errno;
+#		 endif
 			Socket::Cerrar();
 		}
 	}
 	else
 	{
+#	 if ( defined ( WIN ) )
+		iError = WSAGetLastError();
+#	 else
 		iError = errno;
+#	 endif
 	}
 	if ( iError != 0 )
 	{
@@ -118,18 +136,32 @@ bool SocketCliente::Cerrar()
 
 SocketCliente & SocketCliente::operator << ( const string & sMensaje )
 {
+	int iError = 0;
+	
 	if ( Socket::Enviar( sMensaje ) != sMensaje.length() )
 	{
-		throw SocketExcepcion( "SocketCliente", "operator<<", errno );
+#	 if ( defined ( WIN ) )
+		iError = WSAGetLastError();
+#	 else
+		iError = errno;
+#	 endif
+		throw SocketExcepcion( "SocketCliente", "operator<<", iError );
 	}
 	return( *this );
 }
 
 SocketCliente & SocketCliente::operator >> ( string & sMensaje )
 {
-	if ( Socket::Recibir( sMensaje ) < 0)
+	int iError = 0;
+	
+	if ( Socket::Recibir( sMensaje ) < 0 )
 	{
-		throw SocketExcepcion( "SocketCliente", "operator>>", errno );
+#	 if ( defined ( WIN ) )
+		iError = WSAGetLastError();
+#	 else
+		iError = errno;
+#	 endif
+		throw SocketExcepcion( "SocketCliente", "operator>>", iError );
 	}
 	return( *this );
 }

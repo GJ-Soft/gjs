@@ -5,7 +5,6 @@
 #include <string>
 
 
-using namespace std;
 
 namespace org
 {
@@ -20,9 +19,9 @@ namespace org
 
 
 
-bool AplicCodigoValido ( const string & sCod, int iTam );
-bool AplicCodigoUsuarioValido ( const string & sCod );
-bool AplicClaveUsuarioValido ( const string & sClave );
+bool AplicCodigoValido ( const std::string & sCod, int iTam );
+bool AplicCodigoUsuarioValido ( const std::string & sCod );
+bool AplicClaveUsuarioValido ( const std::string & sClave );
 
 
 

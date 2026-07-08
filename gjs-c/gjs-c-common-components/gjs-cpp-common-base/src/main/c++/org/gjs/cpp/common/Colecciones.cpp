@@ -1,6 +1,8 @@
 #include "BaseConfig.h"
 #include "Colecciones.h"
 
+using namespace std;
+
 
 namespace org
 {

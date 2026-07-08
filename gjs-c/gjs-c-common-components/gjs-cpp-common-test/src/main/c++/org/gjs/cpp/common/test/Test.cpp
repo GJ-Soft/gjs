@@ -6,6 +6,7 @@
 
 
 
+using namespace std;
 using namespace org::gjs::cpp::common::log;
 using namespace org::gjs::cpp::common;
 
@@ -57,7 +58,7 @@ Test::Test ( const string & sNombre, PROCEDIMIENTO procInicializar, PROCEDIMIENT
 	InicializarEntorno();
 }
 
-Test::~Test()
+Test::~Test ()
 {
 	for ( CasoTest * caso : listCasos )
 	{
@@ -74,7 +75,7 @@ void Test::Inicializar()
 	sDirInicial = DirectorioActual();
 	if ( procInicializarTest != NULL )
 	{
-		procInicializarTest();
+		procInicializarTest ();
 	}
 }
 
@@ -82,7 +83,7 @@ void Test::Finalizar()
 {
 	if ( procFinalizarTest != NULL )
 	{
-		procFinalizarTest();
+		procFinalizarTest ();
 	}
 	EstablecerDirectorio( sDirInicial );
 	_LiberarContexto();
@@ -94,7 +95,7 @@ void Test::InicializarCaso( const string & sId )
 {
 	if ( procInicializarCasoTest != NULL )
 	{
-		procInicializarCasoTest( sId );
+		procInicializarCasoTest ( sId );
 	}
 }
 
@@ -102,13 +103,13 @@ void Test::FinalizarCaso( const string & sId )
 {
 	if ( procFinalizarCasoTest != NULL )
 	{
-		procFinalizarCasoTest( sId );
+		procFinalizarCasoTest ( sId );
 	}
 }
 
 void Test::NuevoCaso( const string & sNombre, FUNCION_BOOL funcion )
 {
-	listCasos.push_back( new CasoTest( sNombre, funcion ) );
+	listCasos.push_back( new CasoTest ( sNombre, funcion ) );
 }
 
 void Test::NuevoCasoAislado( const string & sNombre, FUNCION_BOOL funcion, int iCodigoEsperado )
@@ -181,6 +182,7 @@ bool Test::Ejecutar()
 	}
 	LogInfo ( "" );
 	bResultado = bRes;
+	fflush ( stdout );
 	return( bRes );
 }		
 

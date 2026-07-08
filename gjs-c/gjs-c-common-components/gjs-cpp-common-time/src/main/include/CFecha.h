@@ -16,8 +16,8 @@
 #ifndef _ORG_GJS_C_CC_CPP_CFECHA_H
 #define _ORG_GJS_C_CC_CPP_CFECHA_H
 
-using namespace std;
 
+#include <string>
 #include <chrono>
 
 
@@ -35,29 +35,29 @@ namespace org
 class CFecha
 {
 private:
-     chrono::year_month_day ymdFecha;
+     std::chrono::year_month_day ymdFecha;
 
 public:
 	CFecha ();
 	CFecha ( long lValor );
-	CFecha ( const string & sValor );
+	CFecha ( const std::string & sValor );
 	CFecha ( int iA, int iM, int iD );
-	CFecha ( const chrono::year_month_day & ymd );
-	CFecha ( const chrono::year & y, const chrono::month & m, const chrono::day & d );
+	CFecha ( const std::chrono::year_month_day & ymd );
+	CFecha ( const std::chrono::year & y, const std::chrono::month & m, const std::chrono::day & d );
 	~CFecha();
 
 	void Establecer ( long lValor );
-	void Establecer ( const string & sValor );
+	void Establecer ( const std::string & sValor );
 	void Establecer ( int iA, int iM, int iD );
-	void Establecer ( const chrono::year_month_day & ymd );
-	void Establecer ( const chrono::year & y, const chrono::month & m, const chrono::day & d );
+	void Establecer ( const std::chrono::year_month_day & ymd );
+	void Establecer ( const std::chrono::year & y, const std::chrono::month & m, const std::chrono::day & d );
 
 	bool EsValida ();
 
 	long Valor ();
 	time_t ValorTiempo ();
-	string * ValorCadena ();
-	string * Cadena ( const string & formato );
+	std::string * ValorCadena ();
+	std::string * Cadena ( const std::string & formato );
 
 	int AAAA ();
 	int MM ();
@@ -73,24 +73,24 @@ public:
 	bool EsMenor ( CFecha * p_fecValor );
 	bool EsMayor ( CFecha * p_fecValor );
 	bool EsDiferente ( CFecha * p_fecValor );
-	bool EsIgual ( const string & sValor );
-	bool EsMenor ( const string & sValor );
-	bool EsMayor ( const string & sValor );
-	bool EsDiferente ( const string & sValor );
+	bool EsIgual ( const std::string & sValor );
+	bool EsMenor ( const std::string & sValor );
+	bool EsMayor ( const std::string & sValor );
+	bool EsDiferente ( const std::string & sValor );
 	bool EsIgual ( long lValor );
 	bool EsMenor ( long lValor );
 	bool EsMayor ( long lValor );
 	bool EsDiferente ( long lValor );
-	bool EsIgual ( const chrono::year_month_day & ymd  );
-	bool EsMenor ( const chrono::year_month_day & ymd  );
-	bool EsMayor ( const chrono::year_month_day & ymd  );
-	bool EsDiferente ( const chrono::year_month_day & ymd  );
+	bool EsIgual ( const std::chrono::year_month_day & ymd  );
+	bool EsMenor ( const std::chrono::year_month_day & ymd  );
+	bool EsMayor ( const std::chrono::year_month_day & ymd  );
+	bool EsDiferente ( const std::chrono::year_month_day & ymd  );
 
 	long Diferencia ( CFecha & fecValor );
 	long Diferencia ( CFecha * p_fecValor );
-	long Diferencia ( const string & sValor );
+	long Diferencia ( const std::string & sValor );
 	long Diferencia ( long lValor );
-	long Diferencia ( const chrono::year_month_day & ymd );
+	long Diferencia ( const std::chrono::year_month_day & ymd );
 
 public:
 	bool operator == ( CFecha & fecValor );
@@ -105,30 +105,30 @@ public:
 	bool operator >= ( CFecha * p_fecValor );
 	bool operator < ( CFecha * p_fecValor );
 	bool operator <= ( CFecha * p_fecValor );
-	bool operator == ( const string & sValor );
-	bool operator != ( const string & sValor );
-	bool operator > ( const string & sValor );
-	bool operator >= ( const string & sValor );
-	bool operator < ( const string & sValor );
-	bool operator <= ( const string & sValor );
+	bool operator == ( const std::string & sValor );
+	bool operator != ( const std::string & sValor );
+	bool operator > ( const std::string & sValor );
+	bool operator >= ( const std::string & sValor );
+	bool operator < ( const std::string & sValor );
+	bool operator <= ( const std::string & sValor );
 	bool operator == ( long lValor );
 	bool operator != ( long lValor );
 	bool operator > ( long lValor );
 	bool operator >= ( long lValor );
 	bool operator < ( long lValor );
 	bool operator <= ( long lValor );
-	bool operator == ( const chrono::year_month_day & ymd );
-	bool operator != ( const chrono::year_month_day & ymd );
-	bool operator > ( const chrono::year_month_day & ymd );
-	bool operator >= ( const chrono::year_month_day & ymd );
-	bool operator < ( const chrono::year_month_day & ymd );
-	bool operator <= ( const chrono::year_month_day & ymd );
+	bool operator == ( const std::chrono::year_month_day & ymd );
+	bool operator != ( const std::chrono::year_month_day & ymd );
+	bool operator > ( const std::chrono::year_month_day & ymd );
+	bool operator >= ( const std::chrono::year_month_day & ymd );
+	bool operator < ( const std::chrono::year_month_day & ymd );
+	bool operator <= ( const std::chrono::year_month_day & ymd );
 
 	long operator - ( CFecha & fecValor );
 	long operator - ( CFecha * p_fecValor );
-	long operator - ( const string & sValor );
+	long operator - ( const std::string & sValor );
 	long operator - ( long lValor );
-	long operator - ( const chrono::year_month_day & ymd );
+	long operator - ( const std::chrono::year_month_day & ymd );
 
 };
 

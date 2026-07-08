@@ -2,12 +2,12 @@
 #define _ORG_GJS_C_CC_CPP_COMANDO_IETF_H
 
 
+#include <initializer_list>
 
 #include <Comando.h>
 #include <CodigosIETF.h>
 
 
-using namespace std;
 
 
 namespace org
@@ -24,11 +24,11 @@ namespace org
 			{
 			public:
 				ComandoIETF();
-				ComandoIETF( const string & _sComando, const initializer_list<string> & lisArgumentos );
-				ComandoIETF( const string & sExpresion );
+				ComandoIETF( const std::string & _sComando, const std::initializer_list<std::string> & lisArgumentos );
+				ComandoIETF( const std::string & sExpresion );
 				virtual ~ComandoIETF();
 
-				virtual string toString();
+				virtual std::string toString();
 			};
 
  			}

@@ -19,6 +19,7 @@
 #define _ORG_GJS_C_CC_SISTEMA_H
 
 
+#include <BaseConfig.h>
 
 #include <SistemaTiposErrores.h>
 #include <SistemaErrores.h>
@@ -35,7 +36,6 @@
 #include <SistemaLibrerias.h>
 #include <SistemaMemoria.h>
 #include <SistemaRed.h>
-#include <SistemaEstado.h>
 #include <SistemaComandos.h>
 #include <SistemaSincronizacion.h>
 #include <SistemaSignals.h>
@@ -51,16 +51,9 @@
 #include <SMutex.h>
 #include <SRelojProgramable.h>
 #include <STemporizador.h>
-
-
-/*
-PENDIENTES
-#include <SDirectorio.h>
-#include <SEntradaDirectorio.h>
-#include <SSistemaFicheros.h>
-#include <SErrorSistema.h>
 #include <SProceso.h>
-*/
+
+
 
 
 #if ( defined ( WIN ) )
@@ -69,17 +62,19 @@ PENDIENTES
 
 #include <SistemaImpresoras.h>
 
-
+#if ( defined ( SIGNALS_PERMITIDOS ) )
 typedef void (*SIGNAL_HANDLER)(int);
-
+#endif
 
 void SisInicializar ();
 void SisInicializarExt ( const char * p_cNomProceso, const char * p_cDirTemporal );
 void SisFinalizar ();
 
+#if ( defined ( SIGNALS_PERMITIDOS ) )
 void SisEstablecerManejadorInterrupciones ( SIGNAL_HANDLER fManejador );
 void SisEstablecerManejadorInterrupcionesDefecto ();
 void SisLimpiarManejadorInterrupciones ();
+#endif
 
 
 #endif

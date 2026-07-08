@@ -22,6 +22,7 @@
 		<module>pyz-maven-extension</module>
 		<module>gz-maven-extension</module>
 		<module>whl-maven-extension</module>
+		<module>profile-activator-maven-extension</module>
     </modules>
     
  </project>
