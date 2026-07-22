@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                             SistemaComandos.h                              */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  Sistema                                                         */
-/* Versi髇:   3.0.0                                                           */
+/* Librer铆a:  Sistema                                                         */
+/* Versi贸n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de cabecera que contiene la definici髇 de algunas rutinas de       */
-/* para la ejecuci髇 directa de comandos y programas externos.                */
+/* Descripci贸n:                                                               */
+/* Fichero de cabecera que contiene la definici贸n de algunas rutinas de       */
+/* para la ejecuci贸n directa de comandos y programas externos.                */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

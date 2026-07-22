@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                                CMensajes.h                                 */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  Aplicacion                                                      */
-/* Versi髇:   3.0.0                                                           */
+/* Librer铆a:  Aplicacion                                                      */
+/* Versi贸n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de cabecera que contiene la definici髇 de la clase de datos        */
+/* Descripci贸n:                                                               */
+/* Fichero de cabecera que contiene la definici贸n de la clase de datos        */
 /* CMensajes, destinada a almacenar una lista de mensajes o literales que     */
-/* utiliza una librer韆 o aplicaci髇.                                         */
+/* utiliza una librer铆a o aplicaci贸n.                                         */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -18,7 +18,7 @@
 #define _ORG_GJS_C_CC_CPP_CMENSAJES_H
 
 
-// PENDIENTE: Utilizar CIdioma, y a馻dir funcionalidad multiidioma.
+// PENDIENTE: Utilizar CIdioma, y a帽adir funcionalidad multiidioma.
 
 #include <string>
 #include <map>

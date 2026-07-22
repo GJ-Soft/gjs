@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                Versiones.h                                 */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GBase                                                           */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GBase                                                           */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
+/* Descripci贸n:                                                               */
 /* Fichero de cabecera que contiene constantes y rutinas para manejar las     */
-/* cadenas de informaci髇 de versiones.                                       */
+/* cadenas de informaci贸n de versiones.                                       */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -22,7 +22,7 @@
 
 
 
-/* Patrones/m醩caras de los diferentes tipos de cadenas de versi髇: */
+/* Patrones/m谩scaras de los diferentes tipos de cadenas de versi贸n: */
 #define VERS_PAT_1	"%d"
 #define VERS_PAT_2	"%d.%d"
 #define VERS_PAT_3	"%d.%d.%d"

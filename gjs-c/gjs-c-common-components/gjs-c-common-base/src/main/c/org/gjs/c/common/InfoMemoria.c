@@ -1,17 +1,17 @@
 /******************************************************************************/
 /*                              InfoMemoria.cpp                               */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GBase                                                           */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GBase                                                           */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cÛdigo fuente que contiene la implementaciÛn de las rutinas     */
-/* de consulta de la memoria din·mica reservada utilizando MemReservar, o     */
+/* Descripci√≥n:                                                               */
+/* Fichero de c√≥digo fuente que contiene la implementaci√≥n de las rutinas     */
+/* de consulta de la memoria din√°mica reservada utilizando MemReservar, o     */
 /* mediante objetos de clases que hereden de CClase.                          */
-/* TambiÈn contiene rutinas para actualizar los contadores internos, que      */
-/* son internas de la librerÌa y no deben conocerse desde fuera.              */
+/* Tambi√©n contiene rutinas para actualizar los contadores internos, que      */
+/* son internas de la librer√≠a y no deben conocerse desde fuera.              */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -96,7 +96,7 @@ void _MemBloqueReservado ( void * p_vDir, unsigned long ulTam )
 	printf ( "  { Reservado bloque memoria. Dir=%X Tam=%lu }\n", (unsigned int) p_vDir, ulTam ); 
 	//fprintf ( stdout, "  { Reservado bloque memoria. Dir=%X Tam=%lu }\n", (unsigned int) p_vDir, ulTam ); 
 	_GesMemReservar ( p_vDir, ulTam );
-	// Poner aquÌ las direcciones crÌticas que se quieran seguir:
+	// Poner aqu√≠ las direcciones cr√≠ticas que se quieran seguir:
 	/*
 	if ( ( ( (unsigned int) p_vDir == 0x14B820 ) && ( ulTam == 36 ) ) ||
 		 ( ( (unsigned int) p_vDir == 0x148288 ) && ( ulTam == 20 ) ) ||

@@ -1,15 +1,15 @@
 /***************************************************************************/
 /*                         SGeneradorIdAdap.h                              */
 /*-------------------------------------------------------------------------*/
-/* Librer韆: TiposDatos                                                    */
-/* Versi髇:  1.1.0                                                         */
+/* Librer铆a: TiposDatos                                                    */
+/* Versi贸n:  1.1.0                                                         */
 /* Fecha:    24/10/2006                                                    */
-/* Autor:    Gin閟 Jim閚ez S醤chez                                         */
+/* Autor:    Gin茅s Jim茅nez S谩nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci髇:                                                            */
-/* Fichero de cabecera que contiene la definici髇 de la clase de datos     */
-/* SGeneradorIdAdap, destinada a gestionar la producci髇 de identificadores*/
-/* 鷑icos dentro de una aplicaci髇.                                        */
+/* Descripci贸n:                                                            */
+/* Fichero de cabecera que contiene la definici贸n de la clase de datos     */
+/* SGeneradorIdAdap, destinada a gestionar la producci贸n de identificadores*/
+/* 煤nicos dentro de una aplicaci贸n.                                        */
 /*-------------------------------------------------------------------------*/
 /***************************************************************************/
 

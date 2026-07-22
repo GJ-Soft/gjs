@@ -1,15 +1,15 @@
 /***************************************************************************/
 /*                        AplicacionInformacion.cpp                        */
 /*-------------------------------------------------------------------------*/
-/* Librer韆: Aplicacion                                                    */
-/* Versi髇:  2.0.0                                                         */
+/* Librer铆a: Aplicacion                                                    */
+/* Versi贸n:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Gin閟 Jim閚ez S醤chez                                         */
+/* Autor:    Gin茅s Jim茅nez S谩nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci髇:                                                            */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de algunas      */
+/* Descripci贸n:                                                            */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de algunas      */
 /* rutinas para inicializar y consultar algunas variables globales que     */
-/* contendr醤 informaci髇 general acerca de una librer韆 o aplicaci髇.     */
+/* contendr谩n informaci贸n general acerca de una librer铆a o aplicaci贸n.     */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
 /***************************************************************************/
@@ -32,13 +32,13 @@
 // PID del proceso:
 static long							g_lAplicPID = -1;
 
-// Nombre de la aplicaci髇:
+// Nombre de la aplicaci贸n:
 static char *						g_p_cAplicNombre = NULL; 
 
-// Informaci髇 de la versi髇:
+// Informaci贸n de la versi贸n:
 static SVersion *					g_p_verAplicInfo = NULL; 
 
-// Control de inicializaci髇:
+// Control de inicializaci贸n:
 static int							g_iAplicInicializada = 0;
 
 
@@ -66,7 +66,7 @@ int AplicInicializar ( const char * p_cNombre, int iVersion, int iSubversion, in
 		// PID:
 		g_lAplicPID = SisPID ();
 
-		// Versi髇:
+		// Versi贸n:
 		if ( ES_NULO ( g_p_verAplicInfo ) )
 		{
 			g_p_verAplicInfo = SVerCrear ( iVersion, iSubversion, iRevision, ulFecha );

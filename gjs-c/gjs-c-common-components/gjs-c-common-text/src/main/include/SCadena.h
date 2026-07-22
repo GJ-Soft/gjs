@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                                 SCadena.h                                  */
 /*----------------------------------------------------------------------------*/
-/* Librería:  GCadenas                                                        */
-/* Versión:   1.0.0                                                           */
+/* LibrerÃ­a:  GCadenas                                                        */
+/* VersiÃ³n:   1.0.0                                                           */
 /* Fecha:     30/06/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de cabecera que contiene la definición de la clase de datos        */
+/* DescripciÃ³n:                                                               */
+/* Fichero de cabecera que contiene la definiciÃ³n de la clase de datos        */
 /* SCadena, destinada a almancenar un dato de tipo cadena y a proveer         */
-/* diferentes operaciones sobre ésta.                                         */
+/* diferentes operaciones sobre Ã©sta.                                         */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

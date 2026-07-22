@@ -1,21 +1,21 @@
 /***************************************************************************/
 /*                         Entorno.cpp                                     */
 /*-------------------------------------------------------------------------*/
-/* LibrerÌa: Entorno                                                       */
-/* VersiÛn:  1.1.0                                                         */
+/* Librer√≠a: Entorno                                                       */
+/* Versi√≥n:  1.1.0                                                         */
 /* Fecha:    25/10/2006                                                    */
-/* Autor:    GinÈs JimÈnez S·nchez                                         */
+/* Autor:    Gin√©s Jim√©nez S√°nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* DescripciÛn:                                                            */
-/* Fichero de cÛdigo fuente que contiene la implementaciÛn de las rutinas  */
-/* de car·cter general de inicializaciÛn del entorno.                      */
+/* Descripci√≥n:                                                            */
+/* Fichero de c√≥digo fuente que contiene la implementaci√≥n de las rutinas  */
+/* de car√°cter general de inicializaci√≥n del entorno.                      */
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este mÛdulo est· extraÌdo de una librerÌa m·s completa creada por el    */
+/* Este m√≥dulo est√° extra√≠do de una librer√≠a m√°s completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, asÌ como cualquier aÒadido o modificaciÛn realizado.   */
-/* Pueden reportar de los mismos enviando un correo electrÛnico a la       */
-/* direcciÛn: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, as√≠ como cualquier a√±adido o modificaci√≥n realizado.   */
+/* Pueden reportar de los mismos enviando un correo electr√≥nico a la       */
+/* direcci√≥n: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 
 #include "CommonConfig.h"

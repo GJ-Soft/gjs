@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                Bits.h                                      */
 /*----------------------------------------------------------------------------*/
-/* Librería:  GBase                                                           */
-/* Versión:   1.0.0                                                           */
+/* LibrerÃ­a:  GBase                                                           */
+/* VersiÃ³n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* DescripciÃ³n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas de      */
-/* carácter general de manejo de mapas de bits.                               */
+/* carÃ¡cter general de manejo de mapas de bits.                               */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -26,14 +26,14 @@
 
 
 
-/* Número de palabras necesarias para almacenar un número determinado de bits.*/
+/* NÃºmero de palabras necesarias para almacenar un nÃºmero determinado de bits.*/
 #define BMP_TAM_NECESARIO( lBits )		(unsigned int)( ( lBits ) / NUM_BITS_PALABRA )
 
 
 #define BMP_FIJO( lBits )				word bmpDatos [ BMP_TAM_NECESARIO( lBits ) ] 
 
 
-/* Valor auxiliar para construir las máscaras. */
+/* Valor auxiliar para construir las mÃ¡scaras. */
 #define BMP_MAS_BASE					x0001
 
 

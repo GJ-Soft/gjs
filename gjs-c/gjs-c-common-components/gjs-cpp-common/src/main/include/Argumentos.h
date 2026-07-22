@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                               CArgumentos.h                                */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  Aplicacion                                                      */
-/* VersiÛn:   3.0.0                                                           */
+/* Librer√≠a:  Aplicacion                                                      */
+/* Versi√≥n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cabecera que contiene la definiciÛn de la clase de datos        */
-/* CArgumentos, destinada a procesar la secuencia de par·metros que recibe    */
-/* un programa desde la lÌnea de comandos.                                    */
+/* Descripci√≥n:                                                               */
+/* Fichero de cabecera que contiene la definici√≥n de la clase de datos        */
+/* CArgumentos, destinada a procesar la secuencia de par√°metros que recibe    */
+/* un programa desde la l√≠nea de comandos.                                    */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

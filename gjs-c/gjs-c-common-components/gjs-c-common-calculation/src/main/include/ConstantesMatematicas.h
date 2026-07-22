@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                          MatematicasConstantes.h                           */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  Calculo                                                         */
-/* VersiÛn:   3.0.0                                                           */
+/* Librer√≠a:  Calculo                                                         */
+/* Versi√≥n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cabecera que contiene la definiciÛn de las principales          */
-/* constantes matem·ticas con diferentes precisiones.                         */
+/* Descripci√≥n:                                                               */
+/* Fichero de cabecera que contiene la definici√≥n de las principales          */
+/* constantes matem√°ticas con diferentes precisiones.                         */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -20,7 +20,7 @@
 
 
 
-/* Constantes numÈricas: */
+/* Constantes num√©ricas: */
 #undef PI
 #undef E
 

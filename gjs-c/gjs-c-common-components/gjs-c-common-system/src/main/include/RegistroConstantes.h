@@ -24,13 +24,13 @@
 #define REG_SEC_LIBRERIAS		"TypeLib"
 #define REG_SEC_CLASES			"CLSID"
 
-/* Claves de la definici髇 de m骴ulo: */
+/* Claves de la definici贸n de m贸dulo: */
 #define REG_CLV_LIB_FICHERO		"Win32"
 #define REG_CLV_LIB_ATRIBUTOS	"Flags"
 #define REG_CLV_LIB_FIC_AYUDA	"HelpDir"
  
 
-/* Claves de la definici髇 clases/interfases por GUID: */
+/* Claves de la definici贸n clases/interfases por GUID: */
 #define REG_CLV_CLS_CAT_IMP		"ImplementedCategories"
 #define REG_CLV_CLS_SERVIDOR	"InprocServer32"
 #define REG_CLV_CLS_PROG_ID		"ProgId"
@@ -40,7 +40,7 @@
 #define REG_CLV_CLS_IND_PROG_ID	"VersionIndependentProgId"
 
 
-/* Claves de la definici髇 clases/interfases por PROGID: */
+/* Claves de la definici贸n clases/interfases por PROGID: */
 #define REG_CLV_CLS_ID			"CLSID"
 #define REG_CLV_VERSION_ACT		"CURVER"
 
@@ -52,13 +52,13 @@
 #define REG_VAL_DEF					""
 
 
-/* Valores m醲imos para las variables auxiliares: */
+/* Valores m谩ximos para las variables auxiliares: */
 #define REG_MAX_TAM_GUID		38
 #define REG_MAX_TAM_CLAVE		63
 #define REG_MAX_TAM_VALOR		1023
 
 
-/* N鷐ero m醲imo de niveles jer醨quicos: */
+/* N煤mero m谩ximo de niveles jer谩rquicos: */
 #define REG_MAX_NIVELES			10
 
 

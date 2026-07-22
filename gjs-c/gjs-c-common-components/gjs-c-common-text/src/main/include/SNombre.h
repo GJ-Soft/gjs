@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                                 SNombre.h                                  */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Texto                                                           */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Texto                                                           */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de cabecera que contiene la definición de la clase de datos        */
+/* DescripciÃ³n:                                                               */
+/* Fichero de cabecera que contiene la definiciÃ³n de la clase de datos        */
 /* SNombre, destinada a gestionar el mantenimiento de una cadena que          */
 /* almacene un dato etiquetado como Nombre.                                   */
 /*----------------------------------------------------------------------------*/

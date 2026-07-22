@@ -1,17 +1,17 @@
 /******************************************************************************/
-/*  APLICACIÓN:  SMCT                                                         */
+/*  APLICACIÃ“N:  SMCT                                                         */
 /*----------------------------------------------------------------------------*/
-/*  MÓDULO:      mt_rc_libs_arbol_b                                           */
+/*  MÃ“DULO:      mt_rc_libs_arbol_b                                           */
 /*----------------------------------------------------------------------------*/
 /*  FICHERO:     mt_rc_libs_arbol_b.h                                         */
 /*----------------------------------------------------------------------------*/
-/*  DESCRIPCIÓN: Fichero de cabecera que contiene la definición de los        */
-/*               constantes de precompilación, las estructuras de datos       */
+/*  DESCRIPCIÃ“N: Fichero de cabecera que contiene la definiciÃ³n de los        */
+/*               constantes de precompilaciÃ³n, las estructuras de datos       */
 /*               y los prototipos de las primitivas que definen el tipo       */
 /*               abstracto de datos TArbolB.                                  */
-/*               Es un árbol balanceado que admite diferentes variantes       */
+/*               Es un Ã¡rbol balanceado que admite diferentes variantes       */
 /*               ( B+, B*, B ) pudiendo variar el alamcenamiento de las       */
-/*               hojas en memoría principal o en disco.                       */
+/*               hojas en memorÃ­a principal o en disco.                       */
 /*----------------------------------------------------------------------------*/
 /*  HISTORIA:    ginesjs - Creado el 06/04/2001                               */
 /******************************************************************************/

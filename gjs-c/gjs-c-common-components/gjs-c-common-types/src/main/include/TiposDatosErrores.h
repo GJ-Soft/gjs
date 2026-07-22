@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                            TiposDatosErrores.h                             */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  TiposDatos                                                      */
-/* Versi髇:   3.0.0                                                           */
+/* Librer铆a:  TiposDatos                                                      */
+/* Versi贸n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de cabecera que contiene la definici髇 de los c骴igos de error     */
+/* Descripci贸n:                                                               */
+/* Fichero de cabecera que contiene la definici贸n de los c贸digos de error     */
 /* de los errores propios de la libreria.                                     */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

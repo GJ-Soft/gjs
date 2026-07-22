@@ -46,31 +46,31 @@
 #define ZNH_EET						ZNH_UTC_2		// Hora de Europa Oriental (N) 
 #define ZNH_CEST					ZNH_UTC_2		// Hora de verano de Europa Central (N) 
 
-#define ZNH_HST						ZNH_UTC_M10		// Hora est·ndar de Hawai y Aleutianas 
-#define ZNH_AKST					ZNH_UTC_M9		// Alaska Standard Time: Tiempo Est·ndar de Alaska (N) 
+#define ZNH_HST						ZNH_UTC_M10		// Hora est√°ndar de Hawai y Aleutianas 
+#define ZNH_AKST					ZNH_UTC_M9		// Alaska Standard Time: Tiempo Est√°ndar de Alaska (N) 
 #define ZNH_HDT						ZNH_UTC_M9		// Hora de verano de las Aleutianas (N) 
-#define ZNH_PST						ZNH_UTC_M8		// Pacific Standard Time: Tiempo Est·ndar del PacÌfico (N) 
+#define ZNH_PST						ZNH_UTC_M8		// Pacific Standard Time: Tiempo Est√°ndar del Pac√≠fico (N) 
 #define ZNH_NW						ZNH_UTC_M8		// Tiempo de la Zona Noroeste (N) 
 #define ZNH_AKDT					ZNH_UTC_M8		// Hora de verano de Alaska (N) 
-#define ZNH_MST						ZNH_UTC_M7		// Mountain Standard Time: Hora Est·ndar de la MontaÒa (N) 
-#define ZNH_PAC						ZNH_UTC_M7		// Tiempo de la Zona PacÌfico (N) 
-#define ZNH_PDT						ZNH_UTC_M7		// Hora de verano del PacÌfico (N) / Hora de verano del Noroeste (N) 
-#define ZNH_CST						ZNH_UTC_M6		// Central Standard Time: Tiempo Est·ndar del Centro (N) 
+#define ZNH_MST						ZNH_UTC_M7		// Mountain Standard Time: Hora Est√°ndar de la Monta√±a (N) 
+#define ZNH_PAC						ZNH_UTC_M7		// Tiempo de la Zona Pac√≠fico (N) 
+#define ZNH_PDT						ZNH_UTC_M7		// Hora de verano del Pac√≠fico (N) / Hora de verano del Noroeste (N) 
+#define ZNH_CST						ZNH_UTC_M6		// Central Standard Time: Tiempo Est√°ndar del Centro (N) 
 #define ZNH_CEN						ZNH_UTC_M6		// Tiempo de la Zona Centro (N) 
-#define ZNH_MDT						ZNH_UTC_M6		// Hora de verano de las MontaÒas (N) / Hora de verano del PacÌfico (N) 
-#define ZNH_SP						ZNH_UTC_M5		// Hora Est·ndar del PacÌfico (S) 
-#define ZNH_EST						ZNH_UTC_M5		// East Standard Time: Tiempo Est·ndar del Este (N) 
+#define ZNH_MDT						ZNH_UTC_M6		// Hora de verano de las Monta√±as (N) / Hora de verano del Pac√≠fico (N) 
+#define ZNH_SP						ZNH_UTC_M5		// Hora Est√°ndar del Pac√≠fico (S) 
+#define ZNH_EST						ZNH_UTC_M5		// East Standard Time: Tiempo Est√°ndar del Este (N) 
 #define ZNH_CDT						ZNH_UTC_M5		// Hora de verano de Centro (N) / Hora de verano del Centro (N) 
-#define ZNH_AST						ZNH_UTC_M4		// Hora est·ndar del Atl·ntico (N) 
+#define ZNH_AST						ZNH_UTC_M4		// Hora est√°ndar del Atl√°ntico (N) 
 #define ZNH_EDT						ZNH_UTC_M4		// Hora de verano del Este (N) 
   
-#define ZNH_NST						(100+ZNH_UTC_M3)// Hora est·ndar de Labrador (UTC-3:30)
+#define ZNH_NST						(100+ZNH_UTC_M3)// Hora est√°ndar de Labrador (UTC-3:30)
 
-#define ZNH_MSK						ZNH_UTC_3		// Hora de Mosc˙ (N) 
-#define ZNH_AWST					ZNH_UTC_8		// Hora est·ndar de Australia Occidental 
-#define ZNH_JST						ZNH_UTC_9		// Hora est·ndar de JapÛn 
-#define ZNH_ACST					(100+ZNH_UTC_9)	// Hora est·ndar de Australia Central (UTC+9:30) 
-#define ZNH_AEST					ZNH_UTC_10		// Hora est·ndar del Este de Australia 
+#define ZNH_MSK						ZNH_UTC_3		// Hora de Mosc√∫ (N) 
+#define ZNH_AWST					ZNH_UTC_8		// Hora est√°ndar de Australia Occidental 
+#define ZNH_JST						ZNH_UTC_9		// Hora est√°ndar de Jap√≥n 
+#define ZNH_ACST					(100+ZNH_UTC_9)	// Hora est√°ndar de Australia Central (UTC+9:30) 
+#define ZNH_AEST					ZNH_UTC_10		// Hora est√°ndar del Este de Australia 
 
 
 

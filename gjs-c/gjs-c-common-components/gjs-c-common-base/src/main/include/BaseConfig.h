@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                                BaseConfig.h                                */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GBase                                                           */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GBase                                                           */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Es el fichero de cabecera de configuraciÛn de la librerÌa que contiene     */
-/* las constantes de pre-compilaciÛn y los ficheros de cabecera externos      */
-/* que necsita la librerÌa.                                                   */
+/* Descripci√≥n:                                                               */
+/* Es el fichero de cabecera de configuraci√≥n de la librer√≠a que contiene     */
+/* las constantes de pre-compilaci√≥n y los ficheros de cabecera externos      */
+/* que necsita la librer√≠a.                                                   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -157,9 +157,9 @@ struct tm
 #include <JuegosCaracteres.h>
 
 
-/* Algunos tipos b·sicos: */
+/* Algunos tipos b√°sicos: */
 
-// Tipo de car·cter que oculta si es wide-char o no:
+// Tipo de car√°cter que oculta si es wide-char o no:
 #include <UniChar.h>
 
 
@@ -250,7 +250,7 @@ typedef byte4	dword;
 #	define LLONG_MAX	_I64_MAX		//9223372036854775807i64
 #	define ULLONG_MAX	_UI64_MAX		
 
-	// PENDIENTE: Ver si est· definido atoll o atoi64
+	// PENDIENTE: Ver si est√° definido atoll o atoi64
 #else
 #	undef LLONG
 #endif
@@ -289,7 +289,7 @@ typedef byte4	dword;
 #define CAD_BASE_TXT_DEMASIADO_LARGO		"(max)"
 
 #define ERR_MAX_TAM_MSJ						1024
-#define ERR_MSJ_OK 							"No se ha producido ning˙n error."
+#define ERR_MSJ_OK 							"No se ha producido ningun error."
 #define ERR_MSJ_DEFECTO						"Se ha producido un error."
 
 

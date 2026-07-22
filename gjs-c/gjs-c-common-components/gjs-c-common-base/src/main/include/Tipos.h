@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                  Tipos.h                                   */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GBase                                                           */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GBase                                                           */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cabecera que contiene la definiciÛn de los diferentes           */
-/* super-tipos de datos, junto con algunas rutinas de validaciÛn, consulta    */
+/* Descripci√≥n:                                                               */
+/* Fichero de cabecera que contiene la definici√≥n de los diferentes           */
+/* super-tipos de datos, junto con algunas rutinas de validaci√≥n, consulta    */
 /* y manejo de los mismos.                                                    */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -26,21 +26,21 @@
 #define TIP_NINGUNO						-1
 #define TIP_DESCONOCIDO					0
 
-/* Tipos b·sicos: */
+/* Tipos b√°sicos: */
 #define TIP_NUMERO						1
 #define TIP_CARACTER					2
 #define TIP_BOOLEANO					3
 #define TIP_BYTE						4
 
-/* Tipos b·sicos de tipo vector : */
+/* Tipos b√°sicos de tipo vector : */
 #define TIP_CADENA						5
 #define TIP_BINARIO						6
 
-/* Tipos b·sicos especiales: */
+/* Tipos b√°sicos especiales: */
 #define TIP_OBJETO						7
 #define TIP_TIEMPO						8
 
-/* Subtipos numÈricos: */
+/* Subtipos num√©ricos: */
 #define TIP_NUMERO_NATURAL				10
 #define TIP_NUMERO_ENTERO				11
 #define TIP_NUMERO_REAL					12

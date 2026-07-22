@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                            CalculoOperaciones.h                            */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  Calculo                                                         */
-/* VersiÛn:   3.0.0                                                           */
+/* Librer√≠a:  Calculo                                                         */
+/* Versi√≥n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
+/* Descripci√≥n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas         */
-/* que implementan algunas funciones sencillas de c·lculo matem·tico.         */
+/* que implementan algunas funciones sencillas de c√°lculo matem√°tico.         */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -64,7 +64,7 @@ double MatArcoSeno ( double dVal, int iCuadrante );
 double MatArcoCoseno ( double dVal, int iCuadrante ); 
 double MatArcoTangenteExt ( double dNum, double dDen, int iEntreMenosPiyPi ); 
 
-// Comparaciones de n˙meros reales con precisiÛn determinada:
+// Comparaciones de n√∫meros reales con precisi√≥n determinada:
 double MatPresicion ();
 void MatEstablecerPresicion ( double dPrecision );
 

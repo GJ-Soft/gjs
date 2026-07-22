@@ -1,13 +1,13 @@
 /***************************************************************************/
 /*                        SGeneradorIdAdap.cpp                             */
 /*-------------------------------------------------------------------------*/
-/* Librer韆: TiposDatos                                                    */
-/* Versi髇:  1.1.0                                                         */
+/* Librer铆a: TiposDatos                                                    */
+/* Versi贸n:  1.1.0                                                         */
 /* Fecha:    24/10/2006                                                    */
-/* Autor:    Gin閟 Jim閚ez S醤chez                                         */
+/* Autor:    Gin茅s Jim茅nez S谩nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci髇:                                                            */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de la clase de  */
+/* Descripci贸n:                                                            */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de la clase de  */
 /* datos SGeneradorIdAdap.                                                 */
 /*-------------------------------------------------------------------------*/
 /***************************************************************************/

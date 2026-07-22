@@ -1,19 +1,19 @@
 /******************************************************************************/
 /*                                 Memoria.h                                  */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GBase                                                           */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GBase                                                           */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
+/* Descripci√≥n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas    */
 /* para reservar, liberar y trabajar con espacios de memoria.                 */
 /*                                                                            */
 /* Trabajo con variables:                                                     */
 /* Para evitar problemas de compatibilidad, se recomienda hacer uso de las    */
 /* rutinas MemReservar y MemLiberar para reservar y liberar espacio de        */
-/* memoria para variables din·micas, manejadas a traves de punteros. No se    */
+/* memoria para variables din√°micas, manejadas a traves de punteros. No se    */
 /* debe utilizar el new y el delete para estas variables, salvo cuando se     */
 /* trate de objetos.                                                          */
 /*----------------------------------------------------------------------------*/

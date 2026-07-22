@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                Errores.cpp                                 */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GBase                                                           */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GBase                                                           */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de las rutinas     */
-/* de gesti髇 del subsistema general de manejo de errores.                    */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de las rutinas     */
+/* de gesti贸n del subsistema general de manejo de errores.                    */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -24,7 +24,7 @@
 
 
 
-/* Descripci髇 de los errores : */
+/* Descripci贸n de los errores : */
 #define ERR_TXT_OK							"No se ha producido ningun error."
 #define ERR_TXT_MEMORIA_INVALIDA			"Direccion de memoria invalida."
 #define ERR_TXT_MEMORIA_INSUFICIENTE		"Memoria insuficiente para realizar la operacion."

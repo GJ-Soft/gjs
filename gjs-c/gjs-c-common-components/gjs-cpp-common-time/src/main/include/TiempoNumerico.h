@@ -1,19 +1,19 @@
 /******************************************************************************/
 /*                              TiempoNumerico.h                              */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Tiempo                                                          */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Tiempo                                                          */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* DescripciÃ³n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas    */
-/* para la transformación de fechas y horas en formato numérico pero que      */
-/* es manejable numéricamente, en otro que sí lo es. Tambien incluyen otras   */
-/* rutinas para operar con fechas, así como algunas de consulta sobre el      */
+/* para la transformaciÃ³n de fechas y horas en formato numÃ©rico pero que      */
+/* es manejable numÃ©ricamente, en otro que sÃ­ lo es. Tambien incluyen otras   */
+/* rutinas para operar con fechas, asÃ­ como algunas de consulta sobre el      */
 /* calendario.                                                                */
-/* El tiempo numéricamente manejable es un valor continuo en segundos o       */
-/* días que han transcurrido desde el primer segundo del año 1 de nuestro     */
+/* El tiempo numÃ©ricamente manejable es un valor continuo en segundos o       */
+/* dÃ­as que han transcurrido desde el primer segundo del aÃ±o 1 de nuestro     */
 /* calendario.                                                                */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

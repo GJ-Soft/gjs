@@ -21,7 +21,7 @@
 
 
 
-/* Parametrizaci髇 de 醨boles B */
+/* Parametrizaci贸n de 谩rboles B */
 #define ARB_B_MIN_ORDEN           		2
 #define ARB_B_MAX_ORDEN           		50
 
@@ -45,13 +45,13 @@
 #define ARB_B_CLAVE_INIC(abcIni)    	 	memset( absInic, 0x0, ARB_B_TAM_CLAVE )
 
 
-/* Macros para c醠cular par醡tros en funci髇 del orden del 醨bol. */
+/* Macros para c谩lcular par谩mtros en funci贸n del orden del 谩rbol. */
 #define ARB_B_MAX_HIJOS_POR_NODO( iOrden )  ( 2 * iOrden )
 
 #define ARB_B_MAX_PTR_POR_NODO        		( ARB_B_MAX_HIJOS_POR_NODO + 1 )
 #define ARB_B_NUM_HOJAS_POR_NODO       		ARB_MAX_HIJOS_POR_NODO    
 
-/* Tipos de 醨boles B. */
+/* Tipos de 谩rboles B. */
 #define ARB_B_TIPO_NORMAL          	0
 #define ARB_B_TIPO_MAS          	1
 #define ARB_B_TIPO_AST          	2
@@ -59,7 +59,7 @@
 #define ARB_B_TIPO_VALIDO( iTipo )     ( ( iTipo == ARB_B_TIPO_NORMAL ) || ( iTipo == ARB_B_TIPO_MAS ) || ( iTipo == ARB_B_TIPO_AST ) )
 
 
-/* Tipo de gesti髇 de posiciones libres en las hojas. */
+/* Tipo de gesti贸n de posiciones libres en las hojas. */
 #define ARB_B_CTL_LIB_NO           0
 #define ARB_B_CTL_LIB_SIG          1
 #define ARB_B_CTL_LIB_ENC          2
@@ -68,7 +68,7 @@
 #define ARB_B_CTL_LIB_VALIDO( iCtl )    ( ( iCtl == ARB_B_CTL_LIB_NO ) || ( iCtl == ARB_B_CTL_LIB_SIG ) || ( iCtl == ARB_B_CTL_LIB_ENC ) || ( iCtl == ARB_B_CTL_LIB_BMP ) ) 
 
 
-/* Tipo de gesti髇 de la ordenaci髇 de los elementos en las hojas. */
+/* Tipo de gesti贸n de la ordenaci贸n de los elementos en las hojas. */
 #define ARB_B_ORDENACION_NO         0
 #define ARB_B_ORDENACION_POS        1
 #define ARB_B_ORDENACION_ENC        2

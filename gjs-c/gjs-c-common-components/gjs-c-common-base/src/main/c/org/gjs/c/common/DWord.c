@@ -1,7 +1,7 @@
 #include "DWord.h"
 
 
-/* Máscaras de obtenciónde los dos words contenidos en un dword: */
+/* MÃ¡scaras de obtenciÃ³nde los dos words contenidos en un dword: */
 #define DWORD_MASC_WORD_SUP		0xFFFF0000
 #define DWORD_MASC_WORD_INF		0x0000FFFF
 

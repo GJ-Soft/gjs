@@ -277,8 +277,8 @@ int SDirCambiarLit ( SDirectorio * p_dirObj, const char * p_cDirectorio )
 
 // PENDIENTE: Probar int fnmatch(const char *_pattern, const char *_string, int _flags);
 // con int  glob(const char *_pattern, int _flags, int (*_errfunc)(const char *_epath, int _eerrno), glob_t *_pglob);
-// para GNU de forma que retorne ordenos alfabéticamente los ficheros: 
-// PENDIENTE2: FindFirstFile no garantiza que estén en orden alfabético, pues depende del
+// para GNU de forma que retorne ordenos alfabÃ©ticamente los ficheros: 
+// PENDIENTE2: FindFirstFile no garantiza que estÃ©n en orden alfabÃ©tico, pues depende del
 // sistema operativo concreto.
 int SDirRefrescar ( SDirectorio * p_dirObj )
 {

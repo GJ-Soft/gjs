@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                             TiempoSistema.cpp                              */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  Tiempo                                                          */
-/* Versi髇:   3.0.0                                                           */
+/* Librer铆a:  Tiempo                                                          */
+/* Versi贸n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de las rutinas     */
-/* generales para la obtenci髇 de la fecha y la hora del sistema.             */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de las rutinas     */
+/* generales para la obtenci贸n de la fecha y la hora del sistema.             */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -140,7 +140,7 @@ long TiempoAhora ()
 	return ( lRes );
 }
 
-// S髄o puede procesar fechas mayores que 0:
+// S贸lo puede procesar fechas mayores que 0:
 double TiempoHoyAhora ()
 {
 	double	dRes;

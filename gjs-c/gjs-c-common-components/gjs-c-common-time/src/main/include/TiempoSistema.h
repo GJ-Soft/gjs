@@ -1,22 +1,22 @@
 /******************************************************************************/
 /*                              TiempoSistema.h                               */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Tiempo                                                          */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Tiempo                                                          */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* DescripciÃ³n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas    */
-/* para la obtención de la fecha y la hora del sistema.                       */
-/* Retornan el tiempo en valor numérico no manejable numéricamente, de las    */
+/* para la obtenciÃ³n de la fecha y la hora del sistema.                       */
+/* Retornan el tiempo en valor numÃ©rico no manejable numÃ©ricamente, de las    */
 /* formas: YYYYMMDD, HHMMDD, YYYYMMDDHHMMDD. Para convertir estos valores     */
-/* en otros manejables numéricamente debe utilizarse las rutinas del módulo   */
+/* en otros manejables numÃ©ricamente debe utilizarse las rutinas del mÃ³dulo   */
 /* TiempoNumerico.                                                            */
-/* Este módulo que debería estar en la librería Sistema, ha sido insertado    */
-/* en esta librería debido a que contiene rutinas necesarias para muchas      */
-/* clases de la librería de TiposDatos que se compila previamente a la        */
-/* librería Sistema.                                                          */
+/* Este mÃ³dulo que deberÃ­a estar en la librerÃ­a Sistema, ha sido insertado    */
+/* en esta librerÃ­a debido a que contiene rutinas necesarias para muchas      */
+/* clases de la librerÃ­a de TiposDatos que se compila previamente a la        */
+/* librerÃ­a Sistema.                                                          */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

@@ -1,15 +1,15 @@
 /***************************************************************************/
 /*                          Conversor.h                                   */
 /*-------------------------------------------------------------------------*/
-/* Librer韆: ClasesBase                                                    */
-/* Versi髇:  2.0.0                                                         */
+/* Librer铆a: ClasesBase                                                    */
+/* Versi贸n:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Gin閟 Jim閚ez S醤chez                                         */
+/* Autor:    Gin茅s Jim茅nez S谩nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci髇:                                                            */
-/* Fichero de cabecera que contiene la definici髇 de la clase de datos     */
-/* Conversor, destinada a gestionar la conversi髇 autom醫ica entre los    */
-/* diferentes tipos de datos b醩icos.                                      */
+/* Descripci贸n:                                                            */
+/* Fichero de cabecera que contiene la definici贸n de la clase de datos     */
+/* Conversor, destinada a gestionar la conversi贸n autom谩tica entre los    */
+/* diferentes tipos de datos b谩sicos.                                      */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
 /***************************************************************************/

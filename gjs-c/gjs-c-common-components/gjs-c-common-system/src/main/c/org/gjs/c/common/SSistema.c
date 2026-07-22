@@ -1163,11 +1163,11 @@ static void SSisInicializar ( SSistema * p_sisObj )
 	}
 	else if ( p_sisObj->lFechaInicial == _SSISTEMA_FEC_INI_IBM )
 	{
-		// Puede ser cualquier cosa (OS/2...) y también hay una version de MAC:
+		// Puede ser cualquier cosa (OS/2...) y tambiÃ©n hay una version de MAC:
 	}
 	else if ( p_sisObj->lFechaInicial == _SSISTEMA_FEC_INI_UNIX )
 	{
-		// También puede ser LINUX, el simulador de DOS de las últminas versiones de WINDOWS
+		// TambiÃ©n puede ser LINUX, el simulador de DOS de las Ãºltminas versiones de WINDOWS
 	}
 
 	if ( iSisDetec == 0 )
@@ -1280,7 +1280,7 @@ static void SSisObtenerOrdenBytes ( SSistema * p_sisObj )
 static void SSisVerificarSubprocesos ( SSistema * p_sisObj )
 {
 # if ( defined ( WIN ) )
-	// No existe algo parecido a un fork, pero suponemos que funciona la creación de subprocesos:
+	// No existe algo parecido a un fork, pero suponemos que funciona la creaciÃ³n de subprocesos:
 	p_sisObj->iAdmiteSubprocesos = 1;
 # else
     pid_t	pidProc;

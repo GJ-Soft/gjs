@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                             SistemaTiempo.cpp                              */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  Sistema                                                         */
-/* Versi髇:   3.0.0                                                           */
+/* Librer铆a:  Sistema                                                         */
+/* Versi贸n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de las rutinas     */
-/* de car醕ter general de manejo de tiempos y temporizaciones.                */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de las rutinas     */
+/* de car谩cter general de manejo de tiempos y temporizaciones.                */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

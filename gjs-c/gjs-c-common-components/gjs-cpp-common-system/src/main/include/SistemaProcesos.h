@@ -1,22 +1,22 @@
 /***************************************************************************/
 /*                        SistemaProcesos.h                                */
 /*-------------------------------------------------------------------------*/
-/* LibrerÌa: Sistema                                                       */
-/* VersiÛn:  1.1.0                                                         */
+/* Librer√≠a: Sistema                                                       */
+/* Versi√≥n:  1.1.0                                                         */
 /* Fecha:    26/10/2006                                                    */
-/* Autor:    GinÈs JimÈnez S·nchez                                         */
+/* Autor:    Gin√©s Jim√©nez S√°nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* DescripciÛn:                                                            */
+/* Descripci√≥n:                                                            */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas de   */
-/* de car·cter general de informaciÛn acerca de los procesos en ejecuciÛn, */
-/* asÌ como algunas rutinas de gestiÛn de los mismos.                      */  
+/* de car√°cter general de informaci√≥n acerca de los procesos en ejecuci√≥n, */
+/* as√≠ como algunas rutinas de gesti√≥n de los mismos.                      */  
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este mÛdulo est· extraÌdo de una librerÌa m·s completa creada por el    */
+/* Este m√≥dulo est√° extra√≠do de una librer√≠a m√°s completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, asÌ como cualquier aÒadido o modificaciÛn realizado.   */
-/* Pueden reportar de los mismos enviando un correo electrÛnico a la       */
-/* direcciÛn: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, as√≠ como cualquier a√±adido o modificaci√≥n realizado.   */
+/* Pueden reportar de los mismos enviando un correo electr√≥nico a la       */
+/* direcci√≥n: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 
 #ifndef _ORG_GJS_C_CC_CPP_SISTEMAPROCESOS_H

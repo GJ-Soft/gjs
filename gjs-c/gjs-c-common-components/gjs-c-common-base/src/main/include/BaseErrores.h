@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                               BaseErrores.h                                */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GBase                                                           */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GBase                                                           */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de cabecera que contiene la definici髇 de los c骴igos de error     */
-/* provocados por la librer韆.                                                */
+/* Descripci贸n:                                                               */
+/* Fichero de cabecera que contiene la definici贸n de los c贸digos de error     */
+/* provocados por la librer铆a.                                                */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -22,7 +22,7 @@
 
 
 
-/* El rango de errores asignado para esta librer韆 es de 0-10: */
+/* El rango de errores asignado para esta librer铆a es de 0-10: */
 #define ERR_OK								0
 #define ERR_MEMORIA_INVALIDA				1
 #define ERR_MEMORIA_INSUFICIENTE			2

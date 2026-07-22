@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                DWord.h                                     */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GBase                                                           */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GBase                                                           */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
+/* Descripci√≥n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas de      */
-/* car·cter general de manejo de palabras de 4 bytes.                         */
+/* car√°cter general de manejo de palabras de 4 bytes.                         */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

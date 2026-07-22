@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                                  ASCII.h                                   */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GTexto                                                          */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GTexto                                                          */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     30/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
+/* Descripci贸n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas de      */
-/* car醕ter general de consulta y conversi髇 de car醕teres en la              */
-/* codificaci髇 ASCII.                                                        */
+/* car谩cter general de consulta y conversi贸n de car谩cteres en la              */
+/* codificaci贸n ASCII.                                                        */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

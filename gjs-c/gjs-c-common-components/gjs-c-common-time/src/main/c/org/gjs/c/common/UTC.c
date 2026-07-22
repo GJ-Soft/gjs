@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                                  UTC.cpp                                   */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  Tiempo                                                          */
-/* Versi髇:   3.0.0                                                           */
+/* Librer铆a:  Tiempo                                                          */
+/* Versi贸n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de las rutinas     */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de las rutinas     */
 /* relativas al sitema horario UTC.                                        *  */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

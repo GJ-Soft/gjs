@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                           CalculoOperaciones.cpp                           */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  Calculo                                                         */
-/* VersiÛn:   3.0.0                                                           */
+/* Librer√≠a:  Calculo                                                         */
+/* Versi√≥n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cÛdigo fuente que contiene la implementaciÛn de las rutinas     */
-/* que implementan algunas funciones sencillas de c·lculo matem·tico.         */
+/* Descripci√≥n:                                                               */
+/* Fichero de c√≥digo fuente que contiene la implementaci√≥n de las rutinas     */
+/* que implementan algunas funciones sencillas de c√°lculo matem√°tico.         */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -891,7 +891,7 @@ double MatDistanciaSuperficieEsfera ( double dRadio, double dLon1, double dLat1,
 	return ( dRes );
 }
 
-// Se aplica las formulas de Gauss teniendo en cuenta un tri·ngulo con un ·ngulo de 90∫:
+// Se aplica las formulas de Gauss teniendo en cuenta un tri√°ngulo con un √°ngulo de 90¬∫:
 double MatHipotenusaSuperficieEsfera ( double dValor1, double dValor2 )
 {
 	return ( MatArcoCoseno ( cos ( fabs ( dValor1 ) ) * cos ( fabs ( dValor2 ) ), 1 ) );
@@ -1013,7 +1013,7 @@ double MatArcoMeridional ( double dSemiejeMayor, double dSemiejeMenor, double dL
 	double dDp;
 	double dEp;
 
-	// Es una aproximaciÛn por los primeros tÈrminos de la serie de Taylor:
+	// Es una aproximaci√≥n por los primeros t√©rminos de la serie de Taylor:
 	dN = MatDiferenciaRelativa ( dSemiejeMayor, dSemiejeMenor );
 	dN2 = MatCuadrado ( dN );
 	dN3 = MatCubo ( dN );

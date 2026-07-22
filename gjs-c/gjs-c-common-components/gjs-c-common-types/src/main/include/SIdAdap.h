@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                                   SIdAdap.h                                */
 /*----------------------------------------------------------------------------*/
-/* Librería:  TiposDatos                                                      */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  TiposDatos                                                      */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de cabecera que contiene la definición de la clase de datos        */
+/* DescripciÃ³n:                                                               */
+/* Fichero de cabecera que contiene la definiciÃ³n de la clase de datos        */
 /* SIdAdap destinada a gestionar el mantenimiento de un valor entero que      */
 /* almacene un dato etiquetado como Id (identificadores).					  */
 /*----------------------------------------------------------------------------*/

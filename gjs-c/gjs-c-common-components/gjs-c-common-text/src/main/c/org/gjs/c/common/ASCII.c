@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                                 ASCII.cpp                                  */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GTexto                                                          */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GTexto                                                          */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     30/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de las rutinas     */
-/* de car醕ter general de consulta y conversi髇 de car醕teres en la           */
-/* codificaci髇 ASCII.                                                        */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de las rutinas     */
+/* de car谩cter general de consulta y conversi贸n de car谩cteres en la           */
+/* codificaci贸n ASCII.                                                        */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

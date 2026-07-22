@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                         CommonConfig.h                                 */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  Commin                                                      */
-/* Versi髇:   3.0.0                                                           */
+/* Librer铆a:  Commin                                                      */
+/* Versi贸n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Es el fichero de cabecera de configuraci髇 de la librer韆 que contiene     */
-/* las constantes de pre-compilaci髇 y los ficheros de cabecera externos      */
-/* que necsita la librer韆.                                                   */
+/* Descripci贸n:                                                               */
+/* Es el fichero de cabecera de configuraci贸n de la librer铆a que contiene     */
+/* las constantes de pre-compilaci贸n y los ficheros de cabecera externos      */
+/* que necsita la librer铆a.                                                   */
 /*----------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                             */
 /******************************************************************************/

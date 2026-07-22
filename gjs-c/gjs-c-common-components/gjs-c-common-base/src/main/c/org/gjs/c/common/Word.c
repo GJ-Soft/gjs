@@ -2,7 +2,7 @@
 
 
 
-/* Máscaras de obtenciónde los dos bytes contenidos en un word: */
+/* MÃ¡scaras de obtenciÃ³nde los dos bytes contenidos en un word: */
 #define WORD_MASC_BYTE_SUP		0xFF00
 #define WORD_MASC_BYTE_INF		0x00FF
 

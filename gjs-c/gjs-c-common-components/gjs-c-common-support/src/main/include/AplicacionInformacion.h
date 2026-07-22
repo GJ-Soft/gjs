@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                          AplicacionInformacion.h                           */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  Aplicacion                                                      */
-/* VersiÛn:   3.0.0                                                           */
+/* Librer√≠a:  Aplicacion                                                      */
+/* Versi√≥n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
+/* Descripci√≥n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas    */
-/* para inicializar y consultar algunas variables globales que contendr·n     */
-/* informaciÛn general acerca de una librerÌa o aplicaciÛn.                   */
+/* para inicializar y consultar algunas variables globales que contendr√°n     */
+/* informaci√≥n general acerca de una librer√≠a o aplicaci√≥n.                   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -23,7 +23,7 @@
 #include <SFecha.h>
 
 
-// Pendeitne aÒadir cadena fecha y info del nombre
+// Pendeitne a√±adir cadena fecha y info del nombre
 
 
 int AplicInicializar ( const char * p_cNombre, int iVersion, int iSubversion, int iRevision, unsigned long ulFecha, int iConsola );

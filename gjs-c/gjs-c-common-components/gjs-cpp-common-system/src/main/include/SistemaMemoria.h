@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                              SistemaMemoria.h                              */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  Sistema                                                         */
-/* VersiÛn:   3.0.0                                                           */
+/* Librer√≠a:  Sistema                                                         */
+/* Versi√≥n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
+/* Descripci√≥n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas de      */
-/* de car·cter general de reserva y liberaciÛn de espacios de memoria.        */
+/* de car√°cter general de reserva y liberaci√≥n de espacios de memoria.        */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

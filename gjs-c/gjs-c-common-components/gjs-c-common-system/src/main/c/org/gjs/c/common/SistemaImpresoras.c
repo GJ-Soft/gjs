@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                           SistemaImpresoras.cpp                            */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  Sistema                                                         */
-/* VersiÛn:   3.0.0                                                           */
+/* Librer√≠a:  Sistema                                                         */
+/* Versi√≥n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cÛdigo fuente que contiene la implementaciÛn de las rutinas     */
-/* de car·cter general de manejo de impresoras.                               */
+/* Descripci√≥n:                                                               */
+/* Fichero de c√≥digo fuente que contiene la implementaci√≥n de las rutinas     */
+/* de car√°cter general de manejo de impresoras.                               */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -46,7 +46,7 @@ int SisImprimir ( const char * p_cTexto )
 	{
 		MemLimpiar ( (void *) &prndlgObj, sizeof ( PRINTDLG ) );
 		prndlgObj.lStructSize = sizeof ( PRINTDLG );
-		// Para que cree el HDC autom·ticamente, se suele aÒadir el flag PD_RETURNDC
+		// Para que cree el HDC autom√°ticamente, se suele a√±adir el flag PD_RETURNDC
 		prndlgObj.Flags = PD_RETURNDC;
 
 		if( PrintDlg ( &prndlgObj ) != 0 )

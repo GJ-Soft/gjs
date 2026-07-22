@@ -1,12 +1,12 @@
 /******************************************************************************/
 /*                               CadenasBase.h                                */
 /*----------------------------------------------------------------------------*/
-/* Librería:  GBase                                                           */
-/* Versión:   1.0.0                                                           */
+/* LibrerÃ­a:  GBase                                                           */
+/* VersiÃ³n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* DescripciÃ³n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas    */
 /* para el manejo general de cadenas.                                         */
 /*----------------------------------------------------------------------------*/

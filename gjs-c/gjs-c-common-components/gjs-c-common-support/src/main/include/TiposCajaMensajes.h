@@ -1,13 +1,13 @@
 /***************************************************************************/
 /*                         TiposCajaMensajes.h                             */
 /*-------------------------------------------------------------------------*/
-/* Librería: CajaMensajes                                                  */
-/* Versión:  2.0.0                                                         */
+/* LibrerÃ­a: CajaMensajes                                                  */
+/* VersiÃ³n:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    GinÃ©s JimÃ©nez SÃ¡nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Fichero de cabecera que contiene la definición de los diferentes tipos  */
+/* DescripciÃ³n:                                                            */
+/* Fichero de cabecera que contiene la definiciÃ³n de los diferentes tipos  */
 /* de caja de mensajes del sistema.                                        */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */

@@ -1,12 +1,12 @@
 /******************************************************************************/
 /*                                Calendario.h                                */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Tiempo                                                          */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Tiempo                                                          */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* DescripciÃ³n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas    */
 /* de consulta sobre el calendario.                                           */
 /*----------------------------------------------------------------------------*/

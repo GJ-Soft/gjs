@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                               TiempoConfig.h                               */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Tiempo                                                          */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Tiempo                                                          */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Es el fichero de cabecera de configuración de la librería que contiene     */
-/* las constantes de pre-compilación y los ficheros de cabecera externos      */
-/* que necsita la librería.                                                   */
+/* DescripciÃ³n:                                                               */
+/* Es el fichero de cabecera de configuraciÃ³n de la librerÃ­a que contiene     */
+/* las constantes de pre-compilaciÃ³n y los ficheros de cabecera externos      */
+/* que necsita la librerÃ­a.                                                   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -37,7 +37,7 @@
 
 
 
-/* Días de la semana: */
+/* DÃ­as de la semana: */
 #define DIA_LUNES								0
 #define DIA_MARTES								1
 #define DIA_MIERCOLES							2
@@ -48,7 +48,7 @@
 
 
 
-// PENDIENTE: Falta el día de menos cada 3300 años.
+// PENDIENTE: Falta el dÃ­a de menos cada 3300 aÃ±os.
 
 //#define _CAL_BISIESTOS_POR_CADA_400			97
 //#define _ES_BISIESTO( iA )				( ( iA % 4 == 0 ) && ( ( iA % 100 == 0 ) || ( iA % 400 == 0 ) ) 

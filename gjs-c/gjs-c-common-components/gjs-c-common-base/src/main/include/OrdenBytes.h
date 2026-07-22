@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                OrdenBytes.h                                */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GBase                                                           */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GBase                                                           */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
+/* Descripci√≥n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas    */
-/* para detectar el orden de bytes en memoria de la m·quina: big endian,      */
+/* para detectar el orden de bytes en memoria de la m√°quina: big endian,      */
 /* little endian o mixto.                                                     */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

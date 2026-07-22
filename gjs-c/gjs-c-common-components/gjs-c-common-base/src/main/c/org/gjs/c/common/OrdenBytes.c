@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                               OrdenBytes.cpp                               */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GBase                                                           */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GBase                                                           */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de las rutinas     */
-/* para detectar el orden de bytes en memoria de la m醧uina: big endian,      */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de las rutinas     */
+/* para detectar el orden de bytes en memoria de la m谩quina: big endian,      */
 /* little endian o mixto.                                                     */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

@@ -27,6 +27,7 @@
 	</description>
 
 	<properties>
+		<gjs.maven.extension.install>true</gjs.maven.extension.install>
 	</properties>
 
 	<build>
@@ -45,7 +46,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<target>
+							<target name="copy-jar-to-maven-libs" if="${gjs.maven.extension.install}">
 								<copy file="${project.build.directory}/${project.build.finalName}.jar"
 									todir="${env.MAVEN_HOME}/lib/ext"
 									overwrite="true"/>

@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                              SistemaTiempo.h                               */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  Sistema                                                         */
-/* VersiÛn:   3.0.0                                                           */
+/* Librer√≠a:  Sistema                                                         */
+/* Versi√≥n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
+/* Descripci√≥n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas de      */
-/* de car·cter general de manejo de tiempos y temporizaciones.       .        */
+/* de car√°cter general de manejo de tiempos y temporizaciones.       .        */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

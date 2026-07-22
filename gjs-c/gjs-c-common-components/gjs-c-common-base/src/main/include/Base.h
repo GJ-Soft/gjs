@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                                   Base.h                                   */
 /*----------------------------------------------------------------------------*/
-/* Librería:  GBase                                                           */
-/* Versión:   1.0.0                                                           */
+/* LibrerÃ­a:  GBase                                                           */
+/* VersiÃ³n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Interfaz de la librería para aplicaciones. Es el fichero de cabecera       */
-/* principal de la librería que hay que incluir en el código de los           */
-/* programas y librerías que la utilicen.                                     */
+/* DescripciÃ³n:                                                               */
+/* Interfaz de la librerÃ­a para aplicaciones. Es el fichero de cabecera       */
+/* principal de la librerÃ­a que hay que incluir en el cÃ³digo de los           */
+/* programas y librerÃ­as que la utilicen.                                     */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

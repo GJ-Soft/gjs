@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                               PaginasCodigos.h                             */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GTexto                                                          */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GTexto                                                          */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     30-06-2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de cabecera que contiene la definici髇 de constantes para las      */
-/* diferentes p醙inas de c骴igo est醤dar existentes.                          */
+/* Descripci贸n:                                                               */
+/* Fichero de cabecera que contiene la definici贸n de constantes para las      */
+/* diferentes p谩ginas de c贸digo est谩ndar existentes.                          */
 /*----------------------------------------------------------------------------*/
 /*                        gines-jimenez@safe-mail.net                         */
 /******************************************************************************/

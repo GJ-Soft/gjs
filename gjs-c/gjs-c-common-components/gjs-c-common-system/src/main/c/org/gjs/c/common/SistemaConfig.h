@@ -1,22 +1,22 @@
 /***************************************************************************/
 /*                           SistemaConfig.h                               */
 /*-------------------------------------------------------------------------*/
-/* LibrerÌa: Sistema                                                       */
-/* VersiÛn:  1.1.0                                                         */
+/* Librer√≠a: Sistema                                                       */
+/* Versi√≥n:  1.1.0                                                         */
 /* Fecha:    26/10/2006                                                    */
-/* Autor:    GinÈs JimÈnez S·nchez                                         */
+/* Autor:    Gin√©s Jim√©nez S√°nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* DescripciÛn:                                                            */
-/* Es el fichero de cabecera de configuraciÛn de la librerÌa que contiene  */
-/* las constantes de pre-compilaciÛn y los ficheros de cabecera externos   */
-/* que necsita la librerÌa.                                                */
+/* Descripci√≥n:                                                            */
+/* Es el fichero de cabecera de configuraci√≥n de la librer√≠a que contiene  */
+/* las constantes de pre-compilaci√≥n y los ficheros de cabecera externos   */
+/* que necsita la librer√≠a.                                                */
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este mÛdulo est· extraÌdo de una librerÌa m·s completa creada por el    */
+/* Este m√≥dulo est√° extra√≠do de una librer√≠a m√°s completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, asÌ como cualquier aÒadido o modificaciÛn realizado.   */
-/* Pueden reportar de los mismos enviando un correo electrÛnico a la       */
-/* direcciÛn: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, as√≠ como cualquier a√±adido o modificaci√≥n realizado.   */
+/* Pueden reportar de los mismos enviando un correo electr√≥nico a la       */
+/* direcci√≥n: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 
 #ifndef _ORG_GJS_C_CC_SISTEMACONFIG_H
@@ -123,7 +123,7 @@
 #endif
 
 // El Kernel32.lib (y otros) junto con los *.h, de VC++ suelen estar obsoletos: algunas funciones hay que obtenerlas
-// din·micamente:
+// din√°micamente:
 #if ( defined ( VC ) ) 
 #	if ( defined ( OpenThread ) )
 #		define OPENTHREAD_INDEFINIDO	

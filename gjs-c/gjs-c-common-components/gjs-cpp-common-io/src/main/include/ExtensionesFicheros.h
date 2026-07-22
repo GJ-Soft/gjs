@@ -1,22 +1,22 @@
 /***************************************************************************/
 /*                        ExtensionesFicheros.h                            */
 /*-------------------------------------------------------------------------*/
-/* LibrerÌa: Sistema                                                       */
-/* VersiÛn:  1.1.0                                                         */
+/* Librer√≠a: Sistema                                                       */
+/* Versi√≥n:  1.1.0                                                         */
 /* Fecha:    26/10/2006                                                    */
-/* Autor:    GinÈs JimÈnez S·nchez                                         */
+/* Autor:    Gin√©s Jim√©nez S√°nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* DescripciÛn:                                                            */
-/* Fichero de cabecera que contiene la definiciÛn de las extensiones de    */
+/* Descripci√≥n:                                                            */
+/* Fichero de cabecera que contiene la definici√≥n de las extensiones de    */
 /* fichero asociadas a los diferentes tipos de archivo existente, o al     */
-/* menos, a los m·s comunes.                                               */
+/* menos, a los m√°s comunes.                                               */
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este mÛdulo est· extraÌdo de una librerÌa m·s completa creada por el    */
+/* Este m√≥dulo est√° extra√≠do de una librer√≠a m√°s completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, asÌ como cualquier aÒadido o modificaciÛn realizado.   */
-/* Pueden reportar de los mismos enviando un correo electrÛnico a la       */
-/* direcciÛn: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, as√≠ como cualquier a√±adido o modificaci√≥n realizado.   */
+/* Pueden reportar de los mismos enviando un correo electr√≥nico a la       */
+/* direcci√≥n: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 
 #ifndef _ORG_GJS_C_CC_EXTENSIONES_FICHEROS_H
@@ -52,7 +52,7 @@
 #define EXT_FIC_LOCALIZACION_SHAPE			"shx"		// Shape entities (AutoCAD)
 #define EXT_FIC_INDICE_SHAPE				"qix" 
 #define EXT_FIC_RASTER_SUN					"ras"		// Sun Rasterfile graphics
-#define EXT_FIC_GEORREF_RASTER_SUN			"rsw"		// Formato especÌfico creado en TelefÛnica I+D 
+#define EXT_FIC_GEORREF_RASTER_SUN			"rsw"		// Formato espec√≠fico creado en Telef√≥nica I+D 
 
 #define EXT_FIC_GZIP			            "gz"		//  Compressed file archive created by GZIP (GNU zip)
 
@@ -64,9 +64,9 @@
 
 #define EXT_FIC_LOG							"log"		// Log file
 
-#define EXT_FIC_INFO_TABLA					"tab"		// Fichero de informaciÛn de tabla de datos.
+#define EXT_FIC_INFO_TABLA					"tab"		// Fichero de informaci√≥n de tabla de datos.
 
-#define EXT_FIC_INFO_SHAPE					"shi"		// Fichero de informaciÛn de un shape.
+#define EXT_FIC_INFO_SHAPE					"shi"		// Fichero de informaci√≥n de un shape.
 
 #define EXT_FIC_GENERADOR_ID				"gid"
 

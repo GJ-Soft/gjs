@@ -74,7 +74,7 @@ int SFicBloqIdEstaVacio ( SFicBloquesIdentificados * p_ficObj );
 byte * SFicBloqIdLeerDatosCabecera ( SFicBloquesIdentificados * p_ficObj );
 int SFicBloqIdEscribirDatosCabecera ( SFicBloquesIdentificados * p_ficObj, byte * p_byCabecera );
 
-// NOTA: ulBloque hace referencia al orden físco del bloque; ulId hace referencia al identificador del bloque.
+// NOTA: ulBloque hace referencia al orden fÃ­sco del bloque; ulId hace referencia al identificador del bloque.
 unsigned long SFicBloqIdLeerId ( SFicBloquesIdentificados * p_ficObj, unsigned long ulBloque );
 int SFicBloqIdExisteId ( SFicBloquesIdentificados * p_ficObj, unsigned long ulId );
 unsigned long SFicBloqIdBloqueId ( SFicBloquesIdentificados * p_ficObj, unsigned long ulId );

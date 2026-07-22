@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                 Errores.h                                  */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GBase                                                           */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GBase                                                           */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
+/* Descripci贸n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de las rutinas de          */
-/* gesti髇 del subsistema general de manejo de errores.                       */
+/* gesti贸n del subsistema general de manejo de errores.                       */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -39,7 +39,7 @@
 
 
 
-/* Rutinas de generaci髇 y consulta de errores producidos: */
+/* Rutinas de generaci贸n y consulta de errores producidos: */
 void ErrEstablecer ( const char * p_cModulo, int iLinea, int iCodigo );
 //void ErrEstablecer ( int iCodigo, const char * p_cDescripcion );
 void ErrEstablecerConFormato ( const char * p_cModulo, int iLinea, int iCodigo, const char * p_cDescripcion, ... );

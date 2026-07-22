@@ -56,7 +56,7 @@ int FecEsMayorIgual ( int iA1, int iM1, int iD1, int iA2, int iM2, int iD2 );
 int FecFormEsMayorIgual ( long lFecha1, long lFecha2 );
 
 
-// En años:
+// En aÃ±os:
 int FecValEsValido ( double dValor );
 double FecObtenerValor ( int iA, int iM, int iD );
 double FecFormObtenerValor ( long lFecha );

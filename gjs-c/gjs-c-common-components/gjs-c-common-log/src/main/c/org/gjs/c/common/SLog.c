@@ -1171,7 +1171,7 @@ void SLogGestionarCambioFichero ( SLog * p_logObj )
 		SLogFinalizar ( p_logObj );
 		SLogGenerarNombreFichero ( p_logObj );
 		SLogIniciar ( p_logObj );
-		SLogAnotarLitForzado ( p_logObj, "(Continuación del fichero anterior)." );
+		SLogAnotarLitForzado ( p_logObj, "(Continuacion del fichero anterior)." );
 		iGestionando = 0;
 	}
 }

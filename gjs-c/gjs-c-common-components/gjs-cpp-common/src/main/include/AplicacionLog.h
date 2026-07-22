@@ -1,15 +1,15 @@
 /***************************************************************************/
 /*                         AplicacionLog.h                                 */
 /*-------------------------------------------------------------------------*/
-/* Librería: Aplicacion                                                    */
-/* Versión:  2.0.0                                                         */
+/* LibrerÃ­a: Aplicacion                                                    */
+/* VersiÃ³n:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    GinÃ©s JimÃ©nez SÃ¡nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
+/* DescripciÃ³n:                                                            */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas */
-/* para inicializar y gestionar el subsistema de "log" de una aplicación o */
-/* librería.                                                               */
+/* para inicializar y gestionar el subsistema de "log" de una aplicaciÃ³n o */
+/* librerÃ­a.                                                               */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
 /***************************************************************************/

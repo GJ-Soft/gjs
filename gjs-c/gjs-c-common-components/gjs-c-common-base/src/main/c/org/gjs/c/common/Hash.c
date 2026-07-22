@@ -51,7 +51,7 @@ unsigned int HashBinario ( byte * p_byVal, int iTam )
 		{
 			int slot = i % iTamHash;
 			byte acc = p_byVal[ i ] ^ h[ slot ];
-			/* mezcla con el slot anterior para difusión entre carriles */
+			/* mezcla con el slot anterior para difusiÃ³n entre carriles */
 			if ( slot > 0 )
 			{
 				acc ^= h[ slot - 1 ];

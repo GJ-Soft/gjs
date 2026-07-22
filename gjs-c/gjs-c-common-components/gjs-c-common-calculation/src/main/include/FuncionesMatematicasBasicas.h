@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                       FuncionesMatematicasBasicas.h                        */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  Calculo                                                         */
-/* VersiÛn:   3.0.0                                                           */
+/* Librer√≠a:  Calculo                                                         */
+/* Versi√≥n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cabecera que contiene la definiciÛn de las operaciones          */
-/* matem·ticas b·sicas: aquellas que vienen implementadas por los             */
-/* operadores del lenguaje o las funciones de sus librerÌas.                  */
+/* Descripci√≥n:                                                               */
+/* Fichero de cabecera que contiene la definici√≥n de las operaciones          */
+/* matem√°ticas b√°sicas: aquellas que vienen implementadas por los             */
+/* operadores del lenguaje o las funciones de sus librer√≠as.                  */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

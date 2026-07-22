@@ -32,5 +32,8 @@
 		version      : ${version}
 
 	</description>
- 
+	
+ 	<properties>
+		<gjs.maven.extension.install>false</gjs.maven.extension.install>
+	</properties>
  </project>

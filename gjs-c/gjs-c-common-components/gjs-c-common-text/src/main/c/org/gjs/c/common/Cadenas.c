@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                Cadenas.cpp                                 */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GTexto                                                          */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GTexto                                                          */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     30/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de las rutinas     */
-/* de car醕ter general de manejo de cadenas.                                  */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de las rutinas     */
+/* de car谩cter general de manejo de cadenas.                                  */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -3591,8 +3591,8 @@ int CadEsIdentificadorValidoExt ( const char * p_cAsciiz, int iMax )
 }
 
 
-/* NOTA: Esta rutina es una estimaci髇. Habr韆 que hacerlo utilizando la codificaci髇 interna
-   de representaci髇 de tipos */
+/* NOTA: Esta rutina es una estimaci贸n. Habr铆a que hacerlo utilizando la codificaci贸n interna
+   de representaci贸n de tipos */
 static int _EsCadenaValida ( char * p_cCad )
 {
 	int		iPos;

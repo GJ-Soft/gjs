@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                              Finalizacion.cpp                              */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GBase                                                           */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GBase                                                           */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de una rutina      */
-/* que implementa la finalizaci髇 forzada por error grave de un programa.     */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de una rutina      */
+/* que implementa la finalizaci贸n forzada por error grave de un programa.     */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -19,8 +19,8 @@
 
 
 
-/* Mensajes de error auxiliares par finalizar la ejecuci髇: */
-#define ERR_GRAVE_TXT_DEFECTO				"La aplicaci髇 no puede continuar."
+/* Mensajes de error auxiliares par finalizar la ejecuci贸n: */
+#define ERR_GRAVE_TXT_DEFECTO				"La aplicacion no puede continuar."
 
 
 

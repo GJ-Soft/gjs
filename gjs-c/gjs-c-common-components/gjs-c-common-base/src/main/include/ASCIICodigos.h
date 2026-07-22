@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                               ASCIICodigos.h                               */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GBase                                                           */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GBase                                                           */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de cabecera que contiene la definici髇 de constantes para los      */
-/* car醕teres del c骴igo ASCII est醤dar, con c骴igos entre o y 127.           */
+/* Descripci贸n:                                                               */
+/* Fichero de cabecera que contiene la definici贸n de constantes para los      */
+/* car谩cteres del c贸digo ASCII est谩ndar, con c贸digos entre o y 127.           */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -18,9 +18,9 @@
 
 
 
-/* C骴igos ASCII est醤dar (0-127): */
+/* C贸digos ASCII est谩ndar (0-127): */
 
-// C骴igos especiales de control:
+// C贸digos especiales de control:
 #define ASCII_NUL   			0
 #define ASCII_SOH    			1
 #define ASCII_STX    			2
@@ -74,7 +74,7 @@
 #define ASCII_COMILLA_DOBLE		34
 
 
-// Signos puntuaci髇:
+// Signos puntuaci贸n:
 #define ASCII_COMA				44
 #define ASCII_PUNTO				46
 #define ASCII_DOS_PUNTOS		58
@@ -89,7 +89,7 @@
 
 
 
-// Signos aritm閠icos:
+// Signos aritm茅ticos:
 #define ASCII_MAS				43
 #define ASCII_COMA				44
 #define ASCII_MENOS				45
@@ -97,7 +97,7 @@
 #define ASCII_PRODUCTO			42
 
 
-// Signos comparaci髇:
+// Signos comparaci贸n:
 #define ASCII_IGUAL  			61
 #define ASCII_MENOR				60
 #define ASCII_MAYOR 			62
@@ -119,7 +119,7 @@
 #define ASCII_DOLAR				36
 
 
-// D韌itos decimales:
+// D铆gitos decimales:
 #define ASCII_0					48
 #define ASCII_1      			49
 #define ASCII_2      			50
@@ -132,7 +132,7 @@
 #define ASCII_9      			57
 
 
-// Letras may鷖culas:
+// Letras may煤sculas:
 #define ASCII_A_MAY				65
 #define ASCII_B_MAY	  			66
 #define ASCII_C_MAY  			67
@@ -162,7 +162,7 @@
 
 
 
-// Letras min鷖culas:
+// Letras min煤sculas:
 #define ASCII_A_MIN  			97
 #define ASCII_B_MIN  			98
 #define ASCII_C_MIN  			99

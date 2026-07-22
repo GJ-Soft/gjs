@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                           ConversionesTipos.cpp                            */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GBase                                                           */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GBase                                                           */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de las rutinas     */
-/* generales de conversi髇 entre tipos de datos b醩icos.                      */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de las rutinas     */
+/* generales de conversi贸n entre tipos de datos b谩sicos.                      */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -21,7 +21,7 @@
 #include "Numeros.h"
 
 
-// PENDIENTE: Al convertir desde cadena asegurarse de que el n鷐ero de d韌itos no sobrepasa el m醲imo.
+// PENDIENTE: Al convertir desde cadena asegurarse de que el n煤mero de d铆gitos no sobrepasa el m谩ximo.
 
 
 char ConvDigitoACaracter ( int iDigito )

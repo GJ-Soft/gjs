@@ -84,7 +84,7 @@ int SMtxEsValido ( SMutex * p_mtxObj )
 #	  if ( defined ( WIN ) )
 		if ( ES_VALIDO ( p_mtxObj->hMutex ) )
 #	  elif ( defined ( POSIX ) )
-		// NOTA: Es una dirección de un espacio reservado del sistema:
+		// NOTA: Es una direcciÃ³n de un espacio reservado del sistema:
 		if ( p_mtxObj->p_semMutex != NULL )
 #	 else
 		if ( p_mtxObj->iMutex >= 0 )

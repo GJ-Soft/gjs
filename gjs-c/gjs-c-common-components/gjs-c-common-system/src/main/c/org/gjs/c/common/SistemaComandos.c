@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                            SistemaComandos.cpp                             */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Sistema                                                         */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Sistema                                                         */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de la algunas      */
-/* rutinas para el ejecución directa de comandos y programas externos.        */
+/* DescripciÃ³n:                                                               */
+/* Fichero de cÃ³digo fuente que contiene la implementaciÃ³n de la algunas      */
+/* rutinas para el ejecuciÃ³n directa de comandos y programas externos.        */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -22,7 +22,7 @@
 
 
 
-//NOTA: El para´me, int iSegundoPlano s´polo sirve poara unix
+//NOTA: El paraÂ´me, int iSegundoPlano sÂ´polo sirve poara unix
 
 int SisEjecutarComando ( const char * p_cComando, const char * p_cParametros, int iSegundoPlano )
 {
@@ -43,7 +43,7 @@ int SisEjecutarComando ( const char * p_cComando, const char * p_cParametros, in
 #	  else
 		hwndProceso = GetForegroundWindow ();
 #	  endif
-		// PENDIENTE: Mejorar separando el directorio del programa y de los parámetros:
+		// PENDIENTE: Mejorar separando el directorio del programa y de los parÃ¡metros:
 		//hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, NULL, NULL, SW_SHOW );
 		//hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, p_cParametros, NULL, SW_SHOW );
 		hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, p_cParametros, NULL, SW_HIDE );
@@ -130,22 +130,22 @@ int SisEjecutarComando ( const char * p_cComando, const char * p_cParametros, in
 				{
 					SisEsperar ( 1000 );
 				}
-				// Comprobamos si el comando terminó correctamente
+				// Comprobamos si el comando terminÃ³ correctamente
 				if ( WIFEXITED ( iResSys ) )
 				{
 					int iCodigoSalida = WEXITSTATUS ( iResSys );
 					if ( iCodigoSalida == 0 )
 					{
-						iRes = 1; // El comando se ejecutó y devolvió ÉXITO (0)
+						iRes = 1; // El comando se ejecutÃ³ y devolviÃ³ Ã‰XITO (0)
 					}
 					else
 					{
-						iRes = 0; // El comando se ejecutó pero devolvió un código de ERROR (ej. 1, 2, 5...)
+						iRes = 0; // El comando se ejecutÃ³ pero devolviÃ³ un cÃ³digo de ERROR (ej. 1, 2, 5...)
 					}
 				}
 				else
 				{
-					iRes = 0; // El proceso no terminó normalmente (ej. fue matado por una señal)
+					iRes = 0; // El proceso no terminÃ³ normalmente (ej. fue matado por una seÃ±al)
 				}
 			}
 		}

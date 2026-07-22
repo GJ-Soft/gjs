@@ -39,7 +39,7 @@ int FecRestar ( int * p_iA, int * p_iM, int * p_iD, int iA, int iM, int iD );
 long FecFormSumar ( long lFecha1, long lFecha2 );
 long FecFormRestar ( long lFecha1, long lFecha2 );
 
-// En años:
+// En aÃ±os:
 bool FecValEsValido ( double dValor );
 double FecObtenerValor ( int iA, int iM, int iD );
 double FecFormObtenerValor ( long lFecha );

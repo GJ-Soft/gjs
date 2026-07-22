@@ -91,7 +91,7 @@
 
 
 
-// Errores específicos:
+// Errores especÃ­ficos:
 #define ERR_FIC_ESCRIBIR					400
 
 

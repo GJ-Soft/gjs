@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                 Angulos.h                                  */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Calculo                                                         */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Calculo                                                         */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* DescripciÃ³n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas         */
-/* que implementan algunas funciones sencillas de manejo de ángulos.          */
+/* que implementan algunas funciones sencillas de manejo de Ã¡ngulos.          */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

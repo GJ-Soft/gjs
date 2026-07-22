@@ -1,24 +1,24 @@
 /******************************************************************************/
 /*                              Precompilacion.h                              */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GBase                                                           */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GBase                                                           */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Es el fichero de cabecera de configuraciÛn de la librerÌa que normaliza    */
-/* las constantes de pre-compilaciÛn b·sicas para determinar el tipo de       */
-/* compilaciÛn a realizar.                                                    */
-/* El sistema de constantes de pre-compilaciÛn es el siguiente:               */
+/* Descripci√≥n:                                                               */
+/* Es el fichero de cabecera de configuraci√≥n de la librer√≠a que normaliza    */
+/* las constantes de pre-compilaci√≥n b√°sicas para determinar el tipo de       */
+/* compilaci√≥n a realizar.                                                    */
+/* El sistema de constantes de pre-compilaci√≥n es el siguiente:               */
 /*                                                                            */
-/*  Nivel M·quina:          A64 | A32 | A16 | A8                              */
+/*  Nivel M√°quina:          A64 | A32 | A16 | A8                              */
 /*  Nivel Sistema/Entorno:  POSIX | WIN                                       */
 /*							CYGWIN (adicional)                                */
 /*  Nivel Compilador:       GNU | CC | VC				                      */
 /*  Estilo:  				POSIX | WIN                                       */
 /*                                                                            */
-/*  DepuraciÛn:             MODO_DEPURACION                                   */
+/*  Depuraci√≥n:             MODO_DEPURACION                                   */
 /*                          MODO_DEPURACION, MODO_DEPURACION_2                */
 /*                                                                            */
 /*  Errores:                ALM_ERRORES                                       */
@@ -44,7 +44,7 @@
 #	define WIN
 #endif
 
-/* AquÌ se decide si para CYGWIN se usa estilo POSIX o Windos: */
+/* Aqu√≠ se decide si para CYGWIN se usa estilo POSIX o Windos: */
 #if ( defined ( CYGWIN ) )
 #	if ( defined ( CYGWIN_WIN ) )
 #		define WIN
@@ -67,7 +67,7 @@
 #elif ( INTPTR_MAX == INT8_MAX )
 #	define A8
 #else
-#	error TamaÒo de puntero no soportado
+#	error Tama√±o de puntero no soportado
 #endif
 
 
@@ -75,7 +75,7 @@
 /* Por defecto se considera que se compila con GNU: */
 #if ( !defined ( GNU ) && !defined ( CC ) && !defined ( VC ) )
 #	define	GNU
-#else // Para CC sÛlo se permite UNIX y para VC sÛlo se permite WIN:
+#else // Para CC s√≥lo se permite UNIX y para VC s√≥lo se permite WIN:
 #	if ( defined ( CC ) )
 #		undef CYGWIN
 #		undef WIN
@@ -90,7 +90,7 @@
 
 
 
-/* VersiÛn de Windows a utilizar: se fuerza a que la versiÛn sea como mÌnimo la 5.0: */
+/* Versi√≥n de Windows a utilizar: se fuerza a que la versi√≥n sea como m√≠nimo la 5.0: */
 #if ( defined ( WIN ) )
 #	if ( defined ( WINVER ) )
 #		if ( WINVER < 0x0500 )
@@ -111,7 +111,7 @@
 #endif
 
 
-/* Modos de depuraciÛn: */
+/* Modos de depuraci√≥n: */
 #if ( defined ( MODO_DEPURACION_2 ) )
 #	if ( !defined ( MODO_DEPURACION ) )
 #		define MODO_DEPURACION

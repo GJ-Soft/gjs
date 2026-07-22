@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                Numeros.cpp                                 */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GBase                                                           */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GBase                                                           */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cÛdigo fuente que contiene la implementaciÛn de las rutinas     */
-/* de car·cter general de manejo de los formatos numÈricos de la m·quina.     */
+/* Descripci√≥n:                                                               */
+/* Fichero de c√≥digo fuente que contiene la implementaci√≥n de las rutinas     */
+/* de car√°cter general de manejo de los formatos num√©ricos de la m√°quina.     */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

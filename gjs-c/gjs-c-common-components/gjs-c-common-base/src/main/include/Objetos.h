@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                                 Objetos.h                                  */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GBase                                                           */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GBase                                                           */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cabecera que contiene la defibiciÛn de macros para crear y      */
+/* Descripci√≥n:                                                               */
+/* Fichero de cabecera que contiene la defibici√≥n de macros para crear y      */
 /* destruir objetos, que sustituyen en new y el delete por operaciones        */
 /* equivalentes cuando no se compila para C++ (sin la constante CPP).         */
 /*----------------------------------------------------------------------------*/
@@ -20,13 +20,13 @@
 
 
 
-// NOTA: Con VC++ no se llama al destructor cuando el objeto no est· almacenado en la
+// NOTA: Con VC++ no se llama al destructor cuando el objeto no est√° almacenado en la
 // pila (cuando se accede a partir de direcciones absolutas de memoria). Esto obliga a
-// llamar al destructor explÌcitamente.
+// llamar al destructor expl√≠citamente.
 
 // PENDIENTE:
-// El problema est· cuando hay par·metros de inicializaciÛn: se podrÌa establecer la
-// norma de no incluir par·metros en los constructores.
+// El problema est√° cuando hay par√°metros de inicializaci√≥n: se podr√≠a establecer la
+// norma de no incluir par√°metros en los constructores.
 
 #if ( defined ( CPP ) )
 

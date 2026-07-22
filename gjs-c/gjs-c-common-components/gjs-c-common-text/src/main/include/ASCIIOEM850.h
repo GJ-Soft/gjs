@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                               ASCIIOEM850.h                                */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GTexto                                                          */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GTexto                                                          */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     30/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cabecera que contiene la definiciÛn de constantes para los      */
-/* car·cteres del especÌfioos del cÛdigo ASCII correspondientes al juego      */
-/* car·cteres OEM850.                                                         */
+/* Descripci√≥n:                                                               */
+/* Fichero de cabecera que contiene la definici√≥n de constantes para los      */
+/* car√°cteres del espec√≠fioos del c√≥digo ASCII correspondientes al juego      */
+/* car√°cteres OEM850.                                                         */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -19,8 +19,8 @@
 
 
 
-// CÛdigos no est·ndar fijos para p·ginas de cÛdigos preparadas para 
-// idioma espaÒol (128-255):
+// C√≥digos no est√°ndar fijos para p√°ginas de c√≥digos preparadas para 
+// idioma espa√±ol (128-255):
 
 // Signos de englobamiento:
 #define ASCII_EXCLAMACION_ABR 	173
@@ -39,18 +39,18 @@
 #define ASCII_DIVISA			207
 
 
-// Letras may˙sculas:
+// Letras may√∫sculas:
 #define ASCII_N_MAY_TIL	 		165
 #define ASCII_C_MAY_CED			128
 
 
-// Letras min˙sculas:
+// Letras min√∫sculas:
 #define ASCII_N_MIN_TIL			164
 #define ASCII_C_MIN_CED			135
 
 
 
-// Letr·s may˙sculas acentuadas:
+// Letr√°s may√∫sculas acentuadas:
 #define ASCII_A_MAY_ABI			183
 #define ASCII_E_MAY_ABI			138
 #define ASCII_I_MAY_ABI 		141
@@ -86,7 +86,7 @@
 #define ASCII_A_MAY_ANI 		143
 
 
-// Letr·s min˙sculas acentuadas:
+// Letr√°s min√∫sculas acentuadas:
 #define ASCII_A_MIN_ABI			133
 #define ASCII_E_MIN_ABI			138
 #define ASCII_I_MIN_ABI 		141

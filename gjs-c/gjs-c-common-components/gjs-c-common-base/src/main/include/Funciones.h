@@ -1,12 +1,12 @@
 /******************************************************************************/
 /*                                Funciones.h                                 */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GBase                                                           */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GBase                                                           */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
+/* Descripci√≥n:                                                               */
 /* Fichero de cabecera que contiene los tipos necesarios para manejar los     */
 /* punteros a procedimeitnos y funciones.                                     */
 /*----------------------------------------------------------------------------*/
@@ -39,7 +39,7 @@
 // P[X] = * X
 // PP[X] = ** X
 
-// NOTA: Ir aÒadiendio conforme se vayan necesitando:
+// NOTA: Ir a√±adiendio conforme se vayan necesitando:
 
 typedef void (* PPRCV)(void);
 typedef void (* PPRCI)(int);
@@ -240,7 +240,7 @@ typedef int (* PFUNINTHWN)(HWND);
 #endif
 
 
-/* Tipo de datos especiales para los casos m·s sencillos: */ 
+/* Tipo de datos especiales para los casos m√°s sencillos: */ 
 typedef int (*PTR_FUNCION)();
 typedef void (*PTR_PROCEDIMIENTO)();
 

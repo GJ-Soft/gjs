@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                             SistemaMemoria.cpp                             */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  Sistema                                                         */
-/* VersiÛn:   3.0.0                                                           */
+/* Librer√≠a:  Sistema                                                         */
+/* Versi√≥n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cÛdigo fuente que contiene la implementaciÛn de las rutinas     */
-/* de car·cter general de reserva y liberaciÛn de espacios de memoria.        */
+/* Descripci√≥n:                                                               */
+/* Fichero de c√≥digo fuente que contiene la implementaci√≥n de las rutinas     */
+/* de car√°cter general de reserva y liberaci√≥n de espacios de memoria.        */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -121,13 +121,13 @@ unsigned long long SisMemoriaOcupada ()
     fProc = fopen( "/proc/self/statm", "r" );
     if ( ES_VALIDO ( fProc ) )
     {
-        // El primer valor es el tamaÒo de la memoria virtual en p·ginas
+        // El primer valor es el tama√±o de la memoria virtual en p√°ginas
         if ( fscanf ( fProc, "%ld", &lPaginas ) == 1 )
         {
-            // Obtenemos cu·ntos bytes mide una p·gina en esta arquitectura (ej. 4096 bytes)
+            // Obtenemos cu√°ntos bytes mide una p√°gina en esta arquitectura (ej. 4096 bytes)
             lTamPagina = sysconf( _SC_PAGESIZE );
             
-            // P·ginas ocupadas * Bytes por p·gina = Total de bytes virtuales ocupados
+            // P√°ginas ocupadas * Bytes por p√°gina = Total de bytes virtuales ocupados
             ullRes = (unsigned long long) lPaginas * lTamPagina;
         }
 		else
@@ -189,10 +189,10 @@ unsigned long long SisMemoriaFisicaTotal ()
 # else
 	struct sysinfo info;
 
-    // sysinfo devuelve 0 si tiene Èxito, -1 si falla
+    // sysinfo devuelve 0 si tiene √©xito, -1 si falla
     if ( sysinfo( &info ) == 0 ) 
     {
-		// totalram (p·ginas/bloques de hardware) * mem_unit (bytes por bloque)
+		// totalram (p√°ginas/bloques de hardware) * mem_unit (bytes por bloque)
         ullRes = (unsigned long long)info.totalram * info.mem_unit;
 	}	
 	else
@@ -225,10 +225,10 @@ unsigned long long SisMemoriaFisicaDisponible ()
 # else
 	struct sysinfo info;
 
-    // sysinfo devuelve 0 si tiene Èxito, -1 si falla
+    // sysinfo devuelve 0 si tiene √©xito, -1 si falla
     if ( sysinfo( &info ) == 0 ) 
     {
-		// VersiÛn optimizada (Memoria libre + memoria de intercambio r·pido)
+		// Versi√≥n optimizada (Memoria libre + memoria de intercambio r√°pido)
 		ullRes = ((unsigned long long)info.freeram + info.bufferram) * info.mem_unit;
 	}	
 	else
@@ -261,7 +261,7 @@ unsigned long long SisMemoriaFisicaOcupada ()
 # else
 	struct sysinfo info;
 
-    // sysinfo devuelve 0 si tiene Èxito, -1 si falla
+    // sysinfo devuelve 0 si tiene √©xito, -1 si falla
     if ( sysinfo( &info ) == 0 ) 
     {
 		ullRes = ((unsigned long long)info.totalram - ((unsigned long long)info.freeram + info.bufferram)) * info.mem_unit;
@@ -296,7 +296,7 @@ unsigned long long SisMemoriaFicPaginacionTotal ()
 # else
 	struct sysinfo info;
 
-    // sysinfo devuelve 0 si tiene Èxito, -1 si falla
+    // sysinfo devuelve 0 si tiene √©xito, -1 si falla
     if ( sysinfo( &info ) == 0 ) 
     {
 		// Equivalente estricto al "Commit Limit" de Windows (RAM Total + SWAP Total)
@@ -332,7 +332,7 @@ unsigned long long SisMemoriaFicPaginacionDisponible ()
 # else
 	struct sysinfo info;
 
-    // sysinfo devuelve 0 si tiene Èxito, -1 si falla
+    // sysinfo devuelve 0 si tiene √©xito, -1 si falla
     if ( sysinfo( &info ) == 0 ) 
     {
 		// Equivalente estricto al espacio total comprometible libre (RAM Libre + SWAP Libre)
@@ -368,7 +368,7 @@ unsigned long long SisMemoriaFicPaginacionOcupada ()
 # else
 	struct sysinfo info;
 
-    // sysinfo devuelve 0 si tiene Èxito, -1 si falla
+    // sysinfo devuelve 0 si tiene √©xito, -1 si falla
     if ( sysinfo( &info ) == 0 ) 
     {
 		// Equivalente estricto al "Commit Limit" de Windows (RAM Total + SWAP Total)

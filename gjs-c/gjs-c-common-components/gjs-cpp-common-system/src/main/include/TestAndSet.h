@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                TestAndSet.h                                */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Sistema                                                         */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Sistema                                                         */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* DescripciÃ³n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de las rutinas tas y       */
-/* tar, para los casos en que no vengan en las librerías del compilador.      */
+/* tar, para los casos en que no vengan en las librerÃ­as del compilador.      */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

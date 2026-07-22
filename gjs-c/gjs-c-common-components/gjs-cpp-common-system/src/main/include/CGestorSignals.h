@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                              CGestorSignals.h                              */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  Sistema                                                         */
-/* Versi髇:   3.0.0                                                           */
+/* Librer铆a:  Sistema                                                         */
+/* Versi贸n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de cabecera que contiene la definici髇 de la clase de datos        */
-/* CGestorSignals, que facilita la programaci髇 de los diferentes "signals"   */
+/* Descripci贸n:                                                               */
+/* Fichero de cabecera que contiene la definici贸n de la clase de datos        */
+/* CGestorSignals, que facilita la programaci贸n de los diferentes "signals"   */
 /* del sistema para el proceso en curso.                                      */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

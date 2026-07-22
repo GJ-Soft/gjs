@@ -30,4 +30,7 @@
   Defines packaging: tgz
 	</description>
  
- </project>
+ 	<properties>
+		<gjs.maven.extension.install>false</gjs.maven.extension.install>
+	</properties>
+</project>

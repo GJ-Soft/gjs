@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                             TiempoNumerico.cpp                             */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Tiempo                                                          */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Tiempo                                                          */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de las rutinas     */
-/* de conversión entre tiempo formateado y tiempo numérico, así como de       */
-/* operación numérica de tiempos y consulta general del calendario.        *  */
+/* DescripciÃ³n:                                                               */
+/* Fichero de cÃ³digo fuente que contiene la implementaciÃ³n de las rutinas     */
+/* de conversiÃ³n entre tiempo formateado y tiempo numÃ©rico, asÃ­ como de       */
+/* operaciÃ³n numÃ©rica de tiempos y consulta general del calendario.        *  */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                                   API.h                                    */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Dll                                                             */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Dll                                                             */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de cabecera que define las constantes de pre-compilación que se    */
+/* DescripciÃ³n:                                                               */
+/* Fichero de cabecera que define las constantes de pre-compilaciÃ³n que se    */
 /* necesitan para exportar e importar funciones.                              */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

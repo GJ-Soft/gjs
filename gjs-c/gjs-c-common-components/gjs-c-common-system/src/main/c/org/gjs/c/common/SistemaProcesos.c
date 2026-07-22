@@ -1,22 +1,22 @@
 /***************************************************************************/
 /*                         SistemaProcesos.cpp                             */
 /*-------------------------------------------------------------------------*/
-/* LibrerÌa: Sistema                                                       */
-/* VersiÛn:  1.1.0                                                         */
+/* Librer√≠a: Sistema                                                       */
+/* Versi√≥n:  1.1.0                                                         */
 /* Fecha:    26/10/2006                                                    */
-/* Autor:    GinÈs JimÈnez S·nchez                                         */
+/* Autor:    Gin√©s Jim√©nez S√°nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* DescripciÛn:                                                            */
-/* Fichero de cÛdigo fuente que contiene la implementaciÛn de las rutinas  */
-/* de car·cter general de informaciÛn acerca de los procesos en ejecuciÛn, */
-/* asÌ como algunas rutinas de gestiÛn de los mismos.                      */  
+/* Descripci√≥n:                                                            */
+/* Fichero de c√≥digo fuente que contiene la implementaci√≥n de las rutinas  */
+/* de car√°cter general de informaci√≥n acerca de los procesos en ejecuci√≥n, */
+/* as√≠ como algunas rutinas de gesti√≥n de los mismos.                      */  
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este mÛdulo est· extraÌdo de una librerÌa m·s completa creada por el    */
+/* Este m√≥dulo est√° extra√≠do de una librer√≠a m√°s completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, asÌ como cualquier aÒadido o modificaciÛn realizado.   */
-/* Pueden reportar de los mismos enviando un correo electrÛnico a la       */
-/* direcciÛn: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, as√≠ como cualquier a√±adido o modificaci√≥n realizado.   */
+/* Pueden reportar de los mismos enviando un correo electr√≥nico a la       */
+/* direcci√≥n: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 
 #include "SistemaProcesos.h"
@@ -25,7 +25,7 @@
 #include "SistemaConfig.h"
 
 
-// De momento SistemaLiberÌas sÛlo funciona para WIN:
+// De momento SistemaLiber√≠as s√≥lo funciona para WIN:
 #if ( defined ( WIN ) )
 #	include "SistemaLibrerias.h"
 #endif
@@ -140,7 +140,7 @@ char * SisNombreProceso ()
 		p_cRes = NULL;
 	}
 # else
-	// PENDIENTE: Mejorar para obtenerlo din·micamente:
+	// PENDIENTE: Mejorar para obtenerlo din√°micamente:
 	p_cRes = CadDuplicar ( _g_p_sSisNomProceso );
 # endif
 	return ( p_cRes );
@@ -554,7 +554,7 @@ long SisCrearSubproceso ( const char * p_cEjecutable, const char * p_cParametros
 	pidRes = fork ();
 	if ( pidRes < 0 )
 	{
-		//Padre: Error en la creaciÛn del subproceso:
+		//Padre: Error en la creaci√≥n del subproceso:
 		lPID = -1;
 	}
 	else if ( pidRes > 0 )
@@ -1246,7 +1246,7 @@ int SisNumProcesos ()
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
 		p_dwProcesos = (DWORD *) SBufDireccion ( p_bufDatos );
-		// PENDIENTE: Puede ser que sea necesario m·s tamaÒo (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
+		// PENDIENTE: Puede ser que sea necesario m√°s tama√±o (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
 		if ( EnumProcesses ( p_dwProcesos, (DWORD) SBufTam ( p_bufDatos ), &dwTamOcupado ) != 0 )
 		{
 			iNumProcesos = dwTamOcupado / sizeof ( DWORD );
@@ -1343,7 +1343,7 @@ CListaEnterosLargos * SisListaProcesos ()
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
 		p_dwProcesos = (DWORD *) SBufDireccion ( p_bufDatos );
-		// PENDIENTE: Puede ser que sea necesario m·s tamaÒo (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
+		// PENDIENTE: Puede ser que sea necesario m√°s tama√±o (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
 		if ( EnumProcesses( p_dwProcesos, (DWORD) SBufTam ( p_bufDatos ), &dwTamOcupado ) != 0 )
 		{
 			iNumProcesos = dwTamOcupado / sizeof ( DWORD );

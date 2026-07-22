@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                         AplicacionPortapapeles.cpp                         */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  Aplicacion                                                      */
-/* Versi髇:   3.0.0                                                           */
+/* Librer铆a:  Aplicacion                                                      */
+/* Versi贸n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de algunas         */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de algunas         */
 /* para manejo del portapapeles de Windows.                                   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

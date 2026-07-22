@@ -1,12 +1,12 @@
 /******************************************************************************/
 /*                              FormatoCadena.h                               */
 /*----------------------------------------------------------------------------*/
-/* Librería:  GBase                                                           */
-/* Versión:   1.0.0                                                           */
+/* LibrerÃ­a:  GBase                                                           */
+/* VersiÃ³n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* DescripciÃ³n:                                                               */
 /* Fichero de cabecera que contiene el prototipo de una rutina general        */
 /* espacial para generar cadenas formateadas a partir de un formato y una     */
 /* serie indeterminada de argumentos.                                         */

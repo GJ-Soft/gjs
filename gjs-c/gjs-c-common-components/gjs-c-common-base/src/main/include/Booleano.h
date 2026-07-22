@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                Booleano.h                                  */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GBase                                                           */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GBase                                                           */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
+/* Descripci贸n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas de      */
-/* car醕ter general de manejo de enteros como booleanos.                      */
+/* car谩cter general de manejo de enteros como booleanos.                      */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -31,7 +31,7 @@
 
 
 
-/* Gesti髇 de variables booleanas en diferentes tipos de representaci髇: */
+/* Gesti贸n de variables booleanas en diferentes tipos de representaci贸n: */
 #define BOOL_VAL_CIERTO						1
 #define BOOL_VAL_FALSO						0
 #define BOOL_CAR_CIERTO						'T'

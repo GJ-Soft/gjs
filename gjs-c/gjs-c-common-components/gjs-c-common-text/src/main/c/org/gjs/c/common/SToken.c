@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                                SToken.cpp                                  */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GTexto                                                          */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GTexto                                                          */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     30/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de c骴igo fuente que contiene la implementaci髇 de la clase de     */
+/* Descripci贸n:                                                               */
+/* Fichero de c贸digo fuente que contiene la implementaci贸n de la clase de     */
 /* datos SToken.                                                              */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

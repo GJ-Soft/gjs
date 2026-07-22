@@ -592,12 +592,12 @@ void SDatImprimir ( SDatos * p_datObj )
 			}
 			else
 			{
-				printf ( "  El buffer está erróneo.\n" );
+				printf ( "  El buffer esta erroneo.\n" );
 			}
 		}
 		else
 		{
-			printf ( "  El buffer está vacío.\n" );
+			printf ( "  El buffer esta vacio.\n" );
 		}
 	}
 	else

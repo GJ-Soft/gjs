@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                              CContadorCiclos.h                             */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  Sistema                                                         */
-/* Versi髇:   3.0.0                                                           */
+/* Librer铆a:  Sistema                                                         */
+/* Versi贸n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de cabecera que contiene la definici髇 de la clase de datos        */
+/* Descripci贸n:                                                               */
+/* Fichero de cabecera que contiene la definici贸n de la clase de datos        */
 /* CContadorCiclos, que implementa un temporizador basado en las primitivas   */
-/* de temporizaci髇 del sistema operativo.                                    */
+/* de temporizaci贸n del sistema operativo.                                    */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

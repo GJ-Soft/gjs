@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                 UniChar.h                                  */
 /*----------------------------------------------------------------------------*/
-/* Librer韆:  GBase                                                           */
-/* Versi髇:   1.0.0                                                           */
+/* Librer铆a:  GBase                                                           */
+/* Versi贸n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin閟 Jim閚ez S醤chez                                           */
+/* Autor:     Gin茅s Jim茅nez S谩nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci髇:                                                               */
-/* Fichero de cabecera que contiene la definici髇 de un tipo de datos         */
-/* para manejar cadenas UNICODE, y algunas rutinas de conversi髇.             */
+/* Descripci贸n:                                                               */
+/* Fichero de cabecera que contiene la definici贸n de un tipo de datos         */
+/* para manejar cadenas UNICODE, y algunas rutinas de conversi贸n.             */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

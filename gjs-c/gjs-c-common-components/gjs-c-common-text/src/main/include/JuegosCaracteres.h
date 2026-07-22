@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                          JuegosCaracteres.h                                */
 /*----------------------------------------------------------------------------*/
-/* LibrerÌa:  GTexto                                                          */
-/* VersiÛn:   1.0.0                                                           */
+/* Librer√≠a:  GTexto                                                          */
+/* Versi√≥n:   1.0.0                                                           */
 /* Fecha:     30/06/2008                                                      */
-/* Autor:     GinÈs JimÈnez S·nchez                                           */
+/* Autor:     Gin√©s Jim√©nez S√°nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* DescripciÛn:                                                               */
-/* Fichero de cabecera que contiene la definiciÛn de constantes para los      */
-/* diferentes juegos de car·cteres existentes.                                */
+/* Descripci√≥n:                                                               */
+/* Fichero de cabecera que contiene la definici√≥n de constantes para los      */
+/* diferentes juegos de car√°cteres existentes.                                */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
