@@ -15,14 +15,15 @@
 #include <arpa/inet.h>
 
 
-#if ( defined ( POSIX ) )
-extern char ** environ;
-#endif
-
 
 #if ( defined ( WIN ) )
 #  	define 	MAX_ENV_VALUE 	32767
 #endif
+
+#define SIS_MAX_TAM_VARIABLE			255
+#define SIS_MAX_TAM_VALOR				255
+
+
 
 using namespace std;
 
@@ -184,84 +185,56 @@ string VariableEntorno ( const string & sNombre )
  */
 const char * INVALID_POSITION = "XXX";
 
-
+#define _ENTORNO_FORM_EST_VARIABLE		"%s=%s"
+#define _ENTORNO_MAX_TAM_CAD_DEF		( SIS_MAX_TAM_VARIABLE + SIS_MAX_TAM_VALOR + 1 )
 
 void EstablecerVariableEntorno ( const string & sNombre, const string & sValor )
 {
-	const char * p_cNombre = sNombre.c_str();
-	const char * p_cValor = sValor.c_str();
-#if ( defined ( POSIX ) )
-#  if  ( defined ( CYGWIN ) )
-	if ( ( p_cNombre != NULL ) && ( p_cValor != NULL ) )
+	if ( !sNombre.empty () )
 	{
-		int iTamNombre = strlen( p_cNombre );
-		if ( iTamNombre > 0 )
+		const char * p_cNombre = sNombre.c_str();
+		const char * p_cValor = sValor.c_str();
+		
+#	if ( defined ( WIN) )
+		if ( SetEnvironmentVariableA ( p_cNombre, p_cValor ) == 0 )
 		{
-			try
-			{
-				int iTamEnvValor = iTamNombre + strlen( p_cValor ) + 1;
-				char * p_cEnvValor = (char *) malloc ( iTamEnvValor + 1 );
-				memset( p_cEnvValor, 0x0, iTamEnvValor + 1 );
-				sprintf( p_cEnvValor, "%s=%s", p_cNombre, p_cValor );
-				int iTam = 0;
-				int iPos = -1;
-				bool bFound = false;
-				for ( char **env = environ; *env != NULL; env++ )
-				{
-					if ( !bFound && ( iPos < 0 ) && ( *env == INVALID_POSITION ) )
-					{
-						iPos = iTam;
-					}
-					if ( !bFound && ( strlen( *env ) > iTamNombre ) &&
-						 ( strncmp( p_cNombre, *env, iTamNombre ) == 0 ) &&
-						 ( (*env)[ iTamNombre ] == '=' )  )
-					{
-						iPos = iTam;
-						break;
-					}
-					iTam = iTam + 1;
-				}
-				if ( iPos < 0 )
-				{
-					iPos = iTam;
-					environ = (char **) realloc( environ, (iTam + 1) * sizeof (char *) );
-					environ[ iTam + 1 ] = NULL;
-				}
-				else if ( environ[ iPos ] != INVALID_POSITION )
-				{
-					free( environ[ iPos ] );
-				}
-				environ[ iPos ] = p_cEnvValor;
-			}
-			catch ( const exception & ex )
-			{
-				throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre ), ex ) );
-			}
+			throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( GetLastError() ) ) ) );
 		}
-		else
-		{
-			throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", "Imposible establecer la variable de entorno con nombre vacio" ) );
-		}
-	}
-	else
-	{
-		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", "Imposible establecer la variable de entorno con algun parametro NULO" ) );
-	}
-#  else
+#	else
 	if ( setenv ( p_cNombre, p_cValor, 1 ) != 0 )
 	{
 		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
 	}
-#  endif
-#else
-	printf ( "*** SETENVIRONMENT %s=%s\n", p_cNombre, p_cValor);
-	if ( SetEnvironmentVariableA ( p_cNombre, p_cValor ) == 0 )
-	{
-		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( GetLastError() ) ) ) );
+	/*
+		char * p_cVarEnt = (char *) malloc ( _ENTORNO_MAX_TAM_CAD_DEF + 1 );
+		if ( ES_VALIDO ( p_cVarEnt ) )
+		{
+			if ( ES_NULO ( p_cValor ) )
+			{
+				snprintf ( p_cVarEnt, _ENTORNO_MAX_TAM_CAD_DEF, _ENTORNO_FORM_EST_VARIABLE, p_cNombre, "" );
+			}
+			else
+			{
+				snprintf ( p_cVarEnt, _ENTORNO_MAX_TAM_CAD_DEF, _ENTORNO_FORM_EST_VARIABLE, p_cNombre, p_cValor );
+			}
+			
+			if ( putenv ( p_cVarEnt ) != 0 )
+			{
+				throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
+			}
+			free ( p_cVarEnt );
+		}
+		else
+		{
+			throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
+		}
+		*/
+#	endif
 	}
-	printf("RESULT=%s\n", getenv(p_cNombre));
-	fflush(stdout);
-#endif
+	else
+	{
+		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", "Imposible establecer una variable de entorno vacia" ) );
+	}
 }
 
 void EliminarVariableEntorno ( const string & sNombre )
@@ -289,7 +262,7 @@ void EliminarVariableEntorno ( const string & sNombre )
 					}
 					iTam = iTam + 1;
 				}
-				if ( iPos > 0 )
+				if ( iPos >= 0 )
 				{
 					if ( environ[ iPos ] != INVALID_POSITION )
 					{

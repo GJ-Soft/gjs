@@ -1,27 +1,27 @@
 /******************************************************************************/
 /*                             CGestorSignals.cpp                             */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Sistema                                                         */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Sistema                                                         */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de la clase de     */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de la clase de     */
 /* datos CGestorSignals.                                                      */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
+#include "CommonSystemConfig.h"
 #include "CGestorSignals.h"
 
-#include "CommonSystemConfig.h"
 
 
 
 
 
-#if (defined (UNIX) || defined (LINUX) )
+#if ( defined ( POSIX ) )
 
 
 using namespace std;
@@ -387,9 +387,10 @@ void CGestorSignals::Inicializar ()
 			}
 			else
 			{
-				// Error:
-				iCorrecto = 0;
-			} 
+				// La senal no se puede programar en esta plataforma ( codigo no
+				// aceptado por signal() ): se ignora, sin invalidar el gestor.
+				p_iActSignals [ iSignal ] = 0;
+			}
 		}
 		//else
 		//{

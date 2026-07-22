@@ -260,11 +260,6 @@ int SFicSecEstablecerRutaExt ( SFicSecuencial * p_ficObj, const char * p_cDir, c
 
 int SFicSecAbrir ( SFicSecuencial * p_ficObj, int iModo )
 {
-	return ( SFicSecAbrirExt ( p_ficObj, iModo, 0 ) );
-}
-
-int SFicSecAbrirExt ( SFicSecuencial * p_ficObj, int iModo, int iVaciar )
-{
 	int iRes;
 
 	if ( ES_VALIDO ( p_ficObj ) )
@@ -273,7 +268,7 @@ int SFicSecAbrirExt ( SFicSecuencial * p_ficObj, int iModo, int iVaciar )
 		{
 			if ( iModo == MOD_APR_LECTURA )
 			{
-				if ( ( SisExisteFichero ( p_ficObj->p_cRuta ) == 1 ) && ( iVaciar == 0 ) )
+				if ( SisExisteFichero ( p_ficObj->p_cRuta ) == 1 )
 				{
 					p_ficObj->p_fObj = fopen ( p_ficObj->p_cRuta, "r" );
 
@@ -295,7 +290,7 @@ int SFicSecAbrirExt ( SFicSecuencial * p_ficObj, int iModo, int iVaciar )
 			}
 			else
 			{
-				if ( iVaciar == 1 )
+				if ( iModo == MOD_APR_REESCRITURA )
 				{
 					p_ficObj->p_fObj = fopen ( p_ficObj->p_cRuta, "w" );
 				}
@@ -434,7 +429,7 @@ int SFicSecEstaAbiertoParaEscritura ( SFicSecuencial * p_ficObj )
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) &&
-			 ( p_ficObj->iModo == MOD_APR_ESCRITURA ) )
+			 ( ModAprPermiteEscritura ( p_ficObj->iModo ) == 1 ) )
 		{
 			iRes = 1;
 		}
@@ -458,7 +453,7 @@ int SFicSecEstaEnFinal ( SFicSecuencial * p_ficObj )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			if ( p_ficObj->iModo == MOD_APR_ESCRITURA )
+			if ( ModAprPermiteEscritura ( p_ficObj->iModo ) == 1 )
 			{
 				iRes = 1;
 			}
@@ -551,7 +546,7 @@ int SFicSecEscribir ( SFicSecuencial * p_ficObj, byte byValor )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			if ( p_ficObj->iModo == MOD_APR_ESCRITURA )
+			if ( ModAprPermiteEscritura ( p_ficObj->iModo ) == 1 )
 			{
 				if ( fwrite ( &byValor, sizeof ( byte ), 1, p_ficObj->p_fObj ) == 1 )
 				{
@@ -587,7 +582,7 @@ int SFicSecEscribirBuffer ( SFicSecuencial * p_ficObj, byte * p_byContenido, uns
 	{
 		if ( ( *p_ulTam > 0 ) && ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			if ( p_ficObj->iModo == MOD_APR_ESCRITURA ) 
+			if ( ModAprPermiteEscritura ( p_ficObj->iModo ) == 1 ) 
 			{
 				*p_ulTam = fwrite ( p_byContenido, sizeof ( byte ), *p_ulTam, p_ficObj->p_fObj );
 				if ( *p_ulTam > 0 )

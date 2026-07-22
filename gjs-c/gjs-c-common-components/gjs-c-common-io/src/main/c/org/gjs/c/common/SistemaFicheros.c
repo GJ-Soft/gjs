@@ -1,23 +1,23 @@
 /***************************************************************************/
 /*                        SistemaFicheros.c                                */
 /*-------------------------------------------------------------------------*/
-/* Librería: Sistema                                                       */
-/* Versión:  1.1.0                                                         */
+/* Librerï¿½a: Sistema                                                       */
+/* Versiï¿½n:  1.1.0                                                         */
 /* Fecha:    26/10/2006                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    Ginï¿½s Jimï¿½nez Sï¿½nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Fichero de código fuente que contiene la implementación de las rutinas  */
-/* de carácter general de operaciones con el sistema de ficheros.          */
+/* Descripciï¿½n:                                                            */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de las rutinas  */
+/* de carï¿½cter general de operaciones con el sistema de ficheros.          */
 /* Mantiene un objeto global privado de clase CSistemaFicheros que puede   */
-/* utilizarse para moverse por el árbol de directorios.                    */
+/* utilizarse para moverse por el ï¿½rbol de directorios.                    */
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este módulo está extraído de una librería más completa creada por el    */
+/* Este mï¿½dulo estï¿½ extraï¿½do de una librerï¿½a mï¿½s completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, así como cualquier añadido o modificación realizado.   */
-/* Pueden reportar de los mismos enviando un correo electrónico a la       */
-/* dirección: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, asï¿½ como cualquier aï¿½adido o modificaciï¿½n realizado.   */
+/* Pueden reportar de los mismos enviando un correo electrï¿½nico a la       */
+/* direcciï¿½n: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 
 
@@ -32,35 +32,8 @@
 #define MAX_PARTES 256
 
 // PENDIENTe: En unix/linux SisExisteFichero no distingue entre ficheros y directorios lo que puede
-// llevar a confusión.
+// llevar a confusiï¿½n.
 
-
-int SisEsDirectorioValido ( const char * p_cDirectorio )
-{
-	int iRes;
-
-	if ( ES_VALIDO ( p_cDirectorio ) )
-	{
-#     if ( defined ( WIN ) )
-		if ( ( CadCumpleExpReg ( p_cDirectorio, SF_PATRON_DIRECTORIO_WIN ) == 1 ) || 
-			 ( CadCumpleExpReg ( p_cDirectorio, SF_PATRON_DIRECTORIO_WIN_2 ) == 1 ) )
-#     else
-		if ( CadCumpleExpReg ( p_cDirectorio, SF_PATRON_DIRECTORIO ) == 1 )
-#     endif
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
-	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
-}
 
 int SisEsSubdirectorioValido ( const char * p_cSubdirectorio )
 {
@@ -413,7 +386,7 @@ char * SisComponerRuta ( const char * p_cDirectorio, const char * p_cFichero, in
 
 	if ( ( SisEsFicheroValido ( p_cFichero ) == 1 ) || ( SisEsSubdirectorioValido ( p_cFichero ) == 1 ) )
 	{
-		if ( SisEsDirectorioValido ( p_cDirectorio ) == 1 )
+		if ( SisEsRutaValida ( p_cDirectorio ) == 1 )
 		{
 			p_cRuta = CadCrear ( CadLongitud ( p_cDirectorio ) + CadLongitud ( p_cFichero ) + 1 );
 			if ( ES_VALIDO ( p_cRuta ) )
@@ -432,7 +405,7 @@ char * SisComponerRuta ( const char * p_cDirectorio, const char * p_cFichero, in
 	}
 	else
 	{
-		if ( SisEsDirectorioValido ( p_cDirectorio ) == 1 )
+		if ( SisEsRutaValida ( p_cDirectorio ) == 1 )
 		{
 			p_cRuta = CadDuplicar ( p_cDirectorio );
 		}
@@ -495,7 +468,7 @@ int SisEsRutaValida ( const char * p_cRuta )
 		if ( ES_VALIDO ( p_cRutaNorm ) )
 		{
 			if ( ( CadContieneCaracter  ( p_cRuta, '\\' ) == 1 ) ||
-				 ( CadEmpiezaPorCaracter ( p_cRuta, ':' ) == 1 ) )
+				 ( CadCaracter ( p_cRuta, 1 ) == ':' ) )
 			{
 				SisNormalizarRutaWindows ( p_cRutaNorm );
 				iWindows = 1;
@@ -545,6 +518,62 @@ int SisEsRutaValida ( const char * p_cRuta )
 	return ( iRes );
 }
 
+int SisEsRutaAbsoluta ( const char * p_cRuta )
+{
+	char * 	p_cRutaNorm;	
+	int 	iRes;
+
+	p_cRutaNorm = CadDuplicar ( p_cRuta );	
+	if ( SisRutaEsEstiloWindows  ( p_cRutaNorm ) == 1 )
+	{
+		SisNormalizarRutaWindows ( p_cRutaNorm );
+	}
+	else
+	{
+		SisNormalizarRuta ( p_cRutaNorm );
+	}
+	if ( ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA ) == 1 ) ||  
+		 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_WIN ) == 1 ) )  
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	MemLiberarCadena ( &p_cRutaNorm );
+	return ( iRes );
+}
+
+int SisEsRutaRelativa ( const char * p_cRuta )
+{
+	char * 	p_cRutaNorm;	
+	int 	iRes;
+
+	p_cRutaNorm = CadDuplicar ( p_cRuta );	
+	if ( SisRutaEsEstiloWindows  ( p_cRutaNorm ) == 1 )
+	{
+		SisNormalizarRutaWindows ( p_cRutaNorm );
+	}
+	else
+	{
+		SisNormalizarRuta ( p_cRutaNorm );
+	}
+	if ( ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL ) == 1 ) ||  
+		 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL_2 ) == 1 ) ||
+		 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL_WIN ) == 1 ) ||  
+		 ( CadCumpleExpReg ( p_cRutaNorm, SF_PATRON_RUTA_REL_WIN_2 ) == 1 ) )  
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	MemLiberarCadena ( &p_cRutaNorm );
+	return ( iRes );
+}
+
 int SisEsRutaValidaSistema ( const char * p_cRuta )
 {
 	char * 	p_cRutaNorm;	
@@ -585,7 +614,7 @@ int SisRutaEsEstiloWindows ( const char * p_cRuta )
 	if ( SisEsRutaValida ( p_cRuta ) == 1 )
 	{
 		if ( ( CadContieneCaracter  ( p_cRuta, '\\' ) == 1 ) ||
-			 ( CadEmpiezaPorCaracter ( p_cRuta, ':' ) == 1 ) )
+			 ( CadCaracter ( p_cRuta, 1 ) == ':' ) )
 		{
 			iRes = 1;
 		}
@@ -612,6 +641,7 @@ char * SisRutaEstiloWindowsExt ( const char * p_cRuta, char cUnidad )
 	char **	p_p_cPartes;
 	int		iCount;
 	int		iPartes;
+	int 	iRelativa;
 
 	if ( ( SisEsRutaValida ( p_cRuta ) == 1 ) && ( ASCIIEsLetra ( cUnidad ) == 1 ) )
 	{
@@ -625,11 +655,22 @@ char * SisRutaEstiloWindowsExt ( const char * p_cRuta, char cUnidad )
 				p_p_cPartes [ iCount ] = CadPalabraSep ( p_cRuta, iCount, '/' );
 			}
 				
-			CadConcatenarCaracter ( p_cResultado, ASCIILetraMinAMay ( cUnidad ) );
-			CadConcatenar ( p_cResultado, ":\\" );
+			if ( SisEsRutaRelativa ( p_cRuta ) == 0 )
+			{
+				CadConcatenarCaracter ( p_cResultado, ASCIILetraMinAMay ( cUnidad ) );
+				CadConcatenar ( p_cResultado, ":" );
+				iRelativa = 0;
+			}
+			else
+			{
+				iRelativa = 1;
+			}
 			for ( int i = 0; i < iPartes; i = i + 1 )
 			{
-				CadConcatenarCaracter ( p_cResultado, '\\' );
+				if ( ( iRelativa == 0 ) || ( i > 0 ) )
+				{
+					CadConcatenarCaracter ( p_cResultado, '\\' );
+				}
 				CadConcatenar ( p_cResultado, p_p_cPartes [ i ] );
 				MemLiberar ( ( void ** ) &(p_p_cPartes [ i ]) );
 			}
@@ -638,6 +679,7 @@ char * SisRutaEstiloWindowsExt ( const char * p_cRuta, char cUnidad )
 		else
 		{
 			CadConcatenar ( p_cResultado, p_cRuta );
+			SisNormalizarRutaWindows ( p_cResultado );
 		}
 	}
 	else
@@ -689,7 +731,7 @@ char * SisRutaEstiloUnix ( const char * p_cRuta )
 					{
 						CadConcatenarCaracter ( p_cResultado, '/' );
 					}
-					p_cParte = CadPalabraSep ( p_cRutaCopia, i, '/' );
+					p_cParte = CadPalabraSep ( p_cRutaCopia, i, '\\' );
 					CadConcatenar ( p_cResultado, p_cParte );
 					MemLiberarCadena ( &p_cParte );
 				}
@@ -703,6 +745,7 @@ char * SisRutaEstiloUnix ( const char * p_cRuta )
 		else
 		{
 			CadConcatenar ( p_cResultado, p_cRuta );
+			SisNormalizarRuta ( p_cResultado );
 		}
 	}
 	else
@@ -749,6 +792,7 @@ char * SisRutaEstiloCygwin ( const char * p_cRuta )
 				{
 					CadConcatenar ( p_cResultado, "/cygdrive/" );
 					CadConcatenarCaracter ( p_cResultado, ASCIILetraMayAMin ( cUnidad ) );
+					CadConcatenarCaracter ( p_cResultado, '/' );
 				}
 				for ( int i = iParteIni; i < iPartes; i = i + 1 )
 				{
@@ -770,6 +814,7 @@ char * SisRutaEstiloCygwin ( const char * p_cRuta )
 		else
 		{
 			CadConcatenar ( p_cResultado, p_cRuta );
+			SisNormalizarRuta ( p_cResultado );
 		}
 	}
 	else
@@ -784,10 +829,10 @@ char * SisRutaEstiloSistema ( const char * p_cRuta )
 {
 	char *	p_cResultado;
 	
-# if ( defined ( CYGWIN ) )
-	p_cResultado = SisRutaEstiloCygwin ( p_cRuta );
-# elif ( defined ( WIN ) )
+# if ( defined ( WIN ) )
 	p_cResultado = SisRutaEstiloWindows ( p_cRuta );
+# elif ( defined ( CYGWIN ) )
+	p_cResultado = SisRutaEstiloCygwin ( p_cRuta );
 # else
 	p_cResultado = SisRutaEstiloUnix ( p_cRuta );
 # endif	
@@ -891,40 +936,37 @@ const char * SisCadenaDirectorioFuentes ()
 int SisExisteFichero ( const char * p_cRuta )
 {
 	int			iRes;
+	char *		p_cRutaNorm;
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+#	 if ( defined ( WIN ) )
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			if ( ( dwAtributos  & FILE_ATTRIBUTE_ARCHIVE ) == FILE_ATTRIBUTE_ARCHIVE )
-			{
-				iRes = 1;
-			}
-			else
+			if ( ( dwAtributos & FILE_ATTRIBUTE_DIRECTORY ) == FILE_ATTRIBUTE_DIRECTORY )
 			{
 				iRes = 0;
 			}
+			else
+			{
+				iRes = 1;
+			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
 
-# else
-	struct stat statInfo;
-
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
+#	 else
 		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRuta, &statInfo ) < 0 )
+		if ( stat ( p_cRutaNorm, &statInfo ) < 0 )
 		{
 			  iRes = 0;
 		}
@@ -932,18 +974,19 @@ int SisExisteFichero ( const char * p_cRuta )
 		{
 			iRes = 1;
 		}
+#	 endif
+		MemLiberarCadena ( &p_cRutaNorm );
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
-# endif
 	return ( iRes );
 }
 
 int SisExisteFicheroExt ( const char * p_cDirectorio, const char * p_cFichero )
 {
-	int			iRes;
+	int		iRes;
 	char *	p_cRuta;
 
 	p_cRuta = SisComponerRuta ( p_cDirectorio, p_cFichero, 0 );
@@ -962,18 +1005,25 @@ int SisExisteFicheroExt ( const char * p_cDirectorio, const char * p_cFichero )
 int SisExisteDirectorio ( const char * p_cRuta )
 {
 	int			iRes;
+	char *		p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	
+#	 if ( defined ( WIN ) )
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
 		}
-		else 
+		else
 		{
 			if ( ( dwAtributos  & FILE_ATTRIBUTE_DIRECTORY ) == FILE_ATTRIBUTE_DIRECTORY )
 			{
@@ -984,19 +1034,10 @@ int SisExisteDirectorio ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
 
-# else
-	struct stat statInfo;
-
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
+#	 else
 		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRuta, &statInfo ) != 0 )
+		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
 		{
 			  iRes = 0;
 		}
@@ -1011,19 +1052,19 @@ int SisExisteDirectorio ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
+# endif
+		MemLiberarCadena ( &p_cRutaNorm );
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
-# endif
-
 	return ( iRes );
 }
 
 int SisExisteDirectorioExt ( const char * p_cDirectorio, const char * p_cSubdirectorio )
 {
-	int			iRes;
+	int		iRes;
 	char *	p_cRuta;
 
 	p_cRuta = SisComponerRuta ( p_cDirectorio, p_cSubdirectorio, 0 );
@@ -1043,14 +1084,24 @@ int SisCrearFichero ( const char * p_cRuta )
 {
 	FILE *	p_fObj;
 	int		iRes;
+	char *	p_cRutaNorm;
 
 	if ( SisExisteFichero ( p_cRuta ) == 0 )
 	{
-		p_fObj = fopen ( p_cRuta, "a" );
-		if ( ES_VALIDO ( p_fObj ) )
-		{
-			fclose ( p_fObj );
-			iRes = 1;
+		p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+		if ( ES_VALIDO ( p_cRutaNorm ) )
+		{	
+			p_fObj = fopen ( p_cRutaNorm, "a" );
+			if ( ES_VALIDO ( p_fObj ) )
+			{
+				fclose ( p_fObj );
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
+			MemLiberarCadena ( &p_cRutaNorm );
 		}
 		else
 		{
@@ -1059,14 +1110,14 @@ int SisCrearFichero ( const char * p_cRuta )
 	}
 	else
 	{
-		iRes = 0;
+		iRes = 1;
 	}
 	return ( iRes );
 }
 
 int SisCrearFicheroExt ( const char * p_cDirectorio, const char * p_cFichero )
 {
-	int			iRes;
+	int		iRes;
 	char *	p_cRuta;
 
 	p_cRuta = SisComponerRuta ( p_cDirectorio, p_cFichero, 0 );
@@ -1084,19 +1135,27 @@ int SisCrearFicheroExt ( const char * p_cDirectorio, const char * p_cFichero )
 
 int SisCrearDirectorio ( const char * p_cDirectorio )
 {
-	int	iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 	if ( SisExisteDirectorio ( p_cDirectorio ) == 0 )
 	{
-#	  if ( defined ( VC ) )
-		if ( mkdir ( p_cDirectorio ) == 0 )
-#	  elif ( defined ( WIN ) )
-		if ( CreateDirectory ( (LPCSTR) p_cDirectorio, NULL ) != 0 )		
-#	  else
-		if ( mkdir ( p_cDirectorio,  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH ) == 0 )
-#	  endif
-		{
-			iRes = 1;
+		p_cRutaNorm = SisRutaEstiloSistema ( p_cDirectorio );
+		if ( ES_VALIDO ( p_cRutaNorm ) )
+		{	
+#		  if ( defined ( WIN ) )
+			if ( CreateDirectory ( (LPCSTR) p_cRutaNorm, NULL ) != 0 )		
+#		  else
+			if ( mkdir ( p_cRutaNorm,  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH ) == 0 )
+#		  endif
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
+			MemLiberarCadena ( &p_cRutaNorm );
 		}
 		else
 		{
@@ -1105,14 +1164,14 @@ int SisCrearDirectorio ( const char * p_cDirectorio )
 	}
 	else
 	{
-		iRes = 0;
+		iRes = 1;
 	}
 	return ( iRes );
 }
 
 int SisCrearDirectorioExt ( const char * p_cDirectorio, const char * p_cSubdirectorio )
 {
-	int			iRes;
+	int		iRes;
 	char *	p_cRuta;
 
 	p_cRuta = SisComponerRuta ( p_cDirectorio, p_cSubdirectorio, 0 );
@@ -1130,17 +1189,27 @@ int SisCrearDirectorioExt ( const char * p_cDirectorio, const char * p_cSubdirec
 
 int SisEliminarFichero ( const char * p_cRuta )
 {
-	int	iRes;
+	int			iRes;
+	char *		p_cRutaNorm;
 
 	if ( SisExisteFichero ( p_cRuta ) == 1 )
 	{
-#	  if ( defined ( WIN ) )
-		if ( DeleteFile ( (LPCSTR) p_cRuta ) != 0 )		
-#	  else
-		if ( remove ( p_cRuta ) == 0 )
-#	  endif
-		{
-			iRes = 1;
+		p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+		if ( ES_VALIDO ( p_cRutaNorm ) )
+		{	
+#		  if ( defined ( WIN ) )
+			if ( DeleteFile ( (LPCSTR) p_cRutaNorm ) != 0 )		
+#		  else
+			if ( remove ( p_cRutaNorm ) == 0 )
+#		  endif
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
+			MemLiberarCadena ( &p_cRutaNorm );
 		}
 		else
 		{
@@ -1149,14 +1218,14 @@ int SisEliminarFichero ( const char * p_cRuta )
 	}
 	else
 	{
-		iRes = 0;
+		iRes = 1;
 	}
 	return ( iRes );
 }
 
 int SisEliminarFicheroExt ( const char * p_cDirectorio, const char * p_cFichero )
 {
-	int			iRes;
+	int		iRes;
 	char *	p_cRuta;
 
 	p_cRuta = SisComponerRuta ( p_cDirectorio, p_cFichero, 0 );
@@ -1199,19 +1268,27 @@ const char * SisMascaraBusquedaEnDirectorio ( const char * p_cDirectorio )
 
 int SisEliminarDirectorio ( const char * p_cDirectorio )
 {
-	int	iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 	if ( SisExisteDirectorio ( p_cDirectorio ) == 1 )
 	{
-#	  if ( defined ( VC ) )
-		if ( rmdir ( p_cDirectorio ) == 0 )
-#	  elif ( defined ( WIN ) )
-		if ( RemoveDirectory ( (LPCSTR) p_cDirectorio ) != 0 )		
-#	  else
-		if ( rmdir ( p_cDirectorio ) == 0 )
-#	  endif
-		{
-			iRes = 1;
+		p_cRutaNorm = SisRutaEstiloSistema ( p_cDirectorio );
+		if ( ES_VALIDO ( p_cRutaNorm ) )
+		{	
+#		  if ( defined ( WIN ) )
+			if ( RemoveDirectory ( (LPCSTR) p_cRutaNorm ) != 0 )		
+#		  else
+			if ( rmdir ( p_cRutaNorm ) == 0 )
+#		  endif
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
+			MemLiberarCadena ( &p_cRutaNorm );
 		}
 		else
 		{
@@ -1220,7 +1297,7 @@ int SisEliminarDirectorio ( const char * p_cDirectorio )
 	}
 	else
 	{
-		iRes = 0;
+		iRes = 1;
 	}
 	return ( iRes );
 }
@@ -1246,6 +1323,7 @@ int SisEliminarDirectorioExt ( const char * p_cDirectorio, const char * p_cSubdi
 int SisVaciarDirectorio ( const char * p_cDirectorio )
 {
 	int					iRes;
+	char *				p_cRutaNorm;
 # if ( defined ( WIN ) )
 	const char *		p_cMascBusqueda;
 	WIN32_FIND_DATA		fndfildatObj;
@@ -1258,77 +1336,85 @@ int SisVaciarDirectorio ( const char * p_cDirectorio )
 
 	if ( SisExisteDirectorio ( p_cDirectorio ) == 1 )
 	{
-#	  if ( defined ( WIN ) )
+		p_cRutaNorm = SisRutaEstiloSistema ( p_cDirectorio );
+		if ( ES_VALIDO ( p_cRutaNorm ) )
+		{	
+#		  if ( defined ( WIN ) )
 
-		p_cMascBusqueda = SisMascaraBusquedaEnDirectorio ( p_cDirectorio );
-		if ( ES_VALIDO ( p_cMascBusqueda ) )
-		{
-			hBusqueda = FindFirstFile ( p_cMascBusqueda, &fndfildatObj );
-			if ( hBusqueda != INVALID_HANDLE_VALUE ) 
+			p_cMascBusqueda = SisMascaraBusquedaEnDirectorio ( p_cRutaNorm );
+			if ( ES_VALIDO ( p_cMascBusqueda ) )
 			{
-				iRes = 1;
-				iResBusq = 1;
-				while ( ( iResBusq != 0 ) && ( iRes == 1 ) )
+				hBusqueda = FindFirstFile ( p_cMascBusqueda, &fndfildatObj );
+				if ( hBusqueda != INVALID_HANDLE_VALUE ) 
 				{
-					if ( fndfildatObj.cFileName [ 0 ] != '.' )
+					iRes = 1;
+					iResBusq = 1;
+					while ( ( iResBusq != 0 ) && ( iRes == 1 ) )
 					{
-						if ( SisExisteFicheroExt ( p_cDirectorio, fndfildatObj.cFileName ) == 1 )
+						if ( fndfildatObj.cFileName [ 0 ] != '.' )
 						{
-							if ( SisEliminarFicheroExt ( p_cDirectorio, fndfildatObj.cFileName ) == 0 )
+							if ( SisExisteFicheroExt ( p_cRutaNorm, fndfildatObj.cFileName ) == 1 )
 							{
-								iRes = 0;
+								if ( SisEliminarFicheroExt ( p_cRutaNorm, fndfildatObj.cFileName ) == 0 )
+								{
+									iRes = 0;
+								}
 							}
 						}
+						iResBusq = FindNextFile ( hBusqueda, &fndfildatObj );
 					}
-					iResBusq = FindNextFile ( hBusqueda, &fndfildatObj );
+					if ( ( iResBusq == 0 ) && ( GetLastError () !=  ERROR_NO_MORE_FILES ) )
+					{
+						iRes = 0;
+					}
+					FindClose ( hBusqueda );
 				}
-				if ( ( iResBusq == 0 ) && ( GetLastError () !=  ERROR_NO_MORE_FILES ) )
+				else
 				{
 					iRes = 0;
 				}
-				FindClose ( hBusqueda );
+				MemLiberar ( (void **) &p_cMascBusqueda );
 			}
 			else
 			{
 				iRes = 0;
 			}
-			MemLiberar ( (void **) &p_cMascBusqueda );
-		}
-		else
-		{
-			iRes = 0;
-		}
 
-#	  else
+#		  else
 
-		p_dirInfo = opendir ( p_cDirectorio );
-		if ( ES_VALIDO ( p_dirInfo ) )
-		{
-			iRes = 1;
-			p_directInfo = readdir ( p_dirInfo );
-			while ( ES_VALIDO ( p_directInfo ) )
+			p_dirInfo = opendir ( p_cRutaNorm );
+			if ( ES_VALIDO ( p_dirInfo ) )
 			{
-				if ( p_directInfo->d_name [ 0 ] != '.' )
+				iRes = 1;
+				p_directInfo = readdir ( p_dirInfo );
+				while ( ES_VALIDO ( p_directInfo ) )
 				{
-					if ( SisExisteFicheroExt ( p_cDirectorio, p_directInfo->d_name ) == 1 )
+					if ( p_directInfo->d_name [ 0 ] != '.' )
 					{
-						if ( SisEliminarFicheroExt ( p_cDirectorio, p_directInfo->d_name ) == 0 )
+						if ( SisExisteFicheroExt ( p_cRutaNorm, p_directInfo->d_name ) == 1 )
 						{
-							iRes = 0;
+							if ( SisEliminarFicheroExt ( p_cRutaNorm, p_directInfo->d_name ) == 0 )
+							{
+								iRes = 0;
+							}
 						}
 					}
+					p_directInfo = readdir ( p_dirInfo );
 				}
-				p_directInfo = readdir ( p_dirInfo );
+				closedir ( p_dirInfo );
 			}
-			closedir ( p_dirInfo );
+			else
+			{
+				iRes = 0;
+			}
+
+#		  endif
+			MemLiberarCadena ( &p_cRutaNorm );
 		}
 		else
 		{
 			iRes = 0;
 		}
-
-#	  endif
-
 	}
 	else
 	{
@@ -1358,57 +1444,70 @@ int SisVaciarDirectorioExt ( const char * p_cDirectorio, const char * p_cSubdire
 int SisCopiarFichero ( const char * p_cRutaOrig, const char * p_cRutaDest )
 {
 	int		iRes;
+	char *	p_cRutaOrigNorm;
+	char *	p_cRutaDestNorm;
 
 	if ( SisExisteFichero ( p_cRutaOrig ) == 1 ) 
 	{
-		SisEliminarFichero ( p_cRutaDest );
-#	  if ( defined ( WIN ) )
-		if ( CopyFile ( (LPCSTR) p_cRutaOrig, (LPCSTR) p_cRutaDest, TRUE ) != 0 )		
-#	  else
-		FILE *		p_fOrig;
-		FILE *		p_fDest;
-		char		c;
+		p_cRutaOrigNorm = SisRutaEstiloSistema ( p_cRutaOrig );
+		p_cRutaDestNorm = SisRutaEstiloSistema ( p_cRutaDest );
+		if ( ES_VALIDO ( p_cRutaOrigNorm ) && ES_VALIDO ( p_cRutaDestNorm ) )
+		{	
+			SisEliminarFichero ( p_cRutaDestNorm );
+#		  if ( defined ( WIN ) )
+			if ( CopyFile ( (LPCSTR) p_cRutaOrigNorm, (LPCSTR) p_cRutaDestNorm, TRUE ) != 0 )		
+#		  else
+			FILE *		p_fOrig;
+			FILE *		p_fDest;
+			char		c;
 
-		p_fOrig = fopen ( p_cRutaOrig, "rb" );
-		p_fDest = fopen ( p_cRutaDest, "wb" );
-		if ( ES_VALIDO ( p_fOrig ) && ES_VALIDO ( p_fDest ) )
-		{
-			int iFin = 1;
-			while ( iFin == 0 )
+			p_fOrig = fopen ( p_cRutaOrigNorm, "rb" );
+			p_fDest = fopen ( p_cRutaDestNorm, "wb" );
+			if ( ES_VALIDO ( p_fOrig ) && ES_VALIDO ( p_fDest ) )
 			{
-				fread ( (void *) &c, 1, sizeof ( char ), p_fOrig );
-				if ( feof ( p_fOrig ) == 0 )
+				int iFin = 1;
+				while ( iFin == 0 )
 				{
-					fwrite ( (void *) &c, 1, sizeof ( char ), p_fDest );
+					fread ( (void *) &c, 1, sizeof ( char ), p_fOrig );
+					if ( feof ( p_fOrig ) == 0 )
+					{
+						fwrite ( (void *) &c, 1, sizeof ( char ), p_fDest );
+					}
+					else
+					{
+						iFin = 1;
+					}
 				}
-				else
-				{
-					iFin = 1;
-				}
+				iRes = 1;
 			}
-			iRes = 1;
+			else
+			{
+				iRes = 0;
+			}
+			if ( ES_VALIDO ( p_fOrig ) ) 
+			{
+				fclose ( p_fOrig );
+			}
+			if ( ES_VALIDO ( p_fDest ) ) 
+			{
+				fclose ( p_fDest );
+			}
+			if ( iRes == 1 )
+#		  endif
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
 		}
 		else
 		{
 			iRes = 0;
 		}
-		if ( ES_VALIDO ( p_fOrig ) ) 
-		{
-			fclose ( p_fOrig );
-		}
-		if ( ES_VALIDO ( p_fDest ) ) 
-		{
-			fclose ( p_fDest );
-		}
-		if ( iRes == 1 )
-#	  endif
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		MemLiberarCadena ( &p_cRutaOrigNorm );
+		MemLiberarCadena ( &p_cRutaDestNorm );
 	}
 	else
 	{
@@ -1458,7 +1557,9 @@ int SisCopiarFicheroExt ( const char * p_cDirOrig, const char * p_cFicOrig, cons
 
 int SisMoverFichero ( const char * p_cRutaOrig, const char * p_cRutaDest, int iEliminar )
 {
-	int	iRes;
+	int		iRes;
+	char *	p_cRutaOrigNorm;
+	char *	p_cRutaDestNorm;
 
 	if ( SisExisteFichero ( p_cRutaOrig ) == 1 ) 
 	{
@@ -1466,18 +1567,29 @@ int SisMoverFichero ( const char * p_cRutaOrig, const char * p_cRutaDest, int iE
 		{
 			SisEliminarFichero ( p_cRutaDest );
 		}
-#	  if ( defined ( WIN ) )
-		if ( MoveFile ( (LPCSTR) p_cRutaOrig, (LPCSTR) p_cRutaDest ) != 0 )		
-#	  else
-		if ( rename ( p_cRutaOrig, p_cRutaDest ) == 0 )
-#	  endif
-		{
-			iRes = 1;
+		p_cRutaOrigNorm = SisRutaEstiloSistema ( p_cRutaOrig );
+		p_cRutaDestNorm = SisRutaEstiloSistema ( p_cRutaDest );
+		if ( ES_VALIDO ( p_cRutaOrigNorm ) && ES_VALIDO ( p_cRutaDestNorm ) )
+		{	
+#		  if ( defined ( WIN ) )
+			if ( MoveFile ( (LPCSTR) p_cRutaOrigNorm, (LPCSTR) p_cRutaDestNorm ) != 0 )		
+#		  else
+			if ( rename ( p_cRutaOrigNorm, p_cRutaDestNorm ) == 0 )
+#		  endif
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
 		}
 		else
 		{
 			iRes = 0;
 		}
+		MemLiberarCadena ( &p_cRutaOrigNorm );
+		MemLiberarCadena ( &p_cRutaDestNorm );
 	}
 	else
 	{
@@ -1541,7 +1653,7 @@ typedef struct _BY_HANDLE_FILE_INFORMATION { // bhfi
 
 int SisMoverFicheroExt ( const char * p_cDirOrig, const char * p_cFicOrig, const char * p_cDirDest, const char * p_cFicDest, int iEliminar )
 {
-	int			iRes;
+	int		iRes;
 	char *	p_cRutaOrig;
 	char *	p_cRutaDest;
 
@@ -1577,14 +1689,20 @@ int SisMoverFicheroExt ( const char * p_cDirOrig, const char * p_cFicOrig, const
 // PENDIENTE: UNIX/Linux
 int SisRutaComprimida ( const char * p_cRuta )
 {
-	int			iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	//struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
+	{	
+#	 if ( defined ( WIN ) )
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
@@ -1600,20 +1718,11 @@ int SisRutaComprimida ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
 
-# else
+#	 else
 	/*
-	struct stat statInfo;
-
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
 		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRuta, &statInfo ) != 0 )
+		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
 		{
 			  iRes = 0;
 		}
@@ -1628,29 +1737,35 @@ int SisRutaComprimida ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
+	*/
+# endif
+		MemLiberarCadena ( &p_cRutaNorm );
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
-	*/
-	iRes = 0;
-# endif
-
 	return ( iRes );
 }
 
 // PENDIENTE: UNIX/Linux
 int SisRutaEncriptada ( const char * p_cRuta )
 {
-	int			iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	//struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
+	{	
+#	 if ( defined ( WIN ) )
+
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
@@ -1666,20 +1781,11 @@ int SisRutaEncriptada ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
 
-# else
+#	 else
 	/*
-	struct stat statInfo;
-
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
 		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRuta, &statInfo ) != 0 )
+		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
 		{
 			  iRes = 0;
 		}
@@ -1700,23 +1806,35 @@ int SisRutaEncriptada ( const char * p_cRuta )
 		iRes = 1;
 	}
 	*/
-	iRes = 0;
-# endif
-
+		iRes = 0;
+#	 endif
+		MemLiberarCadena ( &p_cRutaNorm );
+	}
+	else
+	{
+		iRes = 0;
+	}
 	return ( iRes );
 }
 
 // PENDIENTE: UNIX/Linux
 int SisRutaOculta ( const char * p_cRuta )
 {
-	int			iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	//struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
+	{	
+#	 if ( defined ( WIN ) )
+
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
@@ -1732,20 +1850,11 @@ int SisRutaOculta ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
 
-# else
+#	 else
 	/*
-	struct stat statInfo;
-
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
 		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRuta, &statInfo ) != 0 )
+		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
 		{
 			  iRes = 0;
 		}
@@ -1760,29 +1869,35 @@ int SisRutaOculta ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
+	*/
+		iRes = 0;
+#	 endif
+		MemLiberarCadena ( &p_cRutaNorm );
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
-	*/
-	iRes = 0;
-# endif
-
 	return ( iRes );
 }
 
 // PENDIENTE: UNIX/Linux
 int SisFicheroEsAccesible ( const char * p_cRuta )
 {
-	int			iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	//struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
+	{	
+#	 if ( defined ( WIN ) )
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
@@ -1798,20 +1913,11 @@ int SisFicheroEsAccesible ( const char * p_cRuta )
 				iRes = 1;
 			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
 
 # else
 	/*
-	struct stat statInfo;
-
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
 		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRuta, &statInfo ) != 0 )
+		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
 		{
 			  iRes = 0;
 		}
@@ -1832,23 +1938,34 @@ int SisFicheroEsAccesible ( const char * p_cRuta )
 		iRes = 1;
 	}
 	*/
-	iRes = 0;
-# endif
-
+		iRes = 0;
+#	 endif
+		MemLiberarCadena ( &p_cRutaNorm );
+	}
+	else
+	{
+		iRes = 0;
+	}
 	return ( iRes );
 }
 
 // PENDIENTE: UNIX/Linux
 int SisRutaDeSoloLectura ( const char * p_cRuta )
 {
-	int			iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	//struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
+	{	
+#	 if ( defined ( WIN ) )
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
@@ -1864,20 +1981,11 @@ int SisRutaDeSoloLectura ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
 
-# else
+#	 else
 	/*
-	struct stat statInfo;
-
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
 		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRuta, &statInfo ) != 0 )
+		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
 		{
 			  iRes = 0;
 		}
@@ -1898,23 +2006,34 @@ int SisRutaDeSoloLectura ( const char * p_cRuta )
 		iRes = 1;
 	}
 	*/
-	iRes = 0;
-# endif
-
+		iRes = 0;
+#	 endif
+		MemLiberarCadena ( &p_cRutaNorm );
+	}
+	else
+	{
+		iRes = 0;
+	}
 	return ( iRes );
 }
 
 // PENDIENTE: UNIX/Linux
 int SisRutaDelSistema ( const char * p_cRuta )
 {
-	int			iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	//struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
+	{	
+#	 if ( defined ( WIN ) )
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
@@ -1930,20 +2049,11 @@ int SisRutaDelSistema ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
 
-# else
+#	 else
 	/*
-	struct stat statInfo;
-
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
 		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRuta, &statInfo ) != 0 )
+		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
 		{
 			  iRes = 0;
 		}
@@ -1959,28 +2069,35 @@ int SisRutaDelSistema ( const char * p_cRuta )
 			}
 		}
 	}
+	*/
+		iRes = 0;
+#	 endif
+		MemLiberarCadena ( &p_cRutaNorm );
+	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
-	*/
-	iRes = 0;
-# endif
-
 	return ( iRes );
 }
 
 // PENDIENTE: UNIX/Linux
 int SisFicheroEsTemporal ( const char * p_cRuta )
 {
-	int			iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	//struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
+	{	
+#	 if ( defined ( WIN ) )
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
@@ -1996,20 +2113,11 @@ int SisFicheroEsTemporal ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
 
-# else
+#	 else
 	/*
-	struct stat statInfo;
-
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
 		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRuta, &statInfo ) != 0 )
+		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
 		{
 			  iRes = 0;
 		}
@@ -2024,29 +2132,35 @@ int SisFicheroEsTemporal ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
+	*/
+		iRes = 0;
+#	 endif
+		MemLiberarCadena ( &p_cRutaNorm );
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
-	*/
-	iRes = 0;
-# endif
-
 	return ( iRes );
 }
 
 // PENDIENTE: UNIX/Linux
 int SisFicheroAsociadoAAplicacion ( const char * p_cRuta )
 {
-	int			iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	//struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
+	{	
+#	 if ( defined ( WIN ) )
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
@@ -2062,30 +2176,36 @@ int SisFicheroAsociadoAAplicacion ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
+
+#	 else
+	// ï¿½Utilizar el comando du -h?
+		iRes = 0;
+#	 endif
+		MemLiberarCadena ( &p_cRutaNorm );
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
-
-# else
-	// ¿Utilizar el comando du -h?
-	iRes = 0;
-# endif
-
 	return ( iRes );
 }
 
 int SisFicheroConOptimizacionEspacial ( const char * p_cRuta )
 {
-	int			iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
+# else
+	//struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
+	{	
+#	 if ( defined ( WIN ) )
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
@@ -2101,31 +2221,36 @@ int SisFicheroConOptimizacionEspacial ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
+#	 else
+	// Figura de Windows:
+		iRes = 0;
+#	 endif
+		MemLiberarCadena ( &p_cRutaNorm );
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
-
-# else
-	// Figura de Windows:
-	iRes = 0;
-# endif
-
 	return ( iRes );
 }
 
 int SisRutaDesactivarModoSoloLectura ( const char * p_cRuta )
 {
-	int			iRes;
+	int		iRes;
+	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
 	DWORD		dwMascara;
+# else
+	//struct stat statInfo;
+# endif
 
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
-		dwAtributos = GetFileAttributes ( p_cRuta );
+	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
+	if ( ES_VALIDO ( p_cRutaNorm ) )
+	{	
+#	 if ( defined ( WIN ) )
+		dwAtributos = GetFileAttributes ( p_cRutaNorm );
 		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
 		{
 			iRes = 0;
@@ -2144,20 +2269,11 @@ int SisRutaDesactivarModoSoloLectura ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
 
-# else
+#	 else
 	/*
-	struct stat statInfo;
-
-	if ( ES_VALIDO ( p_cRuta ) )
-	{
 		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRuta, &statInfo ) != 0 )
+		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
 		{
 			  iRes = 0;
 		}
@@ -2172,15 +2288,15 @@ int SisRutaDesactivarModoSoloLectura ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
+	*/
+		iRes = 0;
+#	 endif
+		MemLiberarCadena ( &p_cRutaNorm );
 	}
 	else
 	{
-		iRes = 1;
+		iRes = 0;
 	}
-	*/
-	iRes = 0;
-# endif
-
 	return ( iRes );
 }
 
@@ -2450,30 +2566,52 @@ char * SisResolverDirectorioRelativo ( const char * p_cRutaBase, const char * p_
 	int		iPartes;
 	int		iPartesRel;
 	int 	iFinBucle;
+	int 	iWindows;
+	char	cSep;
+	char 	cUnidad;
 
-	if ( ES_VALIDO ( p_cRutaBase ) && ES_VALIDO ( p_cRutaRelativa ) )
+	if ( ( SisEsRutaAbsoluta ( p_cRutaBase ) == 1 ) && 
+			( SisEsRutaRelativa ( p_cRutaRelativa ) == 1 ) )
 	{
-		p_cRutaBaseCopia = SisRutaEstiloUnix ( p_cRutaBase );
-		p_cRutaRelativaCopia = SisRutaEstiloUnix ( p_cRutaRelativa );
+		if ( SisRutaEsEstiloWindows ( p_cRutaBase ) == 1 ) 
+		{
+			p_cRutaBaseCopia = SisRutaEstiloWindows ( p_cRutaBase );
+			p_cRutaRelativaCopia = SisRutaEstiloWindows ( p_cRutaRelativa );
+			iWindows = 1;
+			cSep = '\\';
+			cUnidad = CadCaracter ( p_cRutaBaseCopia, 0 );
+			CadEliminarPrimerosCaracteres ( p_cRutaBaseCopia, 2 );
+		}
+		else
+		{
+			p_cRutaBaseCopia = SisRutaEstiloUnix ( p_cRutaBase );
+			p_cRutaRelativaCopia = SisRutaEstiloUnix ( p_cRutaRelativa );
+			iWindows = 0;
+			cSep = '/';
+		}
 		if ( ES_VALIDO ( p_cRutaBaseCopia ) && ES_VALIDO ( p_cRutaRelativaCopia ) )
 		{
-			if ( ( CadEmpiezaPorCaracter ( p_cRutaBaseCopia, '/' ) == 1 ) &&
+			if ( ( CadEmpiezaPorCaracter ( p_cRutaBaseCopia, cSep ) == 1 ) &&
 				 ( CadEmpiezaPorCaracter ( p_cRutaRelativaCopia, '.' ) == 1 ) )
 			{
 				p_cResultado = CadCrear ( MAXPATHLEN - 1 );
+				if ( iWindows == 1 )
+				{
+					CadConcatenarConFormato ( p_cResultado, "%c:", cUnidad );
+				}
 				p_p_cPartes = (char **) MemReservar ( MAX_PARTES * sizeof ( char * ) );
-				iPartes = CadNumPalabrasSep ( p_cRutaBaseCopia, '/' );
+				iPartes = CadNumPalabrasSep ( p_cRutaBaseCopia, cSep );
 				for ( iCount = 0; iCount < iPartes; iCount = iCount + 1 )
 				{
-					p_p_cPartes [ iCount ] = CadPalabraSep ( p_cRutaBaseCopia, iCount, '/' );
+					p_p_cPartes [ iCount ] = CadPalabraSep ( p_cRutaBaseCopia, iCount, cSep );
 				}
 				
-				iPartesRel = CadNumPalabrasSep ( p_cRutaRelativaCopia, '/' );
-				iCountRel = 1; 
+				iPartesRel = CadNumPalabrasSep ( p_cRutaRelativaCopia, cSep );
+				iCountRel = 0; 
 				iFinBucle = 0;
 				while ( ( iCountRel < iPartesRel ) && ( iFinBucle == 0 ) )
 				{
-					p_cToken = CadPalabraSep ( p_cRutaRelativaCopia, iCountRel, '/' );
+					p_cToken = CadPalabraSep ( p_cRutaRelativaCopia, iCountRel, cSep );
 					if ( CadEsIgual ( p_cToken, ".." ) == 1 )
 					{
 						if ( iCount > 0 )
@@ -2482,9 +2620,13 @@ char * SisResolverDirectorioRelativo ( const char * p_cRutaBase, const char * p_
 						}
 						iCountRel = iCountRel + 1 ;
 					}
-					else
+					else if ( CadEsIgual ( p_cToken, "." ) == 0 )
 					{
 						iFinBucle = 1;
+					}
+					else 
+					{
+						iCountRel = iCountRel + 1 ;
 					}
 					MemLiberar ( ( void ** ) &p_cToken );
 				}
@@ -2492,7 +2634,7 @@ char * SisResolverDirectorioRelativo ( const char * p_cRutaBase, const char * p_
 				{
 					if ( i < iCount )
 					{
-						CadConcatenarCaracter ( p_cResultado, '/' );
+						CadConcatenarCaracter ( p_cResultado, cSep );
 						CadConcatenar ( p_cResultado, p_p_cPartes [ i ] );
 					}
 					MemLiberar ( ( void ** ) &(p_p_cPartes [ i ]) );
@@ -2500,18 +2642,17 @@ char * SisResolverDirectorioRelativo ( const char * p_cRutaBase, const char * p_
 				MemLiberar ( ( void ** ) &p_p_cPartes );
 				while ( iCountRel < iPartesRel )
 				{
-					p_cToken = CadPalabraSep ( p_cRutaRelativaCopia, iCountRel, '/' );
-					CadConcatenarCaracter ( p_cResultado, '/' );
+					p_cToken = CadPalabraSep ( p_cRutaRelativaCopia, iCountRel, cSep );
+					CadConcatenarCaracter ( p_cResultado, cSep );
 					CadConcatenar ( p_cResultado, p_cToken );
 					MemLiberar ( ( void ** ) &p_cToken );
 					iCountRel = iCountRel + 1 ;
 				}
 				if ( CadLongitud ( p_cResultado ) == 0 )
 				{
-					CadConcatenarCaracter ( p_cResultado, '/' );
+					CadConcatenarCaracter ( p_cResultado, cSep );
 				}
-				p_cRes = SisRutaEstiloSistema ( p_cResultado ); 
-				MemLiberarCadena ( &p_cResultado );
+				p_cRes = p_cResultado;
 			}
 			else
 			{
@@ -2535,14 +2676,12 @@ char * SisResolverDirectorioRelativo ( const char * p_cRutaBase, const char * p_
 }
 
 
-const char * SisDirectorioRaiz ()
+char * SisDirectorioRaiz ()
 {
-#if ( defined ( CYGWIN ) )
-	return ( "/" );
-#elif ( defined ( WIN ) )
-	return ( "C:\\" );
+#if ( defined ( WIN ) )
+	return ( CadDuplicar ( "C:\\" ) );
 #else
-	return ( "/" );
+	return ( CadDuplicar ( "/" ) );
 #endif
 }
 

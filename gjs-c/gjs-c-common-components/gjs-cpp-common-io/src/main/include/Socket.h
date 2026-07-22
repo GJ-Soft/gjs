@@ -2,11 +2,9 @@
 #define _ORG_GJS_C_CC_CPP_SOCKET_H
 
 
-#include <BaseConfig.h>
 
-#include <SocketExcepcion.h>
+#include <Precompilacion.h>
 
-#include <string>
 
 #if ( defined ( WIN ) )
 #	include <winsock2.h>
@@ -15,6 +13,9 @@
 # 	include <netinet/in.h>
 #endif	
 
+#include <SocketExcepcion.h>
+
+#include <string>
 
 
 

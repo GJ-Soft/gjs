@@ -38,6 +38,8 @@ extern bool TestContador();
 extern bool TestFicheroFormateado();
 extern bool TestControlConcurrencia();
 extern bool TestMapaVector();
+extern bool TestCalculo();
+extern bool TestMemoriaGlobal();
 
 
 int main ( int argc, char * argv[] )
@@ -46,27 +48,29 @@ int main ( int argc, char * argv[] )
 	int iRes = 0;
 
 	map<string, FUNCION_BOOL> mapTests;
-	mapTests[ "StringStreamOut" ] = TestStringStreamOut;
-	mapTests[ "CaptorSalida" ] = TestCaptorSalida;
-	mapTests[ "Simbolos" ] = TestSimbolos;
-	mapTests[ "WinHerramientas" ] = TestWinHerramientas;
-	mapTests[ "Secuencias" ] = TestSecuencias;
-	mapTests[ "Constantes" ] = TestConstantes;
-	mapTests[ "Ptr" ] = TestPtr;
-	mapTests[ "NodoBin" ] = TestNodoBin;
-	mapTests[ "ArbolBin" ] = TestArbolBin;
-	mapTests[ "TipoDatos" ] = TestTipoDatos;
-	mapTests[ "Tipo" ] = TestTipo;
-	mapTests[ "Atributo" ] = TestAtributo;
-	mapTests[ "Valor" ] = TestValor;
-	mapTests[ "Entidad" ] = TestEntidad;
-	mapTests[ "ListaValores" ] = TestListaValores;
-	mapTests[ "ConjuntoValores" ] = TestConjuntoValores;
-	mapTests[ "Propiedades" ] = TestPropiedades;
-	mapTests[ "Contador" ] = TestContador;
-	mapTests[ "FicheroFormateado" ] = TestFicheroFormateado;
-	mapTests[ "ControlConcurrencia" ] = TestControlConcurrencia;
-	mapTests[ "MapaVector" ] = TestMapaVector;
+	mapTests[ "StringStreamOutTest" ] = TestStringStreamOut;
+	mapTests[ "CaptorSalidaTest" ] = TestCaptorSalida;
+	mapTests[ "SimbolosTest" ] = TestSimbolos;
+	mapTests[ "WinHerramientasTest" ] = TestWinHerramientas;
+	mapTests[ "SecuenciasTest" ] = TestSecuencias;
+	mapTests[ "ConstantesTest" ] = TestConstantes;
+	mapTests[ "PtrTest" ] = TestPtr;
+	mapTests[ "NodoBinTest" ] = TestNodoBin;
+	mapTests[ "ArbolBinTest" ] = TestArbolBin;
+	mapTests[ "TipoDatosTest" ] = TestTipoDatos;
+	mapTests[ "TipoTest" ] = TestTipo;
+	mapTests[ "AtributoTest" ] = TestAtributo;
+	mapTests[ "ValorTest" ] = TestValor;
+	mapTests[ "EntidadTest" ] = TestEntidad;
+	mapTests[ "ListaValoresTest" ] = TestListaValores;
+	mapTests[ "ConjuntoValoresTest" ] = TestConjuntoValores;
+	mapTests[ "PropiedadesTest" ] = TestPropiedades;
+	mapTests[ "ContadorTest" ] = TestContador;
+	mapTests[ "FicheroFormateadoTest" ] = TestFicheroFormateado;
+	mapTests[ "ControlConcurrenciaTest" ] = TestControlConcurrencia;
+	mapTests[ "MapaVectorTest" ] = TestMapaVector;
+	mapTests[ "CalculoTest" ] = TestCalculo;
+	mapTests[ "MemoriaGlobalTest" ] = TestMemoriaGlobal;
 
 
 	string sTest ( "null" );
@@ -92,29 +96,14 @@ int main ( int argc, char * argv[] )
 		return( iRes );
 	}
 
-	if (! TestStringStreamOut () ||
-		! TestCaptorSalida () ||
-		! TestSimbolos () ||
-		! TestWinHerramientas () ||
-		! TestSecuencias () ||
-		! TestConstantes () ||
-		! TestPtr () ||
-		! TestNodoBin () ||
-		! TestArbolBin () ||
-		! TestTipoDatos () ||
-		! TestTipo () ||
-		! TestAtributo () ||
-		! TestValor () ||
-		! TestEntidad () ||
-		! TestListaValores () ||
-		! TestConjuntoValores () ||
-		! TestPropiedades () ||
-		! TestContador () ||
-		! TestFicheroFormateado() ||
-		! TestControlConcurrencia() ||
-		! TestMapaVector() )
+
+	for ( auto it = mapTests.begin(); it != mapTests.end(); ++it )
 	{
-		iRes = -1;
+		FUNCION_BOOL fTest = it->second;
+		if( fTest () != 1 )
+		{
+			iRes = -1;
+		}
 	}
 	fflush ( stdout );
 	return ( iRes );

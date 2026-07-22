@@ -1,21 +1,21 @@
 /***************************************************************************/
 /*                         Entorno.cpp                                     */
 /*-------------------------------------------------------------------------*/
-/* Librería: Entorno                                                       */
-/* Versión:  1.1.0                                                         */
+/* Librerï¿½a: Entorno                                                       */
+/* Versiï¿½n:  1.1.0                                                         */
 /* Fecha:    25/10/2006                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    Ginï¿½s Jimï¿½nez Sï¿½nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Fichero de código fuente que contiene la implementación de las rutinas  */
-/* de carácter general de inicialización del entorno.                      */
+/* Descripciï¿½n:                                                            */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de las rutinas  */
+/* de carï¿½cter general de inicializaciï¿½n del entorno.                      */
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este módulo está extraído de una librería más completa creada por el    */
+/* Este mï¿½dulo estï¿½ extraï¿½do de una librerï¿½a mï¿½s completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, así como cualquier añadido o modificación realizado.   */
-/* Pueden reportar de los mismos enviando un correo electrónico a la       */
-/* dirección: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, asï¿½ como cualquier aï¿½adido o modificaciï¿½n realizado.   */
+/* Pueden reportar de los mismos enviando un correo electrï¿½nico a la       */
+/* direcciï¿½n: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 
 
@@ -84,19 +84,9 @@ bool EntInicializar ( bool bConsola, const string & sNombre, int iVersion, int i
 
 			if ( bVaciarDirTemporal )
 			{
-				if ( SisVaciarDirectorio ( *SisDirectorioTemporal () )  )
-				{
-					g_bEntInicializado = true;
-				}
-				else
-				{
-					g_bEntInicializado = true;
-				}
+				SisVaciarDirectorio ( *SisDirectorioTemporal () );
 			}
-			else
-			{
-				g_bEntInicializado = true;
-			}
+			g_bEntInicializado = true;
 		}
 	}
 	return ( g_bEntInicializado );
@@ -108,6 +98,10 @@ void EntFinalizar ()
 	{
 		delete g_p_sEntDirDatos;
 		g_p_sEntDirDatos = NULL;
+		delete g_p_sEntDirSeguridad;
+		g_p_sEntDirSeguridad = NULL;
+		delete g_p_sEntDirLog;
+		g_p_sEntDirLog = NULL;
 		AplicFinalizar ();
 
 #	  if ( defined ( WIN )  )

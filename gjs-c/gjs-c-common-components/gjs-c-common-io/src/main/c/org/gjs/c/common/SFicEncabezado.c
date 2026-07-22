@@ -55,11 +55,10 @@ SFicEncabezado * SFicEncAsignar ( const char * p_cRuta )
 				ulPos = sizeof ( unsigned long );
 			}
 			ulTam = sizeof ( unsigned long );
-			SFicAlCerrar ( p_ficObj->p_ficObj );
 			if ( SFicAlLeerBufferEn ( p_ficObj->p_ficObj, ulPos, (byte *) &(p_ficObj->ulTamCabecera), &ulTam ) == 0 )
 			{
 				SFicEncDestruir ( &p_ficObj );
-			}	
+			}
 		}
 		else
 		{

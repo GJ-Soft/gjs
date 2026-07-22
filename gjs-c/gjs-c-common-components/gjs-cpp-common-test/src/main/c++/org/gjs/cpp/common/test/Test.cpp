@@ -1,5 +1,5 @@
-#include "Test.h"
 #include "CppTestConfig.h"
+#include "Test.h"
 
 #include <signal.h>
 #include <stdexcept>

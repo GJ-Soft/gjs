@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <thread>
+#include <atomic>
 
 
 
@@ -18,8 +19,10 @@ namespace org
 			class ControlConcurrencia
 			{
 			private:
-				std::mutex 			mtxAcceso;
-				std::thread::id * 	idBloqueante = nullptr;
+				std::mutex 						mtxAcceso;
+				// Dueno del bloqueo (o thread::id() si esta libre). Atomico para
+				// poder consultarlo sin cerrojo sin incurrir en carrera de datos.
+				std::atomic<std::thread::id> 	idBloqueante { std::thread::id() };
 
 			public:
 				ControlConcurrencia ();

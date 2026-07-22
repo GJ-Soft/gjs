@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                             ASCIIEstandar.cpp                              */
 /*----------------------------------------------------------------------------*/
-/* Librería:  GBase                                                           */
-/* Versión:   1.0.0                                                           */
+/* Librerï¿½a:  GBase                                                           */
+/* Versiï¿½n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de las rutinas     */
-/* de carácter general de consulta y conversión de carácteres en la           */
-/* codificación ASCII estánar (0-127).                                        */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de las rutinas     */
+/* de carï¿½cter general de consulta y conversiï¿½n de carï¿½cteres en la           */
+/* codificaciï¿½n ASCII estï¿½nar (0-127).                                        */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -53,8 +53,8 @@ char ASCIICaracter ( int iCod )
 
 bool ASCIIEsCodigoControl ( char cVal )
 {
-	int iCod = ASCIICodigo ( cVal );	
-	return ( ( iCod < ASCII_US ) || ( iCod == ASCII_DEL ) );
+	int iCod = ASCIICodigo ( cVal );
+	return ( ( iCod <= ASCII_US ) || ( iCod == ASCII_DEL ) );
 }
 
 

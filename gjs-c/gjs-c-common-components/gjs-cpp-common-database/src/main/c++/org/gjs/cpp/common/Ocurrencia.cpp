@@ -24,12 +24,16 @@ Ocurrencia::Ocurrencia ( Entidad * _entidad ) : ListaValores( ( ( _entidad != NU
 }
 
 Ocurrencia::Ocurrencia( Ocurrencia * obj )
+	: ListaValores( ( ( obj != NULL ) && ( obj->getEntidad() != NULL ) ) ? obj->getEntidad()->NumAtributos() : 0, false )
 {
+	entidad = ( obj != NULL ) ? obj->getEntidad() : NULL;
 	Asignar( obj );
 }
 
 Ocurrencia::Ocurrencia( Ocurrencia & obj )
+	: ListaValores( ( obj.getEntidad() != NULL ) ? obj.getEntidad()->NumAtributos() : 0, false )
 {
+	entidad = obj.getEntidad();
 	Asignar( obj );
 }
 
@@ -128,7 +132,12 @@ Valor * Ocurrencia::getValor ( int iIndice )
 
 void Ocurrencia::Asignar( Ocurrencia & obj )
 {
-	if ( EsCompatible ( obj ) )
+	/* La compatibilidad se comprueba sobre la estructura (entidad) y el tamano,
+	   no sobre la validez de los valores de destino: una ocurrencia recien creada
+	   tiene valores nulos (invalida) pero debe poder recibir una copia. */
+	if ( obj.EsValida() && ( entidad != NULL ) &&
+			entidad->EsCompatible( obj.getEntidad() ) &&
+			( NumValores() == obj.NumValores() ) )
 	{
 		for ( int iInd = 0; iInd < NumValores(); iInd = iInd + 1 )
 		{

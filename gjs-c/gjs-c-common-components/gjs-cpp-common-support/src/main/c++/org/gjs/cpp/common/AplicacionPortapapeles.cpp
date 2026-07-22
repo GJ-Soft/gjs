@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                         AplicacionPortapapeles.cpp                         */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Aplicacion                                                      */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Aplicacion                                                      */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de algunas         */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de algunas         */
 /* para manejo del portapapeles de Windows.                                   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -54,7 +54,7 @@ void AplicPplesCopiar ( const string & sTexto )
 	{
 		EmptyClipboard ();
 
-		dwTam = ((DWORD) sTexto.lenght() )) + 1;
+		dwTam = ((DWORD) sTexto.length() ) + 1;
 		if ( dwTam > 0 )
 		{
 			hMem = GlobalAlloc ( GMEM_FIXED, dwTam );
@@ -73,11 +73,11 @@ void AplicPplesCopiar ( const string & sTexto )
     CloseClipboard();
 }
 
-string AplicPplesContenido ( int iLimpiar )
+string * AplicPplesContenido ( bool bLimpiar )
 {
 	DWORD	dwTam;
 	HANDLE	hMem;
-	string 	sRes = "";
+	string 	* p_sRes = NULL;
 
 	if ( OpenClipboard ( GetActiveWindow () ) != 0 )
 	{
@@ -90,16 +90,16 @@ string AplicPplesContenido ( int iLimpiar )
 			{
 				vector<char> buffer = vector<char>  ( dwTam - 1 );
 				CopyMemory ( buffer.data(), hMem, dwTam - 1 );
-				if ( iLimpiar == 1 )
+				if ( bLimpiar )
 				{
 					EmptyClipboard ();
 				}
-				sRes = string ( buffer.data() );
+				p_sRes = new string ( buffer.data() );
 			}
 		}
 	}
     CloseClipboard();
-	return ( sRes );
+	return ( p_sRes );
 }
 
 

@@ -1,9 +1,0 @@
-<component-set>
-	<components>
-		<component>
-			<role>org.apache.maven.AbstractMavenLifecycleParticipant</role>
-			<role-hint>profile-activator</role-hint>
-			<implementation>org.gjs.maven.extensions.profile.ProfileActivationPropertyExtension</implementation>
-		</component>
-	</components>
-</component-set>

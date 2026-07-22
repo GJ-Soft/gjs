@@ -51,6 +51,10 @@ SFicBloquesIdentificados * SFicBloqIdAsignar ( const char * p_cRuta )
 				SFicBloqIdDestruir ( &p_ficObj );
 			}
 		}
+		else
+		{
+			SFicBloqIdDestruir ( &p_ficObj );
+		}
 	}
 	else
 	{
@@ -335,7 +339,7 @@ unsigned long SFicBloqIdTamBloque ( SFicBloquesIdentificados * p_ficObj )
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		ulRes = SFicBloqTamBloque ( p_ficObj->p_ficObj );
+		ulRes = SFicBloqTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQID_TAM_ID;
 	}
 	else
 	{
@@ -1353,6 +1357,14 @@ int _SFicBloqIdActualizarValores ( SFicBloquesIdentificados * p_ficObj )
 				ulBloque = ulBloque + 1;
 			}
 			MemLiberar ( (void **) &p_byBloque );
+			if ( iError == 0 )
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
 		}
 		else
 		{

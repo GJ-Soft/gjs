@@ -406,8 +406,19 @@ int SisProcesador ()
 		iRes = PROC_DESCONOCIDO;
 	}
 # else
-	// PENDIENTE:
-	iRes = PROC_DESCONOCIDO;
+	// Deteccion de la arquitectura por macros del compilador ( arquitectura del
+	// binario ). ARM/otros no tienen constante -> PROC_ARQ_DESCONOCIDO.
+#	if ( defined ( __x86_64__ ) || defined ( __i386__ ) || defined ( __amd64__ ) )
+	iRes = PROC_ARQ_INTEL;
+#	elif ( defined ( __mips__ ) )
+	iRes = PROC_ARQ_MIPS;
+#	elif ( defined ( __alpha__ ) )
+	iRes = PROC_ARQ_ALPHA;
+#	elif ( defined ( __powerpc__ ) || defined ( __ppc__ ) || defined ( __PPC__ ) )
+	iRes = PROC_ARQ_PPC;
+#	else
+	iRes = PROC_ARQ_DESCONOCIDO;
+#	endif
 # endif
 	return ( iRes );
 }
@@ -570,52 +581,16 @@ void * SisMemAplicDireccionMaxima ()
 	return ( p_vRes );
 }
 
-/*
-const char * SisDirectorioSistema ()
+#if ( defined ( WIN ) )
+char * SisDirectorioSistema ()
 {
-	const char * p_cRes;
+	const char * 	p_cRes;
 	SBuffer	*		p_bufDatos;
 	
 	p_bufDatos = SBufCrear ( SIS_SO_MAX_TAM_BUFFER );
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
-#	 if ( defined ( WIN ) )
-		if ( GetSystemDirectory ( (LPTSTR) SBufDireccion ( p_bufDatos ), (UINT) SBufTam ( p_bufDatos ) ) > 0 )
-#	 else
-		// PENDIENTE:
-#	 endif
-		{
-			p_cRes = SBufDuplicarCadena ( p_bufDatos );
-		}
-		else
-		{
-			p_cRes = NULL;
-		}
-		SBufDestruir ( &p_bufDatos );
-	}
-	else
-	{
-		p_cRes = NULL;
-	}
-	return ( p_cRes );
-}
-*/
-
-#if ( defined ( WIN ) || defined ( DOS ) )
-const char * SisDirectorioSistema ()
-{
-	const char * p_cRes;
-	SBuffer	*		p_bufDatos;
-	
-	p_bufDatos = SBufCrear ( SIS_SO_MAX_TAM_BUFFER );
-	if ( ES_VALIDO ( p_bufDatos ) )
-	{
-#	 if ( defined ( WIN ) )
 		if ( GetWindowsDirectory ( (LPTSTR) SBufDireccion ( p_bufDatos ), (UINT) SBufTam ( p_bufDatos ) ) > 0 )
-#	 else
-		// PENDIENTE para DOS:
-		if ( 0 )
-#	 endif
 		{
 			p_cRes = SBufDuplicarCadena ( p_bufDatos );
 		}
@@ -633,9 +608,9 @@ const char * SisDirectorioSistema ()
 }
 #endif
 
-const char * SisDirectorioTemporal ()
+char * SisDirectorioTemporal ()
 {
-	const char * p_cRes;
+	char * p_cRes;
 #if ( defined ( WIN ) || !defined ( DOS ) )
 	SBuffer	*		p_bufDatos;
 #endif

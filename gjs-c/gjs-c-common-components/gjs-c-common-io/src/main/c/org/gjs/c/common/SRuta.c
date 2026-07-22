@@ -1,5 +1,6 @@
 
 #include "SRuta.h"
+#include "SistemaFicheros.h"
 
 #include "FicherosConfig.h"
 
@@ -174,7 +175,7 @@ int SRutEsDirectorioValido ( SRuta * p_rutObj )
 
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
-        iRes = ExpRegSeCumple ( "^([a-zA-Z]:\\\\|\\\\\\\\[^\\\\]+\\\\|/)?((\\.|[^\\\\/:\\*\\?\"<>\\|]+)[/\\\\])*$", SCadValorConstante ( p_rutObj->p_cadFichero ) );
+        iRes = SisEsRutaValida ( SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
 	}
 	else
 	{
@@ -189,7 +190,7 @@ int SRutEsFicheroValido ( SRuta * p_rutObj )
 
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
-        iRes = ExpRegSeCumple ( "^[^\\\\/:\\*\\?\"<>\\|]+$", SCadValorConstante ( p_rutObj->p_cadFichero ) );
+        iRes = SisEsFicheroValido ( SCadValorConstante ( p_rutObj->p_cadFichero ) );
 	}
 	else
 	{
@@ -248,7 +249,7 @@ int SRutEsAbsoluta ( SRuta * p_rutObj )
 	
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
-        iRes = ExpRegSeCumple ( "^([a-zA-Z]:\\\\|\\\\\\\\[^\\\\]+\\\\|/)((\\.{1,2}|[^\\\\/:\\*\\?\"<>\\|]+)[/\\\\])*$", SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
+        iRes = SisEsRutaAbsoluta ( SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
 	}
 	else
 	{
@@ -263,7 +264,7 @@ int SRutEsRelativa ( SRuta * p_rutObj )
 	
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
-        iRes = ExpRegSeCumple ( "^(\\.[/\\\\]|(\\.{1,2}[/\\\\]))(\\.{1,2}[/\\\\]|[^\\\\/:\\*\\?\"<>\\|]+[/\\\\])*$", SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
+        iRes = SisEsRutaRelativa ( SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
 	}
 	else
 	{
@@ -331,63 +332,17 @@ int SRutExiste ( SRuta * p_rutObj )
 int SRutExisteDirectorio ( SRuta * p_rutObj )
 {
 	int iRes;
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-# else
-	struct stat statInfo;
-# endif
-	
+
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
-#   if ( defined ( WIN ) )
         if ( ES_VALIDO ( p_rutObj->p_cadDirectorio ) )
         {
-            dwAtributos = GetFileAttributes ( SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
-            if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
-            {
-                iRes = 0;
-            }
-            else 
-            {
-                if ( ( dwAtributos  & FILE_ATTRIBUTE_DIRECTORY ) == FILE_ATTRIBUTE_DIRECTORY )
-                {
-                    iRes = 1;
-                }
-                else
-                {
-                    iRes = 0;
-                }
-            }
+            iRes = SisExisteDirectorio ( SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
         }
         else
         {
             iRes = 1;
         }
-#   else
-        if ( ES_VALIDO ( p_rutObj->p_cadDirectorio ) )
-        {
-            memset ( &statInfo, 0, sizeof(struct stat) );
-            if ( stat ( SCadValorConstante ( p_rutObj->p_cadDirectorio ), &statInfo ) != 0 )
-            {
-                iRes = 0;
-            }
-            else 
-            {
-                if ( ( statInfo.st_mode & S_IFDIR ) == S_IFDIR )
-                {
-                    iRes = 1;
-                }
-                else
-                {
-                    iRes = 0;
-                }
-            }
-        }
-        else
-        {
-            iRes = 1;
-        }
-#   endif
 	}
 	else
 	{
@@ -400,11 +355,6 @@ int SRutExisteFichero ( SRuta * p_rutObj )
 {
 	int     iRes;
 	char *	p_cRuta;
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-# else
-	struct stat statInfo;
-# endif
 	
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
@@ -413,27 +363,7 @@ int SRutExisteFichero ( SRuta * p_rutObj )
             p_cRuta = SRutRutaAbsolutaLit ( p_rutObj );
             if ( ES_VALIDO ( p_cRuta ) )
             {
-#		 if ( defined ( WIN ) )
-                dwAtributos = GetFileAttributes ( p_cRuta );
-                if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
-                {
-                    iRes = 0;
-                }
-                else 
-                {
-                    iRes = 1;
-                }
-#		 else
-                memset ( &statInfo, 0, sizeof(struct stat) );
-                if ( stat ( p_cRuta, &statInfo ) < 0 )
-                {
-                    iRes = 0;
-                }
-                else 
-                {
-                    iRes = 1;
-                }
-#		 endif
+                iRes = SisExisteFichero ( p_cRuta );
                 MemLiberar ( (void **) &p_cRuta );
             }
             else
@@ -459,7 +389,14 @@ int SRutTieneExtension ( SRuta * p_rutObj )
 	
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
-       iRes = ExpRegSeCumple ( "^[^.]+(\\.[^.]+)+$", SCadValorConstante ( p_rutObj->p_cadFichero ) );
+		if ( SCadBuscarCaracterDesc ( p_rutObj->p_cadFichero, '.', SCadLongitud ( p_rutObj->p_cadFichero ) - 1 ) > 0 )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
     }
 	else
 	{
@@ -471,15 +408,15 @@ int SRutTieneExtension ( SRuta * p_rutObj )
 int SRutTieneExtensionExt ( SRuta * p_rutObj, const char * p_cExt )
 {
 	int     iRes;
-    char *  p_cExpReg;
+    char *  p_cFinal;
 	
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
 		if ( ES_VALIDO ( p_cExt ) )
 		{
-            p_cExpReg = CadCrearConFormato ( ".%s", p_cExt );
-            iRes = ExpRegSeCumple ( p_cExpReg, SCadValorConstante ( p_rutObj->p_cadFichero ) );
-            MemLiberar ( (void **) &p_cExpReg );
+            p_cFinal = CadCrearConFormato ( ".%s", p_cExt );
+            iRes = SCadAcabaPorLiteral ( p_rutObj->p_cadFichero, p_cFinal );
+            MemLiberar ( (void **) &p_cFinal );
 		}
 		else
 		{
@@ -587,10 +524,10 @@ SCadena * SRutSubdirectorio ( SRuta * p_rutObj )
 
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
-		iPos = SCadBuscarCaracterDesc ( p_rutObj->p_cadDirectorio, '/', 0 );
+		iPos = SCadBuscarCaracterDesc ( p_rutObj->p_cadDirectorio, '/', SCadLongitud ( p_rutObj->p_cadDirectorio ) - 1 );
 		if ( iPos < 0 )
 		{
-			iPos = SCadBuscarCaracterDesc ( p_rutObj->p_cadDirectorio, '\\', 0 );
+			iPos = SCadBuscarCaracterDesc ( p_rutObj->p_cadDirectorio, '\\', SCadLongitud ( p_rutObj->p_cadDirectorio ) - 1 );
 		}
 		if ( iPos >= 0 )
 		{
@@ -615,10 +552,10 @@ char * SRutSubdirectorioLit ( SRuta * p_rutObj )
 
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
-		iPos = CadBuscarDescCaracter ( SCadValor ( p_rutObj->p_cadDirectorio ), '/', 0 );
+		iPos = CadBuscarDescCaracter ( SCadValor ( p_rutObj->p_cadDirectorio ), '/', SCadLongitud ( p_rutObj->p_cadDirectorio ) - 1 );
 		if ( iPos < 0 )
 		{
-			iPos = CadBuscarDescCaracter ( SCadValor ( p_rutObj->p_cadDirectorio ), '\\', 0 );
+			iPos = CadBuscarDescCaracter ( SCadValor ( p_rutObj->p_cadDirectorio ), '\\', SCadLongitud ( p_rutObj->p_cadDirectorio ) - 1 );
 		}
 		if ( iPos >= 0 )
 		{
@@ -976,10 +913,18 @@ int SRutAgregarExtension ( SRuta * p_rutObj, SCadena * p_cadExt )
 
 int SRutAgregarExtensionLit ( SRuta * p_rutObj, const char * p_cExt )
 {
-	int  iRes;
+	int iRes;
+	int iLong;
+	int	iCaracteres;
 	
 	if ( ( SRutEsFichero ( p_rutObj ) == 1 ) && ES_VALIDO ( p_cExt ) )
     {
+		iLong = SCadLongitud ( p_rutObj->p_cadFichero );
+		iCaracteres = CadLongitud ( p_cExt ) + 1;
+		if ( SCadMaxTam ( p_rutObj->p_cadFichero ) < iLong + iCaracteres ) 
+		{
+			SCadEstablecerMaxTam ( p_rutObj->p_cadFichero, iLong + iCaracteres );
+		}
         SCadConcatenarCaracter ( p_rutObj->p_cadFichero, '.' );
         SCadConcatenarLiteral ( p_rutObj->p_cadFichero, p_cExt );
 		iRes = 1;
@@ -998,10 +943,10 @@ int SRutEliminarExtension ( SRuta * p_rutObj )
 
 	if ( SRutEsFichero ( p_rutObj ) == 1 )
 	{
-		iPosPunto = SCadBuscarCaracter ( p_rutObj->p_cadFichero, '.', 0 );
+		iPosPunto = SCadBuscarCaracterDesc ( p_rutObj->p_cadFichero, '.', SCadLongitud ( p_rutObj->p_cadFichero ) - 1 );
 		if ( iPosPunto > 0 )
 		{
-			iRes = SCadEliminarPrimerosCaracteres ( p_rutObj->p_cadFichero, iPosPunto );
+			iRes = SCadEliminarUltimosCaracteres ( p_rutObj->p_cadFichero, SCadLongitud ( p_rutObj->p_cadFichero ) - iPosPunto );
 		}
 		else
 		{

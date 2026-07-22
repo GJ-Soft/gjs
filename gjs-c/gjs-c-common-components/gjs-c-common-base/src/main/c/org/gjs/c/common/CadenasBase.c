@@ -413,35 +413,35 @@ int CadCompararExt ( const char * p_cAsciiz1, const char * p_cAsciiz2, int iMax1
 	int iCar;
 	int iLong1;
 	int iLong2;
+	int iMinLong;
 
 	if ( ES_VALIDO (  p_cAsciiz1 ) && ES_VALIDO (  p_cAsciiz2 ) ) 
 	{
 		iLong1 = CadLongitudSeg ( p_cAsciiz1, iMax1 ); 
 		iLong2 = CadLongitudSeg ( p_cAsciiz2, iMax2 ); 
-		if ( iLong1 == iLong2 )
+		iMinLong = MIN ( iLong1, iLong2 );
+
+		iRes = COMP_IGUAL;
+		iCar = 0; 
+		while ( ( iCar < iMinLong ) && ( iRes == COMP_IGUAL ) )  
 		{
-			iRes = COMP_IGUAL;
-			iCar = 0; 
-			while ( ( iCar < iLong1 ) && ( iRes == COMP_IGUAL ) )  
+			if ( p_cAsciiz1 [ iCar ] < p_cAsciiz2 [ iCar ] )
 			{
-				if ( p_cAsciiz1 [ iCar ] < p_cAsciiz2 [ iCar ] )
-				{
-					iRes = COMP_MENOR;
-				}
-				else if ( p_cAsciiz1 [ iCar ] > p_cAsciiz2 [ iCar ] )
-				{
-					iRes = COMP_MAYOR;
-				}
-				iCar = iCar + 1;
+				iRes = COMP_MENOR;
 			}
+			else if ( p_cAsciiz1 [ iCar ] > p_cAsciiz2 [ iCar ] )
+			{
+				iRes = COMP_MAYOR;
+			}
+			iCar = iCar + 1;
 		}
-		else
+		if ( iRes == COMP_IGUAL )
 		{
-			if (  iLong1 < iLong2 )
+			if ( iLong1 < iLong2 )
 			{
 				iRes = COMP_MENOR;
 			} 
-			else 
+			else if ( iLong2 < iLong1 ) 
 			{
 				iRes = COMP_MAYOR;
 			} 

@@ -227,5 +227,38 @@ int SLisEtxExiste ( SListaEntradasExt * p_lisObj, const char * p_cNombre )
 	return ( iRes );
 }
 
+SEntradaExt * SLisEtxBuscar ( SListaEntradasExt * p_lisObj, const char * p_cNombre )
+{
+	SEntradaExt *	p_etxRes;
+	int				iEnc;
+	int				iElem;
+	int 			iNumElems;
+
+	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cNombre ) )
+	{
+		iEnc = 0;
+		iElem = 0;
+		iNumElems = SLisEtxNumElementos ( p_lisObj );
+		while ( ( iElem < iNumElems ) && ( iEnc == 0 ) )
+		{
+			p_etxRes = SLisEtxElemento ( p_lisObj, iElem );
+			if ( CadComparar ( SEtxNombre ( p_etxRes ), p_cNombre ) == COMP_IGUAL )
+			{
+				iEnc = 1;
+			}
+			iElem = iElem + 1;
+		}
+		if ( iEnc == 0 )
+		{
+			p_etxRes = NULL;
+		}
+	}
+	else
+	{
+		p_etxRes = NULL;
+	}
+	return ( p_etxRes );
+}
+
 
 

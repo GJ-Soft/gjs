@@ -27,7 +27,7 @@ bool AplicCodigoValido ( const string & sCod, int iTam )
 	if ( ( iTam > 0 ) && ( iLong == iTam ) )
 	{
 		bRes = true;
-		iCar = 1; 
+		iCar = 0;
 		while ( ( iCar < iLong ) && bRes )  
 		{
 			if ( !isalnum( sCod [ iCar ] ) &&  ( sCod [ iCar ] != '_' ) ) 
@@ -50,7 +50,7 @@ bool AplicCodigoUsuarioValido ( const string & sCod )
 	if ( ( iLong >= APL_MIN_TAM_COD_USUARIO ) && ( iLong <= APL_MAX_TAM_COD_USUARIO ) )
 	{
 		bRes = true;
-		iCar = 1; 
+		iCar = 0;
 		while ( ( iCar < iLong ) && bRes )  
 		{
 			if ( !isalnum( sCod [ iCar ] ) &&  ( sCod [ iCar ] != '_' ) ) 
@@ -73,7 +73,7 @@ bool AplicClaveUsuarioValido ( const string & sClave )
 	if ( iLong <= APL_MAX_TAM_CLV_USUARIO )
 	{
 		bRes = true;
-		iCar = 1; 
+		iCar = 0;
 		while ( ( iCar < iLong ) && bRes )  
 		{
 			if ( ! isprint( sClave [ iCar ] ) )

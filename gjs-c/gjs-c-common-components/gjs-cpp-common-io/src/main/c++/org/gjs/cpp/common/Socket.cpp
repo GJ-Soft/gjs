@@ -220,7 +220,16 @@ bool Socket::Cerrar()
 	bool bRes = false;
 	if( EsValido() )
 	{
+#if ( defined ( WIN ) )
+		// shutdown explicito antes de cerrar: fuerza el envio del FIN para que el
+		// extremo remoto detecte el cierre (en Cygwin/winsock, closesocket a secas
+		// no siempre hace que un recv() bloqueado del cliente devuelva EOF).
+		shutdown ( iSocket, SD_BOTH );
 		bRes = ( closesocket ( iSocket ) == 0 );
+#else
+		shutdown ( iSocket, SHUT_RDWR );
+		bRes = ( close ( iSocket ) == 0 );
+#endif
 		iSocket = -1;
 	}
 	return( bRes );

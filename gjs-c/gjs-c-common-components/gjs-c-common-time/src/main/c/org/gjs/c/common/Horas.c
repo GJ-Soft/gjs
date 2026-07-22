@@ -54,7 +54,7 @@ void HorFormDescomponer ( long lHora, int * p_iH, int * p_iM, int * p_iS )
 {
 	long lAux;
 
-	if ( ( lHora >= 0 ) && ( lHora < 240000 ) && 
+	if ( ( lHora >= 0 ) && ( lHora < 1000000 ) && 
 		 ES_VALIDO ( p_iH ) && ES_VALIDO ( p_iM ) && ES_VALIDO ( p_iS ) )
 	{
 		*p_iH = lHora / 10000;
@@ -288,7 +288,7 @@ double HorObtenerValor ( int iH, int iM, int iS )
 
 	if ( HorEsValida ( iH, iM, iS ) == 1 )
 	{
-		dRes = iH * 1.0 + iM/60.0 + iS/3600.0;
+		dRes = iH * 1.0 + iM / 60.0 + iS / 3600.0;
 	}
 	else
 	{
@@ -320,7 +320,7 @@ int HorEstablecerValor ( double dValor, int * p_iH, int * p_iM, int * p_iS )
 		*p_iH = ConvRealDobleAEntero ( dValor, 1 );
 		dAux = ( dValor - *p_iH * 1.0 ) * 60; 
 		*p_iM = ConvRealDobleAEntero ( dAux, 1 );
-		dAux = ( dValor - *p_iM * 1.0 ) * 60; 
+		dAux = ( dAux - *p_iM ) * 60; 
 		*p_iS = ConvRealDobleAEntero ( dAux, 0 );
 		iRes = 1;
 	}

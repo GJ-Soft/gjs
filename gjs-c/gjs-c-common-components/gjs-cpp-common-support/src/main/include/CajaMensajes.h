@@ -1,15 +1,15 @@
 /***************************************************************************/
 /*                          CajaMensajes.h                                 */
 /*-------------------------------------------------------------------------*/
-/* Librería: GAplicacion                                                   */
-/* Versión:  2.0.0                                                         */
+/* Librerï¿½a: GAplicacion                                                   */
+/* Versiï¿½n:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    Ginï¿½s Jimï¿½nez Sï¿½nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Interfaz de la librería para aplicaciones. Es el fichero de cabecera    */
-/* principal de la librería que hay que incluir en el código de los        */
-/* programas y librerías que la utilicen.                                  */
+/* Descripciï¿½n:                                                            */
+/* Interfaz de la librerï¿½a para aplicaciones. Es el fichero de cabecera    */
+/* principal de la librerï¿½a que hay que incluir en el cï¿½digo de los        */
+/* programas y librerï¿½as que la utilicen.                                  */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
 /***************************************************************************/
@@ -21,6 +21,7 @@
 #include <Precompilacion.h>
 #include <TiposCajaMensajes.h>
 #include <string>
+#include <format>
 
 
 
@@ -39,8 +40,15 @@ namespace org
 
 
 
-int CajMsjMostrar ( int iTipo, const std::string & sTitulo, const std::string & sMensaje );
-template<typename... Args> int CajMsjMostrarConFormato ( int iTipo, const std::string & sTitulo, const std::string & sFormato, Args&&... argumentos );
+RespuestaCajaMensajes CajMsjMostrar ( TipoCajaMensajes tipo, const std::string & sTitulo, const std::string & sMensaje );
+
+// Variante con formato: definida aqui ( una plantilla debe verse en el punto de
+// instanciacion ) delegando en std::vformat + CajMsjMostrar.
+template<typename... Args>
+RespuestaCajaMensajes CajMsjMostrarConFormato ( TipoCajaMensajes tipo, const std::string & sTitulo, const std::string & sFormato, Args&&... argumentos )
+{
+	return ( CajMsjMostrar ( tipo, sTitulo, std::vformat ( sFormato, std::make_format_args ( argumentos... ) ) ) );
+}
 
 
 

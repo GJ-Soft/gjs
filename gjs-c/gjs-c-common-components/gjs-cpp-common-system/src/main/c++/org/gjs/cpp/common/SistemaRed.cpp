@@ -23,6 +23,7 @@
 
 
 using namespace std;
+using namespace org::gjs::cpp::common;
 
 namespace org
 {
@@ -32,6 +33,8 @@ namespace org
 		{
 			namespace common
 			{
+
+extern void MemLimpiar ( void * p_vBloque, int iNumBytes );
 
 
 wstring SisRedNombreOrdenador ()
@@ -53,9 +56,7 @@ wstring SisRedNombreOrdenador ()
 	}
 # else
 	iTam = buffer.size();
-	// TODO: No lo coge en este punto
-	//if ( gethostname ( (char *) buffer.data(), iTam ) == 0 )
-	if ( false )
+	if ( gethostname( (char *) buffer.data(), iTam ) == 0 )
 	{
 		sRes = Utf8AUnicode ( buffer.data() );
 	}
@@ -81,11 +82,23 @@ wstring SisRedNombreDNSOrdenador ()
 	}
 # else
 	iTam = (int) buffer.size();
-	// TODO: No lo coge en este punto
-	// if ( gethostname ( (char *) buffer.data(), iTam ) == 0 )
-	if ( false )
+	if ( gethostname( (char *) buffer.data(), iTam ) == 0 )
 	{
 		sRes = Utf8AUnicode ( buffer.data() );
+
+		struct addrinfo hints;
+		struct addrinfo *res;
+		MemLimpiar ( (void *) &hints, (int) sizeof( hints ) );
+		hints.ai_flags = AI_CANONNAME;
+
+		if ( getaddrinfo( buffer.data(), NULL, &hints, &res ) == 0 )
+		{
+			if ( ES_VALIDO ( res->ai_canonname ) )
+			{
+				sRes = Utf8AUnicode ( res->ai_canonname );
+			}
+			freeaddrinfo( res );
+		}
 	}
 # endif
 	return ( sRes );
@@ -105,13 +118,12 @@ bool SisRedEnviarMensaje ( const wstring & sDestino, const wstring & sOrigen, co
 		dwTam = (DWORD) sMensaje.length();
 		dwRes = NetMessageBufferSend ( (LPCWSTR) NULL, (LPCWSTR) sDestino.c_str(), ( LPCWSTR ) sOrigen.c_str (), ( LPBYTE ) sMensaje.c_str (), dwTam);
 		if ( dwRes == 0 ) // NERR_Success )
-#	 else
-		// PENDIENTE:
-		if ( false )
-#	 endif
 		{
 			bRes = true;
 		}
+#	 else
+		// PENDIENTE:
+#	 endif
 	}
 	return ( bRes );
 }
@@ -132,7 +144,7 @@ list<wstring> * SisRedOrdenadoresAccesibles ()
 		for ( unsigned int i = 0; i < dwRead; i = i + 1 )
 		{
 			wstring wsNombre = wstring ( p_srvInfo[ i ].sv100_name );
-			p_lisOrdenadores->add ( wsNombre );
+			p_lisOrdenadores->push_back ( wsNombre );
 		}
 	}
 	if ( ES_VALIDO ( p_srvInfo ) )
@@ -154,23 +166,18 @@ bool SisRedServidorEsAccesible ( const wstring & sServidor )
 	if ( ! sServidor.empty () )
 	{
 #	 if ( defined ( WIN ) )
-#	  if ( _MSC_VER < 1600 )
-		dwRes = NetServerGetInfo ( (char *) sServidor.c_str(), ( DWORD ) 100, ( LPBYTE * ) &p_srvinfDatos);
-#	  else
-		dwRes = NetServerGetInfo ( (LPWSTR) sServidor.c_str (), (DWORD) 100, (LPBYTE *) &p_srvinfDatos );
-#	  endif
+		dwRes = NetServerGetInfo ( (LMSTR) sServidor.c_str(), (DWORD) 100, (LPBYTE *) &p_srvinfDatos );
+		if ( dwRes == 0 ) // NERR_Success )
+		{
+			bRes = true;
+		}
 		if ( ES_VALIDO ( p_srvinfDatos ) )
 		{
 			NetApiBufferFree( p_srvinfDatos );
 		}
-		if ( dwRes == 0 ) // NERR_Success )
 #	 else
 		// PENDIENTE:
-		if ( false )
 #	 endif
-		{
-			bRes = true;
-		}
 	}
 	return ( bRes );
 }
@@ -184,23 +191,18 @@ bool SisRedEstacionEsAccesible ( const wstring & sEstacion )
 	if ( ! sEstacion.empty () )
 	{
 #	 if ( defined ( WIN ) )
-#	  if ( _MSC_VER < 1600 )
-		dwRes = NetWkstaGetInfo ( (char *) sEstacion.c_str(), ( DWORD ) 100, ( LPBYTE * ) &p_estinfDatos);
-#	  else
-		dwRes = NetWkstaGetInfo ( (LPWSTR) sEstacion.c_str (), (DWORD) 100, (LPBYTE *) &p_estinfDatos );
-#	  endif
+		dwRes = NetWkstaGetInfo ( (LMSTR) sEstacion.c_str(), (DWORD) 100, (LPBYTE *) &p_estinfDatos );
+		if ( dwRes == 0 ) // NERR_Success )
+		{
+			bRes = true;
+		}
 		if ( ES_VALIDO ( p_estinfDatos ) )
 		{
 			NetApiBufferFree( p_estinfDatos );
 		}
-		if ( dwRes == 0 ) // NERR_Success )
 #	 else
 		// PENDIENTE:
-		if ( false )
 #	 endif
-		{
-			bRes = true;
-		}
 	}
 	return ( bRes );
 }

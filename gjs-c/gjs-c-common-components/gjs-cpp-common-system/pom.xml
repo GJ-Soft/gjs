@@ -35,7 +35,58 @@
 			<artifactId>gjs-cpp-common-io</artifactId>
 			<type>nar</type>
 		</dependency>
+		<dependency>
+			<groupId>org.gjs.c.common</groupId>
+			<artifactId>gjs-cpp-common-calculation</artifactId>
+			<type>nar</type>
+		</dependency>
     </dependencies>
 
+	
+	<profiles>
+		<profile>
+			<id>runtime-win</id>
+			<activation>
+                <property>
+					<name>environment.style</name>
+					<value>windows</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.maven-nar</groupId>
+						<artifactId>nar-maven-plugin</artifactId>
+						<configuration>
+							<linker>
+								<libs combine.children="append">
+									<lib>
+										<name>netapi32</name>
+										<type>shared</type>
+										<directory>${cygwin-windows.dir.lib.system}</directory>
+									</lib>
+									<lib>
+										<name>psapi</name>
+										<type>shared</type>
+										<directory>${cygwin-windows.dir.lib.system}</directory>
+									</lib>
+									<lib>
+										<name>gdi32</name>
+										<type>shared</type>
+										<directory>${cygwin-windows.dir.lib.system}</directory>
+									</lib>
+									<lib>
+										<name>comdlg32</name>
+										<type>shared</type>
+										<directory>${cygwin-windows.dir.lib.system}</directory>
+									</lib>
+								</libs>					
+							</linker>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

@@ -63,6 +63,10 @@ SFicBloquesOrdenados * SFicBloqOrdAsignar ( const char * p_cRuta )
 				SFicBloqOrdDestruir ( &p_ficObj );
 			}
 		}
+		else
+		{
+			SFicBloqOrdDestruir ( &p_ficObj );
+		}
 	}
 	else
 	{
@@ -827,10 +831,12 @@ unsigned long  SFicBloqOrdActual ( SFicBloquesOrdenados * p_ficObj )
 unsigned long SFicBloqOrdLeerId ( SFicBloquesOrdenados * p_ficObj )
 {
 	unsigned long	ulId;
+	unsigned long	ulBloque;
 
 	if ( SFicBloqOrdEstaPosicionado ( p_ficObj ) == 1 )
 	{
-		ulId = SFicBloqIdLeerId ( p_ficObj->p_ficObj, p_ficObj->ulActual );
+		ulBloque = SFicBloqIdBloqueId ( p_ficObj->p_ficObj, p_ficObj->ulActual );
+		ulId = SFicBloqIdLeerId ( p_ficObj->p_ficObj, ulBloque );
 	}
 	else
 	{
@@ -930,7 +936,7 @@ byte * SFicBloqOrdLeer ( SFicBloquesOrdenados * p_ficObj )
 
 	if ( SFicBloqOrdEstaPosicionado ( p_ficObj ) == 1 )
 	{
-		p_byBloque = SFicBloqIdLeerBloque ( p_ficObj->p_ficObj, p_ficObj->ulActual );
+		p_byBloque = SFicBloqIdLeer ( p_ficObj->p_ficObj, p_ficObj->ulActual );
 		if ( ES_VALIDO ( p_byBloque ) )
 		{
 			iTamCont = SFicBloqIdTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQORD_TAM_PUNTEROS;
@@ -961,7 +967,7 @@ int SFicBloqOrdLeerExt ( SFicBloquesOrdenados * p_ficObj, byte * p_byContenido )
 
 	if ( ( SFicBloqOrdEstaPosicionado ( p_ficObj ) == 1 ) && ES_VALIDO ( p_byContenido ) )
 	{
-		p_byBloque = SFicBloqIdLeerBloque ( p_ficObj->p_ficObj, p_ficObj->ulActual );
+		p_byBloque = SFicBloqIdLeer ( p_ficObj->p_ficObj, p_ficObj->ulActual );
 		if ( ES_VALIDO ( p_byBloque ) )
 		{
 			iTamCont = SFicBloqIdTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQORD_TAM_PUNTEROS;
@@ -989,7 +995,7 @@ int SFicBloqOrdModificar ( SFicBloquesOrdenados * p_ficObj, byte * p_byContenido
 
 	if ( ( SFicBloqOrdEstaPosicionado ( p_ficObj ) == 1 ) && ES_VALIDO ( p_byContenido ) )
 	{
-		p_byBloque = SFicBloqIdLeerBloque ( p_ficObj->p_ficObj, p_ficObj->ulActual );
+		p_byBloque = SFicBloqIdLeer ( p_ficObj->p_ficObj, p_ficObj->ulActual );
 		if ( ES_VALIDO ( p_byBloque ) )
 		{
 			iTamCont = SFicBloqIdTamBloque ( p_ficObj->p_ficObj ) - FIC_BLOQORD_TAM_PUNTEROS;
@@ -1019,7 +1025,7 @@ int SFicBloqOrdInsertar ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, b
 	int				iTamCont;
 	int				iTamBloq;
 
-	if ( ( SFicBloqOrdEstaAbierto ( p_ficObj ) == 1 )  && ES_VALIDO ( p_byContenido ) )
+	if ( ( SFicBloqOrdEstaAbierto ( p_ficObj ) == 1 ) && ES_VALIDO ( p_byContenido ) )
 	{
 		if ( SFicBloqIdExisteId ( p_ficObj->p_ficObj, ulId ) == 0 )
 		{
@@ -1047,7 +1053,7 @@ int SFicBloqOrdInsertar ( SFicBloquesOrdenados * p_ficObj, unsigned long ulId, b
 				}
 				else if ( SFicBloqOrdEstaPosicionado ( p_ficObj ) == 1 ) 
 				{
-					p_byBloqueAct = SFicBloqIdLeerBloque ( p_ficObj->p_ficObj, p_ficObj->ulActual );
+					p_byBloqueAct = SFicBloqIdLeer ( p_ficObj->p_ficObj, p_ficObj->ulActual );
 					if ( ES_VALIDO ( p_byBloqueAct ) )
 					{
 						MemCopiar ( &ulAnt, &(p_byBloqueAct [ FIC_BLOQORD_POS_ANT_BLOQUE ]), sizeof ( unsigned long ) ); 
@@ -1138,7 +1144,7 @@ int SFicBloqOrdSuprimir ( SFicBloquesOrdenados * p_ficObj )
 
 	if ( SFicBloqOrdEstaPosicionado ( p_ficObj ) == 1 ) 
 	{
-		p_byBloqueAct = SFicBloqIdLeerBloque ( p_ficObj->p_ficObj, p_ficObj->ulActual );
+		p_byBloqueAct = SFicBloqIdLeer ( p_ficObj->p_ficObj, p_ficObj->ulActual );
 		if ( ES_VALIDO ( p_byBloqueAct ) )
 		{
 			MemCopiar ( &ulAnt, &(p_byBloqueAct [ FIC_BLOQORD_POS_ANT_BLOQUE ]), sizeof ( unsigned long ) ); 
@@ -1146,7 +1152,7 @@ int SFicBloqOrdSuprimir ( SFicBloquesOrdenados * p_ficObj )
 
 			if ( ulAnt > 0 )
 			{
-				p_byBloqueAnt = SFicBloqIdLeerBloque ( p_ficObj->p_ficObj, ulAnt );
+				p_byBloqueAnt = SFicBloqIdLeer ( p_ficObj->p_ficObj, ulAnt );
 				if ( ES_VALIDO ( p_byBloqueAnt ) )
 				{
 					MemCopiar ( &(p_byBloqueAnt [ FIC_BLOQORD_POS_SIG_BLOQUE ]), &ulSig, sizeof ( unsigned long ) ); 
@@ -1168,7 +1174,7 @@ int SFicBloqOrdSuprimir ( SFicBloquesOrdenados * p_ficObj )
 			{
 				if ( ulSig > 0 ) 
 				{
-					p_byBloqueSig = SFicBloqIdLeerBloque ( p_ficObj->p_ficObj, ulSig );
+					p_byBloqueSig = SFicBloqIdLeer ( p_ficObj->p_ficObj, ulSig );
 					if ( ES_VALIDO ( p_byBloqueSig ) )
 					{
 						MemCopiar ( &(p_byBloqueSig [ FIC_BLOQORD_POS_ANT_BLOQUE ]), &ulAnt, sizeof ( unsigned long ) ); 
@@ -1327,7 +1333,7 @@ int _SFicBloqOrdLeerPunteros ( SFicBloquesOrdenados * p_ficObj, unsigned long ul
 
 	if ( ES_VALIDO ( p_ficObj ) && ES_VALIDO ( p_ulAnt ) && ES_VALIDO ( p_ulSig ) )
 	{
-		p_byBloque = SFicBloqIdLeerBloque ( p_ficObj->p_ficObj, ulBloque );
+		p_byBloque = SFicBloqIdLeer ( p_ficObj->p_ficObj, ulBloque );
 		if ( ES_VALIDO ( p_byBloque ) )
 		{
 			MemCopiar ( p_ulAnt, &(p_byBloque [ FIC_BLOQORD_POS_ANT_BLOQUE ]), sizeof ( unsigned long ) ); 

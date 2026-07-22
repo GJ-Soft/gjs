@@ -41,6 +41,9 @@
 			* oracleDir : Directory of Oracle installation
 			
 			* visualStudioVCDir : Directory of VC header and lib files (if is present)
+		.
+		To compile on pure Windows (without Cygwin) the gcc and g++ compiler executables need to be accessible
+		in the PATH. 
 	</description>
 
 	<properties>
@@ -130,7 +133,7 @@
 		<unix.dir.include.additional></unix.dir.include.additional>
 		
 		<!-- CppCheck Tool directory -->
-		<cpp.checkDir>${cygwinDir}/bin</cpp.checkDir>
+		<cpp.checkDir>${cygwinDir}${unix.home}/bin</cpp.checkDir>
 		
 		<!-- Apache Log4cxx directory -->
 		<log4cxxDir>${cygwin.dir.lib.custom}/log4cxx</log4cxxDir>
@@ -319,8 +322,9 @@
 									<arg value="-I${oraDirInclude}"/>
 									<arg value="-I${xmlDirInclude}"/>
 									<arg value="-I${log4cxxDirInclude}"/>											
-									<arg value="-I${cygwin.dir.include.system}"/>
-									<arg value="-I${cygwin.dir.include.installed}"/>	
+									<arg value="-I${cpp.dir.include.system}"/>
+									<arg value="-I${cpp.dir.include.installed}"/>	
+									<arg value="-I${cpp.dir.include.additional}"/>	
 									<arg value="--suppress=virtualCallInConstructor"/>
 									<arg value="--suppress=uninitMemberVar"/>		
 									<arg value="--suppress=useInitializationList"/>		

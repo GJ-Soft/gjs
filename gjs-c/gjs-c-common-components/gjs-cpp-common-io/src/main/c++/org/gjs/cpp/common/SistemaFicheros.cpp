@@ -1,33 +1,54 @@
 /***************************************************************************/
 /*                        SistemaFicheros.cpp                              */
 /*-------------------------------------------------------------------------*/
-/* Librería: Sistema                                                       */
-/* Versión:  1.1.0                                                         */
+/* Librerï¿½a: Sistema                                                       */
+/* Versiï¿½n:  1.1.0                                                         */
 /* Fecha:    26/10/2006                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    Ginï¿½s Jimï¿½nez Sï¿½nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Fichero de código fuente que contiene la implementación de las rutinas  */
-/* de carácter general de operaciones con el sistema de ficheros.          */
+/* Descripciï¿½n:                                                            */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de las rutinas  */
+/* de carï¿½cter general de operaciones con el sistema de ficheros.          */
 /* Mantiene un objeto global privado de clase CSistemaFicheros que puede   */
-/* utilizarse para moverse por el árbol de directorios.                    */
+/* utilizarse para moverse por el ï¿½rbol de directorios.                    */
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este módulo está extraído de una librería más completa creada por el    */
+/* Este mï¿½dulo estï¿½ extraï¿½do de una librerï¿½a mï¿½s completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, así como cualquier añadido o modificación realizado.   */
-/* Pueden reportar de los mismos enviando un correo electrónico a la       */
-/* dirección: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, asï¿½ como cualquier aï¿½adido o modificaciï¿½n realizado.   */
+/* Pueden reportar de los mismos enviando un correo electrï¿½nico a la       */
+/* direcciï¿½n: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 
+/*-------------------------------------------------------------------------*/
+/* NOTA DE PORTABILIDAD (adaptaciï¿½n C++):                                   */
+/* Este mï¿½dulo se apoya en una librerï¿½a de cadenas C++ (todavï¿½a por crear)  */
+/* con estas funciones auxiliares sobre std::string:                       */
+/*   bool        CumpleExpresionRegular ( const string&, const string& );   */
+/*   bool        ContieneCaracter       ( const string&, char );            */
+/*   int         NumPalabras            ( const string&, char sep );        */
+/*   string      ExtraerPalabra         ( const string&, int, char sep );   */
+/*   int         BuscarDesdeAtrasCaracter( const string&, char [, int] );   */
+/*   string      SubcadenaDesde         ( const string&, char );            */
+/*   string      ReemplazarTodos        ( const string&, from, to );        */
+/*   string      ReemplazarTodos     ( const string&, char, char );         */
+/* CommonIoConfig.h debe proporcionar las constantes SF_* (equivalentes a   */
+/* FicherosConfig.h de la versiï¿½n C).                                       */
+/*-------------------------------------------------------------------------*/
 
-#include "SistemaFicheros.h"
 
 #include "CommonIoConfig.h"
 
+#include "SistemaFicheros.h"
+
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
 
 // PENDIENTe: En unix/linux SisExisteFichero no distingue entre ficheros y directorios lo que puede
-// llevar a confusión.
+// llevar a confusiï¿½n.
 
 
 using namespace std;
@@ -44,25 +65,24 @@ namespace org
 			{
 
 
-
-
-
-
-bool SisEsDirectorioValido ( const string & sDirectorio )
+// Auxiliar local: divide la cadena por el separador descartando los tokens vacï¿½os
+// (equivalente a la semï¿½ntica de "palabras" de CadNumPalabrasSep / CadPalabraSep).
+static vector<string> SisDividirEnPartes ( const string & sCadena, char cSep )
 {
-	bool bRes = false;
+	vector<string>	vecPartes;
+	stringstream	ss ( sCadena );
+	string			sParte;
 
-# if ( defined ( WIN ) )
-	if ( CumpleExpresionRegular ( sDirectorio, SF_PATRON_DIRECTORIO_WIN )  || 
-		 CumpleExpresionRegular ( sDirectorio, SF_PATRON_DIRECTORIO_WIN_2 ) )
-# else
-	if ( CumpleExpresionRegular ( sDirectorio, SF_PATRON_DIRECTORIO ) )
-# endif
+	while ( getline ( ss, sParte, cSep ) )
 	{
-		bRes = true;
+		if ( ! sParte.empty () )
+		{
+			vecPartes.push_back ( sParte );
+		}
 	}
-	return ( bRes );
+	return ( vecPartes );
 }
+
 
 bool SisEsSubdirectorioValido ( const string & sSubdirectorio )
 {
@@ -91,7 +111,7 @@ int SisFicheroTieneExtension ( const string & sFichero )
 {
 	bool bRes = false;
 
-	if ( CumpleExpresionRegular ( sFichero, SF_PATRON_FICHERO ) ) 
+	if ( CumpleExpresionRegular ( sFichero, SF_PATRON_FICHERO ) )
 	{
 		bRes = true;
 	}
@@ -139,11 +159,11 @@ string SisDirectorioSubdirectorio ( const string & sDirectorio, int iNivel )
 		{
 			iSubdir = iNumSubdirs - 1;
 		}
-		else 
+		else
 		{
 			iSubdir = iNivel;
 		}
-			 
+
 		if ( ( iSubdir >= 0 ) && ( iSubdir < iNumSubdirs ) )
 		{
 			sRes = ExtraerPalabra ( sDirectorio, iSubdir, cSep );
@@ -167,11 +187,11 @@ string SisDirectorioSuperior ( const string & sDirectorio )
 	{
 		cSep = SF_DIR_SEPARADOR_WIN;
 	}
-	iLong = sDirectorio.length();
+	iLong = (int) sDirectorio.length ();
 	iPos = BuscarDesdeAtrasCaracter ( sDirectorio, cSep, iLong - 2 );
 	if ( ( iPos > 1 ) && ( iPos < iLong - 2 ) )
 	{
-		sRes = sDirectorio.substr( 0, iPos );
+		sRes = sDirectorio.substr ( 0, iPos );
 	}
 	return ( sRes );
 }
@@ -180,7 +200,7 @@ string SisFicheroExtension ( const string & sFichero )
 {
 	string sRes = "";
 
-	if ( CumpleExpresionRegular ( sFichero, SF_PATRON_FICHERO ) ) 
+	if ( CumpleExpresionRegular ( sFichero, SF_PATRON_FICHERO ) )
 	{
 		sRes = SubcadenaDesde ( sFichero, SF_FIC_SEPARADOR );
 	}
@@ -194,7 +214,7 @@ string SisFicheroNombre ( const string & sFichero )
 	int		iPosIni;
 	int		iPosFin;
 
-	if ( CumpleExpresionRegular ( sFichero, SF_PATRON_FICHERO ) ) 
+	if ( CumpleExpresionRegular ( sFichero, SF_PATRON_FICHERO ) )
 	{
 		if ( ContieneCaracter ( sFichero, SF_DIR_SEPARADOR ) )
 		{
@@ -215,13 +235,15 @@ string SisComponerFichero ( const string & sNombre, const string & sExtension )
 {
 	string sFichero;
 
-	if ( !sExtension.empty() )
+	// Nombre + '.' + extensiï¿½n; si no hay extensiï¿½n, sï¿½lo el nombre (equivalente
+	// a CadDuplicar ( p_cNombre ) de la versiï¿½n C).
+	if ( ! sExtension.empty () )
 	{
-		sFichero = format( SF_MASCARA_FICHERO, sNombre, sExtension );
+		sFichero = sNombre + SF_FIC_SEPARADOR + sExtension;
 	}
 	else
 	{
-		sFichero = string( sExtension );
+		sFichero = sNombre;
 	}
 	return ( sFichero );
 }
@@ -232,7 +254,7 @@ string SisRutaDirectorio ( const string & sRuta )
 	int		iPos;
 	char	cSep;
 
-	if ( SisEsRutaValida ( sRuta ) ) 
+	if ( SisEsRutaValida ( sRuta ) )
 	{
 		if ( ContieneCaracter ( sRuta, SF_DIR_SEPARADOR ) )
 		{
@@ -242,8 +264,8 @@ string SisRutaDirectorio ( const string & sRuta )
 		{
 			cSep = SF_DIR_SEPARADOR_WIN;
 		}
-		iPos =BuscarDesdeAtrasCaracter ( sRuta, cSep ); 
-		sRes = sRuta.substr( 0, iPos );
+		iPos = BuscarDesdeAtrasCaracter ( sRuta, cSep );
+		sRes = sRuta.substr ( 0, iPos );
 	}
 	return ( sRes );
 }
@@ -254,7 +276,7 @@ string SisRutaFichero ( const string & sRuta )
 	int		iPos;
 	char	cSep;
 
-	if ( SisEsRutaValida ( sRuta ) ) 
+	if ( SisEsRutaValida ( sRuta ) )
 	{
 		if ( ContieneCaracter ( sRuta, SF_DIR_SEPARADOR ) )
 		{
@@ -264,8 +286,9 @@ string SisRutaFichero ( const string & sRuta )
 		{
 			cSep = SF_DIR_SEPARADOR_WIN;
 		}
-		iPos =BuscarDesdeAtrasCaracter ( sRuta, cSep ); 
-		sRes = sRuta.substr ( sRuta.length() - iPos - 1 );
+		iPos = BuscarDesdeAtrasCaracter ( sRuta, cSep );
+		// El nombre de fichero es todo lo que hay tras el ï¿½ltimo separador.
+		sRes = sRuta.substr ( iPos + 1 );
 	}
 	return ( sRes );
 }
@@ -274,7 +297,7 @@ int SisRutaNumSubdirectorios ( const string & sRuta )
 {
 	int		iRes = 0;
 	string	sDirectorio = SisRutaDirectorio ( sRuta );
-	if ( ! sDirectorio.empty() )
+	if ( ! sDirectorio.empty () )
 	{
 		iRes = SisDirectorioNumSubdirectorios ( sDirectorio );
 	}
@@ -285,7 +308,7 @@ string SisRutaSubdirectorio ( const string & sRuta, int iNivel )
 {
 	string 	sRes = "";
 	string	sDirectorio = SisRutaDirectorio ( sRuta );
-	if ( ! sDirectorio.empty() )
+	if ( ! sDirectorio.empty () )
 	{
 		sRes = SisDirectorioSubdirectorio ( sDirectorio, iNivel );
 	}
@@ -298,18 +321,18 @@ string SisComponerRuta ( const string & sDirectorio, const string & sFichero, in
 
 	if ( SisEsFicheroValido ( sFichero ) || SisEsSubdirectorioValido ( sFichero ) )
 	{
-		if ( SisEsDirectorioValido ( sDirectorio ) )
+		if ( SisEsRutaValida ( sDirectorio ) )
 		{
-			sRuta = format ( SF_MASCARA_RUTA, sDirectorio, sFichero );
+			sRuta = sDirectorio + SF_DIR_SEPARADOR + sFichero;
 		}
 		else
 		{
-			sRuta = format ( SF_MASCARA_RUTA, SF_DIR_ACTUAL, sFichero );
+			sRuta = string ( SF_DIR_ACTUAL ) + SF_DIR_SEPARADOR + sFichero;
 		}
 	}
 	else
 	{
-		if ( SisEsDirectorioValido ( sDirectorio ) )
+		if ( SisEsRutaValida ( sDirectorio ) )
 		{
 			sRuta = string ( sDirectorio );
 		}
@@ -330,7 +353,7 @@ string SisComponerRutaExt ( const string & sDirectorio, const string & sSubdirec
 
 	if ( SisEsSubdirectorioValido ( sSubdirectorio ) )
 	{
-		string sDirComp = SisComponerRuta ( sDirectorio, sSubdirectorio );
+		string sDirComp = SisComponerRuta ( sDirectorio, sSubdirectorio, 0 );
 		sRuta = SisComponerRuta ( sDirComp, sFichero, iDirActualPorDef );
 	}
 	else
@@ -342,24 +365,75 @@ string SisComponerRutaExt ( const string & sDirectorio, const string & sSubdirec
 
 string SisNormalizarRuta ( const string & sRuta )
 {
-	return ( ReemplazarTodos ( sRuta, '\\', '/' ) );
+	return ( ReemplazarTodos ( ReemplazarTodos ( sRuta, "\\\\", "/" ), '\\', '/' ) );
 }
+
+string SisNormalizarRutaWindows ( const string & sRuta )
+{
+	return ( ReemplazarTodos ( ReemplazarTodos ( ReemplazarTodos ( sRuta, "\\\\", "\\" ), "\\:", ":" ), '/', '\\' ) );
+}
+
 
 bool SisEsRutaValida ( const string & sRuta )
 {
-	bool bRes = false;
-	
-#     if ( defined ( WIN ) )
-	if ( CumpleExpresionRegular ( sRuta, SF_PATRON_RUTA_WIN ) ||  
-		 CumpleExpresionRegular ( sRuta, SF_PATRON_RUTA_WIN_2 ) ||
-		 CumpleExpresionRegular ( sRuta, SF_PATRON_RUTA_REL_WIN ) ||  
-		 CumpleExpresionRegular ( sRuta, SF_PATRON_RUTA_REL_WIN_2 ) ||  
-		 CumpleExpresionRegular ( sRuta, SF_PATRON_RUTA_REL_WIN_3 ) ||  
-		 CumpleExpresionRegular ( sRuta, SF_PATRON_RUTA_REL_WIN_4 ) )  
-#     else
-	if ( CumpleExpresionRegular ( sRuta, SF_PATRON_RUTA ) ||  
-		 CumpleExpresionRegular ( sRuta, SF_PATRON_RUTA_REL ) ||  
-		 CumpleExpresionRegular ( sRuta, SF_PATRON_RUTA_REL_2 ) )  
+	bool 	bRes = false;
+	bool	bWindows = false;
+	string 	sRutaNorm;
+
+	if ( ! sRuta.empty () )
+	{
+		if ( ContieneCaracter ( sRuta, '\\' ) ||
+			 ( ( sRuta.length () > 1 ) && ( sRuta.at ( 1 ) == ':' ) ) )
+		{
+			sRutaNorm = SisNormalizarRutaWindows ( sRuta );
+			bWindows = true;
+		}
+		else
+		{
+			sRutaNorm = SisNormalizarRuta ( sRuta );
+		}
+		if ( bWindows )
+		{
+			if ( CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_WIN ) ||
+				 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL_WIN ) ||
+				 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL_WIN_2 ) )
+			{
+				bRes = true;
+			}
+		}
+		else
+		{
+			if ( CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA ) ||
+				 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL ) ||
+				 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL_2 ) )
+			{
+				bRes = true;
+			}
+		}
+	}
+	return ( bRes );
+}
+
+bool SisEsRutaValidaSistema ( const string & sRuta )
+{
+	string 	sRutaNorm;
+	bool 	bRes = false;
+
+# if ( defined ( CYGWIN ) )
+	sRutaNorm = SisNormalizarRuta ( sRuta );
+	if ( CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA ) ||
+		 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL ) ||
+		 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL_2 ) )
+# elif ( defined ( WIN ) )
+	sRutaNorm = SisNormalizarRutaWindows ( sRuta );
+	if ( CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_WIN ) ||
+		 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL_WIN ) ||
+		 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL_WIN_2 ) )
+# else
+	sRutaNorm = SisNormalizarRuta ( sRuta );
+	if ( CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA ) ||
+		 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL ) ||
+		 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL_2 ) )
 #     endif
 	{
 		bRes = true;
@@ -367,29 +441,211 @@ bool SisEsRutaValida ( const string & sRuta )
 	return ( bRes );
 }
 
+bool SisRutaEsEstiloWindows ( const string & sRuta )
+{
+	bool bRes = false;
+
+	if ( SisEsRutaValida ( sRuta ) )
+	{
+		if ( ContieneCaracter ( sRuta, '\\' ) ||
+			 ( ( sRuta.length () > 1 ) && ( sRuta.at ( 1 ) == ':' ) ) )
+		{
+			bRes = true;
+		}
+	}
+	return ( bRes );
+}
+
+string SisRutaEstiloWindows ( const string & sRuta )
+{
+	return ( SisRutaEstiloWindowsExt ( sRuta, 'C' ) );
+}
+
+string SisRutaEstiloWindowsExt ( const string & sRuta, char cUnidad )
+{
+	string	sResultado = "";
+
+	if ( SisEsRutaValida ( sRuta ) && isalpha ( cUnidad ) )
+	{
+		if ( ! SisRutaEsEstiloWindows ( sRuta ) )
+		{
+			vector<string> vecPartes = SisDividirEnPartes ( sRuta, '/' );
+
+			sResultado.push_back ( static_cast<char>(toupper ( cUnidad )) );
+			sResultado.append ( ":\\" );
+			for ( size_t i = 0; i < vecPartes.size (); i = i + 1 )
+			{
+				sResultado.push_back ( '\\' );
+				sResultado.append ( vecPartes [ i ] );
+			}
+		}
+		else
+		{
+			sResultado.append ( sRuta );
+		}
+	}
+	return ( sResultado );
+}
+
+string SisRutaEstiloUnix ( const string & sRuta )
+{
+	string	sResultado = "";
+
+	if ( SisEsRutaValida ( sRuta ) )
+	{
+		if ( SisRutaEsEstiloWindows ( sRuta ) )
+		{
+			string sRutaCopia = ReemplazarTodos ( ReemplazarTodos ( sRuta, '/', '\\' ), "\\\\", "\\" );
+
+			bool bEsAbsoluto = CumpleExpresionRegular ( sRutaCopia, SF_PATRON_RUTA_WIN );
+			int  iParteIni   = bEsAbsoluto ? 1 : 0;
+			// Se divide por '\\' de forma coherente (la versiï¿½n C original dividï¿½a por
+			// '\\' pero extraï¿½a las palabras con '/'; corregido en ambas versiones).
+			vector<string> vecPartes = SisDividirEnPartes ( sRutaCopia, '\\' );
+
+			if ( bEsAbsoluto )
+			{
+				sResultado.push_back ( '/' );
+			}
+			for ( size_t i = (size_t) iParteIni; i < vecPartes.size (); i = i + 1 )
+			{
+				if ( (int) i > iParteIni )
+				{
+					sResultado.push_back ( '/' );
+				}
+				sResultado.append ( vecPartes [ i ] );
+			}
+		}
+		else
+		{
+			sResultado.append ( sRuta );
+		}
+	}
+	return ( sResultado );
+}
+
+string SisRutaEstiloCygwin ( const string & sRuta )
+{
+	string	sResultado = "";
+
+	if ( SisEsRutaValida ( sRuta ) )
+	{
+		if ( SisRutaEsEstiloWindows ( sRuta ) )
+		{
+			// Aseguramos que todo esta en Windows
+			string	sRutaCopia   = SisNormalizarRutaWindows ( sRuta );
+			bool	bEsAbsoluto  = CumpleExpresionRegular ( sRutaCopia, SF_PATRON_RUTA_WIN );
+			int		iParteIni    = bEsAbsoluto ? 1 : 0;
+			char	cUnidad      = sRutaCopia.empty () ? 0 : sRutaCopia.at ( 0 );
+			vector<string> vecPartes = SisDividirEnPartes ( sRutaCopia, '\\' );
+
+			if ( bEsAbsoluto )
+			{
+				sResultado.append ( "/cygdrive/" );
+				sResultado.push_back ( static_cast<char>(tolower ( cUnidad )));
+			}
+			for ( size_t i = (size_t) iParteIni; i < vecPartes.size (); i = i + 1 )
+			{
+				// En ruta absoluta hay que separar tambiï¿½n la primera parte del prefijo
+				// "/cygdrive/<unidad>"; en relativa, no lleva '/' inicial.
+				if ( ( (int) i > iParteIni ) || bEsAbsoluto )
+				{
+					sResultado.push_back ( '/' );
+				}
+				sResultado.append ( vecPartes [ i ] );
+			}
+		}
+		else
+		{
+			sResultado.append ( sRuta );
+		}
+	}
+	return ( sResultado );
+}
+
+string SisRutaEstiloSistema ( const string & sRuta )
+{
+	string sResultado;
+
+# if ( defined ( CYGWIN ) )
+	sResultado = SisRutaEstiloCygwin ( sRuta );
+# elif ( defined ( WIN ) )
+	sResultado = SisRutaEstiloWindows ( sRuta );
+# else
+	sResultado = SisRutaEstiloUnix ( sRuta );
+# endif
+	return ( sResultado );
+}
+
+bool SisEsRutaAbsoluta ( const string & sRuta )
+{
+	string	sRutaNorm;
+	bool	bRes = false;
+
+	if ( SisRutaEsEstiloWindows ( sRuta ) )
+	{
+		sRutaNorm = SisNormalizarRutaWindows ( sRuta );
+	}
+	else
+	{
+		sRutaNorm = SisNormalizarRuta ( sRuta );
+	}
+	if ( CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA ) ||
+		 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_WIN ) )
+	{
+		bRes = true;
+	}
+	return ( bRes );
+}
+
+bool SisEsRutaRelativa ( const string & sRuta )
+{
+	string	sRutaNorm;
+	bool	bRes = false;
+
+	if ( SisRutaEsEstiloWindows ( sRuta ) )
+	{
+		sRutaNorm = SisNormalizarRutaWindows ( sRuta );
+	}
+	else
+	{
+		sRutaNorm = SisNormalizarRuta ( sRuta );
+	}
+	if ( CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL ) ||
+		 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL_2 ) ||
+		 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL_WIN ) ||
+		 CumpleExpresionRegular ( sRutaNorm, SF_PATRON_RUTA_REL_WIN_2 ) )
+	{
+		bRes = true;
+	}
+	return ( bRes );
+}
+
+
 string SisDirectorioActual ()
 {
 	string sDirectorio = "";
-	try 
+	try
 	{
-		sDirectorio = fs::current_path().string();
+		sDirectorio = fs::current_path ().string ();
 	}
-	catch (...) {
+	catch ( ... )
+	{
 	}
-	return ( sDirectorio ); 
+	return ( sDirectorio );
 }
 
 bool SisEstDirectorioActual ( const string & sDirectorio )
 {
 	bool bRes = false;
+	string sDirNorm = SisRutaEstiloSistema ( sDirectorio );
 
-	try 
+	try
 	{
-		fs::path sActual = fs::current_path();
-		fs::current_path( sDirectorio );
+		fs::current_path ( sDirNorm );
 		bRes = true;
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 	return ( bRes );
@@ -397,29 +653,35 @@ bool SisEstDirectorioActual ( const string & sDirectorio )
 
 string SisCadenaDirectorioSistema ()
 {
-	vector<char> buffer(  SF_MAX_TAM_RUTA );					
-	unsigned int uiTam = 0;
-	
 # if ( defined ( WIN ) )
-	uiTam = GetSystemDirectoryA( buffer.data(), buffer.size() );
+	vector<char> buffer ( SF_MAX_TAM_RUTA );
+	unsigned int uiTam = GetSystemDirectoryA ( buffer.data (), (UINT) buffer.size () );
+	return ( string ( buffer.data (), uiTam ) );
 # else
 	// PENDIENTE
+	return ( string ( "" ) );
 # endif
-	return ( string( buffer.data(), uiTam ) );
+}
+
+string SisCadenaDirectorioFuentes ()
+{
+	return ( string ( "" ) );
 }
 
 bool SisExisteFichero ( const string & sRuta )
 {
 	bool bRes = false;
-	try 
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
+
+	try
 	{
-		fs::path ruta( sRuta );
-		if ( fs::exists( ruta ) ) 
+		fs::path ruta ( sRutaNorm );
+		if ( fs::exists ( ruta ) )
 		{
-			bRes = fs::is_regular_file(ruta);
+			bRes = fs::is_regular_file ( ruta );
 		}
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 	return ( bRes );
@@ -427,21 +689,23 @@ bool SisExisteFichero ( const string & sRuta )
 
 bool SisExisteFicheroExt ( const string & sDirectorio, const string & sFichero )
 {
-	return ( SisExisteFichero ( SisComponerRuta ( sDirectorio, sFichero ) ) );
+	return ( SisExisteFichero ( SisComponerRuta ( sDirectorio, sFichero, 0 ) ) );
 }
 
 bool SisExisteDirectorio ( const string & sRuta )
 {
 	bool bRes = false;
-	try 
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
+
+	try
 	{
-		fs::path ruta( sRuta );
-		if ( fs::exists( ruta ) ) 
+		fs::path ruta ( sRutaNorm );
+		if ( fs::exists ( ruta ) )
 		{
-			bRes = fs::is_directory(ruta);
+			bRes = fs::is_directory ( ruta );
 		}
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 	return ( bRes );
@@ -449,22 +713,27 @@ bool SisExisteDirectorio ( const string & sRuta )
 
 bool SisExisteDirectorioExt ( const string & sDirectorio, const string & sSubdirectorio )
 {
-	return ( SisExisteDirectorio ( SisComponerRuta ( sDirectorio, sSubdirectorio ) ) );
+	return ( SisExisteDirectorio ( SisComponerRuta ( sDirectorio, sSubdirectorio, 0 ) ) );
 }
 
 bool SisCrearFichero ( const string & sRuta )
 {
 	bool bRes = false;
-	try 
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
+
+	try
 	{
-		ofstream archivo( sRuta );
-		if ( archivo.is_open() ) 
+		if ( ! SisExisteFichero ( sRutaNorm ) )
 		{
-			archivo.close();
-			bRes = true;
+			ofstream archivo ( sRutaNorm );
+			if ( archivo.is_open () )
+			{
+				archivo.close ();
+				bRes = true;
+			}
 		}
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 	return ( bRes );
@@ -472,18 +741,20 @@ bool SisCrearFichero ( const string & sRuta )
 
 bool SisCrearFicheroExt ( const string & sDirectorio, const string & sFichero )
 {
-	return ( SisCrearFichero ( SisComponerRuta ( sDirectorio, sFichero ) ) );
+	return ( SisCrearFichero ( SisComponerRuta ( sDirectorio, sFichero, 0 ) ) );
 }
 
 bool SisCrearDirectorio ( const string & sDirectorio )
 {
 	bool bRes = false;
-	try 
+	string sDirNorm = SisRutaEstiloSistema ( sDirectorio );
+
+	try
 	{
-		fs::path directorio ( sDirectorio );
-		bRes = ( fs::create_directories( directorio ) );
+		fs::path directorio ( sDirNorm );
+		bRes = ( fs::create_directories ( directorio ) );
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 	return ( bRes );
@@ -491,18 +762,20 @@ bool SisCrearDirectorio ( const string & sDirectorio )
 
 bool SisCrearDirectorioExt ( const string & sDirectorio, const string & sSubdirectorio )
 {
-	return ( SisCrearDirectorio ( SisComponerRuta ( sDirectorio, sSubdirectorio ) ) );
+	return ( SisCrearDirectorio ( SisComponerRuta ( sDirectorio, sSubdirectorio, 0 ) ) );
 }
 
 bool SisEliminarFichero ( const string & sRuta )
 {
 	bool bRes = false;
-	try 
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
+
+	try
 	{
-		fs::path ruta ( sRuta );
-		bRes = ( fs::remove( ruta ) );
+		fs::path ruta ( sRutaNorm );
+		bRes = ( fs::remove ( ruta ) );
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 	return ( bRes );
@@ -510,18 +783,18 @@ bool SisEliminarFichero ( const string & sRuta )
 
 bool SisEliminarFicheroExt ( const string & sDirectorio, const string & sFichero )
 {
-	return ( SisEliminarFichero ( SisComponerRuta ( sDirectorio, sFichero ) ) );
+	return ( SisEliminarFichero ( SisComponerRuta ( sDirectorio, sFichero, 0 ) ) );
 }
 
 string SisMascaraBusquedaEnDirectorio ( const string & sDirectorio )
 {
 	string sRes;
 
-	if ( !sDirectorio.empty() )
+	if ( ! sDirectorio.empty () )
 	{
-		sRes = format ( "%s/%s",  sDirectorio, SF_MASCARA_BUSQUEDA );
-	} 
-	else 
+		sRes = sDirectorio + SF_DIR_SEPARADOR + SF_MASCARA_BUSQUEDA;
+	}
+	else
 	{
 		sRes = string ( SF_MASCARA_BUSQUEDA );
 	}
@@ -531,12 +804,14 @@ string SisMascaraBusquedaEnDirectorio ( const string & sDirectorio )
 bool SisEliminarDirectorio ( const string & sDirectorio )
 {
 	bool bRes = false;
-	try 
+	string sDirNorm = SisRutaEstiloSistema ( sDirectorio );
+
+	try
 	{
-		fs::path directorio ( sDirectorio );
-		bRes = ( fs::remove_all( directorio ) > 0 );
+		fs::path directorio ( sDirNorm );
+		bRes = ( fs::remove_all ( directorio ) > 0 );
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 	return ( bRes );
@@ -544,25 +819,27 @@ bool SisEliminarDirectorio ( const string & sDirectorio )
 
 bool SisEliminarDirectorioExt ( const string & sDirectorio, const string & sSubdirectorio )
 {
-	return ( SisEliminarDirectorio ( SisComponerRuta ( sDirectorio, sSubdirectorio ) ) );
+	return ( SisEliminarDirectorio ( SisComponerRuta ( sDirectorio, sSubdirectorio, 0 ) ) );
 }
 
 bool SisVaciarDirectorio ( const string & sDirectorio )
 {
 	bool bRes = false;
-	try 
+	string sDirNorm = SisRutaEstiloSistema ( sDirectorio );
+
+	try
 	{
-		fs::path directorio( sDirectorio );
-		if ( fs::exists( directorio ) && fs::is_directory( directorio ) ) 
+		fs::path directorio ( sDirNorm );
+		if ( fs::exists ( directorio ) && fs::is_directory ( directorio ) )
 		{
-			for ( const auto& entrada : fs::directory_iterator( directorio ) )
+			for ( const auto & entrada : fs::directory_iterator ( directorio ) )
 			{
-				fs::remove_all( entrada.path() );
+				fs::remove_all ( entrada.path () );
 			}
 			bRes = true;
 		}
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 	return ( bRes );
@@ -570,31 +847,36 @@ bool SisVaciarDirectorio ( const string & sDirectorio )
 
 bool SisVaciarDirectorioExt ( const string & sDirectorio, const string & sSubdirectorio )
 {
-	return ( SisVaciarDirectorio ( SisComponerRuta ( sDirectorio, sSubdirectorio ) ) );
+	return ( SisVaciarDirectorio ( SisComponerRuta ( sDirectorio, sSubdirectorio, 0 ) ) );
 }
 
 bool SisCopiarFichero ( const string & sRutaOrig, const string & sRutaDest, bool bEliminar )
 {
 	bool bRes = false;
-	try 
+	string sRutaOrigNorm = SisRutaEstiloSistema ( sRutaOrig );
+	string sRutaDestNorm = SisRutaEstiloSistema ( sRutaDest );
+
+	try
 	{
-		fs::path origen( sRutaOrig );
-		fs::path destino( sRutaDest );
-		
-		if ( bEliminar ) 
+		fs::path origen ( sRutaOrigNorm );
+		fs::path destino ( sRutaDestNorm );
+
+		// bEliminar actï¿½a como "sobrescribir el destino si existe".
+		if ( bEliminar )
 		{
-			fs::copy_file( origen, destino, fs::copy_options::overwrite_existing );
-		} 
-		else 
+			fs::copy_file ( origen, destino, fs::copy_options::overwrite_existing );
+			bRes = true;
+		}
+		else
 		{
-			if ( !fs::exists( destino) ) 
+			if ( ! fs::exists ( destino ) )
 			{
-				fs::copy_file( origen, destino );
+				fs::copy_file ( origen, destino );
+				bRes = true;
 			}
 		}
-		bRes = true;
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 	return ( bRes );
@@ -602,45 +884,59 @@ bool SisCopiarFichero ( const string & sRutaOrig, const string & sRutaDest, bool
 
 bool SisCopiarFicheroExt ( const string & sDirOrig, const string & sFicOrig, const string & sDirDest, const string & sFicDest, bool bEliminar )
 {
-	return ( SisCopiarFichero ( SisComponerRuta ( sDirOrig, sFicOrig ),SisComponerRuta ( sDirDest, sFicDest ), bEliminar ) );
+	// Si no se indica fichero destino se reutiliza el nombre de origen (como en la versiï¿½n C).
+	const string & sFicD = sFicDest.empty () ? sFicOrig : sFicDest;
+	return ( SisCopiarFichero ( SisComponerRuta ( sDirOrig, sFicOrig, 0 ),
+		SisComponerRuta ( sDirDest, sFicD, 0 ), bEliminar ) );
 }
 
 bool SisMoverFichero ( const string & sRutaOrig, const string & sRutaDest, bool bEliminar )
 {
 	bool bRes = false;
-	try 
+	string sRutaOrigNorm = SisRutaEstiloSistema ( sRutaOrig );
+	string sRutaDestNorm = SisRutaEstiloSistema ( sRutaDest );
+
+	try
 	{
-		fs::path origen( sRutaOrig );
-		fs::path destino( sRutaDest );
-		
-		if ( bEliminar || fs::exists( destino ) )  
+		fs::path origen ( sRutaOrigNorm );
+		fs::path destino ( sRutaDestNorm );
+
+		if ( fs::exists ( destino ) )
 		{
-			fs::rename( origen, destino );
-			bRes = true;
+			if ( ! bEliminar )
+			{
+				// Destino ya existe y no se permite sobrescribir.
+				return ( false );
+			}
+			fs::remove ( destino );
 		}
+		fs::rename ( origen, destino );
+		bRes = true;
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 	return ( bRes );
 }
 
-bool SisMoverFicheroExt( const string & sDirOrig, const string & sFicOrig,
-                       const string & sDirDest, const string & sFicDest, bool bEliminar)
+bool SisMoverFicheroExt ( const string & sDirOrig, const string & sFicOrig,
+                       const string & sDirDest, const string & sFicDest, bool bEliminar )
 {
-	return ( SisMoverFichero ( SisComponerRuta ( sDirOrig, sFicOrig ),
-		SisComponerRuta ( sDirDest, sFicDest ), bEliminar ) );
+	const string & sFicD = sFicDest.empty () ? sFicOrig : sFicDest;
+	return ( SisMoverFichero ( SisComponerRuta ( sDirOrig, sFicOrig, 0 ),
+		SisComponerRuta ( sDirDest, sFicD, 0 ), bEliminar ) );
 }
 
 // PENDIENTE: UNIX/Linux
 bool SisRutaComprimida ( const string & sRuta )
 {
 	bool bRes = false;
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRuta.c_str() );
+	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
 	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
 	{
 		if ( ( dwAtributos & FILE_ATTRIBUTE_COMPRESSED ) == FILE_ATTRIBUTE_COMPRESSED )
@@ -658,11 +954,12 @@ bool SisRutaComprimida ( const string & sRuta )
 bool SisRutaEncriptada ( const string & sRuta )
 {
 	bool bRes = false;
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRuta.c_str() );
+	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
 	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
 	{
 		if ( ( dwAtributos & FILE_ATTRIBUTE_ENCRYPTED ) == FILE_ATTRIBUTE_ENCRYPTED )
@@ -680,11 +977,12 @@ bool SisRutaEncriptada ( const string & sRuta )
 bool SisRutaOculta ( const string & sRuta )
 {
 	bool bRes = false;
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRuta.c_str() );
+	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
 	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
 	{
 		if ( ( dwAtributos & FILE_ATTRIBUTE_HIDDEN ) == FILE_ATTRIBUTE_HIDDEN )
@@ -702,31 +1000,33 @@ bool SisRutaOculta ( const string & sRuta )
 bool SisFicheroEsAccesible ( const string & sRuta )
 {
 	bool bRes = false;
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRuta.c_str() );
+	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
 	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
 	{
-		if ( ( dwAtributos & FILE_ATTRIBUTE_OFFLINE ) == FILE_ATTRIBUTE_OFFLINE )
+		// Accesible == NO estï¿½ offline.
+		if ( ( dwAtributos & FILE_ATTRIBUTE_OFFLINE ) != FILE_ATTRIBUTE_OFFLINE )
 		{
 			bRes = true;
 		}
 	}
 
 # else
-	try 
+	try
 	{
 		// TODO: No es exactamente lo mismo
-		fs::path ruta( sRuta );
-		fs::file_status estado = fs::status( ruta );
-		
+		fs::path ruta ( sRutaNorm );
+		fs::file_status estado = fs::status ( ruta );
+
 		// Verificar permisos de lectura
-		auto permisos = estado.permissions();
+		auto permisos = estado.permissions ();
 		bRes = ( permisos != fs::perms::none );
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 # endif
@@ -736,31 +1036,47 @@ bool SisFicheroEsAccesible ( const string & sRuta )
 bool SisRutaDeSoloLectura ( const string & sRuta )
 {
 	bool bRes = false;
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
-	try 
+# if ( defined ( WIN ) )
+	DWORD		dwAtributos;
+
+	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
+	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	{
+		if ( ( dwAtributos & FILE_ATTRIBUTE_READONLY ) == FILE_ATTRIBUTE_READONLY )
+		{
+			bRes = true;
+		}
+	}
+
+# else
+	try
 	{
 		// TODO: No es exactamente lo mismo
-		fs::path ruta( sRuta );
-		fs::file_status estado = fs::status( ruta );
-		
-		// Verificar permisos de lectura
-		auto permisos = estado.permissions();
+		fs::path ruta ( sRutaNorm );
+		fs::file_status estado = fs::status ( ruta );
+
+		// Verificar permisos de escritura
+		auto permisos = estado.permissions ();
 		bRes = ( ( permisos & fs::perms::owner_write ) == fs::perms::none );
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
+# endif
 	return ( bRes );
 }
 
 bool SisRutaDelSistema ( const string & sRuta )
 {
 	bool bRes = false;
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRuta.c_str() );
+	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
 	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
 	{
 		if ( ( dwAtributos & FILE_ATTRIBUTE_SYSTEM ) == FILE_ATTRIBUTE_SYSTEM )
@@ -778,11 +1094,12 @@ bool SisRutaDelSistema ( const string & sRuta )
 bool SisFicheroEsTemporal ( const string & sRuta )
 {
 	bool bRes = false;
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRuta.c_str() );
+	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
 	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
 	{
 		if ( ( dwAtributos & FILE_ATTRIBUTE_TEMPORARY ) == FILE_ATTRIBUTE_TEMPORARY )
@@ -792,16 +1109,16 @@ bool SisFicheroEsTemporal ( const string & sRuta )
 	}
 
 # else
-	try 
+	try
 	{
 		// TODO: No es exactamente lo mismo
-		fs::path ruta( sRuta );
-		fs::path dirTemp = fs::temp_directory_path();
-		
-		// Verificar si está en el directorio temporal
-		bRes = ( ruta.string().find( dirTemp.string() ) == 0 );
+		fs::path ruta ( sRutaNorm );
+		fs::path dirTemp = fs::temp_directory_path ();
+
+		// Verificar si estï¿½ en el directorio temporal
+		bRes = ( ruta.string ().find ( dirTemp.string () ) == 0 );
 	}
-	catch (...) 
+	catch ( ... )
 	{
 	}
 # endif
@@ -811,11 +1128,12 @@ bool SisFicheroEsTemporal ( const string & sRuta )
 bool SisFicheroAsociadoAAplicacion ( const string & sRuta )
 {
 	bool bRes = false;
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRuta.c_str() );
+	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
 	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
 	{
 		if ( ( dwAtributos & FILE_ATTRIBUTE_REPARSE_POINT ) == FILE_ATTRIBUTE_REPARSE_POINT )
@@ -833,11 +1151,12 @@ bool SisFicheroAsociadoAAplicacion ( const string & sRuta )
 bool SisFicheroConOptimizacionEspacial ( const string & sRuta )
 {
 	bool bRes = false;
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRuta.c_str() );
+	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
 	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
 	{
 		if ( ( dwAtributos & FILE_ATTRIBUTE_SPARSE_FILE ) == FILE_ATTRIBUTE_SPARSE_FILE )
@@ -855,35 +1174,36 @@ bool SisFicheroConOptimizacionEspacial ( const string & sRuta )
 bool SisRutaDesactivarModoSoloLectura ( const string & sRuta )
 {
 	bool bRes = false;
+	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
 	DWORD		dwAtributos;
 	DWORD		dwMascara;
 
-	dwAtributos = GetFileAttributes ( sRuta.c_str() );
+	dwAtributos = GetFileAttributes ( sRutaNorm.c_str () );
 	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
 	{
 		dwMascara = FILE_ATTRIBUTE_READONLY;
 		dwMascara = 0xFFFFFFFF ^ dwMascara;
 		dwAtributos = dwAtributos & dwMascara;
-		if ( SetFileAttributes ( sRuta.c_str(), dwAtributos ) != 0 )
+		if ( SetFileAttributes ( sRutaNorm.c_str (), dwAtributos ) != 0 )
 		{
 			bRes = true;
 		}
 	}
 # else
-	try 
+	try
 	{
-		// NOTA: Esto debería sevir para todos los casos
-		fs::path ruta( sRuta );
-		
-		// Añadir permisos de escritura
-		fs::permissions( ruta,  
+		// NOTA: Esto deberï¿½a servir para todos los casos
+		fs::path ruta ( sRutaNorm );
+
+		// Aï¿½adir permisos de escritura
+		fs::permissions ( ruta,
 		                fs::perms::owner_write | fs::perms::group_write,
 		                fs::perm_options::add );
 		bRes = true;
 	}
-	catch (...)
+	catch ( ... )
 	{
 	}
 # endif
@@ -895,8 +1215,8 @@ bool SisEsFicheroC ( const string & sRuta )
 	bool bRes = false;
 
 	string sFichero = SisRutaFichero ( sRuta );
-	string sExt = SisRutaFichero ( sFichero );
-	if ( ! sExt.empty() )
+	string sExt = SisFicheroExtension ( sFichero );
+	if ( ! sExt.empty () )
 	{
 		bRes = ( ( sExt == EXT_FIC_CABECERA_C ) ||
 			( sExt == EXT_FIC_CODIGO_C ) ||
@@ -912,8 +1232,8 @@ bool SisEsFicheroCodigoC ( const string & sRuta )
 	bool bRes = false;
 
 	string sFichero = SisRutaFichero ( sRuta );
-	string sExt = SisRutaFichero ( sFichero );
-	if ( ! sExt.empty() )
+	string sExt = SisFicheroExtension ( sFichero );
+	if ( ! sExt.empty () )
 	{
 		bRes = ( ( sExt == EXT_FIC_CODIGO_C ) ||
 				( sExt == EXT_FIC_CODIGO_C_2 ) ||
@@ -928,8 +1248,8 @@ bool SisEsFicheroCabeceraC ( const string & sRuta )
 	bool bRes = false;
 
 	string sFichero = SisRutaFichero ( sRuta );
-	string sExt = SisRutaFichero ( sFichero );
-	if ( ! sExt.empty() )
+	string sExt = SisFicheroExtension ( sFichero );
+	if ( ! sExt.empty () )
 	{
 		bRes = ( sExt == EXT_FIC_CABECERA_C );
 	}
@@ -941,8 +1261,8 @@ bool SisEsFicheroXML ( const string & sRuta )
 	bool bRes = false;
 
 	string sFichero = SisRutaFichero ( sRuta );
-	string sExt = SisRutaFichero ( sFichero );
-	if ( ! sExt.empty() )
+	string sExt = SisFicheroExtension ( sFichero );
+	if ( ! sExt.empty () )
 	{
 		bRes = ( sExt == EXT_FIC_XML );
 	}
@@ -954,8 +1274,8 @@ bool SisEsFicheroHTML ( const string & sRuta )
 	bool bRes = false;
 
 	string sFichero = SisRutaFichero ( sRuta );
-	string sExt = SisRutaFichero ( sFichero );
-	if ( ! sExt.empty() )
+	string sExt = SisFicheroExtension ( sFichero );
+	if ( ! sExt.empty () )
 	{
 		bRes = ( ( sExt == EXT_FIC_HTML ) ||
 				( sExt == EXT_FIC_HTML_2 ) );
@@ -968,8 +1288,8 @@ bool SisEsFicheroSHP ( const string & sRuta )
 	bool bRes = false;
 
 	string sFichero = SisRutaFichero ( sRuta );
-	string sExt = SisRutaFichero ( sFichero );
-	if ( ! sExt.empty() )
+	string sExt = SisFicheroExtension ( sFichero );
+	if ( ! sExt.empty () )
 	{
 		bRes = ( sExt == EXT_FIC_SHAPE );
 	}
@@ -981,19 +1301,144 @@ bool SisEsFicheroDBF ( const string & sRuta )
 	bool bRes = false;
 
 	string sFichero = SisRutaFichero ( sRuta );
-	string sExt = SisRutaFichero ( sFichero );
-	if ( ! sExt.empty() )
+	string sExt = SisFicheroExtension ( sFichero );
+	if ( ! sExt.empty () )
 	{
 		bRes = ( sExt == EXT_FIC_DBASE );
 	}
 	return ( bRes );
 }
 
+string SisResolverDirectorioRelativo ( const string & sRutaBase, const string & sRutaRelativa )
+{
+	string sRes = "";
+
+	if ( SisEsRutaAbsoluta ( sRutaBase ) && SisEsRutaRelativa ( sRutaRelativa ) )
+	{
+		string	sRutaBaseCopia;
+		string	sRutaRelativaCopia;
+		bool	bWindows;
+		char	cSep;
+		char	cUnidad = 0;
+
+		if ( SisRutaEsEstiloWindows ( sRutaBase ) )
+		{
+			sRutaBaseCopia     = SisRutaEstiloWindows ( sRutaBase );
+			sRutaRelativaCopia = SisRutaEstiloWindows ( sRutaRelativa );
+			bWindows = true;
+			cSep     = '\\';
+			if ( ! sRutaBaseCopia.empty () )
+			{
+				cUnidad        = sRutaBaseCopia.at ( 0 );
+				sRutaBaseCopia = ( sRutaBaseCopia.length () > 2 ) ? sRutaBaseCopia.substr ( 2 ) : string ( "" );
+			}
+		}
+		else
+		{
+			sRutaBaseCopia     = SisRutaEstiloUnix ( sRutaBase );
+			sRutaRelativaCopia = SisRutaEstiloUnix ( sRutaRelativa );
+			bWindows = false;
+			cSep     = '/';
+		}
+
+		if ( ! sRutaBaseCopia.empty () && ! sRutaRelativaCopia.empty () &&
+			 ( sRutaBaseCopia.at ( 0 ) == cSep ) && ( sRutaRelativaCopia.at ( 0 ) == '.' ) )
+		{
+			string			sResultado = "";
+			if ( bWindows )
+			{
+				sResultado.push_back ( cUnidad );
+				sResultado.push_back ( ':' );
+			}
+
+			vector<string>	vecPartesBase = SisDividirEnPartes ( sRutaBaseCopia, cSep );
+			vector<string>	vecPartesRel  = SisDividirEnPartes ( sRutaRelativaCopia, cSep );
+
+			int iPartes    = (int) vecPartesBase.size ();
+			int iPartesRel = (int) vecPartesRel.size ();
+			int iCount     = iPartes;
+
+			// Consumir los "." y ".." iniciales de la ruta relativa subiendo por la base.
+			int  iCountRel = 0;
+			bool bFinBucle = false;
+			while ( ( iCountRel < iPartesRel ) && ! bFinBucle )
+			{
+				if ( vecPartesRel [ iCountRel ] == ".." )
+				{
+					if ( iCount > 0 )
+					{
+						iCount = iCount - 1;
+					}
+					iCountRel = iCountRel + 1;
+				}
+				else if ( vecPartesRel [ iCountRel ] != "." )
+				{
+					bFinBucle = true;
+				}
+				else
+				{
+					iCountRel = iCountRel + 1;
+				}
+			}
+
+			// Reconstruir la parte de la base que sobrevive.
+			for ( int i = 0; i < iPartes; i = i + 1 )
+			{
+				if ( i < iCount )
+				{
+					sResultado.push_back ( cSep );
+					sResultado.append ( vecPartesBase [ i ] );
+				}
+			}
+
+		// Aï¿½adir el resto de la ruta relativa.
+			while ( iCountRel < iPartesRel )
+			{
+				sResultado.push_back ( cSep );
+				sResultado.append ( vecPartesRel [ iCountRel ] );
+				iCountRel = iCountRel + 1;
+			}
+
+			if ( sResultado.empty () )
+			{
+				sResultado.push_back ( cSep );
+			}
+			sRes = sResultado;
+		}
+	}
+	return ( sRes );
+}
+
+
+string SisDirectorioRaiz ()
+{
+# if ( defined ( CYGWIN ) )
+	return ( string ( "/" ) );
+# elif ( defined ( WIN ) )
+	return ( string ( "C:\\" ) );
+# else
+	return ( string ( "/" ) );
+# endif
+}
+
+# if ( defined ( WIN ) )
+string SisDirectorioRaizExt ( char cUnidad )
+{
+# if ( defined ( CYGWIN ) )
+	return ( string ( "/cygdrive/" ) + static_cast<char>(tolower ( cUnidad )) );
+# else
+	return ( string ( 1, cUnidad ) + ":\\" );
+# endif
+}
+# endif
+
+char SisSeparadorRutaFicheros ()
+{
+	return ( SIS_SEPARADOR_PATH );
+}
 
 
 			}
 		}
 	}
 }
-
-

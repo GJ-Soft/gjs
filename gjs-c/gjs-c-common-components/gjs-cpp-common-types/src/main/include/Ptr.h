@@ -40,6 +40,11 @@ namespace org
 					bLiberar = _bLiberar;
 				}
 
+				// Puntero propietario: prohibir copia y asignacion para evitar
+				// una doble liberacion del mismo bloque (regla de tres).
+				Ptr ( const Ptr & ) = delete;
+				Ptr & operator= ( const Ptr & ) = delete;
+
 				virtual ~Ptr ()
 				{
 					if ( bLiberar && PuedeLiberarse( datos ) )

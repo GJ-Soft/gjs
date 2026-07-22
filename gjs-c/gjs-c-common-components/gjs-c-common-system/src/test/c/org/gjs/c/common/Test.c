@@ -1,22 +1,88 @@
 #include "Base.h"
 
-// TODO
 
-#define NUM_TESTS        1
 
-extern int TestSId ();
+#define NUM_TESTS        23
+
+extern int TestTiposSistema ();
+extern int TestSistemaSignals ();
+extern int TestVariablesEntorno ();
+extern int TestSistemaErrores ();
+extern int TestSistemaTiempo ();
+extern int TestSistemaInformacion ();
+extern int TestSistemaMemoria ();
+extern int TestSistemaProcesos ();
+extern int TestSistemaComandos ();
+extern int TestSistemaRed ();
+extern int TestSistemaUsuario ();
+extern int TestSistemaLibrerias ();
+extern int TestSistemaImpresoras ();
+extern int TestSistemaSincronizacion ();
+extern int TestSContadorCiclos ();
+extern int TestSTemporizador ();
+extern int TestSProceso ();
+extern int TestSSistema ();
+extern int TestSMutex ();
+extern int TestSSemaforo ();
+extern int TestSMemoriaCompartida ();
+extern int TestSRelojProgramable ();
+extern int TestSGestorSignals ();
 
 char ** testArrayInit ()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *));
-    p_p_cTests[ 0 ] = CadDuplicar ( "SId" );
+    p_p_cTests[ 0 ] = CadDuplicar ( "TiposSistemaTest" );
+    p_p_cTests[ 1 ] = CadDuplicar ( "SistemaSignalsTest" );
+    p_p_cTests[ 2 ] = CadDuplicar ( "VariablesEntornoTest" );
+    p_p_cTests[ 3 ] = CadDuplicar ( "SistemaErroresTest" );
+    p_p_cTests[ 4 ] = CadDuplicar ( "SistemaTiempoTest" );
+    p_p_cTests[ 5 ] = CadDuplicar ( "SistemaInformacionTest" );
+    p_p_cTests[ 6 ] = CadDuplicar ( "SistemaMemoriaTest" );
+    p_p_cTests[ 7 ] = CadDuplicar ( "SistemaProcesosTest" );
+    p_p_cTests[ 8 ] = CadDuplicar ( "SistemaComandosTest" );
+    p_p_cTests[ 9 ] = CadDuplicar ( "SistemaRedTest" );
+    p_p_cTests[ 10 ] = CadDuplicar ( "SistemaUsuarioTest" );
+    p_p_cTests[ 11 ] = CadDuplicar ( "SistemaLibreriasTest" );
+    p_p_cTests[ 12 ] = CadDuplicar ( "SistemaImpresorasTest" );
+    p_p_cTests[ 13 ] = CadDuplicar ( "SistemaSincronizacionTest" );
+    p_p_cTests[ 14 ] = CadDuplicar ( "SContadorCiclosTest" );
+    p_p_cTests[ 15 ] = CadDuplicar ( "STemporizadorTest" );
+    p_p_cTests[ 16 ] = CadDuplicar ( "SProcesoTest" );
+    p_p_cTests[ 17 ] = CadDuplicar ( "SSistemaTest" );
+    p_p_cTests[ 18 ] = CadDuplicar ( "SMutexTest" );
+    p_p_cTests[ 19 ] = CadDuplicar ( "SSemaforoTest" );
+    p_p_cTests[ 20 ] = CadDuplicar ( "SMemoriaCompartidaTest" );
+    p_p_cTests[ 21 ] = CadDuplicar ( "SRelojProgramableTest" );
+    p_p_cTests[ 22 ] = CadDuplicar ( "SGestorSignalsTest" );
     return p_p_cTests;
 }
 
 PFUNINTV * functionArrayInit ()
 {
     PFUNINTV* p_fTests = (PFUNINTV *) MemReservar ( NUM_TESTS * sizeof( PFUNINTV ));
-    p_fTests[ 0 ] = TestSId;
+    p_fTests[ 0 ] = TestTiposSistema;
+    p_fTests[ 1 ] = TestSistemaSignals;
+    p_fTests[ 2 ] = TestVariablesEntorno;
+    p_fTests[ 3 ] = TestSistemaErrores;
+    p_fTests[ 4 ] = TestSistemaTiempo;
+    p_fTests[ 5 ] = TestSistemaInformacion;
+    p_fTests[ 6 ] = TestSistemaMemoria;
+    p_fTests[ 7 ] = TestSistemaProcesos;
+    p_fTests[ 8 ] = TestSistemaComandos;
+    p_fTests[ 9 ] = TestSistemaRed;
+    p_fTests[ 10 ] = TestSistemaUsuario;
+    p_fTests[ 11 ] = TestSistemaLibrerias;
+    p_fTests[ 12 ] = TestSistemaImpresoras;
+    p_fTests[ 13 ] = TestSistemaSincronizacion;
+    p_fTests[ 14 ] = TestSContadorCiclos;
+    p_fTests[ 15 ] = TestSTemporizador;
+    p_fTests[ 16 ] = TestSProceso;
+    p_fTests[ 17 ] = TestSSistema;
+    p_fTests[ 18 ] = TestSMutex;
+    p_fTests[ 19 ] = TestSSemaforo;
+    p_fTests[ 20 ] = TestSMemoriaCompartida;
+    p_fTests[ 21 ] = TestSRelojProgramable;
+    p_fTests[ 22 ] = TestSGestorSignals;
     return p_fTests;
 }
 

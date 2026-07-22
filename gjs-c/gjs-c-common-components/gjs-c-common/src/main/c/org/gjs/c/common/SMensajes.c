@@ -49,7 +49,7 @@ int SMsjInsertar ( SMensajes * p_msjObj, unsigned long ulCodigo, SCadena * p_cad
 	int				iRes;
 	SEntidadId *	p_entDatos;
 
-	if ( ES_VALIDO ( p_msjObj ) && (  ulCodigo > 0 ) && ( SCadLongitud ( p_cadTexto ) > 0 ) )
+	if ( ES_VALIDO ( p_msjObj ) && ( ulCodigo > 0 ) && ( SCadLongitud ( p_cadTexto ) > 0 ) )
 	{
 		if ( SMsjExisteCodigo ( p_msjObj, ulCodigo ) == 0 )
 		{
@@ -97,18 +97,24 @@ int SMsjExisteCodigo ( SMensajes * p_msjObj, unsigned long ulCodigo )
 {
 	int				iRes;
 	int				iEnc;
+	int 			iFin;
 	SEntidadId *	p_entDatos;
 
 	if ( ES_VALIDO ( p_msjObj ) )
 	{
 		iEnc = 0;
+		iFin = 0;
 		SLispInicio ( p_msjObj->p_lisMensajes );
-		while ( ( iEnc == 0 ) && ( SLispEstaEnFinal ( p_msjObj->p_lisMensajes ) == 0 ) )
+		while ( ( iEnc == 0 ) && ( iFin == 0 ) )
 		{
 			p_entDatos = ( SEntidadId * ) SLispActual ( p_msjObj->p_lisMensajes );
 			if ( SEntIdId ( p_entDatos ) == ulCodigo )
 			{
 				iEnc = 1;
+			}
+			else if ( SLispEstaEnFinal ( p_msjObj->p_lisMensajes ) == 1 )
+			{
+				iFin = 1;
 			}
 			else
 			{
@@ -145,19 +151,25 @@ SCadena * SMsjTexto ( SMensajes * p_msjObj, unsigned long ulCodigo )
 	SEntidadId *	p_entDatos;
 	SCadena *		p_cadTexto;
 	int				iEnc;
+	int 			iFin;
 
 	if ( ES_VALIDO ( p_msjObj ) )
 	{
-		iEnc = 0;
 		p_cadTexto = NULL;
+		iEnc = 0;
+		iFin = 0;
 		SLispInicio ( p_msjObj->p_lisMensajes );
-		while ( ( iEnc == 0 ) && ( SLispEstaEnFinal ( p_msjObj->p_lisMensajes ) == 0 ) )
+		while ( ( iEnc == 0 ) && ( iFin == 0 ) )
 		{
 			p_entDatos = ( SEntidadId * ) SLispActual ( p_msjObj->p_lisMensajes );
 			if ( SEntIdId ( p_entDatos ) == ulCodigo )
 			{
 				iEnc = 1;
 				p_cadTexto = SEntIdNombre ( p_entDatos );
+			}
+			else if ( SLispEstaEnFinal ( p_msjObj->p_lisMensajes ) == 1 )
+			{
+				iFin = 1;
 			}
 			else
 			{

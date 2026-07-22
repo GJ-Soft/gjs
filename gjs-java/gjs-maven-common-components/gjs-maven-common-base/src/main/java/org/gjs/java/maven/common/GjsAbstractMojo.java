@@ -30,14 +30,14 @@ public abstract class GjsAbstractMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	protected MavenProject project;
 
+	@Parameter(defaultValue = "${project.basedir}", required = true)
+	protected File baseDirectory;
+
 	@Parameter(defaultValue = "${project.build.directory}", required = true)
 	protected File outputDirectory;
 
 	@Parameter(defaultValue = "${project.build.finalName}", required = true)
 	protected String finalName;
-
-	@Parameter(defaultValue = "${project.basedir}", required = true)
-	protected File baseDirectory;
 
 	/** Flag to easily getSkip() all checks. */
 	protected abstract boolean getSkip();
@@ -61,7 +61,7 @@ public abstract class GjsAbstractMojo extends AbstractMojo {
 	 *
 	 * @param errorMessages the error messages
 	 */
-	protected abstract void goalExecution(Log log, List<String> errorMessages);
+	protected abstract void goalExecution(Log log, List<String> errorMessages) throws Throwable;
 
 	protected void additionalInitializations() {
 	}

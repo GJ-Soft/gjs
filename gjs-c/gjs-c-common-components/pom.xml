@@ -35,6 +35,7 @@
 		<module>gjs-cpp-common-base</module>
 		<module>gjs-cpp-common-types</module>
 		<module>gjs-cpp-common-time</module>
+		<module>gjs-cpp-common-calculation</module>
 		<module>gjs-cpp-common-log</module>
 		<module>gjs-cpp-common-io</module>
 		<module>gjs-cpp-common-system</module>

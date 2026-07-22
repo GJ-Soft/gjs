@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                                SCadena.cpp                                 */
 /*----------------------------------------------------------------------------*/
-/* Librería:  GTexto                                                          */
-/* Versión:   1.0.0                                                           */
+/* Librerï¿½a:  GTexto                                                          */
+/* Versiï¿½n:   1.0.0                                                           */
 /* Fecha:     30/06/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de la clase de     */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de la clase de     */
 /* datos SCadena.                                                             */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -114,7 +114,7 @@ SCadena * SCadGenerarConFormatoExt ( const char * p_cFormato, va_list valArgumen
 		p_cadObj = SCadCrear ( iLong );
 		if ( ES_VALIDO ( p_cadObj ) )
 		{
-			if ( SCadCopiarConFormato ( p_cadObj, p_cFormato, valArgumentos ) == 1 )
+			if ( SCadCopiarConFormatoExt ( p_cadObj, p_cFormato, valArgumentos ) == 1 )
 			{
 				SCadAjustarMaxTam ( p_cadObj );
 			}

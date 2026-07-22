@@ -1756,37 +1756,51 @@ int CadCompararSinDistinguirTipoLetraExt ( const char * p_cAsciiz1, const char *
 	int iCar;
 	int iLong1;
 	int iLong2;
+	int iMinLong;
 
 	iLong1 = CadLongitudSeg ( p_cAsciiz1, iMax1 ); 
 	iLong2 = CadLongitudSeg ( p_cAsciiz2, iMax2 ); 
 	if ( ( iLong1 > 0 ) && ( iLong2 > 0 ) )
 	{
-		if ( iLong1 == iLong2 )
+		iMinLong = MIN ( iLong1, iLong2 );
+		iRes = COMP_IGUAL;
+		iCar = 0; 
+		while ( ( iCar < iMinLong ) && ( iRes == 1 ) )  
 		{
-			iRes = 1;
-			iCar = 0; 
-			while ( ( iCar < iLong1 ) && ( iRes == 1 ) )  
+			if ( ASCIILetraMinAMay ( p_cAsciiz1 [ iCar ] ) < ASCIILetraMinAMay ( p_cAsciiz2 [ iCar ] ) )
 			{
-				if ( ASCIILetraMinAMay ( p_cAsciiz1 [ iCar ] ) < ASCIILetraMinAMay ( p_cAsciiz2 [ iCar ] ) )
-				{
-					iRes = 2;
-				}
-				else if ( ASCIILetraMinAMay ( p_cAsciiz1 [ iCar ] ) > ASCIILetraMinAMay ( p_cAsciiz2 [ iCar ] ) )
-				{
-					iRes = 3;
-				}
-				iCar = iCar + 1;
+				iRes = COMP_MENOR;
 			}
+			else if ( ASCIILetraMinAMay ( p_cAsciiz1 [ iCar ] ) > ASCIILetraMinAMay ( p_cAsciiz2 [ iCar ] ) )
+			{
+				iRes = COMP_MAYOR;
+			}
+			iCar = iCar + 1;
 		}
-		else
+		if ( iRes == COMP_IGUAL )
 		{
-			iRes = 0;
+			if ( iLong1 < iLong2 )
+			{
+				iRes = COMP_MENOR;
+			} 
+			else if ( iLong2 < iLong1 ) 
+			{
+				iRes = COMP_MAYOR;
+			} 
 		}
 	}
-	else
+	else if ( ES_NULO ( p_cAsciiz1 ) && ES_NULO ( p_cAsciiz2 ) ) 
 	{
-		iRes = 0;
-	}
+		iRes = COMP_IGUAL;
+	} 
+	else if ( ES_NULO ( p_cAsciiz1 ) )
+	{
+		iRes = COMP_MENOR;
+	} 
+	else 
+	{
+		iRes = COMP_MAYOR;
+	} 
 	return ( iRes );
 }
 

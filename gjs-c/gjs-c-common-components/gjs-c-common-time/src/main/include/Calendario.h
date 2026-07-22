@@ -21,14 +21,6 @@
 
 
 
-
-
-
-
-
-
-
-
 int CalendEsValido ( int iA, int iM, int iD );
 
 int CalendEsMenor  ( int iA1, int iM1, int iD1, int iA2, int iM2, int iD2 );
@@ -41,6 +33,8 @@ int CalendDiasAno ( int iA );
 int CalendDiasMes ( int iA, int iM );
 
 long CalendDiasHastaElAno ( int iA );
+long CalendDiasHastaElMes ( int iA, int iM );
+long CalendDiasHastaFecha ( int iA, int iM, int iD );
 int CalendDiasAnualesHastaElMes ( int iA, int iM );
 int CalendDiasAnualesDesdeElMes ( int iA, int iM );
 

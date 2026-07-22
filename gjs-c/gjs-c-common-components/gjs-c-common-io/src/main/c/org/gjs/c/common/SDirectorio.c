@@ -23,6 +23,7 @@ SDirectorio * SDirCrear ( SCadena * p_cadDirectorio )
 		{
 			p_dirObj->p_cadNombre = SCadDuplicar ( SRutSubdirectorio( p_dirObj->p_rutObj ) );
 			p_dirObj->p_lisEntradas = SLispCrear ();
+			SLispDesactivarLiberacionMemoria ( p_dirObj->p_lisEntradas );
 			SDirRefrescar ( p_dirObj );
 		}
 		else
@@ -46,6 +47,7 @@ SDirectorio * SDirCrearLit ( const char * p_cDirectorio )
 		{
 			p_dirObj->p_cadNombre = SCadDuplicar ( SRutSubdirectorio( p_dirObj->p_rutObj ) );
 			p_dirObj->p_lisEntradas = SLispCrear ();
+			SLispDesactivarLiberacionMemoria ( p_dirObj->p_lisEntradas );
 			SDirRefrescar ( p_dirObj );
 		}
 		else
@@ -71,6 +73,7 @@ SDirectorio * SDirCrearRuta ( SRuta * p_rutDirectorio )
 			{
 				p_dirObj->p_cadNombre = SCadDuplicar ( SRutSubdirectorio( p_dirObj->p_rutObj ) );
 				p_dirObj->p_lisEntradas = SLispCrear ();
+				SLispDesactivarLiberacionMemoria ( p_dirObj->p_lisEntradas );
 				SDirRefrescar ( p_dirObj );
 			}
 			else
@@ -294,6 +297,7 @@ int SDirRefrescar ( SDirectorio * p_dirObj )
 	int						iEnc;
 	int						iEntrada;
 	int						iError;
+	int						iFin;
     struct dirent *			p_directInfo;
 #endif
 	
@@ -352,59 +356,67 @@ int SDirRefrescar ( SDirectorio * p_dirObj )
 				p_dirInfo = opendir ( SCadValorConstante ( p_cadBusqueda ) );
 				if ( ES_VALIDO ( p_dirInfo ) )
 				{
+					iFin = 0;
 					iRes = 1;
-					p_directInfo = readdir ( p_dirInfo );
-					while ( ES_VALIDO ( p_directInfo ) && ( iRes == 1 ) )
+					while ( ( iFin == 0 ) && ( iRes == 1 ) )
 					{
-						if ( *p_directInfo->d_name != '.' )
+						p_directInfo = readdir ( p_dirInfo );
+						if ( ES_VALIDO ( p_directInfo ) )
 						{
-							if ( SisExisteDirectorioExt ( SRutDirectorioLit ( p_dirObj->p_rutObj ), p_directInfo->d_name ) == 1)
+							if ( p_directInfo->d_name[0] != '.' )
 							{
-								p_entdirDatos = SEntDirCrearDirectorioLit ( p_directInfo->d_name );
-							}
-							else
-							{
-								p_entdirDatos = SEntDirCrearFicheroLit ( p_directInfo->d_name );
-							}
-							if ( ES_VALIDO ( p_entdirDatos ) )
-							{
-								iError = 0;
-								iEnc = 0;
-								iEntrada = 0;
-								int iNumEntradas = SLispNumElementos ( p_dirObj->p_lisEntradas );
-								while ( ( iEnc == 0 ) && ( iEntrada < iNumEntradas ) && ( iError == 0 ) )
+								if ( SisExisteDirectorioExt ( SRutDirectorioLit ( p_dirObj->p_rutObj ), p_directInfo->d_name ) == 1)
 								{
-									p_entdirElem = (SEntradaDirectorio *) SLispElemento( p_dirObj->p_lisEntradas, iEntrada );
-									if ( ES_VALIDO ( p_entdirElem ) )
-									{
-										if ( SCadEsMayor ( SEntDirEntrada ( p_entdirDatos ), SEntDirEntrada ( p_entdirElem ) ) == 1 )
-										{
-											iEntrada = iEntrada + 1;
-										}
-										else
-										{
-											iEnc = 1;
-										}
-									}
-									else
-									{
-										iError = 1;
-									}
-								}
-								if ( iEnc == 1 )
-								{
-									SLispMoverA ( p_dirObj->p_lisEntradas, iEntrada );
-									iRes = SLispInsertarDelante ( p_dirObj->p_lisEntradas, (void *) p_entdirDatos );
+									p_entdirDatos = SEntDirCrearDirectorioLit ( p_directInfo->d_name );
 								}
 								else
 								{
-									iRes = SLispInsertarAlFinal ( p_dirObj->p_lisEntradas, (void *) p_entdirDatos );
+									p_entdirDatos = SEntDirCrearFicheroLit ( p_directInfo->d_name );
+								}
+								if ( ES_VALIDO ( p_entdirDatos ) )
+								{
+									iError = 0;
+									iEnc = 0;
+									iEntrada = 0;
+									int iNumEntradas = SLispNumElementos ( p_dirObj->p_lisEntradas );
+									while ( ( iEnc == 0 ) && ( iEntrada < iNumEntradas ) && ( iError == 0 ) )
+									{
+										p_entdirElem = (SEntradaDirectorio *) SLispElemento( p_dirObj->p_lisEntradas, iEntrada );
+										if ( ES_VALIDO ( p_entdirElem ) )
+										{
+											if ( SCadEsMayor ( SEntDirEntrada ( p_entdirDatos ), SEntDirEntrada ( p_entdirElem ) ) == 1 )
+											{
+												iEntrada = iEntrada + 1;
+											}
+											else
+											{
+												iEnc = 1;
+											}
+										}
+										else
+										{
+											iError = 1;
+										}
+									}
+									if ( iEnc == 1 )
+									{
+										SLispMoverA ( p_dirObj->p_lisEntradas, iEntrada );
+										iRes = SLispInsertarDelante ( p_dirObj->p_lisEntradas, (void *) p_entdirDatos );
+									}
+									else
+									{
+										iRes = SLispInsertarAlFinal ( p_dirObj->p_lisEntradas, (void *) p_entdirDatos );
+									}
+								}
+								else
+								{
+									iRes = 0;
 								}
 							}
-							else
-							{
-								iRes = 0;
-							}
+						}
+						else
+						{
+							iFin = 1;
 						}
 					}
 				}

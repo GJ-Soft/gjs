@@ -43,12 +43,18 @@ int RadNumeroVueltas  ( double dRadianes )
 
 int RadCuadrante  ( double dRadianes )
 {
-	return ( ( ( ConvRealDobleAEntero ( dRadianes / PI_M, 1 ) + 1 ) % 4 ) + 1 );
+	double dNorm;
+
+	dNorm = RadNormalizar ( dRadianes, 0 );
+	return ( ( ConvRealDobleAEntero ( dNorm / PI_M, 1 ) % 4 ) + 1 );
 }
 
 int RadSemiplanoX  ( double dRadianes )
 {
-	return ( ( ( ConvRealDobleAEntero ( dRadianes / PI, 1 ) + 1 ) % 2 ) + 1 );
+	double dNorm;
+
+	dNorm = RadNormalizar ( dRadianes, 0 );
+	return ( ( ConvRealDobleAEntero ( dNorm / PI, 1 ) % 2 ) + 1 );
 }
 
 int RadSemiplanoY  ( double dRadianes )

@@ -1,21 +1,21 @@
 /******************************************************************************/
 /*                              Argumentos.cpp                               */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Aplicacion                                                      */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Aplicacion                                                      */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de la clase de     */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de la clase de     */
 /* datos Argumentos.                                                         */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
+#include "CppCommonConfig.h"
 #include "Argumentos.h"
 
-#include "CppCommonConfig.h"
 
 #include "ArgumentoInvalidoExcepcion.h"
 
@@ -40,11 +40,11 @@ Argumentos::Argumentos ()
 {
 	int iNumArgs = 0;
 	LPWSTR * p_lpwsArg = CommandLineToArgvW ( GetCommandLineW (), &iNumArgs );
-	if ( ES_VALIDO ( p_p_cArg ) )
+	if ( ES_VALIDO ( p_lpwsArg ) )
 	{
 		iNumArgumentos = 0;
-		vecArgumentos = vector<string> ( iNumArg - 1 );
-		for ( iArg = 0; iArg < iNumArgs - 1; iArg = iArg + 1 )
+		vecArgumentos = vector<string> ( iNumArgs - 1 );
+		for ( int iArg = 0; iArg < iNumArgs - 1; iArg = iArg + 1 )
 		{
 			string sArg = UnicodeAUtf8 ( wstring ( p_lpwsArg [ iArg + 1 ] ) );
 			sArg = EliminarCaracteresNoAlfanumericos ( sArg );
@@ -143,7 +143,7 @@ long Argumentos::ArgumentoEnteroLargo ( int iArg ) const
 
 float Argumentos::ArgumentoReal ( int iArg ) const
 {
-	return ( (float) ArgumentoEnteroLargo ( iArg ) );
+	return ( (float) ArgumentoRealDoble ( iArg ) );
 }
 
 double Argumentos::ArgumentoRealDoble ( int iArg ) const

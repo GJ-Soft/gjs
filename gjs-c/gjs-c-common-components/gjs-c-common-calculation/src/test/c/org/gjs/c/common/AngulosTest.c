@@ -95,13 +95,111 @@ static int TestAngConversion01 ()
 
 
 
+static int TestAngCuadrantes01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test AngCuadrantes 01:\n" );
+
+	/* Numero de vueltas completas. */
+	if ( AngNumeroVueltas ( 720.0 ) != 2 )
+	{
+		printf( "Error caso 1: 720 grados son 2 vueltas: %d\n", AngNumeroVueltas ( 720.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( AngNumeroVueltas ( 90.0 ) != 0 )
+	{
+		printf( "Error caso 2: 90 grados son 0 vueltas: %d\n", AngNumeroVueltas ( 90.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* Se trunca ( no se redondea ): 340 grados es 0 vueltas, no 1. */
+	if ( AngNumeroVueltas ( 340.0 ) != 0 )
+	{
+		printf( "Error caso 3: 340 grados deberian ser 0 vueltas: %d\n", AngNumeroVueltas ( 340.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* Cuadrante estandar: Q1..Q4 -> 1..4 ( pasos de 90 grados ). */
+	if ( AngCuadrante ( 45.0 ) != 1 )
+	{
+		printf( "Error caso 4: 45 grados estan en el cuadrante 1: %d\n", AngCuadrante ( 45.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( AngCuadrante ( 135.0 ) != 2 )
+	{
+		printf( "Error caso 5: 135 grados estan en el cuadrante 2: %d\n", AngCuadrante ( 135.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( AngCuadrante ( 225.0 ) != 3 )
+	{
+		printf( "Error caso 6: 225 grados estan en el cuadrante 3: %d\n", AngCuadrante ( 225.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( AngCuadrante ( 315.0 ) != 4 )
+	{
+		printf( "Error caso 7: 315 grados estan en el cuadrante 4: %d\n", AngCuadrante ( 315.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* Se toma por truncamiento: 54 grados sigue en el primer cuadrante. */
+	if ( AngCuadrante ( 54.0 ) != 1 )
+	{
+		printf( "Error caso 8: 54 grados siguen en el cuadrante 1: %d\n", AngCuadrante ( 54.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* SemiplanoX ( respecto al eje X, signo de y ): [0,180) -> 1, [180,360) -> 2. */
+	if ( AngSemiplanoX ( 45.0 ) != 1 )
+	{
+		printf( "Error caso 9: 45 grados ( y>0 ) estan en el semiplano X 1: %d\n", AngSemiplanoX ( 45.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( AngSemiplanoX ( 225.0 ) != 2 )
+	{
+		printf( "Error caso 10: 225 grados ( y<0 ) estan en el semiplano X 2: %d\n", AngSemiplanoX ( 225.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* SemiplanoY ( respecto al eje Y, signo de x ): Q1 y Q4 -> 1, Q2 y Q3 -> 2. */
+	if ( AngSemiplanoY ( 45.0 ) != 1 )
+	{
+		printf( "Error caso 11: 45 grados ( x>0 ) estan en el semiplano Y 1: %d\n", AngSemiplanoY ( 45.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( AngSemiplanoY ( 135.0 ) != 2 )
+	{
+		printf( "Error caso 12: 135 grados ( x<0 ) estan en el semiplano Y 2: %d\n", AngSemiplanoY ( 135.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* La entrada se normaliza a [0, 360): vale fuera de rango y negativa. */
+	if ( AngCuadrante ( 45.0 + 360.0 ) != 1 )
+	{
+		printf( "Error caso 13: 45 grados + una vuelta siguen en el cuadrante 1: %d\n", AngCuadrante ( 45.0 + 360.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( AngCuadrante ( -45.0 ) != 4 )
+	{
+		printf( "Error caso 14: -45 grados estan en el cuadrante 4: %d\n", AngCuadrante ( -45.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( AngCuadrante ( -315.0 ) != 1 )
+	{
+		printf( "Error caso 15: -315 grados equivalen a 45 ( cuadrante 1 ): %d\n", AngCuadrante ( -315.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( AngSemiplanoX ( -45.0 ) != 2 )
+	{
+		printf( "Error caso 16: -45 grados ( y<0 ) estan en el semiplano X 2: %d\n", AngSemiplanoX ( -45.0 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
+
+
 int TestAngulos ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test Angulos]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestAngRangos01 () == BOOL_VAL_CIERTO ) &&
 			( TestAngNormalizar01 () == BOOL_VAL_CIERTO ) &&
-			( TestAngConversion01 () == BOOL_VAL_CIERTO ) )
+			( TestAngConversion01 () == BOOL_VAL_CIERTO ) &&
+			( TestAngCuadrantes01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

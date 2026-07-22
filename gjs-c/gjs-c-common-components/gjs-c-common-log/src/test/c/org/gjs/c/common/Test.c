@@ -1,22 +1,25 @@
 #include "Base.h"
 
-// TODO
 
-#define NUM_TESTS        1
 
-extern int TestSId ();
+#define NUM_TESTS        2
+
+extern int TestNivelesLog ();
+extern int TestSLog ();
 
 char ** testArrayInit ()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *));
-    p_p_cTests[ 0 ] = CadDuplicar ( "SId" );
+    p_p_cTests[ 0 ] = CadDuplicar ( "NivelesLogTest" );
+    p_p_cTests[ 1 ] = CadDuplicar ( "SLogTest" );
     return p_p_cTests;
 }
 
 PFUNINTV * functionArrayInit ()
 {
     PFUNINTV* p_fTests = (PFUNINTV *) MemReservar ( NUM_TESTS * sizeof( PFUNINTV ));
-    p_fTests[ 0 ] = TestSId;
+    p_fTests[ 0 ] = TestNivelesLog;
+    p_fTests[ 1 ] = TestSLog;
     return p_fTests;
 }
 

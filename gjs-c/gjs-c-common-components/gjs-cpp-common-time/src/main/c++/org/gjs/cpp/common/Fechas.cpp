@@ -37,7 +37,7 @@ long FecFormConstruir ( int iA, int iM, int iD )
 bool FecEsValida ( int iA, int iM, int iD )
 {
 	return ( ( iA != 0 ) && ( iM >= 1 ) && ( iM <= 12 ) &&
-		 ( iD >= 1 ) && ( iD <= CalendDiasMes ( iA, iD ) ) );
+		 ( iD >= 1 ) && ( iD <= CalendDiasMes ( iA, iM ) ) );
 }
 
 bool FecFormEsValida ( long lFecha )
@@ -54,7 +54,7 @@ void FecFormDescomponer ( long lFecha, int * p_iA, int * p_iM, int * p_iD )
 {
 	long lAux;
 
-	if ( ( lFecha >= 0 ) && ( lFecha < 240000 ) && 
+	if ( ( lFecha >= 0 ) && ( lFecha <= 99991231 ) &&
 		 ES_VALIDO ( p_iA ) && ES_VALIDO ( p_iM ) && ES_VALIDO ( p_iD ) )
 	{
 		*p_iA = lFecha / 10000;
@@ -139,7 +139,7 @@ int FecSumar ( int * p_iA, int * p_iM, int * p_iD, int iA, int iM, int iD )
 
 	if ( ES_VALIDO ( p_iA ) && ES_VALIDO ( p_iM ) && ES_VALIDO ( p_iD ) )
 	{
-		if ( FecEsValida ( *p_iA, *p_iM, *p_iD ) && FecEsValida ( iA, iM, iD ) )
+		if ( FecEsValida ( *p_iA, *p_iM, *p_iD ) )
 		{
 			*p_iD = *p_iD + iD;
 			if ( *p_iD > CalendDiasMes ( *p_iA, *p_iM ) )
@@ -266,7 +266,7 @@ double FecObtenerValor ( int iA, int iM, int iD )
 
 	if ( FecEsValida ( iA, iM, iD ) )
 	{
-		dRes = iA * 1.0 + FecNumDiasAnualesHasta ( iA, iM, iD ) / CalendDiasAno ( iA );
+		dRes = iA * 1.0 + FecNumDiasAnualesHasta ( iA, iM, iD ) / ( CalendDiasAno ( iA ) * 1.0 );
 	}
 	else
 	{

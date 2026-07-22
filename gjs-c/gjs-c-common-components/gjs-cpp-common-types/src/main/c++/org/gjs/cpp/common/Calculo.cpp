@@ -27,9 +27,14 @@ double Epsilon()
 
 double GenerarNumeroAleatorio()
 {
-    srand ( time(0) );
-    int iNumAl = rand();
-	return ( iNumAl / RAND_MAX );
+	static bool bSembrado = false;
+	if ( ! bSembrado )
+	{
+		srand ( (unsigned) time( 0 ) );
+		bSembrado = true;
+	}
+	// Division en coma flotante para obtener un valor en [0.0, 1.0):
+	return ( (double) rand() / ( (double) RAND_MAX + 1.0 ) );
 }
 
 
@@ -40,12 +45,12 @@ bool EsIgual( double dA, double dB )
 
 bool EsMayor( double dA, double dB )
 {
-	return ( fabs( dA - dB ) > EPSILON );
+	return ( ( dA - dB ) > EPSILON );
 }
 
 bool EsMenor( double dA, double dB )
 {
-	return ( fabs( dB - dA ) > EPSILON );
+	return ( ( dB - dA ) > EPSILON );
 }
 
  			}

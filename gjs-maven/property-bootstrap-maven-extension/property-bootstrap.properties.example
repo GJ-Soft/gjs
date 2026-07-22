@@ -1,0 +1,26 @@
+# property-bootstrap.properties (ejemplo)
+#
+# Copiar a $MAVEN_HOME/conf/property-bootstrap.properties
+# o indicar la ruta con -Dproperty-bootstrap.config=<ruta>.
+#
+# Formato: clave = expresion   (una por linea; # para comentarios)
+# Las lineas se evaluan en orden; una puede usar propiedades calculadas antes.
+#
+# Referencias: env.X = variable de entorno; el resto = propiedad existente
+#              (user -D > system > JVM > perfiles activos de settings.xml).
+# Operadores: ?: || && == != ~ (contiene, insensible a mayusculas) ! ( )
+# Funciones:  path(x)    lleva x al estilo de environment.style
+#             cygpath(x) fuerza estilo Cygwin   (C:\dir -> /cygdrive/c/dir)
+#             winpath(x) fuerza estilo Windows  (/cygdrive/c/dir -> C:\dir)
+# Verdad: solo null y 'false' son falso (cadena vacia = definida = verdad).
+
+# Estilo Cygwin: posix por defecto; -Dcygwin.style=windows lo fuerza y se respeta.
+cygwin.style      = env.CYGWIN ? 'posix' : cygwin.style
+
+# windows en Windows nativo o Cygwin en modo windows; posix en el resto.
+environment.style = (os.name ~ 'windows' && !env.CYGWIN) || (env.CYGWIN && cygwin.style == 'windows') ? 'windows' : 'posix'
+
+# Normaliza la raiz de Cygwin al estilo vigente, venga como venga del settings.xml.
+# Debe ir DESPUES de environment.style. Es idempotente: si ya esta en el formato
+# destino se devuelve intacta.
+cygwinDir         = path(cygwinDir)

@@ -1,15 +1,15 @@
 /***************************************************************************/
 /*                          Conversor.cpp                                 */
 /*-------------------------------------------------------------------------*/
-/* Librería: ClasesBase                                                    */
-/* Versión:  2.0.0                                                         */
+/* Librerï¿½a: ClasesBase                                                    */
+/* Versiï¿½n:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    Ginï¿½s Jimï¿½nez Sï¿½nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Fichero de código fuente que contiene la implementación de la clase de  */
-/* datos Conversor, destinada a gestionar la conversión automática entre  */
-/* los diferentes tipos de datos básicos.                                  */
+/* Descripciï¿½n:                                                            */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de la clase de  */
+/* datos Conversor, destinada a gestionar la conversiï¿½n automï¿½tica entre  */
+/* los diferentes tipos de datos bï¿½sicos.                                  */
 /*-------------------------------------------------------------------------*/
 /*                    ginesjimenez@safe-mail.net                          */
 /***************************************************************************/
@@ -686,7 +686,15 @@ void Conversor::EstablecerValor ( const string & sValor )
     this->sValor = sValor;
 	if ( EsCadenaNumerica () )
 	{
-		this->ldValor = stold ( this->sValor );
+		try
+		{
+			this->ldValor = stold ( this->sValor );
+		}
+		catch ( ... )
+		{
+			// Cadena numerica valida pero fuera del rango de long double.
+			this->ldValor = HUGE_VALL;
+		}
 		if ( this->ldValor == HUGE_VALL )
  		{
 			bConvValida = false;
@@ -826,7 +834,7 @@ void Conversor::EstablecerValorHex ( const string & sValor )
         else
         {
             bConvValida = false;
-            this->uiValor = 0;
+            this->ulValor = 0;
         }
         if ( this->ullValor <= INT_MAX )
         {

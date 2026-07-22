@@ -1,22 +1,67 @@
 #include "Base.h"
 
-// TODO
 
-#define NUM_TESTS        1
 
-extern int TestSId ();
+#define NUM_TESTS        16
+
+extern int TestModosApertura ();
+extern int TestEstilosFicheroTexto ();
+extern int TestSRuta ();
+extern int TestSistemaFicheros ();
+extern int TestSFicSecuencial ();
+extern int TestSFicTexto ();
+extern int TestSEntradaDirectorio ();
+extern int TestSDirectorio ();
+extern int TestSFicAleatorio ();
+extern int TestSFicSecuencialBuffer ();
+extern int TestSFicEncabezado ();
+extern int TestSFicBloques ();
+extern int TestSFicBloquesIdentificados ();
+extern int TestSFicBloquesOrdenados ();
+extern int TestSFicEstructura ();
+extern int TestEntradaSalida ();
 
 char ** testArrayInit ()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *));
-    p_p_cTests[ 0 ] = CadDuplicar ( "SId" );
+    p_p_cTests[ 0 ] = CadDuplicar ( "ModosAperturaTest" );
+    p_p_cTests[ 1 ] = CadDuplicar ( "EstilosFicheroTextoTest" );
+    p_p_cTests[ 2 ] = CadDuplicar ( "SRutaTest" );
+    p_p_cTests[ 3 ] = CadDuplicar ( "SistemaFicherosTest" );
+    p_p_cTests[ 4 ] = CadDuplicar ( "SFicSecuencialTest" );
+    p_p_cTests[ 5 ] = CadDuplicar ( "SFicTextoTest" );
+    p_p_cTests[ 6 ] = CadDuplicar ( "SEntradaDirectorioTest" );
+    p_p_cTests[ 7 ] = CadDuplicar ( "SDirectorioTest" );
+    p_p_cTests[ 8 ] = CadDuplicar ( "SFicAleatorioTest" );
+    p_p_cTests[ 9 ] = CadDuplicar ( "SFicSecuencialBufferTest" );
+    p_p_cTests[ 10 ] = CadDuplicar ( "SFicEncabezadoTest" );
+    p_p_cTests[ 11 ] = CadDuplicar ( "SFicBloquesTest" );
+    p_p_cTests[ 12 ] = CadDuplicar ( "SFicBloquesIdentificadosTest" );
+    p_p_cTests[ 13 ] = CadDuplicar ( "SFicBloquesOrdenadosTest" );
+    p_p_cTests[ 14 ] = CadDuplicar ( "SFicEstructuraTest" );
+    p_p_cTests[ 15 ] = CadDuplicar ( "EntradaSalidaTest" );
     return p_p_cTests;
 }
 
 PFUNINTV * functionArrayInit ()
 {
     PFUNINTV * p_fTests = (PFUNINTV *) MemReservar ( NUM_TESTS * sizeof( PFUNINTV ));
-    p_fTests[ 0 ] = TestSId;
+    p_fTests[ 0 ] = TestModosApertura;
+    p_fTests[ 1 ] = TestEstilosFicheroTexto;
+    p_fTests[ 2 ] = TestSRuta;
+    p_fTests[ 3 ] = TestSistemaFicheros;
+    p_fTests[ 4 ] = TestSFicSecuencial;
+    p_fTests[ 5 ] = TestSFicTexto;
+    p_fTests[ 6 ] = TestSEntradaDirectorio;
+    p_fTests[ 7 ] = TestSDirectorio;
+    p_fTests[ 8 ] = TestSFicAleatorio;
+    p_fTests[ 9 ] = TestSFicSecuencialBuffer;
+    p_fTests[ 10 ] = TestSFicEncabezado;
+    p_fTests[ 11 ] = TestSFicBloques;
+    p_fTests[ 12 ] = TestSFicBloquesIdentificados;
+    p_fTests[ 13 ] = TestSFicBloquesOrdenados;
+    p_fTests[ 14 ] = TestSFicEstructura;
+    p_fTests[ 15 ] = TestEntradaSalida;
     return p_fTests;
 }
 

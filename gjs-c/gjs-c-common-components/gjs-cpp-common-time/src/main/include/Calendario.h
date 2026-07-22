@@ -20,6 +20,19 @@
 
 
 
+
+/* Días de la semana: */
+#define DIA_LUNES								0
+#define DIA_MARTES								1
+#define DIA_MIERCOLES							2
+#define DIA_JUEVES								3
+#define DIA_VIERNES								4
+#define DIA_SABADO								5
+#define DIA_DOMINGO								6
+
+
+
+
 namespace org
 {
 	namespace gjs

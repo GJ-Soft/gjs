@@ -1,12 +1,12 @@
 /******************************************************************************/
 /*                            AplicacionConsola.h                             */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Aplicacion                                                      */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Aplicacion                                                      */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* Descripciï¿½n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas    */
 /* para manejo de la consola.                                                 */
 /*----------------------------------------------------------------------------*/
@@ -36,8 +36,15 @@ char * AplicConLeerCadena ();
 void AplicConEsperarRetorno ();
 
 int AplicConDibujarLinea ( char cCar );
+int AplicConDibujarLineaDiscontinua ();
+int AplicConDibujarLineaSimple ();
+int AplicConDibujarLineaDoble ();
 int AplicConDibujarLineaExt ( int iAncho, int iColIni, char cCar );
+int AplicConDibujarLineaDiscontinuaExt ( int iAncho, int iColIni );
+int AplicConDibujarLineaSimpleExt ( int iAncho, int iColIni );
+int AplicConDibujarLineaDobleExt ( int iAncho, int iColIni );
 int AplicConDibujarRectangulo ( int iAlto, int iAncho, int iColIni );
+int AplicConDibujarRectanguloDoble ( int iAlto, int iAncho, int iColIni );
 
 #endif
 

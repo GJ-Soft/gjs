@@ -2,7 +2,9 @@
 #define _ORG_GJS_C_CC_CPP_WINHERRAMIENTAS_H
 
 
-#if ( defined( _WIN32 ) || defined( _WIN64 ) || defined( _WINRT_DLL ) || defined ( __CYGWIN__ ) )
+#include <BaseConfig.h>
+
+#if ( defined( WIN ) )
 
 
 #include <string>

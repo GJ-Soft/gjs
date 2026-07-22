@@ -1,5 +1,6 @@
-#include <CppBase.h>
+
 #include "CppCommonIo.h"
+#include <CppBase.h>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ extern bool TestCodigosIETF ();
 extern bool TestClienteServidorFTP ();
 extern bool TestURI ();
 extern bool TestClienteServidorHTTP ();
+extern bool TestSistemaFicheros ();
 
 
 
@@ -27,20 +29,21 @@ int main ( int argc, char * argv[] )
 	int iRes = 0;
 
 	map<std::string, FUNCION_BOOL> mapTests;
-	mapTests[ "SocketExcepcion" ] = TestSocketExcepcion;
-	mapTests[ "Socket" ] = TestSocket;
-	mapTests[ "GestorUsuarios" ] = TestGestorUsuarios;
-	mapTests[ "ClienteServidor" ] = TestClienteServidor;
-	mapTests[ "Comando" ] = TestComando;
-	mapTests[ "ResultadoComando" ] = TestResultadoComando;
-	mapTests[ "GestorSesiones" ] = TestGestorSesiones;
-	mapTests[ "ClienteServidorComandos" ] = TestClienteServidorComandos;
-	mapTests[ "ClienteServidorSesion" ] = TestClienteServidorSesion;
-	mapTests[ "ClienteServidorIETF" ] = TestClienteServidorIETF;
-	mapTests[ "CodigosIETF" ] = TestCodigosIETF;
-	mapTests[ "ClienteServidorFTP" ] = TestClienteServidorFTP;
-	mapTests[ "URI" ] = TestURI;
-	mapTests[ "ClienteServidorHTTP" ] = TestClienteServidorHTTP;
+	mapTests[ "SocketExcepcionTest" ] = TestSocketExcepcion;
+	mapTests[ "SocketTest" ] = TestSocket;
+	mapTests[ "GestorUsuariosTest" ] = TestGestorUsuarios;
+	mapTests[ "ClienteServidorTest" ] = TestClienteServidor;
+	mapTests[ "ComandoTest" ] = TestComando;
+	mapTests[ "ResultadoComandoTest" ] = TestResultadoComando;
+	mapTests[ "GestorSesionesTest" ] = TestGestorSesiones;
+	mapTests[ "ClienteServidorComandosTest" ] = TestClienteServidorComandos;
+	mapTests[ "ClienteServidorSesionTest" ] = TestClienteServidorSesion;
+	mapTests[ "ClienteServidorIETFTest" ] = TestClienteServidorIETF;
+	mapTests[ "CodigosIETFTest" ] = TestCodigosIETF;
+	mapTests[ "ClienteServidorFTPTest" ] = TestClienteServidorFTP;
+	mapTests[ "URITest" ] = TestURI;
+	mapTests[ "ClienteServidorHTTPTest" ] = TestClienteServidorHTTP;
+	mapTests[ "SistemaFicherosTest" ] = TestSistemaFicheros;
 
 	std::string sTest ( "null" );
 	if ( argc > 1 )
@@ -65,22 +68,14 @@ int main ( int argc, char * argv[] )
 		return( iRes );
 	}
 
-	if ( ! TestSocketExcepcion () ||
-		! TestSocket () ||
-		! TestGestorUsuarios() ||
-		! TestClienteServidor() ||
-		! TestComando() ||
-		! TestResultadoComando() ||
-		! TestGestorSesiones() ||
-		! TestClienteServidorComandos () ||
-		! TestClienteServidorSesion ()  ||
-		! TestCodigosIETF () ||
-		! TestClienteServidorIETF() ||
-		! TestClienteServidorFTP () ||
-		! TestURI () ||
-		! TestClienteServidorHTTP () )
+
+	for ( auto it = mapTests.begin(); it != mapTests.end(); ++it )
 	{
-		iRes = -1;
+		FUNCION_BOOL fTest = it->second;
+		if( fTest () != 1 )
+		{
+			iRes = -1;
+		}
 	}
 	fflush ( stdout );
 	return ( iRes );

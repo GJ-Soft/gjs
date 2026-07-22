@@ -29,7 +29,7 @@ SVectorCadenas * SVecCadCrear ( int iNumElementos );
 
 void SVecCadDestruir ( SVectorCadenas ** p_p_vecObj );
 
-int SVecCadEsValida ( SVectorCadenas * p_vecObj );
+int SVecCadEsValido ( SVectorCadenas * p_vecObj );
 
 int SVecCadNumElementos ( SVectorCadenas * p_vecObj );
 

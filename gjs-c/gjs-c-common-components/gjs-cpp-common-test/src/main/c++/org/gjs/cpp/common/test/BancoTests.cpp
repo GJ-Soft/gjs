@@ -1,5 +1,5 @@
-#include "BancoTests.h"
 #include "CppTestConfig.h"
+#include "BancoTests.h"
 
 
 
@@ -63,13 +63,14 @@ int BancoTests::Ejecutar( const string & sTest )
 	else
 	{
 		int iTest = 0;
-		while ( ( iRes == 0 ) && ( iTest < mapTests.size() ) )
+		while ( iTest < mapTests.size() )
 		{
 			FUNCION_BOOL fTest = mapTests.at( iTest );
 			if( !fTest() )
 			{
 				iRes = -1;
 			}
+			iTest = iTest + 1;
 		}
 	}
 	return( iRes );

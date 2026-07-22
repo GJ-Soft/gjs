@@ -22,6 +22,7 @@ namespace org
 				std::string sModulo;
 				std::string sRutina;
 				std::string sMensaje;
+				std::string sWhat;
 
 			public:
 				Excepcion ( const std::string & _sModulo, const std::string & _sRutina, const std::string & _sMensaje );

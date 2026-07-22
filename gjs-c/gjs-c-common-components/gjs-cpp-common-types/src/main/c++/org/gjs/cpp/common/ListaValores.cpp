@@ -79,6 +79,12 @@ void ListaValores::InsertarValor ( Valor * valor )
 	{
 		vecValores.push_back( valor );
 	}
+	else
+	{
+		// No se inserta: el objeto es propiedad de la lista, hay que liberarlo
+		// para no fugarlo (delete de NULL es inocuo).
+		delete valor;
+	}
 }
 
 void ListaValores::InsertarValor ( const string & _valor )

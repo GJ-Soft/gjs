@@ -4,7 +4,20 @@
 
 using namespace std;
 
-//extern bool TestPtr ();
+extern bool TestTiposSistema ();
+extern bool TestSistemaTiempo ();
+extern bool TestSistemaEstado ();
+extern bool TestSistemaErrores ();
+extern bool TestSistemaInformacion ();
+extern bool TestSistemaMemoria ();
+extern bool TestSistemaProcesos ();
+extern bool TestSistemaRed ();
+extern bool TestSistemaSignals ();
+extern bool TestCContadorCiclos ();
+extern bool TestCTemporizador ();
+extern bool TestCVariablesEntorno ();
+extern bool TestSistemaSincronizacion ();
+extern bool TestCGestorSignals ();
 
 
 int main ( int argc, char * argv[] )
@@ -13,7 +26,20 @@ int main ( int argc, char * argv[] )
 	int iRes = 0;
 
 	map<string, FUNCION_BOOL> mapTests;
-//	mapTests[ "Ptr" ] = TestPtr;
+	mapTests[ "TiposSistemaTest" ] = TestTiposSistema;
+	mapTests[ "SistemaTiempoTest" ] = TestSistemaTiempo;
+	mapTests[ "SistemaEstadoTest" ] = TestSistemaEstado;
+	mapTests[ "SistemaErroresTest" ] = TestSistemaErrores;
+	mapTests[ "SistemaInformacionTest" ] = TestSistemaInformacion;
+	mapTests[ "SistemaMemoriaTest" ] = TestSistemaMemoria;
+	mapTests[ "SistemaProcesosTest" ] = TestSistemaProcesos;
+	mapTests[ "SistemaRedTest" ] = TestSistemaRed;
+	mapTests[ "SistemaSignalsTest" ] = TestSistemaSignals;
+	mapTests[ "CContadorCiclosTest" ] = TestCContadorCiclos;
+	mapTests[ "CTemporizadorTest" ] = TestCTemporizador;
+	mapTests[ "CVariablesEntornoTest" ] = TestCVariablesEntorno;
+	mapTests[ "SistemaSincronizacionTest" ] = TestSistemaSincronizacion;
+	mapTests[ "CGestorSignalsTest" ] = TestCGestorSignals;
 
 	string sTest ( "null" );
 	if ( argc > 1 )
@@ -38,10 +64,14 @@ int main ( int argc, char * argv[] )
 		return( iRes );
 	}
 
-	//if (! TestPtr () )
-	if ( false )
+
+	for ( auto it = mapTests.begin(); it != mapTests.end(); ++it )
 	{
-		iRes = -1;
+		FUNCION_BOOL fTest = it->second;
+		if( fTest () != 1 )
+		{
+			iRes = -1;
+		}
 	}
 	fflush ( stdout );
 	return ( iRes );

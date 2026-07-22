@@ -14,9 +14,9 @@
 /*                    gines_jimenez@safe-mail.net                          */
 /***************************************************************************/
 
+#include "CppCommonConfig.h"
 #include "AplicacionLog.h"
 
-#include "CppCommonConfig.h"
 
 
 

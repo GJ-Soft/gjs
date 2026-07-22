@@ -259,11 +259,11 @@ string Entidad::toString ()
 		conv << "(";
 		for ( auto & obj : mapDefinicion )
 		{
-			conv << obj.first << "=" << obj.second->toString();
 			if ( !bIni )
 			{
 				conv << "; ";
 			}
+			conv << obj.first << "=" << obj.second->toString();
 			bIni = false;
 		}
 		conv << ")";

@@ -17,7 +17,7 @@ int main ( int argc, char * argv[] )
 	EstablecerManejadorInterrupcionesDefecto ();
 
 	map<string, FUNCION_BOOL> mapTests;
-	mapTests[ "MockServidorFTP" ] = TestMockServidorFTP;
+	mapTests[ "MockServidorFTPTest" ] = TestMockServidorFTP;
 
 	string sTest ( "null" );
 	if ( argc > 1 )
@@ -42,9 +42,14 @@ int main ( int argc, char * argv[] )
 		return( iRes );
 	}
 
-	if ( ! TestMockServidorFTP () )
+
+	for ( auto it = mapTests.begin(); it != mapTests.end(); ++it )
 	{
-		iRes = -1;
+		FUNCION_BOOL fTest = it->second;
+		if( fTest () != 1 )
+		{
+			iRes = -1;
+		}
 	}
 	fflush ( stdout );
 	return ( iRes );

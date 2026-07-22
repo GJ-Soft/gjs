@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                              SistemaSignals.h                              */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Sistema                                                         */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Sistema                                                         */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de cabecera que contiene la definición de los "signals" del        */
-/* sistema, así como los prototipos de algunas rutinas para el manejo de      */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cabecera que contiene la definiciï¿½n de los "signals" del        */
+/* sistema, asï¿½ como los prototipos de algunas rutinas para el manejo de      */
 /* mismos.                                                                    */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -38,7 +38,7 @@
 
 
 
-/* Lista de señales progrmables en CGestorSignals: */
+/* Lista de seï¿½ales progrmables en CGestorSignals: */
 #define SIS_SIG_ABORTAR									0
 #define SIS_SIG_ALARMA									1
 #define SIS_SIG_ERROR_COMA_FLOTANTE						2
@@ -102,7 +102,11 @@
 #	define SIS_COD_SIG_DEPURACION						SIGTRAP
 #	define SIS_COD_SIG_TEMPORIZADOR						SIGPROF
 #	define SIS_COD_SIG_ERROR_BUS						SIGBUS
-#	define SIS_COD_SIG_ERROR_PILA						SIGSTKSZ
+#	if ( defined ( SIGSTKFLT ) )
+#		define SIS_COD_SIG_ERROR_PILA					SIGSTKFLT
+#	else
+#		define SIS_COD_SIG_ERROR_PILA					-1
+#	endif
 #	define SIS_COD_SIG_CAMBIO_ESTADO_HIJO				SIGCHLD
 #	define SIS_COD_SIG_CONTINUAR						SIGCONT
 #	define SIS_COD_SIG_PARAR							SIGSTOP

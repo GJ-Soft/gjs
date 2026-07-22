@@ -27,7 +27,7 @@ constexpr double EPSILON_LDOUBLE = numeric_limits<long double>::epsilon();
 
 bool equals ( float fValor1, float fValor2, int iTolerancia )
 {
-    return abs( fValor1 - fValor2 ) <= EPSILON_DOUBLE * max( abs( fValor1 ), abs( fValor2 ) ) * iTolerancia;
+    return abs( fValor1 - fValor2 ) <= EPSILON_FLOAT * max( abs( fValor1 ), abs( fValor2 ) ) * iTolerancia;
 }
 
 bool equals ( double dValor1, double dValor2, int iTolerancia )
@@ -37,7 +37,7 @@ bool equals ( double dValor1, double dValor2, int iTolerancia )
 
 bool equals ( long double ldValor1, long double ldValor2, int iTolerancia )
 {
-    return abs( ldValor1 - ldValor2 ) <= EPSILON_DOUBLE * max( abs( ldValor1 ), abs( ldValor2 ) ) * iTolerancia;
+    return abs( ldValor1 - ldValor2 ) <= EPSILON_LDOUBLE * max( abs( ldValor1 ), abs( ldValor2 ) ) * iTolerancia;
 }
 
 bool equalsWithPrec ( float fValor1, float fValor2, int iDigitosSignificativos )
@@ -48,7 +48,7 @@ bool equalsWithPrec ( float fValor1, float fValor2, int iDigitosSignificativos )
 		float fTolerancia = pow ( 10.0, -iDigitosSignificativos + 1 );
 		// Usar el mayor de los dos como dReferencia para la comparación relativa
 		float fReferencia = max ( abs ( fValor1 ), abs( fValor2 ) );
-		if ( fReferencia != 0.0 ) 
+		if ( fReferencia != 0.0 )
 		{
 			bRes = abs( fValor1 - fValor2 ) / fReferencia < fTolerancia;
 		}
@@ -59,7 +59,8 @@ bool equalsWithPrec ( float fValor1, float fValor2, int iDigitosSignificativos )
 	}
 	else
 	{
-		bRes = true;
+		// Solo se consideran iguales si ambos son exactamente cero.
+		bRes = ( fValor1 == 0.0 ) && ( fValor2 == 0.0 );
 	}
     return ( bRes );
 }
@@ -72,7 +73,7 @@ bool equalsWithPrec ( double dValor1, double dValor2, int iDigitosSignificativos
 		double dTolerancia = pow ( 10.0, -iDigitosSignificativos + 1 );
 		// Usar el mayor de los dos como dReferencia para la comparación relativa
 		double dReferencia = max ( abs ( dValor1 ), abs( dValor2 ) );
-		if ( dReferencia != 0.0 ) 
+		if ( dReferencia != 0.0 )
 		{
 			bRes = abs( dValor1 - dValor2 ) / dReferencia < dTolerancia;
 		}
@@ -83,7 +84,8 @@ bool equalsWithPrec ( double dValor1, double dValor2, int iDigitosSignificativos
 	}
 	else
 	{
-		bRes = true;
+		// Solo se consideran iguales si ambos son exactamente cero.
+		bRes = ( dValor1 == 0.0 ) && ( dValor2 == 0.0 );
 	}
     return ( bRes );
 }
@@ -96,7 +98,7 @@ bool equalsWithPrec ( long double ldValor1, long double ldValor2, int iDigitosSi
 		long double ldTolerancia = pow ( 10.0, -iDigitosSignificativos + 1 );
 		// Usar el mayor de los dos como dReferencia para la comparación relativa
 		long double ldReferencia = max ( abs ( ldValor1 ), abs( ldValor2 ) );
-		if ( ldReferencia != 0.0 ) 
+		if ( ldReferencia != 0.0 )
 		{
 			bRes = abs( ldValor1 - ldValor2 ) / ldReferencia < ldTolerancia;
 		}
@@ -107,7 +109,8 @@ bool equalsWithPrec ( long double ldValor1, long double ldValor2, int iDigitosSi
 	}
 	else
 	{
-		bRes = true;
+		// Solo se consideran iguales si ambos son exactamente cero.
+		bRes = ( ldValor1 == 0.0 ) && ( ldValor2 == 0.0 );
 	}
     return ( bRes );
 }

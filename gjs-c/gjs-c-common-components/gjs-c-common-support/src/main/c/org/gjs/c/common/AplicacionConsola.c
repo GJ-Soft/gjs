@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                           AplicacionConsola.cpp                            */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Aplicacion                                                      */
-/* Versión:   3.0.0                                                           */
+/* LibrerÃ­a:  Aplicacion                                                      */
+/* VersiÃ³n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     GinÃ©s JimÃ©nez SÃ¡nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de algunas         */
+/* DescripciÃ³n:                                                               */
+/* Fichero de cÃ³digo fuente que contiene la implementaciÃ³n de algunas         */
 /* rutinas para manejo de la consola.                                         */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -28,7 +28,7 @@ static int	g_iAplicConsolaDisponible = 1;
 
 
 
-// PENDIENTE: ¿Como determinar si es WIN en modo consola o no?
+// PENDIENTE: ï¿½Como determinar si es WIN en modo consola o no?
 //  PENDIENTE: Refinar para el caso GNU/UNIX y completar para el caso VC
 int AplicConAbrir ()
 {
@@ -44,7 +44,7 @@ int AplicConAbrir ()
 		AllocConsole ();
 #	 else
 #	   if ( defined ( VC ) )
-		// PENDIENTE: Quizás aquí haya que utilizar conio.h (evitar se puede):
+		// PENDIENTE: Quizï¿½s aquï¿½ haya que utilizar conio.h (evitar se puede):
 		iFilDesc = _open ( "/dev/tty", O_RDWR );
 		_dup2 ( iFilDesc, 0 );
 		_dup2 ( iFilDesc, 1 );
@@ -81,6 +81,10 @@ int AplicConAbrir ()
 		tcsetattr ( iFilDesc, TCSANOW, &trmioConsola ); 
 #	   endif
 #	 endif
+		/* Tras abrir (o reabrir tras un AplicConCerrar) la consola queda
+		   disponible; sin esto EstaAbierta/Ancho seguirian viendo 0 y un
+		   Cerrar posterior no liberaria la consola. */
+		g_iAplicConsolaDisponible = 1;
 		iRes = 1;
 	}
 	else
@@ -90,7 +94,7 @@ int AplicConAbrir ()
 	return ( iRes );
 }
 
-// NOTA: En modo de depuración 2 no se permite cerrar la consola (es importante).
+// NOTA: En modo de depuraciï¿½n 2 no se permite cerrar la consola (es importante).
 void AplicConCerrar ()
 {
 #  if ( !defined ( MODO_DEPURACION_2 ) )
@@ -125,17 +129,37 @@ int AplicConAncho ()
 	{
 #	  if ( defined ( WIN ) )
 		hConsola = GetStdHandle ( STD_OUTPUT_HANDLE );
-		GetConsoleScreenBufferInfo ( hConsola, &csbiObj );
-		iRes = csbiObj.dwSize.X;
+		if ( GetConsoleScreenBufferInfo ( hConsola, &csbiObj ) != 0 )
+		{
+			/* Ancho de la ventana visible (no el del buffer, que puede diferir). */
+			iRes = csbiObj.srWindow.Right - csbiObj.srWindow.Left + 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
 
 #	  else
-		// PENDIENTE
-		iRes = 0;
+		struct winsize wsInfo;
+		if ( ( isatty ( STDOUT_FILENO ) ) &&
+			( ioctl ( STDOUT_FILENO, TIOCGWINSZ, &wsInfo ) == 0 ) &&
+			( wsInfo.ws_col > 0 ) )
+		{
+			iRes = (int) wsInfo.ws_col;
+		}
+		else
+		{
+			iRes = 0;   /* sin terminal (p. ej. salida redirigida) */
+		}
 #	  endif
 	}
 	else
 	{
 		iRes = 0;
+	}
+	if ( iRes <= 0 )
+	{
+		iRes = CON_ANCHO_DEFECTO;
 	}
 	return ( iRes );
 }
@@ -308,17 +332,14 @@ void AplicConEsperarRetorno ()
 # endif
 }
 
-int AplicConDibujarLinea ( char cCar )
-{   
-	return ( AplicConDibujarLineaExt ( 80, 1, cCar ) );
-}
+/* Los caracteres de dibujo de bordes (_CON_BRD_*) se definen en AplicacionConfig.h. */
 
-int AplicConDibujarLineaExt ( int iAncho, int iColIni, char cCar )
+static int _AplicConDibujarLineaExt ( int iAncho, int iColIni, const char * p_cCod )
 {   
 	int iCol;
 	int iRes;
 
-	if ( ( iAncho > 0 ) && ( iColIni >= 0 ) && ( iColIni + iAncho < 80 ) )
+	if ( ( iAncho > 0 ) && ( iColIni >= 0 ) && ( iColIni + iAncho <= AplicConAncho () ) )
 	{
 		iCol = 0; 
 		while ( iCol < iColIni )
@@ -328,9 +349,122 @@ int AplicConDibujarLineaExt ( int iAncho, int iColIni, char cCar )
 		}
 		while ( iCol < iColIni + iAncho )
 		{
-			printf ( "%c", cCar ); 
+			printf ( "%s", p_cCod ); 
 			iCol = iCol + 1;
 		}
+
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+
+int AplicConDibujarLinea ( char cCar )
+{   
+	return ( AplicConDibujarLineaExt ( AplicConAncho (), 0, cCar ) );
+}
+
+int AplicConDibujarLineaDiscontinua ()
+{   
+	return ( AplicConDibujarLineaDiscontinuaExt ( AplicConAncho (), 0 ) );
+}
+
+int AplicConDibujarLineaSimple ()
+{   
+	return ( AplicConDibujarLineaSimpleExt ( AplicConAncho (), 0 ) );
+}
+
+int AplicConDibujarLineaDoble ()
+{   
+	return ( AplicConDibujarLineaDobleExt ( AplicConAncho (), 0 ) );
+}
+
+int AplicConDibujarLineaExt ( int iAncho, int iColIni, char cCar )
+{   
+	int 	iRes;
+	char *	p_cCod;
+	
+	p_cCod = CadCrearConFormato ( "%c", cCar );
+	iRes = _AplicConDibujarLineaExt ( iAncho, iColIni, p_cCod );
+	MemLiberarCadena ( &p_cCod );
+	return ( iRes );
+}
+
+int AplicConDibujarLineaDiscontinuaExt ( int iAncho, int iColIni )
+{   
+	return ( AplicConDibujarLineaExt ( iAncho, iColIni, '-' ) );
+}
+
+int AplicConDibujarLineaSimpleExt ( int iAncho, int iColIni )
+{   
+	return ( _AplicConDibujarLineaExt ( iAncho, iColIni, _CON_BRD_S_HOR ) );
+}
+
+int AplicConDibujarLineaDobleExt ( int iAncho, int iColIni )
+{   
+	return ( _AplicConDibujarLineaExt ( iAncho, iColIni, _CON_BRD_D_HOR ) );
+}
+
+
+/* Dibuja una caja con las esquinas y lados indicados. iAlto/iAncho incluyen el
+   borde; iColIni es la columna de inicio. No imprime salto de linea final (como
+   el resto de rutinas de dibujo). Devuelve 1 si dibuja, 0 si los parametros no
+   son validos (el minimo es una caja de 2x2). */
+static int _AplicConDibujarCaja ( int iAlto, int iAncho, int iColIni,
+								  const char * p_cSupIzq, const char * p_cSupDer,
+								  const char * p_cInfIzq, const char * p_cInfDer,
+								  const char * p_cHor, const char * p_cVer )
+{
+	int iCol;
+	int iFil;
+	int iRes;
+
+	if ( ( iAlto > 1 ) && ( iAncho > 1 ) && ( iColIni >= 0 ) && ( iColIni + iAncho <= AplicConAncho () ) )
+	{
+		/* Linea superior: esquina + horizontales + esquina. */
+		for ( iCol = 0; iCol < iColIni; iCol = iCol + 1 )
+		{
+			printf ( " " );
+		}
+		printf ( "%s", p_cSupIzq );
+		for ( iCol = 0; iCol < iAncho - 2; iCol = iCol + 1 )
+		{
+			printf ( "%s", p_cHor );
+		}
+		printf ( "%s", p_cSupDer );
+
+		/* Lineas intermedias: vertical + huecos + vertical. */
+		for ( iFil = 1; iFil < iAlto - 1; iFil = iFil + 1 )
+		{
+			printf ( "\n" );
+			for ( iCol = 0; iCol < iColIni; iCol = iCol + 1 )
+			{
+				printf ( " " );
+			}
+			printf ( "%s", p_cVer );
+			for ( iCol = 0; iCol < iAncho - 2; iCol = iCol + 1 )
+			{
+				printf ( " " );
+			}
+			printf ( "%s", p_cVer );
+		}
+
+		/* Linea inferior: esquina + horizontales + esquina. */
+		printf ( "\n" );
+		for ( iCol = 0; iCol < iColIni; iCol = iCol + 1 )
+		{
+			printf ( " " );
+		}
+		printf ( "%s", p_cInfIzq );
+		for ( iCol = 0; iCol < iAncho - 2; iCol = iCol + 1 )
+		{
+			printf ( "%s", p_cHor );
+		}
+		printf ( "%s", p_cInfDer );
 
 		iRes = 1;
 	}
@@ -342,66 +476,18 @@ int AplicConDibujarLineaExt ( int iAncho, int iColIni, char cCar )
 }
 
 int AplicConDibujarRectangulo ( int iAlto, int iAncho, int iColIni )
-{   
-	int iCol;
-	int iFil;
-	int iRes;
+{
+	return ( _AplicConDibujarCaja ( iAlto, iAncho, iColIni,
+									_CON_BRD_S_SUP_IZQ, _CON_BRD_S_SUP_DER,
+									_CON_BRD_S_INF_IZQ, _CON_BRD_S_INF_DER,
+									_CON_BRD_S_HOR, _CON_BRD_S_VER ) );
+}
 
-	if ( ( iAlto > 0 ) && ( iAncho > 0 ) && ( iColIni >= 0 ) && ( iColIni + iAncho < 80 ) )
-	{
-		iCol = 0; 
-		while ( iCol < iColIni )
-		{
-			printf ( " " );
-			iCol = iCol + 1;
-		}
-		while ( iCol < iColIni + iAncho )
-		{
-			printf ( "_" ); 
-			iCol = iCol + 1;
-		}
-
-		iFil = 1;
-		while ( iFil < iAlto - 1 )
-		{
-			printf ( "\n" );
-			iCol = 0; 
-			while ( iCol < iColIni )
-			{
-				printf ( " " );
-				iCol = iCol + 1;
-			}
-			printf ( "|" ); 
-			iCol = iCol + 1;
-			while ( iCol < iColIni + iAncho - 1 )
-			{
-				printf ( " " ); 
-				iCol = iCol + 1;
-			}
-			printf ( "|" ); 
-		
-			iFil = iFil + 1;
-		}
-		printf ( "\n" );
-
-		iCol = 0; 
-		while ( iCol < iColIni )
-		{
-			printf ( " " );
-			iCol = iCol + 1;
-		}
-		while ( iCol < iColIni + iAncho )
-		{
-			printf ( "_" ); 
-			iCol = iCol + 1;
-		}
-
-		iRes = 1;
-	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
+int AplicConDibujarRectanguloDoble ( int iAlto, int iAncho, int iColIni )
+{
+	return ( _AplicConDibujarCaja ( iAlto, iAncho, iColIni,
+									_CON_BRD_D_SUP_IZQ, _CON_BRD_D_SUP_DER,
+									_CON_BRD_D_INF_IZQ, _CON_BRD_D_INF_DER,
+									_CON_BRD_D_HOR, _CON_BRD_D_VER ) );
 }
 

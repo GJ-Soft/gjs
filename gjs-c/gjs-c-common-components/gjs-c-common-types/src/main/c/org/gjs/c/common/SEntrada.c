@@ -16,9 +16,12 @@ SEntrada * SEtrCrear ( const char * p_cNombre )
 	{
 		p_etrObj->p_cNombre = NULL;
 		p_etrObj->p_cDefinicion = NULL;
-		if ( SEtrEstablecerNombre ( p_etrObj,  p_cNombre ) == 0 )
+		if ( ES_VALIDO ( p_cNombre ) )
 		{
-			SEtrDestruir ( &p_etrObj );
+			if ( SEtrEstablecerNombre ( p_etrObj,  p_cNombre ) == 0 )
+			{
+				SEtrDestruir ( &p_etrObj );
+			}
 		}
 	}
 	return ( p_etrObj );

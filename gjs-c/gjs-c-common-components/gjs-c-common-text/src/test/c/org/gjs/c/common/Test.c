@@ -24,21 +24,21 @@ extern int TestSToken ();
 char ** testArrayInit ()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *));
-    p_p_cTests[ 0 ] = CadDuplicar ( "Cadenas" );
-    p_p_cTests[ 1 ] = CadDuplicar ( "Expresiones Regulares" );
-    p_p_cTests[ 2 ] = CadDuplicar ( "ASCII" );
-    p_p_cTests[ 3 ] = CadDuplicar ( "TiposCaracter" );
-    p_p_cTests[ 4 ] = CadDuplicar ( "Patrones" );
-    p_p_cTests[ 5 ] = CadDuplicar ( "SCadena" );
-    p_p_cTests[ 6 ] = CadDuplicar ( "SCadenaConv" );
-    p_p_cTests[ 7 ] = CadDuplicar ( "SCadenaNumerica" );
-    p_p_cTests[ 8 ] = CadDuplicar ( "SDescripcion" );
-    p_p_cTests[ 9 ] = CadDuplicar ( "SDivisor" );
-    p_p_cTests[ 10 ] = CadDuplicar ( "SLinea" );
-    p_p_cTests[ 11 ] = CadDuplicar ( "SListaCadenas" );
-    p_p_cTests[ 12 ] = CadDuplicar ( "SNombre" );
-    p_p_cTests[ 13 ] = CadDuplicar ( "STexto" );
-    p_p_cTests[ 14 ] = CadDuplicar ( "SToken" );
+    p_p_cTests[ 0 ] = CadDuplicar ( "CadenasTest" );
+    p_p_cTests[ 1 ] = CadDuplicar ( "ExpresionesRegularesTest" );
+    p_p_cTests[ 2 ] = CadDuplicar ( "ASCIITest" );
+    p_p_cTests[ 3 ] = CadDuplicar ( "TiposCaracterTest" );
+    p_p_cTests[ 4 ] = CadDuplicar ( "PatronesTest" );
+    p_p_cTests[ 5 ] = CadDuplicar ( "SCadenaTest" );
+    p_p_cTests[ 6 ] = CadDuplicar ( "SCadenaConvTest" );
+    p_p_cTests[ 7 ] = CadDuplicar ( "SCadenaNumericaTest" );
+    p_p_cTests[ 8 ] = CadDuplicar ( "SDescripcionTest" );
+    p_p_cTests[ 9 ] = CadDuplicar ( "SDivisorTest" );
+    p_p_cTests[ 10 ] = CadDuplicar ( "SLineaTest" );
+    p_p_cTests[ 11 ] = CadDuplicar ( "SListaCadenasTest" );
+    p_p_cTests[ 12 ] = CadDuplicar ( "SNombreTest" );
+    p_p_cTests[ 13 ] = CadDuplicar ( "STextoTest" );
+    p_p_cTests[ 14 ] = CadDuplicar ( "STokenTest" );
     return p_p_cTests;
 }
 

@@ -1,15 +1,15 @@
 /***************************************************************************/
 /*                        AplicacionInformacion.cpp                        */
 /*-------------------------------------------------------------------------*/
-/* Librería: Aplicacion                                                    */
-/* Versión:  2.0.0                                                         */
+/* Librerï¿½a: Aplicacion                                                    */
+/* Versiï¿½n:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    Ginï¿½s Jimï¿½nez Sï¿½nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Fichero de código fuente que contiene la implementación de algunas      */
+/* Descripciï¿½n:                                                            */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de algunas      */
 /* rutinas para inicializar y consultar algunas variables globales que     */
-/* contendrán información general acerca de una librería o aplicación.     */
+/* contendrï¿½n informaciï¿½n general acerca de una librerï¿½a o aplicaciï¿½n.     */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
 /***************************************************************************/
@@ -38,25 +38,25 @@ namespace org
 // PID del proceso:
 static long							g_lAplicPID = -1;
 
-// Nombre de la aplicación:
+// Nombre de la aplicaciï¿½n:
 static string 						g_sAplicNombre = string ( "" ); 
 
-// Información de la versión:
+// Informaciï¿½n de la versiï¿½n:
 static Version *					g_p_verAplicInfo = NULL; 
 
-// Control de inicialización:
+// Control de inicializaciï¿½n:
 static bool							g_bAplicInicializada = false;
 
 
 
 
 
-bool AplicInicializar ( const string & sNombre, int iVersion, int iSubversion, int iRevision, long lFecha, int iConsola )
+bool AplicInicializar ( const string & sNombre, int iVersion, int iSubversion, int iRevision, long lFecha, bool bConsola )
 {
 	if ( !g_bAplicInicializada )
-	{ 
+	{
 		// Consola:
-		if ( iConsola == 0 )
+		if ( !bConsola )
 		{
 			AplicConCerrar ();
 		}
@@ -67,7 +67,7 @@ bool AplicInicializar ( const string & sNombre, int iVersion, int iSubversion, i
 		// PID:
 		g_lAplicPID = SisPID ();
 
-		// Versión:
+		// Versiï¿½n:
 		if ( ES_NULO ( g_p_verAplicInfo ) )
 		{
 			g_p_verAplicInfo = new Version ( iVersion, iSubversion, iRevision, lFecha );
@@ -78,7 +78,8 @@ bool AplicInicializar ( const string & sNombre, int iVersion, int iSubversion, i
 		}
 		else
 		{
-			g_bAplicInicializada = g_p_verAplicInfo->Establecer ( iVersion, iRevision, iSubversion, lFecha );
+			// ( se corrigio el orden: antes se pasaba iRevision antes que iSubversion ).
+			g_bAplicInicializada = g_p_verAplicInfo->Establecer ( iVersion, iSubversion, iRevision, lFecha );
 		}
 	}
 	return ( g_bAplicInicializada );

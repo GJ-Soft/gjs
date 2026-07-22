@@ -68,6 +68,10 @@ SFicBloques * SFicBloqAsignar ( const char * p_cRuta )
 				SFicBloqDestruir ( &p_ficObj );
 			}
 		}
+		else
+		{
+			SFicBloqDestruir ( &p_ficObj );
+		}
 	}
 	else
 	{

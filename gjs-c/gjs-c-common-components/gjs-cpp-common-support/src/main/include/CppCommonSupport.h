@@ -12,6 +12,6 @@
 #include <CajaMensajes.h>
 
 #include <ConsolaDepuracion.h>
-
+#include <SimulacionUsuarioConsola.h>
 
 #endif

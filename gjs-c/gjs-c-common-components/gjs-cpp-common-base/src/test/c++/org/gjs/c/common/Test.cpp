@@ -20,6 +20,10 @@ extern bool TestIComparable ();
 extern bool TestColecciones ();
 extern bool TestFicheros ();
 extern bool TestConversor ();
+extern bool TestReal ();
+extern bool TestASCIIEstandar ();
+extern bool TestExpresionesRegulares ();
+extern bool TestMemoria ();
 
 int main ( int argc, char * argv[] )
 {
@@ -27,20 +31,24 @@ int main ( int argc, char * argv[] )
 	int iRes = 0;
 
 	map<string, FUNCION_BOOL> mapTests;
-	mapTests[ "ToInt" ] = TestToInt;
-	mapTests[ "ToReal" ] = TestToReal;
-	mapTests[ "ToString" ] = TestToString;
-	mapTests[ "Concatenar" ] = TestConcatenar;
-	mapTests[ "Cadenas" ] = TestCadenas;
-	mapTests[ "Codificacion" ] = TestCodificacion;
-	mapTests[ "IToString" ] = TestIToString;
-	mapTests[ "Objeto" ] = TestObjeto;
-	mapTests[ "Excepcion" ] = TestExcepcion;
-	mapTests[ "Sistema" ] = TestSistema;
-	mapTests[ "IComparable" ] = TestIComparable;
-	mapTests[ "Colecciones" ] = TestColecciones;
-	mapTests[ "Ficheros" ] = TestFicheros;
-	mapTests[ "Conversor" ] = TestConversor;
+	mapTests[ "ToIntTest" ] = TestToInt;
+	mapTests[ "ToRealTest" ] = TestToReal;
+	mapTests[ "ToStringTest" ] = TestToString;
+	mapTests[ "ConcatenarTest" ] = TestConcatenar;
+	mapTests[ "CadenasTest" ] = TestCadenas;
+	mapTests[ "CodificacionTest" ] = TestCodificacion;
+	mapTests[ "IToStringTest" ] = TestIToString;
+	mapTests[ "ObjetoTest" ] = TestObjeto;
+	mapTests[ "ExcepcionTest" ] = TestExcepcion;
+	mapTests[ "SistemaTest" ] = TestSistema;
+	mapTests[ "IComparableTest" ] = TestIComparable;
+	mapTests[ "ColeccionesTest" ] = TestColecciones;
+	mapTests[ "FicherosTest" ] = TestFicheros;
+	mapTests[ "ConversorTest" ] = TestConversor;
+	mapTests[ "RealTest" ] = TestReal;
+	mapTests[ "ASCIIEstandarTest" ] = TestASCIIEstandar;
+	mapTests[ "ExpresionesRegularesTest" ] = TestExpresionesRegulares;
+	mapTests[ "MemoriaTest" ] = TestMemoria;
 
 
 	string sTest ( "null" );
@@ -79,7 +87,11 @@ int main ( int argc, char * argv[] )
         ! TestIComparable() ||
         ! TestColecciones() ||
         ! TestFicheros() ||
-        ! TestConversor() )
+        ! TestConversor() ||
+        ! TestReal() ||
+        ! TestASCIIEstandar() ||
+        ! TestExpresionesRegulares() ||
+        ! TestMemoria() )
 	{
 		iRes = -1;
 	}

@@ -88,12 +88,17 @@ long ToInt ( const wstring & t )
 
 long ToInt ( wchar_t * t )
 {
-	return ( ToInt ( wstring( t ) ) );
+	return ( ToInt ( (const wchar_t *) t ) );
 }
 
 long ToInt ( const wchar_t * t )
 {
-	return ( ToInt ( wstring( t ) ) );
+	long lRes = 0;
+	if ( t != NULL )
+	{
+		lRes = ToInt ( wstring( t ) );
+	}
+	return ( lRes );
 }
 
 long long ToLLong ( char * t )
@@ -156,12 +161,17 @@ long long ToLLong ( const wstring & t )
 
 long long ToLLong ( wchar_t * t )
 {
-	return ( ToLLong ( wstring( t ) ) );
+	return ( ToLLong ( (const wchar_t *) t ) );
 }
 
 long long ToLLong ( const wchar_t * t )
 {
-	return ( ToLLong ( wstring( t ) ) );
+	long long lRes = 0;
+	if ( t != NULL )
+	{
+		lRes = ToLLong ( wstring( t ) );
+	}
+	return ( lRes );
 }
 
 

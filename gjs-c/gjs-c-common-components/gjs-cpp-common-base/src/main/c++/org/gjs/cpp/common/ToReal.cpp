@@ -74,12 +74,17 @@ double ToDouble ( const wstring & t )
 
 double ToDouble ( wchar_t * t )
 {
-	return ( ToDouble ( wstring( t ) ) );
+	return ( ToDouble ( (const wchar_t *) t ) );
 }
 
 double ToDouble ( const wchar_t * t )
 {
-	return ( ToDouble ( wstring( t ) ) );
+	double dRes = 0.0;
+	if ( t != NULL )
+	{
+		dRes = ToDouble ( wstring( t ) );
+	}
+	return ( dRes );
 }
 			}
 		}

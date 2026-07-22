@@ -23,3 +23,19 @@ int ModAprEsValido ( int iModo )
 	return ( iRes );
 }
 
+int ModAprPermiteEscritura ( int iModo )
+{
+	int iRes;
+
+	if ( ( iModo == MOD_APR_ESCRITURA ) || 
+		 ( iModo == MOD_APR_REESCRITURA ) )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+

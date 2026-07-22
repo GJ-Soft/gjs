@@ -44,8 +44,7 @@ int SFicTxtEsEstiloUNIX ( SFicTexto * p_ficObj );
 int SFicTxtEsEstiloDOS ( SFicTexto * p_ficObj );
 
 int SFicTxtAbrir ( SFicTexto * p_ficObj, int iModo );
-int SFicTxtAbrirExt ( SFicTexto * p_ficObj, int iModo, int iVaciar );
-int SFicTxtCerrar ( SFicTexto * p_4icObj );
+int SFicTxtCerrar ( SFicTexto * p_ficObj );
 
 int SFicTxtEstaAbierto ( SFicTexto * p_ficObj );
 int SFicTxtModoApertura ( SFicTexto * p_ficObj );

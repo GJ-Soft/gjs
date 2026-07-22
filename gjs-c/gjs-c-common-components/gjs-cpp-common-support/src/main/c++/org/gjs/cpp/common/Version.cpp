@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                                Version.cpp                                */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Aplicacion                                                      */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Aplicacion                                                      */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de la clase de     */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de la clase de     */
 /* datos Version.                                                            */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -43,16 +43,16 @@ Version::Version ()
 	Inicializar ();
 }
 
-Version::Version ( int _iVersion, int _iSubversion, int _iRevision, long lFecVersion ) 
+Version::Version ( int iVersion, int iSubversion, int iRevision, long lFecVersion ) 
 {
 	Inicializar ();
-	Establecer ( _iVersion, _iSubversion, _iRevision, lFecVersion );
+	Establecer ( iVersion, iSubversion, iRevision, lFecVersion );
 }
 
-Version::Version ( int _iVersion, int _iSubversion, int _iRevision, const ::org::gjs::cpp::common::Fecha & fecVersion )
+Version::Version ( int iVersion, int iSubversion, int iRevision, const ::org::gjs::cpp::common::Fecha & fecVersion )
 {
 	Inicializar ();
-	Establecer ( _iVersion, _iSubversion, _iRevision, fecVersion );
+	Establecer ( iVersion, iSubversion, iRevision, fecVersion );
 }
 
 Version::~Version ()
@@ -79,11 +79,11 @@ int Version::Rev () const
 	return ( (::org::gjs::cpp::common::Fecha) *this );
 }
 
-string Version::CadenaVersion ( int iCorta )
+string Version::CadenaVersion ( bool bCorta )
 {
 	string sRes;
 
-	if ( ( iCorta == 0 ) && ( iRevision >= 0 ) )
+	if ( !bCorta && ( iRevision >= 0 ) )
 	{
 		sRes = format ( VER_FORM_CADENA, iVersion, iSubversion, iRevision );
 	}
@@ -100,50 +100,50 @@ bool Version::EsValida ()
 		Fecha::EsValida () );
 }
 
-bool Version::EstablecerVer ( int _iVersion )
+bool Version::EstablecerVer ( int iVersion )
 {
-	bool bRes = true;
+	bool bRes = false;
 
-	if ( _iVersion > 0 )
+	if ( iVersion > 0 )
 	{
-		iVersion = _iVersion;
+		this->iVersion = iVersion;
 		bRes = true;
 	}
 	else
 	{
-		iVersion = 0;
+		this->iVersion = 0;
 	}
 	return ( bRes );
 }
 
-bool Version::EstablecerSubver ( int _iSubversion )
+bool Version::EstablecerSubver ( int iSubversion )
 {
-	bool bRes = true;
+	bool bRes = false;
 
-	if ( _iSubversion >= 0 )
+	if ( iSubversion >= 0 )
 	{
-		iSubversion = _iSubversion;
+		this->iSubversion = iSubversion;
 		bRes = true;
 	}
 	else
 	{
-		iSubversion = -1;
+		this->iSubversion = -1;
 	}
 	return ( bRes );
 }
 
-bool Version::EstablecerRev ( int _iRevision )
+bool Version::EstablecerRev ( int iRevision )
 {
-	bool bRes = true;
+	bool bRes = false;
 
-	if ( _iRevision >= 0 )
+	if ( iRevision >= 0 )
 	{
-		iRevision = _iRevision;
+		this->iRevision = iRevision;
 		bRes = true;
 	}
 	else
 	{
-		iRevision = -1;
+		this->iRevision = -1;
 	}
 	return ( bRes );
 }
@@ -158,20 +158,20 @@ bool Version::EstablecerFecha ( const ::org::gjs::cpp::common::Fecha & fecVersio
 	return ( Fecha::Establecer ( fecVersion.Valor() ) );
 }
 
-bool Version::Establecer ( int _iVersion, int _iSubversion, int _iRevision, long lFecVersion )
+bool Version::Establecer ( int iVersion, int iSubversion, int iRevision, long lFecVersion )
 {
-	return ( EstablecerVer ( _iVersion ) &&
-		 EstablecerSubver ( _iSubversion ) &&
-		 EstablecerRev ( _iRevision ) &&
+	return ( EstablecerVer ( iVersion ) &&
+		 EstablecerSubver ( iSubversion ) &&
+		 EstablecerRev ( iRevision ) &&
 		 EstablecerFecha ( lFecVersion ) );
 }
 
 
-bool Version::Establecer ( int _iVersion, int _iSubversion, int _iRevision, const ::org::gjs::cpp::common::Fecha & fecVersion ) 
+bool Version::Establecer ( int iVersion, int iSubversion, int iRevision, const ::org::gjs::cpp::common::Fecha & fecVersion ) 
 {
-	return (  EstablecerVer ( _iVersion )&&
-		  EstablecerSubver ( _iSubversion ) &&
-		  EstablecerRev ( _iRevision )&&
+	return (  EstablecerVer ( iVersion )&&
+		  EstablecerSubver ( iSubversion ) &&
+		  EstablecerRev ( iRevision )&&
 		  EstablecerFecha ( fecVersion ) );
 }
 

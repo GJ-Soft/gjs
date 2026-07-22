@@ -3,13 +3,19 @@
 
 
 
-#include <BaseConfig.h>
+#include <Precompilacion.h>
 
-/* Ficheros de cabecera de C particulares de cada entorno: */
-#if ( defined ( CC ) ) // Asociado a UNIX:
+#if ( defined ( WIN ) )
 
-#error "ERROR CC"
-#	include <ctype.h>
+#		include <winsock2.h>
+#		include <Tlhelp32.h>
+#		include <Psapi.h>
+#		include <Shlwapi.h>
+#		include <shellapi.h>
+#		include <lm.h>
+
+#else 
+
 #	include <unistd.h>
 #	include <errno.h>
 #	include <sys/types.h>
@@ -19,77 +25,19 @@
 #	include <sys/wait.h>
 #	include <sys/resource.h>
 #	include <sys/utsname.h>
+#	include <sys/mman.h>
+#	include <sys/sysinfo.h>
+#	include <sys/socket.h>
+#	include <netdb.h>
 #	if ( !defined ( errno ) )
 #		define errno	(*_errno())
 #	endif
-//#		include <rld_interface.h>
-
-#elif ( defined ( VC ) )  // Asociado a WIN 
-
-#error "ERROR VC"
-#	if ( defined ( WIN ) )
-
-#		include <windef.h>
-#		include <winnt.h>
-#		include <Tlhelp32.h>
-
-#		if ( WINVER >= 0x500 )
-#			include <Psapi.h>
-#			include <Shlwapi.h>
-#		endif
-
-#		include <lm.h>
-
-#	else
-
-#		include <process.h>
-#		define sleep		_sleep
-#		undef INC_DIRECT
-#		if ( !defined ( _STDC__ ) )
-#			define _STDC__		0
-#		endif
-#	endif
-
-#	include <intrin.h>
-
-#else // GNU:
-
-#	if ( defined ( POSIX ) )
-#error "ERROR POSIX"
-#		include <unistd.h>
-#		include <errno.h>
-#		include <sys/types.h>
-#		include <sys/stat.h>
-#		include <sys/param.h>
-#		include <sys/dir.h>
-#		include <sys/wait.h>
-#		include <sys/resource.h>
-#		include <sys/utsname.h>
-#		include <sys/mman.h>
-#		include <sys/sysinfo.h>
-#		include <sys/socket.h>
-#		include <netdb.h>
-#		if ( !defined ( errno ) )
-#			define errno	(*_errno())
-#		endif
-#		include <pthread.h>
-#		include <semaphore.h>
-#		include <pwd.h>
-#		include <grp.h>
-#		include <signal.h>
-#		include <setjmp.h>
-
-
-#	else // Caso por defecto ( defined ( WIN ) )
-
-#		include <winsock2.h>
-#		include <Tlhelp32.h>
-#		include <Psapi.h>
-#		include <Shlwapi.h>
-#		include <lm.h>
-
-#	endif
-
+#	include <pthread.h>
+#	include <semaphore.h>
+#	include <pwd.h>
+#	include <grp.h>
+#	include <signal.h>
+#	include <setjmp.h>
 #endif
 
 // El Kernel32.lib (y otros) junto con los *.h, de VC++ suelen estar obsoletos: algunas funciones hay que obtenerlas
@@ -110,6 +58,7 @@ WINBASEAPI BOOL WINAPI SwitchToThread ();
 
 #include <CppBase.h>
 #include <CppCommonTypes.h>
+#include <CppCommonCalculation.h>
 #include <CppCommonIo.h>
 
 

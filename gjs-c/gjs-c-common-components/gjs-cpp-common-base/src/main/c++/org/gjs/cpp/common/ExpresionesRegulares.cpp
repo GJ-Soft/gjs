@@ -18,27 +18,47 @@ namespace org
 bool CumpleExpresionRegular( const string& cadena, const string& patron ) {
 	bool bRes = false;
 	try {
-		// Convertir patrón estilo DOS/shell a regex estándar
-		string patronRegex = patron;
-		
-		// Reemplazar '?' por '.' (un carácter cualquiera)
-		size_t pos = 0;
-		while ((pos = patronRegex.find('?', pos)) != string::npos) {
-			patronRegex.replace(pos, 1, ".");
-			pos++;
-		}
-		
-		// Reemplazar '*' por '.*' (cualquier número de caracteres)
-		pos = 0;
-		while ((pos = patronRegex.find('*', pos)) != string::npos) {
-			if (pos == 0 || patronRegex[pos-1] != '.') {
-				patronRegex.replace(pos, 1, ".*");
-				pos += 2;
-			} else {
-				pos++;
+		// Se traduce el patron estilo glob/DOS a una expresion regular estandar:
+		//   '?'      -> '.'         ( un caracter cualquiera )
+		//   '*'      -> '.*'        ( cualquier numero de caracteres )
+		//   '(' ')'  -> grupo opcional no capturador '(?:' ... ')?'
+		//   el resto -> literal, escapando los metacaracteres de regex
+		//               ( . \ + ^ $ | [ ] { } ) para que no se interpreten.
+		string patronRegex;
+		patronRegex.reserve( patron.size() * 2 );
+		for ( char c : patron ) {
+			switch ( c ) {
+				case '?':
+					patronRegex += '.';
+					break;
+				case '*':
+					patronRegex += ".*";
+					break;
+				case '(':
+					patronRegex += "(?:";
+					break;
+				case ')':
+					patronRegex += ")?";
+					break;
+				case '.':
+				case '\\':
+				case '+':
+				case '^':
+				case '$':
+				case '|':
+				case '[':
+				case ']':
+				case '{':
+				case '}':
+					patronRegex += '\\';
+					patronRegex += c;
+					break;
+				default:
+					patronRegex += c;
+					break;
 			}
 		}
-		
+
 		regex re( patronRegex );
 		bRes = regex_match( cadena, re );
 	}
@@ -46,7 +66,7 @@ bool CumpleExpresionRegular( const string& cadena, const string& patron ) {
 	}
 	return ( bRes );
 }
-	
+
 
 
             }

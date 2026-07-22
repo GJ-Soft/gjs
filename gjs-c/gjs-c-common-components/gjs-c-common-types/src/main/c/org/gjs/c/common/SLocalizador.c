@@ -17,9 +17,12 @@ SLocalizador * SLczCrear ( const char * p_cClave )
 	{
 		p_lczObj->p_cClave = NULL;
 		p_lczObj->iPosicion = -1;
-		if ( SLczEstablecerClave ( p_lczObj,  p_cClave ) == 0 )
+		if ( ES_VALIDO ( p_cClave ) )
 		{
-			SLczDestruir ( &p_lczObj );
+			if ( SLczEstablecerClave ( p_lczObj,  p_cClave ) == 0 )
+			{
+				SLczDestruir ( &p_lczObj );
+			}
 		}
 	}
 	return ( p_lczObj );
@@ -213,6 +216,8 @@ int SLczEsMenor ( SLocalizador * p_lczObj, const char * p_cClave )
 
 	if ( ( SLczEsValido ( p_lczObj ) == 1 ) && ( CadEsTokenValido ( p_cClave ) == 1 ) )
 	{
+		printf ( "CLAVE:%s VALOR: %s\n", p_lczObj->p_cClave, p_cClave );
+		printf ( "CadCompararSinDistinguirTipoLetra ( p_lczObj->p_cClave, p_cClave ): %d\n", CadCompararSinDistinguirTipoLetra ( p_lczObj->p_cClave, p_cClave ));
 		if ( CadCompararSinDistinguirTipoLetra ( p_lczObj->p_cClave, p_cClave ) == COMP_MENOR )
 		{
 			iRes = 1;

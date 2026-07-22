@@ -46,11 +46,11 @@ int STestNumCasos ( STest * p_testObj );
 
 int STestEjecutar ( STest * p_testObj );
 
-int Resultado ( STest * p_testObj );
-int CasosEjecutados ( STest * p_testObj );
-int CasosCorrectos ( STest * p_testObj );
-int CasosErroneos ( STest * p_testObj );
-int CasosFallidos ( STest * p_testObj );
+int STestResultado ( STest * p_testObj );
+int STestCasosEjecutados ( STest * p_testObj );
+int STestCasosCorrectos ( STest * p_testObj );
+int STestCasosErroneos ( STest * p_testObj );
+int STestCasosFallidos ( STest * p_testObj );
 
 
 int STestEjecutar ( STest * p_testObj );

@@ -7,7 +7,7 @@ using namespace std;
 using namespace org::gjs::cpp::common;
 
 
-#if ( defined( _WIN32 ) || defined( _WIN64 ) || defined( _WINRT_DLL ) || defined ( __CYGWIN__ ) )
+#if ( defined( WIN ) )
 	
 
 static bool TestDLLEjecutar01 ()
@@ -16,7 +16,7 @@ static bool TestDLLEjecutar01 ()
 	bool bRes = true;
 	try
 	{
-		if ( DLLEjecutar ( "C:\\Windows\\System32\\Kernel32.dll", "GetLastError" ) )
+		if ( ! DLLEjecutar ( "C:\\Windows\\System32\\Kernel32.dll", "GetLastError" ) )
 		{
 			cout << "Error: retorna falso" << endl;
 			bRes = false;
@@ -40,9 +40,9 @@ static bool TestDLLEjecutar01 ()
 bool TestWinHerramientas ()
 {
 	bool bRes = true;
-#if ( defined( _WIN32 ) || defined( _WIN64 ) || defined( _WINRT_DLL ) || defined ( __CYGWIN__ ) )
 	
 	cout << endl << ANSI::AMARILLO << "[Test WinHerramientas]" << ANSI::RESETEAR << endl;
+#if ( defined( WIN ) )
 	if ( TestDLLEjecutar01() )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
@@ -52,8 +52,10 @@ bool TestWinHerramientas ()
 		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
 		bRes = false;
 	}
-	cout << ANSI::AMARILLO << "[Fin]" << ANSI::RESETEAR << endl;	
+#else
+	cout << "  (Esta clase sólo está disponible si se compila para Windows)" << endl;	
 #endif
+	cout << ANSI::AMARILLO << "[Fin]" << ANSI::RESETEAR << endl;	
 	
 	return ( bRes );
 }

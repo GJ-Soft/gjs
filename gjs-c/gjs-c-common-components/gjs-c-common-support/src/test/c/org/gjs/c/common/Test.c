@@ -1,22 +1,43 @@
 #include "Base.h"
 
-// TODO
 
-#define NUM_TESTS        1
 
-extern int TestSId ();
+#define NUM_TESTS        8
+
+extern int TestTiposCajaMensajes ();
+extern int TestCajaMensajes ();
+extern int TestAplicacionValidaciones ();
+extern int TestAplicacionConsola ();
+extern int TestAplicacionInformacion ();
+extern int TestAplicacionPortapapeles ();
+extern int TestSVersion ();
+extern int TestSPropiedades ();
 
 char ** testArrayInit ()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *));
-    p_p_cTests[ 0 ] = CadDuplicar ( "SId" );
+    p_p_cTests[ 0 ] = CadDuplicar ( "TiposCajaMensajesTest" );
+    p_p_cTests[ 1 ] = CadDuplicar ( "CajaMensajesTest" );
+    p_p_cTests[ 2 ] = CadDuplicar ( "AplicacionValidacionesTest" );
+    p_p_cTests[ 3 ] = CadDuplicar ( "AplicacionConsolaTest" );
+    p_p_cTests[ 4 ] = CadDuplicar ( "AplicacionInformacionTest" );
+    p_p_cTests[ 5 ] = CadDuplicar ( "AplicacionPortapapelesTest" );
+    p_p_cTests[ 6 ] = CadDuplicar ( "SVersionTest" );
+    p_p_cTests[ 7 ] = CadDuplicar ( "SPropiedadesTest" );
     return p_p_cTests;
 }
 
 PFUNINTV * functionArrayInit ()
 {
     PFUNINTV* p_fTests = (PFUNINTV *) MemReservar ( NUM_TESTS * sizeof( PFUNINTV ));
-    p_fTests[ 0 ] = TestSId;
+    p_fTests[ 0 ] = TestTiposCajaMensajes;
+    p_fTests[ 1 ] = TestCajaMensajes;
+    p_fTests[ 2 ] = TestAplicacionValidaciones;
+    p_fTests[ 3 ] = TestAplicacionConsola;
+    p_fTests[ 4 ] = TestAplicacionInformacion;
+    p_fTests[ 5 ] = TestAplicacionPortapapeles;
+    p_fTests[ 6 ] = TestSVersion;
+    p_fTests[ 7 ] = TestSPropiedades;
     return p_fTests;
 }
 

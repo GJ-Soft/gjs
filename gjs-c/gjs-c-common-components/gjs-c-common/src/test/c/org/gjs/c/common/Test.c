@@ -1,22 +1,34 @@
 #include "Base.h"
 
-// TODO
 
-#define NUM_TESTS        1
 
-extern int TestSId ();
+#define NUM_TESTS        5
+
+extern int TestSArgumentos ();
+extern int TestSMensajes ();
+extern int TestEntorno ();
+extern int TestConsolaDepuracion ();
+extern int TestAplicacionLog ();
 
 char ** testArrayInit ()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *));
-    p_p_cTests[ 0 ] = CadDuplicar ( "SId" );
+    p_p_cTests[ 0 ] = CadDuplicar ( "SArgumentosTest" );
+    p_p_cTests[ 1 ] = CadDuplicar ( "SMensajesTest" );
+    p_p_cTests[ 2 ] = CadDuplicar ( "EntornoTest" );
+    p_p_cTests[ 3 ] = CadDuplicar ( "ConsolaDepuracionTest" );
+    p_p_cTests[ 4 ] = CadDuplicar ( "AplicacionLogTest" );
     return p_p_cTests;
 }
 
 PFUNINTV * functionArrayInit ()
 {
     PFUNINTV* p_fTests = (PFUNINTV *) MemReservar ( NUM_TESTS * sizeof( PFUNINTV ));
-    p_fTests[ 0 ] = TestSId;
+    p_fTests[ 0 ] = TestSArgumentos;
+    p_fTests[ 1 ] = TestSMensajes;
+    p_fTests[ 2 ] = TestEntorno;
+    p_fTests[ 3 ] = TestConsolaDepuracion;
+    p_fTests[ 4 ] = TestAplicacionLog;
     return p_fTests;
 }
 

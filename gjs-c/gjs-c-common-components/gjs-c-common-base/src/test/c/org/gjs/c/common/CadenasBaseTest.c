@@ -396,9 +396,10 @@ static int TestCadComparar02 ()
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test CadComparar 01:\n" );
 	char * p_cCadena1 = CadDuplicar ( "Cadena1" );
-	char * p_cCadena2 = CadDuplicar ( "Cadena Mas Larga 2 " );
+	char * p_cCadena2 = CadDuplicar ( "Cadena1 Mas Larga 2 " );
 	char * p_cCadena3 = CadDuplicar ( "Cadena2" );
 	char * p_cCadena4 = CadDuplicar ( "Cadena1" );
+	char * p_cCadena5 = CadDuplicar ( "Cad4na5" );
 	int iResult = CadComparar ( p_cCadena1, p_cCadena2 );
 	if ( iResult != COMP_MENOR )
 	{
@@ -429,10 +430,23 @@ static int TestCadComparar02 ()
 		printf( "Error caso 4: se esperaban iguales el resultado es %d \n", iResult );
 		iRes = BOOL_VAL_FALSO;
 	}
+	iResult = CadComparar ( p_cCadena1, p_cCadena5 );
+	if ( iResult != COMP_MAYOR )
+	{
+		printf( "Error caso 5: se esperaba mayor el resultado es %d \n", iResult );
+		iRes = BOOL_VAL_FALSO;
+	}
+	iResult = CadComparar ( p_cCadena5, p_cCadena1 );
+	if ( iResult != COMP_MENOR )
+	{
+		printf( "Error caso 6: se esperaba mayor el resultado es %d \n", iResult );
+		iRes = BOOL_VAL_FALSO;
+	}
 	MemLiberar ( (void **) &p_cCadena1 );
 	MemLiberar ( (void **) &p_cCadena2 );
 	MemLiberar ( (void **) &p_cCadena3 );
 	MemLiberar ( (void **) &p_cCadena4 );
+	MemLiberar ( (void **) &p_cCadena5 );
 	return ( iRes );
 }
 

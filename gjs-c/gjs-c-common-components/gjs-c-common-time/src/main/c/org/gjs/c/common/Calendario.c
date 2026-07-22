@@ -284,6 +284,31 @@ long CalendDiasHastaElAno ( int iA )
 	return ( lRes );
 }
 
+long CalendDiasHastaElMes ( int iA, int iM )
+{
+	long lRes;
+
+	lRes = 0;
+	if ( ( iA != 0 ) && ( iM > 0 ) && ( iM <= 12 ) )
+	{
+		lRes = CalendDiasHastaElAno ( iA ) + CalendDiasAnualesHastaElMes ( iA, iM );
+	}
+	return ( lRes );
+}
+
+long CalendDiasHastaFecha ( int iA, int iM, int iD )
+{
+	long lRes;
+
+	lRes = 0;
+	if ( CalendEsValido ( iA, iM, iD ) == 1 )
+	{
+		lRes = CalendDiasHastaElMes ( iA, iM ) + iD;
+	}
+	return ( lRes );
+}
+
+
 int CalendDiasAnualesHastaElMes ( int iA, int iM )
 {
 	int iRes;
@@ -322,12 +347,7 @@ long CalendDiasTranscurridos ( int iA1, int iM1, int iD1, int iA2, int iM2, int 
 
 	if ( ( CalendEsValido ( iA1, iM1, iD1 ) == 1 ) && ( CalendEsValido ( iA2, iM2, iD2 ) == 1 ) )
 	{
-		lRes = CalendDiasMes ( iA1, iM1 ) - iD1 +
-			   CalendDiasAnualesDesdeElMes ( iA1, iM1 ) +
-			   CalendDiasHastaElAno ( iA2 ) -
-			   CalendDiasHastaElAno ( iA1 ) +
-			   CalendDiasAnualesHastaElMes ( iA2, iM2 ) +
-			   iD2;
+		lRes = CalendDiasHastaFecha ( iA2, iM2, iD2 ) - CalendDiasHastaFecha ( iA1, iM1, iD1 );
 	}
 	else
 	{
@@ -840,17 +860,13 @@ int CalendSegundosIntercalaresAcumulados ( int iA, int iM, int iD )
 
 	if ( iA >= CAL_INICIO_SEGUNDOS_INTERCALARES )
 	{
-		iRes = 0;
 		iFecha = 0;
 		lFechaCmp = iA * 10000 + iM * 100 + iD;
-		while ( ( iFecha < g_iNumSegundosIntercalares ) && ( lFechaCmp <= g_p_lSegundosIntercalares [ iFecha ] ) )
+		while ( ( iFecha < g_iNumSegundosIntercalares ) && ( lFechaCmp >= g_p_lSegundosIntercalares [ iFecha ] ) )
 		{
-			if ( lFechaCmp > g_p_lSegundosIntercalares [ iFecha ] )
-			{
-				iRes = iRes + 1;
-			}
 			iFecha = iFecha + 1;
 		}
+		iRes = iFecha;
 	}
 	else
 	{

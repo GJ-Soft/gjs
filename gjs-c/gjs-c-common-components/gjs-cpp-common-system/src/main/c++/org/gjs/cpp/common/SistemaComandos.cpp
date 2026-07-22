@@ -44,7 +44,7 @@ bool SisEjecutarComando ( const string & sComando, const string & sParametros, i
 #  if ( defined ( WIN ) )
 	HINSTANCE	hinsExec;
 	HWND		hwndProceso;
-#  else //( defined ( DOS ) || defined ( UNIX ) || defined ( LINUX )
+#  else 
 	int			iResSys;
 #  endif
 
@@ -60,7 +60,7 @@ bool SisEjecutarComando ( const string & sComando, const string & sParametros, i
 		//hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, NULL, NULL, SW_SHOW );
 		//hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, p_cParametros, NULL, SW_SHOW );
 		hinsExec = ShellExecute ( hwndProceso, "open", sComando.c_str(), sParametros.c_str(), NULL, SW_HIDE);
-		if ( hinsExec > 0 )
+		if ( (INT_PTR)hinsExec > 32 )
 		{
 			SisEsperar ( 10 );
 			bRes = true;
@@ -77,17 +77,14 @@ bool SisEjecutarComando ( const string & sComando, const string & sParametros, i
 		}
 		errno = 0;
 		iResSys = system ( sOrden.c_str () );
-		if ( iResSys > 0 ) 
+		// Comprobamos si el comando terminó correctamente
+		if ( WIFEXITED ( iResSys ) )
 		{
-			if ( iSegundoPlano == 1 )
+			int iCodigoSalida = WEXITSTATUS ( iResSys );
+			if ( iCodigoSalida == 0 )
 			{
-				SisEsperar ( 1000 );
+				bRes = true; // El comando se ejecutó y devolvió ÉXITO (0)
 			}
-			bRes = true;
-		}
-		else // 0, -1 y negativos
-		{	
-			bRes = ( errno == 0 );
 		}
 #	  endif
 	}

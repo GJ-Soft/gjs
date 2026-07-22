@@ -38,6 +38,9 @@
 					export CYGWIN=1
 				  To deactivate cygwin profile 		
 					export CYGWIN
+		.
+		To compile on pure Windows (without Cygwin) the gcc and g++ compiler executables need to be accessible
+		in the PATH. 
 					
 	Needs properties in settings.xml file: 
 		
@@ -64,12 +67,27 @@
 			<id>gjs</id>
 			<name>Ginés Jiménez Sánchez</name>
 			<email>gjsoft@gmx.es</email>
+			<organization>GJ Soft</organization>
 			<roles>
 				<role>Master</role>
 			</roles>
 			<timezone>+1</timezone>			
 		</developer>
 	</developers>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/GJ-Soft/gjs/issues</url>
+	</issueManagement>
+	<!--
+	<ciManagement>
+		<system>GitHub Actions</system>
+		<url>https://github.com/GJ-Soft/gjs/actions</url>
+	</ciManagement>
+	-->
+
+	<prerequisites>
+		<maven>3.9.11</maven>
+	</prerequisites>
      
     <properties>   
 		<!-- Encoding -->
@@ -86,9 +104,9 @@
 		<skip.if.not.source>true</skip.if.not.source>
 	
 		<!-- Public Free License -->
-		<lincence.name>gpl_v3</lincence.name>
-		<lincence.organization>GJ Software</lincence.organization>
-		<lincence.year>2026</lincence.year>
+		<license.name>gpl_v3</license.name>
+		<license.organization>GJ Software</license.organization>
+		<license.year>2026</license.year>
 
 		<!-- Aggregational platform specific compilation options -->
 		<platformOptions></platformOptions>
@@ -374,9 +392,9 @@
 					<version>${license-maven-plugin.version}</version>
 					<configuration>
 						<inceptionYear>${license.year}</inceptionYear>
-						<organizationName>${lincence.organization}</organizationName>
+						<organizationName>${license.organization}</organizationName>
 						<projectName>${project.name}</projectName>
-						<licenseName>${lincence.name}</licenseName>
+						<licenseName>${license.name}</licenseName>
 
 						<roots>
 							<root>src/main/java</root>
@@ -510,6 +528,10 @@
 		</plugins>
 	</build>
 
+	<reporting>
+		<plugins/>
+	</reporting>
+
 	<profiles>
 		<profile>
 			<id>win-base</id>
@@ -602,6 +624,7 @@
 			</activation>
             <properties>
 				<!-- Posix / Windows -->
+				<cygwinDir>/cygdrive/c/Desarrollo/Cygwin64</cygwinDir>
 				<cygwin.style>posix</cygwin.style>
 				<environment>cygwin-${cygwin.style}</environment>
 				<environment.style>${cygwin.style}</environment.style>

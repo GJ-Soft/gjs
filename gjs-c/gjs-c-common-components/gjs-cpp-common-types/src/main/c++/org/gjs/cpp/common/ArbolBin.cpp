@@ -135,13 +135,15 @@ void ArbolBin::Vaciar()
 {
 	if ( nodoRaiz != NULL )
 	{
+		// Al borrar cada ArbolBin hijo su destructor vacia recursivamente su
+		// subarbol; asi no se fugan los objetos ArbolBin envoltorio.
 		if ( nodoRaiz->TieneHijoDer() )
 		{
-			nodoRaiz->getHijoDer()->Vaciar();
+			delete nodoRaiz->getHijoDer();
 		}
 		if ( nodoRaiz->TieneHijoIzq() )
 		{
-			nodoRaiz->getHijoIzq()->Vaciar();
+			delete nodoRaiz->getHijoIzq();
 		}
 		delete nodoRaiz;
 		nodoRaiz = NULL;

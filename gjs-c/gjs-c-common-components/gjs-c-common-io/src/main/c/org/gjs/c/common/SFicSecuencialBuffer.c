@@ -229,16 +229,11 @@ unsigned long SFicSecBufTamBuffer ( SFicSecuencialBuffer * p_ficObj )
 
 int SFicSecBufAbrir ( SFicSecuencialBuffer * p_ficObj, int iModo )
 {
-	return ( SFicSecBufAbrirExt ( p_ficObj, iModo, 0 ) );
-}
-
-int SFicSecBufAbrirExt ( SFicSecuencialBuffer * p_ficObj, int iModo, int iVaciar )
-{
 	int iRes;
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		iRes = SFicSecAbrirExt ( p_ficObj->p_ficObj, iModo, iVaciar );
+		iRes = SFicSecAbrir ( p_ficObj->p_ficObj, iModo );
 		if ( iRes == 1 )
 		{
 			SBufLimpiar ( p_ficObj->p_bufObj );

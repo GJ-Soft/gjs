@@ -18,11 +18,15 @@ SSemaforo * SSemCrearExt ( const char * p_cNombre, long lValorMaximo )
 	{
 		p_semObj->iAlta = 0;
 		p_semObj->iCreado = 0;
+		/* Debe fijarse tambien para los semaforos con nombre: SSemInicializar
+		   (WIN) usa lValMax como contador maximo de CreateSemaphore y 0 es
+		   invalido. */
+		p_semObj->lValMax = ( lValorMaximo > 0 ) ? lValorMaximo : 0;
 #	 if ( defined ( POSIX ) )
         if ( ( CadLongitud ( p_cNombre ) > 0 ) && ( CadEmpiezaPor ( p_cNombre,  "/" ) == 0 ) )
         {
 			p_semObj->p_cNombre = CadCrear ( CadLongitud ( p_cNombre ) + 1 );
-			CadCopiarConFormato ( p_semObj->p_cNombre, "/%s", p_cNombre);
+			CadCopiarConFormato ( p_semObj->p_cNombre, "/%s", p_cNombre );
         }
 		else
 		{
@@ -58,12 +62,12 @@ SSemaforo * SSemCrearExt ( const char * p_cNombre, long lValorMaximo )
 #	 if ( defined ( WIN ) )
 				p_semObj->hSemaforo = CreateSemaphore ( NULL, p_semObj->lValMax, p_semObj->lValMax, p_semObj->p_cNombre );
 #	 elif ( defined ( POSIX ) )
-				//  Al ser anónimo, necesitamos reservar memoria para el propio sem_t interno
+				//  Al ser anï¿½nimo, necesitamos reservar memoria para el propio sem_t interno
 				p_semObj->p_semObj = (sem_t *) MemReservar ( sizeof ( sem_t ) );
 				if ( ES_VALIDO ( p_semObj->p_semObj ) )
 				{
-					// Inicializamos el semáforo. Usamos '0' asumiendo que es para hilos mutuos.
-					// Si requieres que sea entre procesos distintos, este parámetro debe ser 1.
+					// Inicializamos el semï¿½foro. Usamos '0' asumiendo que es para hilos mutuos.
+					// Si requieres que sea entre procesos distintos, este parï¿½metro debe ser 1.
 					if ( sem_init ( p_semObj->p_semObj, 0, p_semObj->lValMax ) != 0 )
 					{
 						MemLiberar ( (void **) &(p_semObj->p_semObj) );
@@ -123,7 +127,7 @@ void SSemDestruir ( SSemaforo ** p_p_semObj )
 				sem_close ( p_semObj->p_semObj );
 				p_semObj->p_semObj = NULL;
 			}
-			if ( p_semObj->iCreado == 1 )
+			if ( ( p_semObj->iCreado == 1 ) && ( CadLongitud ( p_semObj->p_cNombre ) > 0 ) )
 			{
 				sem_unlink ( p_semObj->p_cNombre );
 			}
@@ -160,7 +164,7 @@ int SSemEsValido ( SSemaforo * p_semObj )
 #	 if ( defined ( WIN ) )
 		if ( ES_VALIDO ( p_semObj->hSemaforo ) )
 #	 elif ( defined ( POSIX ) )
-		// NOTA: Es una dirección de un espacio reservado del sistema:
+		// NOTA: Es una direcciï¿½n de un espacio reservado del sistema:
 		if ( p_semObj->p_semObj != NULL )
 #	 else
 		if ( p_semObj->iSemaforo >= 0 )

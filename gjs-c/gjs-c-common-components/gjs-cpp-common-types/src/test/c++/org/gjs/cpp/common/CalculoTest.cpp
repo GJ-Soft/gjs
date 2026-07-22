@@ -10,7 +10,7 @@ using namespace org::gjs::cpp::common;
 
 static bool TestGenerarNumeroAleatorio01 ()
 {
-	cout << "Test Comparar 01:" << endl;
+	cout << "Test GenerarNumeroAleatorio 01:" << endl;
 	bool bRes = true;
 	for ( int i = 0; i < 10; i = i + 1 )
 	{
@@ -77,8 +77,9 @@ static bool TestComparar01 ()
 		cout << "Error caso 7: [" << bRet << "]" << endl;
 		bRes = false;
 	}
+	// dVal4 esta dentro de la tolerancia de dVal1: no es mayor (son "iguales").
 	bRet = EsMayor ( dVal1, dVal4 );
-	if ( !bRet )
+	if ( bRet )
 	{
 		cout << "Error caso 8: [" << bRet << "]" << endl;
 		bRes = false;
@@ -102,8 +103,9 @@ static bool TestComparar01 ()
 		cout << "Error caso 11: [" << bRet << "]" << endl;
 		bRes = false;
 	}
+	// dVal4 esta dentro de la tolerancia de dVal1: no es menor (son "iguales").
 	bRet = EsMenor ( dVal1, dVal4 );
-	if ( !bRet )
+	if ( bRet )
 	{
 		cout << "Error caso 12: [" << bRet << "]" << endl;
 		bRes = false;

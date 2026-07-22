@@ -20,6 +20,7 @@ Excepcion::Excepcion( const string & _sModulo, const string & _sRutina, const st
 	sModulo = _sModulo;
 	sRutina = _sRutina;
 	sMensaje = _sMensaje;
+	sWhat = Concatenar( "[", sModulo, "::", sRutina, "] ", sMensaje );
 }
 
 Excepcion::Excepcion ( const string & _sModulo, const string & _sRutina, const string & _sMensaje, const exception & ex ) : runtime_error( _sMensaje.c_str () )
@@ -27,6 +28,7 @@ Excepcion::Excepcion ( const string & _sModulo, const string & _sRutina, const s
 	sModulo = _sModulo;
 	sRutina = _sRutina;
 	sMensaje = Concatenar ( _sMensaje, " [", ex.what(), "]" );
+	sWhat = Concatenar( "[", sModulo, "::", sRutina, "] ", sMensaje );
 }
 
 Excepcion::Excepcion ( const string & _sModulo, const string & _sRutina, const exception & ex ) : runtime_error( ex.what() )
@@ -34,6 +36,7 @@ Excepcion::Excepcion ( const string & _sModulo, const string & _sRutina, const e
 	sModulo = _sModulo;
 	sRutina = _sRutina;
 	sMensaje = string( ex.what() );
+	sWhat = Concatenar( "[", sModulo, "::", sRutina, "] ", sMensaje );
 }
 
 string Excepcion::getModulo () const
@@ -53,12 +56,12 @@ string Excepcion::getMensaje() const
 
 const char * Excepcion::what() const noexcept
 {
-	return ( Concatenar( "[", sModulo, "::", sRutina, "] ", sMensaje ).c_str () );
+	return ( sWhat.c_str () );
 }
 
 string Excepcion::whatExt() const
 {
-	return ( Concatenar( "[", sModulo, "::", sRutina, "] ", sMensaje ) );
+	return ( sWhat );
 }
 
 exception & Excepcion::toException()

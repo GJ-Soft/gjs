@@ -1,24 +1,25 @@
 /***************************************************************************/
 /*                         SistemaProcesos.cpp                             */
 /*-------------------------------------------------------------------------*/
-/* Librería: Sistema                                                       */
-/* Versión:  1.1.0                                                         */
+/* Librerï¿½a: Sistema                                                       */
+/* Versiï¿½n:  1.1.0                                                         */
 /* Fecha:    26/10/2006                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    Ginï¿½s Jimï¿½nez Sï¿½nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Fichero de código fuente que contiene la implementación de las rutinas  */
-/* de carácter general de información acerca de los procesos en ejecución, */
-/* así como algunas rutinas de gestión de los mismos.                      */  
+/* Descripciï¿½n:                                                            */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de las rutinas  */
+/* de carï¿½cter general de informaciï¿½n acerca de los procesos en ejecuciï¿½n, */
+/* asï¿½ como algunas rutinas de gestiï¿½n de los mismos.                      */  
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este módulo está extraído de una librería más completa creada por el    */
+/* Este mï¿½dulo estï¿½ extraï¿½do de una librerï¿½a mï¿½s completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, así como cualquier añadido o modificación realizado.   */
-/* Pueden reportar de los mismos enviando un correo electrónico a la       */
-/* dirección: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, asï¿½ como cualquier aï¿½adido o modificaciï¿½n realizado.   */
+/* Pueden reportar de los mismos enviando un correo electrï¿½nico a la       */
+/* direcciï¿½n: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 #include "CommonSystemConfig.h"
+
 
 #include "SistemaProcesos.h"
 
@@ -41,12 +42,12 @@ namespace org
 			namespace common
 			{
 
-
-
 # if ( ! defined ( WIN ) || ! defined ( _PSAPI_H_ ) )
 string * _g_p_sSisNomProceso = NULL;
 #endif
 
+
+extern void MemLimpiar ( void * p_vBloque, int iNumBytes );
 
 
 #if ( !defined ( WIN ) )
@@ -98,7 +99,7 @@ string SisNombreProceso ()
 # endif
 
 # if ( ( defined ( WIN ) ) && ( defined ( _PSAPI_H_ ) ) )
- 	vector<unsigned char> buffer ( MAXPATHLEN );
+ 	vector<char> buffer ( MAXPATHLEN );
 	hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, GetCurrentProcessId () );
 	if ( hProceso != NULL )
 	{
@@ -112,7 +113,7 @@ string SisNombreProceso ()
 		CloseHandle ( hProceso );
 	}
 # else
-	// PENDIENTE: Mejorar para obtenerlo dinámicamente:
+	// PENDIENTE: Mejorar para obtenerlo dinï¿½micamente:
 	if ( ES_VALIDO ( _g_p_sSisNomProceso ) )
 	{
 		sRes = *_g_p_sSisNomProceso;
@@ -146,9 +147,18 @@ string SisRutaEjecutable ()
 		CloseHandle ( hProceso );
 	}
 # elif ( defined ( GNU ) )
-	sDir = "";
-	sRes = "";
-	if ( ES_VALIDO ( _g_p_sSisNomProceso ) )
+	// En Linux/Cygwin la via fiable es el enlace simbolico /proc/self/exe.
+	{
+		ssize_t iLong = readlink ( "/proc/self/exe", buffer.data (), buffer.size () - 1 );
+		if ( iLong > 0 )
+		{
+			buffer [ (size_t) iLong ] = '\0';
+			sRes = string ( buffer.data () );
+		}
+	}
+	// Reserva: componer la ruta con el nombre del proceso, SOLO si esta definido
+	// ( evita desreferenciar un puntero nulo cuando no se ha llamado a SisInicializar ).
+	if ( sRes.empty () && ES_VALIDO ( _g_p_sSisNomProceso ) )
 	{
 		if ( SisEsRutaValida ( *_g_p_sSisNomProceso ) == 1 )
 		{
@@ -156,20 +166,13 @@ string SisRutaEjecutable ()
 		}
 		else
 		{
-			if ( getcwd ( ( char * ) buffer.data (), ( size_t ) buffer.size () ) != NULL )
+			if ( getcwd ( buffer.data (), buffer.size () ) != NULL )
 			{
 				sDir = string ( buffer.data () );
 			}
+			sRes = SisComponerRuta ( sDir, *_g_p_sSisNomProceso );
 		}
 	}
-	else
-	{
-		if ( getcwd ( ( char * ) buffer.data (), ( size_t ) buffer.size () ) != NULL )
-		{
-			sDir = string ( buffer.data () );
-		}
-	}
-	sRes = SisComponerRuta ( sDir, *_g_p_sSisNomProceso );
 # else
 	if ( getcwd ( (string) buffer.data (), (size_t) buffer.size() () ) != NULL )
 	{
@@ -211,7 +214,7 @@ string SisTituloProceso ()
 	GetStartupInfo ( (LPSTARTUPINFO) &stupinfDatos );
 	if ( ES_VALIDO ( stupinfDatos.lpTitle ) )
 	{
-		sRes = CadDuplicar ( stupinfDatos.lpTitle );
+		sRes = string ( stupinfDatos.lpTitle );
 	}
 # else
 	// PENDIENTE:
@@ -249,7 +252,7 @@ int SisProcesoEsDeGUI ()
 	// PENDIENTE:
 	iRes = 0;
 # endif
-	return ( iRes );
+	return ( bRes );
 }
 
 int SisProcesoEsDeConsola ()
@@ -272,7 +275,7 @@ int SisProcesoEsDeConsola ()
 	// PENDIENTE:
 	iRes = 0;
 # endif
-	return ( iRes );
+	return ( bRes );
 }
 */
 
@@ -350,7 +353,7 @@ long SisCrearSubproceso ( const string & sEjecutable, const string & sParametros
 	STARTUPINFO			stupintDatos;
 	BOOL				bHeredar;
 	DWORD				dwFlags;
-	string			sComando;
+	string				sComando;
 	int					iTam;
 # else
 	pid_t				pidRes;
@@ -363,10 +366,10 @@ long SisCrearSubproceso ( const string & sEjecutable, const string & sParametros
 #endif
 
 # if ( defined ( WIN ) )
-	if ( ES_VALIDO ( sEjecutable ) )
+	if ( ! sEjecutable.empty () )
 	{
 		// Set up the start up info struct.
-		MemLimpiar ( (void *) &stupintDatos, sizeof ( STARTUPINFO ) );
+		MemLimpiar ( (void *) &stupintDatos, (int) sizeof ( STARTUPINFO ) );
 		stupintDatos.cb = sizeof ( STARTUPINFO );
 		dwFlags = NORMAL_PRIORITY_CLASS;
 		if ( iHeredarDescriptores == 1 )
@@ -379,7 +382,7 @@ long SisCrearSubproceso ( const string & sEjecutable, const string & sParametros
 			dwFlags = dwFlags + DETACHED_PROCESS;
 		}
 		iTam = sEjecutable.length();
-		if ( ES_VALIDO ( sParametros ) )
+		if ( ! sParametros.empty () )
 		{
 			iTam = iTam + sParametros.length () + 1;
 		}
@@ -390,7 +393,7 @@ long SisCrearSubproceso ( const string & sEjecutable, const string & sParametros
 			sComando = format ( "{} {}", sComando, sParametros );
 		}
 
-		if ( CreateProcess ( sEjecutable, sComando, NULL, NULL, bHeredar, dwFlags, NULL, NULL, &stupintDatos, &prcinfDatos ) != 0 )
+		if ( CreateProcess ( sEjecutable.c_str(), (LPSTR) sComando.c_str(), NULL, NULL, bHeredar, dwFlags, NULL, NULL, &stupintDatos, &prcinfDatos ) != 0 )
 		{
 			lPID = (long) prcinfDatos.dwProcessId;
 		}
@@ -531,7 +534,7 @@ int SisNumHilos ()
 	return ( iRes );
 }
 
-// PENDIENTE: GetThreadId sólo funciona en VISTA:
+// PENDIENTE: GetThreadId sï¿½lo funciona en VISTA:
 thread_id SisCrearHilo ( PTR_FUNCION_HILO p_funCodigo, void * p_vParam, int iSuspender )
 {
 	thread_id			thHilo;
@@ -853,7 +856,7 @@ int SisNumProcesos ()
 
  	vector<unsigned char> buffer ( SIS_SO_MAX_TAM_BUFFER );
 	p_dwProcesos = (DWORD *) buffer.data();
-	// PENDIENTE: Puede ser que sea necesario más tamaño (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
+	// PENDIENTE: Puede ser que sea necesario mï¿½s tamaï¿½o (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
 	if ( EnumProcesses ( p_dwProcesos, (DWORD) buffer.size(), &dwTamOcupado) != 0 )
 	{
 		iNumProcesos = dwTamOcupado / sizeof ( DWORD );
@@ -903,6 +906,7 @@ list<long> * SisListaProcesos ()
 {
 	list<long> * p_lislPID = NULL;
 # if ( defined ( WIN ) )
+	int						iError;
 #  if ( defined ( _EnumProcesses ) )
 	vector<unsigned char>   buffer = vector<unsigned char> ( SIS_SO_MAX_TAM_BUFFER );
 	DWORD					dwTamOcupado;
@@ -925,17 +929,18 @@ list<long> * SisListaProcesos ()
 # if ( defined ( WIN ) )
 #  if ( defined ( _EnumProcesses ) )
 	p_dwProcesos = (DWORD *) buffer.data();
-	// PENDIENTE: Puede ser que sea necesario más tamaño (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
+	// PENDIENTE: Puede ser que sea necesario mï¿½s tamaï¿½o (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
 	if ( EnumProcesses( p_dwProcesos, (DWORD) buffer.size(), &dwTamOcupado) != 0 )
 	{
 		iNumProcesos = dwTamOcupado / sizeof ( DWORD );
 		iProceso = 0;
+		iError = 0;
 		p_lislPID = new list<long> ();
 		while ( ( iProceso < iNumProcesos ) && ( iError == 0 ) )
 		{
 			if ( p_dwProcesos [ iProceso ] != 0 )
 			{
-				p_lislPID->add ( ( long ) p_dwProcesos [iProceso] );
+				p_lislPID->push_back ( ( long ) p_dwProcesos [iProceso] );
 			}
 			iProceso = iProceso + 1;
 		}
@@ -948,12 +953,13 @@ list<long> * SisListaProcesos ()
 		pe32Datos.dwSize = sizeof ( PROCESSENTRY32 );
 		if ( Process32First ( hSnapshot, &pe32Datos ) != 0 )
 		{
+			iError = 0;
 			iFinal = 0;
 			while ( ( iFinal == 0 ) && ( iError == 0 ) )
 			{
 				if ( Process32Next ( hSnapshot, &pe32Datos ) != 0 )
 				{
-					p_lislPID->add ( ( long ) pe32Datos.th32ProcessID ) );
+					p_lislPID->push_back ( ( long ) pe32Datos.th32ProcessID );
 				}
 				else
 				{
@@ -1111,7 +1117,7 @@ bool SisProgramaEnEjecucion ( const string & sEjecutable )
 				iFinal = 0;
 				while ( ( iFinal == 0 ) && ! bRes )
 				{
-					if ( SCadLiteralEsIgual ( sadNombre, pe32Datos.szExeFile ) == 1 )
+					if ( strcmp ( sEjecutable.c_str(), pe32Datos.szExeFile ) == 0 )
 					{
 						bRes = true;
 					}
@@ -1281,7 +1287,7 @@ unsigned long SisProcesoTiempoCPUModoUsuario ( long lPID )
 		}
 		CloseHandle ( hProceso );
 	}
- else
+# else
 	// PENDIENTE:
 # endif
 	return ( ulRes );

@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                             SistemaSignals.cpp                             */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Sistema                                                         */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Sistema                                                         */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de las rutinas     */
-/* de carácter general para la gestión y el manejo de "signals".              */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de las rutinas     */
+/* de carï¿½cter general para la gestiï¿½n y el manejo de "signals".              */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -111,7 +111,7 @@ int SisSigCodigo ( int iSignal )
 		{
 			iRes = SIS_COD_SIG_DEPURACION;
 		}
-#	  if ( defined ( UNIX ) || defined ( LINUX ) )
+#	  if ( defined ( POSIX ) )
 		else if ( iSignal == SIS_SIG_ERROR_BUS )
 		{
 			iRes = SIS_COD_SIG_ERROR_BUS;
@@ -189,7 +189,7 @@ int SisSigId ( int iCod )
 	{
 		if ( iCod == SIS_COD_SIG_ABORTAR )
 		{
-			iRes = SIS_COD_SIG_ABORTAR;
+			iRes = SIS_SIG_ABORTAR;
 		}
 		else if ( iCod == SIS_COD_SIG_ALARMA )
 		{
@@ -247,7 +247,7 @@ int SisSigId ( int iCod )
 		{
 			iRes = SIS_SIG_DEPURACION;
 		}
-#	  if ( defined ( UNIX ) || defined ( LINUX ) )
+#	  if ( defined ( POSIX ) )
 		else if ( iCod == SIS_COD_SIG_ERROR_BUS )
 		{
 			iRes = SIS_SIG_ERROR_BUS;
@@ -323,7 +323,7 @@ bool SisSigEsProgramable ( int iSignal )
 
 	if ( SisSigEstanPermitidos () )
 	{
-#	  if ( defined ( UNIX ) || defined ( LINUX ) )
+#	  if ( defined ( POSIX ) )
 		if ( ( iSignal != SIS_SIG_FINALIZACION_OBLIGADA ) &&
 			 ( iSignal != SIS_SIG_PARAR ) )
 #	  else
@@ -410,7 +410,7 @@ string SisSigDescripcion ( int iSignal )
 	{
 		return ( string ( SIS_SIG_TXT_DEPURACION ) );
 	}
-#  if ( defined ( UNIX ) || defined ( LINUX ) )
+#  if ( defined ( POSIX ) )
 	else if ( iSignal == SIS_SIG_ERROR_BUS )
 	{
 		return ( string ( SIS_SIG_TXT_ERROR_BUS ) );

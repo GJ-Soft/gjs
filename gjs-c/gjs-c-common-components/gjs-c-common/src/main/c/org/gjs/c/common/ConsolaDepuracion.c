@@ -14,6 +14,7 @@ static int	g_iConsolaDepuracionDisponible = 0;
 static int	g_iConsolaDepuracionAbierta = 0;
 
 
+
 extern int EntEstaEnModoTest ();
 
 

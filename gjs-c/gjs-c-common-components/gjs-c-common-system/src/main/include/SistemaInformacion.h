@@ -57,9 +57,9 @@ void * SisMemAplicDireccionMinima ();
 void * SisMemAplicDireccionMaxima ();
 
 #if ( defined ( WIN ) )
-const char * SisDirectorioSistema ();
+char *  SisDirectorioSistema ();
 #endif
-const char * SisDirectorioTemporal ();
+char * SisDirectorioTemporal ();
 
 void SisInicializarDirectorios ( const char * p_cDirTemporal );
 

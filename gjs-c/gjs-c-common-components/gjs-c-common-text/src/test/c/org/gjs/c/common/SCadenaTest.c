@@ -289,6 +289,68 @@ static int TestSCadCaracter01 ()
 
 
 
+static int TestSCadGenerarConFormato01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCadGenerarConFormato 01:\n" );
+
+	/* Varios argumentos de distinto tipo: si la lista de argumentos se
+	   pierde por el camino, el resultado no coincide con lo esperado. */
+	SCadena * p_cadObj = SCadGenerarConFormato ( "%d-%s-%d", 42, "abc", 7 );
+	if ( ES_VALIDO ( p_cadObj ) )
+	{
+		if ( SCadEsIgualLiteral ( p_cadObj, "42-abc-7" ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba \"42-abc-7\": [%s]\n", SCadValor ( p_cadObj ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo generar la cadena con formato\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCadDestruir ( &p_cadObj );
+
+	/* Un unico argumento tipo cadena. */
+	SCadena * p_cadUno = SCadGenerarConFormato ( "Hola %s", "mundo" );
+	if ( ES_VALIDO ( p_cadUno ) )
+	{
+		if ( SCadEsIgualLiteral ( p_cadUno, "Hola mundo" ) != 1 )
+		{
+			printf( "Error caso 2: se esperaba \"Hola mundo\": [%s]\n", SCadValor ( p_cadUno ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 3: no se pudo generar la cadena con un argumento\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCadDestruir ( &p_cadUno );
+
+	/* Varios enteros consecutivos. */
+	SCadena * p_cadNums = SCadGenerarConFormato ( "%d,%d,%d,%d", 1, 22, 333, 4444 );
+	if ( ES_VALIDO ( p_cadNums ) )
+	{
+		if ( SCadEsIgualLiteral ( p_cadNums, "1,22,333,4444" ) != 1 )
+		{
+			printf( "Error caso 4: se esperaba \"1,22,333,4444\": [%s]\n", SCadValor ( p_cadNums ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 5: no se pudo generar la cadena de enteros\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCadDestruir ( &p_cadNums );
+
+	return ( iRes );
+}
+
+
+
 int TestSCadena ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -299,7 +361,8 @@ int TestSCadena ()
 			( TestSCadComparaciones01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadEmpiezaAcaba01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadTransformar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSCadCaracter01 () == BOOL_VAL_CIERTO ) )
+			( TestSCadCaracter01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCadGenerarConFormato01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

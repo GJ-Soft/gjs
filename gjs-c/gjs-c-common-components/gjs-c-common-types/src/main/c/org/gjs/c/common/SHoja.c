@@ -119,11 +119,11 @@ int SHojInsertar ( SHoja * p_hojObj, const char * p_cClave, int iPosicion )
 				p_hojObj->p_cMinClave = SLczClave ( p_hojObj->p_p_lczContenido[ iRes ] );
 				p_hojObj->p_cMaxClave = p_hojObj->p_cMinClave;
 			}
-			else if ( CadComparar ( p_hojObj->p_cMinClave, p_cClave ) == COMP_MENOR )
+			else if ( CadComparar ( p_hojObj->p_cMinClave, p_cClave ) == COMP_MAYOR )
 			{
 				p_hojObj->p_cMinClave = SLczClave ( p_hojObj->p_p_lczContenido[ iRes ] );
 			}
-			else if ( CadComparar ( p_hojObj->p_cMaxClave, p_cClave ) == COMP_MAYOR )
+			else if ( CadComparar ( p_hojObj->p_cMaxClave, p_cClave ) == COMP_MENOR )
 			{
 				p_hojObj->p_cMaxClave = SLczClave ( p_hojObj->p_p_lczContenido[ iRes ] );
 			}

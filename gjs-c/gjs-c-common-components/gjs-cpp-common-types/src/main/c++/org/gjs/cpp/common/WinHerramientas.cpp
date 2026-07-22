@@ -1,10 +1,11 @@
 
-#if ( defined( _WIN32 ) || defined( _WIN64 ) || defined( _WINRT_DLL ) || defined ( __CYGWIN__ ) )
+#include "WinHerramientas.h"
+
+#if ( defined( WIN ) )
 
 #include <windows.h>
 
 #include "CommonTypesConfig.h"
-#include "WinHerramientas.h"
 
 
 #include <Excepcion.h>
@@ -40,6 +41,7 @@ bool DLLEjecutar ( std::string sRutaDLL, std::string sFuncion )
 			if ( lpfnDllFunc != NULL )
 			{
 				lpfnDllFunc ();
+				bRes = true;
 			}
 			else
 			{

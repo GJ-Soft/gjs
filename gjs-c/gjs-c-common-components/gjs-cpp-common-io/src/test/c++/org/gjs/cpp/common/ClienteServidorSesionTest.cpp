@@ -7,7 +7,7 @@ using namespace std;
 using namespace org::gjs::cpp::common;
 
 
-static const string FICHERO_USUARIO = "../../test-classes/data/usuarios.info";
+static const string FICHERO_USUARIO = "../data/usuarios.info";
 
 
 static bool _bResTestSesionCliente1 = false;
@@ -749,11 +749,11 @@ static void Servidor3()
 	try
 	{
 		servidorTestSesion3 = new ServidorSesionTest3( 44240 );
-		if ( servidorTestSesion->EsValido() )
+		if ( servidorTestSesion3->EsValido() )
 		{
 
 			cout << "{SERVIDOR} Iniciando bucle de espera..." << endl;
-			servidorTestSesion->Iniciar();
+			servidorTestSesion3->Iniciar();
 			_bResTestSesionServidor = true;
 		}
 		else
@@ -967,7 +967,7 @@ static bool TestClienteServidorSesion02 ()
 			cout << "Resultado Servidor=" << ToString( _bResTestSesionServidor ) << endl;
 			cout << "Resultado Cliente=" << ToString( _bResTestSesionCliente1 ) << endl;
 		}
-		delete servidorTestSesion;
+		delete servidorTestSesion2;
 	}
 	catch ( exception & ex )
 	{
@@ -994,7 +994,7 @@ static bool TestClienteServidorSesion03 ()
 	{
 		thread thServidor ( Servidor3 );
 		Esperar( 500 );
-		if ( servidorTestSesion->EsValido() )
+		if ( servidorTestSesion3->EsValido() )
 		{
 			Esperar( 2000 );
 			thread thCliente1 ( Cliente4 );
@@ -1007,7 +1007,7 @@ static bool TestClienteServidorSesion03 ()
 			bRes = false;
 		}
 		cout << "Parando servidorTestSesion..." << endl;
-		servidorTestSesion->Parar();
+		servidorTestSesion3->Parar();
 		thServidor.join();
 		bRes = bRes && _bResTestSesionServidor && _bResTestSesionCliente1 && _bResTestSesionCliente2;
 		if ( !bRes )
@@ -1016,7 +1016,7 @@ static bool TestClienteServidorSesion03 ()
 			cout << "Resultado Cliente1=" << ToString( _bResTestSesionCliente1 ) << endl;
 			cout << "Resultado Cliente2=" << ToString( _bResTestSesionCliente2 ) << endl;
 		}
-		delete servidorTestSesion;
+		delete servidorTestSesion3;
 	}
 	catch ( exception & ex )
 	{

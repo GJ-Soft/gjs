@@ -1,12 +1,12 @@
 /******************************************************************************/
 /*                          AplicacionPortapapeles.h                          */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Aplicacion                                                      */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Aplicacion                                                      */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* Descripciï¿½n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas    */
 /* para manejo del portapapeles de Windows.                                   */
 /*----------------------------------------------------------------------------*/
@@ -37,12 +37,9 @@ namespace org
 #if ( defined ( WIN ) ) 
 
 
-
-
-
 void AplicPplesLimpiar ();
 void AplicPplesCopiar ( const std::string & sTexto );
-std::string * AplicPplesContenido ( int iLimpiar = 1 );
+std::string * AplicPplesContenido ( bool bLimpiar = true );
 
 
 #endif

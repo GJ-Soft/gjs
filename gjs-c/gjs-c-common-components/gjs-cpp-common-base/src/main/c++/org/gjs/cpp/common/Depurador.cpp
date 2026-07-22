@@ -1,5 +1,8 @@
 #include "Depurador.h"
 
+#include "BaseConfig.h"
+#include "InfoMemoria.h"
+
 
 
 using namespace std;
@@ -32,6 +35,45 @@ namespace org
 	void _GesClsAltaInstancia ( const string & sNombre );
 	void _GesClsBajaInstancia ( const string & sNombre );
 
+
+void _GesClsInicializar ()
+{
+	_g_mapInstancias.clear ();
+	_g_iGesClsIniciado = 1;
+}
+
+int _GesClsBuscar ( const string & sNombre )
+{
+	int iRes = 0;
+	map<string, int>::iterator it = _g_mapInstancias.find ( sNombre );
+	if ( it != _g_mapInstancias.end () )
+	{
+		iRes = it->second;
+	}
+	return ( iRes );
+}
+
+void _GesClsAltaInstancia ( const string & sNombre )
+{
+	if ( _g_iGesClsIniciado == 0 )
+	{
+		_GesClsInicializar ();
+	}
+	_g_mapInstancias[ sNombre ] = _g_mapInstancias[ sNombre ] + 1;
+}
+
+void _GesClsBajaInstancia ( const string & sNombre )
+{
+	if ( _g_iGesClsIniciado == 1 )
+	{
+		map<string, int>::iterator it = _g_mapInstancias.find ( sNombre );
+		if ( ( it != _g_mapInstancias.end () ) && ( it->second > 0 ) )
+		{
+			it->second = it->second - 1;
+		}
+	}
+}
+
 #endif
 
 
@@ -53,15 +95,12 @@ extern void _MemObjetoDestruido ( unsigned long ulTam, unsigned int uiObjetos );
 Depurador::Depurador () : Objeto ()
 {
 #  if ( defined ( MODO_DEPURACION ) )
-	int iCar;
-
 	p_vDirObjeto = (void *) this;
-	iTamObjeto = _TAM_CLASE;
+	iTamObjeto = 0;
 	iObjetos = 0;
 	iEliminando = 0;
 	iError = 0;
-	_MemObjetoCreado ( (unsigned long) iTamObjeto, iObjetos );
-	ActualizarObjeto ( ::Objeto::getTipo (), (void *) this, (int) ::Objeto::getTam (); )
+	ActualizarObjeto ( Objeto::getTipo (), (void *) this, (int) Objeto::getTam () );
 #  endif
 }
 
@@ -74,20 +113,21 @@ Depurador::~Depurador ()
 		iEliminando = 1;
 		_MemObjetoDestruido ( (unsigned long) iTamObjeto, iObjetos );
 #	  if ( defined ( MODO_DEPURACION_2 ) )
+		string sNombre = Objeto::getTipo ();
 		if ( iObjetos == 1 )
 		{
-			cout << "{Eliminando objeto de clase %s (Tamaño: %d)}\n", 
-					 p_cNombre, iTamObjeto );
+			cout << "{Eliminando objeto de clase " << sNombre
+				 << " (Tamano: " << iTamObjeto << ")}" << endl;
 		}
 		else
 		{
-			cout << "{Eliminando objeto de clase %s compuesto por %d objetos simples (Tamaño: %d)}\n", 
-						p_cNombre, iObjetos, iTamObjeto );
+			cout << "{Eliminando objeto de clase " << sNombre
+				 << " compuesto por " << iObjetos << " objetos simples (Tamano: " << iTamObjeto << ")}" << endl;
 		}
-		cout << "\t[Objetos totales: %lu, Memoria ocupada: %lu]\n", 
-				 MemNumObjetosActuales (), MemReservadaObjetos ();
+		cout << "\t[Objetos totales: " << MemNumObjetosActuales ()
+			 << ", Memoria ocupada: " << MemReservadaObjetos () << "]" << endl;
 
-		_GesClsBajaInstancia ( p_cNombre );
+		_GesClsBajaInstancia ( sNombre );
 #	  endif
 	}
 #endif
@@ -95,34 +135,34 @@ Depurador::~Depurador ()
 
 #if ( defined ( MODO_DEPURACION ) )
 
-int Depurador::EsTipo ( const string & sNombre )
+bool Depurador::EsTipo ( const string & sNombre )
 {
-	int iRes;
+	bool bRes;
 
 	if ( Objeto::getTipo().compare ( sNombre ) == 0 )
 	{
-		iRes = 1;
+		bRes = true;
 	}
 	else
 	{
-		iRes = 0;
+		bRes = false;
 	}
-	return ( iRes );
+	return ( bRes );
 }
 
-int Depurador::EsTipo ( const char * p_cNombre )
+bool Depurador::EsTipo ( const char * p_cNombre )
 {
-	int iRes;
+	bool bRes;
 
-	if ( strcmp ( Objeto::getTipo().c_str(), p_cNombre ) == 0 )
+	if ( ( p_cNombre != NULL ) && ( strcmp ( Objeto::getTipo().c_str(), p_cNombre ) == 0 ) )
 	{
-		iRes = 1;
+		bRes = true;
 	}
 	else
 	{
-		iRes = 0;
+		bRes = false;
 	}
-	return ( iRes );
+	return ( bRes );
 }
 
 int Depurador::NumObjetos ()
@@ -142,7 +182,7 @@ int Depurador::Error ()
 
 void Depurador::EstablecerError ( int iError )
 {
-	iError = iError;
+	this->iError = iError;
 }
 
 void Depurador::LimpiarError ()
@@ -152,8 +192,6 @@ void Depurador::LimpiarError ()
 
 void Depurador::ActualizarObjeto ( const string & sNombre, void * p_vDirObj, int iTamObj )
 {
-	int iCar;
-	int iTam;
 	if ( ES_VALIDO ( p_vDirObj ) && ( iTamObj > 0 ) )
 	{
 		iObjetos = iObjetos + 1;
@@ -164,7 +202,7 @@ void Depurador::ActualizarObjeto ( const string & sNombre, void * p_vDirObj, int
 #	  if ( defined ( MODO_DEPURACION ) )
 		_MemObjetoCreado ( (unsigned long) iTamObj, iObjetos );
 
-		cout << "{Creando objeto de clase " << sNombre << " (Tamaño: " << iTamObjeto << ")}" << endl; 
+		cout << "{Creando objeto de clase " << sNombre << " (Tamano: " << iTamObjeto << ")}" << endl;
 		if ( iObjetos == 1 ) 
 		{
 #		  if ( defined ( MODO_DEPURACION_2 ) )
@@ -193,27 +231,22 @@ void Depurador::ActualizarObjeto ( const string & sNombre, void * p_vDirObj, int
 void GesClsImprimirEstado ()
 {
 #	if ( defined ( MODO_DEPURACION_2 ) )
-		int iClase;
-		int iTab;
-
 		if ( _g_iGesClsIniciado == 1 )
 		{
 			cout << endl << " * Lista de clases utilizadas: " << endl;
 			cout << " " << string(70, '-') << endl;
-			for ( const pair<const int, string>& par : _g_mapInstancias )
+			for ( const pair<const string, int>& par : _g_mapInstancias )
 			{
 				cout << " Clase: "  <<  left << setw(50) << par.first;
-				cout << "Instancias: "  <<  pair.second() << endl;
+				cout << "Instancias: "  <<  par.second << endl;
 			}
-			cout << endl << "Total clases: "  << endl << _g_mapInstancias.size(); 	
+			cout << endl << "Total clases: "  << _g_mapInstancias.size() << endl;
 			cout << " " << string(70, '-') << endl << endl;
 		}
 		else
 		{
 			cout << "Gestor de clases no inicializado" << endl;
 		}
-
-		char c = getchar ();
 #	endif
 }
 

@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                             FormatoCadena.cpp                              */
 /*----------------------------------------------------------------------------*/
-/* Librería:  GBase                                                           */
-/* Versión:   1.0.0                                                           */
+/* Librerï¿½a:  GBase                                                           */
+/* Versiï¿½n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de una rutina      */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de una rutina      */
 /* general espacial para generar cadenas formateadas a partir de un           */
 /* formato y una serie indeterminada de argumentos.                           */
 /*----------------------------------------------------------------------------*/
@@ -65,12 +65,19 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 	long		lArg;
 	int			iIndLargo;
 	char *	    p_cTmp;
-	char	*	p_cFrmProc;
-	char	*	p_cCod;
-	char	*	p_cBuffer;
+	char *		p_cFrmProc;
+	char *		p_cCod;
+	char *		p_cBuffer;
 	int			iPosPun;
 	int			iLongBuf;
 
+	/* Se inicializan a NULL porque solo se reservan dentro del if; si el guard
+	   falla (p.ej. iMaxTam <= 0 con la salida redirigida) los MemLiberar del
+	   final se ejecutan igualmente y sobre punteros sin inicializar abortarian. */
+	p_cTmp = NULL;
+	p_cFrmProc = NULL;
+	p_cCod = NULL;
+	p_cBuffer = NULL;
 	if ( ES_VALIDO ( p_cCadena ) && ES_VALIDO ( p_cFormato ) && ( iMaxTam > 0 ) )
 	{
 		p_cTmp = CadCrear ( 63 );
@@ -219,7 +226,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 						}
 						break;
 					}
-					case 3: // Casos después de flag *:
+					case 3: // Casos despuï¿½s de flag *:
 					{
 						if ( cCarFrm == '.' )
 						{
@@ -238,7 +245,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
       					}
 						break;
 					}
-					case 4: // Procesando la precisión:
+					case 4: // Procesando la precisiï¿½n:
 					{
 						if ( ( cCarFrm >= '0' ) && ( cCarFrm <= '9' ) )
 						{
@@ -275,7 +282,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 						}
 						break;
 					}
-					case 5: // Procesando la precisión:
+					case 5: // Procesando la precisiï¿½n:
 					{
 						if ( ( cCarFrm >= '0' ) && ( cCarFrm <= '9' ) )
 						{
@@ -567,8 +574,8 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 }
 
 
-/* NOTA: Esta rutina es una estimación. Habría que hacerlo utilizando la codificación interna
-   de representación de tipos */
+/* NOTA: Esta rutina es una estimaciï¿½n. Habrï¿½a que hacerlo utilizando la codificaciï¿½n interna
+   de representaciï¿½n de tipos */
 static int _EsCadenaValida ( char * p_cCad )
 {
 	int		iPos;

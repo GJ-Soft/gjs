@@ -53,7 +53,7 @@ void FecFormDescomponer ( long lFecha, int * p_iA, int * p_iM, int * p_iD )
 {
 	long lAux;
 
-	if ( ( lFecha >= 0 ) && ( lFecha < 10000000 ) && 
+	if ( ( lFecha >= 0 ) && ( lFecha < 100000000 ) && 
 		 ES_VALIDO ( p_iA ) && ES_VALIDO ( p_iM ) && ES_VALIDO ( p_iD ) )
 	{
 		*p_iA = lFecha / 10000;
@@ -321,23 +321,50 @@ int FecSumarDias ( int * p_iA, int * p_iM, int * p_iD, int iD )
 	{
 		if ( FecEsValida ( *p_iA, *p_iM, *p_iD ) == 1 )
 		{
-			while ( iD > 0 ) 
+			if ( iD >= 0 )
 			{
-				iDiasMes = CalendDiasMes ( *p_iA, *p_iM );
-				if ( iDiasMes - *p_iD > iD )
+				while ( iD > 0 ) 
 				{
-					*p_iD = *p_iD + iD;
-					iD = 0;
-				}
-				else
-				{
-					*p_iD = 1;
-					iD = iD - iDiasMes + *p_iD - 1;
-					*p_iM = *p_iM + 1;
-					if ( *p_iM == 13 )
+					iDiasMes = CalendDiasMes ( *p_iA, *p_iM );
+					if ( iDiasMes - *p_iD > iD )
 					{
-						*p_iA = *p_iA + 1;
-						*p_iM = 1;
+						*p_iD = *p_iD + iD;
+						iD = 0;
+					}
+					else
+					{
+						*p_iD = 1;
+						iD = iD - iDiasMes + *p_iD - 1;
+						*p_iM = *p_iM + 1;
+						if ( *p_iM == 13 )
+						{
+							*p_iA = *p_iA + 1;
+							*p_iM = 1;
+						}
+					}
+				}
+			}
+			else
+			{
+				while ( iD < 0 ) 
+				{
+					iDiasMes = CalendDiasMes ( *p_iA, *p_iM );
+					if ( iDiasMes > -iD )
+					{
+						*p_iD = *p_iD + iD;
+						iD = 0;
+					}
+					else
+					{
+						iD = iD + *p_iD;
+						*p_iM = *p_iM - 1;
+						if ( *p_iM == 0 )
+						{
+							*p_iA = *p_iA - 1;
+							*p_iM = 12;
+						}
+						iDiasMes = CalendDiasMes ( *p_iA, *p_iM );
+						*p_iD = iDiasMes;
 					}
 				}
 			}
@@ -368,8 +395,13 @@ int FecSumarMeses ( int * p_iA, int * p_iM, int * p_iD, int iM )
 	{
 		if ( FecEsValida ( *p_iA, *p_iM, *p_iD ) == 1 )
 		{
-			*p_iA = *p_iA + ( *p_iM + iM ) / 12;
-			*p_iM = ( ( *p_iM + iM ) % 12 ) + 1;
+			*p_iA = *p_iA + ( iM / 12 );
+			*p_iM = *p_iM + ( iM % 12 );
+			if ( *p_iM > 12 )
+			{
+				*p_iM = *p_iM - 12;
+				*p_iA = *p_iA + 1;
+			}
 			iRes = 1;
 		}
 		else
@@ -398,6 +430,7 @@ int FecSumarAnos ( int * p_iA, int * p_iM, int * p_iD, int iA )
 		if ( FecEsValida ( *p_iA, *p_iM, *p_iD ) == 1 )
 		{
 			*p_iA = *p_iA + iA;
+			iRes = 1;
 		}
 		else
 		{
@@ -691,7 +724,7 @@ double FecObtenerValor ( int iA, int iM, int iD )
 
 	if ( FecEsValida ( iA, iM, iD ) == 1 )
 	{
-		dRes = iA * 1.0 + FecNumDiasAnualesHasta ( iA, iM, iD ) / CalendDiasAno ( iA );
+		dRes = iA * 1.0 + ( 1.0 * FecNumDiasAnualesHasta ( iA, iM, iD ) ) / ( 1.0 * CalendDiasAno ( iA ) );
 	}
 	else
 	{

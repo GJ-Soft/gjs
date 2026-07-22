@@ -1,0 +1,8 @@
+<extension>
+	<exportedPackages>
+		<exportedPackage>org.gjs.maven.extensions.bootstrap</exportedPackage>
+	</exportedPackages>
+	<exportedArtifacts>
+		<exportedArtifact>org.gjs.maven.extensions:property-bootstrap-maven-extension</exportedArtifact>
+	</exportedArtifacts>
+</extension>

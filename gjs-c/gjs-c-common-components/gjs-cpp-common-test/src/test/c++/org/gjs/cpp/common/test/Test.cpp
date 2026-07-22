@@ -12,6 +12,7 @@ extern bool TestCasoTestAislado ();
 extern bool TestTest ();
 extern bool TestUtilesTest ();
 extern bool TestBancoTests ();
+extern bool TestContextoTest ();
 
 
 
@@ -22,11 +23,12 @@ int main ( int argc, char * argv[] )
 	EstablecerManejadorInterrupcionesDefecto ();
 
 	map<string, FUNCION_BOOL> mapTests;
-	mapTests[ "CasoTest" ] = TestCasoTest;
-	mapTests[ "CasoTestAislado" ] = TestCasoTestAislado;
-	mapTests[ "Test" ] = TestTest;
-	mapTests[ "UtilesTest" ] = TestUtilesTest;
-	mapTests[ "BancoTests" ] = TestBancoTests;
+	mapTests[ "CasoTestTest" ] = TestCasoTest;
+	mapTests[ "CasoTestAisladoTest" ] = TestCasoTestAislado;
+	mapTests[ "TestTest" ] = TestTest;
+	mapTests[ "UtilesTestTest" ] = TestUtilesTest;
+	mapTests[ "BancoTestsTest" ] = TestBancoTests;
+	mapTests[ "ContextoTestTest" ] = TestContextoTest;
 
 	string sTest ( "null" );
 	if ( argc > 1 )
@@ -51,12 +53,14 @@ int main ( int argc, char * argv[] )
 		return( iRes );
 	}
 
-	if ( ! TestUtilesTest () ||
-		! TestCasoTest () ||
-		! TestCasoTestAislado () ||
-		! TestTest () )
+
+	for ( auto it = mapTests.begin(); it != mapTests.end(); ++it )
 	{
-		iRes = -1;
+		FUNCION_BOOL fTest = it->second;
+		if( fTest () != 1 )
+		{
+			iRes = -1;
+		}
 	}
 	fflush ( stdout );
 	return ( iRes );

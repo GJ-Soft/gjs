@@ -287,16 +287,11 @@ int SFicTxtEsEstiloDOS ( SFicTexto * p_ficObj )
 
 int SFicTxtAbrir ( SFicTexto * p_ficObj, int iModo )
 {
-	return ( SFicTxtAbrirExt ( p_ficObj, iModo, 0 ) );
-}
-
-int SFicTxtAbrirExt ( SFicTexto * p_ficObj, int iModo, int iVaciar )
-{
 	int iRes;
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
-		iRes = SFicSecAbrirExt ( p_ficObj->p_ficObj, iModo, iVaciar );
+		iRes = SFicSecAbrir ( p_ficObj->p_ficObj, iModo );
 	}
 	else
 	{

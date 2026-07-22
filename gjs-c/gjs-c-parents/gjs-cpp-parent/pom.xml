@@ -39,7 +39,7 @@
 		<gjs.nar.linker>g++</gjs.nar.linker>		
 		<gjs.nar.compiler.language>c++</gjs.nar.compiler.language>
 		<gjs.nar.language.version>20</gjs.nar.language.version>
-		<gjs.nar.language.standard>c++${gjs.nar.language.version}</gjs.nar.language.standard>
+		<gjs.nar.language.standard>gnu++${gjs.nar.language.version}</gjs.nar.language.standard>
 		<gjs.nar.language.aol>gpp</gjs.nar.language.aol>
 		
 		<!-- Dependency versions -->
@@ -47,6 +47,7 @@
 		<gjs-c-common-base.version>1.0.0-RC.1</gjs-c-common-base.version>
 		<gjs-cpp-common-base.version>1.0.0-RC.1</gjs-cpp-common-base.version>
 		<gjs-cpp-common-types.version>1.0.0-RC.1</gjs-cpp-common-types.version>
+		<gjs-cpp-common-calculation.version>1.0.0-RC.1</gjs-cpp-common-calculation.version>
 		<gjs-cpp-common-time.version>1.0.0-RC.1</gjs-cpp-common-time.version>
 		<gjs-cpp-common-support.version>1.0.0-RC.1</gjs-cpp-common-support.version>
 		<gjs-cpp-common-io.version>1.0.0-RC.1</gjs-cpp-common-io.version>
@@ -76,6 +77,12 @@
 				<groupId>org.gjs.c.common</groupId>
 				<artifactId>gjs-cpp-common-types</artifactId>
 				<version>${gjs-cpp-common-types.version}</version>
+				<type>nar</type>
+			</dependency>
+			<dependency>
+				<groupId>org.gjs.c.common</groupId>
+				<artifactId>gjs-cpp-common-calculation</artifactId>
+				<version>${gjs-cpp-common-calculation.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>

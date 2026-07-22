@@ -26,7 +26,7 @@
 #define _ORG_GJS_C_CC_CPP_MEMORIA_H
 
 
-
+#include <BaseConfig.h>
 
 #if ( defined ( VC ) )
 
@@ -76,6 +76,27 @@
 
 
 #define LIBERAR( ptr ) 				if( ptr != NULL ) { delete ptr; ptr = NULL; }
+
+
+
+namespace org
+{
+	namespace gjs
+	{
+		namespace cpp
+		{
+            namespace common
+            {
+
+// Para el API de Windows necesitamos manejar estructuras de C	
+void * MemReservar ( int iNumBytes );
+int MemLiberar ( void ** p_p_vBloque );
+void MemLimpiar ( void * p_vBloque, int iNumBytes );
+
+            }
+		}
+	}
+}
 
 
 #endif

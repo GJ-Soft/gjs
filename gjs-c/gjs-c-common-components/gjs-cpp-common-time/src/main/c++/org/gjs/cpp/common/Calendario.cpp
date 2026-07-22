@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                               Calendario.cpp                               */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Tiempo                                                          */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Tiempo                                                          */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de las rutinas     */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de las rutinas     */
 /* de consulta general del calendario.                                     *  */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -695,12 +695,11 @@ int CalendSegundosIntercalaresAcumulados ( int iA, int iM, int iD )
 		iRes = 0;
 		iFecha = 0;
 		lFechaCmp = iA * 10000 + iM * 100 + iD;
-		while ( ( iFecha < g_iNumSegundosIntercalares ) && ( lFechaCmp <= g_p_lSegundosIntercalares [ iFecha ] ) )
+		// El array esta ordenado ascendentemente: se cuentan los segundos
+		// intercalares cuya fecha es <= a la consultada.
+		while ( ( iFecha < g_iNumSegundosIntercalares ) && ( lFechaCmp >= g_p_lSegundosIntercalares [ iFecha ] ) )
 		{
-			if ( lFechaCmp > g_p_lSegundosIntercalares [ iFecha ] )
-			{
-				iRes = iRes + 1;
-			}
+			iRes = iRes + 1;
 			iFecha = iFecha + 1;
 		}
 	}
@@ -720,7 +719,7 @@ int CalendSistemaHorario ( int iA, int iM, int iD )
 	{
 		lFecha = iA * 10000 + iM * 100 + iD;
 		// El cambio a UTC+1 se realiza a las 23:00 pasando a ser el
-		// día siguiente:
+		// dï¿½a siguiente:
 		if ( lFecha > SisHorFechaInicioUTC () )
 		{
 			iRes = SIS_HOR_UTC;
@@ -772,13 +771,13 @@ bool CalendEsDiaCambioASistemaHorarioGMT( int iA, int iM, int iD )
 
 
 /*
-Mal de muchos... No somos los únicos, alrededor de 80 países en el planeta se someten al mismo criterio. 
-De partida, toda la Unión Europea suscribió un acuerdo que obliga a los países miembros a incorporarla. 
-En el Estado español se realizó el cambio de hora por primera vez en 1918, como medida para ahorrar carbón, 
-y se mantuvo una frecuencia irregular hasta que se abandonó esta práctica entre los años 1950 y 1973.
- Se recuperó la costumbre al año siguiente, 1974, junto al resto de países europeos, y desde 1981 la Unión Europea,
- en su afán por uniformizar las costumbres de los países miembros, ha legislado sobre el cambio horario y regulado 
- mediante ocho directivas distintas que se dictaban para uno o varios años.( http://europa.eu.int/eur-lex/es/oj/ ) 
+Mal de muchos... No somos los ï¿½nicos, alrededor de 80 paï¿½ses en el planeta se someten al mismo criterio. 
+De partida, toda la Uniï¿½n Europea suscribiï¿½ un acuerdo que obliga a los paï¿½ses miembros a incorporarla. 
+En el Estado espaï¿½ol se realizï¿½ el cambio de hora por primera vez en 1918, como medida para ahorrar carbï¿½n, 
+y se mantuvo una frecuencia irregular hasta que se abandonï¿½ esta prï¿½ctica entre los aï¿½os 1950 y 1973.
+ Se recuperï¿½ la costumbre al aï¿½o siguiente, 1974, junto al resto de paï¿½ses europeos, y desde 1981 la Uniï¿½n Europea,
+ en su afï¿½n por uniformizar las costumbres de los paï¿½ses miembros, ha legislado sobre el cambio horario y regulado 
+ mediante ocho directivas distintas que se dictaban para uno o varios aï¿½os.( http://europa.eu.int/eur-lex/es/oj/ ) 
 
 */
 

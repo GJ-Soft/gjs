@@ -36,7 +36,7 @@
 #define LOG_TXT_CONSULTA_TABLAS_SQL			"Tablas"
 #define LOG_TXT_CONSULTA_CONDIC_SQL			"Condiciones"
 
-
+#define LOG_TXT_NOMBRE_DEFECTO				"aplicacion"
 
 
 

@@ -13,6 +13,8 @@
 #include <SRuta.h>
 
 
+// TODO: usar el Id como indicador de actual es muy ineficiente, hay que guardar la posicion también o
+// trabajar sólo con posiciones
 
 
 typedef struct

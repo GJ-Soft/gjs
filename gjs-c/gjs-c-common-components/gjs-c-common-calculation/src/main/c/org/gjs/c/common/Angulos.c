@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                Angulos.cpp                                 */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Calculo                                                         */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Calculo                                                         */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de cabecera que contiene la implementación de algunas rutinas      */
-/* que implementan algunas funciones sencillas de manejo de ángulos.          */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cabecera que contiene la implementaciï¿½n de algunas rutinas      */
+/* que implementan algunas funciones sencillas de manejo de ï¿½ngulos.          */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -122,12 +122,18 @@ int AngNumeroVueltas  ( double dAngulo )
 
 int AngCuadrante  ( double dAngulo )
 {
-	return ( ( ( ConvRealDobleAEntero ( dAngulo / 180.0, 1 ) + 1 ) % 4 ) + 1 );
+	double dNorm;
+
+	dNorm = AngNormalizar ( dAngulo, 0 );
+	return ( ( ConvRealDobleAEntero ( dNorm / 90.0, 1 ) % 4 ) + 1 );
 }
 
 int AngSemiplanoX  ( double dAngulo )
 {
-	return ( ( ( ConvRealDobleAEntero ( dAngulo / 180.0, 1 ) + 1 ) % 2 ) + 1 );
+	double dNorm;
+
+	dNorm = AngNormalizar ( dAngulo, 0 );
+	return ( ( ConvRealDobleAEntero ( dNorm / 180.0, 1 ) % 2 ) + 1 );
 }
 
 int AngSemiplanoY  ( double dAngulo )

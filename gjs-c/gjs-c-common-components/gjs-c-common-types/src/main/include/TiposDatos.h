@@ -23,6 +23,8 @@
 
 
 
+#include <TiposAccion.h>
+
 
 #include <SIdAdap.h>
 #include <SGeneradorIdAdap.h>

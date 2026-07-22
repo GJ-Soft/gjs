@@ -4,7 +4,16 @@
 
 using namespace std;
 
-//extern bool TestToString ();
+extern bool TestCalendario ();
+extern bool TestFechas ();
+extern bool TestHoras ();
+extern bool TestSistemasHorarios ();
+extern bool TestTiempoNumerico ();
+extern bool TestTiempoSistema ();
+extern bool TestFecha ();
+extern bool TestHora ();
+extern bool TestFechaHora ();
+extern bool TestCronometro ();
 
 int main ( int argc, char * argv[] )
 {
@@ -12,7 +21,16 @@ int main ( int argc, char * argv[] )
 	int iRes = 0;
 
 	map<string, FUNCION_BOOL> mapTests;
-	//mapTests[ "ToString" ] = TestToString;
+	mapTests[ "CalendarioTest" ] = TestCalendario;
+	mapTests[ "FechasTest" ] = TestFechas;
+	mapTests[ "HorasTest" ] = TestHoras;
+	mapTests[ "SistemasHorariosTest" ] = TestSistemasHorarios;
+	mapTests[ "TiempoNumericoTest" ] = TestTiempoNumerico;
+	mapTests[ "TiempoSistemaTest" ] = TestTiempoSistema;
+	mapTests[ "FechaTest" ] = TestFecha;
+	mapTests[ "HoraTest" ] = TestHora;
+	mapTests[ "FechaHoraTest" ] = TestFechaHora;
+	mapTests[ "CronometroTest" ] = TestCronometro;
 
 
 	string sTest ( "null" );
@@ -38,9 +56,14 @@ int main ( int argc, char * argv[] )
 		return( iRes );
 	}
 
-	if ( false ) //! TestToStrin() )
+
+	for ( auto it = mapTests.begin(); it != mapTests.end(); ++it )
 	{
-		iRes = -1;
+		FUNCION_BOOL fTest = it->second;
+		if( fTest () != 1 )
+		{
+			iRes = -1;
+		}
 	}
 	fflush ( stdout );
 	return ( iRes );

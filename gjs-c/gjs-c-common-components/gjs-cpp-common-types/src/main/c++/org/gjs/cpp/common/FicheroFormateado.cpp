@@ -101,17 +101,16 @@ void FicheroFormateado::Vaciar ()
 bool FicheroFormateado::Cargar( const string & sRuta )
 {
 	bool bRes = false;
-	ifstream * fichero = NULL;;
+	ifstream fichero( sRuta, ios::in | ios::binary );
 	try
 	{
-		fichero = new ifstream( sRuta, ios::in | ios::binary );
-		if( fichero != NULL )
+		if( fichero.is_open() )
 		{
-			fichero->clear();
+			fichero.clear();
 			sFichero = sRuta;
 			bRes = true;
 			string sLinea;
-			while ( getline( *fichero, sLinea ) )
+			while ( getline( fichero, sLinea ) )
 			{
 				while ( !sLinea.empty() && ( ( sLinea[ sLinea.size() - 1 ] == '\n' ) || ( sLinea[ sLinea.size() - 1 ] == '\r' ) ) )
 				{
@@ -128,12 +127,15 @@ bool FicheroFormateado::Cargar( const string & sRuta )
 	}
 	catch( exception & ex )
 	{
+		if( fichero.is_open() )
+		{
+			fichero.close();
+		}
 		throw Excepcion( "FicheroFormateado", "Cargar", Concatenar( "Error cargando el fichero [", sRuta, "]" ), ex );
 	}
-	if( fichero != NULL )
-	//if ( fichero.is_open() )
+	if( fichero.is_open() )
 	{
-		fichero->close();
+		fichero.close();
 	}
 	return( bRes );
 }

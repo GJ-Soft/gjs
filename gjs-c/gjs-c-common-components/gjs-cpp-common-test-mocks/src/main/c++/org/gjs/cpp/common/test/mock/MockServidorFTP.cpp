@@ -1,6 +1,6 @@
+#include "CppMockConfig.h"
 #include "MockServidorFTP.h"
 
-#include "CppMockConfig.h"
 #include "ContextoTest.h"
 
 
@@ -25,8 +25,11 @@ namespace org
                     {
 
 MockServidorFTP::MockServidorFTP( int iPuerto, int iPuertoDatos, const string & sSubdirectorioRaiz, const string & sFicheroUsuarios ) :
-			ServidorFTP( iPuerto, iPuertoDatos, ResolverDirectorioRelativo( DirectorioTestRecursos(), sSubdirectorioRaiz ),
-							ResolverDirectorioRelativo( DirectorioTestRecursos(), Concatenar( "data/", sFicheroUsuarios ) ) )
+			/* Las partes relativas se prefijan con "./" porque ResolverDirectorioRelativo
+			   solo compone la ruta cuando empieza por "." o ".."; sin el prefijo devolveria
+			   el directorio de recursos sin anadir el subdirectorio ni el fichero. */
+			ServidorFTP( iPuerto, iPuertoDatos, ResolverDirectorioRelativo( DirectorioTestRecursos(), Concatenar( "./", sSubdirectorioRaiz ) ),
+							ResolverDirectorioRelativo( DirectorioTestRecursos(), Concatenar( "./data/", sFicheroUsuarios ) ) )
 {
 }
 

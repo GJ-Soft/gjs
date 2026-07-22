@@ -52,4 +52,35 @@
 		</dependency>
     </dependencies>
 
+	<profiles>
+		<profile>
+			<id>runtime-posix</id>
+			<activation>
+                <property>
+					<name>environment.style</name>
+					<value>posix</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.maven-nar</groupId>
+						<artifactId>nar-maven-plugin</artifactId>
+						<configuration>
+							<linker>
+								<libs combine.children="append">
+									<lib>
+										<name>ncurses</name>
+										<type>shared</type>
+										<directory>${cpp.dir.lib.system}</directory>
+									</lib>
+								</libs>					
+							</linker>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>

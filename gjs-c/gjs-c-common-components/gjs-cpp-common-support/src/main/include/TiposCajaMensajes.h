@@ -1,13 +1,13 @@
 /***************************************************************************/
 /*                         TiposCajaMensajes.h                             */
 /*-------------------------------------------------------------------------*/
-/* Librería: CajaMensajes                                                  */
-/* Versión:  2.0.0                                                         */
+/* Librerï¿½a: CajaMensajes                                                  */
+/* Versiï¿½n:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    Ginï¿½s Jimï¿½nez Sï¿½nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Fichero de cabecera que contiene la definición de los diferentes tipos  */
+/* Descripciï¿½n:                                                            */
+/* Fichero de cabecera que contiene la definiciï¿½n de los diferentes tipos  */
 /* de caja de mensajes del sistema.                                        */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
@@ -49,7 +49,41 @@ namespace org
 
 
 
+// Tipos de caja de mensajes ( enum class por seguridad de tipos; los valores
+// coinciden con los TIP_CAJ_MSJ_* de arriba, que se conservan por compatibilidad ).
+enum class TipoCajaMensajes
+{
+	Informacion     = TIP_CAJ_MSJ_INFORMACION,
+	Pregunta        = TIP_CAJ_MSJ_PREGUNTA,
+	PreguntaOkCan   = TIP_CAJ_MSJ_PREGUNTA_OKCAN,
+	PreguntaReinCan = TIP_CAJ_MSJ_PREGUNTA_REINCAN,
+	PreguntaSiNoCan = TIP_CAJ_MSJ_PREGUNTA_SINOCAN,
+	Aviso           = TIP_CAJ_MSJ_AVISO,
+	AvisoOkCan      = TIP_CAJ_MSJ_AVISO_OKCAN,
+	AvisoReinCan    = TIP_CAJ_MSJ_AVISO_REINCAN,
+	AvisoAbrReinIgn = TIP_CAJ_MSJ_AVISO_ABRREINIGN,
+	Error           = TIP_CAJ_MSJ_ERROR,
+	ErrorOkCan      = TIP_CAJ_MSJ_ERROR_OKCAN,
+	ErrorReinCan    = TIP_CAJ_MSJ_ERROR_REINCAN,
+	ErrorAbrReinIgn = TIP_CAJ_MSJ_ERROR_ABRREINIGN
+};
+
+// Respuesta portable ( en WIN se deriva del boton pulsado; en consola POSIX,
+// que es bloqueante hasta <retorno>, siempre es Aceptar ).
+enum class RespuestaCajaMensajes
+{
+	Ninguna    = 0,   // no mostrada / tipo invalido
+	Aceptar,          // OK / Si
+	Cancelar,
+	Reintentar,
+	No,
+	Abortar,
+	Ignorar
+};
+
+
 bool TipCajMsjEsValido ( int iTipo );
+bool TipCajMsjEsValido ( TipoCajaMensajes tipo );
 
 
  			}

@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                           CVariablesEntorno.cpp                            */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Sistema                                                         */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Sistema                                                         */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de la clase de     */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de la clase de     */
 /* datos CVariablesEntorno.                                                   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -68,13 +68,25 @@ bool CVariablesEntorno::LimpiarValor ( const string & sVariable )
 bool CVariablesEntorno::EstValor ( const string & sVariable, const string & sValor )
 {
 	bool bRes = false;
-	//string sComando = format ( "{}={}", sVariable, sValor );
-	// TODO
-	//if ( putenv ( sComando.c_str () ) == 0 )
-	//if ( setenv ( sVariable.c_str(), sValor.c_str(), 1 ) == 0 )
-	if ( false )
+
+	if ( ! sVariable.empty () )
 	{
-		bRes = true;
+		// putenv toma posesion de la cadena ( pasa a formar parte del entorno ):
+		// se duplica y, si tiene exito, NO se libera -- liberarla seria comportamiento
+		// indefinido en POSIX. En caso de fallo si se libera.
+		string sAsignacion = sVariable + "=" + sValor;
+		char * p_cBuffer = strdup ( sAsignacion.c_str () );
+		if ( ES_VALIDO ( p_cBuffer ) )
+		{
+			if ( putenv ( p_cBuffer ) == 0 )
+			{
+				bRes = true;
+			}
+			else
+			{
+				free ( p_cBuffer );
+			}
+		}
 	}
 	return ( bRes );
 }

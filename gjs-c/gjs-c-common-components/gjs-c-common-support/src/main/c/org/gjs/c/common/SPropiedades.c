@@ -335,7 +335,7 @@ int SPropGuardar ( SPropiedades * p_propObj, const char * p_cRuta )
 						iRes = 0;
 					}
 				}
-				SFicTxtCerrar ( p_ficProp );
+				iRes = SFicTxtCerrar ( p_ficProp );
 			}
 			else
 			{

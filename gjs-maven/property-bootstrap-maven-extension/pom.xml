@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+     <parent>
+		<groupId>org.gjs.java.maven</groupId>
+		<artifactId>gjs-java-maven-extension-parent</artifactId>
+		<version>1.0.0-RC.1</version>
+        <relativePath />
+    </parent>
+
+	<groupId>org.gjs.maven.extensions</groupId>
+	<artifactId>property-bootstrap-maven-extension</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Property Bootstrap Maven Extension</name>
+    <description>Maven core extension for early property resolution
+  --------------------------------------------------------
+  Calcula propiedades en afterSessionStart (antes de leer los POMs del
+  reactor y activar sus perfiles) y las fija como user properties, para
+  que la activacion nativa por &lt;property&gt; las vea en la unica pasada
+  del model building. Evita duplicar condiciones de &lt;activation&gt; en
+  varios perfiles: la propiedad se calcula una sola vez.
+
+  Debe declararse como core extension en .mvn/extensions.xml
+  (NO en &lt;build&gt;&lt;extensions&gt;).
+
+  Pom extension definition:
+
+		groupId      : org.gjs.maven.extensions
+		artifactId   : property-bootstrap-maven-extension
+		version      : 1.0.0-RC.1
+
+	</description>
+ 
+ </project>

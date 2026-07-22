@@ -94,11 +94,11 @@ private:
 static ServidorTest * servidor = NULL;
 
 
-static void Servidor1()
+static void Servidor1( int iPuerto )
 {
 	try
 	{
-		servidor = new ServidorTest( 43234 );
+		servidor = new ServidorTest( iPuerto );
 		servidor->Iniciar();
 		_bResServidor = true;
 	}
@@ -143,7 +143,7 @@ static bool TestClienteServidor01 ()
 	bool bRes = true;
 	try
 	{
-		thread thServidor ( Servidor1 );
+		thread thServidor ( Servidor1, 43234 );
 		Esperar( 2000 );
 		thread thCliente1 ( Cliente1 );
 		thCliente1.join();
@@ -179,7 +179,7 @@ static bool TestClienteServidor02 ()
 	{
 		Esperar( 1000 );
 		cout << "Ejecutando servidor..." << endl;
-		thread thServidor ( Servidor1 );
+		thread thServidor ( Servidor1, 43334 );
 		Esperar( 2000 );
 		cout << "Ejecutando cliente..." << endl;
 		ClienteTest * cliente = NULL;

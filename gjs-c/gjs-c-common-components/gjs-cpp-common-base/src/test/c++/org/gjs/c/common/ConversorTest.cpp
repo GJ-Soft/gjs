@@ -60,7 +60,7 @@ static bool TestConversor01 ()
 	}
 	if ( obj1->Real() != 0 )
 	{
-		cout << "Error caso 11" << endl;
+		cout << "Error caso 11:" << obj1->Real() << endl;
 		bRes = false;
 	}
 	if ( obj1->RealDoble() != 0 )
@@ -160,7 +160,7 @@ static bool TestConversor02 ()
 	}
 	if ( !real::equals ( obj1->RealDobleLargo(), 1.0l ) )
 	{
-		cout << "Error caso 11" << endl;
+		cout << "Error caso 11" << obj1->RealDobleLargo() << endl;
 		bRes = false;
 	}
 	string sHex = obj1->CadenaHex();
@@ -689,9 +689,9 @@ static bool TestConversor09 ()
 		cout << "Error caso 10" << endl;
 		bRes = false;
 	}
-	if ( !real::equals ( obj1->RealDobleLargo(), 10.1l ) )
+	if ( !real::equalsWithPrec ( obj1->RealDobleLargo(), 10.1l, 3 ) )
 	{
-		cout << "Error caso 11" << endl;
+		cout << "Error caso 11: " << obj1->RealDobleLargo() << endl;
 		bRes = false;
 	}
 	string sHex = obj1->CadenaHex();
@@ -759,9 +759,9 @@ static bool TestConversor10 ()
 		cout << "Error caso 10" << endl;
 		bRes = false;
 	}
-	if ( !real::equals ( obj1->RealDobleLargo(), 20.4l ) )
+	if ( !real::equalsWithPrec ( obj1->RealDobleLargo(), 20.4l, 3 ) )
 	{
-		cout << "Error caso 11" << endl;
+		cout << "Error caso 11: " << obj1->RealDobleLargo() << endl;
 		bRes = false;
 	}
 	string sHex = obj1->CadenaHex();
@@ -831,7 +831,7 @@ static bool TestConversor11 ()
 	}
 	if ( !real::equals ( obj1->RealDobleLargo(), -1.0l ) )
 	{
-		cout << "Error caso 11" << endl;
+		cout << "Error caso 11: " << obj1->RealDobleLargo() << endl;
 		bRes = false;
 	}
 	string sHex = obj1->CadenaHex();

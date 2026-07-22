@@ -178,6 +178,26 @@ static int TestCadComparar01 ()
 		printf( "Error caso 6: \"ho\" y \"xy\" no deberian coincidir\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
+	if ( CadCompararSinDistinguirTipoLetra ( "Hola", "hola mundo" ) != COMP_MENOR )
+	{
+		printf( "Error caso 7: \"Hola\" deberia ser menor que \"hola mundo\"\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( CadCompararSinDistinguirTipoLetra ( "HoLA Mundo", "hola " ) != COMP_MAYOR )
+	{
+		printf( "Error caso 8: \"HoLA Mundo\" deberia ser mayor que \"hola \"\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( CadCompararSinDistinguirTipoLetra ( "Holas", "h0las" ) != COMP_MAYOR )
+	{
+		printf( "Error caso 9: \"Holas\" deberia ser mayor que \"h0las\"\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( CadCompararSinDistinguirTipoLetra ( "h0las", "Holas" ) != COMP_MENOR )
+	{
+		printf( "Error caso 10: \"h0las\" deberia ser menor que \"Holas\"\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
 	return ( iRes );
 }
 

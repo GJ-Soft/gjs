@@ -44,7 +44,6 @@ int SFicSecBufEstablecerRutaExt ( SFicSecuencialBuffer * p_ficObj, const char * 
 unsigned long SFicSecBufTamBuffer ( SFicSecuencialBuffer * p_ficObj ); 
 
 int SFicSecBufAbrir ( SFicSecuencialBuffer * p_ficObj, int iModo );
-int SFicSecBufAbrirExt ( SFicSecuencialBuffer * p_ficObj, int iModo, int iVaciar );
 int SFicSecBufCerrar ( SFicSecuencialBuffer * p_ficObj );
 
 int SFicSecBufEstaAbierto ( SFicSecuencialBuffer * p_ficObj );

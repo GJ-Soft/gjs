@@ -105,6 +105,9 @@ SSistema * SSisCrear ()
 	p_sisObj = (SSistema *) MemReservar ( sizeof ( SSistema ) );
 	if ( ES_VALIDO ( p_sisObj ) )
 	{
+		p_sisObj->p_cadDirSistema = NULL;
+		p_sisObj->p_cadDirFuentes = NULL;
+		p_sisObj->p_cadDirTemporal = NULL;
 		SSisInicializar ( p_sisObj );
 	}
 	return ( p_sisObj );
@@ -163,7 +166,7 @@ int SSisEsDos ( SSistema * p_sisObj )
 
 	if ( ES_VALIDO ( p_sisObj ) )
 	{
-		if ( p_sisObj->iSistema == TIP_SIS_DOS )
+		if ( p_sisObj->iTipo == TIP_SIS_DOS )
 		{
 			iRes = 1;
 		}
@@ -185,7 +188,7 @@ int SSisEsWindows ( SSistema * p_sisObj )
 
 	if ( ES_VALIDO ( p_sisObj ) )
 	{
-		if ( p_sisObj->iSistema == TIP_SIS_WINDOWS )
+		if ( p_sisObj->iTipo == TIP_SIS_WINDOWS )
 		{
 			iRes = 1;
 		}
@@ -207,7 +210,7 @@ int SSisEsPosix ( SSistema * p_sisObj )
 
 	if ( ES_VALIDO ( p_sisObj ) )
 	{
-		if ( p_sisObj->iSistema == TIP_SIS_POSIX )
+		if ( p_sisObj->iTipo == TIP_SIS_POSIX )
 		{
 			iRes = 1;
 		}
@@ -229,7 +232,7 @@ int SSisEsMackintosh ( SSistema * p_sisObj )
 
 	if ( ES_VALIDO ( p_sisObj ) )
 	{
-		if ( p_sisObj->iSistema == TIP_SIS_MACKINTOSH )
+		if ( p_sisObj->iTipo == TIP_SIS_MACKINTOSH )
 		{
 			iRes = 1;
 		}
@@ -1221,10 +1224,6 @@ static void SSisInicializar ( SSistema * p_sisObj )
 
 # if ( defined ( WIN ) )
 	TCHAR  p_tcBuffer [ SIS_MAX_TAM_PATH + 1 ];
-
-	p_sisObj->p_cadDirSistema = NULL;
-	p_sisObj->p_cadDirFuentes = NULL;
-	p_sisObj->p_cadDirTemporal = NULL;
 
 	if ( GetSystemDirectory ( p_tcBuffer, SIS_MAX_TAM_PATH + 1 ) > 0 )
 	{

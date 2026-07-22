@@ -1,22 +1,69 @@
 #include "Base.h"
 
-// TODO
 
-#define NUM_TESTS        1
+#define NUM_TESTS        17
 
-extern int TestSId ();
+extern int TestFechas ();
+extern int TestHoras ();
+extern int TestCalendario ();
+extern int TestSistemasHorarios ();
+extern int TestTiposPeriodicidad ();
+extern int TestHusosHorarios ();
+extern int TestZonasHorarias ();
+extern int TestUTC ();
+extern int TestTiempoNumerico ();
+extern int TestTiempoSistema ();
+extern int TestSFecha ();
+extern int TestSHora ();
+extern int TestSFechaHora ();
+extern int TestSCronometro ();
+extern int TestSReloj ();
+extern int TestSPeriodo ();
+extern int TestDeteccion ();
 
 char ** testArrayInit ()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *));
-    p_p_cTests[ 0 ] = CadDuplicar ( "SId" );
+    p_p_cTests[ 0 ] = CadDuplicar ( "FechasTest" );
+    p_p_cTests[ 1 ] = CadDuplicar ( "HorasTest" );
+    p_p_cTests[ 2 ] = CadDuplicar ( "CalendarioTest" );
+    p_p_cTests[ 3 ] = CadDuplicar ( "SistemasHorariosTest" );
+    p_p_cTests[ 4 ] = CadDuplicar ( "TiposPeriodicidadTest" );
+    p_p_cTests[ 5 ] = CadDuplicar ( "HusosHorariosTest" );
+    p_p_cTests[ 6 ] = CadDuplicar ( "ZonasHorariasTest" );
+    p_p_cTests[ 7 ] = CadDuplicar ( "UTCTest" );
+    p_p_cTests[ 8 ] = CadDuplicar ( "TiempoNumericoTest" );
+    p_p_cTests[ 9 ] = CadDuplicar ( "TiempoSistemaTest" );
+    p_p_cTests[ 10 ] = CadDuplicar ( "SFechaTest" );
+    p_p_cTests[ 11 ] = CadDuplicar ( "SHoraTest" );
+    p_p_cTests[ 12 ] = CadDuplicar ( "SFechaHoraTest" );
+    p_p_cTests[ 13 ] = CadDuplicar ( "SCronometroTest" );
+    p_p_cTests[ 14 ] = CadDuplicar ( "SRelojTest" );
+    p_p_cTests[ 15 ] = CadDuplicar ( "SPeriodoTest" );
+    p_p_cTests[ 16 ] = CadDuplicar ( "DeteccionTest" );
     return p_p_cTests;
 }
 
 PFUNINTV * functionArrayInit ()
 {
     PFUNINTV* p_fTests = (PFUNINTV *) MemReservar ( NUM_TESTS * sizeof( PFUNINTV ));
-    p_fTests[ 0 ] = TestSId;
+    p_fTests[ 0 ] = TestFechas;
+    p_fTests[ 1 ] = TestHoras;
+    p_fTests[ 2 ] = TestCalendario;
+    p_fTests[ 3 ] = TestSistemasHorarios;
+    p_fTests[ 4 ] = TestTiposPeriodicidad;
+    p_fTests[ 5 ] = TestHusosHorarios;
+    p_fTests[ 6 ] = TestZonasHorarias;
+    p_fTests[ 7 ] = TestUTC;
+    p_fTests[ 8 ] = TestTiempoNumerico;
+    p_fTests[ 9 ] = TestTiempoSistema;
+    p_fTests[ 10 ] = TestSFecha;
+    p_fTests[ 11 ] = TestSHora;
+    p_fTests[ 12 ] = TestSFechaHora;
+    p_fTests[ 13 ] = TestSCronometro;
+    p_fTests[ 14 ] = TestSReloj;
+    p_fTests[ 15 ] = TestSPeriodo;
+    p_fTests[ 16 ] = TestDeteccion;
     return p_fTests;
 }
 

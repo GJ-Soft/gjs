@@ -152,8 +152,8 @@ static bool TestExisteDirectorio01 ()
 	try
 	{
 		sDir1 = DirectorioActual ();
-		sDir2 = sDir1 + "/../../test-classes/data/directorio-vacio";
-		sDir4 = sDir1 + "/../../test-classes/data/fichero-vacio.txt";
+		sDir2 = sDir1 + "/../data/directorio-vacio";
+		sDir4 = sDir1 + "/../data/fichero-vacio.txt";
 
 		if ( ! ExisteDirectorio ( sDir1 ) )
 		{
@@ -175,7 +175,7 @@ static bool TestExisteDirectorio01 ()
 			cout << "Dice que el fichero es un directorio: [" << sDir4 << "]" << endl;
 			bRes = false;
 		}
-		sSubdir = "../../test-classes/data/directorio-vacio";
+		sSubdir = "../data/directorio-vacio";
 		if ( ! ExisteDirectorio ( sSubdir ) )
 		{
 			cout << "Dice que no existe el subdirectorio de recursos: [" << sSubdir << "]" << endl;
@@ -194,9 +194,9 @@ static bool TestExisteFichero01 ()
 {
 	cout << "Test ExisteFichero01:" << endl;
 	bool bRes = true;
-	string sFic1 ( "../../test-classes/data/fichero-vacio.txt" );
+	string sFic1 ( "../data/fichero-vacio.txt" );
 	string sFic2 ( "./noexiste.txt" );
-	string sFic3 ( "../../test-classes/data" );
+	string sFic3 ( "../data" );
 
 	try
 	{

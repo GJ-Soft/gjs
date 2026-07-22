@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                           VariablesEntorno.c                               */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Sistema                                                         */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Sistema                                                         */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de la clase de     */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de la clase de     */
 /* datos CVariablesEntorno.                                                   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -69,32 +69,21 @@ char * VarEntObtValor ( const char * p_cVariable )
 int VarEntEstValor ( const char * p_cVariable, const char * p_cValor )
 {
 	int iRes;
-	SBuffer * p_bufCadDef;
 
 	if ( ES_VALIDO ( p_cVariable ) )
 	{
-		p_bufCadDef = SBufCrear ( _ENTORNO_MAX_TAM_CAD_DEF + 1 );
-		if ( ES_VALIDO ( p_bufCadDef ) )
+#	 if ( defined ( WIN ) && ! defined ( CYGWIN ) )
+		/* _putenv_s copia las cadenas en el entorno del CRT (getenv las lee);
+		   no hay problema de tiempo de vida como con putenv sobre un buffer
+		   que despues se libera. */
+		if ( _putenv_s ( p_cVariable, ES_NULO ( p_cValor ) ? "" : p_cValor ) == 0 )
+#	 else
+		/* setenv copia el valor. putenv guardaba el puntero al buffer y, al
+		   liberarlo, la entrada del entorno quedaba colgando (fallo POSIX/Cygwin). */
+		if ( setenv ( p_cVariable, ES_NULO ( p_cValor ) ? "" : p_cValor, 1 ) == 0 )
+#	 endif
 		{
-			if ( ES_NULO ( p_cValor ) )
-			{
-				snprintf ( (char *) SBufDireccion ( p_bufCadDef ), _ENTORNO_MAX_TAM_CAD_DEF, _ENTORNO_FORM_EST_VARIABLE, p_cVariable, "" );
-			}
-			else
-			{
-				snprintf ( (char *) SBufDireccion ( p_bufCadDef ), _ENTORNO_MAX_TAM_CAD_DEF, _ENTORNO_FORM_EST_VARIABLE, p_cVariable, p_cValor );
-			}
-			
-			if ( putenv ( (char *) SBufDireccion ( p_bufCadDef ) ) == 0 )
-			{
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
-
-			SBufDestruir ( &p_bufCadDef );
+			iRes = 1;
 		}
 		else
 		{
@@ -108,7 +97,7 @@ int VarEntEstValor ( const char * p_cVariable, const char * p_cValor )
 	return ( iRes );
 }
 
-int  VarEntExiste ( const char * p_cVariable )
+int VarEntExiste ( const char * p_cVariable )
 {
 	int 	iRes;
 	char *	p_cValor;

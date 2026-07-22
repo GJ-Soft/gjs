@@ -99,7 +99,7 @@ static bool TestGestorUsuarios02 ()
 
 	try
 	{
-		GestorUsuarios * gestor = new GestorUsuarios( "../../test-classes/data/vacio.info" );
+		GestorUsuarios * gestor = new GestorUsuarios( "../data/vacio.info" );
 		if ( gestor->NumUsuarios() != 0 )
 		{
 			cout << "Error caso 1: NumUsuarios=" << gestor->NumUsuarios() << endl;
@@ -107,7 +107,7 @@ static bool TestGestorUsuarios02 ()
 		}
 		delete gestor;
 		
-		gestor = new GestorUsuarios( "../../test-classes/data/usuarios.info" );
+		gestor = new GestorUsuarios( "../data/usuarios.info" );
 		if ( gestor->NumUsuarios() != 3 )
 		{
 			cout << "Error caso 2: NumUsuarios=" << gestor->NumUsuarios() << endl;

@@ -77,7 +77,7 @@ bool NodoBin::TienePadre ()
 bool NodoBin::EsHijoDer ()
 {
 	bool bRes = false;
-	if ( TienePadre () )
+	if ( TienePadre () && getPadre()->TieneHijoDer () )
 	{
 		bRes = ( getPadre()->getHijoDer()->getRaiz() == this );
 	}
@@ -87,7 +87,7 @@ bool NodoBin::EsHijoDer ()
 bool NodoBin::EsHijoIzq ()
 {
 	bool bRes = false;
-	if ( TienePadre () )
+	if ( TienePadre () && getPadre()->TieneHijoIzq () )
 	{
 		bRes = ( getPadre()->getHijoIzq()->getRaiz() == this );
 	}
@@ -159,30 +159,19 @@ NodoBin * NodoBin::SigPreorden ()
 	}
 	else if ( TienePadre () )
 	{
-		if ( EsHijoIzq () )
+		// Hoja: subir hasta encontrar un antepasado que sea hijo izquierdo
+		// cuyo padre tenga hijo derecho; ese hijo derecho es el siguiente.
+		NodoBin * actual = this;
+		while ( ( nodo == NULL ) && actual->TienePadre () )
 		{
-			nodo = nodo->getPadre ();
-		}
-		else
-		{
-			if ( nodo->getPadre()->TienePadre () )
+			NodoBin * padre = actual->getPadre ();
+			if ( actual->EsHijoIzq () && padre->TieneHijoDer () )
 			{
-				nodo = nodo->getPadre ()->getPadre ();
-			}
-		}
-		if ( nodo != NULL )
-		{
-			while ( !nodo->TieneHijoDer () )
-			{
-				nodo = nodo->getPadre ();
-			}
-			if ( nodo->TieneHijoDer () )
-			{
-				nodo = nodo->getHijoDer ()->PrimeroPreorden();
+				nodo = padre->getHijoDer ()->PrimeroPreorden();
 			}
 			else
 			{
-				nodo = NULL;
+				actual = padre;
 			}
 		}
 	}
@@ -252,10 +241,12 @@ void NodoBin::LiberarDatos( void * _datos )
 {
 	if ( PuedeLiberarse ( _datos ) )
 	{
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdelete-incomplete"
-		delete _datos;
-#pragma GCC diagnostic pop
+		// 'datos' tiene el tipo borrado (void*): no es posible invocar el
+		// destructor concreto. Se libera el almacenamiento con ::operator delete
+		// (bien definido) en lugar de 'delete void*' (comportamiento indefinido).
+		// Para datos con destructor no trivial hay que usar un contenedor tipado
+		// (p. ej. Ptr<T>), que si invoca el destructor correcto.
+		::operator delete ( _datos );
 	}
 }
 

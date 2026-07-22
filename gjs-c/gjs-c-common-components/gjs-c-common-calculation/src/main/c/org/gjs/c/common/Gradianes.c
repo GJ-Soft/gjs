@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                               Gradianes.cpp                                */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Calculo                                                         */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Calculo                                                         */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de cabecera que contiene la implementación de algunas rutinas      */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cabecera que contiene la implementaciï¿½n de algunas rutinas      */
 /* que implementan algunas funciones sencillas de manejo de gradianes.        */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -98,6 +98,16 @@ int GradEstablecerAngulo ( double dAngulo, int * p_iGrad, int * p_iMin, int * p_
 		*p_iMin = ConvRealDobleAEntero ( dAux, 1 );
 		dAux = ( dAux - ( *p_iMin * 1.0) ) * 60;
 		*p_iSeg = ConvRealDobleAEntero ( dAux, 0 );
+		if ( *p_iSeg >= 60 )
+		{
+			*p_iSeg = *p_iSeg - 60;
+			*p_iMin = *p_iMin + 1;
+			if ( *p_iMin >= 60 )
+			{
+				*p_iMin = *p_iMin - 60;
+				*p_iGrad = *p_iGrad + 1;
+			}
+		}
 		iRes = 1;
 	}
 	else
@@ -137,6 +147,16 @@ int GradEstablecerRadianes ( double dRadianes, int * p_iGrad, int * p_iMin, int 
 		*p_iMin = ConvRealDobleAEntero ( dAux, 1 );
 		dAux = ( dAux - ( *p_iMin * 1.0) ) * 60;
 		*p_iSeg = ConvRealDobleAEntero ( dAux, 0 );
+		if ( *p_iSeg >= 60 )
+		{
+			*p_iSeg = *p_iSeg - 60;
+			*p_iMin = *p_iMin + 1;
+			if ( *p_iMin >= 60 )
+			{
+				*p_iMin = *p_iMin - 60;
+				*p_iGrad = *p_iGrad + 1;
+			}
+		}
 		iRes = 1;
 	}
 	else
@@ -274,7 +294,7 @@ int GradNormalizar ( int * p_iGrad, int * p_iMin, int * p_iSeg )
                             + (long)(*p_iMin)  * 60
                             + (long)(*p_iSeg);
 
-            // Normalizar al rango [0, 360°) en segundos
+            // Normalizar al rango [0, 360ï¿½) en segundos
             long lCirculoSegs = 360L * 3600L;
             lTotalSegs = lTotalSegs % lCirculoSegs;
             if ( lTotalSegs < 0 )

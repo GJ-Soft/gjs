@@ -70,22 +70,23 @@ bool ConDepEstaAbierta ()
 	return ( g_bConsolaDepuracionDisponible );
 }
 
-template<typename... Args> bool ConDepEscribir ( const string & sTexto, Args&&... argumentos )
+bool ConDepEscribir ( const string & sTexto )
 {
 	bool bRes = false;
 
 	if ( g_bConsolaDepuracionDisponible )
 	{
-		string sValor = ToString ( sTexto, forward<Args>( argumentos )... ).substr( 0, AplicConAncho () ); 
-		cout << sValor; 
+		// Se trunca al ancho de la consola si esta disponible ( > 0 ).
+		int iAncho = AplicConAncho ();
+		cout << ( ( iAncho > 0 ) ? sTexto.substr ( 0, (size_t) iAncho ) : sTexto );
 		bRes = true;
 	}
 	return ( bRes );
 }
 
-template<typename... Args> bool ConDepEscribirLinea ( const string & sTexto, Args&&... argumentos )
+bool ConDepEscribirLinea ( const string & sTexto )
 {
-	bool bRes = ConDepEscribir ( sTexto, forward<Args>( argumentos )... );
+	bool bRes = ConDepEscribir ( sTexto );
 	if ( bRes )
 	{
 		cout << endl;

@@ -1,21 +1,21 @@
 /******************************************************************************/
 /*                               Mensajes.cpp                                */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Aplicacion                                                      */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Aplicacion                                                      */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de la clase de     */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de la clase de     */
 /* datos CMesnajes.                                                           */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
 
+#include "CppCommonConfig.h"
 #include "Mensajes.h"
 
-#include "CppCommonConfig.h"
 
 
 using namespace std;
@@ -92,9 +92,11 @@ bool Mensajes::Cargar ( const string & sFichero )
 	{
 		string sLinea;
 
-		while ( getline ( fichero, sLinea ) ) 
+		while ( getline ( fichero, sLinea ) )
 		{
-			sLinea = EliminarCaracteresNoAlfanumericos ( sLinea );
+			/* Se sanea quitando caracteres no imprimibles (incluido el CR final),
+			   pero SIN eliminar la coma separadora ni los espacios del mensaje. */
+			sLinea = EliminarCaracteresNoEstandar ( sLinea );
 			sLinea = Trim ( sLinea );
 			if ( !sLinea.empty () )
 			{
@@ -111,7 +113,8 @@ bool Mensajes::Cargar ( const string & sFichero )
 				}
 			}
 		}
-		fichero.close();  
+		fichero.close();
+		bRes = true;
 	}
 	return ( bRes );
 }

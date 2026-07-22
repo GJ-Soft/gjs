@@ -1,6 +1,7 @@
 #include "CommonIoConfig.h"
 
 #include "Servidor.h"
+#include "SocketCliente.h"
 
 
 
@@ -59,13 +60,25 @@ void Servidor::Iniciar()
 void Servidor::Parar()
 {
 	bParar = true;
-	SocketServidor::Cerrar();
 	if ( thServidor != NULL )
 	{
+		// Despertar el accept() bloqueante: en winsock closesocket no lo
+		// desbloquea. Se abre una conexion al propio puerto y se MANTIENE abierta
+		// hasta despues del join, para que accept() la recoja con seguridad.
+		SocketCliente * pDespertar = NULL;
+		try
+		{
+			pDespertar = new SocketCliente( "127.0.0.1", getPuerto() );
+		}
+		catch ( ... )
+		{
+		}
 		thServidor->join();
 		delete thServidor;
 		thServidor = NULL;
+		delete pDespertar;
 	}
+	SocketServidor::Cerrar();
 }
 
 Propiedades Servidor::Contexto()
@@ -85,9 +98,19 @@ void Servidor::RutinaAtencion()
 		try
 		{
 			SocketAtencion * sockPeticion = SocketServidor::Aceptar();
-			function<void(SocketAtencion *)> rutina = bind( &Servidor::RutinaPeticion, this, placeholders::_1 );
-			thread thPeticion ( rutina, sockPeticion );
-			thPeticion.detach();
+			if ( !bParar )
+			{
+				function<void(SocketAtencion *)> rutina = bind( &Servidor::RutinaPeticion, this, placeholders::_1 );
+				thread thPeticion ( rutina, sockPeticion );
+				thPeticion.detach();
+			}
+			else
+			{
+				// Conexion efimera de despertar (auto-conexion de Parar): se
+				// descarta sin atenderla.
+				sockPeticion->Cerrar();
+				delete sockPeticion;
+			}
 		}
 		catch ( exception & ex )
 		{

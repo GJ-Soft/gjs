@@ -30,20 +30,22 @@ ControlConcurrencia::~ControlConcurrencia ()
 
 void ControlConcurrencia::Bloquear()
 {
-	if ( ( idBloqueante == NULL ) || ( *idBloqueante != this_thread::get_id() ) )
+	thread::id idActual = this_thread::get_id();
+	// Si este hilo ya es el dueno, la llamada es reentrante y no se vuelve a
+	// tomar el cerrojo (evita el autobloqueo con un mutex no recursivo).
+	if ( idBloqueante.load() != idActual )
 	{
 		mtxAcceso.lock();
-		idBloqueante = new thread::id();
-		*idBloqueante = this_thread::get_id();
+		idBloqueante.store( idActual );
 	}
 }
 
 void ControlConcurrencia::Desbloquear()
 {
-	if ( ( idBloqueante != NULL ) && ( *idBloqueante == this_thread::get_id() ) )
+	thread::id idActual = this_thread::get_id();
+	if ( idBloqueante.load() == idActual )
 	{
-		delete idBloqueante;
-		idBloqueante = NULL;
+		idBloqueante.store( thread::id() );
 		mtxAcceso.unlock();
 	}
 }

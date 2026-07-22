@@ -6,11 +6,9 @@
 
 
 #if ( defined ( POSIX ) )
-#  if ( defined ( CYGWIN )  )
-#   include <sys/cygwin.h>
-#  endif
 #	include <string.h>
 #	include <unistd.h>
+#	include <stdlib.h>
 # else
 #	define NO_STRICT
 #	define WIN32_LEAN_AND_MEAN
@@ -44,7 +42,9 @@
 #include <locale>
 
 
-
+#if ( defined ( WIN ) )
+# define MAXPATHLEN		MAX_PATH
+#endif
 
 #include <Memoria.h>
 #include <ExpresionesRegulares.h>

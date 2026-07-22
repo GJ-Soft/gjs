@@ -1,16 +1,14 @@
 /***************************************************************************/
 /*                          CajaMensajes.cpp                               */
 /*-------------------------------------------------------------------------*/
-/* Librería: GAplicacion                                                  */
-/* Versión:  2.0.0                                                         */
+/* Libreria: GAplicacion                                                   */
+/* Version:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    Gines Jimenez Sanchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Autor:    Ginés Jiménez Sánchez                                         */
-/*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Fichero de código fuente que contiene la implementación de la rutina    */
-/* para controlar el diálogo de mensajes del sistema.                      */
+/* Descripcion:                                                            */
+/* Fichero de codigo fuente que contiene la implementacion de la rutina    */
+/* para controlar el dialogo de mensajes del sistema.                      */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
 /***************************************************************************/
@@ -35,130 +33,128 @@ namespace org
 
 
 
-
 #if ( defined ( WIN ) )
 
 
-//extern HWND ExeVentanaPrincipal ();
-
-
-
-
-int CajMsjMostrar ( int iTipo,const string & sTitulo, const string & sMensaje )
+// Traduce el boton pulsado ( IDOK, IDYES, ... ) a la respuesta portable.
+static RespuestaCajaMensajes _CajMsjRespuestaDeBoton ( int iBoton )
 {
-	int		iRes;
-	UINT	uiFlags;
-	HWND    hVentana;
-
-	
-	if ( ES_VALIDO ( p_cMensaje ) && ( TipCajMsjEsValido ( iTipo ) == 1 ) )
+	switch ( iBoton )
 	{
-		if ( iTipo == TIP_CAJ_MSJ_INFORMACION )
+		case IDOK:		return ( RespuestaCajaMensajes::Aceptar );
+		case IDYES:		return ( RespuestaCajaMensajes::Aceptar );
+		case IDCANCEL:	return ( RespuestaCajaMensajes::Cancelar );
+		case IDNO:		return ( RespuestaCajaMensajes::No );
+		case IDRETRY:	return ( RespuestaCajaMensajes::Reintentar );
+		case IDABORT:	return ( RespuestaCajaMensajes::Abortar );
+		case IDIGNORE:	return ( RespuestaCajaMensajes::Ignorar );
+		default:		return ( RespuestaCajaMensajes::Ninguna );
+	}
+}
+
+RespuestaCajaMensajes CajMsjMostrar ( TipoCajaMensajes tipo, const string & sTitulo, const string & sMensaje )
+{
+	RespuestaCajaMensajes respRes = RespuestaCajaMensajes::Ninguna;
+
+	if ( ! sMensaje.empty () && TipCajMsjEsValido ( tipo ) )
+	{
+		UINT	uiFlags;
+		switch ( tipo )
 		{
-			uiFlags = MB_ICONINFORMATION | MB_OK;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_PREGUNTA )
-		{
-			uiFlags = MB_ICONQUESTION | MB_YESNO;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_PREGUNTA_OKCAN )
-		{
-			uiFlags = MB_ICONQUESTION | MB_OKCANCEL;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_PREGUNTA_REINCAN )
-		{
-			uiFlags = MB_ICONQUESTION | MB_RETRYCANCEL;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_PREGUNTA_SINOCAN )
-		{
-			uiFlags = MB_ICONQUESTION | MB_YESNOCANCEL;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_AVISO )
-		{
-			uiFlags = MB_ICONEXCLAMATION | MB_OK;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_AVISO_OKCAN )
-		{
-			uiFlags = MB_ICONEXCLAMATION | MB_OKCANCEL;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_AVISO_REINCAN )
-		{
-			uiFlags = MB_ICONEXCLAMATION | MB_RETRYCANCEL;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_AVISO_ABRREINIGN )
-		{
-			uiFlags = MB_ICONEXCLAMATION | MB_ABORTRETRYIGNORE;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_ERROR )
-		{
-			uiFlags = MB_ICONERROR | MB_OK;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_ERROR_OKCAN )
-		{
-			uiFlags = MB_ICONERROR | MB_OKCANCEL;
-		}
-		else if ( iTipo == TIP_CAJ_MSJ_ERROR_REINCAN )
-		{
-			uiFlags = MB_ICONERROR | MB_RETRYCANCEL;
-		}
-		else //if ( iTipo == TIP_CAJ_MSJ_ERROR_ABRREINIGN )
-		{
-			uiFlags = MB_ICONERROR | MB_ABORTRETRYIGNORE;
+			case TipoCajaMensajes::Informacion:		uiFlags = MB_ICONINFORMATION | MB_OK;				break;
+			case TipoCajaMensajes::Pregunta:		uiFlags = MB_ICONQUESTION | MB_YESNO;				break;
+			case TipoCajaMensajes::PreguntaOkCan:	uiFlags = MB_ICONQUESTION | MB_OKCANCEL;			break;
+			case TipoCajaMensajes::PreguntaReinCan:	uiFlags = MB_ICONQUESTION | MB_RETRYCANCEL;			break;
+			case TipoCajaMensajes::PreguntaSiNoCan:	uiFlags = MB_ICONQUESTION | MB_YESNOCANCEL;			break;
+			case TipoCajaMensajes::Aviso:			uiFlags = MB_ICONEXCLAMATION | MB_OK;				break;
+			case TipoCajaMensajes::AvisoOkCan:		uiFlags = MB_ICONEXCLAMATION | MB_OKCANCEL;			break;
+			case TipoCajaMensajes::AvisoReinCan:	uiFlags = MB_ICONEXCLAMATION | MB_RETRYCANCEL;		break;
+			case TipoCajaMensajes::AvisoAbrReinIgn:	uiFlags = MB_ICONEXCLAMATION | MB_ABORTRETRYIGNORE;	break;
+			case TipoCajaMensajes::Error:			uiFlags = MB_ICONERROR | MB_OK;						break;
+			case TipoCajaMensajes::ErrorOkCan:		uiFlags = MB_ICONERROR | MB_OKCANCEL;				break;
+			case TipoCajaMensajes::ErrorReinCan:	uiFlags = MB_ICONERROR | MB_RETRYCANCEL;			break;
+			default:								uiFlags = MB_ICONERROR | MB_ABORTRETRYIGNORE;		break;
 		}
 		uiFlags = uiFlags | MB_APPLMODAL;
-		//hVentana = ExeVentanaPrincipal ();
-		//if ( ES_NULO ( hVentana ) )
-		//{
-		hVentana = GetActiveWindow ();
-		//}
-		iRes = MessageBox ( hVentana, p_cMensaje, p_cTitulo, uiFlags );
+		HWND hVentana = GetActiveWindow ();
+		respRes = _CajMsjRespuestaDeBoton ( MessageBox ( hVentana, sMensaje.c_str(), sTitulo.c_str(), uiFlags ) );
 	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
+	return ( respRes );
 }
 
-template<typename... Args> int CajMsjMostrarConFormato ( int iTipo, const string & sTitulo, const string & sFormato, Args&&... argumentos );
-{
-	sMensaje = ToString ( sFormato, forward<Args>( argumentos )... ).substr( 0, CAJ_MSJ_MAX_TAM_LINEA );
-	return ( CajMsjMostrar ( iTipo, sTitulo, sMensaje ) );
-}
 
 #else
 
-int CajMsjMostrar ( int iTipo,const string & sTitulo, const string & sMensaje )
+
+// Imprime una cadena ( caracter de borde multi-byte ) iVeces veces.
+static void _CajMsjRepetir ( const char * p_cCar, int iVeces )
 {
-	int		iRes;
-	if ( TipCajMsjEsValido ( iTipo ) ) 
+	for ( int i = 0; i < iVeces; i = i + 1 )
 	{
-		cout << endl;
-		cout << "********************************************************************************************" << endl;
-		cout << "*  " << setw ( 86 ) << sTitulo << "  *" << endl;
-		cout << "*------------------------------------------------------------------------------------------*" << endl;
-		cout << "*                                                                                          *" << endl;
-		cout << "*  " << setw ( 86 ) << sMensaje << "  *" << endl;
-		cout << "*                                                                                          *" << endl;
-		cout << "*                        Pulsa <retorno> para continuar...                                 *" << endl;
-		cout << "********************************************************************************************" << endl;
-		cout << endl;
-		char cVal = getchar ();
-		iRes = 1;
+		cout << p_cCar;
 	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
 }
 
-template<typename... Args> int CajMsjMostrarConFormato ( int iTipo, const string & sTitulo, const string & sFormato, Args&&... argumentos )
+// Linea " texto ... " entre bordes verticales, rellenando hasta iInterior columnas.
+static void _CajMsjLineaTexto ( const char * p_cVer, const string & sTexto, int iInterior )
 {
-	string sMensaje = ToString ( sFormato, forward<Args>( argumentos )... ).substr( 0, CAJ_MSJ_MAX_TAM_LINEA );
-	return ( CajMsjMostrar ( iTipo, sTitulo, sMensaje ) );
+	string sVis = sTexto;
+	if ( (int) sVis.length () > iInterior - 2 )
+	{
+		sVis = sVis.substr ( 0, iInterior - 2 );
+	}
+	cout << p_cVer << " " << sVis;
+	int iRelleno = iInterior - 1 - (int) sVis.length ();
+	for ( int i = 0; i < iRelleno; i = i + 1 )
+	{
+		cout << " ";
+	}
+	cout << p_cVer << endl;
 }
 
+RespuestaCajaMensajes CajMsjMostrar ( TipoCajaMensajes tipo, const string & sTitulo, const string & sMensaje )
+{
+	RespuestaCajaMensajes respRes = RespuestaCajaMensajes::Ninguna;
+
+	if ( ! sMensaje.empty () && TipCajMsjEsValido ( tipo ) )
+	{
+		// Los tipos de error ( >= TIP_CAJ_MSJ_ERROR ) se dibujan con borde doble.
+		bool bDoble = ( (int) tipo >= TIP_CAJ_MSJ_ERROR );
+
+		const char * pSupIzq = bDoble ? _CON_BRD_D_SUP_IZQ : _CON_BRD_S_SUP_IZQ;
+		const char * pSupDer = bDoble ? _CON_BRD_D_SUP_DER : _CON_BRD_S_SUP_DER;
+		const char * pInfIzq = bDoble ? _CON_BRD_D_INF_IZQ : _CON_BRD_S_INF_IZQ;
+		const char * pInfDer = bDoble ? _CON_BRD_D_INF_DER : _CON_BRD_S_INF_DER;
+		const char * pHor    = bDoble ? _CON_BRD_D_HOR     : _CON_BRD_S_HOR;
+		const char * pVer    = bDoble ? _CON_BRD_D_VER     : _CON_BRD_S_VER;
+		const char * pTeeIzq = bDoble ? _CON_BRD_D_TEE_IZQ : _CON_BRD_S_TEE_IZQ;
+		const char * pTeeDer = bDoble ? _CON_BRD_D_TEE_DER : _CON_BRD_S_TEE_DER;
+
+		int iAncho = CAJ_MSJ_ANCHO_DEFECTO;
+		int iInterior = iAncho - 2;
+
+		cout << endl;
+		// Borde superior.
+		cout << pSupIzq; _CajMsjRepetir ( pHor, iInterior ); cout << pSupDer << endl;
+		// Titulo.
+		_CajMsjLineaTexto ( pVer, sTitulo, iInterior );
+		// Separador titulo / cuerpo.
+		cout << pTeeIzq; _CajMsjRepetir ( pHor, iInterior ); cout << pTeeDer << endl;
+		// Cuerpo.
+		_CajMsjLineaTexto ( pVer, "", iInterior );
+		_CajMsjLineaTexto ( pVer, sMensaje, iInterior );
+		_CajMsjLineaTexto ( pVer, "", iInterior );
+		_CajMsjLineaTexto ( pVer, "Pulsa <retorno> para continuar...", iInterior );
+		// Borde inferior.
+		cout << pInfIzq; _CajMsjRepetir ( pHor, iInterior ); cout << pInfDer << endl;
+		cout << endl;
+
+		// Bloqueante: espera a que el usuario pulse <retorno>.
+		getchar ();
+		respRes = RespuestaCajaMensajes::Aceptar;
+	}
+	return ( respRes );
+}
 
 
 #endif

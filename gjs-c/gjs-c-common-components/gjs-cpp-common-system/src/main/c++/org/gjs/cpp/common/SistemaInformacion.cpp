@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                           SistemaInformacion.cpp                           */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Sistema                                                         */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Sistema                                                         */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de la algunas      */
-/* rutinas generales de información del sistema.                              */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de la algunas      */
+/* rutinas generales de informaciï¿½n del sistema.                              */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -21,8 +21,9 @@
 #include "SistemaTiempo.h"
 #include "CContadorCiclos.h"
 
+#include <fstream>
+#include <string>
 
-#	include <unistd.h>
 
 
 using namespace std;
@@ -167,15 +168,22 @@ double SisVersion ()
 	double dRes = 0.0;
 
 # if ( defined ( WIN ) )
-	OSVERSIONINFO osinfDatos;
+	double			dMult;
+	int 			iDigitos;
+	OSVERSIONINFO	osinfDatos;
 
 	if ( GetVersionEx ( &osinfDatos ) != 0 )
 	{
-		dMult = MatExponencialConExponenteEntero ( 0.1, NumDigitosEnteroLargoSinSigno ( (unsigned long) osinfDatos.dwMinorVersion ) );
+		iDigitos = (osinfDatos.dwMinorVersion == 0) ? 1 : static_cast<int>(log10(osinfDatos.dwMinorVersion)) + 1;
+		dMult = MatExponencialConExponenteEntero ( 0.1, iDigitos );
 		dRes = osinfDatos.dwMajorVersion * 1.0 + osinfDatos.dwMinorVersion * dMult;
 	}
+	else
+	{
+		dRes = 0.0;
+	}
 # else 
-	// TODO
+	dRes = 0.0;
 # endif
 	return ( dRes );
 }
@@ -239,8 +247,19 @@ int SisArquitecturaProcesador ()
 		iRes = PROC_ARQ_DESCONOCIDO;
 	}
 # else
-	// PENDIENTE:
+	// Deteccion de la arquitectura por macros del compilador ( arquitectura del
+	// binario ). ARM/otros no tienen constante -> PROC_ARQ_DESCONOCIDO.
+#	if ( defined ( __x86_64__ ) || defined ( __i386__ ) || defined ( __amd64__ ) )
+	iRes = PROC_ARQ_INTEL;
+#	elif ( defined ( __mips__ ) )
+	iRes = PROC_ARQ_MIPS;
+#	elif ( defined ( __alpha__ ) )
+	iRes = PROC_ARQ_ALPHA;
+#	elif ( defined ( __powerpc__ ) || defined ( __ppc__ ) || defined ( __PPC__ ) )
+	iRes = PROC_ARQ_PPC;
+#	else
 	iRes = PROC_ARQ_DESCONOCIDO;
+#	endif
 # endif
 	return ( iRes );
 }
@@ -358,8 +377,124 @@ int SisProcesador ()
 		iRes = PROC_DESCONOCIDO;
 	}
 # else
-	// PENDIENTE:
+	// En POSIX/Linux ( y Cygwin ) se identifica el procesador leyendo /proc/cpuinfo.
 	iRes = PROC_DESCONOCIDO;
+	{
+		ifstream cpuinfo ( "/proc/cpuinfo" );
+		if ( cpuinfo.is_open () )
+		{
+			string	sLinea;
+			string	sVendor;
+			int		iFamilia = -1;
+			int		iModelo  = -1;
+			bool	bFin = false;
+
+			// Se lee solo el primer procesador ( hasta la primera linea en blanco ).
+			while ( ! bFin && getline ( cpuinfo, sLinea ) )
+			{
+				if ( sLinea.empty () )
+				{
+					bFin = true;
+				}
+				else if ( sLinea.rfind ( "vendor_id", 0 ) == 0 )
+				{
+					size_t iSep = sLinea.find ( ':' );
+					if ( iSep != string::npos )
+					{
+						sVendor = Trim ( sLinea.substr ( iSep + 1 ) );
+					}
+				}
+				else if ( sLinea.rfind ( "cpu family", 0 ) == 0 )
+				{
+					size_t iSep = sLinea.find ( ':' );
+					if ( iSep != string::npos )
+					{
+						iFamilia = (int) ToInt ( Trim ( sLinea.substr ( iSep + 1 ) ) );
+					}
+				}
+				else if ( ( sLinea.rfind ( "model", 0 ) == 0 ) &&
+						  ( sLinea.rfind ( "model name", 0 ) != 0 ) )
+				{
+					size_t iSep = sLinea.find ( ':' );
+					if ( iSep != string::npos )
+					{
+						iModelo = (int) ToInt ( Trim ( sLinea.substr ( iSep + 1 ) ) );
+					}
+				}
+			}
+			cpuinfo.close ();
+
+			if ( sVendor == "GenuineIntel" )
+			{
+				if ( iFamilia == 5 )
+				{
+					iRes = PROC_INTEL_PENTIUM;
+				}
+				else if ( iFamilia == 6 )
+				{
+					// La familia 6 abarca desde el Pentium Pro hasta los Core actuales:
+					// se distinguen los antiguos por el numero de modelo; el resto son Core.
+					if ( iModelo == 1 )
+					{
+						iRes = PROC_INTEL_PENTIUM_PRO;
+					}
+					else if ( ( iModelo == 3 ) || ( iModelo == 5 ) || ( iModelo == 6 ) )
+					{
+						iRes = PROC_INTEL_PENTIUM_II;
+					}
+					else if ( ( iModelo == 7 ) || ( iModelo == 8 ) ||
+							  ( iModelo == 10 ) || ( iModelo == 11 ) )
+					{
+						iRes = PROC_INTEL_PENTIUM_III;
+					}
+					else
+					{
+						iRes = PROC_INTEL_CORE;
+					}
+				}
+				else if ( iFamilia == 15 )
+				{
+					iRes = PROC_INTEL_PENTIUM_4;
+				}
+				else
+				{
+					iRes = PROC_INTEL;
+				}
+			}
+			else if ( sVendor == "AuthenticAMD" )
+			{
+				iRes = ( sizeof ( void * ) == 8 ) ? PROC_AMD_64 : PROC_AMD;
+			}
+		}
+	}
+
+	// Reserva si /proc/cpuinfo no existe o no identifico el procesador ( otro POSIX ).
+	if ( iRes == PROC_DESCONOCIDO )
+	{
+# if ( defined ( __aarch64__ ) )
+		iRes = PROC_ARM64;
+# elif ( defined ( __arm__ ) )
+		iRes = PROC_ARM;
+# else
+		int iArq = SisArquitecturaProcesador ();
+		if ( iArq == PROC_ARQ_INTEL )
+		{
+			iRes = ( sizeof ( void * ) == 8 ) ? PROC_X86_64 : PROC_X86;
+		}
+		else if ( iArq == PROC_ARQ_MIPS )
+		{
+			iRes = PROC_MIPS_R4000;
+		}
+		else if ( iArq == PROC_ARQ_ALPHA )
+		{
+			iRes = PROC_ALPHA_21164;
+		}
+		else if ( iArq == PROC_ARQ_PPC )
+		{
+			iRes = PROC_PPC_620;
+		}
+# endif
+	}
 # endif
 	return ( iRes );
 }
@@ -374,8 +509,8 @@ int SisNumProcesadores ()
 	GetSystemInfo ( &sysinfDatos );
 	iRes = (int) sysinfDatos.dwNumberOfProcessors;
 # else
-	// PENDIENTE:
-	iRes = -1;
+	long lNumProcs = sysconf ( _SC_NPROCESSORS_ONLN );
+	iRes = ( lNumProcs > 0 ) ? (int) lNumProcs : 1;
 # endif
 	return ( iRes );
 }
@@ -502,37 +637,49 @@ void * SisMemAplicDireccionMaxima ()
 	return ( p_vRes );
 }
 
-#if ( defined ( WIN ) || defined ( DOS ) )
+#if ( defined ( WIN ) )
 string * SisDirectorioSistema ()
 {
+	string * p_sRes = NULL;
 	
 #	 if ( defined ( WIN ) )
-	unsigned int uiSize = GetWindowsDirectoryA ( nullptr, 0 ); // tamaño necesario
+	unsigned int uiSize = GetWindowsDirectoryA ( nullptr, 0 ); // tamaï¿½o necesario
 #	 else
 	// TODO
 	unsigned int uiSize = 0;
 #	 endif
-	std::vector<char> buffer ( size );
+	std::vector<char> buffer ( uiSize );
 
 #	 if ( defined ( WIN ) )
-	GetWindowsDirectoryA ( buffer.data (), size );
+	if ( GetWindowsDirectoryA ( (LPTSTR) buffer.data (), (UINT) uiSize ) > 0 )
 #	 else
-	// PENDIENTE
+	// PENDIENTE para DOS:
+	if ( 0 )
 #	 endif
-	return ( new string ( buffer.data () ) );
+	{
+		p_sRes = new string ( buffer.data () );
+	}
+	return ( p_sRes );
 }
 #endif
 
 string * SisDirectorioTemporal ()
 {
-#	 if ( defined ( WIN ) )
-	unsigned int uiSize = GetTempPathA ( nullptr, 0 ); // tamaño necesario
-	std::vector<char> buffer ( size );
-	GetTempPathA ( buffer.data (), size );
-	return ( new string ( buffer.data () ) );
-#	 else
-	return ( g_p_sSisDirTemporal );
-#	 endif
+	string * p_sRes = NULL;
+	
+# if ( defined ( WIN ) )
+	std::vector<char> buffer ( MAXPATHLEN );
+	if ( GetTempPath ( (DWORD) buffer.size (), (LPTSTR)  buffer.data () ) > 0 )
+	{
+		p_sRes = new string ( buffer.data () );
+	}
+#else
+	if ( ES_VALIDO ( g_p_sSisDirTemporal ) )
+	{
+		p_sRes = new string ( *g_p_sSisDirTemporal );
+	}
+#endif
+	return ( p_sRes );
 }
 
 double SisVelocidadCPU ()
@@ -543,7 +690,11 @@ double SisVelocidadCPU ()
 	int64_t				i64Resto;
 	
 	cntcCPU.Iniciar ();
-	sleep(1000); 
+# if ( defined ( WIN ) )
+	Sleep ( 1000 );				// milisegundos
+# else
+	sleep ( 1 );				// segundos ( en POSIX sleep() es en segundos, no en ms )
+# endif
 	cntcCPU.Parar ();
 	i64Valor = cntcCPU.Valor () / 100000;
 	i64Resto = cntcCPU.Valor () % 100000;

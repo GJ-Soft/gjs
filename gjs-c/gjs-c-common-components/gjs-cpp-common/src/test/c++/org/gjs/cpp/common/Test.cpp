@@ -6,6 +6,10 @@ using namespace std;
 
 
 extern bool TestExcepcion ();
+extern bool TestArgumentos ();
+extern bool TestMensajes ();
+extern bool TestEntorno ();
+extern bool TestAplicacionLog ();
 
 
 int main( int argc, char * argv[] )
@@ -14,7 +18,11 @@ int main( int argc, char * argv[] )
 	InicializarBase();
 
 	map<string, FUNCION_BOOL> mapTests;
-	mapTests[ "Excepcion" ] = TestExcepcion;
+	mapTests[ "ExcepcionTest" ] = TestExcepcion;
+	mapTests[ "ArgumentosTest" ] = TestArgumentos;
+	mapTests[ "MensajesTest" ] = TestMensajes;
+	mapTests[ "EntornoTest" ] = TestEntorno;
+	mapTests[ "AplicacionLogTest" ] = TestAplicacionLog;
 
 	string sTest( "null" );
 	if ( argc > 1 )
@@ -39,9 +47,14 @@ int main( int argc, char * argv[] )
 		return( iRes );
 	}
 
-    if ( ! TestExcepcion () )
-    {
-		iRes = -1;
+
+	for ( auto it = mapTests.begin(); it != mapTests.end(); ++it )
+	{
+		FUNCION_BOOL fTest = it->second;
+		if( fTest () != 1 )
+		{
+			iRes = -1;
+		}
 	}
 	return ( iRes );
 }

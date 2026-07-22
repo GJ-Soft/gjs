@@ -3,6 +3,13 @@
 
 
 
+#include <Precompilacion.h>
+
+#if ( defined ( WIN ) )
+#		include <winsock2.h>
+#endif
+
+
 #include <CppBase.h>
 #include <CppLog.h>
 #include <CppCommonTypes.h>

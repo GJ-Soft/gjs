@@ -1,14 +1,14 @@
 /***************************************************************************/
 /*                         TiposCajaMensajes.cpp                           */
 /*-------------------------------------------------------------------------*/
-/* Librería: CajaMensajes                                                  */
-/* Versión:  2.0.0                                                         */
+/* Librerï¿½a: CajaMensajes                                                  */
+/* Versiï¿½n:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Ginés Jiménez Sánchez                                         */
+/* Autor:    Ginï¿½s Jimï¿½nez Sï¿½nchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripción:                                                            */
-/* Fichero de código fuente que contiene la implementación de las rutinas  */
-/* de carácter general de manejo de los identificadores de tipos de        */
+/* Descripciï¿½n:                                                            */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de las rutinas  */
+/* de carï¿½cter general de manejo de los identificadores de tipos de        */
 /* cajas de mensajes.                                                      */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
@@ -56,6 +56,11 @@ bool TipCajMsjEsValido ( int iTipo )
 		 ( iTipo == TIP_CAJ_MSJ_ERROR_OKCAN ) ||
 		 ( iTipo == TIP_CAJ_MSJ_ERROR_REINCAN ) ||
 		 ( iTipo == TIP_CAJ_MSJ_ERROR_ABRREINIGN ) );
+}
+
+bool TipCajMsjEsValido ( TipoCajaMensajes tipo )
+{
+	return ( TipCajMsjEsValido ( (int) tipo ) );
 }
 
 

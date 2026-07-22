@@ -521,7 +521,7 @@ Nivel LogGetNivel ()
 	{
 		try
 		{
-			_ToNivel ( log4cxx::Logger::getRootLogger()->getLevel() );
+			nivel = _ToNivel ( log4cxx::Logger::getRootLogger()->getLevel() );
 		}
 		catch ( const exception & ex )
 		{

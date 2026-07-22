@@ -1,0 +1,9 @@
+<component-set>
+	<components>
+		<component>
+			<role>org.apache.maven.AbstractMavenLifecycleParticipant</role>
+			<role-hint>property-bootstrap</role-hint>
+			<implementation>org.gjs.maven.extensions.bootstrap.PropertyBootstrapExtension</implementation>
+		</component>
+	</components>
+</component-set>

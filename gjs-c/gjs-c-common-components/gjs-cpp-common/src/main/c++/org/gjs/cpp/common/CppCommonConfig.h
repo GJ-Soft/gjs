@@ -2,6 +2,12 @@
 #define _ORG_GJS_C_CC_CPP_COMMON_CONFIG
 
 
+#include <Precompilacion.h>
+
+#if ( defined ( WIN ) )
+#		include <winsock2.h>
+#endif
+
 #include <CppBase.h>
 #include <CppCommonTypes.h>
 #include <CppCommonSupport.h>
@@ -15,6 +21,10 @@
 #include <string_view>
 #include <iostream>
 #include <fstream>
+
+#if ( defined ( WIN ) )
+#	include <shellapi.h>
+#endif
 
 
 #endif

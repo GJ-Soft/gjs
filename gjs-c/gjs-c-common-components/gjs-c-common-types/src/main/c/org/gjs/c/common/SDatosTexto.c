@@ -71,7 +71,7 @@ SDatosTexto * SDatTxtEncapsular ( SDatos * p_datTexto, int iTamFijo )
 	return ( p_datObj );
 }
 	
-void SDatTxtDesturir ( SDatosTexto ** p_p_datObj )
+void SDatTxtDestruir ( SDatosTexto ** p_p_datObj )
 {
     SDatosTexto *  p_datObj;
     
@@ -249,6 +249,7 @@ int SDatTxtAsignarContenidoLit ( SDatosTexto * p_datObj, const char * p_cTexto )
 	{
 		iTam = CadLongitud ( p_cTexto ) + 1;
 		iRes = SDatAsignarContenido ( p_datObj->p_datTexto, (byte *) p_cTexto, iTam );
+		p_datObj->iPrimerLibre = SDatPosicionPrimerNulo ( p_datObj->p_datTexto );
 	}
 	else
 	{

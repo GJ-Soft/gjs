@@ -69,9 +69,9 @@
 		<!-- Linker options -->	
 		<gjs.nar.emulation.option>-Wl,-m,${gjs.nar.emulation}</gjs.nar.emulation.option> 
 		
-		<!-- Resources -->
-		<gjs.nar.resources.directory>${project.build.directory}/nar/resources</gjs.nar.resources.directory>
-		<gjs.nar.testResources.directory>${project.build.directory}/test-nar/resources</gjs.nar.testResources.directory>
+		<!-- Nar build directories -->
+		<gjs.nar.build.directory>${project.build.directory}/nar</gjs.nar.build.directory>
+		<gjs.nar.build.testDirectory>${project.build.directory}/test-nar</gjs.nar.build.testDirectory>
 		
 		<!-- Naming -->
 		<finalName.prefix.lib>lib</finalName.prefix.lib>
@@ -232,7 +232,7 @@
 								<name>Test${exeFinalExtension}</name>
 								<link>shared</link>
 								<args>
-									<arg>${modulo}</arg>
+									<arg>${test}</arg>
 								</args>
 							</test>
 						</tests>						
@@ -254,6 +254,87 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>				
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<skip>${skip.if.not.source}</skip>
+					<includeEmptyDirs>true</includeEmptyDirs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${gjs.nar.build.directory}</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>${resources.dir}</directory>
+									<includes>
+										<include>**/**</include>
+									</includes>
+									<excludes>
+										<exclude>bin/**</exclude>
+										<exclude>data/**</exclude>
+										<exclude>cacerts/**</exclude>
+									</excludes>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>${resources.dir}</directory>
+									<includes>
+										<include>bin/**</include>
+										<include>data/**</include>
+										<include>cacerts/**</include>
+									</includes>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>						
+				   <execution>
+						<id>copy-test-resources</id>
+						<phase>generate-test-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${gjs.nar.build.testDirectory}</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>${testResources.dir}</directory>
+									<includes>
+										<include>**/**</include>
+									</includes>
+									<excludes>
+										<exclude>bin/**</exclude>
+										<exclude>data/**</exclude>
+										<exclude>cacerts/**</exclude>
+									</excludes>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>${testResources.dir}</directory>
+									<includes>
+										<include>bin/**</include>
+										<include>data/**</include>
+										<include>cacerts/**</include>
+									</includes>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>						
+				</executions>
+			</plugin>	
+		</plugins>
 		
 		<directory>${basedir}/target</directory>
 	</build>

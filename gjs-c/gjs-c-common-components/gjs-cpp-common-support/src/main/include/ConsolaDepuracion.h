@@ -14,6 +14,7 @@
 
 
 #include <string>
+#include <format>
 
 
 
@@ -32,8 +33,20 @@ bool ConDepAbrir ();
 void ConDepCerrar ();
 bool ConDepEstaAbierta ();
 
-template<typename... Args> bool ConDepEscribir ( const std::string & sTexto, Args&&... argumentos );
-template<typename... Args> bool ConDepEscribirLinea ( const std::string & sTexto, Args&&... argumentos );
+// Escritores base ( definidos en el .cpp ).
+bool ConDepEscribir ( const std::string & sTexto );
+bool ConDepEscribirLinea ( const std::string & sTexto );
+
+// Variantes con formato: definidas aqui ( una plantilla debe ser visible en el
+// punto de instanciacion ) delegando en std::vformat + el escritor base.
+template<typename... Args> bool ConDepEscribir ( const std::string & sFormato, Args&&... argumentos )
+{
+	return ( ConDepEscribir ( std::vformat ( sFormato, std::make_format_args ( argumentos... ) ) ) );
+}
+template<typename... Args> bool ConDepEscribirLinea ( const std::string & sFormato, Args&&... argumentos )
+{
+	return ( ConDepEscribirLinea ( std::vformat ( sFormato, std::make_format_args ( argumentos... ) ) ) );
+}
 
 
  			}

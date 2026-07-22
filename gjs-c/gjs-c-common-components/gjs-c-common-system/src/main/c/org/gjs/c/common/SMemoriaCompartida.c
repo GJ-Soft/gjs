@@ -144,14 +144,14 @@ int SMemCmpAbrir ( SMemoriaCompartida * p_memcObj )
 					iRes = 1;
 					iCreado = 0;
 		#		  if ( defined ( WIN ) )
-					p_memcObj->hFichero = CreateFileMapping ( (HANDLE) 0xFFFFFFFF, NULL, PAGE_READWRITE, 0, (DWORD) p_memcObj->iNumBytes, (LPSTR) p_cRuta );
+					p_memcObj->hFichero = CreateFileMapping ( INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, (DWORD) p_memcObj->iNumBytes, (LPSTR) SMtxNombre ( p_memcObj->p_mutexObj ) );
 					if ( ES_VALIDO ( p_memcObj->hFichero ) )
 					{
 						iCreado = 1;
 					}
 					else
 					{
-						p_memcObj->hFichero = OpenFileMapping ( FILE_MAP_ALL_ACCESS, FALSE, (LPSTR) p_cRuta );
+						p_memcObj->hFichero = OpenFileMapping ( FILE_MAP_ALL_ACCESS, FALSE, (LPSTR) SMtxNombre ( p_memcObj->p_mutexObj ) );
 					}
 					if ( ES_NULO ( p_memcObj->hFichero ) )
 		#		  elif ( defined ( POSIX ) )

@@ -16,8 +16,8 @@ int main ( int argc, char * argv[] )
 	int iRes = 0;
 
 	map<string, FUNCION_BOOL> mapTests;
-	mapTests[ "MDC" ] = TestMDC;
-	mapTests[ "Log" ] = TestLog;
+	mapTests[ "MDCTest" ] = TestMDC;
+	mapTests[ "LogTest" ] = TestLog;
 
 	string sTest ( "null" );
 	if ( argc > 1 )
@@ -42,10 +42,13 @@ int main ( int argc, char * argv[] )
 		return( iRes );
 	}
 
-	if ( false ) //! TestMDC ()) //||
-		//! TestLog () )
+	for ( auto it = mapTests.begin(); it != mapTests.end(); ++it )
 	{
-		iRes = -1;
+		FUNCION_BOOL fTest = it->second;
+		if( fTest () != 1 )
+		{
+			iRes = -1;
+		}
 	}
 	fflush ( stdout );
 	return ( iRes );

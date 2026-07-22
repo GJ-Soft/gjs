@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                             TiempoNumerico.cpp                             */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Tiempo                                                          */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Tiempo                                                          */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de las rutinas     */
-/* de conversión entre tiempo formateado y tiempo numérico, así como de       */
-/* operación numérica de tiempos y consulta general del calendario.        *  */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de las rutinas     */
+/* de conversiï¿½n entre tiempo formateado y tiempo numï¿½rico, asï¿½ como de       */
+/* operaciï¿½n numï¿½rica de tiempos y consulta general del calendario.        *  */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -131,7 +131,7 @@ double TmpFormConstruirExt ( int iA, int iM, int iD, int iH, int iMi, int iS )
 	long	lHora;
 	long	lFecha;
 
-	lFecha = FecFormConstruir ( iM, iM, iD );
+	lFecha = FecFormConstruir ( iA, iM, iD );
 	lHora = HorFormConstruir ( iH, iMi, iS );
 	dRes = TmpFormConstruir ( lFecha, lHora );
 	return ( dRes );
@@ -179,7 +179,7 @@ long long TmpFormConstruirExtLL ( int iA, int iM, int iD, int iH, int iMi, int i
 	long	lHora;
 	long	lFecha;
 
-	lFecha = FecFormConstruir ( iM, iM, iD );
+	lFecha = FecFormConstruir ( iA, iM, iD );
 	lHora = HorFormConstruir ( iH, iMi, iS );
 	llRes = TmpFormConstruirLL ( lFecha, lHora );
 	return ( llRes );

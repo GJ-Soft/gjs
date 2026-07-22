@@ -12,7 +12,7 @@
 	<artifactId>gjs-cpp-common-time</artifactId>
 	<packaging>nar</packaging>
 
-	<name>GJS C++ Common Support</name>
+	<name>GJS C++ Common Datetime Support</name>
 	<description>Base time and date components and tools for C++ project archetypes</description>
 	
 	<properties>

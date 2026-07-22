@@ -22,17 +22,25 @@
 	
 #else
 
+#	include <winbase.h>
 #	include <windef.h>
 #	include <winnt.h>
+# if ( defined ( CYGWIN ) )
+#	include <unistd.h>
+# endif
 #	include <io.h>
 
 #endif
 
 
 #if ( defined ( WIN ) )
-#	if ( !defined ( INVALID_FILE_ATTRIBUTES ) )
-#		define INVALID_FILE_ATTRIBUTES		((DWORD)-1)
-#	endif
+	/* En Cygwin/LP64 DWORD es unsigned long de 64 bits, por lo que el
+	   (DWORD)-1 de las cabeceras vale 0xFFFFFFFFFFFFFFFF y NO coincide con el
+	   0x00000000FFFFFFFF (32 bits a 1 extendidos con ceros) que devuelve
+	   GetFileAttributes al fallar. Forzamos un centinela de 32 bits para que
+	   la comparacion de existencia funcione tanto en 32 como en 64 bits. */
+#	undef  INVALID_FILE_ATTRIBUTES
+#	define INVALID_FILE_ATTRIBUTES		((DWORD)0xFFFFFFFFUL)
 #endif
 
 
@@ -70,9 +78,6 @@
 #define SF_PATRON_RUTA_WIN			"?:\\(?*\\)(?*)"
 #define SF_PATRON_RUTA_REL_WIN		".(\\?*)"		
 #define SF_PATRON_RUTA_REL_WIN_2	"..(\\?*)"	
-#define SF_PATRON_DIRECTORIO		"/?*(/?*)"
-#define SF_PATRON_DIRECTORIO_WIN	"?:\\?*(\\?*)"
-#define SF_PATRON_DIRECTORIO_WIN_2	"?:/?*(/?*)"
 #define SF_PATRON_SUBDIRECTORIO		"?*"
 #define SF_PATRON_FICHERO			"?*.?*"
 #define SF_PATRON_FICHERO_2			"?*"

@@ -152,20 +152,27 @@ bool CoherenciaCorchetes ( const string & sCadena  )
 bool CoherenciaParejaSignos ( const string & sCadena, char cSigAp, char cSigCl )
 {
   	int iAbiertos = 0;
-	bool bAbierto = false;
-    for ( size_t pos = 0; pos < sCadena.size(); pos = pos + 1 )
+	bool bCoherente = true;
+    for ( size_t pos = 0; bCoherente && ( pos < sCadena.size() ); pos = pos + 1 )
     {
         if ( sCadena.at( pos ) == cSigAp )
         {
             iAbiertos = iAbiertos + 1;
-			bAbierto = true;
         }
-        else if ( bAbierto && sCadena.at( pos ) == cSigCl )
+        else if ( sCadena.at( pos ) == cSigCl )
         {
-            iAbiertos = iAbiertos - 1;
+			if ( iAbiertos > 0 )
+			{
+	            iAbiertos = iAbiertos - 1;
+			}
+			else
+			{
+				// Cierre sin apertura previa: incoherente.
+				bCoherente = false;
+			}
         }
     }
-	return ( iAbiertos == 0 );
+	return ( bCoherente && ( iAbiertos == 0 ) );
 }
 
 string EliminarCaracter ( const string & sCadena, int iCar )

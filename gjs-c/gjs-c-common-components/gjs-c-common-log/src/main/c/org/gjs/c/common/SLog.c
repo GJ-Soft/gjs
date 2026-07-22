@@ -22,6 +22,8 @@ SLog * SLogCrearDef ()
 	if ( ES_VALIDO ( p_logObj ) )
 	{
 		SLogInicializar ( p_logObj );
+		SLogEstNombreProcesoLit ( p_logObj, LOG_TXT_NOMBRE_DEFECTO );
+		SLogEstablecerDirectorioLit ( p_logObj, SisDirectorioActual () );
 	}
 	return ( p_logObj );
 }
@@ -34,6 +36,7 @@ SLog * SLogCrearDirLit ( const char * p_cDir )
 	if ( ES_VALIDO ( p_logObj ) )
 	{
 		SLogInicializar ( p_logObj );
+		SLogEstNombreProcesoLit ( p_logObj, LOG_TXT_NOMBRE_DEFECTO );
 		SLogEstablecerDirectorioLit ( p_logObj, p_cDir );
 	}
 	return ( p_logObj );
@@ -47,6 +50,7 @@ SLog * SLogCrearDir ( SCadena * p_cadDir )
 	if ( ES_VALIDO ( p_logObj ) )
 	{
 		SLogInicializar ( p_logObj );
+		SLogEstNombreProcesoLit ( p_logObj, LOG_TXT_NOMBRE_DEFECTO );
 		SLogEstablecerDirectorio ( p_logObj, p_cadDir );
 	}
 	return ( p_logObj );
@@ -60,8 +64,8 @@ SLog * SLogCrearLit ( const char * p_cDir, const char * p_cFic )
 	if ( ES_VALIDO ( p_logObj ) )
 	{
 		SLogInicializar ( p_logObj );
-		SLogEstablecerDirectorioLit ( p_logObj, p_cDir );
 		SLogEstablecerFicheroLit ( p_logObj, p_cFic );
+		SLogEstablecerDirectorioLit ( p_logObj, p_cDir );
 	}
 	return ( p_logObj );
 }
@@ -74,8 +78,8 @@ SLog * SLogCrear ( SCadena * p_cadDir, SCadena * p_cadFic )
 	if ( ES_VALIDO ( p_logObj ) )
 	{
 		SLogInicializar ( p_logObj );
-		SLogEstablecerDirectorio ( p_logObj, p_cadDir );
 		SLogEstablecerFichero ( p_logObj, p_cadFic );
+		SLogEstablecerDirectorio ( p_logObj, p_cadDir );
 	}
 	return ( p_logObj );
 }
@@ -120,6 +124,8 @@ void SLogDestruir ( SLog ** p_p_logObj )
 				SFicTxtCerrar ( p_logObj->p_ficLog );
 			}
 			SLogFinalizar ( p_logObj );
+			SCadDestruir ( &(p_logObj->p_cadNomProceso) );
+			SFecHorDestruir ( &(p_logObj->p_fechLog) );
 			MemLiberar ( (void **) p_p_logObj );
 		}
 	}
@@ -1068,6 +1074,7 @@ static void SLogGenerarNombreFichero ( SLog * p_logObj )
 {
 	const char * 	p_cHora;
 	SCadenaConv *	p_cadNombre;
+	long			lPID;
 
 	if ( p_logObj->iIniciado == 0 )
 	{
@@ -1129,11 +1136,24 @@ static void SLogGenerarNombreFichero ( SLog * p_logObj )
 			if ( p_logObj->iPIDEnNombre == 1 )
 			{
 				SCadcConcatenarCaracter ( p_cadNombre, '_' );
-				SCadcConcatenarEnteroLargo ( p_cadNombre, AplicPID () );
+				lPID = AplicPID ();
+				if ( lPID < 0 )
+				{
+					lPID = SisPID ();
+				}
+				SCadcConcatenarEnteroLargo ( p_cadNombre, lPID );
 			}
 			SCadcConcatenarCaracter ( p_cadNombre, '.' );
 			SCadcConcatenarLit ( p_cadNombre, LOG_EXT_NOM_FICHERO_DEF );
-			p_logObj->p_ficLog = SFicTxtCrear( SCadcValor ( p_cadNombre ) );
+			if ( ES_NULO ( p_logObj->p_ficLog ) )
+			{
+				p_logObj->p_ficLog = SFicTxtCrear ( SCadcValor ( p_cadNombre ) );
+			}
+			else
+			{
+				SFicTxtEstablecerRutaExt ( p_logObj->p_ficLog, SFicTxtDirectorio ( p_logObj->p_ficLog ), SCadcValor ( p_cadNombre ) );
+			}
+			
 			SCadcDestruir ( &p_cadNombre );
 		}
 	}
@@ -1150,7 +1170,7 @@ void SLogGestionarCambioFichero ( SLog * p_logObj )
 		SLogAnotarLitForzado ( p_logObj, "(Continua en el fichero siguiente)." );
 		SLogFinalizar ( p_logObj );
 		SLogGenerarNombreFichero ( p_logObj );
-		SLogIniciar (p_logObj );
+		SLogIniciar ( p_logObj );
 		SLogAnotarLitForzado ( p_logObj, "(Continuación del fichero anterior)." );
 		iGestionando = 0;
 	}

@@ -57,7 +57,7 @@ template <class T> bool MapaVector<T>::exists( const string & sClave )
 
 template <class T> T& MapaVector<T>::at( size_t pos )
 {
-	if ( pos > vecOrden.size() )
+	if ( pos >= vecOrden.size() )
 	{
 		throw range_error( "Valor no encontrado" );
 	}

@@ -23,20 +23,20 @@ extern int TestSTablaRealesDobles ();
 char ** testArrayInit ()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *));
-    p_p_cTests[ 0 ] = CadDuplicar ( "Angulos" );
-    p_p_cTests[ 1 ] = CadDuplicar ( "Radianes" );
-    p_p_cTests[ 2 ] = CadDuplicar ( "Gradianes" );
-    p_p_cTests[ 3 ] = CadDuplicar ( "Epsilon" );
-    p_p_cTests[ 4 ] = CadDuplicar ( "CalculoOperaciones" );
-    p_p_cTests[ 5 ] = CadDuplicar ( "SIntervalo" );
-    p_p_cTests[ 6 ] = CadDuplicar ( "SFormaLineal" );
-    p_p_cTests[ 7 ] = CadDuplicar ( "SExtremoDominioReal" );
-    p_p_cTests[ 8 ] = CadDuplicar ( "SFuncionReal" );
-    p_p_cTests[ 9 ] = CadDuplicar ( "SListaRealesDobles" );
-    p_p_cTests[ 10 ] = CadDuplicar ( "SVectorRealesDobles" );
-    p_p_cTests[ 11 ] = CadDuplicar ( "SPilaRealesDobles" );
-    p_p_cTests[ 12 ] = CadDuplicar ( "SSecuenciaRealesDobles" );
-    p_p_cTests[ 13 ] = CadDuplicar ( "STablaRealesDobles" );
+    p_p_cTests[ 0 ] = CadDuplicar ( "AngulosTest" );
+    p_p_cTests[ 1 ] = CadDuplicar ( "RadianesTest" );
+    p_p_cTests[ 2 ] = CadDuplicar ( "GradianesTest" );
+    p_p_cTests[ 3 ] = CadDuplicar ( "EpsilonTest" );
+    p_p_cTests[ 4 ] = CadDuplicar ( "CalculoOperacionesTest" );
+    p_p_cTests[ 5 ] = CadDuplicar ( "SIntervaloTest" );
+    p_p_cTests[ 6 ] = CadDuplicar ( "SFormaLinealTest" );
+    p_p_cTests[ 7 ] = CadDuplicar ( "SExtremoDominioRealTest" );
+    p_p_cTests[ 8 ] = CadDuplicar ( "SFuncionRealTest" );
+    p_p_cTests[ 9 ] = CadDuplicar ( "SListaRealesDoblesTest" );
+    p_p_cTests[ 10 ] = CadDuplicar ( "SVectorRealesDoblesTest" );
+    p_p_cTests[ 11 ] = CadDuplicar ( "SPilaRealesDoblesTest" );
+    p_p_cTests[ 12 ] = CadDuplicar ( "SSecuenciaRealesDoblesTest" );
+    p_p_cTests[ 13 ] = CadDuplicar ( "STablaRealesDoblesTest" );
     return p_p_cTests;
 }
 

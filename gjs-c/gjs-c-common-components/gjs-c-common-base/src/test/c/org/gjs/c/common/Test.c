@@ -29,27 +29,27 @@ extern int TestVersiones ();
 char ** testArrayInit ()
 {
     char ** p_p_cTests = (char **) MemReservar ( NUM_TESTS * sizeof( char *) );
-    p_p_cTests[  0 ] = CadDuplicar ( "CadenasBase" );
-    p_p_cTests[  1 ] = CadDuplicar ( "FormatoCadena" );
-    p_p_cTests[  2 ] = CadDuplicar ( "SConversor" );
-    p_p_cTests[  3 ] = CadDuplicar ( "Nibble" );
-    p_p_cTests[  4 ] = CadDuplicar ( "Byte" );
-    p_p_cTests[  5 ] = CadDuplicar ( "Word" );
-    p_p_cTests[  6 ] = CadDuplicar ( "DWord" );
-    p_p_cTests[  7 ] = CadDuplicar ( "Bits" );
-    p_p_cTests[  8 ] = CadDuplicar ( "Hexadecimal" );
-    p_p_cTests[  9 ] = CadDuplicar ( "Numeros" );
-    p_p_cTests[ 10 ] = CadDuplicar ( "Booleano" );
-    p_p_cTests[ 11 ] = CadDuplicar ( "Intercambios" );
-    p_p_cTests[ 12 ] = CadDuplicar ( "OrdenBytes" );
-    p_p_cTests[ 13 ] = CadDuplicar ( "Tipos" );
-    p_p_cTests[ 14 ] = CadDuplicar ( "ConversionesTipos" );
-    p_p_cTests[ 15 ] = CadDuplicar ( "Memoria" );
-    p_p_cTests[ 16 ] = CadDuplicar ( "Errores" );
-    p_p_cTests[ 17 ] = CadDuplicar ( "Hash" );
-    p_p_cTests[ 18 ] = CadDuplicar ( "ASCIIEstandar" );
-    p_p_cTests[ 19 ] = CadDuplicar ( "UniChar" );
-    p_p_cTests[ 20 ] = CadDuplicar ( "Versiones" );
+    p_p_cTests[  0 ] = CadDuplicar ( "CadenasBaseTest" );
+    p_p_cTests[  1 ] = CadDuplicar ( "FormatoCadenaTest" );
+    p_p_cTests[  2 ] = CadDuplicar ( "SConversorTest" );
+    p_p_cTests[  3 ] = CadDuplicar ( "NibbleTest" );
+    p_p_cTests[  4 ] = CadDuplicar ( "ByteTest" );
+    p_p_cTests[  5 ] = CadDuplicar ( "WordTest" );
+    p_p_cTests[  6 ] = CadDuplicar ( "DWordTest" );
+    p_p_cTests[  7 ] = CadDuplicar ( "BitsTest" );
+    p_p_cTests[  8 ] = CadDuplicar ( "HexadecimalTest" );
+    p_p_cTests[  9 ] = CadDuplicar ( "NumerosTest" );
+    p_p_cTests[ 10 ] = CadDuplicar ( "BooleanoTest" );
+    p_p_cTests[ 11 ] = CadDuplicar ( "IntercambiosTest" );
+    p_p_cTests[ 12 ] = CadDuplicar ( "OrdenBytesTest" );
+    p_p_cTests[ 13 ] = CadDuplicar ( "TiposTest" );
+    p_p_cTests[ 14 ] = CadDuplicar ( "ConversionesTiposTest" );
+    p_p_cTests[ 15 ] = CadDuplicar ( "MemoriaTest" );
+    p_p_cTests[ 16 ] = CadDuplicar ( "ErroresTest" );
+    p_p_cTests[ 17 ] = CadDuplicar ( "HashTest" );
+    p_p_cTests[ 18 ] = CadDuplicar ( "ASCIIEstandarTest" );
+    p_p_cTests[ 19 ] = CadDuplicar ( "UniCharTest" );
+    p_p_cTests[ 20 ] = CadDuplicar ( "VersionesTest" );
     return p_p_cTests;
 }
 

@@ -39,7 +39,7 @@ SCadena * SArbCadRaiz ( SArbolCadenas * p_arbObj )
 	
 	if ( ES_VALIDO ( p_arbObj ) )
 	{
-		p_cadRes = (SCadena *) SArbPtrRaiz ( p_arbObj->p_arbContenido );
+		p_cadRes = (SCadena *) SNodPtrDatos ( SArbPtrRaiz ( p_arbObj->p_arbContenido ) );
 	}
 	else
 	{
@@ -59,6 +59,7 @@ int SArbCadEstablecerRaiz ( SArbolCadenas * p_arbObj, SCadena * p_cadValor )
 		if ( SNodPtrEsValido  ( p_nodpObj ) == 1 )
 		{
 			iRes = SArbPtrEstablecerRaiz ( p_arbObj->p_arbContenido, p_nodpObj );
+			
 		}
 		else
 		{

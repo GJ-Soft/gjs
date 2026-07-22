@@ -356,7 +356,7 @@ bool TestLog05 ()
 		// TODO: log4cxx coge las propiedades pero no las encuentra al realizar la sustitucion por un bug
 		//map<string, string> mapPropiedades = LogPropiedadesDefecto ( "TestLog05" );
 		map<string, string> mapPropiedades;
-		if ( ! LogIni ( "../../test-classes/config/file-log.xml", mapPropiedades ) )
+		if ( ! LogIni ( "../config/file-log.xml", mapPropiedades ) )
 		{
 			cout << "Funcionalidad de log no inicializada" << endl;
 			bRes = false;
@@ -388,6 +388,293 @@ bool TestLog05 ()
 		catch ( const exception & ex )
 		{
 			cout << "Error al consultar el contenido del log: " << ex.what () << endl;
+			bRes = false;
+		}
+	}
+
+	try
+	{
+		LogFin ();
+	}
+	catch ( ... )
+	{
+		cout << "Error al finalizar la funcionalidad de log" << endl;
+		bRes = false;
+	}
+	return( bRes );
+}
+
+
+bool TestLog06 ()
+{
+	cout << "Test Log06: Configuracion por consola (console-log.xml)" << endl;
+	bool bRes = true;
+	try
+	{
+		if ( ! LogIni ( "../config/console-log.xml" ) )
+		{
+			cout << "Funcionalidad de log no inicializada" << endl;
+			bRes = false;
+		}
+	}
+	catch ( const exception & ex )
+	{
+		cout << "Error al inicializar la funcionalidad de log: " << ex.what () << endl;
+		bRes = false;
+	}
+
+	if ( bRes )
+	{
+		cout << "Log inicializado" << endl << endl;
+		// El XML solo tiene un ConsoleAppender: debe detectarse salida por consola.
+		if ( ! LogHaySalidaPorConsola () )
+		{
+			cout << "La configuracion de consola deberia haber creado un appender de consola" << endl;
+			bRes = false;
+		}
+		bRes = TestContenidoMinimo () && bRes;
+	}
+
+	try
+	{
+		LogFin ();
+	}
+	catch ( ... )
+	{
+		cout << "Error al finalizar la funcionalidad de log" << endl;
+		bRes = false;
+	}
+	return( bRes );
+}
+
+bool TestLog07 ()
+{
+	cout << "Test Log07: Configuracion por fichero y consola (file-console-log.xml)" << endl;
+	bool bRes = true;
+	// Se limpia una posible salida de una ejecucion anterior para que la
+	// comprobacion de "fichero creado" sea significativa.
+	if ( ExisteFichero ( "ejemplo.log" ) )
+	{
+		EliminarFichero ( "ejemplo.log" );
+	}
+	try
+	{
+		if ( ! LogIni ( "../config/file-console-log.xml" ) )
+		{
+			cout << "Funcionalidad de log no inicializada" << endl;
+			bRes = false;
+		}
+	}
+	catch ( const exception & ex )
+	{
+		cout << "Error al inicializar la funcionalidad de log: " << ex.what () << endl;
+		bRes = false;
+	}
+
+	if ( bRes )
+	{
+		cout << "Log inicializado" << endl << endl;
+		// El XML tiene ConsoleAppender + FileAppender: debe haber salida por consola.
+		if ( ! LogHaySalidaPorConsola () )
+		{
+			cout << "La configuracion deberia incluir salida por consola" << endl;
+			bRes = false;
+		}
+		bRes = TestContenidoMinimo () && bRes;
+		try
+		{
+			if ( ExisteFichero ( "ejemplo.log" ) )
+			{
+				cout << ANSI::SUBRAYADO_INI << "Contenido del fichero:" << ANSI::SUBRAYADO_FIN << endl;
+				ImprimirFichero ( "ejemplo.log" );
+			}
+			else
+			{
+				cout << "No se ha creado el fichero" << endl;
+				bRes = false;
+			}
+		}
+		catch ( const exception & ex )
+		{
+			cout << "Error al consultar el contenido del log: " << ex.what () << endl;
+			bRes = false;
+		}
+	}
+
+	try
+	{
+		LogFin ();
+	}
+	catch ( ... )
+	{
+		cout << "Error al finalizar la funcionalidad de log" << endl;
+		bRes = false;
+	}
+	return( bRes );
+}
+
+
+bool TestLog08 ()
+{
+	cout << "Test Log08: Nivel (set/get)" << endl;
+	bool bRes = true;
+	try
+	{
+		if ( ! LogIniConsola () )
+		{
+			cout << "Funcionalidad de log no inicializada" << endl;
+			bRes = false;
+		}
+	}
+	catch ( const exception & ex )
+	{
+		cout << "Error al inicializar la funcionalidad de log: " << ex.what () << endl;
+		bRes = false;
+	}
+
+	if ( bRes )
+	{
+		// El nivel establecido debe poder recuperarse ( round-trip por cada nivel ).
+		Nivel niveles [] = { Nivel::TRAZA, Nivel::DEPUR, Nivel::INFO, Nivel::AVISO, Nivel::ERROR, Nivel::FATAL };
+		int iNum = (int) ( sizeof ( niveles ) / sizeof ( niveles [ 0 ] ) );
+		for ( int i = 0; i < iNum; i = i + 1 )
+		{
+			LogSetNivel ( niveles [ i ] );
+			if ( LogGetNivel () != niveles [ i ] )
+			{
+				cout << "Caso 1: se esperaba el nivel [" << static_cast<int> ( niveles [ i ] )
+					 << "] y se obtuvo [" << static_cast<int> ( LogGetNivel () ) << "]" << endl;
+				bRes = false;
+			}
+		}
+		// Variante que establece el nivel por entero.
+		LogSetNivel ( ToInt ( Nivel::AVISO ) );
+		if ( LogGetNivel () != Nivel::AVISO )
+		{
+			cout << "Caso 2: se esperaba AVISO tras establecer por entero: [" << static_cast<int> ( LogGetNivel () ) << "]" << endl;
+			bRes = false;
+		}
+		// Conversores auxiliares ToNivel/ToInt.
+		if ( ToNivel ( ToInt ( Nivel::INFO ) ) != Nivel::INFO )
+		{
+			cout << "Caso 3: ToNivel(ToInt(INFO)) deberia ser INFO" << endl;
+			bRes = false;
+		}
+	}
+
+	try
+	{
+		LogFin ();
+	}
+	catch ( ... )
+	{
+		cout << "Error al finalizar la funcionalidad de log" << endl;
+		bRes = false;
+	}
+	return( bRes );
+}
+
+
+bool TestLog09 ()
+{
+	cout << "Test Log09: Activar/Desactivar log" << endl;
+	bool bRes = true;
+	try
+	{
+		if ( ! LogIniConsola () )
+		{
+			cout << "Funcionalidad de log no inicializada" << endl;
+			bRes = false;
+		}
+	}
+	catch ( const exception & ex )
+	{
+		cout << "Error al inicializar la funcionalidad de log: " << ex.what () << endl;
+		bRes = false;
+	}
+
+	if ( bRes )
+	{
+		LogSetNivel ( Nivel::INFO );
+		if ( ! LogActivado () )
+		{
+			cout << "Caso 1: el log deberia estar activado tras fijar un nivel" << endl;
+			bRes = false;
+		}
+		LogDesactivar ();
+		if ( LogActivado () )
+		{
+			cout << "Caso 2: el log deberia estar desactivado" << endl;
+			bRes = false;
+		}
+		LogActivar ();
+		if ( ! LogActivado () )
+		{
+			cout << "Caso 3: el log deberia haberse reactivado" << endl;
+			bRes = false;
+		}
+		// Al reactivar debe restaurarse el nivel que habia antes de desactivar.
+		if ( LogGetNivel () != Nivel::INFO )
+		{
+			cout << "Caso 4: tras reactivar deberia recuperarse el nivel INFO: [" << static_cast<int> ( LogGetNivel () ) << "]" << endl;
+			bRes = false;
+		}
+	}
+
+	try
+	{
+		LogFin ();
+	}
+	catch ( ... )
+	{
+		cout << "Error al finalizar la funcionalidad de log" << endl;
+		bRes = false;
+	}
+	return( bRes );
+}
+
+bool TestLog10 ()
+{
+	cout << "Test Log10: Activar/Desactivar consola" << endl;
+	bool bRes = true;
+	try
+	{
+		// Se usa un xml con ConsoleAppender para que el appender de consola quede
+		// registrado ( LogIniConsola no lo expone por el estado interno del modulo ).
+		if ( ! LogIni ( "../config/console-log.xml" ) )
+		{
+			cout << "Funcionalidad de log no inicializada" << endl;
+			bRes = false;
+		}
+	}
+	catch ( const exception & ex )
+	{
+		cout << "Error al inicializar la funcionalidad de log: " << ex.what () << endl;
+		bRes = false;
+	}
+
+	if ( bRes )
+	{
+		if ( ! LogHaySalidaPorConsola () )
+		{
+			cout << "Caso 1: deberia haber salida por consola con console-log.xml" << endl;
+			bRes = false;
+		}
+		if ( ! LogSalidaPorConsolaActivada () )
+		{
+			cout << "Caso 2: la salida por consola deberia estar activada inicialmente" << endl;
+			bRes = false;
+		}
+		LogDesactivarConsola ();
+		if ( LogSalidaPorConsolaActivada () )
+		{
+			cout << "Caso 3: la salida por consola deberia estar desactivada" << endl;
+			bRes = false;
+		}
+		LogActivarConsola ();
+		if ( ! LogSalidaPorConsolaActivada () )
+		{
+			cout << "Caso 4: la salida por consola deberia haberse reactivado" << endl;
 			bRes = false;
 		}
 	}
@@ -446,6 +733,51 @@ bool TestLog ()
 		bRes = false;
 	}
 	if ( TestLog05 () )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestLog06 () )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestLog07 () )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestLog08 () )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestLog09 () )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestLog10 () )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
 	}

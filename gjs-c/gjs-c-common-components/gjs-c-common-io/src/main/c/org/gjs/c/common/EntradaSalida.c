@@ -3,6 +3,42 @@
 #include "FicherosConfig.h"
 
 
+/* 0 = cerrado, 1 = abierto pero redirigido, 2 = abierto y es terminal */
+int SisEstadoDescriptor ( int iDescriptor )
+{
+	int iRes;
+	
+#if ( defined ( WIN ) )
+      intptr_t h = _get_osfhandle ( iDescriptor );
+      if ( ( h == -1 ) || ( h == -2 ) )
+      {
+			iRes = 0;          /* sin descriptor / sin consola */
+      }
+# if ( defined ( CYGWIN ) )
+      else if ( isatty ( iDescriptor ) )
+# else
+      else if ( _isatty ( iDescriptor ) )
+# endif
+      {
+			iRes = 2;          /* consola */
+      }
+#else
+	if ( fcntl ( iDescriptor, F_GETFD ) == -1 )   /* errno == EBADF */
+	{
+		iRes = 0;
+	}
+	else if ( isatty ( iDescriptor ) == 1 )
+	{
+		iRes = 2;
+	}
+#endif
+	else
+	{
+		iRes = 1;
+	}
+    return ( iRes );
+}
+
 int SisObtenerDescriptor ( FILE * p_fObj )
 {
 	int iRes; 

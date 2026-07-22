@@ -79,12 +79,40 @@ static int TestFrmCadena01 ()
 	return ( iRes );
 }
 
+static int TestFrmCadena02 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test FrmCadena 02:\n" );
+	char * p_cDestino = CadCrear ( 30 );
+	if ( p_cDestino != NULL )
+	{
+		va_list	valArgumentos = _ObtenerArgumentos ( "Cadena" );
+		int iResult = FrmCadena ( p_cDestino, "Cadena", valArgumentos, 30 );
+		va_end ( valArgumentos );
+		if ( iResult == 1 ) 
+		{
+			if ( strcmp ( p_cDestino, "Cadena" ) != 0 ) 
+			{
+				printf( "Error caso 1: La cadena formateada no es la esperada: [%s]\n", p_cDestino );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		else
+		{
+			printf( "Error: Se esperada resultado 1 pero se ha recibido %d\n", iResult );
+			iRes = BOOL_VAL_FALSO;
+		} 
+		MemLiberar ( (void **) &p_cDestino );
+	}
+	return ( iRes );
+}
 
 int TestFormatoCadena ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test FormatoCadena]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
-	if ( ( TestFrmCadena01() == BOOL_VAL_CIERTO ) )
+	if ( ( TestFrmCadena01 () == BOOL_VAL_CIERTO ) &&
+			( TestFrmCadena02 () == BOOL_VAL_CIERTO ))
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

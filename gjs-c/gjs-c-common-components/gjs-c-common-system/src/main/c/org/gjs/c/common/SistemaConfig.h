@@ -62,6 +62,7 @@
 #		include <windef.h>
 #		include <winnt.h>
 #		include <Tlhelp32.h>
+#		include <shellapi.h>
 
 #		if ( WINVER >= 0x500 )
 #			include <Psapi.h>

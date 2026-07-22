@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                                 CVersion.h                                 */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Aplicacion                                                      */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Aplicacion                                                      */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de cabecera que contiene la definición de la clase de datos        */
-/* CVersion, destinada a almacenar algunos datos relativos a al versión y     */
-/* autoría, así como informaciones generales, de una librería o aplicación.   */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cabecera que contiene la definiciï¿½n de la clase de datos        */
+/* CVersion, destinada a almacenar algunos datos relativos a al versiï¿½n y     */
+/* autorï¿½a, asï¿½ como informaciones generales, de una librerï¿½a o aplicaciï¿½n.   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -44,8 +44,8 @@ private:
 
 public:
 	Version ();
-	Version ( int _iVersion, int _iSubversion = 0, int _iRevision = 0, long lFecVersion = 0 );
-	Version ( int _iVersion, int _iSubversion = 0, int _iRevision = 0, const ::org::gjs::cpp::common::Fecha & fecVersion = ::org::gjs::cpp::common::Fecha{} );
+	Version ( int iVersion, int iSubversion = 0, int iRevision = 0, long lFecVersion = 0 );
+	Version ( int iVersion, int iSubversion = 0, int iRevision = 0, const ::org::gjs::cpp::common::Fecha & fecVersion = ::org::gjs::cpp::common::Fecha{} );
 
 	virtual ~Version ();
 
@@ -53,20 +53,20 @@ public:
 	int Subver () const;
 	int Rev () const;
 	::org::gjs::cpp::common::Fecha Fecha () const;
-	std::string CadenaVersion ( int iCorta = 0 );
+	std::string CadenaVersion ( bool bCorta = false );
 	
 	bool EsValida ();
 
 private:
-	bool EstablecerVer ( int _iVersion );
-	bool EstablecerSubver ( int _iSubversion );
-	bool EstablecerRev ( int _iRevision );
+	bool EstablecerVer ( int iVersion );
+	bool EstablecerSubver ( int iSubversion );
+	bool EstablecerRev ( int iRevision );
 	bool EstablecerFecha ( long lFecVersion );
 	bool EstablecerFecha ( const ::org::gjs::cpp::common::Fecha & fecVersion );
 
 public:
-	bool Establecer ( int _iVersion, int _iSubversion = 0, int _iRevision = 0, long lFecVersion = 0 );
-	bool Establecer ( int _iVersion, int _iSubversion = 0, int _iRevision = 0, const ::org::gjs::cpp::common::Fecha & fecVersion = ::org::gjs::cpp::common::Fecha{} );
+	bool Establecer ( int iVersion, int iSubversion = 0, int iRevision = 0, long lFecVersion = 0 );
+	bool Establecer ( int iVersion, int iSubversion = 0, int iRevision = 0, const ::org::gjs::cpp::common::Fecha & fecVersion = ::org::gjs::cpp::common::Fecha{} );
 
 	void Imprimir ();
 

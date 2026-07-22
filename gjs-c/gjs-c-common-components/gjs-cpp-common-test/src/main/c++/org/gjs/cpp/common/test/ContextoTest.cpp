@@ -1,5 +1,5 @@
-#include "ContextoTest.h"
 #include "CppTestConfig.h"
+#include "ContextoTest.h"
 
 
 using namespace std;
@@ -97,12 +97,15 @@ string DirectorioTest()
 
 string DirectorioTestRecursos()
 {
-	return( ResolverDirectorioRelativo( DirectorioTest(), "resources" ) );
+	/* Se prefija con "./" porque ResolverDirectorioRelativo solo compone la ruta
+	   cuando la parte relativa empieza por "." o ".."; sin el prefijo devolveria
+	   el directorio base sin anadir el subdirectorio. */
+	return( ResolverDirectorioRelativo( DirectorioTest(), "./resources" ) );
 }
 
 string DirectorioTestResultados()
 {
-	return( ResolverDirectorioRelativo( DirectorioTest(), "results" ) );
+	return( ResolverDirectorioRelativo( DirectorioTest(), "./results" ) );
 }
 
 				}

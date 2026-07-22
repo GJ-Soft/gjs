@@ -10,6 +10,7 @@
 
 
 int ModAprEsValido ( int iModo );
+int ModAprPermiteEscritura ( int iModo );
 
 
 #endif

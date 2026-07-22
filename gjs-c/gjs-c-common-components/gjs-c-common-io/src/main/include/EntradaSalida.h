@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+/* 0 = cerrado, 1 = abierto pero redirigido, 2 = abierto y es terminal */
+int SisEstadoDescriptor ( int iDescriptor );
 
 int SisObtenerDescriptor ( FILE * p_fObj );
 

@@ -106,6 +106,12 @@ void ConjuntoValores::InsertarValor ( const string & sAtributo, Valor * valor )
 	{
 		mapValores[ sAtributo ] = valor;
 	}
+	else
+	{
+		// No se inserta: el objeto es propiedad del conjunto, hay que liberarlo
+		// para no fugarlo (delete de NULL es inocuo).
+		delete valor;
+	}
 }
 
 void ConjuntoValores::InsertarValor ( const string & sAtributo, const string & _valor )

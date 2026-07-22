@@ -17,7 +17,17 @@ SEntradaExt * SEtxCrear ( const char * p_cNombre )
 	{
 		p_etxObj->p_cNombre = NULL;
 		p_etxObj->p_lisDefiniciones = SLisLitCrear ();
-		if ( SEtxEstablecerNombre ( p_etxObj,  p_cNombre ) == 0 )
+		if ( ES_VALIDO ( p_etxObj->p_lisDefiniciones ) )
+		{
+			if ( ES_VALIDO ( p_cNombre ) )
+			{
+				if ( SEtxEstablecerNombre ( p_etxObj,  p_cNombre ) == 0 )
+				{
+					SEtxDestruir ( &p_etxObj );
+				}
+			}
+		}
+		else
 		{
 			SEtxDestruir ( &p_etxObj );
 		}
@@ -50,9 +60,17 @@ void SEtxDestruir ( SEntradaExt ** p_p_etxObj )
 
 		if ( ES_VALIDO ( p_etxObj ) )
 		{
+			printf ( "***1 \n");
+			fflush(stdout);
 			MemLiberar ( (void **) &(p_etxObj->p_cNombre) );
+			printf ( "***2 \n");
+			fflush(stdout);
 			SLisLitDestruir ( &(p_etxObj->p_lisDefiniciones) );
+			printf ( "***3 \n");
+			fflush(stdout);
 			MemLiberar ( (void **) p_p_etxObj );
+			printf ( "***4 \n");
+			fflush(stdout);
 		}
 	}
 }
@@ -216,11 +234,17 @@ int SEtxEstablecerDefinicion ( SEntradaExt * p_etxObj, int iDef, const char * p_
 
 int SEtxInsertarDefinicion ( SEntradaExt * p_etxObj, const char * p_cDefinicion )
 {
-	int iRes;
+	int 	iRes;
+	char *	p_cCadenaDef;
 
 	if ( ES_VALIDO ( p_etxObj ) )
 	{
-		iRes = SLisLitInsertarAlFinal ( p_etxObj->p_lisDefiniciones, (char *) p_cDefinicion );
+		p_cCadenaDef = CadDuplicar ( p_cDefinicion );
+		iRes = SLisLitInsertarAlFinal ( p_etxObj->p_lisDefiniciones, p_cCadenaDef );
+		if ( iRes == 0 )
+		{
+			MemLiberarCadena ( &p_cCadenaDef );
+		}
 	}
 	else
 	{

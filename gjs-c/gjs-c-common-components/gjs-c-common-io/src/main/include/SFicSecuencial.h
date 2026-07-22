@@ -41,7 +41,6 @@ int SFicSecEstablecerRuta ( SFicSecuencial * p_ficObj, const char * p_cRuta );
 int SFicSecEstablecerRutaExt ( SFicSecuencial * p_ficObj, const char * p_cDir, const char * p_cFic );
 
 int SFicSecAbrir ( SFicSecuencial * p_ficObj, int iModo );
-int SFicSecAbrirExt ( SFicSecuencial * p_ficObj, int iModo, int iVaciar );
 int SFicSecCerrar ( SFicSecuencial * p_ficObj );
 
 int SFicSecEstaAbierto ( SFicSecuencial * p_ficObj );

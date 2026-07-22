@@ -1,17 +1,17 @@
 /******************************************************************************/
 /*                              InfoMemoria.cpp                               */
 /*----------------------------------------------------------------------------*/
-/* Librería:  GBase                                                           */
-/* Versión:   1.0.0                                                           */
+/* Librerï¿½a:  GBase                                                           */
+/* Versiï¿½n:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de las rutinas     */
-/* de consulta de la memoria dinámica reservada utilizando MemReservar, o     */
+/* Descripciï¿½n:                                                               */
+/* Fichero de cï¿½digo fuente que contiene la implementaciï¿½n de las rutinas     */
+/* de consulta de la memoria dinï¿½mica reservada utilizando MemReservar, o     */
 /* mediante objetos de clases que hereden de CClase.                          */
-/* También contiene rutinas para actualizar los contadores internos, que      */
-/* son internas de la librería y no deben conocerse desde fuera.              */
+/* Tambiï¿½n contiene rutinas para actualizar los contadores internos, que      */
+/* son internas de la librerï¿½a y no deben conocerse desde fuera.              */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -41,11 +41,15 @@ namespace org
             {
 
 
-/* Variables y tipos globales que podrán servir el el futuro para controlar la utilización de memoria: */
+/* Variables y tipos globales que podrï¿½n servir el el futuro para controlar la utilizaciï¿½n de memoria: */
 static unsigned long g_ulNumBloquesReservados = 0;
 static unsigned long g_ulNumBloquesLiberados = 0;
 static unsigned long g_ulNumBloques = 0;
 static unsigned long g_ulTamBloques = 0;
+
+/* Contadores de la memoria ocupada por los objetos (clases que heredan de Depurador): */
+static unsigned long g_ulNumObjetos = 0;
+static unsigned long g_ulTamObjetos = 0;
 
 
 #if ( defined ( MODO_DEPURACION_2 ) )
@@ -121,7 +125,7 @@ void _MemBloqueReservado ( void * p_vDir, unsigned long ulTam )
 	cout << "  { Reservado bloque memoria. Dir=" << (unsigned int) p_vDir << " Tam=" << ulTam << " }" << endl; 
 	//fprintf ( stdout, "  { Reservado bloque memoria. Dir=%X Tam=%lu }\n", (unsigned int) p_vDir, ulTam ); 
 	_GesMemReservar ( p_vDir, ulTam );
-	// Poner aquí las direcciones críticas que se quieran seguir:
+	// Poner aquï¿½ las direcciones crï¿½ticas que se quieran seguir:
 	/*
 	if ( ( ( (unsigned int) p_vDir == 0x14B820 ) && ( ulTam == 36 ) ) ||
 		 ( ( (unsigned int) p_vDir == 0x148288 ) && ( ulTam == 20 ) ) ||
@@ -156,6 +160,31 @@ void _MemBloqueLiberado ( void * p_vDir, unsigned long ulTam )
 	if ( g_ulNumBloques > 0 )
 	{
 		g_ulNumBloques = g_ulNumBloques - 1;
+	}
+}
+
+
+void _MemObjetoCreado ( unsigned long ulTam, unsigned int uiObjetos )
+{
+	(void) uiObjetos;
+	g_ulTamObjetos = g_ulTamObjetos + ulTam;
+	g_ulNumObjetos = g_ulNumObjetos + 1;
+}
+
+void _MemObjetoDestruido ( unsigned long ulTam, unsigned int uiObjetos )
+{
+	(void) uiObjetos;
+	if ( g_ulTamObjetos > ulTam )
+	{
+		g_ulTamObjetos = g_ulTamObjetos - ulTam;
+	}
+	else
+	{
+		g_ulTamObjetos = 0;
+	}
+	if ( g_ulNumObjetos > 0 )
+	{
+		g_ulNumObjetos = g_ulNumObjetos - 1;
 	}
 }
 
@@ -275,9 +304,9 @@ void MemImprimirInforme ( int iMostrarBloques )
 		{
 			if ( ( _g_p_mblqTabla [ iBloque ].p_vDireccion != NULL ) && ( _g_p_mblqTabla [ iBloque ].iLiberado == 0 ) )
 			{
-				cout << "   Direccion: " << hex 
-					<< (unsigned int) _g_p_mblqTabla [ iBloque ].p_vDireccion 
-					<< " (Tam= " _g_p_mblqTabla [ iBloque ].ulTam ) << endl; 
+				cout << "   Direccion: " << hex
+					<< (uintptr_t) _g_p_mblqTabla [ iBloque ].p_vDireccion
+					<< dec << " (Tam= " << _g_p_mblqTabla [ iBloque ].ulTam << ")" << endl;
 			}
 		}
 	}

@@ -19,11 +19,11 @@
 #define _ORG_GJS_C_CC_SISTEMAFICHEROS_H
 
 
-
-
+#include <BaseConfig.h>
 
 
 int SisEsDirectorioValido ( const char * p_cDirectorio );
+int SisEsDirectorioValidoSistema ( const char * p_cDirectorio );
 int SisEsSubdirectorioValido ( const char * p_cSubdirectorio );
 int SisEsFicheroValido ( const char * p_cFichero );
 int SisFicheroTieneExtension ( const char * p_cFichero );
@@ -57,6 +57,8 @@ char * SisRutaEstiloUnix ( const char * p_cRuta );
 char * SisRutaEstiloCygwin ( const char * p_cRuta );
 char * SisRutaEstiloSistema ( const char * p_cRuta );
 
+int SisEsRutaAbsoluta ( const char * p_cRuta );
+int SisEsRutaRelativa ( const char * p_cRuta );
 
 char * SisDirectorioActual ();
 int SisEstDirectorioActual ( const char * p_cDirectorio );
@@ -111,9 +113,9 @@ int SisEsFicheroDBF ( const char * p_cRuta );
 
 char * SisResolverDirectorioRelativo ( const char * p_cRutaBase, const char * p_cRutaRelativa );
 
-const char * SisDirectorioRaiz ();
+char * SisDirectorioRaiz ();
 #if ( defined ( WIN ) )
-const char * SisDirectorioRaizExt ( char cUnidad );
+char * SisDirectorioRaizExt ( char cUnidad );
 #endif
 char SisSeparadorRutaFicheros ();
 

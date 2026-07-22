@@ -1,16 +1,16 @@
 /******************************************************************************/
 /*                             SistemaFicheros.h                              */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Sistema                                                         */
-/* Versión:   3.0.0                                                           */
+/* Librerï¿½a:  Sistema                                                         */
+/* Versiï¿½n:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Ginï¿½s Jimï¿½nez Sï¿½nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
+/* Descripciï¿½n:                                                               */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas de      */
-/* de carácter general de operaciones con el sistema de ficheros.             */
+/* de carï¿½cter general de operaciones con el sistema de ficheros.             */
 /* Mantiene un objeto global privado de clase CSistemaFicheros que puede      */
-/* utilizarse para moverse por el árbol de directorios.                       */
+/* utilizarse para moverse por el ï¿½rbol de directorios.                       */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -18,6 +18,9 @@
 #ifndef _ORG_GJS_C_CC_CPP_SISTEMAFICHEROS_H
 #define _ORG_GJS_C_CC_CPP_SISTEMAFICHEROS_H
 
+
+
+#include <Precompilacion.h>
 
 #include <string>
 
@@ -33,7 +36,6 @@ namespace org
             {
 
 
-bool SisEsDirectorioValido ( const std::string & sDirectorio );
 bool SisEsSubdirectorioValido ( const std::string & sSubdirectorio );
 bool SisEsFicheroValido ( const std::string & sFichero );
 int SisFicheroTieneExtension ( const std::string & sFichero );
@@ -53,15 +55,27 @@ std::string SisRutaSubdirectorio ( const std::string & sRuta, int iNivel = -1 );
 std::string SisComponerRuta ( const std::string & sDirectorio, const std::string & sFichero, int iDirActualPorDef = 1 );
 std::string SisComponerRutaExt ( const std::string & sDirectorio, const std::string & sSubdirectorio, const std::string & sFichero, int iDirActualPorDef = 1 );
 
-std::string SisNormalizarRuta ( std::string & sRuta );
+std::string SisNormalizarRuta ( const std::string & sRuta );
+std::string SisNormalizarRutaWindows ( const std::string & sRuta );
 
 bool SisEsRutaValida ( const std::string & sRuta );
+bool SisEsRutaValidaSistema ( const std::string & sRuta );
+bool SisRutaEsEstiloWindows ( const std::string & sRuta );
+std::string SisRutaEstiloWindows ( const std::string & sRuta );
+std::string SisRutaEstiloWindowsExt ( const std::string & sRuta, char cUnidad );
+std::string SisRutaEstiloUnix ( const std::string & sRuta );
+std::string SisRutaEstiloCygwin ( const std::string & sRuta );
+std::string SisRutaEstiloSistema ( const std::string & sRuta );
+
+bool SisEsRutaAbsoluta ( const std::string & sRuta );
+bool SisEsRutaRelativa ( const std::string & sRuta );
 
 
 std::string SisDirectorioActual ();
 bool SisEstDirectorioActual ( const std::string & sDirectorio );
 
 std::string SisCadenaDirectorioSistema ();
+std::string SisCadenaDirectorioFuentes ();
 
 bool SisExisteFichero ( const std::string & sRuta );
 bool SisExisteFicheroExt ( const std::string & sDirectorio, const std::string & sFichero );
@@ -80,10 +94,10 @@ bool SisEliminarDirectorio ( const std::string & sDirectorio );
 bool SisEliminarDirectorioExt ( const std::string & sDirectorio, const std::string & sSubdirectorio );
 bool SisVaciarDirectorio ( const std::string & sDirectorio );
 bool SisVaciarDirectorioExt ( const std::string & sDirectorio, const std::string & sSubdirectorio );
-bool SisCopiarFichero ( const std::string & sRutaOrig, const std::string & sRutaDest, bool bEliminar = 1 );
-bool SisCopiarFicheroExt ( const std::string & sDirOrig, const std::string & sFicOrig, const std::string & sDirDest, const std::string & sFicDest = NULL, bool bEliminar = 1 );
-bool SisMoverFichero ( const std::string & sRutaOrig, const std::string & sRutaDest, bool bEliminar = 1 );
-bool SisMoverFicheroExt ( const std::string & sDirOrig, const std::string & sFicOrig, const std::string & sDirDest, const std::string & sFicDest = NULL, bool bEliminar = 1 );
+bool SisCopiarFichero ( const std::string & sRutaOrig, const std::string & sRutaDest, bool bEliminar = true );
+bool SisCopiarFicheroExt ( const std::string & sDirOrig, const std::string & sFicOrig, const std::string & sDirDest, const std::string & sFicDest = "", bool bEliminar = true );
+bool SisMoverFichero ( const std::string & sRutaOrig, const std::string & sRutaDest, bool bEliminar = true );
+bool SisMoverFicheroExt ( const std::string & sDirOrig, const std::string & sFicOrig, const std::string & sDirDest, const std::string & sFicDest = "", bool bEliminar = true );
 
 bool SisRutaComprimida ( const std::string & sRuta );
 bool SisRutaEncriptada ( const std::string & sRuta );
@@ -106,12 +120,18 @@ bool SisEsFicheroHTML ( const std::string & sRuta );
 bool SisEsFicheroSHP ( const std::string & sRuta );
 bool SisEsFicheroDBF ( const std::string & sRuta );
 
+std::string SisResolverDirectorioRelativo ( const std::string & sRutaBase, const std::string & sRutaRelativa );
 
-		
- 			}
+std::string SisDirectorioRaiz ();
+#if ( defined ( WIN ) )
+std::string SisDirectorioRaizExt ( char cUnidad );
+#endif
+char SisSeparadorRutaFicheros ();
+
+
+			}
 		}
 	}
 }
 
 #endif
-

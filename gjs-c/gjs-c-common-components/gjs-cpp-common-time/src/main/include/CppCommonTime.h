@@ -9,18 +9,14 @@
 #include <TiempoNumerico.h>
 #include <TiempoSistema.h>
 
-// TODO: Hay clases similares de procededencias diferentes que fusionar
+// Fecha unifica la antigua CFecha; Hora/FechaHora/Cronometro son el renombrado
+// de CHora/CFechaHora/CCronometro ( los nombres con C se han eliminado ).
 #include <Fecha.h>
-
-#include <CFecha.h>
-#include <CHora.h>
-#include <CFechaHora.h>
-#include <CCronometro.h>
-/*
 #include <Hora.h>
 #include <FechaHora.h>
-
 #include <Cronometro.h>
+/*
+// TODO: pendiente Reloj.
 #include <Reloj.h>
 */
 

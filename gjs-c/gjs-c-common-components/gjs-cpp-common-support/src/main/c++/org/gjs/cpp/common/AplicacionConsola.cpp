@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                           AplicacionConsola.cpp                            */
 /*----------------------------------------------------------------------------*/
-/* Librería:  Aplicacion                                                      */
-/* Versión:   3.0.0                                                           */
+/* Libreria:  Aplicacion                                                      */
+/* Version:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Ginés Jiménez Sánchez                                           */
+/* Autor:     Gines Jimenez Sanchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripción:                                                               */
-/* Fichero de código fuente que contiene la implementación de algunas         */
+/* Descripcion:                                                               */
+/* Fichero de codigo fuente que contiene la implementacion de algunas         */
 /* rutinas para manejo de la consola.                                         */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -38,7 +38,7 @@ static bool	g_bAplicConsolaDisponible = false;
 
 
 
-// PENDIENTE: ¿Como determinar si es WIN en modo consola o no?
+// PENDIENTE: Como determinar si es WIN en modo consola o no?
 //  PENDIENTE: Refinar para el caso GNU/UNIX y completar para el caso VC
 bool AplicConAbrir ()
 {
@@ -53,39 +53,31 @@ bool AplicConAbrir ()
 		AllocConsole ();
 #	 else
 #	   if ( defined ( VC ) )
-		// PENDIENTE: Quizás aquí haya que utilizar conio.h (evitar se puede):
 		iFilDesc = _open ( "/dev/tty", O_RDWR );
 		_dup2 ( iFilDesc, 0 );
 		_dup2 ( iFilDesc, 1 );
 		_dup2 ( iFilDesc, 2 );
-  
+
 		stdin = _fdopen ( 0, "r" );
 		stdout = _fdopen ( 1, "w" );
 		stderr = _fdopen ( 2, "w" );
-  
+
 		_setlinebuf ( stdin );
 		_setlinebuf ( stdout );
 		_setbuf ( stderr, NULL );
-  
-		//tcsetattr ( iFilDesc, TCSANOW, &console ); 
 #	   else // GNU:
-		// PENDIENTE: Verificar que esobra de todo esto:
 		iFilDesc = open ( "/dev/tty", O_RDWR );
-		tcgetattr ( iFilDesc, &trmioConsola ); 
+		tcgetattr ( iFilDesc, &trmioConsola );
 
 		dup2 ( iFilDesc, 0 );
 		dup2 ( iFilDesc, 1 );
 		dup2 ( iFilDesc, 2 );
 
-		//stdin = fdopen ( 0, "r" );
-		//p_fstdout = fdopen ( 1, "w" );
-		//p_fstderr = fdopen ( 2, "w" );
-
-		setvbuf(stdin, NULL, _IOLBF, 0);
-		setvbuf(stdout, NULL, _IOLBF, 0);;
+		setvbuf ( stdin, NULL, _IOLBF, 0 );
+		setvbuf ( stdout, NULL, _IOLBF, 0 );
 		setbuf ( stderr, NULL );
-  
-		tcsetattr ( iFilDesc, TCSANOW, &trmioConsola ); 
+
+		tcsetattr ( iFilDesc, TCSANOW, &trmioConsola );
 #	   endif
 #	 endif
 		g_bAplicConsolaDisponible = true;
@@ -93,7 +85,7 @@ bool AplicConAbrir ()
 	return ( g_bAplicConsolaDisponible );
 }
 
-// NOTA: En modo de depuración 2 no se permite cerrar la consola (es importante).
+// NOTA: En modo de depuracion 2 no se permite cerrar la consola (es importante).
 void AplicConCerrar ()
 {
 #  if ( !defined ( MODO_DEPURACION_2 ) )
@@ -118,28 +110,35 @@ bool AplicConEstaAbierta ()
 
 int AplicConAncho ()
 {
-	int							iRes;
-# if ( defined ( WIN ) )
-	HANDLE						hConsola;
-	CONSOLE_SCREEN_BUFFER_INFO	csbiObj;
-# endif
+	int	iRes = 0;
 
 	if ( g_bAplicConsolaDisponible )
 	{
 #	  if ( defined ( WIN ) )
-		hConsola = GetStdHandle ( STD_OUTPUT_HANDLE );
-		GetConsoleScreenBufferInfo ( hConsola, &csbiObj );
-		iRes = csbiObj.dwSize.X;
-
-#	  elif ( defined ( LINUX ) || defined ( UNIX ) )
-		// PENDIENTE
-		iRes = 0;
+		HANDLE						hConsola = GetStdHandle ( STD_OUTPUT_HANDLE );
+		CONSOLE_SCREEN_BUFFER_INFO	csbiObj;
+		// Se usa la ventana visible ( no el buffer ) y se comprueba el retorno.
+		if ( GetConsoleScreenBufferInfo ( hConsola, &csbiObj ) )
+		{
+			iRes = csbiObj.srWindow.Right - csbiObj.srWindow.Left + 1;
+		}
 #	  else
-		// PENDIENTE
-		iRes = 0;
+		struct winsize	wsObj;
+		if ( isatty ( STDOUT_FILENO ) && ( ioctl ( STDOUT_FILENO, TIOCGWINSZ, &wsObj ) == 0 ) )
+		{
+			iRes = (int) wsObj.ws_col;
+		}
 #	  endif
 	}
 	return ( iRes );
+}
+
+// Ancho "efectivo": el real de la consola, o CON_ANCHO_DEFECTO si no hay terminal
+// ( p.ej. con la salida redirigida en el build de tests ).
+static int _AplicConAnchoEfectivo ()
+{
+	int iAncho = AplicConAncho ();
+	return ( ( iAncho > 0 ) ? iAncho : CON_ANCHO_DEFECTO );
 }
 
 void AplicConLimpiar ()
@@ -182,7 +181,7 @@ int AplicConLeerNumero ()
 		iRes = -1;
 		while ( iRes == -1 )
 		{
-			while ( kbhit () == 0 ) 
+			while ( kbhit () == 0 )
 			{
 			}
 			iValor = getche ();
@@ -248,7 +247,7 @@ string * AplicConLeerCadena ()
 	while ( ( iFinal == 0 ) && ( iCar < CON_MAX_TAM_CADENA ) )
 	{
 #	  if ( defined ( VC ) )
-		while ( kbhit () == 0 ) 
+		while ( kbhit () == 0 )
 		{
 		}
 		iValor = getche ();
@@ -256,7 +255,7 @@ string * AplicConLeerCadena ()
 		{
 			iFinal = 1;
 		}
-		else if ( iValor == 8 ) 
+		else if ( iValor == 8 )
 		{
 			if ( iCar > 0 )
 			{
@@ -271,6 +270,7 @@ string * AplicConLeerCadena ()
 		}
 #	  else
 		// PENDIENTE:
+		iFinal = 1;
 #	  endif
 	}
 	return ( new string ( buffer.data() ) );
@@ -287,7 +287,7 @@ void AplicConEsperarRetorno ()
 	while ( iFinal == 0  )
 	{
 #	  if ( defined ( VC ) )
-		while ( kbhit () == 0 ) 
+		while ( kbhit () == 0 )
 		{
 		}
 		iValor = getche ();
@@ -301,48 +301,91 @@ void AplicConEsperarRetorno ()
 		}
 #	  else
 		// PENDIENTE:
+		iFinal = 1;
 #	  endif
 	}
 }
 
-bool AplicConDibujarLinea ( char cCar )
-{   
-	return ( AplicConDibujarLineaExt ( 80, 1, cCar ) );
-}
 
-bool AplicConDibujarLineaExt ( int iAncho, int iColIni, char cCar )
-{   
-	int iCol;
+// Dibuja una linea de ancho completo con una cadena ( admite caracteres de dibujo
+// multi-byte, que cuentan como una columna ).
+static bool _AplicConDibujarLineaCadena ( const char * p_cCar )
+{
 	bool bRes = false;
 
-	if ( ( iAncho > 0 ) && ( iColIni >= 0 ) && ( iColIni + iAncho < 80 ) )
+	if ( g_bAplicConsolaDisponible )
 	{
-		iCol = 0; 
-		while ( iCol < iColIni )
+		int iAncho = _AplicConAnchoEfectivo ();
+		for ( int i = 0; i < iAncho; i = i + 1 )
 		{
-			printf ( " " );
-			iCol = iCol + 1;
+			cout << p_cCar;
 		}
-		while ( iCol < iColIni + iAncho )
+		bRes = true;
+	}
+	return ( bRes );
+}
+
+// Dibuja una caja con los caracteres de borde indicados ( minimo 2x2 ).
+static bool _AplicConDibujarCaja ( int iAlto, int iAncho, int iColIni,
+		const char * p_cSupIzq, const char * p_cSupDer,
+		const char * p_cInfIzq, const char * p_cInfDer,
+		const char * p_cHor, const char * p_cVer )
+{
+	int iCol;
+	int iFil;
+	bool bRes = false;
+
+	if ( ( iAlto > 1 ) && ( iAncho > 1 ) && ( iColIni >= 0 ) &&
+		 ( iColIni + iAncho <= _AplicConAnchoEfectivo () ) )
+	{
+		// Linea superior.
+		iCol = 0;
+		while ( iCol < iColIni ) { cout << " "; iCol = iCol + 1; }
+		cout << p_cSupIzq;
+		iCol = iColIni + 1;
+		while ( iCol < iColIni + iAncho - 1 ) { cout << p_cHor; iCol = iCol + 1; }
+		cout << p_cSupDer << endl;
+
+		// Lineas intermedias.
+		iFil = 1;
+		while ( iFil < iAlto - 1 )
 		{
-			printf ( "%c", cCar ); 
-			iCol = iCol + 1;
+			iCol = 0;
+			while ( iCol < iColIni ) { cout << " "; iCol = iCol + 1; }
+			cout << p_cVer;
+			iCol = iColIni + 1;
+			while ( iCol < iColIni + iAncho - 1 ) { cout << " "; iCol = iCol + 1; }
+			cout << p_cVer << endl;
+			iFil = iFil + 1;
 		}
+
+		// Linea inferior.
+		iCol = 0;
+		while ( iCol < iColIni ) { cout << " "; iCol = iCol + 1; }
+		cout << p_cInfIzq;
+		iCol = iColIni + 1;
+		while ( iCol < iColIni + iAncho - 1 ) { cout << p_cHor; iCol = iCol + 1; }
+		cout << p_cInfDer;
 
 		bRes = true;
 	}
 	return ( bRes );
 }
 
-bool AplicConDibujarRectangulo ( int iAlto, int iAncho, int iColIni )
-{   
+bool AplicConDibujarLinea ( char cCar )
+{
+	// Linea de ancho completo ( se corrigio el off-by-one: antes 80,1 -> 81 no dibujaba ).
+	return ( AplicConDibujarLineaExt ( _AplicConAnchoEfectivo (), 0, cCar ) );
+}
+
+bool AplicConDibujarLineaExt ( int iAncho, int iColIni, char cCar )
+{
 	int iCol;
-	int iFil;
 	bool bRes = false;
 
-	if ( ( iAlto > 0 ) && ( iAncho > 0 ) && ( iColIni >= 0 ) && ( iColIni + iAncho < 80 ) )
+	if ( ( iAncho > 0 ) && ( iColIni >= 0 ) && ( iColIni + iAncho <= _AplicConAnchoEfectivo () ) )
 	{
-		iCol = 0; 
+		iCol = 0;
 		while ( iCol < iColIni )
 		{
 			cout << " ";
@@ -350,48 +393,36 @@ bool AplicConDibujarRectangulo ( int iAlto, int iAncho, int iColIni )
 		}
 		while ( iCol < iColIni + iAncho )
 		{
-			cout << "_" ; 
+			cout << cCar;
 			iCol = iCol + 1;
 		}
-
-		iFil = 1;
-		while ( iFil < iAlto - 1 )
-		{
-			cout << endl;
-			iCol = 0; 
-			while ( iCol < iColIni )
-			{
-				cout << " ";
-				iCol = iCol + 1;
-			}
-			cout << "|"; 
-			iCol = iCol + 1;
-			while ( iCol < iColIni + iAncho - 1 )
-			{
-				cout << " "; 
-				iCol = iCol + 1;
-			}
-			cout << "|"; 
-		
-			iFil = iFil + 1;
-		}
-		cout << endl;
-
-		iCol = 0; 
-		while ( iCol < iColIni )
-		{
-			cout << " "; 
-			iCol = iCol + 1;
-		}
-		while ( iCol < iColIni + iAncho )
-		{
-			cout << "_" ; 
-			iCol = iCol + 1;
-		}
-
 		bRes = true;
 	}
 	return ( bRes );
+}
+
+bool AplicConDibujarLineaSimple ()
+{
+	return ( _AplicConDibujarLineaCadena ( _CON_BRD_S_HOR ) );
+}
+
+bool AplicConDibujarLineaDoble ()
+{
+	return ( _AplicConDibujarLineaCadena ( _CON_BRD_D_HOR ) );
+}
+
+bool AplicConDibujarRectangulo ( int iAlto, int iAncho, int iColIni )
+{
+	return ( _AplicConDibujarCaja ( iAlto, iAncho, iColIni,
+		_CON_BRD_S_SUP_IZQ, _CON_BRD_S_SUP_DER, _CON_BRD_S_INF_IZQ, _CON_BRD_S_INF_DER,
+		_CON_BRD_S_HOR, _CON_BRD_S_VER ) );
+}
+
+bool AplicConDibujarRectanguloDoble ( int iAlto, int iAncho, int iColIni )
+{
+	return ( _AplicConDibujarCaja ( iAlto, iAncho, iColIni,
+		_CON_BRD_D_SUP_IZQ, _CON_BRD_D_SUP_DER, _CON_BRD_D_INF_IZQ, _CON_BRD_D_INF_DER,
+		_CON_BRD_D_HOR, _CON_BRD_D_VER ) );
 }
 
 

@@ -5,6 +5,7 @@
 
 #include <CppBase.h>
 #include <CppCommonTypes.h>
+#include <CppCommonCalculation.h>
 #include <CppCommonTime.h>
 #include <CppCommonSupport.h>
 #include <CppLog.h>

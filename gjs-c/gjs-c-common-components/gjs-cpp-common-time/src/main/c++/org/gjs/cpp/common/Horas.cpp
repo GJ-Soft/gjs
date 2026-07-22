@@ -140,7 +140,7 @@ int HorSumar ( int * p_iH, int * p_iM, int * p_iS, int iH, int iM, int iS )
 
 	if ( ES_VALIDO ( p_iH ) && ES_VALIDO ( p_iM ) && ES_VALIDO ( p_iS ) )
 	{
-		if ( HorEsValida ( *p_iH, *p_iM, *p_iS ) && HorEsValida ( iH, iM, iS ) )
+		if ( HorEsValida ( *p_iH, *p_iM, *p_iS ) )
 		{
 			*p_iS = *p_iS + iS;
 			if ( *p_iS > 60 )
@@ -279,7 +279,7 @@ double HorObtenerValor ( int iH, int iM, int iS )
 
 	if ( HorEsValida ( iH, iM, iS ) )
 	{
-		dRes = iH * 1.0 + iM/60 + iS/3600;
+		dRes = iH * 1.0 + iM / 60.0 + iS / 3600.0;
 	}
 	else
 	{
@@ -311,7 +311,7 @@ int HorEstablecerValor ( double dValor, int * p_iH, int * p_iM, int * p_iS )
 		*p_iH = ToInt ( dValor );
 		dAux = ( dValor - *p_iH * 1.0 ) * 60; 
 		*p_iM = ToInt ( dAux );
-		dAux = ( dValor - *p_iM * 1.0 ) * 60; 
+		dAux = ( dAux - *p_iM * 1.0 ) * 60;
 		*p_iS = ToInt ( dAux );
 		iRes = 1;
 	}

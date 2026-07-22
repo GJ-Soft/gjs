@@ -4,7 +4,13 @@
 
 using namespace std;
 
-//extern bool TestToString ();
+extern bool TestVersion ();
+extern bool TestTiposCajaMensajes ();
+extern bool TestAplicacionValidaciones ();
+extern bool TestAplicacionInformacion ();
+extern bool TestAplicacionConsola ();
+extern bool TestConsolaDepuracion ();
+extern bool TestCajaMensajes ();
 
 int main( int argc, char * argv[] )
 {
@@ -12,7 +18,13 @@ int main( int argc, char * argv[] )
 	int iRes = 0;
 
 	map<string, FUNCION_BOOL> mapTests;
-	//mapTests[ "ToString" ] = TestToString;
+	mapTests[ "VersionTest" ] = TestVersion;
+	mapTests[ "TiposCajaMensajesTest" ] = TestTiposCajaMensajes;
+	mapTests[ "AplicacionValidacionesTest" ] = TestAplicacionValidaciones;
+	mapTests[ "AplicacionInformacionTest" ] = TestAplicacionInformacion;
+	mapTests[ "AplicacionConsolaTest" ] = TestAplicacionConsola;
+	mapTests[ "ConsolaDepuracionTest" ] = TestConsolaDepuracion;
+	mapTests[ "CajaMensajesTest" ] = TestCajaMensajes;
 
 
 	string sTest( "null" );
@@ -38,9 +50,14 @@ int main( int argc, char * argv[] )
 		return( iRes );
 	}
 
-	if ( false ) //! TestToStrin() )
+
+	for ( auto it = mapTests.begin(); it != mapTests.end(); ++it )
 	{
-		iRes = -1;
+		FUNCION_BOOL fTest = it->second;
+		if( fTest () != 1 )
+		{
+			iRes = -1;
+		}
 	}
 	fflush ( stdout );
 	return ( iRes );

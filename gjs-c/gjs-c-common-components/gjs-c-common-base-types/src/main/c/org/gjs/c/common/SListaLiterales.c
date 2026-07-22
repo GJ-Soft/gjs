@@ -96,12 +96,9 @@ char * SLisLitElemento ( SListaLiterales * p_lisObj, int iElem )
 int SLisLitEstablecerElem ( SListaLiterales * p_lisObj, int iElem, char * p_cDatos )
 {
 	int		iRes;
-	char *	p_cAnt;	
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		// NOTA: El elemento ya se libera automaticamente
-		p_cAnt = (char *) SLispElemento ( p_lisObj->p_lisDatos, iElem );
 		if ( SLispEstablecerElem ( p_lisObj->p_lisDatos, iElem, (byte *) p_cDatos ) == 1 )
 		{
 			iRes = 1;
@@ -426,13 +423,11 @@ int SLisLitEstaEnInicio ( SListaLiterales * p_lisObj )
 
 int SLisLitEstablecer ( SListaLiterales * p_lisObj, char * p_cDatos )
 {
-	char *	p_cAnt;  
 	int		iRes;
 
 	if ( ES_VALIDO ( p_lisObj ) ) 
 	{
 		// NOTA: El elemento ya se libera automaticamente
-		p_cAnt = (char *) SLispActual ( p_lisObj->p_lisDatos );
 		iRes = SLispEstablecer ( p_lisObj->p_lisDatos, (byte *) p_cDatos );
 	}
 	else
