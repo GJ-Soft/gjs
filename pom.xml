@@ -6,7 +6,7 @@
 	
     <groupId>org.gjs</groupId>
     <artifactId>gjs</artifactId>
-    <version>1.0.0-RC.1</version>
+    <version>1.0.0-RC.2</version>
     <packaging>pom</packaging>
 
     <name>GJS</name>

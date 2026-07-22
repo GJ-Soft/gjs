@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='gjs-python-common',
-    version='1.0.0-RC.1',
+    version='1.0.0-RC.2',
     description='Project Gjs-python-common in language Python',
     author='GJ Software',
     author_email='gjsoft@gmx.es',

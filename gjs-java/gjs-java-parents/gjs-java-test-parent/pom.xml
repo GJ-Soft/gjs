@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjs.java</groupId>
 		<artifactId>gjs-java-test-base-parent</artifactId>
-		<version>1.0.0-RC.1</version>    
+		<version>1.0.0-RC.2</version>    
 		<relativePath>../../gjs-java-base-parents/gjs-java-test-base-parent</relativePath>
 	</parent>	
 
@@ -26,10 +26,10 @@
 	<properties>
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->
-		<gjs-java-common-support.version>1.0.0-RC.1</gjs-java-common-support.version>
-		<gjs-java-common-test-support.version>1.0.0-RC.1</gjs-java-common-test-support.version>
-		<gjs-java-common-io.version>1.0.0-RC.1</gjs-java-common-io.version>
-		<gjs-java-common.version>1.0.0-RC.1</gjs-java-common.version>
+		<gjs-java-common-support.version>1.0.0-RC.2</gjs-java-common-support.version>
+		<gjs-java-common-test-support.version>1.0.0-RC.2</gjs-java-common-test-support.version>
+		<gjs-java-common-io.version>1.0.0-RC.2</gjs-java-common-io.version>
+		<gjs-java-common.version>1.0.0-RC.2</gjs-java-common.version>
 	</properties>
 	
 	<dependencyManagement>

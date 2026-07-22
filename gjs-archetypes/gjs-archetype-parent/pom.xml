@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.gjs</groupId>    
 		<artifactId>gjs-parent</artifactId>    
-		<version>1.0.0-RC.1</version>    
+		<version>1.0.0-RC.2</version>    
 		<relativePath>../../gjs-parent</relativePath>
 	</parent>	
  
     <groupId>org.gjs.maven.archetypes</groupId>    
     <artifactId>gjs-archetype-parent</artifactId>    
-    <version>1.0.0-RC.1</version>    
+    <version>1.0.0-RC.2</version>    
     <packaging>pom</packaging>    
    
     <name>GSJ archetype parent</name>    

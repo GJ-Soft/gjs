@@ -42,7 +42,7 @@ Supported Languages:
 
 ### Current version
 
-- 1.0.0-RC.1
+- 1.0.0-RC.2
 
 
 ### Under Development

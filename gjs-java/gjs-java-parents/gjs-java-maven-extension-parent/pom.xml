@@ -5,8 +5,8 @@
 	<parent>
 		<groupId>org.gjs.java.maven</groupId>
 		<artifactId>gjs-java-maven-parent</artifactId>
-		<version>1.0.0-RC.1</version>    
-		<relativePath>../..gjs-java-maven-parent</relativePath>
+		<version>1.0.0-RC.2</version>    
+		<relativePath>../gjs-java-maven-parent</relativePath>
 	</parent>	
 
     <artifactId>gjs-java-maven-extension-parent</artifactId>

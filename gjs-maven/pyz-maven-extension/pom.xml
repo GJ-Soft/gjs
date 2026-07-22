@@ -5,7 +5,7 @@
      <parent>
 		<groupId>org.gjs.java.maven</groupId>
 		<artifactId>gjs-java-maven-extension-parent</artifactId>
-		<version>1.0.0-RC.1</version>
+		<version>1.0.0-RC.2</version>
         <relativePath />
     </parent>
 
@@ -25,7 +25,7 @@
 
 		groupId      : org.gjs.maven.extensions
 		artifactId   : pyz-maven-extension
-		version      : 1.0.0-RC.1
+		version      : 1.0.0-RC.2
 		
   Defines packaging: pyz
 	</description>

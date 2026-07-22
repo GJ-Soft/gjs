@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjs.c</groupId>
 		<artifactId>gjs-c-parent</artifactId>
-		<version>1.0.0-RC.1</version>
+		<version>1.0.0-RC.2</version>
 		<relativePath>../gjs-c-parent</relativePath>
 	</parent>
 

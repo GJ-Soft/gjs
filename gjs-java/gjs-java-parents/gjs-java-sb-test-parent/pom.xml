@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjs.java</groupId>
 		<artifactId>gjs-java-test-parent</artifactId>
-		<version>1.0.0-RC.1</version>    
+		<version>1.0.0-RC.2</version>    
 		<relativePath>../gjs-java-test-parent</relativePath>
 	</parent>	
 
@@ -28,11 +28,11 @@
 	<properties>
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->
-		<gjs-java-sb-common-support.version>1.0.0-RC.1</gjs-java-sb-common-support.version>
-		<gjs-java-sb-common.version>1.0.0-RC.1</gjs-java-sb-common.version>
-		<gjs-java-sb-common-test-support.version>1.0.0-RC.1</gjs-java-sb-common-test-support.version>
-		<gjs-java-sb-common-test-mocks.version>1.0.0-RC.1</gjs-java-sb-common-test-mocks.version>
-		<gjs-java-sb-common-test.version>1.0.0-RC.1</gjs-java-sb-common-test.version>
+		<gjs-java-sb-common-support.version>1.0.0-RC.2</gjs-java-sb-common-support.version>
+		<gjs-java-sb-common.version>1.0.0-RC.2</gjs-java-sb-common.version>
+		<gjs-java-sb-common-test-support.version>1.0.0-RC.2</gjs-java-sb-common-test-support.version>
+		<gjs-java-sb-common-test-mocks.version>1.0.0-RC.2</gjs-java-sb-common-test-mocks.version>
+		<gjs-java-sb-common-test.version>1.0.0-RC.2</gjs-java-sb-common-test.version>
 
 		<!-- Sprong boot -->
 		<springboot.version>3.5.7</springboot.version>
@@ -43,7 +43,7 @@
 			<dependency>
 				<groupId>org.gjs.java</groupId>
 				<artifactId>gjs-java-web-parent</artifactId>
-				<version>1.0.0-RC.1</version>
+				<version>1.0.0-RC.2</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>

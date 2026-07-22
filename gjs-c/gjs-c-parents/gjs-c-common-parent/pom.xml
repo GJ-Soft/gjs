@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjs</groupId>
 		<artifactId>gjs-no-java-parent</artifactId>
-		<version>1.0.0-RC.1</version>
+		<version>1.0.0-RC.2</version>
 		<relativePath>../../../gjs-no-java-parent</relativePath>
 	</parent>	
 
@@ -158,6 +158,16 @@
 		
 		<!-- Checkstyle -->
 		<cpp.check>${cpp.checkDir}/cppcheck</cpp.check>
+		<!-- Informe HTML navegable: una pagina por fichero con el fuente anotado.
+		     El script es autocontenido, solo necesita la libreria Pygments. -->
+		<cpp.check.report>${cpp.checkDir}/cppcheck-htmlreport</cpp.check.report>
+		<cpp.check.report.dir>${project.build.directory}/check-report</cpp.check.report.dir>
+		<!-- OJO: el interprete debe entender rutas Windows. El XML de cppcheck lleva
+		     rutas absolutas tipo C:/... (vienen de los -I) y el Python de Cygwin no las
+		     reconoce como absolutas: las concatena a la ruta de source-dir y deja esos
+		     ficheros fuera del informe, sin dar error. Bajo Cygwin hay que apuntar a un
+		     Python de Windows. -->
+		<cpp.check.python>python</cpp.check.python>
 		<cpp.check.execute>false</cpp.check.execute>
 		<cpp.check.severity>all</cpp.check.severity>	
 		<cpp.check.configurations>1</cpp.check.configurations>
@@ -192,8 +202,8 @@
 		<extensions>
 			<extension>
 				<groupId>org.gjs.maven.extensions</groupId>
-				<artifactId>profile-activator-maven-extension</artifactId>
-				<version>1.0.0-RC.1</version>
+				<artifactId>property-bootstrap-maven-extension</artifactId>
+				<version>1.0.0-RC.2</version>
 			</extension>
 			<!--
 			<extension>
@@ -249,12 +259,20 @@
 									// 4. Se definen las propiedades generales independientes del entorno
 									project.properties["cpp.dir.lib.runtime"] = dirRuntime ?: ""
 									project.properties["cpp.dir.lib.system"] = dirSystem ?: ""
-									project.properties["cpp.dir.lib.system.addtional"] = dirSystemAdd ?: ""
+									project.properties["cpp.dir.lib.system.additional"] = dirSystemAdd ?: ""
 									project.properties["cpp.dir.lib.installed"] = dirInst ?: ""
 									project.properties["cpp.dir.include.system"] = includeSys ?: ""
 									project.properties["cpp.dir.include.installed"] = includeInst ?: ""
 									project.properties["cpp.dir.include.additional"] = includeAdd ?: ""
-									
+
+									// 4.b Opciones -I ya montadas y filtradas. Un directorio vacio NO puede generar
+									//     un "-I" suelto: cppcheck aborta con "argument to '-I' is missing".
+									def includeOptions = [includeSys, includeInst, includeAdd]
+										.findAll { it }
+										.collect { "-I" + it }
+										.join(" ")
+									project.properties["cpp.dir.include.options"] = includeOptions
+
 									// 5. Usar el AntBuilder nativo de GMaven para escribir el archivo de propiedades
 									ant.propertyfile(file: "${customDir.absolutePath}/compile-context.properties") {
 										entry(key: "cpp.dir.lib.runtime", value: dirRuntime ?: "")
@@ -264,6 +282,7 @@
 										entry(key: "cpp.dir.include.system", value: includeSys ?: "")
 										entry(key: "cpp.dir.include.installed", value: includeInst ?: "")
 										entry(key: "cpp.dir.include.additional", value: includeAdd ?: "")
+										entry(key: "cpp.dir.include.options", value: includeOptions)
 									}
 									
 									log.info "Contexto de C/C++ generado exitosamente en Groovy para el entorno: ${env}"
@@ -304,15 +323,47 @@
 					
 					<execution>
 						<id>check</id>
-						<phase>validate</phase>
+						<!-- NO usar 'validate': el contexto C/C++ (cpp.dir.include.*) lo genera el script
+						     Groovy de gmavenplus en 'initialize', que va despues. Vale cualquier fase
+						     posterior a 'initialize'; se elige una explicita para no depender del orden
+						     de declaracion de los plugins dentro de una misma fase. -->
+						<phase>process-sources</phase>
 						<configuration>
 							<target name="execute-cppcheck" if="${cpp.check.execute}">
+								<!-- El contexto se lee del fichero, no de las propiedades que gmavenplus inyecta
+								     en el modelo de Maven: asi la dependencia es explicita y el check se puede
+								     relanzar suelto (mvn antrun:run@check) tras un build. -->
+								<available file="${project.build.directory}/custom/compile-context.properties" property="cpp.check.context.available"/>
+								<fail unless="cpp.check.context.available" message="Falta ${project.build.directory}/custom/compile-context.properties: el script Groovy de gmavenplus (fase initialize) no se ha ejecutado."/>
+								<property file="${project.build.directory}/custom/compile-context.properties"/>
 								<mkdir dir="${project.basedir}/target/check"/>
+								<!-- El informe NO puede ir a target/check: ahi vive la cache .a1 de
+								     cppcheck-build-dir, que no es un informe sino datos de analisis. -->
+								<mkdir dir="${cpp.check.report.dir}"/>
+								<!-- Macros predefinidos del compilador. cppcheck no los conoce, y sin ellos el
+								     preprocesado se va al traste: las cabeceras de Cygwin deciden el tipo de
+								     intptr_t con __INTPTR_TYPE__ y sin el disparan un #error que ABORTA el
+								     analisis del fichero (de ahi los "0 avisos" enganosos). El compilador y el
+								     lenguaje salen de las mismas propiedades que usa la compilacion real, asi
+								     que esto se ajusta solo a C/C++ y al modo (gcc de Cygwin o de MinGW).
+								     El fichero vacio hace de /dev/null, que no existe en Windows puro. -->
+								<touch file="${project.basedir}/target/check/empty.c"/>
+								<exec executable="${gjs.nar.compiler}" output="${project.basedir}/target/check/compiler-defines.h" failonerror="false">
+									<arg value="-dM"/>
+									<arg value="-E"/>
+									<arg value="-x"/>
+									<arg value="${gjs.nar.compiler.language}"/>
+									<arg value="${project.basedir}/target/check/empty.c"/>
+								</exec>
 								<exec executable="${cpp.check}" dir="${project.basedir}/src/main/${gjs.source.language}" failonerror="false">
 									<arg value="--language=${gjs.nar.compiler.language}"/>
+									<arg value="--include=${project.basedir}/target/check/compiler-defines.h"/>
+									<!-- Los mismos -D de plataforma que recibe el compilador (CYGWIN_POSIX /
+									     CYGWIN_WIN), para que se analicen las ramas WIN/POSIX que se compilan
+									     de verdad. Por defecto esta vacio, y vacio no anade ningun argumento. -->
+									<arg line="${gjs.nar.platform.options}"/>
 									<!-- TODO: Asegurar que cppcheck es la última version -->
-									<!--arg value="++std=${cppOption}"/-->
-									<arg value="--std=${languageStandard}"/>
+									<arg value="--std=${gjs.nar.language.standard}"/>
 									<arg value="--platform=native"/>
 									<arg value="--enable=${cpp.check.severity}"/>
 									<arg value="--max-configs=${cpp.check.configurations}"/>
@@ -322,19 +373,41 @@
 									<arg value="-I${oraDirInclude}"/>
 									<arg value="-I${xmlDirInclude}"/>
 									<arg value="-I${log4cxxDirInclude}"/>											
-									<arg value="-I${cpp.dir.include.system}"/>
-									<arg value="-I${cpp.dir.include.installed}"/>	
-									<arg value="-I${cpp.dir.include.additional}"/>	
+									<!-- Las -I del contexto van en una sola cadena ya filtrada por el script Groovy:
+									     un directorio vacio generaria un "-I" suelto y cppcheck aborta con
+									     "argument to '-I' is missing". arg line reparte por espacios (ninguna de
+									     estas rutas los tiene) y con la cadena vacia no anade ningun argumento. -->
+									<arg line="${cpp.dir.include.options}"/>
 									<arg value="--suppress=virtualCallInConstructor"/>
 									<arg value="--suppress=uninitMemberVar"/>		
 									<arg value="--suppress=useInitializationList"/>		
-									<arg value="--suppress=toomanyconfigs"/>												
-									<arg value="--suppress='*:${cygwin.dir.include.installed}/*'"/>											
-									<arg value="--suppress='*:${cygwin.dir.include.system}/*'"/>											
-									<arg value="--suppress='*:${oraDirInclude}/*'"/>											
+									<arg value="--suppress=toomanyconfigs"/>
+									<!-- Las cabeceras estandar que falten se quedan en un aviso informativo:
+									     cppcheck se apoya en sus ficheros .cfg, no en los headers reales. No
+									     hay que darle los del propio compilador (el include de gcc ni los de
+									     libstdc++): rompen el analisis por include_next y __has_builtin. -->
+									<arg value="--suppress=missingIncludeSystem"/>
+									<!-- OJO: suppress usa el formato id:fichero:linea, y parte por ':'. Una
+									     ruta Windows con letra de unidad (C:/...) rompe el parseo y aborta
+									     cppcheck, asi que los patrones van sin unidad: *:*/ruta/* -->
+									<arg value="--suppress=*:*/instantclient_*/sdk/include/*"/>
 									<arg value="--cppcheck-build-dir=${project.basedir}/target/check"/>
+									<!-- Con la opcion xml TODOS los avisos van al fichero: ya no salen por
+									     consola. La via de consulta pasa a ser el informe HTML de mas abajo. -->
+									<arg value="--xml"/>
+									<arg value="--output-file=${cpp.check.report.dir}/cppcheck.xml"/>
 									<!-- arg value="++check-config" /-->
-									<arg value="*.*" />
+									<arg value="." />
+								</exec>
+								<!-- Informe navegable a partir del XML: index.html con los avisos agrupados
+								     por fichero, una pagina por fichero con el fuente resaltado y la linea
+								     marcada, y stats.html con el desglose por severidad. -->
+								<exec executable="${cpp.check.python}" failonerror="false">
+									<arg value="${cpp.check.report}"/>
+									<arg value="--file=${cpp.check.report.dir}/cppcheck.xml"/>
+									<arg value="--report-dir=${cpp.check.report.dir}/html"/>
+									<arg value="--source-dir=${project.basedir}/src/main/${gjs.source.language}"/>
+									<arg value="--title=${project.artifactId}"/>
 								</exec>
 							</target>
 						</configuration>
@@ -378,6 +451,12 @@
 			</activation>
 			<properties>
 				<platformOptions>-DCYGWIN_WIN</platformOptions>
+			</properties>
+		</profile>
+		<profile>
+			<id>cppcheck</id>
+			<properties>
+				<cpp.check.execute>true</cpp.check.execute>
 			</properties>
 		</profile>
 	</profiles>

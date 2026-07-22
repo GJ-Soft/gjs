@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.gjs.maven.archetypes</groupId>    
 		<artifactId>gjs-archetype-parent</artifactId>    
-		<version>1.0.0-RC.1</version>    
+		<version>1.0.0-RC.2</version>    
 		<relativePath>../gjs-archetype-parent</relativePath>
 	</parent>	
 
@@ -25,7 +25,7 @@
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjs.maven.archetypes \
 							-DarchetypeArtifactId=gjs-python-lib-archetype \
-							-DarchetypeVersion=1.0.0-RC.1 \
+							-DarchetypeVersion=1.0.0-RC.2 \
 							-DshortName=test-project \
 							-DgroupId=org.gjs.test \
 							-Dauthor="GJ Software" \

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjs.python</groupId>
 		<artifactId>gjs-python-parent</artifactId>
-		<version>1.0.0-RC.1</version>
+		<version>1.0.0-RC.2</version>
 		<relativePath>../gjs-python-parent</relativePath>
 	</parent>	
 
@@ -30,7 +30,7 @@
 		<gjs.python.artifact.ext>whl</gjs.python.artifact.ext>
 		
 		<!-- Extensions versions -->
-		<whl-maven-extension.version>1.0.0-RC.1</whl-maven-extension.version>
+		<whl-maven-extension.version>1.0.0-RC.2</whl-maven-extension.version>
 	</properties>
 	
 	<build>

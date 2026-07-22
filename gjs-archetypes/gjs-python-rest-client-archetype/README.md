@@ -19,12 +19,12 @@ Archetype to generate the basic structure of a basic REST Client project in pyth
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjs.maven.archetypes \
 							-DarchetypeArtifactId=gjs-python-rest-client-archetype \
-							-DarchetypeVersion=1.0.0-RC.1 
+							-DarchetypeVersion=1.0.0-RC.2 
 
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjs.maven.archetypes \
 							-DarchetypeArtifactId=gjs-python-rest-client-archetype \
-							-DarchetypeVersion=1.0.0-RC.1 \
+							-DarchetypeVersion=1.0.0-RC.2 \
 							-DshortName=test \ 
 							-DgroupId=org.gjs.test \
 							-DmainFunction=Main:main \

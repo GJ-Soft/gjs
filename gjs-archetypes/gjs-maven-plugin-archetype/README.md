@@ -19,12 +19,12 @@ Archetype to generate the basic structure of a maven plugin.
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjs.maven.archetypes \
 							-DarchetypeArtifactId=gjs-maven-plugin-archetype \
-							-DarchetypeVersion=1.0.0-RC.1 
+							-DarchetypeVersion=1.0.0-RC.2 
 
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjs.maven.archetypes \
 							-DarchetypeArtifactId=gjs-maven-plugin-archetype \
-							-DarchetypeVersion=1.0.0-RC.1 \
+							-DarchetypeVersion=1.0.0-RC.2 \
 							-DshortName=test -Drule=test -Dphase=test
     
 	Archetype Parameters:

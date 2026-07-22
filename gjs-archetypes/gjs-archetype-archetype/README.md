@@ -20,12 +20,12 @@ Archetype to generate the structure of a archetype of project im any programming
     mvn archetype:generate \
 		-DarchetypeGroupId=org.gjs.maven.archetypes \
 		-DarchetypeArtifactId=gjs-archetype-archetype \
-		-DarchetypeVersion=1.0.0-RC.1 							    
+		-DarchetypeVersion=1.0.0-RC.2 							    
 
     mvn archetype:generate \
 		-DarchetypeGroupId=org.gjs.maven.archetypes \
 		-DarchetypeArtifactId=gjs-archetype-archetype \
-		-DarchetypeVersion=1.0.0-RC.1  \
+		-DarchetypeVersion=1.0.0-RC.2  \
 		-Dprefix=gjs -DshortName=c-lib -Dlan=c -Dext=c -Dpackaging=nar \
 		-DprojectParentGroupId=org.gjs \
 		-DprojectParentArtifactId=gjs-parent \

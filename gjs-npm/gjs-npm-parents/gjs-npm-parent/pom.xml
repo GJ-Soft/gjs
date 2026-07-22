@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjs</groupId>
 		<artifactId>gjs-no-java-parent</artifactId>
-		<version>1.0.0-RC.1</version>
+		<version>1.0.0-RC.2</version>
 		<relativePath>../../../gjs-no-java-parent</relativePath>
 	</parent>	
 
@@ -65,7 +65,7 @@
 		<local.install.libs></local.install.libs>  <!-- Library names separated by a space -->
 		
 		<!-- Extensions versions -->
-		<tgz-maven-extension.version>1.0.0-RC.1</tgz-maven-extension.version>
+		<tgz-maven-extension.version>1.0.0-RC.2</tgz-maven-extension.version>
 	</properties>
 	
 	<build>

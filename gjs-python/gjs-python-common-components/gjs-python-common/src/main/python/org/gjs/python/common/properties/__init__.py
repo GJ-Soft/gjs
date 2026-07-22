@@ -5,5 +5,5 @@
 from .Properties import Properties
 from .ApplicationProperties import ApplicationProperties, applicationProperties
 
-__version__ = "1.0.0-RC.1"
+__version__ = "1.0.0-RC.2"
 __all__ = ["Properties", "ApplicationProperties", "applicationProperties"]
