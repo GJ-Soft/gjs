@@ -22,7 +22,7 @@
   ${upperExension} Maven exension
   --------------------------------------------------------    
     
-  Maven exension to manage the packaging ${extension}
+  Maven exension 
 
   Pom exension definition:
 
@@ -34,6 +34,6 @@
 	</description>
 	
  	<properties>
-		<gjs.maven.extension.install>false</gjs.maven.extension.install>
+		<gjs.maven.extension.install>true</gjs.maven.extension.install>
 	</properties>
  </project>

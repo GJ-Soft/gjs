@@ -41,23 +41,23 @@ int BancoTests::NumTests()
 }
 
 
-int BancoTests::Ejecutar( const string & sTest )
+bool BancoTests::Ejecutar( const string & sTest )
 {
-	int iRes = 0;
-	if ( sTest.size() > 0 )
+	bool bRes = true;
+	if ( ( sTest.size() > 0 ) && ( sTest != "null" ) )
 	{
 		if ( mapTests.exists( sTest ) )
 		{
 			FUNCION_BOOL fTest = mapTests[ sTest ];
 			if( !fTest() )
 			{
-				iRes = -1;
+				bRes = false;
 			}
 		}
 		else
 		{
 			cerr << "Test [" << sTest << "] no encontrado." << endl;
-			iRes = -1;
+			bRes = false;
 		}
 	}
 	else
@@ -68,20 +68,20 @@ int BancoTests::Ejecutar( const string & sTest )
 			FUNCION_BOOL fTest = mapTests.at( iTest );
 			if( !fTest() )
 			{
-				iRes = -1;
+				bRes = false;
 			}
 			iTest = iTest + 1;
 		}
 	}
-	return( iRes );
+	return( bRes );
 }		
 
-int BancoTests::Ejecutar ( int argc, char * argv[] )
+bool BancoTests::Ejecutar ( int argc, char * argv[] )
 {
-	string sTest( "" );
+	string sTest( "null" );
 	if ( argc > 1 )
 	{
-		sTest = argv[1];
+		sTest = argv[ 1 ];
 	}
 	return( Ejecutar( sTest ) );
 }

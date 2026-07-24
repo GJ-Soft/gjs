@@ -7,7 +7,7 @@ ${symbol_pound}include <CppTest.h>
 
 ${symbol_pound}include "${capitalizedName}.h"
 
-${symbol_pound}include <map>
+#include <iostream>
 
 
 using namespace org::gjs::cpp::common;
@@ -27,33 +27,24 @@ int main( int argc, char * argv[] )
 	map<string, FUNCION_BOOL> mapTests;
 	mapTests[ "Sample" ] = TestSample;
 	mapTests[ "SampleType" ] = TestSampleType;
+	int iRes = 0;
+	InicializarBase();
+	EstablecerManejadorInterrupcionesDefecto ();
 
+	SBancoTests * p_banTests = SBanTstCrear ();
+	p_banTests->NuevoTest ( "SampleTest", TestSample );
+	p_banTests->NuevoTest ( "SampleTypeTest", TestSampleType );
 
-	string sTest( "null" );
+	string sTest ( "null" );
 	if ( argc > 1 )
 	{
-		sTest = argv[1];
+		sTest = argv[ 1 ];
 	}
-	if ( ( sTest.size() > 0 ) && ( sTest.compare( "null" ) != 0 ) )
+	if ( p_banTests->EjecutarTest ( sTest ) )
 	{
-		if ( mapTests.find( sTest ) != mapTests.end() )
-		{
-			FUNCION_BOOL fTest = mapTests[ sTest ];
-			if( !fTest() )
-			{
-				iRes = -1;
-			}
-		}
-		else
-		{
-			cerr << "Test [" << sTest << "] no encontrado." << endl;
-			iRes = -1;
-		}
-		return( iRes );
+		iRes = 0;
 	}
-
-	if ( ! TestSample () ||
-        ! TestSampleType ())
+	else
 	{
 		iRes = -1;
 	}

@@ -1,0 +1,39 @@
+#set( $capitalizedName = $shortName.substring(0,1).toUpperCase() + $shortName.substring(1))
+#set( $upperExension = $extension.toUpperCase())
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+     <parent>
+		<groupId>org.gjs.java.maven</groupId>
+		<artifactId>gjs-java-maven-base-parent</artifactId>
+		<version>1.0.0-RC.2</version>
+        <relativePath />
+    </parent>
+
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${version}</version>
+    <packaging>jar</packaging>
+	
+    <name>${upperExension} Maven extension </name>
+    <description>Maven extension ${capitalizedName} 
+  --------------------------------------------------------    
+  ${upperExension} Maven exension
+  --------------------------------------------------------    
+    
+  Maven exension to manage the packaging ${extension}
+
+  Pom exension definition:
+
+
+		groupId      : ${groupId}
+		artifactId   : ${artifactId}
+		version      : ${version}
+
+	</description>
+	
+ 	<properties>
+		<gjs.maven.extension.install>false</gjs.maven.extension.install>
+	</properties>
+ </project>

@@ -17,8 +17,6 @@
 
 	<properties>
 		<checkSeverity>style</checkSeverity>	
-		<!-- Provisional por problema de classpath con la librería de log4cxx -->
-		<maven.test.skip>true</maven.test.skip>		
 	</properties>
 
 
@@ -45,4 +43,25 @@
 			<scope>compile</scope>
 		</dependency>
     </dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.gjs.maven.plugins</groupId>
+				<artifactId>nar-maven-plugin</artifactId>
+				<configuration>
+					<linker>
+						<libs combine.children="append">
+							<lib>
+								<name>log4cxx</name>
+								<type>shared</type>
+								<directory>${log4cxxDirLib}</directory>
+								<binDirectory>${log4cxxDirBin}</binDirectory>
+							</lib>
+						</libs>					
+					</linker>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

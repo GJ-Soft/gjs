@@ -25,6 +25,7 @@
         <module>gjs-java-lib-archetype</module>
         <module>gjs-maven-plugin-archetype</module>
         <module>gjs-maven-extension-archetype</module>
+        <module>gjs-maven-packaging-extension-archetype</module>
         <module>gjs-c-lib-archetype</module>
         <module>gjs-c-stlib-archetype</module>
         <module>gjs-c-exe-archetype</module>

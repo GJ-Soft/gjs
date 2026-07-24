@@ -55,7 +55,7 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>com.github.maven-nar</groupId>
+						<groupId>org.gjs.maven.plugins</groupId>
 						<artifactId>nar-maven-plugin</artifactId>
 						<configuration>
 							<linker>

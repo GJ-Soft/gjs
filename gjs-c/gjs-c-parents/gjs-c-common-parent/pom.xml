@@ -139,6 +139,7 @@
 		<log4cxxDir>${cygwin.dir.lib.custom}/log4cxx</log4cxxDir>
 		<log4cxxDirInclude>${log4cxxDir}/include</log4cxxDirInclude>
 		<log4cxxDirLib>${log4cxxDir}/lib</log4cxxDirLib>
+		<log4cxxDirBin>${log4cxxDir}/bin</log4cxxDirBin>
 	
 		<!-- GLib  directory -->
 		<glibDir>${cygwinDir}/lib/glib-2.0</glibDir>
@@ -312,7 +313,7 @@
 								<propertyfile file="${project.basedir}/target/test-nar/internal/test.properties">
 									<entry key="project.basedir" value="${project.basedir}"/>
 									<entry key="project.build.directory" value="${project.build.directory}"/>
-									<entry key="project.build.testDirectory" value="${dirTest}"/>
+									<entry key="project.build.testDirectory" value="${gjs.nar.build.testReportsDirectory}"/>
 								</propertyfile>
 							</target>
 						</configuration>
@@ -452,6 +453,21 @@
 			<properties>
 				<platformOptions>-DCYGWIN_WIN</platformOptions>
 			</properties>
+		</profile>
+		<profile>
+			<id>win</id>
+			<activation>
+                <property>
+					<name>!env.CYGWIN</name>
+				</property>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+            <properties>
+				<!-- Apache Log4cxx directory -->
+				<log4cxxDir>${log4cxxInstallDir}</log4cxxDir>
+            </properties>
 		</profile>
 		<profile>
 			<id>cppcheck</id>

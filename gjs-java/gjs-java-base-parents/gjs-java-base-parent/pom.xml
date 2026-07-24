@@ -76,6 +76,9 @@
         <!-- Compilation config -->
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <gjs.compiler.verbose>false</gjs.compiler.verbose>
+		<gjs.compiler.lint>none</gjs.compiler.lint>
+		<gjs.compiler.proc>none</gjs.compiler.proc>
 
         <!-- Dependency versions -->
         <!-- Gjs versions -->
@@ -104,7 +107,7 @@
 
         <!-- Xml serialization -->
         <xerces.version>2.12.2</xerces.version>
-        <xml-apis.version>2.0.2</xml-apis.version>
+        <xml-apis.version>1.0.b2</xml-apis.version>
 
         <!-- Logging -->
         <slf4j.version>2.0.17</slf4j.version>
@@ -354,6 +357,7 @@
     <build>
         <pluginManagement>
             <plugins>
+				<!-- Maven plugins -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
@@ -466,8 +470,19 @@
         </extensions>
 
         <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<showDeprecation>${gjs.compiler.verbose}</showDeprecation>
+					<showWarnings>${gjs.compiler.verbose}</showWarnings>
+					<compilerArgs>
+						<arg>-proc:${gjs.compiler.proc}</arg>
+						<arg>-Xlint:${gjs.compiler.lint}</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
         </plugins>
-
     </build>
 
     <reporting>

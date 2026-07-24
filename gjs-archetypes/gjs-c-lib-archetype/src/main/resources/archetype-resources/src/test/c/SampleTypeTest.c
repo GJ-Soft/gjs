@@ -10,6 +10,8 @@ ${symbol_pound}include "${capitalizedName}.h"
 
 
 
+#define  NOMBRE_MODULO 			"SampleType"
+
 
 
 static int TestSampleType01 ()
@@ -32,16 +34,11 @@ static int TestSampleType01 ()
 int TestSampleType ()
 {
 	int iRes = 1;
-	printf ( "[Test SampleType]\n" );
-	if ( TestSampleType01() == 1 )
-	{
-		printf ( "Resultado: OK\n" );;
-	}
-	else
-	{
-		printf ( "Resultado: KO\n" );;
-		iRes = 0;
-	}
-	printf ( "[Fin]\n" );;
+
+	STest * testModulo = STestCrear ( NOMBRE_MODULO );
+	STestNuevoCaso ( testModulo, "TestSampleType01", TestSampleType01 );
+
+	iRes = STestEjecutar ( testModulo );
+	STestDestruir ( &testModulo );
 	return ( iRes );
 }

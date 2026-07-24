@@ -61,7 +61,6 @@
 		<gjs.nar.architecture>x86_64-pc-cygwin</gjs.nar.architecture>
 		<gjs.nar.emulation>i386pep</gjs.nar.emulation>
 		<gjs.nar.architecture.option>-A ${gjs.nar.architecture}</gjs.nar.architecture.option> 
-		<gjs.nar.aol>${gjs.nar.architecture}-${osName}-${gjs.nar.language.aol}</gjs.nar.aol>
 		
 		<!-- Threads -->
 		<gjs.nar.threads.option>-mthreads</gjs.nar.threads.option>
@@ -72,6 +71,7 @@
 		<!-- Nar build directories -->
 		<gjs.nar.build.directory>${project.build.directory}/nar</gjs.nar.build.directory>
 		<gjs.nar.build.testDirectory>${project.build.directory}/test-nar</gjs.nar.build.testDirectory>
+		<gjs.nar.build.testReportsDirectory>${gjs.nar.build.testDirectory}/test-reports</gjs.nar.build.testReportsDirectory>
 		
 		<!-- Naming -->
 		<finalName.prefix.lib>lib</finalName.prefix.lib>
@@ -79,37 +79,15 @@
 		<finalName.prefix></finalName.prefix>
 		<finalName>${finalName.prefix}${project.artifactId}-${project.version}</finalName>
 			
-		<!-- Includes -->		
-		<includeDir>${project.basedir}/target/nar/include</includeDir>
-		
-		<!-- Binary directories -->
-		<!-- TODO: Pendiente de customizar para todos los tipos de binario -->
-		<subdirBinExe>nar/${project.artifactId}-${project.version}-${gjs.nar.aol}-executable/bin/${gjs.nar.aol}</subdirBinExe>
-		<subdirBinLib>nar/${project.artifactId}-${project.version}-${gjs.nar.aol}-shared/lib/${gjs.nar.aol}/shared</subdirBinLib>
-		<subdirBinStLib>nar/${project.artifactId}-${project.version}-${gjs.nar.aol}-static/lib/${gjs.nar.aol}/static</subdirBinStLib>
-		<subdirBinObj>nar/obj/${gjs.nar.aol}</subdirBinObj>
-		<subdirBinObjTest>test-nar/obj/${gjs.nar.aol}</subdirBinObjTest>
-		<subdirTest>test-nar/test-reports</subdirTest>
-		<dirBinLib>${project.basedir}/target/${subdirBinLib}</dirBinLib>
-		<dirBinStLib>${project.basedir}/target/${subdirBinStLib}</dirBinStLib>
-		<dirBinExe>${project.basedir}/target/${subdirBinExe}</dirBinExe>
-		<dirBinObj>${project.basedir}/target/${subdirBinObj}</dirBinObj>
-		<dirBinObjTest>${project.basedir}/target/${subdirBinObjTest}</dirBinObjTest>
-		<dirTest>${project.basedir}/target/${subdirTest}</dirTest>
-		<dirStLib>${project.basedir}/target/lib</dirStLib>
-		
 		<!-- Ejecutables auxiliares -->
-		<gcovr>/ust/bin/gcovr</gcovr> 
+		<gcovr>/usr/bin/gcovr</gcovr> 
 	</properties>
 
 	<build>	
 		<pluginManagement>				
 			<plugins>
 				<plugin>
-					<!--
-					<groupId>org.gjs.java.maven.plugins</groupId>
-					-->
-					<groupId>com.github.maven-nar</groupId>
+					<groupId>org.gjs.maven.plugins</groupId>
 					<artifactId>nar-maven-plugin</artifactId>
 					<configuration>
 						<os>${osName}</os>
@@ -341,145 +319,12 @@
 
 	<profiles>
 		<profile>
-			<id>no-ld-library-path</id>
-			<activation>
-				<os>
-					<family>Windows</family>
-				</os>
-				<property>
-					<name>packaging</name>
-					<value>nar</value>
-				</property>
-			</activation>		
-			<build>	
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-						   <execution>
-								<id>copy-bin-for-test</id>
-								<phase>process-test-classes</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<skip>!${noLdLibraryPath}</skip>
-									<outputDirectory>${dirTest}</outputDirectory>
-									<overwrite>true</overwrite>
-									<resources>
-										<resource>
-											<directory>${dirBinExe}</directory>
-											<includes>
-												<include>*.exe</include>
-											</includes>
-										</resource>
-										<resource>
-											<directory>${dirBinLib}</directory>
-											<includes>
-												<include>*.dll</include>
-											</includes>
-										</resource>
-										<resource>
-											<directory>${project.basedir}/target/nar</directory>
-											<includes>
-												<include>**/*.dll</include>
-											</includes>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>						
-						</executions>
-					</plugin>	
-					<plugin>
-						<groupId>org.codehaus.gmavenplus</groupId>
-						<artifactId>gmavenplus-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-dependencies-bin-for-test</id>
-								<phase>generate-test-resources</phase>
-								<goals>
-									<goal>execute</goal>
-								</goals>
-								<configuration>
-									<scripts>
-										<script><![CDATA[
-										if ( "true".equals( project.properties.get("noLdLibraryPath") ) ) { 
-										try 
-										{
-											if ( project.dependencies.size() > 0 )
-											{
-												// Para recuperar las dependencias de las dependencias es mejor ir por directorios
-												log.info ( "\n* R E C O P I L A N D O    B I N A R I O S *\n" )
-												def baseDir = $/${project.basedir}/$
-												def dirTo = $/${project.basedir}/$ + "/target/${subdirTest}"
-												def dirDeps = baseDir + "/target/test-nar"
-												log.info ( "Origen  = " + dirDeps )
-												log.info ( "Destino = " + dirTo + "\n" )
-												
-												def dependencias = new File( dirDeps );
-												def separator = System.getProperty( "file.separator" ) 
-												def finLib = "-shared" + separator + "lib" + separator + "${gjs.nar.aol}" + separator + "shared"
-												def finExe = "-executable" + separator + "bin" + separator + "${gjs.nar.aol}"
-												def subdirRep = separator + "test-reports" + separator 
-												dependencias.eachFileRecurse ( groovy.io.FileType.DIRECTORIES )
-												{
-													if ( ! it.path.contains( subdirRep ) )
-													{
-														def filename = ""
-														def dirFrom = it.path
-														if ( dirFrom.endsWith( finLib ) )
-														{
-															log.info ( "LIB: " + dirFrom )
-															filename = "**/*.dll"
-														}
-														else if ( dirFrom.endsWith( finExe ) )
-														{
-															log.info ( "EXE: " + dirFrom )
-															filename = "**/*.exe"
-														}
-														if ( filename.size() > 0 )
-														{
-															ant.copy(todir: dirTo ) 
-															{
-																fileset(dir: dirFrom )
-																{
-																	include(name: filename)
-																}
-															}																				
-														}
-													}
-												}
-												log.info ( "\n" )
-											}
-										}
-										catch ( Exception ex )
-										{
-											log.error ( ex.getMessage() )
-										}
-										} else {
-											log.info ( "Skipping the execution.\n" )
-										}
-										]]></script>
-									</scripts>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>					
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
 			<id>cobertura</id>
 			<!-- TODO compilar en un subdirectorio diferente y lanzar ejecucion de gcovr x -m despues de los test-->
 			<build>
 				<plugins>
 					<plugin>
-						<!--
-						<groupId>org.gjs.java.maven.plugins</groupId>
-						-->
-						<groupId>com.github.maven-nar</groupId>
+						<groupId>org.gjs.maven.plugins</groupId>
 						<artifactId>nar-maven-plugin</artifactId>
 						<configuration>
 							<cpp>
@@ -512,7 +357,7 @@
 								<phase>test</phase>
 								<configuration>
 									<target name="execute-gcovr">
-										<exec executable="${gcovr}" dir="${dirTest}" failonerror="true">
+										<exec executable="${gcovr}" dir="${gjs.nar.build.testReporstDirectory}" failonerror="true">
 											<arg value="Test${exeFinalExtension}"/>
 										</exec>
 									</target>
@@ -535,10 +380,7 @@
 			<build>
 				<plugins>
 					<plugin>
-						<!--
-						<groupId>org.gjs.java.maven.plugins</groupId>
-						-->
-						<groupId>com.github.maven-nar</groupId>
+						<groupId>org.gjs.maven.plugins</groupId>
 						<artifactId>nar-maven-plugin</artifactId>
 						<configuration>
 							<cpp combine.children="append">

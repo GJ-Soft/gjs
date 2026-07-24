@@ -5,11 +5,15 @@
 
 ${symbol_pound}include <CppTest.h>
 
-${symbol_pound}include <map>
+${symbol_pound}include <iostream>
 
 
 using namespace org::gjs::cpp::common;
 using namespace std;
+
+
+
+extern bool Test${capitalizedName} ();
 
 
 
@@ -18,6 +22,23 @@ int main( int argc, char * argv[] )
 {
 	int iRes = 0;
 	InicializarBase();
-	// TODO
+	EstablecerManejadorInterrupcionesDefecto ();
+
+	SBancoTests * p_banTests = SBanTstCrear ();
+	p_banTests->NuevoTest ( "${capitalizedName}Test", Test${capitalizedName} );
+
+	string sTest ( "null" );
+	if ( argc > 1 )
+	{
+		sTest = argv[ 1 ];
+	}
+	if ( p_banTests->EjecutarTest ( sTest ) )
+	{
+		iRes = 0;
+	}
+	else
+	{
+		iRes = -1;
+	}
 	return ( iRes );
 }

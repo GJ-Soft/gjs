@@ -64,9 +64,9 @@ bool EntInicializar ( bool bConsola, const string & sNombre, int iVersion, int i
 			SisInicializarDirectorios ( sDirTemporal );
 
 		}
-		EntEstablecerDirectorioDatos ( *SisDirectorioTemporal () );
-		EntEstablecerDirectorioSeguridad ( *SisDirectorioTemporal () );
-		EntEstablecerDirectorioLog ( *SisDirectorioTemporal () );
+		g_p_sEntDirDatos = SisDirectorioTemporal ();
+		g_p_sEntDirSeguridad = SisDirectorioTemporal ();
+		g_p_sEntDirLog = SisDirectorioTemporal ();
 # if ( ! defined ( WIN ) )
 		SisProcInicializar ( sNomProceso );
 #  endif
@@ -128,6 +128,7 @@ void EntFinalizar ()
 			cout << endl << endl;
 		}
 #	 endif
+		log::LogLiberar ();
 	}
 }
 

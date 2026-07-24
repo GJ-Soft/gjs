@@ -38,8 +38,8 @@ namespace org
 					void NuevoTest ( const std::string & sNombre, FUNCION_BOOL funcion );
 					int NumTests ();
 
-					int Ejecutar ( const std::string & sTest = "" );
-					int Ejecutar ( int argc, char * argv[] );
+					bool Ejecutar ( const std::string & sTest = "" );
+					bool Ejecutar ( int argc, char * argv[] );
 
 			};
 

@@ -9,64 +9,9 @@
 <component-set>
 	<components>
 		<component>
-			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
-			<role-hint>${extension}</role-hint>
-			<implementation>${package}.${capitalizedExtension}ArtifactHandler</implementation>
-			<configuration>
-				<type>${extension}</type>
-				<extension>${extension}</extension>
-				<packaging>${extension}</packaging>
-				<addedToClasspath>false</addedToClasspath>
-			</configuration>
-		</component>
-		<component>
 			<role>org.apache.maven.AbstractMavenLifecycleParticipant</role>
-			<implementation>${package}.${capitalizedExtension}ArtifactExtension</implementation>
-		</component>
-		<component>
-			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
-			<role-hint>${extension}</role-hint>
-			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
-			<configuration>
-				<lifecycles>
-					<lifecycle>
-						<id>default</id>
-						<phases>
-							<validate></validate>
-							<initialize></initialize>
-							<generate-sources></generate-sources>
-							<process-sources></process-sources>
-							<generate-resources></generate-resources>
-							<process-resources>
-								org.apache.maven.plugins:maven-resources-plugin:resources
-							</process-resources>
-							<compile></compile>
-							<process-classes></process-classes>
-							<generate-test-sources></generate-test-sources>
-							<process-test-sources></process-test-sources>
-							<generate-test-resources></generate-test-resources>
-							<process-test-resources>
-								org.apache.maven.plugins:maven-resources-plugin:testResources
-							</process-test-resources>
-							<test-compile></test-compile>
-							<process-test-classes></process-test-classes>
-							<test></test>
-							<prepare-package></prepare-package>
-							<package></package>
-							<pre-integration-test></pre-integration-test>
-							<integration-test></integration-test>
-							<post-integration-test></post-integration-test>
-							<verify></verify>
-							<install>
-								org.apache.maven.plugins:maven-install-plugin:install
-							</install>
-							<deploy>
-								org.apache.maven.plugins:maven-deploy-plugin:deploy
-							</deploy>
-						</phases>
-					</lifecycle>
-				</lifecycles>
-			</configuration>
+			<role-hint>${shortName}</role-hint>
+			<implementation>${package}.${capitalizedExtension}Extension</implementation>
 		</component>
 	</components>
 </component-set>

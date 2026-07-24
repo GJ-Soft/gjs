@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor xsi:schemaLocation="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 http://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd" name="gjs-plugin-archetype"
+    xmlns="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <requiredProperties>
+		<!-- These properties function as constants -->
+		<requiredProperty key="defaultVersion">
+			<defaultValue>1.0.0-SNAPSHOT</defaultValue>
+		</requiredProperty>
+		<requiredProperty key="defaultYes">
+			<defaultValue>y</defaultValue>
+		</requiredProperty>
+		<requiredProperty key="defaultNo">
+			<defaultValue>n</defaultValue>
+		</requiredProperty>
+		
+		<!-- Propiedades reales -->
+		<requiredProperty key="shortName">
+			<validationRegex>[a-z]+</validationRegex>
+		</requiredProperty>
+		<requiredProperty key="groupId">
+			<validationRegex>[a-z]{2,}(.[a-z]{2,}){2,}</validationRegex>
+		</requiredProperty>
+		<requiredProperty key="artifactId">
+			<defaultValue>${shortName}</defaultValue>
+		</requiredProperty>
+		<requiredProperty key="package">
+			<defaultValue>${groupId}</defaultValue>
+			<validationRegex>[a-z]{2,}(.[a-z]{2,}){2,}</validationRegex>
+		</requiredProperty>
+		<requiredProperty key="version">
+			<defaultValue>${defaultVersion}</defaultValue>
+			<validationRegex>^[1-9][0-9]*\.[0-9]+\.[0-9]+(-SNAPSHOT|-RC\.[0-9]+)?</validationRegex>
+		</requiredProperty>
+ 		<requiredProperty key="extension">
+			<validationRegex>[a-z]+</validationRegex>
+		</requiredProperty>
+</requiredProperties>
+	
+	<fileSets>
+        <fileSet filtered="true" encoding="UTF-8">
+ 		  <directory>/</directory>
+		  <includes>
+			<include>pom.xml</include>
+		  </includes>
+		</fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+ 		  <directory>/</directory>
+		  <includes>
+			<include>README.md</include>
+			<include>changelog.md</include>
+		  </includes>
+		</fileSet>
+		<fileSet filtered="true" packaged="true" encoding="UTF-8">
+		  <directory>src/main/java</directory>
+			  <includes>
+				<include>**/*.java</include>
+			  </includes>
+		</fileSet>
+		<fileSet filtered="true" encoding="UTF-8">
+		  <directory>src/main/resources</directory>
+			  <includes>
+				<include>**</include>
+			  </includes>
+		</fileSet>
+		<fileSet filtered="true" packaged="true" encoding="UTF-8">
+		  <directory>src/test/java</directory>
+			  <includes>
+				<include>**/*.java</include>
+			  </includes>
+		</fileSet>
+		<fileSet filtered="true" encoding="UTF-8">
+		  <directory>src/test/resources</directory>
+			  <includes>
+				<include>**</include>
+			  </includes>
+		</fileSet>
+	</fileSets>	
+</archetype-descriptor>

@@ -39,35 +39,35 @@ bool TestBancoTests01 ()
 	try
 	{
 		BancoTests * p_tests = new BancoTests ();
-		if ( p_tests->Ejecutar () != 0 )
+		if ( ! p_tests->Ejecutar () )
 		{
 			cout << "Error caso banco vacio: Resultado incorrecto" << endl;
 			bRes = false;
 		}
 		p_tests->NuevoTest ( "Test1", EjemploTestOK1 );
-		if ( p_tests->Ejecutar () != 0 )
+		if ( ! p_tests->Ejecutar () )
 		{
 			cout << "Error caso 1: Resultado incorrecto" << endl;
 			bRes = false;
 		}
 		p_tests->NuevoTest ( "Test2", EjemploTestOK2 );
-		if ( p_tests->Ejecutar () != 0 )
+		if ( ! p_tests->Ejecutar () )
 		{
 			cout << "Error caso 2: Resultado incorrecto" << endl;
 			bRes = false;
 		}
 		p_tests->NuevoTest ( "Test3", EjemploTestKO );
-		if ( p_tests->Ejecutar () != -1 )
+		if ( p_tests->Ejecutar () )
 		{
 			cout << "Error caso 3: Resultado incorrecto" << endl;
 			bRes = false;
 		}
-		if ( p_tests->Ejecutar ( "Test2" ) != 0 )
+		if ( ! p_tests->Ejecutar ( "Test2" ) )
 		{
 			cout << "Error caso 4: Resultado incorrecto" << endl;
 			bRes = false;
 		}
-		if ( p_tests->Ejecutar ( "Test3" ) != -1 )
+		if ( p_tests->Ejecutar ( "Test3" ) )
 		{
 			cout << "Error caso 5: Resultado incorrecto" << endl;
 			bRes = false;

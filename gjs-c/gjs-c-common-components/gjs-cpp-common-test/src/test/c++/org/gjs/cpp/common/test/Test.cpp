@@ -1,10 +1,12 @@
-#include <CppBase.h>
+#include <CppTest.h>
 
 #include <iostream>
 
 
 using namespace std;
 using namespace org::gjs::cpp::common;
+using namespace org::gjs::cpp::common::test;
+
 
 
 extern bool TestCasoTest ();
@@ -13,55 +15,39 @@ extern bool TestTest ();
 extern bool TestUtilesTest ();
 extern bool TestBancoTests ();
 extern bool TestContextoTest ();
-
+extern bool TestEjemplo1 ();
+extern bool TestEjemplo2 ();
 
 
 int main ( int argc, char * argv[] )
 {
-	InicializarBase();
 	int iRes = 0;
+	EntInicializar ( true, "Test", 1, 0 );
 	EstablecerManejadorInterrupcionesDefecto ();
 
-	map<string, FUNCION_BOOL> mapTests;
-	mapTests[ "CasoTestTest" ] = TestCasoTest;
-	mapTests[ "CasoTestAisladoTest" ] = TestCasoTestAislado;
-	mapTests[ "TestTest" ] = TestTest;
-	mapTests[ "UtilesTestTest" ] = TestUtilesTest;
-	mapTests[ "BancoTestsTest" ] = TestBancoTests;
-	mapTests[ "ContextoTestTest" ] = TestContextoTest;
-
+	BancoTests * p_banTests = new BancoTests ();
+	p_banTests->NuevoTest ( "UtilesTestTest", TestUtilesTest );
+	p_banTests->NuevoTest ( "CasoTestTest", TestCasoTest );
+	p_banTests->NuevoTest ( "CasoTestAisladoTest", TestCasoTestAislado );
+	p_banTests->NuevoTest ( "TestTest", TestTest );
+	p_banTests->NuevoTest ( "BancoTestsTest", TestBancoTests );
+	p_banTests->NuevoTest ( "ContextoTestTest", TestContextoTest );
+	p_banTests->NuevoTest ( "Ejemplo1Test", TestEjemplo1 );
+	p_banTests->NuevoTest ( "Ejemplo2Test", TestEjemplo2 );
 	string sTest ( "null" );
 	if ( argc > 1 )
 	{
-		sTest = argv[1];
+		sTest = argv[ 1 ];
 	}
-	if ( ( sTest.size() > 0 ) && ( sTest.compare( "null" ) != 0 ) )
+	if ( p_banTests->Ejecutar ( sTest ) )
 	{
-		if ( mapTests.find( sTest ) != mapTests.end() )
-		{
-			FUNCION_BOOL fTest = mapTests[ sTest ];
-			if( !fTest () )
-			{
-				iRes = -1;
-			}
-		}
-		else
-		{
-			cerr << "Test [ " << sTest << " ] no encontrado." << endl;
-			iRes = -1;
-		}
-		return( iRes );
+		iRes = 0;
 	}
-
-
-	for ( auto it = mapTests.begin(); it != mapTests.end(); ++it )
+	else
 	{
-		FUNCION_BOOL fTest = it->second;
-		if( fTest () != 1 )
-		{
-			iRes = -1;
-		}
+		iRes = -1;
 	}
-	fflush ( stdout );
+	delete p_banTests;
+	EntFinalizar ();
 	return ( iRes );
 }

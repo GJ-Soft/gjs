@@ -22,21 +22,21 @@ int main ( int argc, char * argv[] )
 
 	SBancoTests * p_banTests = SBanTstCrear ();
 	SBanTstNuevoTest ( p_banTests, "UtilesTest", TestUtilesTest );
-	SBanTstNuevoTest ( p_banTests, "SCasoTestSimple", TestSCasoTestSimple );
-	SBanTstNuevoTest ( p_banTests, "SCasoTestAislado", TestSCasoTestAislado );
-	SBanTstNuevoTest ( p_banTests, "SCasoTest", TestSCasoTest );
-	SBanTstNuevoTest ( p_banTests, "STest", TestSTest );
-	SBanTstNuevoTest ( p_banTests, "SBancoTests", TestSBancoTests );
-	SBanTstNuevoTest ( p_banTests, "ContextoTests", TestContextoTests );
-	SBanTstNuevoTest ( p_banTests, "Ejemplo1", TestEjemplo1 );
-	SBanTstNuevoTest ( p_banTests, "Ejemplo2", TestEjemplo2 );
+	SBanTstNuevoTest ( p_banTests, "SCasoTestSimpleTest", TestSCasoTestSimple );
+	SBanTstNuevoTest ( p_banTests, "SCasoTestAisladoTest", TestSCasoTestAislado );
+	SBanTstNuevoTest ( p_banTests, "SCasoTestTest", TestSCasoTest );
+	SBanTstNuevoTest ( p_banTests, "STestTest", TestSTest );
+	SBanTstNuevoTest ( p_banTests, "SBancoTestsTest", TestSBancoTests );
+	SBanTstNuevoTest ( p_banTests, "ContextoTestsTest", TestContextoTests );
+	SBanTstNuevoTest ( p_banTests, "Ejemplo1Test", TestEjemplo1 );
+	SBanTstNuevoTest ( p_banTests, "Ejemplo2Test", TestEjemplo2 );
 
 	char * p_cTest = NULL;
 	if ( argc > 1 )
 	{
-		p_cTest = argv[1];
+		p_cTest = argv [ 1 ];
 	}
-	if( SBanTstEjecutarTest ( p_banTests, p_cTest ) == 1 )
+	if ( SBanTstEjecutarTest ( p_banTests, p_cTest ) == 1 )
 	{
 		iRes = 0;
 	}

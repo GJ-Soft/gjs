@@ -1,10 +1,14 @@
 #include <CppBase.h>
 
+
+
 #include <iostream>
+
+#include <Log.h>
+
 
 using namespace std;
 using namespace org::gjs::cpp::common;
-
 
 extern bool TestMDC ();
 extern bool TestLog ();
@@ -39,6 +43,9 @@ int main ( int argc, char * argv[] )
 			cerr << "Test [ " << sTest << " ] no encontrado." << endl;
 			iRes = -1;
 		}
+		// Cierre ordenado de log4cxx mientras el runtime sigue vivo, para evitar
+		// que la destruccion estatica lo haga tras el teardown interno de APR.
+		log::LogLiberar ();
 		return( iRes );
 	}
 
@@ -50,6 +57,7 @@ int main ( int argc, char * argv[] )
 			iRes = -1;
 		}
 	}
+	log::LogLiberar ();
 	fflush ( stdout );
 	return ( iRes );
 }

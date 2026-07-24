@@ -134,9 +134,9 @@ static bool TestPropiedades02 ()
 			cout << "Error caso 2: NumPropiedades=" << propiedades->getPropiedades().size() << endl;
 			bRes = false;
 		}
-		if ( propiedades->Cargar( sFic2 ) )
+		if ( !propiedades->Cargar( sFic2 ) )
 		{
-			cout << "Error caso 3: No deberia haber cargado el fichero" << endl;
+			cout << "Error caso 3: Deberia haber cargado el fichero" << endl;
 			bRes = false;
 		}
 		if ( propiedades->getPropiedades().size() != 4 )

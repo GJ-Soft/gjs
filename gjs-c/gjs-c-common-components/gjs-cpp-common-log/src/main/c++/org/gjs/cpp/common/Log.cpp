@@ -26,9 +26,9 @@ static log4cxx::LevelPtr _p_level = nullptr;
 
 static void _LogIniConsola ( bool bSoloMensaje )
 {
-	if ( _p_consoleAppender == nullptr ) 
+	if ( _p_consoleAppender == nullptr )
 	{
-		log4cxx::ConsoleAppenderPtr _p_consoleAppender( new log4cxx::ConsoleAppender() );
+		_p_consoleAppender = log4cxx::ConsoleAppenderPtr( new log4cxx::ConsoleAppender() );
 		log4cxx::PatternLayout * layout = new log4cxx::PatternLayout ();
 		log4cxx::LogString conversionPattern = log4cxx::LogString ( ( bSoloMensaje ? LOG_PATRON_CONSOLA_MIN : LOG_PATRON_DEF ) );
 		layout-> setConversionPattern( conversionPattern );
@@ -356,12 +356,20 @@ void LogFin ()
 		log4cxx::Logger::getRootLogger()->closeNestedAppenders ();
 		log4cxx::LogManager::getLoggerRepository()->resetConfiguration();
 		log4cxx::LogManager::getLoggerRepository()->setConfigured( false );
+		// Se sueltan las referencias estaticas a objetos log4cxx antes de la
+		// destruccion estatica del proceso; en caso contrario sus destructores
+		// se ejecutan tras el teardown interno de log4cxx/APR y abortan.
+		_p_consoleAppender = nullptr;
+		_p_levelConsole = nullptr;
+		_p_level = nullptr;
 		_bLogInicializado = false;
 	}
 }
 
-
-
+void LogLiberar ()
+{
+	log4cxx::LogManager::shutdown();
+}
 
 void LogInfo ( const string & sMensaje )
 {

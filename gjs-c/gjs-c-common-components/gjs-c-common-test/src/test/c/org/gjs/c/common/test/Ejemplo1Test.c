@@ -46,8 +46,8 @@ int TestEjemplo1 ()
 	int iRes = 1;
 
 	STest * testModulo = STestCrear ( NOMBRE_MODULO );
-	//STestNuevoCaso ( testModulo, "CasoEjemplo1_01", CasoEjemplo1_01 );
-	//STestNuevoCaso ( testModulo, "CasoEjemplo1_02", CasoEjemplo1_02 );
+	STestNuevoCaso ( testModulo, "CasoEjemplo1_01", CasoEjemplo1_01 );
+	STestNuevoCaso ( testModulo, "CasoEjemplo1_02", CasoEjemplo1_02 );
 
 	iRes = STestEjecutar ( testModulo );
 	STestDestruir ( &testModulo );

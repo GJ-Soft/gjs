@@ -7,9 +7,6 @@ ${symbol_pound}include <CTest.h>
 
 ${symbol_pound}include "${capitalizedName}.h"
 
-${symbol_pound}include <Funciones.h>
-${symbol_pound}include <SListaReferencias.h>
-${symbol_pound}include <CEntorno.h>
 
 extern int TestSample ();
 extern int TestSampleType ();
@@ -19,42 +16,27 @@ int main( int argc, char * argv[] )
 {
 	int iRes = 0;
 	EntInicializar ( 1, "Test${capitalizedName}", 1, 0 );
+	EntActivarModoTest ();
+	thread thHilo = SisLanzarHiloVigilanciaPadre ();
+	printf ( "****** HILO = %lu\n", (unsigned long) thHilo );
 
-	SListaReferencias * p_lisTests = SLisRefCrear ();
-	SLisRefInsertarExt ( p_lisTests, "Sample", (void *) TestSample );
-	SLisRefInsertarExt ( p_lisTests, "SampleType", (void *) TestSampleType );
-
+	SBancoTests * p_banTests = SBanTstCrear ();
+	SBanTstNuevoTest ( p_banTests, "SampleTest", TestSample );
+	SBanTstNuevoTest ( p_banTests, "SampleTypeTest", TestSampleType );
 
 	char * p_cTest = NULL;
 	if ( argc > 1 )
 	{
-		p_cTest = argv[1];
+		p_cTest = argv [ 1 ];
 	}
-	if ( ( CadLongitud( p_cTest ) > 0 ) && ( CadComparar ( p_cTest, "null" ) != 0 ) )
+	if( SBanTstEjecutarTest ( p_banTests, p_cTest ) == 1 )
 	{
-		SReferencia * p_refObj = SLisRefBuscar ( p_lisTests, p_cTest );
-		if ( ES_VALIDO ( p_refObj ) )
-		{
-			PFUNINTV fTest = ( PFUNINTV ) SRefObtenerDatos ( p_refObj );
-			if( fTest() == 0 )
-			{
-				iRes = -1;
-			}
-		}
-		else
-		{
-			printf ( "ERROR: Test [%s] no encontrado.\n", p_cTest );
-			iRes = -1;
-		}
-		return( iRes );
+		iRes = 0;
 	}
-
-	if ( ( TestSample () == 0 ) ||
-        ( TestSampleType () == 0 ) )
+	else
 	{
 		iRes = -1;
 	}
-	SLisRefDestruir ( &p_lisTests );
 	EntFinalizar ();
 	return ( iRes );
 }

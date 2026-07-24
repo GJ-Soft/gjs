@@ -69,6 +69,7 @@ namespace org
             bool LogIniFichero ( const std::string & sFicLog, bool consola = false );
 
             void LogFin ();
+			void LogLiberar ();
 
             void LogInfo ( const std::string & sMensaje );
             void LogDepuracion ( const std::string & sMensaje );
@@ -100,6 +101,7 @@ namespace org
                     Reconfiguracion forzada
                     Test reconfiguración periodica y forzada
              */
+			 
                 }
             }
         }

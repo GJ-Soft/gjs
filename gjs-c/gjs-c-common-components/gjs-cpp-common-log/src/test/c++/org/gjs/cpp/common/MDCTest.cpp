@@ -76,7 +76,6 @@ bool TestMDC01 ()
 			cout << "Caso 6: Se ha recuperado un valor erroneo para [" << sClave2 << "]=[" << sValorRet << "]" << endl;
 			bRes = false;
 		}
-
 	}
 	catch ( const exception & ex )
 	{

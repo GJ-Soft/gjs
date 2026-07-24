@@ -114,15 +114,18 @@ bool Propiedades::Cargar( const string & sRuta )
 			while ( getline( is, sLinea ) )
 			{
 				sLinea = Limpiar( sLinea );
-				if ( EsPropiedad( sLinea ) )
+				if ( !sLinea.empty () && ! EmpiezaPor( sLinea, "#" ) )
 				{
-					pair<string, string> propiedad = ParsearPropiedad( sLinea );
-					setPropiedad( propiedad.first, propiedad.second );
-				}
-				else
-				{
-					bRes = false;
-					cerr << "Propiedades::Cargar(" << sRuta << "): Linea erronea " << numLinea << ": " << sLinea << endl;
+					if ( EsPropiedad( sLinea ) )
+					{
+						pair<string, string> propiedad = ParsearPropiedad( sLinea );
+						setPropiedad( propiedad.first, propiedad.second );
+					}
+					else
+					{
+						bRes = false;
+						cerr << "Propiedades::Cargar(" << sRuta << "): Linea erronea " << numLinea << ": " << sLinea << endl;
+					}
 				}
 				numLinea = numLinea + 1;
 			}

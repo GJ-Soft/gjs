@@ -11,6 +11,10 @@ ${symbol_pound}include "${capitalizedName}.h"
 
 
 
+#define  NOMBRE_MODULO 			"SampleType"
+
+
+
 using namespace ${packageNamespace};
 using namespace org::gjs::cpp::common;
 using namespace org::gjs::cpp::common::test;
@@ -52,16 +56,11 @@ static bool TestSampleType01 ()
 bool TestSampleType ()
 {
 	bool bRes = true;
-	cout << endl << ANSI::AMARILLO << "[Test SampleType]" << ANSI::RESETEAR << endl;
-	if ( TestSampleType01() )
-	{
-		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
-	}
-	else
-	{
-		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
-		bRes = false;
-	}
-	cout << ANSI::AMARILLO << "[Fin]" << ANSI::RESETEAR << endl;
+
+	Test * testModulo = new Test ( NOMBRE_MODULO );
+	testModulo->NuevoCaso ( "TestSampleType01", TestSampleType01 );
+
+	bRes = testModulo->Ejecutar ();
+	delete testModulo;
 	return ( bRes );
 }

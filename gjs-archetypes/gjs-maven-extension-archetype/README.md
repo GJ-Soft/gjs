@@ -25,13 +25,11 @@ Archetype to generate the basic structure of a maven extension.
 							-DarchetypeGroupId=org.gjs.maven.archetypes \
 							-DarchetypeArtifactId=gjs-maven-extension-archetype \
 							-DarchetypeVersion=1.0.0-RC.2 \
-							-DshortName=test -Dextension=tgz 
+							-DshortName=test 
     
 	Archetype Parameters:
 
 	* shortName: Name of the project. Always lowercase. Allows two words separated by a hyphen.
-
-	* extension: Extension or packaging to manage. Always lowercase. Allows two words separated by a hyphen.
 
 	* groupId: The group of the project artifact. 
 

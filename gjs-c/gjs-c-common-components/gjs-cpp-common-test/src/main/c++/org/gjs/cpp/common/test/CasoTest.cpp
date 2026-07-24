@@ -40,6 +40,7 @@ ResultadoCasoTest CasoTest::Ejecutar ()
 		{
 			if ( ! funcionCaso() )
 			{
+				cout << "KO!!" << endl;
 				rctRes = ResultadoCasoTest::KO;
 			}
 			if ( bEsperaExcepcion )
