@@ -9,7 +9,7 @@ ${symbol_pound}include <CppTest.h>
 
 
 
-#define  NOMBRE_MODULO 			"${capitalizedName}"
+${symbol_pound}define  NOMBRE_MODULO 			"${capitalizedName}"
 
 
 
@@ -17,12 +17,17 @@ ${symbol_pound}include <CppTest.h>
 
 
 
-using namespace ${packageNamespace};
+using namespace std;
 using namespace org::gjs::cpp::common;
 using namespace org::gjs::cpp::common::test;
-using namespace std;
 
 
+
+#if( $parameters > 0 )
+extern int execute${capitalizedName} ( int iNumArgs, char * p_p_cArgs [] );
+#else
+extern int execute${capitalizedName} ();
+#end
 
 
 
@@ -33,22 +38,28 @@ static bool Test${capitalizedName}01 ()
 	bool bRes = true;
 	try
 	{
-# if( $parameters > 0 )
-		int iNumArgs = $parameters;
-		char * p_p_cArgs [] = MemReservar ( ( iNumArgs + 1 ) * sizeof ( char * ) );
-		p_p_cArgs [ 0 ] = string ( "${capitalizedName}.exe" ).c_str(); 
+#if( $parameters > 0 )
+		int iNumArgs = ${parameters};
+		char ** p_p_cArgs = new char * [ iNumArgs + 1 ];
+		p_p_cArgs [ 0 ] = (char *)string ( "${capitalizedName}.exe" ).c_str(); 
+		string sArgumento ( "0" );
 		for ( int i = 0; i < iNumArgs; i = i + 1 )
 		{
-			p_p_cArgs [ i + 1 ] = string ( "0" ).c_str(); 
+			p_p_cArgs [ i + 1 ] = (char *)sArgumento.c_str(); 
 		}
-		if ( main ( iNumArgs, p_p_cArgs [] ) != 0 )
+		cout << "Llamando con " << iNumArgs << " argumentos" << endl; 
+		if ( execute${capitalizedName} ( iNumArgs + 1, p_p_cArgs ) != 0 )
 #else
-		if ( main () != 0 )
+		cout << "Llamando con sin argumentos" << endl; 
+		if ( execute${capitalizedName} () != 0 )
 #end	
 		{
 			cout <<  "Error caso 1" << endl;
 			bRes = false;
 		}
+#if( $parameters > 0 )
+		delete[] p_p_cArgs;
+#end
 	}
 	catch ( exception & ex )
 	{
@@ -63,7 +74,7 @@ static bool Test${capitalizedName}01 ()
 	return( bRes );
 }
 
-# if( $parameters > 0 )
+#if( $parameters > 0 )
 static bool Test${capitalizedName}02 ()
 {
 	cout <<  "Test ${capitalizedName} 02" << endl;
@@ -71,17 +82,18 @@ static bool Test${capitalizedName}02 ()
 	try
 	{
 		int iNumArgs = $parameters;
-		char * p_p_cArgs [] = MemReservar ( ( iNumArgs + 1 ) * sizeof ( char * ) );
-		p_p_cArgs [ 0 ] = string ( "${capitalizedName}.exe" ).c_str (); 
+		char ** p_p_cArgs = new char * [ iNumArgs + 1 ];
+		p_p_cArgs [ 0 ] = (char *)string ( "${capitalizedName}.exe" ).c_str (); 
 		for ( int i = 0; i < iNumArgs; i = i + 1 )
 		{
-			p_p_cArgs [ i + 1 ] = string ( "" ).c_str(); 
+			p_p_cArgs [ i + 1 ] = (char *)string ( "" ).c_str(); 
 		}
-		if ( main ( iNumArgs, p_p_cArgs [] ) != 0 )
+		if ( execute${capitalizedName} ( iNumArgs + 1, p_p_cArgs ) == 0 )
 		{
-			cout <<  "Error caso 1" << endl;
+			cout <<  "Error caso 1: Se esperaba error" << endl;
 			bRes = false;
 		}
+		delete[] p_p_cArgs;
 	}
 	catch ( exception & ex )
 	{
@@ -104,9 +116,9 @@ bool Test${capitalizedName} ()
 	bool bRes = true;
 
 	Test * testModulo = new Test ( NOMBRE_MODULO );
-	testModulo->NuevoCasoAislado ( "Test${capitalizedName}01", Test${capitalizedName}01 );
-# if( $parameters > 0 )
-	testModulo->NuevoCasoAislado ( "Test${capitalizedName}02", Test${capitalizedName}02 );
+	testModulo->NuevoCasoAislado ( "Test${capitalizedName}01", Test${capitalizedName}01, EXIT_SUCCESS );
+#if( $parameters > 0 )
+	testModulo->NuevoCasoAislado ( "Test${capitalizedName}02", Test${capitalizedName}02, EXIT_SUCCESS );
 #end	
 	bRes = testModulo->Ejecutar ();
 	delete testModulo;

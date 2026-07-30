@@ -16,6 +16,7 @@ typedef struct
 
 } SCasoTestAislado;
 
+SCasoTestAislado * SCasTstaCrearDef ( const char * p_cId, PFUNINTV p_fTest );
 SCasoTestAislado * SCasTstaCrear ( const char * p_cId, PFUNINTV p_fTest, int iCodigoEsperado );
 //SCasoTestAislado * SCasTstaCrearPruebaExe ( const char * p_cId, const char * p_cExe, int iCodigoEsperado );
 void SCasTstaDestruir ( SCasoTestAislado ** p_p_caststaObj );

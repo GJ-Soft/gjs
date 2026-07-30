@@ -8,7 +8,6 @@ println "Post generate tasks..."
 
 def replaceTags(String text) {
 	return text.replace( "__capitalizedName__", shortName.capitalize() )
-			.replace( "__capitalizedExtension__", extension.capitalize() )
 }
 
 def processFile(File in) {

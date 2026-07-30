@@ -11,14 +11,15 @@ ${symbol_pound}include "${capitalizedName}.h"
 
 
 
-#define  NOMBRE_MODULO 			"SampleType"
+${symbol_pound}define  NOMBRE_MODULO 			"SampleType"
 
 
 
-using namespace ${packageNamespace};
+using namespace std;
 using namespace org::gjs::cpp::common;
 using namespace org::gjs::cpp::common::test;
-using namespace std;
+using namespace ${packageNamespace};
+
 
 
 

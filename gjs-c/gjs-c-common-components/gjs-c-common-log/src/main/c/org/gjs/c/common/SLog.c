@@ -17,13 +17,16 @@ static const char * _LogTxtNivelMensaje ( int iNivel );
 SLog * SLogCrearDef ()
 {
 	SLog * p_logObj;
+	char * p_cDir;
 	
 	p_logObj = (SLog *) MemReservar ( sizeof ( SLog ) );
 	if ( ES_VALIDO ( p_logObj ) )
 	{
 		SLogInicializar ( p_logObj );
 		SLogEstNombreProcesoLit ( p_logObj, LOG_TXT_NOMBRE_DEFECTO );
-		SLogEstablecerDirectorioLit ( p_logObj, SisDirectorioActual () );
+		p_cDir = SisDirectorioActual ();
+		SLogEstablecerDirectorioLit ( p_logObj, p_cDir );
+		MemLiberarCadena ( &p_cDir );
 	}
 	return ( p_logObj );
 }
@@ -35,7 +38,6 @@ SLog * SLogCrearDirLit ( const char * p_cDir )
 	p_logObj = SLogCrearDef ();
 	if ( ES_VALIDO ( p_logObj ) )
 	{
-		SLogInicializar ( p_logObj );
 		SLogEstNombreProcesoLit ( p_logObj, LOG_TXT_NOMBRE_DEFECTO );
 		SLogEstablecerDirectorioLit ( p_logObj, p_cDir );
 	}
@@ -49,7 +51,6 @@ SLog * SLogCrearDir ( SCadena * p_cadDir )
 	p_logObj = SLogCrearDef ();
 	if ( ES_VALIDO ( p_logObj ) )
 	{
-		SLogInicializar ( p_logObj );
 		SLogEstNombreProcesoLit ( p_logObj, LOG_TXT_NOMBRE_DEFECTO );
 		SLogEstablecerDirectorio ( p_logObj, p_cadDir );
 	}
@@ -63,7 +64,6 @@ SLog * SLogCrearLit ( const char * p_cDir, const char * p_cFic )
 	p_logObj = SLogCrearDef ();
 	if ( ES_VALIDO ( p_logObj ) )
 	{
-		SLogInicializar ( p_logObj );
 		SLogEstablecerFicheroLit ( p_logObj, p_cFic );
 		SLogEstablecerDirectorioLit ( p_logObj, p_cDir );
 	}
@@ -77,7 +77,6 @@ SLog * SLogCrear ( SCadena * p_cadDir, SCadena * p_cadFic )
 	p_logObj = SLogCrearDef ();
 	if ( ES_VALIDO ( p_logObj ) )
 	{
-		SLogInicializar ( p_logObj );
 		SLogEstablecerFichero ( p_logObj, p_cadFic );
 		SLogEstablecerDirectorio ( p_logObj, p_cadDir );
 	}
@@ -91,7 +90,6 @@ SLog * SLogCrearRutaLit ( const char * p_cRuta )
 	p_logObj = SLogCrearDef ();
 	if ( ES_VALIDO ( p_logObj ) )
 	{
-		SLogInicializar ( p_logObj );
 		SLogEstablecerRutaLit ( p_logObj, p_cRuta );
 	}
 	return ( p_logObj );
@@ -104,7 +102,6 @@ SLog * SLogCrearRuta ( SCadena * p_cadRuta )
 	p_logObj = SLogCrearDef ();
 	if ( ES_VALIDO ( p_logObj ) )
 	{
-		SLogInicializar ( p_logObj );
 		SLogEstablecerRuta ( p_logObj, p_cadRuta );
 	}
 	return ( p_logObj );

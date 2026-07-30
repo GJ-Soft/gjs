@@ -7,11 +7,13 @@ ${symbol_pound}include <CppTest.h>
 
 ${symbol_pound}include "${capitalizedName}.h"
 
-#include <iostream>
+${symbol_pound}include <iostream>
 
 
-using namespace org::gjs::cpp::common;
+
 using namespace std;
+using namespace org::gjs::cpp::common;
+using namespace org::gjs::cpp::common::test;
 
 
 
@@ -22,16 +24,10 @@ extern bool TestSampleType ();
 int main( int argc, char * argv[] )
 {
 	int iRes = 0;
-	InicializarBase();
-
-	map<string, FUNCION_BOOL> mapTests;
-	mapTests[ "Sample" ] = TestSample;
-	mapTests[ "SampleType" ] = TestSampleType;
-	int iRes = 0;
-	InicializarBase();
+	EntInicializar ( true, "Test${capitalizedName}", 1, 0 );
 	EstablecerManejadorInterrupcionesDefecto ();
 
-	SBancoTests * p_banTests = SBanTstCrear ();
+	BancoTests * p_banTests = new BancoTests ();
 	p_banTests->NuevoTest ( "SampleTest", TestSample );
 	p_banTests->NuevoTest ( "SampleTypeTest", TestSampleType );
 
@@ -40,7 +36,7 @@ int main( int argc, char * argv[] )
 	{
 		sTest = argv[ 1 ];
 	}
-	if ( p_banTests->EjecutarTest ( sTest ) )
+	if ( p_banTests->Ejecutar ( sTest ) )
 	{
 		iRes = 0;
 	}
@@ -48,5 +44,7 @@ int main( int argc, char * argv[] )
 	{
 		iRes = -1;
 	}
+	delete p_banTests;
+	EntFinalizar ();
 	return ( iRes );
 }

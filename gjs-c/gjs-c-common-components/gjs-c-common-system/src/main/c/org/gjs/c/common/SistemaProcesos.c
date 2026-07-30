@@ -2071,10 +2071,10 @@ void * _HiloVigilarPadre ( void * p_arg )
         }
 # else
         sleep( 1 );
-	SisConAsincEscribirConFormato ( "BUCLE HILO %lu/%lu\n",  getppid (), pidPadre );
+		// SisConAsincEscribirConFormato ( "BUCLE HILO %lu/%lu\n",  getppid (), pidPadre );
         if ( getppid () != pidPadre )
         {
-			SisConAsincEscribir ( "EL PADRE HA MUERTO!!!!\n" );
+			SisConAsincEscribir ( "EL PADRE HA MUERTO!\n" );
             /* El padre ha muerto, el hijo se autotermina */
             raise ( SIGTERM );
         }

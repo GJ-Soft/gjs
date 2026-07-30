@@ -34,12 +34,10 @@
 		.
 	</description>
 	<properties>
-		<!-- C/C++ Language version -->
-		<gjs.nar.language.option>--std=${gjs.nar.language.standard}</gjs.nar.language.option>
-
 		<!-- Generic compilation options-->
 		<gjs.nar.architecture.bits>64</gjs.nar.architecture.bits>
-		<gjs.nar.optimization.level>2</gjs.nar.optimization.level>
+		<!-- none=none, size=-Os, speed=-O1, full=-O2, extreme=-O3 -->
+		<gjs.nar.optimization>full</gjs.nar.optimization>
 		
 		<!-- Optinal specific compilation options -->
 		<gjs.nar.locale.option>-DWITH_NO_C_LOCALE</gjs.nar.locale.option>
@@ -63,7 +61,7 @@
 		<gjs.nar.architecture.option>-A ${gjs.nar.architecture}</gjs.nar.architecture.option> 
 		
 		<!-- Threads -->
-		<gjs.nar.threads.option>-mthreads</gjs.nar.threads.option>
+		<gjs.nar.threads.option>-pthread</gjs.nar.threads.option>
 
 		<!-- Linker options -->	
 		<gjs.nar.emulation.option>-Wl,-m,${gjs.nar.emulation}</gjs.nar.emulation.option> 
@@ -80,7 +78,7 @@
 		<finalName>${finalName.prefix}${project.artifactId}-${project.version}</finalName>
 			
 		<!-- Ejecutables auxiliares -->
-		<gcovr>/usr/bin/gcovr</gcovr> 
+		<gcovr>${cygwinDir}/usr/bin/gcovr</gcovr> 
 	</properties>
 
 	<build>	
@@ -114,14 +112,16 @@
 								<exclude>**/*.sql</exclude>
 								<exclude>**/resources/**</exclude>
 							</excludes>						
-							<multiThreaded>true</multiThreaded>
 							<ccache>false</ccache>
+							<languageStandard>${gjs.nar.language.standard}</languageStandard>   
+							<bitsArchitecture>${gjs.nar.architecture.bits}</bitsArchitecture>
+							<multiThreaded>true</multiThreaded>
+							<threadFlag>${gjs.nar.threads.option}</threadFlag>
+							<optimize>${gjs.nar.optimization}</optimize>
 						
 							<options>
-								<option>-m${gjs.nar.architecture.bits}</option> 
 								<option>-fPIC</option> 
 								<option>-fabi-version=0</option>
-								<option>-O${gjs.nar.optimization.level}</option> 
 								<option>-Wall</option> 
 								<option>-Wno-switch</option> 
 								<option>-Wno-sign-compare</option> 
@@ -130,7 +130,6 @@
 								<option>-Wunused-result</option>
 								<option>${gjs.nar.locale.option}</option>
 								<option>${gjs.nar.platform.options}</option>
-								<option>${gjs.nar.threads.option}</option>
 								<option>${gjs.compiler.additionalOptions}</option>
 							</options>
 
@@ -157,15 +156,16 @@
 								<exclude>**/*.sql</exclude>
 								<exclude>**/resources/**</exclude>
 							</excludes>						
-							<multiThreaded>true</multiThreaded>
 							<ccache>false</ccache>
+							<languageStandard>${gjs.nar.language.standard}</languageStandard>   
+							<bitsArchitecture>${gjs.nar.architecture.bits}</bitsArchitecture>
+							<multiThreaded>true</multiThreaded>
+							<threadFlag>${gjs.nar.threads.option}</threadFlag>
+							<optimize>${gjs.nar.optimization}</optimize>
 						
 							<options>
-								<option>${gjs.nar.language.option}</option>
-								<option>-m${gjs.nar.architecture.bits}</option> 
 								<option>-fPIC</option> 
 								<option>-fabi-version=0</option>
-								<option>-O${gjs.nar.optimization.level}</option> 
 								<option>-Wall</option> 
 								<option>-Wno-switch</option> 
 								<option>-Wno-sign-compare</option> 
@@ -174,7 +174,6 @@
 								<option>-Wunused-result</option>
 								<option>${gjs.nar.locale.option}</option>
 								<option>${gjs.nar.platform.options}</option>
-								<option>${gjs.nar.threads.option}</option>
 								<option>${gjs.compiler.additionalOptions}</option>
 							</options>
 
@@ -199,7 +198,6 @@
 								<option>-v</option> 
 								<option>${gjs.nar.emulation.option}</option> 
 								<option>${gjs.nar.platform.link.options}</option>
-								<option>${gjs.nar.threads.option}</option>
 							</testOptions>
 							<libs>
 							</libs>					
@@ -374,7 +372,7 @@
 		<profile>
 			<id>debug</id>
             <properties>
-                <gjs.nar.optimization.level>0</gjs.nar.optimization.level>
+                <gjs.nar.optimization>none</gjs.nar.optimization>
 				<compilerExtraOptions>-g</compilerExtraOptions>
             </properties>
 			<build>
@@ -390,6 +388,18 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+		<profile>
+			<id>runtime-win</id>
+			<activation>
+                <property>
+					<name>environment.style</name>
+					<value>windows</value>
+				</property>
+			</activation>
+            <properties>		
+				<gjs.nar.threads.option>-mthreads</gjs.nar.threads.option>
+            </properties>
 		</profile>
 	</profiles>	
 </project>

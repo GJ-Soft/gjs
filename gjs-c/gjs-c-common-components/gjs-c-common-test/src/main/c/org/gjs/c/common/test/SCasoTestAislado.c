@@ -10,6 +10,11 @@
 
 	  
 
+SCasoTestAislado * SCasTstaCrearDef ( const char * p_cId, PFUNINTV p_fTest )
+{
+	return ( SCasTstaCrear ( p_cId, p_fTest, EXIT_SUCCESS ) );
+}
+
 SCasoTestAislado * SCasTstaCrear ( const char * p_cId, PFUNINTV p_fTest, int iCodigoEsperado )
 {
 	SCasoTestAislado * p_caststaObj;
@@ -103,7 +108,7 @@ int SCasTstaEjecutar ( SCasoTestAislado * p_caststaObj )
 			int iCodigoRecibido = 0;
 			// kill( pid, SIGUSR1 );
 			waitpid ( pid, &iCodigoRecibido, 0 );
-			AplicLogAnotar ( "Proceso terminado con %s", WEXITSTATUS ( iCodigoRecibido ) );
+			AplicLogAnotar ( "Proceso terminado con %d", WEXITSTATUS ( iCodigoRecibido ) );
 			if ( WEXITSTATUS ( iCodigoRecibido ) == p_caststaObj->iCodigo )
 			{
 				iRes = RESULTADO_CASO_TEST_OK;

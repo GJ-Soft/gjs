@@ -49,12 +49,10 @@ ResultadoCasoTest CasoTestAislado::Ejecutar ()
 		LogAviso ( "El codigo del test ha terminado normalmente: puede que haya que implementarlo como CasoTest normal" );
 		if ( rctRes == ResultadoCasoTest::OK )
 		{
-			cout << "SUCCESSD" << endl;
 			exit ( EXIT_SUCCESS );
 		}
 		else
 		{
-			cout << "FAILD" << endl;
 			exit( EXIT_FAILURE );
 		}
 	}

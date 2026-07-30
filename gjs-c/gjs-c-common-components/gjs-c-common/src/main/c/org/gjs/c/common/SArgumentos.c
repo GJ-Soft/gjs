@@ -84,7 +84,7 @@ SArgumentos * SArgCrear ( int iNumArg, char ** p_p_cArg )
 					{
 						CadEliminarCaracteresNoImprimibles ( p_cArg );
 						CadEliminarBlancos ( p_cArg );
-						if ( CadLongitud ( p_cArg ) > 0 ) 
+						if ( CadLongitud ( p_cArg ) >= 0 ) 
 						{
 							if ( SSecLitInsertar ( p_argObj->p_seclitArgumentos, p_cArg ) == 0 )
 							{

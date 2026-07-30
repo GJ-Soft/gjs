@@ -41,7 +41,7 @@
 		
 		<gjs.nar.compiler.language>c</gjs.nar.compiler.language>
 		<gjs.nar.language.version>2x</gjs.nar.language.version>
-		<gjs.nar.language.standard>c${gjs.nar.language.version}</gjs.nar.language.standard>
+		<gjs.nar.language.standard>gnu${gjs.nar.language.version}</gjs.nar.language.standard>
 		<gjs.nar.language.aol>gcc</gjs.nar.language.aol>
 		
 		<!-- Dependency versions -->
@@ -128,11 +128,14 @@
 				<version>${gjs-c-common.version}</version>
 				<type>nar</type>
 			</dependency>
+			
+			<!-- Test -->
 			<dependency>
 				<groupId>org.gjs.c.common</groupId>
 				<artifactId>gjs-c-common-test</artifactId>
 				<version>${gjs-c-common-test.version}</version>
 				<type>nar</type>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

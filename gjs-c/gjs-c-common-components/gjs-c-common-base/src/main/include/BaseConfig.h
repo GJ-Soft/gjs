@@ -116,7 +116,10 @@
 #	define	WORD							unsigned short
 #endif
 
-#if ( !defined ( DWORD ) )
+/* En WIN, windows.h ya define DWORD (typedef, 32 bits). El guard !defined(DWORD)
+   no ve el typedef (solo macros), asi que sin el !defined(WIN) este #define lo
+   machacaria: en Cygwin (LP64) 'unsigned long' es 64 bits y rompe la ABI Windows. */
+#if ( !defined ( DWORD ) && !defined ( WIN ) )
 #	define	DWORD							unsigned long
 #endif
 

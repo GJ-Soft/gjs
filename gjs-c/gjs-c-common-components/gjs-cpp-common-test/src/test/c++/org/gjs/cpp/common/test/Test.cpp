@@ -34,6 +34,7 @@ int main ( int argc, char * argv[] )
 	p_banTests->NuevoTest ( "ContextoTestTest", TestContextoTest );
 	p_banTests->NuevoTest ( "Ejemplo1Test", TestEjemplo1 );
 	p_banTests->NuevoTest ( "Ejemplo2Test", TestEjemplo2 );
+	
 	string sTest ( "null" );
 	if ( argc > 1 )
 	{

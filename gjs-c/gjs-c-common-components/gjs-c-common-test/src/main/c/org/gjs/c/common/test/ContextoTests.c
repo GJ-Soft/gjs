@@ -15,9 +15,13 @@ static int				_iEntornoTestInicializado = 0;
 #if ( defined ( SIGNALS_PERMITIDOS ) )
 void _TestSignalHandler ( int iSignal )
 {
-	char * p_cMsj = SisSigMensaje ( iSignal );	
-	SisConAsincEscribirConFormato ( "%sRecibida interrupcion: %s%s\n", ANSI_ROJO,p_cMsj, ANSI_RESETEAR );
-	MemLiberarCadena ( &p_cMsj );
+	// sigaction entrega el codigo de interrupcion del sistema operativo, mientras que
+	// las rutinas SisSig* trabajan con los identificadores internos SIS_SIG_*: hay
+	// que convertir con SisSigId, o el nombre que sale no es el de la interrupcion
+	// recibida. Se evita ademas SisSigMensaje, que reserva memoria, cosa que no es
+	// segura dentro de un manejador de interrupciones.
+	int iId = SisSigId ( iSignal );
+	SisConAsincEscribirConFormato ( "%sRecibida interrupcion: %s(%d): %s%s\n", ANSI_ROJO, SisSigNombre ( iId ), iSignal, SisSigDescripcion ( iId ), ANSI_RESETEAR );
 	_exit ( -1 );
 }		
 #endif

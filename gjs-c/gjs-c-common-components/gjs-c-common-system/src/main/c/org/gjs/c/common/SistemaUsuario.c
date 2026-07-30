@@ -159,7 +159,7 @@ int SisUsrActivarRoot ()
 
 
 
-unsigned int SisUsrObtenerUsuario (int type)
+unsigned int SisUsrObtenerUsuario ( int type )
 {
 #if (defined (POSIX) )
     static int

@@ -13,7 +13,13 @@
 #	define NO_STRICT
 #	define WIN32_LEAN_AND_MEAN
 #	define NOMINMAX
-#   include <windows.h>	
+#   include <windows.h>
+	/* winsock2.h tiene que entrar aqui, que es lo mas temprano del stack: en cuanto
+	   alguna cabecera arrastra sys/types.h (el <string> de mas abajo ya lo hace, via
+	   pthread.h), Cygwin declara el select POSIX y despues winsock2.h choca con el.
+	   Ponerlo mas abajo en la cadena, en CppCommonIo.h o en Socket.h, llega tarde.
+	   WIN32_LEAN_AND_MEAN evita que windows.h haya metido ya el winsock.h v1. */
+#	include <winsock2.h>
 #endif
 
 

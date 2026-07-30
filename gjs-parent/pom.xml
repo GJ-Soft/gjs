@@ -104,6 +104,9 @@
 		<license.organization>GJ Software</license.organization>
 		<license.year>2026</license.year>
 
+		<!-- Sonar -->
+		<sonar.organization>ginesjsanchez</sonar.organization>
+
 		<!-- Aggregational platform specific compilation options -->
 		<platformOptions></platformOptions>
 		<platformLinkOptions></platformLinkOptions>

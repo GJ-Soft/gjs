@@ -30,10 +30,12 @@ ${symbol_pound}include "${includeConfig}"
 static int validateArgument ( int iArg, const char * p_cArg );
 #end
 
+
+
 #if( $parameters > 0 )
-int main ( int iNumArgs, char * p_p_cArgs [] )
+int execute${capitalizedName} ( int iNumArgs, char * p_p_cArgs [] )
 #else
-int main ()
+int execute${capitalizedName} ()
 #end
 {
 	int					iRes;
@@ -55,7 +57,7 @@ int main ()
 		{
 			for ( int iArg = 0; iArg < SArgNumArgumentos ( p_argParametros ); iArg = iArg + 1 )
 			{
-				if ( !validateArgument ( iArg, SArgArgumento ( p_argParametros, iArg ) ) )
+				if ( validateArgument ( iArg, SArgArgumento ( p_argParametros, iArg ) ) == 0 )
 				{
 					printf ( "Invalid argument %d (Value=%s).\n", iArg,  
 							SArgArgumento ( p_argParametros, iArg ) ); 
@@ -65,7 +67,7 @@ int main ()
 		}
 		else
 		{
-			printf ( "Invalid number of arguments.\n" );
+			printf ( "Invalid number of arguments: %d.\n", SArgNumArgumentos ( p_argParametros ) );
 			//TODO
 			printf ( "Use: ${shortName} <Param1> ...\n" );
 			iRes = EXIT_FAILURE;
@@ -111,7 +113,7 @@ static int validateArgument ( int iArg, const char * p_cArg )
 	return ( iRes );
 }
 #end		 
-	
+
 
 
 

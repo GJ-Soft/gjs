@@ -12,6 +12,8 @@ ${symbol_pound}include "${capitalizedName}.h"
 
 
 
+${symbol_pound}define  NOMBRE_MODULO 			"Sample"
+
 
 
 
@@ -33,16 +35,11 @@ static int TestSample01 ()
 int TestSample ()
 {
 	int iRes = 1;
-	printf ( "[Test Sample]\n" );
-	if ( TestSample01() == 1 )
-	{
-		printf ( "Resultado: OK\n" );
-	}
-	else
-	{
-		printf ( "Resultado: KO\n" );
-		iRes = 0;
-	}
-	printf ( "[Fin]\n" );
+
+	STest * testModulo = STestCrear ( NOMBRE_MODULO );
+	STestNuevoCaso ( testModulo, "TestSample01", TestSample01 );
+
+	iRes = STestEjecutar ( testModulo );
+	STestDestruir ( &testModulo );
 	return ( iRes );
 }

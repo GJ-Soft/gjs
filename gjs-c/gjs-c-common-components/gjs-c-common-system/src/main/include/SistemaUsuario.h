@@ -5,7 +5,7 @@
 
 
 
-unsigned int SisUsrObtenerUsuario ();
+unsigned int SisUsrObtenerUsuario ( int type );
 unsigned int SisUsrObtenerGrupo ( int type );
 char * SisUsrObtenerNombre ( unsigned int uiId );
 char * SisUsrObtenerNombreGrupo ( unsigned int uiIdGrupo ) ;

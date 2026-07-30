@@ -45,10 +45,6 @@
 							<narSystemPackage>${project.groupId}</narSystemPackage>
 						</library>
 					</libraries>
-					<linker>
-						<options combine.self="override">
-						</options>
-					</linker>
 				</configuration>
 			</plugin>
 		</plugins>

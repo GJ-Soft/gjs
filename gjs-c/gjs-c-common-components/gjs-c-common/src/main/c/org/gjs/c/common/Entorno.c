@@ -25,13 +25,18 @@
 
 
 
-static int		g_iEntInicializado = 0;
-static char *	g_p_cEntDirDatos = NULL;
-static char *	g_p_cEntDirSeguridad = NULL;
-static char *	g_p_cEntDirLog = NULL;
+static int			g_iEntInicializado = 0;
+static char *		g_p_cEntDirDatos = NULL;
+static char *		g_p_cEntDirSeguridad = NULL;
+static char *		g_p_cEntDirLog = NULL;
 
-static int		g_iEntModoTest = 0;
+static int			g_iEntModoTest = 0;
 
+# if ( defined ( WIN ) ) 
+static DWORD      	g_pidProcesoInicializador;
+# else
+static pid_t 		g_pidProcesoInicializador;
+# endif
 
 
 int EntInicializar ( int iConsola, const char * p_cNombre, int iVersion, int iSubversion )
@@ -102,6 +107,14 @@ int EntInicializarExt ( int iConsola, const char * p_cNombre, int iVersion, int 
 		{
 			iRes = 0;
 		}
+		if ( g_iEntInicializado == 1 )
+		{
+# 		 if ( defined ( WIN ) ) 
+			g_pidProcesoInicializador = GetCurrentProcessId ();
+#		 else
+			g_pidProcesoInicializador = getpid ();
+#		 endif
+		}
 	}
 	else
 	{
@@ -114,37 +127,45 @@ void EntFinalizar ()
 {
 	if ( g_iEntInicializado == 1 )
 	{
-		MemLiberarCadena ( &g_p_cEntDirSeguridad );
-		MemLiberarCadena ( &g_p_cEntDirLog );
-		MemLiberarCadena ( &g_p_cEntDirDatos );
-		AplicFinalizar ();
-
-
-#	  if ( defined ( WIN )  )
-		//_WinSckFinalizar ();
-#	  endif
-
-		SisFinalizar ();
-		ErrLimpiar ();
-		g_iEntInicializado = 0;
-
-#	 if ( defined ( MODO_DEPURACION_2 ) || defined ( MODO_DEPURACION ) )
-		char 	cVal;
-		int		iParar;
-
-#	  if ( defined ( MODO_DEPURACION_2 ) )
-		// TODO: Esto todavia no se ha pasado a lo nuevo
-		GesClsImprimirEstado ();
-		MemImprimirInforme ( 1 );
-#	  endif
-
-		if ( iParar == 1 )
-		{
-			printf ( "\nPulse <RETORNO> para continuar...");
-			cVal = getchar ();
-			printf ( "\n\n" );
-		}
+# 	 if ( defined ( WIN ) ) 
+		if ( g_pidProcesoInicializador == GetCurrentProcessId () )
+#	 else
+		if ( g_pidProcesoInicializador == getpid () )
 #	 endif
+		{
+			MemLiberarCadena ( &g_p_cEntDirSeguridad );
+			MemLiberarCadena ( &g_p_cEntDirLog );
+			MemLiberarCadena ( &g_p_cEntDirDatos );
+			AplicFinalizar ();
+
+
+#		  if ( defined ( WIN )  )
+			//_WinSckFinalizar ();
+#		  endif
+
+			SisFinalizar ();
+			ErrLimpiar ();
+			g_iEntInicializado = 0;
+			g_pidProcesoInicializador = 0;
+
+#		 if ( defined ( MODO_DEPURACION_2 ) || defined ( MODO_DEPURACION ) )
+			char 	cVal;
+			int		iParar;
+
+#		  if ( defined ( MODO_DEPURACION_2 ) )
+			// TODO: Esto todavia no se ha pasado a lo nuevo
+			GesClsImprimirEstado ();
+			MemImprimirInforme ( 1 );
+#		  endif
+
+			if ( iParar == 1 )
+			{
+				printf ( "\nPulse <RETORNO> para continuar...");
+				cVal = getchar ();
+				printf ( "\n\n" );
+			}
+#	 endif
+		}
 	}
 }
 

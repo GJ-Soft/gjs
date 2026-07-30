@@ -23,6 +23,7 @@
 
 
 
+int AplicLogInicializarDef ( const char * p_cFichero );
 int AplicLogInicializar ( const char * p_cDirectorio, const char * p_cFichero );
 int AplicLogInicializarExt ( const char * p_cDirectorio, const char * p_cFichero, int iNivel, int iActivado, int iHorEnNombre, int iHoraAlInicioNombre, char cSepHoraNombre, int iPIDEnNombre );
 int AplicLogEstaInicializado ();

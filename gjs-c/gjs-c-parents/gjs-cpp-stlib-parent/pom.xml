@@ -45,16 +45,6 @@
 							<narSystemPackage>${project.groupId}</narSystemPackage>
 						</library>
 					</libraries>
-					<linker>
-						<!-- Para crear librerías estáticas se utiliza el ar -->
-						<options combine.self="override">
-						</options>
-						<!--
-						<testOptions combine.children="append">
-							<option>${dirBinObjTest}/${finalPrefix}${finalName}.a</option>
-						</testOptions>
-						-->
-					</linker>
 				</configuration>
 			</plugin>
 		</plugins>

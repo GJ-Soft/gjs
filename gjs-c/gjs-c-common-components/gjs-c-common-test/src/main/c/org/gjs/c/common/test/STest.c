@@ -11,10 +11,17 @@ static void _Nada ()
 {
 }	
 	
+static void _Inicializar ( const char * p_cNombre )
+{
+}	
+	
+static void _Finalizar ( const char * p_cNombre )
+{
+}	
 
 STest * STestCrear ( const char * p_cNombre )
 {
-	return ( STestCrearExt ( p_cNombre, _Nada, _Nada, _Nada, _Nada ) );
+	return ( STestCrearExt ( p_cNombre, _Nada, _Nada, _Inicializar , _Finalizar ) );
 }
 
 STest * STestCrearExt ( const char * p_cNombre, PPRCV procInicializar, PPRCV procFinalizar, PPRCT procInicializarCaso, PPRCT procFinalizarCaso )

@@ -21,6 +21,7 @@
   #set($patch = "0" )
 #end
 
+
 ${symbol_pound}include "${includeConfig}"
 
 
@@ -35,9 +36,9 @@ static bool validateArgument ( int iArg, string sArg );
 #end
 
 #if( $parameters > 0 )
-int main ( int iNumArgs, char * p_p_cArgs [] )
+int execute${capitalizedName} ( int iNumArgs, char * p_p_cArgs [] )
 #else
-int main ()
+int execute${capitalizedName} ()
 #end
 {
 	int					iRes;

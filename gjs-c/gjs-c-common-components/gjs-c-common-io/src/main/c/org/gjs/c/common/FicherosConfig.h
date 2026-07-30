@@ -22,9 +22,11 @@
 	
 #else
 
-#	include <winbase.h>
-#	include <windef.h>
-#	include <winnt.h>
+	/* Paraguas estandar: incluye windef -> winnt -> winbase en el orden correcto
+	   y con la deteccion de target bien (DWORD queda a 32 bits de forma
+	   consistente, incluso en Cygwin LP64). No incluir esas cabeceras a trozos:
+	   el orden piecemeal rompe el dimensionado de DWORD via __LONG32/__LP64__. */
+#	include <windows.h>
 # if ( defined ( CYGWIN ) )
 #	include <unistd.h>
 # endif

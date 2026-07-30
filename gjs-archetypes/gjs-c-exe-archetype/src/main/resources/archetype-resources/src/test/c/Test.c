@@ -20,7 +20,6 @@ int main( int argc, char * argv[] )
 	EntInicializar ( 1, "Test${capitalizedName}", 1, 0 );
 	EntActivarModoTest ();
 	thread thHilo = SisLanzarHiloVigilanciaPadre ();
-	printf ( "****** HILO = %lu\n", (unsigned long) thHilo );
 
 	SBancoTests * p_banTests = SBanTstCrear ();
 	SBanTstNuevoTest ( p_banTests, "${capitalizedName}Test", Test${capitalizedName} );

@@ -78,7 +78,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <gjs.compiler.verbose>false</gjs.compiler.verbose>
 		<gjs.compiler.lint>none</gjs.compiler.lint>
-		<gjs.compiler.proc>none</gjs.compiler.proc>
+		<gjs.compiler.proc>full</gjs.compiler.proc>
 
         <!-- Dependency versions -->
         <!-- Gjs versions -->

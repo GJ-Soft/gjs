@@ -31,11 +31,21 @@ static int							g_iAplicLogInicializado = 0;
 
 
 
+int AplicLogInicializarDef ( const char * p_cFichero )
+{
+	char * 	p_cDir;
+	int		iRes;
+	
+	p_cDir = SisDirectorioActual ();
+	iRes = AplicLogInicializar ( p_cDir, p_cFichero );
+	MemLiberarCadena ( &p_cDir );
+	return ( iRes );
+}
+
 int AplicLogInicializar ( const char * p_cDirectorio, const char * p_cFichero )
 {
 	return ( AplicLogInicializarExt ( p_cDirectorio, p_cFichero, LOG_NIVEL_DEFECTO, 1, 1, 0, ' ', 0 ) );
 }
-
 
 int AplicLogInicializarExt ( const char * p_cDirectorio, const char * p_cFichero, int iNivel, int iActivado, int iHorEnNombre, int iHoraAlInicioNombre, char cSepHoraNombre, int iPIDEnNombre )
 {

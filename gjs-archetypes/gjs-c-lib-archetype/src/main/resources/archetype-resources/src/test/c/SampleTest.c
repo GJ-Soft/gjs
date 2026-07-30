@@ -12,7 +12,7 @@ ${symbol_pound}include "${capitalizedName}.h"
 
 
 
-#define  NOMBRE_MODULO 			"Sample"
+${symbol_pound}define  NOMBRE_MODULO 			"Sample"
 
 
 

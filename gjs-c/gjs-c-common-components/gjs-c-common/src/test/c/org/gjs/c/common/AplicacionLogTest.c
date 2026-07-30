@@ -22,8 +22,7 @@ static int TestAplicLogCicloVida01 ()
 	}
 
 	/* Inicializacion: crea el fichero de log (con fecha) en el directorio actual. */
-	/*
-	if ( AplicLogInicializar ( NULL, "aplictest" ) != 1 )
+	if ( AplicLogInicializarDef ( "aplictest" ) != 1 )
 	{
 		printf( "Error caso 3: no se pudo inicializar el log de aplicacion\n" );
 		iRes = BOOL_VAL_FALSO;
@@ -58,16 +57,13 @@ static int TestAplicLogCicloVida01 ()
 		printf( "Error caso 9: se esperaba 1 al anotar en el log\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
-	*/	
 	/* Elimina el fichero de log del disco y deja el subsistema sin inicializar. */
-	/*
 	AplicLogEliminar ();
 	if ( AplicLogEstaInicializado () != 0 )
 	{
 		printf( "Error caso 10: tras eliminar no deberia estar inicializado\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
-	*/
 	return ( iRes );
 }
 
@@ -77,7 +73,7 @@ int TestAplicacionLog ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test AplicacionLog]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
-	if ( 1 ) //( TestAplicLogCicloVida01 () == BOOL_VAL_CIERTO ) )
+	if ( TestAplicLogCicloVida01 () == BOOL_VAL_CIERTO )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

@@ -49,7 +49,7 @@ Argumentos::Argumentos ()
 			string sArg = UnicodeAUtf8 ( wstring ( p_lpwsArg [ iArg + 1 ] ) );
 			sArg = EliminarCaracteresNoAlfanumericos ( sArg );
 			sArg = Trim ( sArg );
-			if ( ( sArg.length () > 0 ) &&
+			if ( ( sArg.length () >= 0 ) &&
 				 ( sArg != "\\" ) )
 			{
 				vecArgumentos [ iNumArgumentos ] = sArg;
@@ -79,7 +79,7 @@ Argumentos::Argumentos ( int iNumArgs, char ** p_p_cArg )
 			string sArg = string ( p_p_cArg [ iArg + 1 ] );
 			sArg = EliminarCaracteresNoEstandar ( sArg );
 			sArg = EliminarBlancos ( sArg );
-			if ( ( sArg.length () > 0 ) &&
+			if ( ( sArg.length () >= 0 ) &&
 				 ( sArg != "\\" ) )
 			{
 				vecArgumentos [ iNumArgumentos ] = sArg;
