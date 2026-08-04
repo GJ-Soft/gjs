@@ -90,10 +90,6 @@ void MemLlenar ( void * p_vBloque, byte byValor, int iNumBytes );
 void MemCopiar ( void * p_vDest, void * p_vOrig, int iNumBytes );
 
 int MemEsValida ( void * p_vDireccion );
-int MemEsValida ( void * p_vDireccion );
-
-
-byte MemValorByte ( unsigned long ulDireccion );
 
 int MemEsIgual ( void * p_vBloque1, void * p_vBloque2, int iNumBytes );
 

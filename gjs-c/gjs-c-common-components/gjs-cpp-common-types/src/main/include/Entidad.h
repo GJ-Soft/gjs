@@ -28,8 +28,8 @@ namespace org
 			public:
 				Entidad ();
 				explicit Entidad ( const std::string & _sNombre );
-				Entidad ( Entidad & obj );
-				explicit Entidad ( Entidad * obj );
+				Entidad ( const Entidad & obj );
+				explicit Entidad ( const Entidad * obj );
 				virtual ~Entidad ();
 
 			public:
@@ -54,19 +54,19 @@ namespace org
 				void EliminarAtributo ( int iIndice );
 				void LimpiarAtributos ();
 
-				bool EsCompatible ( Entidad & obj );
-				bool EsCompatible ( Entidad * obj );
+				bool EsCompatible ( const Entidad & obj ) const;
+				bool EsCompatible ( const Entidad * obj ) const;
 
-				void Asignar ( Entidad & obj );
-				void Asignar ( Entidad * obj );
+				void Asignar ( const Entidad & obj );
+				void Asignar ( const Entidad * obj );
 
 				Entidad * Clonar();
 
 				virtual std::string toString () override;
 
-				Entidad & operator=( Entidad & obj );
-				bool operator== ( Entidad & obj );
-				bool operator!= ( Entidad & obj );
+				Entidad & operator=( const Entidad & obj );
+				bool operator== ( const Entidad & obj ) const;
+				bool operator!= ( const Entidad & obj ) const;
 			};
 
  			}

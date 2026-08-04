@@ -4,7 +4,9 @@
 
 
 #include <FicherosDefs.h>
-
+#include <ExtensionesFicheros.h>
+#include <ModosApertura.h>
+#include <EstilosFicheroTexto.h>
 
 
 #include <SistemaFicheros.h>

@@ -33,16 +33,17 @@ char * VersCadena ( int iVersion, int iSubversion, int iRevision, int iCorreccio
 
 	if ( iVersion >= 0 )
 	{
-		iTam = 5;
+		/* Cada campo es un int: hasta 11 caracteres con signo, mas el separador. */
+		iTam = 11;
 		if ( iSubversion >= 0 )
 		{
-			iTam = iTam + 6;
+			iTam = iTam + 12;
 			if ( iRevision >= 0 )
 			{
-				iTam = iTam + 6;
+				iTam = iTam + 12;
 				if ( iCorreccion >= 0 )
 				{
-					iTam = iTam + 6;
+					iTam = iTam + 12;
 					p_cPatron = VERS_PAT_4;
 				}
 				else
@@ -64,6 +65,7 @@ char * VersCadena ( int iVersion, int iSubversion, int iRevision, int iCorreccio
 		{
 			sprintf ( p_cAux, p_cPatron, iVersion, iSubversion, iRevision, iCorreccion );
 			p_cRes = CadDuplicar ( p_cAux );
+			MemLiberar ( (void **) &p_cAux );
 		}
 		else
 		{

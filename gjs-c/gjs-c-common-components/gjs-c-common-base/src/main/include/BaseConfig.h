@@ -168,7 +168,7 @@ struct tm
 
 #define TAM_BYTE					8
 #define TAM_PALABRA					sizeof ( unsigned int )
-#define NUM_BITS_PALABRA			( BMP_TAM_PALABRA * BMP_TAM_BYTE )
+#define NUM_BITS_PALABRA			( TAM_PALABRA * TAM_BYTE )
 
 
 

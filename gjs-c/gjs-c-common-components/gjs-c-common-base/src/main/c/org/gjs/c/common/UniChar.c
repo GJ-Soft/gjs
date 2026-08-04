@@ -54,7 +54,9 @@ char * CadUnicodeAAsciiz ( const unichar * p_ucUnicode )
 #    endif
 		if ( iLong > 0 )
 		{
-			p_cRes = (char *) MemReservar ( iLong * sizeof ( char ) );
+			/* En WIN iLong ya incluye el terminador; en POSIX wcstombs no lo cuenta,
+			   asi que se reserva siempre uno de mas para no escribir fuera. */
+			p_cRes = (char *) MemReservar ( ( iLong + 1 ) * sizeof ( char ) );
 #	     if ( defined ( WIN ) )
 #		  if ( defined ( VC ) && ( _MSC_VER < 1600 ) )
 			if ( WideCharToMultiByte ( JUEG_CAR_OEM_LATIN_I, 0, (const unsigned short *) p_ucUnicode, -1, p_cRes, iLong, NULL, NULL ) == 0 )

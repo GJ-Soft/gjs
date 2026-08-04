@@ -31,7 +31,6 @@ void _PrepararContexto ()
 {
 	if ( ES_NULO ( _g_p_propContexto ) )
 	{
-		printf ( "** CREANDO _g_p_propContexto\n" );
 		char * p_cDir = SisDirectorioActual ();
 		char * p_cFic = SisResolverDirectorioRelativo ( p_cDir, TEST_FIC_PROPIEDADES );
 		_g_p_propContexto = SPropCrear ( p_cFic );	
@@ -44,8 +43,7 @@ void _LiberarContexto ()
 {
 	if ( ES_VALIDO ( _g_p_propContexto ) )
 	{
-		printf ( "** DESTRUYENDO _g_p_propContexto\n" );
-		// SPropDestruir ( &_g_p_propContexto );	
+		SPropDestruir ( &_g_p_propContexto );	
 	}
 }	
 		

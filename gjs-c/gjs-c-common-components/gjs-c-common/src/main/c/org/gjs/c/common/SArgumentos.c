@@ -24,8 +24,10 @@ SArgumentos * SArgCrearDef ()
 
 #	 if ( defined ( WIN ) )
 		p_p_cArg = (unichar **) CommandLineToArgvW ( GetCommandLineW (), &iNumArg );
-		if ( ( iNumArg > 1 ) && ES_VALIDO ( p_p_cArg ) )
+		if ( ES_VALIDO ( p_p_cArg ) )
 		{
+		  if ( iNumArg > 1 )
+		  {
 			iNumArgsEnt = iNumArg - 1;
 			p_argObj->p_seclitArgumentos = SSecLitCrear ();
 			if ( ES_VALIDO ( p_argObj->p_seclitArgumentos ) )
@@ -51,6 +53,10 @@ SArgumentos * SArgCrearDef ()
 					}
 				}
 			}
+		  }
+			/* CommandLineToArgvW reserva el vector con LocalAlloc: hay que
+			   soltarlo con LocalFree aunque no se haya usado. */
+			LocalFree ( (HLOCAL) p_p_cArg );
 		}
 #	 endif
 	}
@@ -84,7 +90,7 @@ SArgumentos * SArgCrear ( int iNumArg, char ** p_p_cArg )
 					{
 						CadEliminarCaracteresNoImprimibles ( p_cArg );
 						CadEliminarBlancos ( p_cArg );
-						if ( CadLongitud ( p_cArg ) >= 0 ) 
+						if ( CadLongitud ( p_cArg ) > 0 )
 						{
 							if ( SSecLitInsertar ( p_argObj->p_seclitArgumentos, p_cArg ) == 0 )
 							{

@@ -232,14 +232,9 @@ char * CadDuplicarSeg ( const char * p_cAsciiz, int iMax )
 
 unichar * CadUniCrear ( int iLong )
 {
-# if ( defined ( MODO_UNICODE ) )
 	unichar *	p_ucCad;
 	int			iPos;
-# endif 
 
-# if ( !defined ( MODO_UNICODE ) )
-	return ( (unichar *) CadCrear ( iLong ) );
-# else
 	p_ucCad = NULL;
 	if ( iLong >= 0 )
 	{
@@ -261,7 +256,6 @@ unichar * CadUniCrear ( int iLong )
 		ERROR_ESTABLECER ( ERR_PARAMETROS );
 	}
 	return ( p_ucCad );
-# endif 
 }
 
 int CadUniLongitud ( const unichar * p_ucValor )

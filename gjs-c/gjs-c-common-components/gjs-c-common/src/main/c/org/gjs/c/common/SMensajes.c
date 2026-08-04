@@ -229,7 +229,7 @@ int SMsjCargar ( SMensajes * p_msjObj, const char * p_cFichero )
 					p_cadLinea = SCadGenerar ( p_cLinea );
 					if ( ES_VALIDO ( p_cadLinea ) )
 					{
-						SCadEliminarBlancos ( p_cadLinea );
+						SCadEliminarBlancosLaterales ( p_cadLinea );
 						if ( SCadLongitud ( p_cadLinea ) > 0 )
 						{
 							iSep = SCadBuscarCaracter ( p_cadLinea, ' ', 0 );
@@ -238,8 +238,8 @@ int SMsjCargar ( SMensajes * p_msjObj, const char * p_cFichero )
 								p_cadCodigoAux = SCadExtraerPrimeros ( p_cadLinea, iSep );
 								p_cadTexto = SCadExtraerUltimos ( p_cadLinea, SCadLongitud ( p_cadLinea ) - iSep - 1 );
 
-								SCadEliminarBlancos ( p_cadCodigoAux );
-								SCadEliminarBlancos ( p_cadTexto );
+								SCadEliminarBlancosLaterales ( p_cadCodigoAux );
+								SCadEliminarBlancosLaterales ( p_cadTexto );
 
 								p_cadCodigo = SCadcCrearCad ( p_cadCodigoAux );
 								if ( SCadcEsNumerica ( p_cadCodigo ) == 1 )
@@ -253,6 +253,7 @@ int SMsjCargar ( SMensajes * p_msjObj, const char * p_cFichero )
 								if ( iCargado == 0 )
 								{
 									SCadDestruir ( &p_cadTexto );
+									iRes = 0;
 								}
 							}
 						}

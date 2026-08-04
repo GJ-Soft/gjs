@@ -19,13 +19,13 @@
 
 
 
-#define MAYOR( lVal1, lVal2 )              ( ( lVal1 > lVal2 )  ? 1 : 0 )
-#define MENOR( lVal1, lVal2 )              ( ( lVal1 < lVal2 )  ? 1 : 0 )
-#define IGUAL( lVal1, lVal2 )              ( ( lVal1 == lVal2 ) ? 1 : 0 )
-#define MAYOR_IG( lVal1, lVal2 )           ( ( lVal1 =< lVal2 ) ? 1 : 0 )
-#define MENOR_IG( lVal1, lVal2 )           ( ( lVal1 => lVal2 ) ? 1 : 0 )
+#define MAYOR( lVal1, lVal2 )              ( ( ( lVal1 ) > ( lVal2 ) )  ? 1 : 0 )
+#define MENOR( lVal1, lVal2 )              ( ( ( lVal1 ) < ( lVal2 ) )  ? 1 : 0 )
+#define IGUAL( lVal1, lVal2 )              ( ( ( lVal1 ) == ( lVal2 ) ) ? 1 : 0 )
+#define MAYOR_IG( lVal1, lVal2 )           ( ( ( lVal1 ) >= ( lVal2 ) ) ? 1 : 0 )
+#define MENOR_IG( lVal1, lVal2 )           ( ( ( lVal1 ) <= ( lVal2 ) ) ? 1 : 0 )
 
-#define VALOR_EN_RANGO( lVal, lIni, lFin ) ( ( lVal >= lIni ) &&  ( lVal <= lFin ) ? 1 : 0 )
+#define VALOR_EN_RANGO( lVal, lIni, lFin ) ( ( ( lVal ) >= ( lIni ) ) &&  ( ( lVal ) <= ( lFin ) ) ? 1 : 0 )
 
 
 

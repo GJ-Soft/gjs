@@ -104,10 +104,6 @@ int SisSigCodigo ( int iSignal )
 		{
 			iRes = SIS_COD_SIG_ERROR_BUS;
 		}
-		else if ( iSignal == SIS_SIG_ERROR_PILA	 )
-		{
-			iRes = SIS_COD_SIG_ERROR_PILA;
-		}
 		else if ( iSignal == SIS_SIG_CAMBIO_ESTADO_HIJO )
 		{
 			iRes = SIS_COD_SIG_CAMBIO_ESTADO_HIJO;
@@ -443,10 +439,6 @@ const char * SisSigNombre ( int iSignal )
 	{
 		return ( SIS_SIG_NOM_ERROR_PILA );
 	}
-	else if ( iSignal == SIS_SIG_CAMBIO_ESTADO_HIJO )
-	{
-		return ( SIS_SIG_NOM_CAMBIO_ESTADO_HIJO );
-	}
 	else if ( iSignal == SIS_SIG_CONTINUAR )
 	{
 		return ( SIS_SIG_NOM_CONTINUAR );
@@ -581,10 +573,6 @@ const char * SisSigDescripcion ( int iSignal )
 	else if ( iSignal == SIS_SIG_CAMBIO_ESTADO_HIJO )
 	{
 		return ( SIS_SIG_TXT_CAMBIO_ESTADO_HIJO );
-	}
-	else if ( iSignal == SIS_SIG_CONTINUAR )
-	{
-		return ( SIS_SIG_TXT_CONTINUAR );
 	}
 	else if ( iSignal == SIS_SIG_PARAR )
 	{

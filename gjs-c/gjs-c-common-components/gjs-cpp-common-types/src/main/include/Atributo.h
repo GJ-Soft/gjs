@@ -21,16 +21,15 @@ namespace org
 			class Atributo : public Tipo
 			{
 			private:
-				TipoDatos		tipo;
 				std::string 	sNombre;
 				bool			bAnulable;
 
 			public:
 				Atributo ();
 				Atributo ( TipoDatos _tipo, const std::string & _sNombre, bool _bAnulable =  true );
-				Atributo ( Tipo & _tipo, const std::string & _sNombre, bool _bAnulable =  true );
-				Atributo ( Atributo & atributo );
-				explicit Atributo ( Atributo * atributo );
+				Atributo ( const Tipo & _tipo, const std::string & _sNombre, bool _bAnulable =  true );
+				Atributo ( const Atributo & atributo );
+				explicit Atributo ( const Atributo * atributo );
 				virtual ~Atributo ();
 
 			public:
@@ -43,23 +42,23 @@ namespace org
 				bool isAnulable () const;
 				void setAnulable ( bool bValor );
 
-				void Asignar ( Atributo & atributo );
-				void Asignar ( Atributo * atributo );
+				void Asignar ( const Atributo & atributo );
+				void Asignar ( const Atributo * atributo );
 
 				Atributo * Clonar();
 
 				virtual bool EsValido () const override;
 
-				bool EsCompatible ( Atributo & atributo ) const;
-				bool EsCompatible ( Atributo * atributo ) const;
-				bool EsCompatible ( Valor & valor ) const;
-				bool EsCompatible ( Valor * valor ) const;
+				bool EsCompatible ( const Atributo & atributo ) const;
+				bool EsCompatible ( const Atributo * atributo ) const;
+				bool EsCompatible ( const Valor & valor ) const;
+				bool EsCompatible ( const Valor * valor ) const;
 
 				virtual std::string toString () override;
 
-				Atributo & operator=( Atributo & atributo );
-				bool operator== ( Atributo & obj );
-				bool operator!= ( Atributo & obj );
+				Atributo & operator=( const Atributo & atributo );
+				bool operator== ( const Atributo & obj ) const;
+				bool operator!= ( const Atributo & obj ) const;
 			};
 
  			}

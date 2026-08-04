@@ -31,12 +31,12 @@ string IComparable::toString()
 	return ( Concatenar( "[Object=", ToString( getHash() ), "]" ) );
 }
 
-bool IComparable::esIgual( IComparable & obj )
+bool IComparable::esIgual( const IComparable & obj ) const
 {
 	return ( getHash() == obj.getHash() );
 }
 
-bool IComparable::esIgual( IComparable * obj )
+bool IComparable::esIgual( const IComparable * obj ) const
 {
 	if( obj != NULL )
 	{
@@ -45,34 +45,34 @@ bool IComparable::esIgual( IComparable * obj )
 	return( false );
 }
 
-bool IComparable::operator== ( IComparable & obj )
+bool IComparable::operator== ( const IComparable & obj ) const
 {
 	return ( getHash() == obj.getHash() );
 }
 
-bool IComparable::operator!= ( IComparable & obj )
+bool IComparable::operator!= ( const IComparable & obj ) const
 {
 	return ( getHash() != obj.getHash() );
 }
 
-bool IComparable::operator< ( IComparable & obj )
+bool IComparable::operator< ( const IComparable & obj ) const
 {
 	return ( getHash() < obj.getHash() );
 }
 
-bool IComparable::operator> ( IComparable & obj )
+bool IComparable::operator> ( const IComparable & obj ) const
 {
 	return ( getHash() > obj.getHash() );
 }
 
 
 
-bool IComparable::operator<= ( IComparable & obj )
+bool IComparable::operator<= ( const IComparable & obj ) const
 {
 	return ( getHash() <= obj.getHash() );
 }
 
-bool IComparable::operator>= ( IComparable & obj )
+bool IComparable::operator>= ( const IComparable & obj ) const
 {
 	return ( getHash() >= obj.getHash() );
 }

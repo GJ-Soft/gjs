@@ -16,6 +16,7 @@
 	
 #define LOG_MAX_TAM_LINEA					511
 #define LOG_MAX_LINEAS						30000
+#define LOG_MAX_LINEAS_MENSAJE				100
 #define LOG_PREF_NOM_FICHERO_DEF			"Log"
 #define LOG_EXT_NOM_FICHERO_DEF				"log"
 #define LOG_FORM_NOM_FICHERO_DEF			"%s%s.log"  // Proceso, Fecha-hora.
@@ -26,6 +27,7 @@
 
 #define LOG_MSJ_TXT_INICIO					"Iniciado bloque de anotacion en el fichero"
 #define LOG_MSJ_TXT_FINAL					"Finalizado bloque de anotacion en el fichero"
+#define LOG_MSJ_TXT_TRUNCADO				"(mensaje truncado: demasiadas lineas)"
 
 #define LOG_TXT_NIVEL_INFORMACION			"INFOR"
 #define LOG_TXT_NIVEL_AVISO					"AVISO"

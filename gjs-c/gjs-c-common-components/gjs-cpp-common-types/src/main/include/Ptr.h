@@ -49,10 +49,7 @@ namespace org
 				{
 					if ( bLiberar && PuedeLiberarse( datos ) )
 					{
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wfree-nonheap-object"
 						delete datos;
-#pragma GCC diagnostic pop
 					}
 				}
 

@@ -280,7 +280,7 @@ void SConvEstablecerValorEntero ( SConversor * p_convObj, int iValor )
 		p_convObj->llValor = (llong) iValor;
 	#  endif
 
-		if ( iValor > 0 )
+		if ( iValor >= 0 )
 		{
 			p_convObj->uiValor = (unsigned int) p_convObj->iValor;
 			p_convObj->ulValor = (unsigned long) p_convObj->iValor;
@@ -340,7 +340,7 @@ void SConvEstablecerValorEnteroLargo ( SConversor * p_convObj, long lValor )
 			p_convObj->iConvValida = 0;
 			p_convObj->iValor = 0;
 		}
-		if ( ( p_convObj->lValor >= 0 ) && ( (unsigned int) p_convObj->lValor <= UINT_MAX ) )
+		if ( ( p_convObj->lValor >= 0 ) && ( (unsigned long) p_convObj->lValor <= (unsigned long) UINT_MAX ) )
 		{
 			p_convObj->uiValor = (unsigned int) p_convObj->lValor;
 		}
@@ -1001,7 +1001,7 @@ void SConvEstablecerValorEnteroDobleLargo ( SConversor * p_convObj, llong llValo
 			p_convObj->iConvValida = 0;
 			p_convObj->iValor = 0;
 		}
-		if ( ( p_convObj->llValor >= 0 ) && ( (unsigned int) p_convObj->llValor <= UINT_MAX ) )
+		if ( ( p_convObj->llValor >= 0 ) && ( (ullong) p_convObj->llValor <= (ullong) UINT_MAX ) )
 		{
 			p_convObj->uiValor = (unsigned int) p_convObj->llValor;
 		}
@@ -1076,7 +1076,7 @@ void SConvEstablecerValorEnteroDobleLargoSinSigno ( SConversor * p_convObj, ullo
 			p_convObj->iConvValida = 0;
 			p_convObj->iValor = 0;
 		}
-		if ( ( p_convObj->llValor >= 0 ) && ( (unsigned int) p_convObj->llValor <= UINT_MAX ) )
+		if ( ( p_convObj->llValor >= 0 ) && ( (ullong) p_convObj->llValor <= (ullong) UINT_MAX ) )
 		{
 			p_convObj->uiValor = (unsigned int) p_convObj->llValor;
 		}

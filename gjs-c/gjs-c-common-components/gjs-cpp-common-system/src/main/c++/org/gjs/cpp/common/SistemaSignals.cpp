@@ -116,10 +116,6 @@ int SisSigCodigo ( int iSignal )
 		{
 			iRes = SIS_COD_SIG_ERROR_BUS;
 		}
-		else if ( iSignal == SIS_SIG_ERROR_PILA )
-		{
-			iRes = SIS_COD_SIG_ERROR_PILA;
-		}
 		else if ( iSignal == SIS_SIG_CAMBIO_ESTADO_HIJO )
 		{
 			iRes = SIS_COD_SIG_CAMBIO_ESTADO_HIJO;
@@ -251,10 +247,6 @@ int SisSigId ( int iCod )
 		else if ( iCod == SIS_COD_SIG_ERROR_BUS )
 		{
 			iRes = SIS_SIG_ERROR_BUS;
-		}
-		else if ( iCod == SIS_COD_SIG_ERROR_PILA )
-		{
-			iRes = SIS_SIG_ERROR_PILA;
 		}
 		else if ( iCod == SIS_COD_SIG_CAMBIO_ESTADO_HIJO )
 		{
@@ -414,10 +406,6 @@ string SisSigDescripcion ( int iSignal )
 	else if ( iSignal == SIS_SIG_ERROR_BUS )
 	{
 		return ( string ( SIS_SIG_TXT_ERROR_BUS ) );
-	}
-	else if ( iSignal == SIS_SIG_ERROR_PILA	 )
-	{
-		return ( string ( SIS_SIG_TXT_ERROR_PILA ) );
 	}
 	else if ( iSignal == SIS_SIG_CAMBIO_ESTADO_HIJO )
 	{

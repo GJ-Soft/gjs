@@ -54,23 +54,22 @@
 #if ( defined ( POSIX ) )
 
 #define SIS_SIG_ERROR_BUS								15
-#define SIS_SIG_ERROR_PILA								16
-#define SIS_SIG_CAMBIO_ESTADO_HIJO						17
-#define SIS_SIG_CONTINUAR								18
-#define SIS_SIG_PARAR									19
-#define SIS_SIG_PARAR_TECLADO							20
-#define SIS_SIG_LECTURA_SEGUNDO_PLANO					21
-#define SIS_SIG_ESCRITURA_SEGUNDO_PLANO					22
-#define SIS_SIG_AVISO_SOCKET							23
-#define SIS_SIG_ERROR_LIMITE_CPU						24
-#define SIS_SIG_ERROR_TAM_FICHERO						25
-#define SIS_SIG_TEMPORIZADOR_VIRTUAL					26
-#define SIS_SIG_CAMBIO_TAM_VENTANA						27
-#define SIS_SIG_EVENTO_ENTRADA_SALIDA					28
-#define SIS_SIG_ERROR_REINICIO_SISTEMA					29
-#define SIS_SIG_ERROR_LLAMADA_SISTEMA					30
+#define SIS_SIG_CAMBIO_ESTADO_HIJO						16
+#define SIS_SIG_CONTINUAR								17
+#define SIS_SIG_PARAR									18
+#define SIS_SIG_PARAR_TECLADO							19
+#define SIS_SIG_LECTURA_SEGUNDO_PLANO					20
+#define SIS_SIG_ESCRITURA_SEGUNDO_PLANO					21
+#define SIS_SIG_AVISO_SOCKET							22
+#define SIS_SIG_ERROR_LIMITE_CPU						23
+#define SIS_SIG_ERROR_TAM_FICHERO						24
+#define SIS_SIG_TEMPORIZADOR_VIRTUAL					25
+#define SIS_SIG_CAMBIO_TAM_VENTANA						26
+#define SIS_SIG_EVENTO_ENTRADA_SALIDA					27
+#define SIS_SIG_ERROR_REINICIO_SISTEMA					28
+#define SIS_SIG_ERROR_LLAMADA_SISTEMA					29
 
-#	define SIS_NUM_SIGNALS   							31
+#	define SIS_NUM_SIGNALS   							30
 
 #else
 
@@ -98,7 +97,6 @@
 #	define SIS_COD_SIG_DEPURACION						SIGTRAP
 #	define SIS_COD_SIG_TEMPORIZADOR						SIGPROF
 #	define SIS_COD_SIG_ERROR_BUS						SIGBUS
-#	define SIS_COD_SIG_ERROR_PILA						SIGSTKSZ
 #	define SIS_COD_SIG_CAMBIO_ESTADO_HIJO				SIGCHLD
 #	define SIS_COD_SIG_CONTINUAR						SIGCONT
 #	define SIS_COD_SIG_PARAR							SIGSTOP
@@ -177,7 +175,6 @@
 #if ( defined ( POSIX ) )
 
 #define SIS_SIG_NOM_ERROR_BUS								"SIGBUS"
-#define SIS_SIG_NOM_ERROR_PILA								"SIGSTKFLT"
 #define SIS_SIG_NOM_CAMBIO_ESTADO_HIJO						"SIGCHLD"
 #define SIS_SIG_NOM_CONTINUAR								"SIGCONT"
 #define SIS_SIG_NOM_PARAR									"SIGSTOP"
@@ -215,7 +212,6 @@
 #if ( defined ( POSIX ) )
 
 #define SIS_SIG_TXT_ERROR_BUS                   "Error de acceso al bus o alineacion de memoria"
-#define SIS_SIG_TXT_ERROR_PILA                  "Error en la pila de la pila de ejecucion"
 #define SIS_SIG_TXT_CAMBIO_ESTADO_HIJO          "Proceso hijo detenido, reanudado o finalizado"
 #define SIS_SIG_TXT_CONTINUAR                   "Reanudar proceso previamente detenido"
 #define SIS_SIG_TXT_PARAR                       "Detencion forzosa no capturable ni ignorable"

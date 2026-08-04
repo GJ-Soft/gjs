@@ -17,7 +17,7 @@ namespace org
             namespace common
             {
 
-			class Contador : IToString
+			class Contador : public IToString
 			{
 			private:
 				unsigned long	ulTotal = 0;

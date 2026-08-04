@@ -254,7 +254,7 @@ SValor * SValCrearFechaHoraNum ( double dValor )
 	return ( p_valObj );
 }
 
-SValor * SValCrearPuntero ( void * p_vValor )
+SValor * SValCrearPuntero ( const void * p_vValor )
 {
    SValor * p_valObj;
 
@@ -562,9 +562,9 @@ byte * SValValorBinario ( SValor * p_valObj )
 	return ( p_byRes );
 }
 
-void * SValValorPuntero ( SValor * p_valObj )
+const void * SValValorPuntero ( SValor * p_valObj )
 {
-	return ( (void *) SValValorBinario ( p_valObj ) );
+	return ( (const void *) SValValorBinario ( p_valObj ) );
 }
 
 int SValMaxTam ( SValor * p_valObj )
@@ -589,8 +589,10 @@ int SValMaxTam ( SValor * p_valObj )
 	return ( iRes );
 }
 
-void SValEstablecerValorByte ( SValor * p_valObj, byte byValor )
+int SValEstablecerValorByte ( SValor * p_valObj, byte byValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -604,12 +606,24 @@ void SValEstablecerValorByte ( SValor * p_valObj, byte byValor )
 				}
 			}
 			SCadcCopiarCaracter ( p_valObj->p_cadValor, byValor );
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
 		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorCaracter ( SValor * p_valObj, char cValor )
+int SValEstablecerValorCaracter ( SValor * p_valObj, char cValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -627,12 +641,24 @@ void SValEstablecerValorCaracter ( SValor * p_valObj, char cValor )
 				}
 			}
 			SCadcCopiarCaracter ( p_valObj->p_cadValor, cValor );
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
 		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorBooleano ( SValor * p_valObj, int iValor )
+int SValEstablecerValorBooleano ( SValor * p_valObj, int iValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -647,12 +673,24 @@ void SValEstablecerValorBooleano ( SValor * p_valObj, int iValor )
 				iValor = 0;
 			}
 			SCadcCopiarEntero ( p_valObj->p_cadValor, iValor );
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
 		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorEntero ( SValor * p_valObj, int iValor )
+int SValEstablecerValorEntero ( SValor * p_valObj, int iValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -665,25 +703,43 @@ void SValEstablecerValorEntero ( SValor * p_valObj, int iValor )
 					iValor = 1;
 				}
 				SCadcCopiarEntero ( p_valObj->p_cadValor, iValor );
+				iRes = 1;
 			}
 			else if ( TipEsNatural ( p_valObj->iTipo ) == 1 )
 			{
 				if ( iValor < 0 )
 				{
 					iValor = 0;
+					iRes = 0;
+				}
+				else
+				{
+					iRes = 1;
 				}
 				SCadcCopiarEntero ( p_valObj->p_cadValor, iValor );
 			}
 			else 
 			{
 				SCadcCopiarEntero ( p_valObj->p_cadValor, iValor );
+				iRes = 1;
 			}
 		}
+		else
+		{
+			iRes = 0;
+		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorEnteroLargo ( SValor * p_valObj, long lValor )
+int SValEstablecerValorEnteroLargo ( SValor * p_valObj, long lValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -696,25 +752,43 @@ void SValEstablecerValorEnteroLargo ( SValor * p_valObj, long lValor )
 					lValor = 1;
 				}
 				SCadcCopiarEnteroLargo ( p_valObj->p_cadValor, lValor );
+				iRes = 1;
 			}
 			else if ( TipEsNatural ( p_valObj->iTipo ) == 1 )
 			{
 				if ( lValor < 0 )
 				{
 					lValor = 0;
+					iRes = 0;
+				}
+				else
+				{
+					iRes = 1;
 				}
 				SCadcCopiarEnteroLargo ( p_valObj->p_cadValor, lValor );
 			}
 			else 
 			{
 				SCadcCopiarEnteroLargo ( p_valObj->p_cadValor, lValor );
+				iRes = 1;
 			}
 		}
+		else
+		{
+			iRes = 0;
+		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorEnteroSinSigno ( SValor * p_valObj, unsigned int uiValor )
+int SValEstablecerValorEnteroSinSigno ( SValor * p_valObj, unsigned int uiValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -727,17 +801,30 @@ void SValEstablecerValorEnteroSinSigno ( SValor * p_valObj, unsigned int uiValor
 					uiValor = 1;
 				}
 				SCadcCopiarEnteroSinSigno ( p_valObj->p_cadValor, uiValor );
+				iRes = 1;
 			}
 			else 
 			{
 				SCadcCopiarEnteroSinSigno ( p_valObj->p_cadValor, uiValor );
+				iRes = 1;
 			}
 		}
+		else
+		{
+			iRes = 0;
+		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorEnteroLargoSinSigno ( SValor * p_valObj, unsigned long ulValor )
+int SValEstablecerValorEnteroLargoSinSigno ( SValor * p_valObj, unsigned long ulValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -750,17 +837,30 @@ void SValEstablecerValorEnteroLargoSinSigno ( SValor * p_valObj, unsigned long u
 					ulValor = 1;
 				}
 				SCadcCopiarEnteroLargoSinSigno ( p_valObj->p_cadValor, ulValor );
+				iRes = 1;
 			}
 			else 
 			{
 				SCadcCopiarEnteroLargoSinSigno ( p_valObj->p_cadValor, ulValor );
+				iRes = 1;
 			}
 		}
+		else
+		{
+			iRes = 0;
+		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorReal ( SValor * p_valObj, float fValor )
+int SValEstablecerValorReal ( SValor * p_valObj, float fValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -773,25 +873,43 @@ void SValEstablecerValorReal ( SValor * p_valObj, float fValor )
 					fValor = 1.0;
 				}
 				SCadcCopiarReal ( p_valObj->p_cadValor, fValor );
+				iRes = 1;
 			}
 			else if ( TipEsNatural ( p_valObj->iTipo ) == 1 )
 			{
 				if ( fValor < 0.0 )
 				{
 					fValor = 0.0;
+					iRes = 0;
+				}
+				else
+				{
+					iRes = 1;
 				}
 				SCadcCopiarReal ( p_valObj->p_cadValor, fValor );
 			}
 			else 
 			{
 				SCadcCopiarReal ( p_valObj->p_cadValor, fValor );
+				iRes = 1;
 			}
 		}
+		else
+		{
+			iRes = 0;
+		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorRealDoble ( SValor * p_valObj, double dValor )
+int SValEstablecerValorRealDoble ( SValor * p_valObj, double dValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -804,25 +922,42 @@ void SValEstablecerValorRealDoble ( SValor * p_valObj, double dValor )
 					dValor = 1.0;
 				}
 				SCadcCopiarRealDoble ( p_valObj->p_cadValor, dValor );
+				iRes = 1;
 			}
 			else if ( TipEsNatural ( p_valObj->iTipo ) == 1 )
 			{
 				if ( dValor < 0.0 )
 				{
 					dValor = 0.0;
+					iRes = 0;
+				}
+				else
+				{
+					iRes = 1;
 				}
 				SCadcCopiarRealDoble ( p_valObj->p_cadValor, dValor );
 			}
 			else 
 			{
 				SCadcCopiarRealDoble ( p_valObj->p_cadValor, dValor );
+				iRes = 1;
 			}
 		}
+		else
+		{
+			iRes = 0;
+		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorBinario ( SValor * p_valObj, byte * p_byValor, int iTam ) 
+int SValEstablecerValorBinario ( SValor * p_valObj, byte * p_byValor, int iTam ) 
 {
+	int iRes;
 	int iByte;
 	
 	if ( ES_VALIDO ( p_valObj ) )
@@ -842,12 +977,18 @@ void SValEstablecerValorBinario ( SValor * p_valObj, byte * p_byValor, int iTam 
 					{
 						SCadcCopiarEntero ( p_valObj->p_cadValor, 0 );
 					}
+					iRes = 1;
 				}
 				else 
 				{
 					if ( iTam > SCadcMaxTam ( p_valObj->p_cadValor ) )
 					{
 						iTam = SCadcMaxTam ( p_valObj->p_cadValor ); 
+						iRes = 0;
+					}
+					else
+					{
+						iRes = 1;
 					}
 					for ( iByte = 0; iByte < iTam; iByte = iByte + 1 )
 					{
@@ -855,12 +996,27 @@ void SValEstablecerValorBinario ( SValor * p_valObj, byte * p_byValor, int iTam 
 					}
 				}
 			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
 		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorLiteral ( SValor * p_valObj, const char * p_cValor )
+int SValEstablecerValorLiteral ( SValor * p_valObj, const char * p_cValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -880,21 +1036,25 @@ void SValEstablecerValorLiteral ( SValor * p_valObj, const char * p_cValor )
 						{
 							SCadcCopiarEntero ( p_valObj->p_cadValor, 0 );
 						}
+						iRes = 1;
 					}
 					else
 					{
 						SCadcCopiarEntero ( p_valObj->p_cadValor, 0 );
 					}
+					iRes = 1;
 				}
 				else if ( TipEsNatural ( p_valObj->iTipo ) == 1 )
 				{
 					if ( ( CadEsNumerica ( p_cValor ) == 1 ) && ( p_cValor [ 0 ] != '-' ) )
 					{
 						SCadcCopiarLit ( p_valObj->p_cadValor, p_cValor );
+						iRes = 1;
 					}
 					else
 					{
 						SCadcCopiarEntero ( p_valObj->p_cadValor, 0 );
+						iRes = 0;
 					}
 				}
 				else if ( TipEsNumero ( p_valObj->iTipo ) == 1 )
@@ -902,34 +1062,63 @@ void SValEstablecerValorLiteral ( SValor * p_valObj, const char * p_cValor )
 					if ( CadEsNumerica ( p_cValor ) == 0 )
 					{
 						SCadcCopiarEntero ( p_valObj->p_cadValor, 0 );
+						iRes = 0;
 					}
 					else
 					{
 						SCadcCopiarLit ( p_valObj->p_cadValor, p_cValor );
+						iRes = 1;
 					}
 				}
 				else
 				{
 					SCadcCopiarLit ( p_valObj->p_cadValor, p_cValor );
+					iRes = 1;
 				}
 			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
 		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorCadena ( SValor * p_valObj, SCadena * p_cadValor )
+int SValEstablecerValorCadena ( SValor * p_valObj, SCadena * p_cadValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
 		{
-			SValEstablecerValorLiteral ( p_valObj, SCadValorConstante ( p_cadValor ) );
+			iRes = SValEstablecerValorLiteral ( p_valObj, SCadValorConstante ( p_cadValor ) );
+		}
+		else
+		{
+			iRes = 0;
 		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValor ( SValor * p_valObj, SCadenaConv * p_cadValor )
+int SValEstablecerValor ( SValor * p_valObj, SCadenaConv * p_cadValor )
 {
+	int iRes;
+	
 	if ( ES_VALIDO ( p_valObj ) )
 	{
 		if ( ES_VALIDO ( p_valObj->p_cadValor ) )
@@ -939,7 +1128,7 @@ void SValEstablecerValor ( SValor * p_valObj, SCadenaConv * p_cadValor )
 			{
 				if ( TipEsBooleano ( p_valObj->iTipo ) == 1 )
 				{
-					if ( SCadcValorEntero (p_cadValor ) != 0 )
+					if ( SCadcValorEntero ( p_cadValor ) != 0 )
 					{
 						SCadcCopiarEntero ( p_valObj->p_cadValor, 1 );
 					}
@@ -947,73 +1136,127 @@ void SValEstablecerValor ( SValor * p_valObj, SCadenaConv * p_cadValor )
 					{
 						SCadcCopiarEntero ( p_valObj->p_cadValor, 0 );
 					}
+					iRes = 1;
 				}
 				else if ( TipEsNatural ( p_valObj->iTipo ) == 1 )
 				{
 					if ( SCadcValorEnteroLargo ( p_cadValor ) < 0 )
 					{
 						SCadcCopiarEntero ( p_valObj->p_cadValor, 0 );
+						iRes = 0;
 					}
 					else
 					{
 						SCadcCopiarEnteroLargo ( p_valObj->p_cadValor, SCadcValorEnteroLargo ( p_cadValor ) );
+						iRes = 1;
 					}
 				}
 				else if ( TipEsEntero ( p_valObj->iTipo ) == 1 )
 				{
 					SCadcCopiarEnteroLargo ( p_valObj->p_cadValor, SCadcValorEnteroLargo ( p_cadValor ) );
-				}
+					iRes = 1;
+				}	
 				else if ( TipEsReal ( p_valObj->iTipo ) == 1 )
 				{
 					SCadcCopiarRealDoble ( p_valObj->p_cadValor, SCadcValorRealDoble ( p_cadValor ) );
+					iRes = 1;
 				}
 				else 
 				{
 					SCadcCopiar ( p_valObj->p_cadValor, p_cadValor );
+					iRes = 1;
 				}
 			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
 		}
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorNumerico ( SValor * p_valObj, SCadenaNumerica * p_cadValor )
+int SValEstablecerValorNumerico ( SValor * p_valObj, SCadenaNumerica * p_cadValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
-		SValEstablecerValor ( p_valObj, SCadnCadenaConv ( p_cadValor ) );
+		iRes = SValEstablecerValor ( p_valObj, SCadnCadenaConv ( p_cadValor ) );
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorFecha ( SValor * p_valObj, SFecha * p_fecValor )
+int SValEstablecerValorFecha ( SValor * p_valObj, SFecha * p_fecValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
-		SValEstablecerValorEnteroLargo ( p_valObj, SFecValor ( p_fecValor ) );
+		iRes = SValEstablecerValorEnteroLargo ( p_valObj, SFecValor ( p_fecValor ) );
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorHora ( SValor * p_valObj, SHora * p_horValor )
+int SValEstablecerValorHora ( SValor * p_valObj, SHora * p_horValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
-		SValEstablecerValorEnteroLargo ( p_valObj, SHorValor ( p_horValor ) );
+		iRes = SValEstablecerValorEnteroLargo ( p_valObj, SHorValor ( p_horValor ) );
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorFechaHora ( SValor * p_valObj, SFechaHora * p_fechValor )
+int SValEstablecerValorFechaHora ( SValor * p_valObj, SFechaHora * p_fechValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
-		SValEstablecerValorRealDoble ( p_valObj, SFecHorValor ( p_fechValor ) );
+		iRes = SValEstablecerValorRealDoble ( p_valObj, SFecHorValor ( p_fechValor ) );
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-void SValEstablecerValorPuntero ( SValor * p_valObj, void * p_vValor )
+int SValEstablecerValorPuntero ( SValor * p_valObj, const void * p_vValor )
 {
+	int iRes;
+
 	if ( ES_VALIDO ( p_valObj ) )
 	{
-		SValEstablecerValorBinario ( p_valObj, (byte *) p_vValor, sizeof ( void * ) );
+		iRes = SValEstablecerValorBinario ( p_valObj, (byte *) &p_vValor, sizeof ( void * ) );
 	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
 void SValAsignar ( SValor * p_valObj, SValor * p_valValor )

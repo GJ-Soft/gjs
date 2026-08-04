@@ -6,15 +6,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
 #include <SCadena.h>
 #include <SCadenaConv.h>
 #include <SCadenaNumerica.h>
@@ -52,7 +43,7 @@ SValor * SValCrearFechaHora ( SFechaHora * p_fechValor );
 SValor * SValCrearFechaNum ( long lValor );
 SValor * SValCrearHoraNum ( long lValor );
 SValor * SValCrearFechaHoraNum ( double dValor );
-SValor * SValCrearPuntero ( void * p_vValor );
+SValor * SValCrearPuntero ( const void * p_vValor );
 
 
 void SValDestruir ( SValor ** p_p_valObj );
@@ -70,28 +61,28 @@ double SValValorReal ( SValor * p_valObj );
 SCadena * SValValorCadena ( SValor * p_valObj );
 const char * SValValorLiteral ( SValor * p_valObj );
 byte * SValValorBinario ( SValor * p_valObj );
-void * SValValorPuntero ( SValor * p_valObj );
+const void * SValValorPuntero ( SValor * p_valObj );
 
 int SValMaxTam ( SValor * p_valObj );
 
-void SValEstablecerValorByte ( SValor * p_valObj, byte byValor );
-void SValEstablecerValorBooleano ( SValor * p_valObj, int iValor );
-void SValEstablecerValorCaracter ( SValor * p_valObj, char cValor );
-void SValEstablecerValorEntero ( SValor * p_valObj, int iValor );
-void SValEstablecerValorEnteroLargo ( SValor * p_valObj, long lValor );
-void SValEstablecerValorEnteroSinSigno ( SValor * p_valObj, unsigned int uiValor );
-void SValEstablecerValorEnteroLargoSinSigno ( SValor * p_valObj, unsigned long ulValor );
-void SValEstablecerValorReal ( SValor * p_valObj, float fValor );
-void SValEstablecerValorRealDoble ( SValor * p_valObj, double dValor );
-void SValEstablecerValorLiteral ( SValor * p_valObj, const char * p_cValor );
-void SValEstablecerValorBinario ( SValor * p_valObj, byte * p_byValor, int iTam );
-void SValEstablecerValorCadena ( SValor * p_valObj, SCadena * p_cadValor );
-void SValEstablecerValor ( SValor * p_valObj, SCadenaConv * p_cadValor );
-void SValEstablecerValorNumerico ( SValor * p_valObj, SCadenaNumerica * p_cadValor );
-void SValEstablecerValorFecha ( SValor * p_valObj, SFecha * p_fecValor );
-void SValEstablecerValorHora ( SValor * p_valObj, SHora * p_horValor );
-void SValEstablecerValorFechaHora ( SValor * p_valObj, SFechaHora * p_fechValor );
-void SValEstablecerValorPuntero ( SValor * p_valObj, void * p_vValor );
+int SValEstablecerValorByte ( SValor * p_valObj, byte byValor );
+int SValEstablecerValorBooleano ( SValor * p_valObj, int iValor );
+int SValEstablecerValorCaracter ( SValor * p_valObj, char cValor );
+int SValEstablecerValorEntero ( SValor * p_valObj, int iValor );
+int SValEstablecerValorEnteroLargo ( SValor * p_valObj, long lValor );
+int SValEstablecerValorEnteroSinSigno ( SValor * p_valObj, unsigned int uiValor );
+int SValEstablecerValorEnteroLargoSinSigno ( SValor * p_valObj, unsigned long ulValor );
+int SValEstablecerValorReal ( SValor * p_valObj, float fValor );
+int SValEstablecerValorRealDoble ( SValor * p_valObj, double dValor );
+int SValEstablecerValorLiteral ( SValor * p_valObj, const char * p_cValor );
+int SValEstablecerValorBinario ( SValor * p_valObj, byte * p_byValor, int iTam );
+int SValEstablecerValorCadena ( SValor * p_valObj, SCadena * p_cadValor );
+int SValEstablecerValor ( SValor * p_valObj, SCadenaConv * p_cadValor );
+int SValEstablecerValorNumerico ( SValor * p_valObj, SCadenaNumerica * p_cadValor );
+int SValEstablecerValorFecha ( SValor * p_valObj, SFecha * p_fecValor );
+int SValEstablecerValorHora ( SValor * p_valObj, SHora * p_horValor );
+int SValEstablecerValorFechaHora ( SValor * p_valObj, SFechaHora * p_fechValor );
+int SValEstablecerValorPuntero ( SValor * p_valObj, const void * p_vValor );
 
 
 void SValAsignar ( SValor * p_valObj, SValor * p_valValor );

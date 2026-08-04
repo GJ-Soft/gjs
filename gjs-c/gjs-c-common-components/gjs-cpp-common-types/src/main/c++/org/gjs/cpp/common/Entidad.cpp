@@ -31,12 +31,12 @@ Entidad::Entidad ( const string & _sNombre )
 	sNombre = _sNombre;
 }
 
-Entidad::Entidad ( Entidad & obj )
+Entidad::Entidad ( const Entidad & obj )
 {
 	Asignar( obj );
 }
 
-Entidad::Entidad ( Entidad * obj )
+Entidad::Entidad ( const Entidad * obj )
 {
 	Asignar( obj );
 }
@@ -204,7 +204,7 @@ void Entidad::LimpiarAtributos ()
 	mapDefinicion.clear();
 }
 
-bool Entidad::EsCompatible ( Entidad & obj )
+bool Entidad::EsCompatible ( const Entidad & obj ) const
 {
 	bool bRes = false;
 	if ( EsValida() && obj.EsValida() && ( NumAtributos() <= obj.NumAtributos() ) )
@@ -218,7 +218,7 @@ bool Entidad::EsCompatible ( Entidad & obj )
 	return ( bRes );
 }
 
-bool Entidad::EsCompatible ( Entidad * obj )
+bool Entidad::EsCompatible ( const Entidad * obj ) const
 {
 	bool bRes = false;
 	if ( obj != NULL )
@@ -228,7 +228,7 @@ bool Entidad::EsCompatible ( Entidad * obj )
 	return ( bRes );
 }
 
-void Entidad::Asignar( Entidad & entidad )
+void Entidad::Asignar( const Entidad & entidad )
 {
 	sNombre = entidad.getNombre();
 	for ( int i = 0; i < entidad.NumAtributos(); i = i + 1 )
@@ -237,7 +237,7 @@ void Entidad::Asignar( Entidad & entidad )
 	}
 }
 
-void Entidad::Asignar( Entidad * entidad )
+void Entidad::Asignar( const Entidad * entidad )
 {
 	if ( entidad != NULL )
 	{
@@ -275,19 +275,19 @@ string Entidad::toString ()
 	}
 }
 
-Entidad & Entidad::operator= ( Entidad & entidad )
+Entidad & Entidad::operator= ( const Entidad & entidad )
 {
 	Asignar( entidad );
 	return ( *this );
 }
 
 
-bool Entidad::operator== ( Entidad & obj )
+bool Entidad::operator== ( const Entidad & obj ) const
 {
 	return ( IComparable::operator==( obj ) );
 }
 
-bool Entidad::operator!= ( Entidad & obj )
+bool Entidad::operator!= ( const Entidad & obj ) const
 {
 	return ( IComparable::operator!=( obj ) );
 }

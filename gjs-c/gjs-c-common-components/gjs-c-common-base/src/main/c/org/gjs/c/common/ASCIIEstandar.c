@@ -42,8 +42,8 @@ int ASCIIEsCodigoControl ( char cVal )
 	int iRes;
 	int iCod;
 
-	iCod = ASCIICodigo ( cVal );	
-	if ( iCod < ASCII_US ) 
+	iCod = ASCIICodigo ( cVal );
+	if ( ( iCod >= ASCII_NUL ) && ( iCod <= ASCII_US ) )
 	{
 		iRes = 1;
 	}

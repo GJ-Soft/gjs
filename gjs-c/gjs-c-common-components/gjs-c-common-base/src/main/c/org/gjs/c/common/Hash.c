@@ -92,7 +92,7 @@ unsigned int HashEnteroDobleLargo ( llong llVal )
     return ( HashBinario ( (byte *) &llVal, sizeof ( llong ) ) );
 }
 
-unsigned int HashEnteroDobleLargoSinSigno ( llong ullVal )
+unsigned int HashEnteroDobleLargoSinSigno ( ullong ullVal )
 {
     return ( HashBinario ( (byte *) &ullVal, sizeof ( ullong ) ) );
 }

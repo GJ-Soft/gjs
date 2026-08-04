@@ -748,8 +748,11 @@ void SLogAnotarNivelLit ( SLog * p_logObj, int iNivel, const char * p_cTexto )
 	const char *	p_cHora;
 	int				iFinal;
 	int				iTamPar;
+	int				iTamUtil;
+	int				iNumLineas;
 	SCadena *		p_cadLinea;
 	SCadena *		p_cadTexto;
+	SCadena *		p_cadTrozo;
 
 	if ( ( SLogEsValido ( p_logObj ) == 1 ) && ( SLogEstaIniciado ( p_logObj ) == 1 ) && 
 		 ( ( SLogSalidaActivada ( p_logObj ) == 1 ) || ( SLogPantallaActivada ( p_logObj ) == 1 ) ) && 
@@ -762,6 +765,7 @@ void SLogAnotarNivelLit ( SLog * p_logObj, int iNivel, const char * p_cTexto )
 		if ( ES_VALIDO ( p_cadLinea ) && ES_VALIDO ( p_cadTexto ) )
 		{
 			iFinal = 0;
+			iNumLineas = 0;
 
 			while ( iFinal == 0 )
 			{
@@ -786,7 +790,6 @@ void SLogAnotarNivelLit ( SLog * p_logObj, int iNivel, const char * p_cTexto )
 						SCadConcatenarLiteral ( p_cadLinea,  ": " );
 					}
 					iTamPar = LOG_MAX_TAM_LINEA - SCadLongitud ( p_cadLinea );
-					SCadConcatenar ( p_cadLinea,  p_cadTexto );
 					MemLiberar ( (void **) &p_cHora );
 				}
 				else
@@ -798,19 +801,48 @@ void SLogAnotarNivelLit ( SLog * p_logObj, int iNivel, const char * p_cTexto )
 						SCadConcatenarLiteral ( p_cadLinea, ": " );
 					}
 					iTamPar = LOG_MAX_TAM_LINEA - SCadLongitud ( p_cadLinea );
-					SCadConcatenar ( p_cadLinea, p_cadTexto );
 				}
 
-				if ( iTamPar > SCadLongitud ( p_cadTexto ) )
+				/* Cada rama vacia el texto o le quita iTamPar caracteres (>= 1),
+				   de modo que el bucle siempre avanza y termina. */
+				if ( iTamPar <= 0 )
 				{
+					/* El encabezado ya llena la linea: no cabe nada de texto. */
 					SCadLimpiar ( p_cadTexto );
+				}
+				else if ( SCadLongitud ( p_cadTexto ) <= iTamPar )
+				{
+					SCadConcatenar ( p_cadLinea, p_cadTexto );
+					SCadLimpiar ( p_cadTexto );
+				}
+				else if ( SLogParticionLineaActivada ( p_logObj ) == 1 )
+				{
+					/* Se parte: se escribe lo que cabe y se quita del principio. */
+					p_cadTrozo = SCadExtraerPrimeros ( p_cadTexto, iTamPar );
+					if ( ES_VALIDO ( p_cadTrozo ) )
+					{
+						SCadConcatenar ( p_cadLinea, p_cadTrozo );
+						SCadDestruir ( &p_cadTrozo );
+					}
+					SCadEliminarPrimerosCaracteres ( p_cadTexto, iTamPar );
 				}
 				else
 				{
-					SCadEliminarUltimosCaracteres ( p_cadTexto, iTamPar - SCadLongitud ( p_cadTexto ) - 3 );
+					/* Se trunca: lo que cabe menos los tres puntos. */
+					iTamUtil = ( iTamPar > 3 ) ? ( iTamPar - 3 ) : 0;
+					if ( iTamUtil > 0 )
+					{
+						p_cadTrozo = SCadExtraerPrimeros ( p_cadTexto, iTamUtil );
+						if ( ES_VALIDO ( p_cadTrozo ) )
+						{
+							SCadConcatenar ( p_cadLinea, p_cadTrozo );
+							SCadDestruir ( &p_cadTrozo );
+						}
+					}
 					SCadConcatenarLiteral ( p_cadLinea, "..." );
+					SCadLimpiar ( p_cadTexto );
 				}
-				
+
 				if ( SLogSalidaActivada ( p_logObj ) == 1 )
 				{
 					if ( SFicTxtAbrir ( p_logObj->p_ficLog, MOD_APR_ESCRITURA ) == 1 )
@@ -835,8 +867,31 @@ void SLogAnotarNivelLit ( SLog * p_logObj, int iNivel, const char * p_cTexto )
 					printf ( "\n" );
 				}
 
+				iNumLineas = iNumLineas + 1;
+
 				if ( SCadLongitud ( p_cadTexto ) <= 0 )
 				{
+					iFinal = 1;
+				}
+				else if ( iNumLineas >= LOG_MAX_LINEAS_MENSAJE )
+				{
+					/* Red de seguridad: un mensaje no puede llevarse el disco. */
+					SCadLimpiar ( p_cadLinea );
+					SCadCopiarLiteral ( p_cadLinea, LOG_MSJ_TXT_TRUNCADO );
+					if ( SLogSalidaActivada ( p_logObj ) == 1 )
+					{
+						if ( SFicTxtAbrir ( p_logObj->p_ficLog, MOD_APR_ESCRITURA ) == 1 )
+						{
+							SFicTxtEscribirLinea ( p_logObj->p_ficLog, SCadValorConstante ( p_cadLinea ) );
+							p_logObj->ulNumLineas = p_logObj->ulNumLineas + 1;
+							SFicTxtCerrar ( p_logObj->p_ficLog );
+						}
+					}
+					if ( SLogPantallaActivada ( p_logObj ) == 1 )
+					{
+						CadImprimir ( SCadValorConstante ( p_cadLinea ) );
+						printf ( "\n" );
+					}
 					iFinal = 1;
 				}
 			}

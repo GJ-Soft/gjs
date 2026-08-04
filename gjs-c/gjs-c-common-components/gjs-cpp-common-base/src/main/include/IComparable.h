@@ -33,15 +33,15 @@ namespace org
 			public:
 				virtual std::string toString() override;
 
-				bool esIgual( IComparable & obj );
-				bool esIgual( IComparable * obj );
+				bool esIgual( const IComparable & obj ) const;
+				bool esIgual( const IComparable * obj ) const;
 
-				bool operator== ( IComparable & obj );
-				bool operator!= ( IComparable & obj );
-				bool operator< ( IComparable & obj );
-				bool operator> ( IComparable & obj );
-				bool operator<= ( IComparable & obj );
-				bool operator>= ( IComparable & obj );
+				bool operator== ( const IComparable & obj ) const;
+				bool operator!= ( const IComparable & obj ) const;
+				bool operator< ( const IComparable & obj ) const;
+				bool operator> ( const IComparable & obj ) const;
+				bool operator<= ( const IComparable & obj ) const;
+				bool operator>= ( const IComparable & obj ) const;
 
 			};
 

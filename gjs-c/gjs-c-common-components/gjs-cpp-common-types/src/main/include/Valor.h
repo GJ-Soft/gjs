@@ -38,8 +38,8 @@ namespace org
 				explicit Valor ( long double _valor );
 				explicit Valor ( char _valor );
 				explicit Valor ( unsigned char _valor );
-				Valor ( Valor & obj );
-				explicit Valor ( Valor * obj );
+				Valor ( const Valor & obj );
+				explicit Valor ( const Valor * obj );
 				virtual ~Valor ();
 
 			public:
@@ -73,8 +73,8 @@ namespace org
 				void setValor ( char _valor );
 				void setValor ( unsigned char _valor );
 
-				void Asignar ( Valor & obj );
-				void Asignar ( Valor * obj );
+				void Asignar ( const Valor & obj );
+				void Asignar ( const Valor * obj );
 
 				Valor * Clonar();
 
@@ -82,9 +82,9 @@ namespace org
 
 				virtual std::string toString () override;
 
-				Valor & operator=( Valor & obj );
-				bool operator== ( Valor & obj );
-				bool operator!= ( Valor & obj );
+				Valor & operator=( const Valor & obj );
+				bool operator== ( const Valor & obj );
+				bool operator!= ( const Valor & obj );
 			};
 
  			}

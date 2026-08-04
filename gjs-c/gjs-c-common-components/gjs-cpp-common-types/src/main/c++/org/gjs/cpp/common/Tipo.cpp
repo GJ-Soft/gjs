@@ -28,12 +28,12 @@ Tipo::Tipo ( TipoDatos _tipo )
 	tipo = _tipo;
 }
 
-Tipo::Tipo( Tipo & _tipo )
+Tipo::Tipo( const Tipo & _tipo )
 {
 	Asignar( _tipo );
 }
 
-Tipo::Tipo ( Tipo * _tipo )
+Tipo::Tipo ( const Tipo * _tipo )
 {
 	Asignar( _tipo );
 }
@@ -57,12 +57,12 @@ void Tipo::setTipo( TipoDatos valor )
 	tipo = valor;
 }
 
-void Tipo::Asignar( Tipo & _tipo )
+void Tipo::Asignar( const Tipo & _tipo )
 {
 	tipo = _tipo.getTipo();
 }
 
-void Tipo::Asignar( Tipo * _tipo )
+void Tipo::Asignar( const Tipo * _tipo )
 {
 	if ( _tipo != NULL )
 	{
@@ -100,7 +100,7 @@ bool Tipo::isBooleano () const
 	return( tipo == TipoDatos::BOOLEANO );
 }
 
-bool Tipo::EsCompatible ( Tipo & _tipo ) const
+bool Tipo::EsCompatible ( const Tipo & _tipo ) const
 {
 	bool bRes = false;
 	if ( isEntero () )
@@ -122,7 +122,7 @@ bool Tipo::EsCompatible ( Tipo & _tipo ) const
 	return ( bRes );
 }
 
-bool Tipo::EsCompatible ( Tipo * _tipo ) const
+bool Tipo::EsCompatible ( const Tipo * _tipo ) const
 {
 	bool bRes = false;
 	if ( _tipo != NULL )
@@ -159,18 +159,18 @@ string Tipo::toString ()
 	return ( ToString( getTipo() ) );
 }
 
-Tipo & Tipo::operator= ( Tipo & _tipo )
+Tipo & Tipo::operator= ( const Tipo & _tipo )
 {
 	Asignar( _tipo );
 	return ( *this );
 }
 
-bool Tipo::operator== ( Tipo & obj )
+bool Tipo::operator== ( const Tipo & obj ) const
 {
 	return ( IComparable::operator==( obj ) );
 }
 
-bool Tipo::operator!= ( Tipo & obj )
+bool Tipo::operator!= ( const Tipo & obj ) const
 {
 	return ( IComparable::operator!=( obj ) );
 }

@@ -33,18 +33,18 @@ Atributo::Atributo ( TipoDatos _tipo, const string & _sNombre, bool _bAnulable )
 	bAnulable = _bAnulable;
 }
 
-Atributo::Atributo ( Tipo & _tipo, const string & _sNombre, bool _bAnulable ) : Tipo ( _tipo.getTipo() )
+Atributo::Atributo ( const Tipo & _tipo, const string & _sNombre, bool _bAnulable ) : Tipo ( _tipo.getTipo() )
 {
 	sNombre = _sNombre;
 	bAnulable = _bAnulable;
 }
 
-Atributo::Atributo( Atributo & atributo )
+Atributo::Atributo( const Atributo & atributo )
 {
 	Asignar( atributo );
 }
 
-Atributo::Atributo ( Atributo * atributo )
+Atributo::Atributo ( const Atributo * atributo )
 {
 	Asignar( atributo );
 }
@@ -78,14 +78,14 @@ void Atributo::setAnulable( bool bValor )
 	bAnulable = bValor;
 }
 
-void Atributo::Asignar( Atributo & atributo )
+void Atributo::Asignar( const Atributo & atributo )
 {
 	sNombre = atributo.getNombre();
 	setTipo( atributo.getTipo() );
 	bAnulable = atributo.isAnulable();
 }
 
-void Atributo::Asignar( Atributo * atributo )
+void Atributo::Asignar( const Atributo * atributo )
 {
 	if ( atributo != NULL )
 	{
@@ -105,7 +105,7 @@ bool Atributo::EsValido () const
 	return( Tipo::EsValido() && EsToken( sNombre ) );
 }
 
-bool Atributo::EsCompatible ( Atributo & atributo ) const
+bool Atributo::EsCompatible ( const Atributo & atributo ) const
 {
 	bool bRes = false;
 	if ( Tipo::EsCompatible( (Tipo &)atributo ) )
@@ -115,7 +115,7 @@ bool Atributo::EsCompatible ( Atributo & atributo ) const
 	return ( bRes );
 }
 
-bool Atributo::EsCompatible ( Atributo * atributo ) const
+bool Atributo::EsCompatible ( const Atributo * atributo ) const
 {
 	bool bRes = false;
 	if ( atributo != NULL )
@@ -125,7 +125,7 @@ bool Atributo::EsCompatible ( Atributo * atributo ) const
 	return ( bRes );
 }
 
-bool Atributo::EsCompatible ( Valor & valor ) const
+bool Atributo::EsCompatible ( const Valor & valor ) const
 {
 	bool bRes = false;
 	if ( isAnulable() && valor.EsNulo() )
@@ -139,7 +139,7 @@ bool Atributo::EsCompatible ( Valor & valor ) const
 	return ( bRes );
 }
 
-bool Atributo::EsCompatible ( Valor * valor ) const
+bool Atributo::EsCompatible ( const Valor * valor ) const
 {
 	bool bRes = false;
 	if ( valor != NULL )
@@ -154,18 +154,18 @@ string Atributo::toString ()
 	return ( Concatenar( "[Atributo={Tipo=", Tipo::toString(), "; Nombre=[", getNombre(), "]; Anulable=", ToString( isAnulable() ), "}]" ) );
 }
 
-Atributo & Atributo::operator= ( Atributo & atributo )
+Atributo & Atributo::operator= ( const Atributo & atributo )
 {
 	Asignar( atributo );
 	return ( *this );
 }
 
-bool Atributo::operator== ( Atributo & obj )
+bool Atributo::operator== ( const Atributo & obj ) const
 {
 	return ( IComparable::operator==( obj ) );
 }
 
-bool Atributo::operator!= ( Atributo & obj )
+bool Atributo::operator!= ( const Atributo & obj ) const
 {
 	return ( IComparable::operator!=( obj ) );
 }

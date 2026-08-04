@@ -349,13 +349,13 @@ unsigned int ConvCadenaAEnteroSinSigno ( const char * p_cVal )
 {
 	unsigned int uiVal;
 
+	uiVal = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		sscanf ( p_cVal, "%u", &uiVal );
-	}
-	else
-	{
-		uiVal = 0;
+		if ( sscanf ( p_cVal, "%u", &uiVal ) != 1 )
+		{
+			uiVal = 0;
+		}
 	}
 	return ( uiVal );
 }
@@ -364,13 +364,13 @@ unsigned long ConvCadenaAEnteroLargoSinSigno ( const char * p_cVal )
 {
 	unsigned long ulVal;
 
+	ulVal = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		sscanf ( p_cVal, "%lu", &ulVal );
-	}
-	else
-	{
-		ulVal = 0;
+		if ( sscanf ( p_cVal, "%lu", &ulVal ) != 1 )
+		{
+			ulVal = 0;
+		}
 	}
 	return ( ulVal );
 }
@@ -379,13 +379,13 @@ int	ConvCadenaAEntero ( const char * p_cVal )
 {
 	int iVal;
 
+	iVal = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		sscanf ( p_cVal, "%d", &iVal );
-	}
-	else
-	{
-		iVal = 0;
+		if ( sscanf ( p_cVal, "%d", &iVal ) != 1 )
+		{
+			iVal = 0;
+		}
 	}
 	return ( iVal );
 }
@@ -394,13 +394,13 @@ long ConvCadenaAEnteroLargo ( const char * p_cVal )
 {
 	long lVal;
 
+	lVal = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		sscanf ( p_cVal, "%ld", &lVal );
-	}
-	else
-	{
-		lVal = 0;
+		if ( sscanf ( p_cVal, "%ld", &lVal ) != 1 )
+		{
+			lVal = 0;
+		}
 	}
 	return ( lVal );
 }
@@ -461,9 +461,9 @@ llong ConvCadenaAEnteroDobleLargo ( const char * p_cVal )
 
 ullong ConvCadenaAEnteroDobleLargoSinSigno ( const char * p_cVal )
 {
-	llong	ullVal;
+	ullong	ullVal;
 	int		iPos;
-	llong	ullPeso;
+	ullong	ullPeso;
 	int		iRes;
 	int		iDig;
 
@@ -1120,21 +1120,23 @@ char * ConvEnteroLargoSinSignoACadenaHex ( unsigned long ulVal )
 unsigned int ConvCadenaHexAEnteroSinSigno ( const char * p_cVal )
 {
 	unsigned int uiVal;
+	int			 iCampos;
 
+	uiVal = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
 		if ( p_cVal [ 0 ] == '&' )
 		{
-			sscanf ( p_cVal, "&%x", &uiVal );
+			iCampos = sscanf ( p_cVal, "&%x", &uiVal );
 		}
 		else
 		{
-			sscanf ( p_cVal, "%x", &uiVal );
+			iCampos = sscanf ( p_cVal, "%x", &uiVal );
 		}
-	}
-	else
-	{
-		uiVal = 0;
+		if ( iCampos != 1 )
+		{
+			uiVal = 0;
+		}
 	}
 	return ( uiVal );
 }
@@ -1142,21 +1144,23 @@ unsigned int ConvCadenaHexAEnteroSinSigno ( const char * p_cVal )
 unsigned long ConvCadenaHexAEnteroLargoSinSigno ( const char * p_cVal )
 {
 	unsigned long ulVal;
+	int			  iCampos;
 
+	ulVal = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
 		if ( p_cVal [ 0 ] == '&' )
 		{
-			sscanf ( p_cVal, "&%lx", &ulVal );
+			iCampos = sscanf ( p_cVal, "&%lx", &ulVal );
 		}
 		else
 		{
-			sscanf ( p_cVal, "%lx", &ulVal );
+			iCampos = sscanf ( p_cVal, "%lx", &ulVal );
 		}
-	}
-	else
-	{
-		ulVal = 0;
+		if ( iCampos != 1 )
+		{
+			ulVal = 0;
+		}
 	}
 	return ( ulVal );
 }
@@ -1174,29 +1178,31 @@ long ConvCadenaHexAEnteroLargo ( const char * p_cVal )
 #if ( defined ( LLONG ) )
 ullong ConvCadenaHexAEnteroDobleLargoSinSigno ( const char * p_cVal )
 {
-	ullong ullVal;
+	ullong	ullVal;
+	int		iCampos;
 
+	ullVal = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
 		if ( p_cVal [ 0 ] == '&' )
 		{
-			sscanf ( p_cVal, "&%llx", &ullVal );
+			iCampos = sscanf ( p_cVal, "&%llx", &ullVal );
 		}
 		else
 		{
-			sscanf ( p_cVal, "%llx", &ullVal );
+			iCampos = sscanf ( p_cVal, "%llx", &ullVal );
 		}
-	}
-	else
-	{
-		ullVal = 0;
+		if ( iCampos != 1 )
+		{
+			ullVal = 0;
+		}
 	}
 	return ( ullVal );
 }
 
 llong ConvCadenaHexAEnteroDobleLargo( const char * p_cVal )
 {
-	return ( (llong) ConvCadenaHexAEnteroLargoSinSigno ( p_cVal ) );
+	return ( (llong) ConvCadenaHexAEnteroDobleLargoSinSigno ( p_cVal ) );
 }
 #endif
 

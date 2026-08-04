@@ -91,7 +91,6 @@
 
 // Signos aritméticos:
 #define ASCII_MAS				43
-#define ASCII_COMA				44
 #define ASCII_MENOS				45
 #define ASCII_DIVISION			47
 #define ASCII_PRODUCTO			42

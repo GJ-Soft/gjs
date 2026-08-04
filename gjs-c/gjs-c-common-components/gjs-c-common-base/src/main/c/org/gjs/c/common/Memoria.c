@@ -162,7 +162,7 @@ int MemRedimensionar ( void ** p_p_vBloque, int iNumBytes )
 #  endif
 
 	iRes = 0;
-	if ( iNumBytes > 0 )
+	if ( ( iNumBytes > 0 ) && ES_VALIDO ( p_p_vBloque ) )
 	{
 		p_vBloque = *p_p_vBloque;
 		if ( ES_NULO ( p_vBloque ) )
@@ -211,9 +211,10 @@ int MemRedimensionar ( void ** p_p_vBloque, int iNumBytes )
 				ERROR_ESTABLECER ( ERR_MEMORIA_INVALIDA );
 			}
 #	  else
-			*p_p_vBloque = (void *) realloc ( p_vBloque, iNumBytes );
-			if ( ES_VALIDO ( p_p_vBloque ) )
+			p_vBloque = (void *) realloc ( p_vBloque, iNumBytes );
+			if ( ES_VALIDO ( p_vBloque ) )
 			{
+				*p_p_vBloque = p_vBloque;
 				iRes = 1;
 #			  if ( defined ( MODO_DEPURACION ) )
 				_MemBloqueReservado ( *p_p_vBloque, (unsigned long) iNumBytes );
@@ -221,6 +222,8 @@ int MemRedimensionar ( void ** p_p_vBloque, int iNumBytes )
 			}
 			else
 			{
+				/* realloc ha fallado: el bloque original sigue siendo valido y
+				   *p_p_vBloque se deja intacto para no perder la referencia. */
 				ERROR_ESTABLECER ( ERR_MEMORIA_INSUFICIENTE );
 			}
 #	  endif

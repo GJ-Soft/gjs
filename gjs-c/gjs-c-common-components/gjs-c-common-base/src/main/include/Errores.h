@@ -24,7 +24,7 @@
 #define ERROR_ESTABLECER( iCodigo )		ErrEstablecer ( __FILE__, __LINE__, iCodigo )
 
 #define ERROR_ESTABLECER_FORM( iCodigo, p_cDescripcion, ... ) \
-										ErrEstablecerConFormato ( __FILE__, __LINE__, iCodigo, p_cDescripcion, ##__VA_ARGS_ )
+										ErrEstablecerConFormato ( __FILE__, __LINE__, iCodigo, p_cDescripcion, ##__VA_ARGS__ )
 
 
 

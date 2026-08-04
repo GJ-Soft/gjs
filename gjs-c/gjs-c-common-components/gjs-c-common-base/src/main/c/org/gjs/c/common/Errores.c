@@ -458,9 +458,13 @@ const char * ErrMensaje ()
 
 	if ( g_iGError != ERR_OK )
 	{
-		p_cRes = CadCrear ( 255 );
-		p_cDesc = g_p_cGErrDescripcion; //InfErrDescripcion ( g_iGError );
-		sprintf ( p_cRes, "Error %d - %s (%s:%u)", g_iGError, p_cDesc, g_p_cGErrModulo, g_uiGErrLinea );
+		p_cRes = CadCrear ( ERR_MAX_TAM_MSJ );
+		if ( ES_VALIDO ( p_cRes ) )
+		{
+			p_cDesc = g_p_cGErrDescripcion; //InfErrDescripcion ( g_iGError );
+			snprintf ( p_cRes, ERR_MAX_TAM_MSJ + 1, "Error %d - %s (%s:%u)", g_iGError,
+					   CadValorSeguro ( p_cDesc ), CadValorSeguro ( g_p_cGErrModulo ), g_uiGErrLinea );
+		}
 	}
 	return ( (const char *) p_cRes );
 }
@@ -470,8 +474,11 @@ void ErrImprimir ()
 	const char * p_cMsj;
 
 	p_cMsj = ErrMensaje ();
-	printf ( "%s\n", p_cMsj );
-	MemLiberar ( (void **) &p_cMsj );
+	if ( ES_VALIDO ( p_cMsj ) )
+	{
+		printf ( "%s\n", p_cMsj );
+		MemLiberar ( (void **) &p_cMsj );
+	}
 }
 
 static const char * _ErrDescripcion ( int iCod )

@@ -98,7 +98,6 @@ int TipEsCadena ( int iCod );
 int TipEsBooleano ( int iCod );
 int TipEsCaracter ( int iCod );
 int TipEsByte ( int iCod );
-int TipEsFecha ( int iCod );
 int TipEsBinario ( int iCod );
 int TipEsObjeto ( int iCod );
 int TipEsTiempo ( int iCod );

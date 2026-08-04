@@ -27,13 +27,14 @@
 
 
 /* Consultas del estado de la memoria ocupada por los objetos creados: */
-unsigned long MemReservada ();
+unsigned long MemReservadaBloques ();
+unsigned long MemReservadaTotal ();
 
 unsigned long MemNumBloquesReservados ();
 unsigned long MemNumBloquesLiberados ();
 unsigned long MemNumBloquesActuales ();
 
-void MemImprimirInforme ( int iMostrarBloques = 1 );
+void MemImprimirInforme ( int iMostrarBloques );
 
 #endif
 

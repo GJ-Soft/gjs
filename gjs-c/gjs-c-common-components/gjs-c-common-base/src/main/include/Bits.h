@@ -26,15 +26,19 @@
 
 
 
+/* Número de bits de cada palabra del mapa: la unidad de almacenamiento es 'word'. */
+#define BMP_BITS_PALABRA				( (int) ( sizeof ( word ) * TAM_BYTE ) )
+
+
 /* Número de palabras necesarias para almacenar un número determinado de bits.*/
-#define BMP_TAM_NECESARIO( lBits )		(unsigned int)( ( lBits ) / NUM_BITS_PALABRA )
+#define BMP_TAM_NECESARIO( lBits )		(unsigned int)( ( ( lBits ) + BMP_BITS_PALABRA - 1 ) / BMP_BITS_PALABRA )
 
 
 #define BMP_FIJO( lBits )				word bmpDatos [ BMP_TAM_NECESARIO( lBits ) ] 
 
 
 /* Valor auxiliar para construir las máscaras. */
-#define BMP_MAS_BASE					x0001
+#define BMP_MAS_BASE					0x0001
 
 
 /* Macros. */
@@ -47,9 +51,9 @@
 
 #define BMP_BIT_ACT( bmpObj, lBit )		*( bmpObj + BMP_NUM_PALABRA(lBit) ) |= BMP_MASCARA_BIT(lBit)
 
-#define BMP_BIT_DES( bmpObj, lBit )		*( bmpObj + BMP_NUM_PALABRA(lBit) ) &= ! BMP_MASCARA_BIT(lBit)
+#define BMP_BIT_DES( bmpObj, lBit )		*( bmpObj + BMP_NUM_PALABRA(lBit) ) &= (word) ( ~ BMP_MASCARA_BIT(lBit) )
 
-#define BMP_LIMPIAR( bmpObj, lBits )	memset ( bmpObj, 0x0, BMP_TAM_NECESARIO(lBits) ) 
+#define BMP_LIMPIAR( bmpObj, lBits )	memset ( bmpObj, 0x0, BMP_TAM_NECESARIO(lBits) * sizeof ( word ) )
 
 
 

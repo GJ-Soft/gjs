@@ -24,8 +24,8 @@ namespace org
 			public:
 				Tipo ();
 				explicit Tipo ( TipoDatos _tipo );
-				Tipo ( Tipo & _tipo );
-				explicit Tipo ( Tipo * _tipo );
+				Tipo ( const Tipo & _tipo );
+				explicit Tipo ( const Tipo * _tipo );
 				virtual ~Tipo ();
 
 			protected:
@@ -35,8 +35,8 @@ namespace org
 				TipoDatos getTipo () const;
 				void setTipo ( TipoDatos valor );
 
-				void Asignar ( Tipo & _tipo );
-				void Asignar ( Tipo * _tipo );
+				void Asignar ( const Tipo & _tipo );
+				void Asignar ( const Tipo * _tipo );
 
 				Tipo * Clonar();
 
@@ -46,15 +46,15 @@ namespace org
 				bool isCadena () const;
 				bool isBooleano () const;
 
-				bool EsCompatible ( Tipo & _tipo ) const;
-				bool EsCompatible ( Tipo * _tipo ) const;
+				bool EsCompatible ( const Tipo & _tipo ) const;
+				bool EsCompatible ( const Tipo * _tipo ) const;
 				bool EsCompatible ( const std::string & sValor ) const;
 
 				virtual std::string toString () override;
 
-				Tipo & operator=( Tipo & _tipo );
-				bool operator== ( Tipo & obj );
-				bool operator!= ( Tipo & obj );
+				Tipo & operator=( const Tipo & _tipo );
+				bool operator== ( const Tipo & obj ) const;
+				bool operator!= ( const Tipo & obj ) const;
 
 			};
 

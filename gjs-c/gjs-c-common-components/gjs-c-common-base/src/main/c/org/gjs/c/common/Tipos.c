@@ -610,7 +610,11 @@ int TipTam ( int iCod )
 	{
 		iRes = 0;
 	}
-	else if ( iCod == TIP_BINARIO_16 ) 
+	else if ( iCod == TIP_BINARIO )
+	{
+		iRes = 0;
+	}
+	else if ( iCod == TIP_BINARIO_16 )
 	{
 		iRes = 2;
 	}

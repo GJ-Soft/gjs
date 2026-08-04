@@ -108,12 +108,12 @@ Valor::Valor ( unsigned char _valor )
 	setValor ( _valor );
 }
 
-Valor::Valor ( Valor & obj )
+Valor::Valor ( const Valor & obj )
 {
 	Asignar( obj );
 }
 
-Valor::Valor ( Valor * obj )
+Valor::Valor ( const Valor * obj )
 {
 	Asignar( obj );
 }
@@ -296,13 +296,13 @@ void Valor::setValor( unsigned char _valor )
 	setValor ( ToString( _valor ) );
 }
 
-void Valor::Asignar( Valor & obj )
+void Valor::Asignar( const Valor & obj )
 {
 	sDato = obj.getValor();
 	bNulo = obj.EsNulo();
 }
 
-void Valor::Asignar( Valor * obj )
+void Valor::Asignar( const Valor * obj )
 {
 	if ( obj != NULL )
 	{
@@ -331,18 +331,18 @@ string Valor::toString ()
 	return ( sDato );
 }
 
-Valor & Valor::operator= ( Valor & obj )
+Valor & Valor::operator= ( const Valor & obj )
 {
 	Asignar( obj );
 	return ( *this );
 }
 
-bool Valor::operator== ( Valor & obj )
+bool Valor::operator== ( const Valor & obj )
 {
 	return ( IComparable::operator==( obj ) );
 }
 
-bool Valor::operator!= ( Valor & obj )
+bool Valor::operator!= ( const Valor & obj )
 {
 	return ( IComparable::operator!=( obj ) );
 }
