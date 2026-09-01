@@ -30,21 +30,6 @@ import lombok.Setter;
  *
  * Clase abstracta que permite recubrir un repositorio cualquiera.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @param <T>  la clase de objetos
  * @param <ID> la clase del identificador o clave primaria del objeto
  *

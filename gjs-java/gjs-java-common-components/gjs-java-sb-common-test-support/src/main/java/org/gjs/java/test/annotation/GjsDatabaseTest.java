@@ -25,19 +25,6 @@ import org.springframework.test.context.jdbc.SqlConfig.TransactionMode;
  * Anotación para las clase de test unitarios SpringBoot con acceso a datos que necesiten garantizar que el juego de
  * pruebas no se ve afectado por otras clases de test similares.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- * correspondiente licencia en los activos de la
- * SES. Los programas informáticos propiedad de la SES están protegidos por la propiedad intelectual, y por tanto está
- * estrictamente prohibida su reproducción, modificación, cesión o comunicación sin la debida autorización. Queda
- * estrictamente prohibido el uso, reproducción, cesión, transformación o comunicación pública de cualquier otro tipo de
- * obra o invención protegida por la propiedad intelectual sin la debida autorización.
- *
- *  Seguridad Ministerio del Interior
- * Gobierno de España
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0
@@ -48,6 +35,18 @@ import org.springframework.test.context.jdbc.SqlConfig.TransactionMode;
 @SpringBootTest
 @Sql(scripts = {
         "classpath:sql/init-db.sql" }, executionPhase = ExecutionPhase.BEFORE_TEST_CLASS, config = @SqlConfig(transactionMode = TransactionMode.ISOLATED, errorMode = ErrorMode.CONTINUE_ON_ERROR))
+/**
+ * The Interface GjsDatabaseTest.
+ *
+ * Anotación de la librería Gjs
+ *
+ * Marca una clase de test contra base de datos: levanta el contexto de Spring Boot, ejecuta los scripts SQL indicados y aísla la ejecución del resto.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Isolated
 @Execution(ExecutionMode.SAME_THREAD)
 @Inherited

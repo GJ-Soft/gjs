@@ -30,20 +30,6 @@ import org.gjs.java.common.exception.GjsException;
  * Incluye algunas funciones sobre fechas que se utilizan en las rutinas de test
  * automatizados de Gjs.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

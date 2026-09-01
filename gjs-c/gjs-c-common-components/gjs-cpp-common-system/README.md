@@ -15,11 +15,11 @@ todo tiene una rama `WIN` y otra `POSIX`.
 
 | Dato         | Valor                                                     |
 | ------------ | --------------------------------------------------------- |
-| `groupId`    | `org.gjs.c.common`                                        |
+| `groupId`    | `org.gjsoft.c.common`                                        |
 | `artifactId` | `gjs-cpp-common-system`                                   |
 | `version`    | `1.0.0-RC.2`                                              |
 | `packaging`  | `nar` (biblioteca **shared**)                             |
-| Pom padre    | `org.gjs.c:gjs-cpp-lib-parent`                            |
+| Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent`                            |
 | Depende de   | `gjs-cpp-common-base`, `…-types`, `…-io`, `…-calculation` |
 
 Es el componente con **más dependencias internas de todo el stack** —cuatro—, y

@@ -6,6 +6,18 @@ import org.gjs.java.test.samples.dto.SampleEntityDto;
 import org.gjs.java.test.samples.dto.SampleWithFKEntityDto;
 import org.slf4j.Logger;
 
+/**
+ * The Class DtoTestingGame.
+ *
+ * Clase funcional de la librería Gjs
+ *
+ * Juego de suministradores para los DTO de ejemplo: entrega instancias pobladas y vacías de SampleEntityDto y de SampleWithFKEntityDto.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public final class DtoTestingGame extends ObjectSupplierManager {
 
 	static class SampleEntityDtoSupplier extends AbstractObjectSupplier<SampleEntityDto> {

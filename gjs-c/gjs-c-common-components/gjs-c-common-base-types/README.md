@@ -15,12 +15,12 @@ y algo más de 31.000 de implementación.
 
 | Dato         | Valor                                |
 | ------------ | ------------------------------------ |
-| `groupId`    | `org.gjs.c.common`                   |
+| `groupId`    | `org.gjsoft.c.common`                   |
 | `artifactId` | `gjs-c-common-base-types`            |
 | `version`    | `1.0.0-RC.2`                         |
 | `packaging`  | `nar` (biblioteca **shared**)        |
-| Pom padre    | `org.gjs.c:gjs-c-lib-parent`         |
-| Depende de   | `org.gjs.c.common:gjs-c-common-base` |
+| Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`         |
+| Depende de   | `org.gjsoft.c.common:gjs-c-common-base` |
 
 ---
 

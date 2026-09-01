@@ -16,22 +16,6 @@ import lombok.Setter;
  *
  * Clase DTO para contener la información de un aviso.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0
@@ -89,22 +73,10 @@ public class AvisoDto extends EntityPkLongDto {
 		this.mensaje = StringUtils.abbreviate(mensaje, MAX_LEN_MENSAJE);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.dto.EntidadDto#equals(java.lang.Object)
-	 */
-
 	@Override
 	public boolean equals(Object o) {
 		return super.equals(o);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.dto.EntidadDto#hashCode()
-	 */
 
 	@Override
 	public int hashCode() {

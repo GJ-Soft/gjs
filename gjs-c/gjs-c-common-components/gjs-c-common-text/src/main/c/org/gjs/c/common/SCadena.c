@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                                SCadena.cpp                                 */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  GTexto                                                          */
-/* Versi�n:   1.0.0                                                           */
+/* Libreria:  GTexto                                                          */
+/* Version:   1.0.0                                                           */
 /* Fecha:     30/06/2008                                                      */
 /* Autor:     Gin�s Jim�nez S�nchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
-/* Fichero de c�digo fuente que contiene la implementaci�n de la clase de     */
+/* Descripcion:                                                               */
+/* Fichero de codigo fuente que contiene la implementaci�n de la clase de     */
 /* datos SCadena.                                                             */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -1956,7 +1956,7 @@ int SCadEsIgual ( SCadena * p_cadObj, SCadena * p_cadValor )
 	return ( iRes );
 }
 
-int SCadEsMenor( SCadena * p_cadObj, SCadena * p_cadValor )
+int SCadEsMenor ( SCadena * p_cadObj, SCadena * p_cadValor )
 {
 	int iRes;
 
@@ -1993,6 +1993,36 @@ int SCadEsDiferente ( SCadena * p_cadObj, SCadena * p_cadValor )
 	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cadValor ) )
 	{
 		iRes = SCadEsDiferenteLiteral ( p_cadObj, SCadValor ( p_cadValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SCadEsMenorIg ( SCadena * p_cadObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadEsMenorIgLiteral ( p_cadObj, SCadValor ( p_cadValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SCadEsMayorIg ( SCadena * p_cadObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadEsMayorIgLiteral ( p_cadObj, SCadValor ( p_cadValor ) );
 	}
 	else
 	{
@@ -2157,6 +2187,52 @@ int SCadEsMayorLiteral ( SCadena * p_cadObj, const char * p_cValor )
 	return ( iRes );
 }
 
+int SCadEsMenorIgLiteral ( SCadena * p_cadObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		if ( ( SCadEsMenorLiteral ( p_cadObj, p_cValor ) == 1 ) ||
+		     ( SCadEsIgualLiteral ( p_cadObj, p_cValor ) == 1 ) )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SCadEsMayorIgLiteral ( SCadena * p_cadObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		if ( ( SCadEsMayorLiteral ( p_cadObj, p_cValor ) == 1 ) ||
+		     ( SCadEsIgualLiteral ( p_cadObj, p_cValor ) == 1 ) )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int SCadEsDiferenteLiteral ( SCadena * p_cadObj, const char * p_cValor )
 {
 	int iRes;
@@ -2168,6 +2244,52 @@ int SCadEsDiferenteLiteral ( SCadena * p_cadObj, const char * p_cValor )
 	else
 	{
 		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SCadComparar ( SCadena * p_cadObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadCompararLiteral ( p_cadObj, SCadValorConstante ( p_cadValor ) );
+	}
+	else if ( ES_VALIDO ( p_cadObj ) )
+	{
+		iRes = COMP_MAYOR;
+	}
+	else if ( ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = COMP_MENOR;
+	}
+	else
+	{
+		iRes = COMP_IGUAL;
+	}
+	return ( iRes );
+}
+
+int SCadCompararLiteral ( SCadena * p_cadObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		iRes = CadComparar ( p_cadObj->p_cValor, p_cValor );
+	}
+	else if ( ES_VALIDO ( p_cadObj ) )
+	{
+		iRes = COMP_MAYOR;
+	}
+	else if ( ES_VALIDO ( p_cValor ) )
+	{
+		iRes = COMP_MENOR;
+	}
+	else
+	{
+		iRes = COMP_IGUAL;
 	}
 	return ( iRes );
 }

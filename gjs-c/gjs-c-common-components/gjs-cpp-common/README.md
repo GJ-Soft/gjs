@@ -15,11 +15,11 @@ sólo están los arquetipos.
 
 | Dato         | Valor                          |
 | ------------ | ------------------------------ |
-| `groupId`    | `org.gjs.c.common`             |
+| `groupId`    | `org.gjsoft.c.common`             |
 | `artifactId` | `gjs-cpp-common`               |
 | `version`    | `1.0.0-RC.2`                   |
 | `packaging`  | `nar` (biblioteca **shared**)  |
-| Pom padre    | `org.gjs.c:gjs-cpp-lib-parent` |
+| Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent` |
 
 ---
 

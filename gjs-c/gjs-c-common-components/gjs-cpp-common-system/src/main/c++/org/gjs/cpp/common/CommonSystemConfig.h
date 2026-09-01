@@ -40,19 +40,6 @@
 #	include <setjmp.h>
 #endif
 
-// El Kernel32.lib (y otros) junto con los *.h, de VC++ suelen estar obsoletos: algunas funciones hay que obtenerlas
-// dinámicamente:
-#if ( defined ( VC ) ) 
-#	if ( defined ( OpenThread ) )
-#		define OPENTHREAD_INDEFINIDO	
-//#	if ( !defined ( OpenThread ) )
-//WINBASEAPI HANDLE WINAPI OpenThread ( DWORD dwDesiredAccess, BOOL bInheritHandle, DWORD dwThreadId );
-#	endif
-#	if ( !defined ( SwitchToThread ) )
-WINBASEAPI BOOL WINAPI SwitchToThread ();
-#	endif
-#endif
-
 
 
 

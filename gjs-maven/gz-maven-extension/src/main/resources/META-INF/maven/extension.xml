@@ -3,6 +3,6 @@
 		<exportedPackage>org.gjs.maven.extensions.gz</exportedPackage>
 	</exportedPackages>
 	<exportedArtifacts>
-		<exportedArtifact>org.gjs.maven.extensions:gz-maven-extension</exportedArtifact>
+		<exportedArtifact>org.gjsoft.maven.extensions:gz-maven-extension</exportedArtifact>
 	</exportedArtifacts>
 </extension>

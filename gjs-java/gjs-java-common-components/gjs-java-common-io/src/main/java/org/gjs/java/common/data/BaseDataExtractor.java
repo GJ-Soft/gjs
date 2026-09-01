@@ -17,22 +17,6 @@ import org.slf4j.LoggerFactory;
  * Clase abstracta usada como base para implementar un extractor de datos
  * singular.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @param <T> la clase de datos del extractor
  *
  * @author Gjs

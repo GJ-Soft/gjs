@@ -5,6 +5,18 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SamplePojoNoUpdatables.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Pojo con un campo estático y otro final, que no se pueden actualizar.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @SuppressWarnings("rawtypes")
 @Getter
 @Setter

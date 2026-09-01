@@ -18,22 +18,6 @@ import org.gjs.java.common.util.ConditionUtils;
  * una hoja de cálculo, incorporando una primera fila de nombres de columnas al
  * formato de valores separados por un separador concreto.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

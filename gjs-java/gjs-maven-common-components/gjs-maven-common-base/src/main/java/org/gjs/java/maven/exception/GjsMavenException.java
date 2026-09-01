@@ -4,6 +4,14 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * The Class GjsMavenException.
+ *
+ * Excepcion de la libreria Gjs para los goals de Maven. Al extender MojoExecutionException, Maven la trata como un
+ * fallo de ejecucion del plugin y no como un error interno.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
  */
 public class GjsMavenException extends MojoExecutionException {
 

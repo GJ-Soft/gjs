@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.gjs.java.common.contant.CommonConstants;
+import org.gjs.java.common.constant.CommonConstants;
 import org.gjs.java.common.type.DocumentTemplate;
 import org.gjs.java.common.util.ConversionUtils;
 
@@ -15,22 +15,6 @@ import org.gjs.java.common.util.ConversionUtils;
  *
  * Clase que almacena los resultados de una tarea con mayor detalle en el que se
  * puede guardar la información de cada registro e informaciones adiconales.
- *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
  *
  * @author Gjs
  * @version 4.0.0

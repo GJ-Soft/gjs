@@ -17,22 +17,6 @@ import org.gjs.java.common.util.NormalizationUtils;
  * Facilita el manejo de la entrada y salida por stremers de un texto plano
  * visto como una secuencia de objetos con sus atributos.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.java</groupId>
+		<groupId>org.gjsoft.java</groupId>
 		<artifactId>gjs-java-test-parent</artifactId>
 		<version>1.0.0-RC.2</version>    
 		<relativePath>../gjs-java-test-parent</relativePath>
@@ -41,7 +41,7 @@
     <dependencyManagement>
         <dependencies>
 			<dependency>
-				<groupId>org.gjs.java</groupId>
+				<groupId>org.gjsoft.java</groupId>
 				<artifactId>gjs-java-web-parent</artifactId>
 				<version>1.0.0-RC.2</version>
 				<type>pom</type>
@@ -59,7 +59,7 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-test</artifactId>
-				<version>${spring-boot.version}</version>
+				<version>${springboot.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.springframework.boot</groupId>
@@ -70,12 +70,12 @@
 		
  			<!-- Gjs -->
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-sb-common-support</artifactId>
 				<version>${gjs-java-sb-common-support.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-sb-common</artifactId>
 				<version>${gjs-java-sb-common.version}</version>
 			</dependency>
@@ -83,19 +83,19 @@
 			<!-- Test -->
  			<!-- Gjs -->
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-sb-common-test-support</artifactId>
 				<version>${gjs-java-sb-common-test-support.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-sb-common-test-mocks</artifactId>
 				<version>${gjs-java-sb-common-test-mocks.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-sb-common-test</artifactId>
 				<version>${gjs-java-sb-common-test.version}</version>
 				<scope>compile</scope>

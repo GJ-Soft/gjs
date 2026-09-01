@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>    
     
 	<parent>
-		<groupId>org.gjs.maven.archetypes</groupId>    
+		<groupId>org.gjsoft.maven.archetypes</groupId>    
 		<artifactId>gjs-archetype-parent</artifactId>    
 		<version>1.0.0-RC.2</version>    
 		<relativePath>../gjs-archetype-parent</relativePath>
@@ -23,11 +23,11 @@
   Example of use: This command generates the test-project project:    
      
     mvn -B archetype:generate \
-							-DarchetypeGroupId=org.gjs.maven.archetypes \
+							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-python-rest-client-archetype \
 							-DarchetypeVersion=1.0.0-RC.2 \
 							-DshortName=test-project \
-							-DgroupId=org.gjs.test \
+							-DgroupId=org.gjsoft.test \
 							-DmainFunction=Main:main \
 							-Dauthor="GJ Software" \
 							-DauthorMail=gjsoft@gmx.es \

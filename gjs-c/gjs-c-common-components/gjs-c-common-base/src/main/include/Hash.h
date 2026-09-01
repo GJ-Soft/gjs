@@ -5,8 +5,10 @@
 
 
 #include <BaseConfig.h>
+#include <Funciones.h>
 
 
+#define PFUNHASH	PFUNUINTPV
 
 
 

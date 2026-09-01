@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -204,6 +205,7 @@ public class FileSeparatedValuesTest extends BaseUnitTest<FileSeparatedValues> {
 		try {
 			final Path filePath = currentDir.resolve("data/nuevoX.csv");
 			logger.info("{}", filePath.toAbsolutePath().toString().replace("\\", "\\\\"));
+            Files.deleteIfExists(filePath);
 			final FileSeparatedValues file = new FileSeparatedValues(filePath.toFile());
 			assertNotNull(file.getDirectory());
 			assertNotNull(file.getName());

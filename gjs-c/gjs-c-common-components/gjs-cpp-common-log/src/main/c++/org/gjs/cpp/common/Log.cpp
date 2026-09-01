@@ -564,40 +564,11 @@ void LogSetNivel ( int iNivel )
 }
 
 
-template<typename... Args> void LogInfo ( const string & sFormato, Args&&... argumentos )
-{
-	LogInfo( ToString ( sFormato, forward<Args>( argumentos )... ) );
-}
-
-template<typename... Args> void LogDepuracion ( const string & sFormato, Args&&... argumentos )
-{
-	LogDepuracion( ToString ( sFormato, forward<Args>( argumentos )... ) );
-}
-
-template<typename... Args> void LogTraza ( const string & sFormato, Args&&... argumentos )
-{
-	LogTraza( ToString ( sFormato, forward<Args>( argumentos )... ) );
-}
-
-template<typename... Args> void LogAviso ( const string & sFormato, Args&&... argumentos )
-{
-	LogAviso( ToString ( sFormato, forward<Args>( argumentos )... ) );
-}
-
-template<typename... Args> auto LogError ( const string & sFormato, Args&&... argumentos )
- -> std::enable_if_t<!(... || std::is_base_of_v<std::exception, std::decay_t<Args>>)>
-{
-	LogError( ToString ( sFormato, forward<Args>( argumentos )... ) );
-}
-
-template<typename... Args> auto LogFatal ( const string & sFormato, Args&&... argumentos )
- -> std::enable_if_t<!(... || std::is_base_of_v<std::exception, std::decay_t<Args>>)>
-{
-	LogFatal( ToString ( sFormato, forward<Args>( argumentos )... ) );
-}
+/* Las seis variadicas Log* estan definidas en Log.h: aqui no se instanciaban
+   para nadie de fuera del modulo. */
 
 
-Nivel ToNivel ( int iNivel ) 
+Nivel ToNivel ( int iNivel )
 {
 	return ( static_cast<Nivel> ( iNivel ) );
 }

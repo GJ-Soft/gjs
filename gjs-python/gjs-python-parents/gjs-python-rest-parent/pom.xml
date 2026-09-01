@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.python</groupId>
+		<groupId>org.gjsoft.python</groupId>
 		<artifactId>gjs-python-exe-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../gjs-python-exe-parent</relativePath>

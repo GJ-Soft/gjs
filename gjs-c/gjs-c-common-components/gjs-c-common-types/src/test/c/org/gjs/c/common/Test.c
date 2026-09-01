@@ -2,7 +2,7 @@
 
 
 
-#define NUM_TESTS        31
+#define NUM_TESTS        34
 
 extern int TestSError ();
 extern int TestSTipo ();
@@ -12,9 +12,12 @@ extern int TestSConector ();
 extern int TestSUbicacion ();
 extern int TestSLocalizador ();
 extern int TestSLocalizadorExt ();
-extern int TestSEntidadId ();
+extern int TestSEntidad ();
+extern int TestSEntidadNom ();
 extern int TestSEntidadCod ();
+extern int TestSEntidadCodNom ();
 extern int TestSEntidadIdCod ();
+extern int TestSMensaje ();
 extern int TestSIdAdap ();
 extern int TestSGeneradorIdAdap ();
 extern int TestSAccion ();
@@ -47,29 +50,32 @@ char ** testArrayInit()
     p_p_cTests[ 5 ] = CadDuplicar ( "SUbicacionTest" );
     p_p_cTests[ 6 ] = CadDuplicar ( "SLocalizadorTest" );
     p_p_cTests[ 7 ] = CadDuplicar ( "SLocalizadorExtTest" );
-    p_p_cTests[ 8 ] = CadDuplicar ( "SEntidadIdTest" );
-    p_p_cTests[ 9 ] = CadDuplicar ( "SEntidadCodTest" );
-    p_p_cTests[ 10 ] = CadDuplicar ( "SEntidadIdCodTest" );
-    p_p_cTests[ 11 ] = CadDuplicar ( "SIdAdapTest" );
-    p_p_cTests[ 12 ] = CadDuplicar ( "SGeneradorIdAdapTest" );
-    p_p_cTests[ 13 ] = CadDuplicar ( "SAccionTest" );
-    p_p_cTests[ 14 ] = CadDuplicar ( "TiposAccionTest" );
-    p_p_cTests[ 15 ] = CadDuplicar ( "SHiloAriadnaTest" );
-    p_p_cTests[ 16 ] = CadDuplicar ( "SHojaTest" );
-    p_p_cTests[ 17 ] = CadDuplicar ( "SDatosTextoTest" );
-    p_p_cTests[ 18 ] = CadDuplicar ( "SVectorCadenasTest" );
-    p_p_cTests[ 19 ] = CadDuplicar ( "SSecuenciaCadenasTest" );
-    p_p_cTests[ 20 ] = CadDuplicar ( "STablaCadenasTest" );
-    p_p_cTests[ 21 ] = CadDuplicar ( "SPilaCadenasTest" );
-    p_p_cTests[ 22 ] = CadDuplicar ( "SArbolCadenasTest" );
-    p_p_cTests[ 23 ] = CadDuplicar ( "SSecuenciaGeneradoresIdTest" );
-    p_p_cTests[ 24 ] = CadDuplicar ( "SEntradaTest" );
-    p_p_cTests[ 25 ] = CadDuplicar ( "SEntradaExtTest" );
-    p_p_cTests[ 26 ] = CadDuplicar ( "SListaEntradasTest" );
-    p_p_cTests[ 27 ] = CadDuplicar ( "SListaEntradasExtTest" );
-    p_p_cTests[ 28 ] = CadDuplicar ( "SListaParametrosTest" );
-    p_p_cTests[ 29 ] = CadDuplicar ( "SListaValoresTest" );
-    p_p_cTests[ 30 ] = CadDuplicar ( "SListaErroresTest" );
+    p_p_cTests[ 8 ] = CadDuplicar ( "SEntidadTest" );
+    p_p_cTests[ 9 ] = CadDuplicar ( "SEntidadNomTest" );
+    p_p_cTests[ 10 ] = CadDuplicar ( "SEntidadCodTest" );
+    p_p_cTests[ 11 ] = CadDuplicar ( "SEntidadCodNomTest" );
+    p_p_cTests[ 12 ] = CadDuplicar ( "SEntidadIdCodTest" );
+    p_p_cTests[ 13 ] = CadDuplicar ( "SMensajeTest" );
+    p_p_cTests[ 14 ] = CadDuplicar ( "SIdAdapTest" );
+    p_p_cTests[ 15 ] = CadDuplicar ( "SGeneradorIdAdapTest" );
+    p_p_cTests[ 16 ] = CadDuplicar ( "SAccionTest" );
+    p_p_cTests[ 17 ] = CadDuplicar ( "TiposAccionTest" );
+    p_p_cTests[ 18 ] = CadDuplicar ( "SHiloAriadnaTest" );
+    p_p_cTests[ 19 ] = CadDuplicar ( "SHojaTest" );
+    p_p_cTests[ 20 ] = CadDuplicar ( "SDatosTextoTest" );
+    p_p_cTests[ 21 ] = CadDuplicar ( "SVectorCadenasTest" );
+    p_p_cTests[ 22 ] = CadDuplicar ( "SSecuenciaCadenasTest" );
+    p_p_cTests[ 23 ] = CadDuplicar ( "STablaCadenasTest" );
+    p_p_cTests[ 24 ] = CadDuplicar ( "SPilaCadenasTest" );
+    p_p_cTests[ 25 ] = CadDuplicar ( "SArbolCadenasTest" );
+    p_p_cTests[ 26 ] = CadDuplicar ( "SSecuenciaGeneradoresIdTest" );
+    p_p_cTests[ 27 ] = CadDuplicar ( "SEntradaTest" );
+    p_p_cTests[ 28 ] = CadDuplicar ( "SEntradaExtTest" );
+    p_p_cTests[ 29 ] = CadDuplicar ( "SListaEntradasTest" );
+    p_p_cTests[ 30 ] = CadDuplicar ( "SListaEntradasExtTest" );
+    p_p_cTests[ 31 ] = CadDuplicar ( "SListaParametrosTest" );
+    p_p_cTests[ 32 ] = CadDuplicar ( "SListaValoresTest" );
+    p_p_cTests[ 33 ] = CadDuplicar ( "SListaErroresTest" );
     return p_p_cTests;
 }
 
@@ -84,29 +90,32 @@ PFUNINTV * functionArrayInit()
     p_fTests[ 5 ] = TestSUbicacion;
     p_fTests[ 6 ] = TestSLocalizador;
     p_fTests[ 7 ] = TestSLocalizadorExt;
-    p_fTests[ 8 ] = TestSEntidadId;
-    p_fTests[ 9 ] = TestSEntidadCod;
-    p_fTests[ 10 ] = TestSEntidadIdCod;
-    p_fTests[ 11 ] = TestSIdAdap;
-    p_fTests[ 12 ] = TestSGeneradorIdAdap;
-    p_fTests[ 13 ] = TestSAccion;
-    p_fTests[ 14 ] = TestTiposAccion;
-    p_fTests[ 15 ] = TestSHiloAriadna;
-    p_fTests[ 16 ] = TestSHoja;
-    p_fTests[ 17 ] = TestSDatosTexto;
-    p_fTests[ 18 ] = TestSVectorCadenas;
-    p_fTests[ 19 ] = TestSSecuenciaCadenas;
-    p_fTests[ 20 ] = TestSTablaCadenas;
-    p_fTests[ 21 ] = TestSPilaCadenas;
-    p_fTests[ 22 ] = TestSArbolCadenas;
-    p_fTests[ 23 ] = TestSSecuenciaGeneradoresId;
-    p_fTests[ 24 ] = TestSEntrada;
-    p_fTests[ 25 ] = TestSEntradaExt;
-    p_fTests[ 26 ] = TestSListaEntradas;
-    p_fTests[ 27 ] = TestSListaEntradasExt;
-    p_fTests[ 28 ] = TestSListaParametros;
-    p_fTests[ 29 ] = TestSListaValores;
-    p_fTests[ 30 ] = TestSListaErrores;
+    p_fTests[ 8 ] = TestSEntidad;
+    p_fTests[ 9 ] = TestSEntidadNom;
+    p_fTests[ 10 ] = TestSEntidadCod;
+    p_fTests[ 11 ] = TestSEntidadCodNom;
+    p_fTests[ 12 ] = TestSEntidadIdCod;
+    p_fTests[ 13 ] = TestSMensaje;
+    p_fTests[ 14 ] = TestSIdAdap;
+    p_fTests[ 15 ] = TestSGeneradorIdAdap;
+    p_fTests[ 16 ] = TestSAccion;
+    p_fTests[ 17 ] = TestTiposAccion;
+    p_fTests[ 18 ] = TestSHiloAriadna;
+    p_fTests[ 19 ] = TestSHoja;
+    p_fTests[ 20 ] = TestSDatosTexto;
+    p_fTests[ 21 ] = TestSVectorCadenas;
+    p_fTests[ 22 ] = TestSSecuenciaCadenas;
+    p_fTests[ 23 ] = TestSTablaCadenas;
+    p_fTests[ 24 ] = TestSPilaCadenas;
+    p_fTests[ 25 ] = TestSArbolCadenas;
+    p_fTests[ 26 ] = TestSSecuenciaGeneradoresId;
+    p_fTests[ 27 ] = TestSEntrada;
+    p_fTests[ 28 ] = TestSEntradaExt;
+    p_fTests[ 29 ] = TestSListaEntradas;
+    p_fTests[ 30 ] = TestSListaEntradasExt;
+    p_fTests[ 31 ] = TestSListaParametros;
+    p_fTests[ 32 ] = TestSListaValores;
+    p_fTests[ 33 ] = TestSListaErrores;
     return p_fTests;
 }
 

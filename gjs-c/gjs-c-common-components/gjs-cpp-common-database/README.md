@@ -13,11 +13,11 @@ deja apuntados dos módulos que aún no existen.
 
 | Dato         | Valor                          |
 | ------------ | ------------------------------ |
-| `groupId`    | `org.gjs.c.common`             |
+| `groupId`    | `org.gjsoft.c.common`             |
 | `artifactId` | `gjs-cpp-common-database`      |
 | `version`    | `1.0.0-RC.2`                   |
 | `packaging`  | `nar` (biblioteca **shared**)  |
-| Pom padre    | `org.gjs.c:gjs-cpp-lib-parent` |
+| Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent` |
 | Depende de   | `gjs-cpp-common-support`       |
 
 Depende de `support` y, a través de él, de todo el stack. En realidad lo que usa

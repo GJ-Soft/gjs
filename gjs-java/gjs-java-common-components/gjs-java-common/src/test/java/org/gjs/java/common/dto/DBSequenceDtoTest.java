@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigInteger;
 
-import org.gjs.java.common.contant.CommonConstants;
+import org.gjs.java.common.constant.CommonConstants;
 import org.gjs.java.common.dto.DBSequenceDto;
 import org.gjs.java.test.BaseUnitTest;
 import org.gjs.java.test.util.AssertionUtils;

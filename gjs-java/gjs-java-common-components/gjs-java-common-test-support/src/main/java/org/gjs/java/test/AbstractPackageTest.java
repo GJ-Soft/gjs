@@ -28,22 +28,6 @@ import com.openpojo.validation.test.Tester;
  * Clase abstracta base para todos los test unitarios que se apliquen a todas
  * las clases de un un paquete concreto de la librería Gjs
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

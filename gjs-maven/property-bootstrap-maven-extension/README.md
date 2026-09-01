@@ -134,7 +134,7 @@ reciben `afterSessionStart`, que se ejecuta antes de activar los perfiles.
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://maven.apache.org/EXTENSIONS/1.1.0 http://maven.apache.org/xsd/core-extensions-1.1.0.xsd">
 		<extension>
-			<groupId>org.gjs.maven.extensions</groupId>
+			<groupId>org.gjsoft.maven.extensions</groupId>
 			<artifactId>property-bootstrap-maven-extension</artifactId>
 			<version>1.0.0-RC.2</version>
 		</extension>

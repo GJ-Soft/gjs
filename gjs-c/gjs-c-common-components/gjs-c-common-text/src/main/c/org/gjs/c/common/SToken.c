@@ -84,7 +84,7 @@ SToken * STokGenerar ( SCadena * p_cadValor )
 	return ( p_tokObj );
 }
 
-SToken * STokGenerarExt ( const char * p_cValor )
+SToken * STokGenerarLit ( const char * p_cValor )
 {
 	SToken *	p_tokObj;
 	int			iLong;
@@ -190,7 +190,7 @@ int STokEstaVacio ( SToken * p_tokObj )
 	return ( iRes );
 }
 
-SCadena * STokCadena ( SToken * p_tokObj )
+SCadena * STokValor ( SToken * p_tokObj )
 {
 	SCadena * p_cadRes;
 
@@ -205,22 +205,7 @@ SCadena * STokCadena ( SToken * p_tokObj )
 	return ( p_cadRes );
 }
 
-char * STokValor ( SToken * p_tokObj )
-{
-	char * p_cRes;
-
-	if ( ES_VALIDO ( p_tokObj ) )
-	{
-		p_cRes = SCadValor ( p_tokObj->p_cadValor );
-	}
-	else
-	{
-		p_cRes = NULL;
-	}
-	return ( p_cRes );
-}
-
-const char * STokValorConstante ( SToken * p_tokObj )
+const char * STokValorLit ( SToken * p_tokObj )
 {
 	const char * p_cRes;
 
@@ -336,7 +321,7 @@ int STokCopiar ( SToken * p_tokObj, SToken * p_tokValor )
 
 	if ( ES_VALIDO ( p_tokObj ) && ES_VALIDO ( p_tokValor ) )
 	{
-		iRes = STokCopiarCadena ( p_tokObj, STokCadena ( p_tokValor ) );
+		iRes = STokCopiarCadena ( p_tokObj, STokValor ( p_tokValor ) );
 	}
 	else
 	{
@@ -469,7 +454,7 @@ int STokAsignar ( SToken * p_tokObj, SToken * p_tokValor )
 	return ( iRes );
 }
 
-int STokAsignarCadena ( SToken * p_tokObj, SCadena * p_cadValor )
+int STokEstablecer ( SToken * p_tokObj, SCadena * p_cadValor )
 {
 	int iRes;
 
@@ -491,7 +476,7 @@ int STokAsignarCadena ( SToken * p_tokObj, SCadena * p_cadValor )
 	return ( iRes );
 }
 
-int STokAsignarLiteral ( SToken * p_tokObj, const char * p_cValor )
+int STokEstablecerLit ( SToken * p_tokObj, const char * p_cValor )
 {
 	int iRes;
 
@@ -564,7 +549,7 @@ int STokEsIgual ( SToken * p_tokObj, SToken * p_tokValor )
 
 	if ( ES_VALIDO ( p_tokObj ) && ES_VALIDO ( p_tokValor ) )
 	{
-		iRes = STokLiteralEsIgual ( p_tokObj, STokValor ( p_tokValor ) );
+		iRes = STokEsIgualCad ( p_tokObj, STokValor ( p_tokValor ) );
 	}
 	else
 	{
@@ -579,7 +564,7 @@ int STokEsMenor ( SToken * p_tokObj, SToken * p_tokValor )
 
 	if ( ES_VALIDO ( p_tokObj ) && ES_VALIDO ( p_tokValor ) )
 	{
-		iRes = STokLiteralEsMenor ( p_tokObj, STokValor ( p_tokValor ) );
+		iRes = STokEsMenorCad ( p_tokObj, STokValor ( p_tokValor ) );
 	}
 	else
 	{
@@ -594,7 +579,7 @@ int STokEsMayor ( SToken * p_tokObj, SToken * p_tokValor )
 
 	if ( ES_VALIDO ( p_tokObj ) && ES_VALIDO ( p_tokValor ) )
 	{
-		iRes = STokLiteralEsMayor ( p_tokObj, STokValor ( p_tokValor ) );
+		iRes = STokEsMayorCad ( p_tokObj, STokValor ( p_tokValor ) );
 	}
 	else
 	{
@@ -609,7 +594,7 @@ int STokEsDiferente ( SToken * p_tokObj, SToken * p_tokValor )
 
 	if ( ES_VALIDO ( p_tokObj ) && ES_VALIDO ( p_tokValor ) )
 	{
-		iRes = STokLiteralEsDiferente ( p_tokObj, STokValor ( p_tokValor ) );
+		iRes = STokEsDiferenteCad ( p_tokObj, STokValor ( p_tokValor ) );
 	}
 	else
 	{
@@ -618,7 +603,7 @@ int STokEsDiferente ( SToken * p_tokObj, SToken * p_tokValor )
 	return ( iRes );
 }
 
-int STokCadenaEsIgual ( SToken * p_tokObj, SCadena * p_cadValor )
+int STokEsIgualCad ( SToken * p_tokObj, SCadena * p_cadValor )
 {
 	int iRes;
 
@@ -633,7 +618,7 @@ int STokCadenaEsIgual ( SToken * p_tokObj, SCadena * p_cadValor )
 	return ( iRes );
 }
 
-int STokCadenaEsMenor ( SToken * p_tokObj, SCadena * p_cadValor )
+int STokEsMenorCad ( SToken * p_tokObj, SCadena * p_cadValor )
 {
 	int iRes;
 
@@ -648,7 +633,7 @@ int STokCadenaEsMenor ( SToken * p_tokObj, SCadena * p_cadValor )
 	return ( iRes );
 }
 
-int STokCadenaEsMayor ( SToken * p_tokObj, SCadena * p_cadValor )
+int STokEsMayorCad ( SToken * p_tokObj, SCadena * p_cadValor )
 {
 	int iRes;
 
@@ -663,7 +648,7 @@ int STokCadenaEsMayor ( SToken * p_tokObj, SCadena * p_cadValor )
 	return ( iRes );
 }
 
-int STokCadenaEsDiferente ( SToken * p_tokObj, SCadena * p_cadValor )
+int STokEsDiferenteCad ( SToken * p_tokObj, SCadena * p_cadValor )
 {
 	int iRes;
 
@@ -678,7 +663,7 @@ int STokCadenaEsDiferente ( SToken * p_tokObj, SCadena * p_cadValor )
 	return ( iRes );
 }
 
-int STokLiteralEsIgual ( SToken * p_tokObj, const char * p_cValor )
+int STokEsIgualLit ( SToken * p_tokObj, const char * p_cValor )
 {
 	int iRes;
 
@@ -693,7 +678,7 @@ int STokLiteralEsIgual ( SToken * p_tokObj, const char * p_cValor )
 	return ( iRes );
 }
 
-int STokLiteralEsMenor ( SToken * p_tokObj, const char * p_cValor )
+int STokEsMenorLit ( SToken * p_tokObj, const char * p_cValor )
 {
 	int iRes;
 
@@ -708,7 +693,7 @@ int STokLiteralEsMenor ( SToken * p_tokObj, const char * p_cValor )
 	return ( iRes );
 }
 
-int STokLiteralEsMayor ( SToken * p_tokObj, const char * p_cValor )
+int STokEsMayorLit ( SToken * p_tokObj, const char * p_cValor )
 {
 	int iRes;
 
@@ -723,7 +708,7 @@ int STokLiteralEsMayor ( SToken * p_tokObj, const char * p_cValor )
 	return ( iRes );
 }
 
-int STokLiteralEsDiferente ( SToken * p_tokObj, const char * p_cValor )
+int STokEsDiferenteLit ( SToken * p_tokObj, const char * p_cValor )
 {
 	int iRes;
 
@@ -734,6 +719,75 @@ int STokLiteralEsDiferente ( SToken * p_tokObj, const char * p_cValor )
 	else
 	{
 		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int STokComparar ( SToken * p_tokObj, SToken * p_tokValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_tokObj ) && ES_VALIDO ( p_tokValor ) )
+	{
+		iRes = STokCompararCad ( p_tokObj, STokValor ( p_tokValor ) );
+	}
+	else if ( ES_VALIDO ( p_tokObj ) )
+	{
+		iRes = COMP_MAYOR;
+	}
+	else if ( ES_VALIDO ( p_tokValor ) )
+	{
+		iRes = COMP_MENOR;
+	}
+	else
+	{
+		iRes = COMP_IGUAL;
+	}
+	return ( iRes );
+}
+
+int STokCompararCad ( SToken * p_tokObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_tokObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadComparar ( p_tokObj->p_cadValor, p_cadValor );
+	}
+	else if ( ES_VALIDO ( p_tokObj ) )
+	{
+		iRes = COMP_MAYOR;
+	}
+	else if ( ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = COMP_MENOR;
+	}
+	else
+	{
+		iRes = COMP_IGUAL;
+	}
+	return ( iRes );
+}
+
+int STokCompararLit ( SToken * p_tokObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_tokObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		iRes = SCadCompararLiteral ( p_tokObj->p_cadValor, p_cValor );
+	}
+	else if ( ES_VALIDO ( p_tokObj ) )
+	{
+		iRes = COMP_MAYOR;
+	}
+	else if ( ES_VALIDO ( p_cValor ) )
+	{
+		iRes = COMP_MENOR;
+	}
+	else
+	{
+		iRes = COMP_IGUAL;
 	}
 	return ( iRes );
 }

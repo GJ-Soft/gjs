@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.java</groupId>
+		<groupId>org.gjsoft.java</groupId>
 		<artifactId>gjs-java-base-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../../gjs-java-base-parents/gjs-java-base-parent</relativePath>
@@ -48,63 +48,34 @@
 		<gjs-java-common.version>1.0.0-RC.2</gjs-java-common.version>
 		<gjs-java-common-test.version>1.0.0-RC.2</gjs-java-common-test.version>
 
-		<!-- Apache commons-->
-		<apache.commons-io.version>2.19.0</apache.commons-io.version>
-		<apache.commons-collections.version>4.4</apache.commons-collections.version>
-        <apache.commons-text.version>1.14.0</apache.commons-text.version>
-		
 		<!-- Jackson -->
 		<jackson.version>3.0.3</jackson.version>
 		
 		<!-- AspectJ -->
 		<aspectj.version>1.5.4</aspectj.version>
 		
-		<!-- Logging -->
-		<slf4j.version>2.0.17</slf4j.version>
-		
-		<!-- JUnit -->
-		<junit-jupiter.version>6.0.1</junit-jupiter.version>
-		
-		<!-- Mockito -->
-		<mockito.version>5.20.0</mockito.version>
 	</properties>
 	
 	<dependencyManagement>
 		<dependencies>
  			<!-- Gjs -->
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-common-support</artifactId>
 				<version>${gjs-java-common-support.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-common-io</artifactId>
 				<version>${gjs-java-common-io.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-common</artifactId>
 				<version>${gjs-java-common.version}</version>
 			</dependency>
 
-           <!-- Apache commons -->
-			<dependency>
-			    <groupId>commons-io</groupId>
-			    <artifactId>commons-io</artifactId>
-			    <version>${apache.commons-io.version}</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.apache.commons</groupId>
-			    <artifactId>commons-collections4</artifactId>
-			    <version>${apache.commons-collections.version}</version>
-			</dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-text</artifactId>
-                <version>${apache.commons-text.version}</version>
-            </dependency>
-
+			<!-- Jackson -->
 			<dependency>
 				<groupId>tools.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
@@ -121,13 +92,7 @@
 				<version>${jackson.version}</version>
 			</dependency>
 			
-			<!-- Logging -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-    
+			<!-- AspectJ -->
             <dependency>
                 <groupId>aspectj</groupId>
                 <artifactId>aspectjrt</artifactId>
@@ -137,62 +102,38 @@
 			<!-- Test -->
  			<!-- Gjs -->
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-common-test</artifactId>
 				<version>${gjs-java-common-test.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-common-test-support</artifactId>
 				<version>${gjs-java-common-test-support.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-common-test-mocks</artifactId>
 				<version>${gjs-java-common-test-mocks.version}</version>
 				<scope>test</scope>
 			</dependency>
 
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter</artifactId>
-				<version>${junit-jupiter.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-api</artifactId>
-				<version>${junit-jupiter.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-junit-jupiter</artifactId>
-				<version>${mockito.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>
-				<version>${mockito.version}</version>
-				<scope>test</scope>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
 		<!-- Gjs -->
 		<dependency>
-			<groupId>org.gjs.java.common</groupId>
+			<groupId>org.gjsoft.java.common</groupId>
 			<artifactId>gjs-java-common-base</artifactId>
 		</dependency>
 		
 		<!-- Apache -->
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
@@ -207,7 +148,7 @@
 		
 		<!-- Test -->
         <dependency>
-            <groupId>org.gjs.java.common</groupId>
+            <groupId>org.gjsoft.java.common</groupId>
             <artifactId>gjs-java-common-test-base</artifactId>
         </dependency>
 	    <dependency>

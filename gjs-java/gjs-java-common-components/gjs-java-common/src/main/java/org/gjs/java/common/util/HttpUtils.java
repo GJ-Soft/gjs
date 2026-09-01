@@ -12,22 +12,6 @@ import org.gjs.java.common.constant.CommonBaseConstants;
  *
  * Funciones auxiliares de formateo de diferentes tipos de datos.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

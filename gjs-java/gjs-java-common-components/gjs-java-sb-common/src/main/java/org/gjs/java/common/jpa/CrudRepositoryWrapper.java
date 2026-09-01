@@ -20,22 +20,6 @@ import lombok.Setter;
  *
  * Clase que permite recubrir un repositorio con operativa CRUD.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @param <T>  la clase de objetos
  * @param <ID> la clase del identificador o clave primaria del objeto
  *

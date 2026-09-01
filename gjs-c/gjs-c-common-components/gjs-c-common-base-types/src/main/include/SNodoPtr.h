@@ -29,7 +29,7 @@ struct SNodoPtr
 
 
 
-SNodoPtr * SNodBinCrearMem ( int iTamDatos );
+SNodoPtr * SNodPtrCrearMem ( int iTamDatos );
 SNodoPtr * SNodPtrCrear ( byte * p_byDatos, int iLiberar );
 
 void SNodPtrDestruir ( SNodoPtr ** p_p_nodpObj, int iDestruirHijos );

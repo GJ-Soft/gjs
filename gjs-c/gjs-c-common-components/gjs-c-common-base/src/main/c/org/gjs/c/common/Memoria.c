@@ -22,32 +22,9 @@
 
 
 
-// Limites por defecto (solo se consideran casos 64 y 32 bits):
-#if ( defined ( A64 ) )
-#	if ( defined ( WIN ) )
-
-#		define MEM_LIM_INF							0x0000000000010000ULL
-#		define MEM_LIM_SUP							0x00007FFFFFFFFFFFULL
-												  
-#	else 
-
-#		define MEM_LIM_INF							0x0000000000010000ULL
-#		define MEM_LIM_SUP							0x00007FFFFFFFFFFFULL
-
-#	endif
-#else 
-#	if ( defined ( WIN ) )
-
-#		define MEM_LIM_INF							0x00010000UL
-#		define MEM_LIM_SUP							0x7FFFFFFFUL
-												  
-#	else 
-
-#		define MEM_LIM_INF							0x00010000UL
-#		define MEM_LIM_SUP							0x7FFFFFFFUL
-
-#	endif
-#endif	
+// MEM_LIM_INF y MEM_LIM_SUP estan ahora en Memoria.h, junto a ES_VALIDO, que es
+// quien los usa. Aqui estaban duplicados: las ramas WIN y no-WIN de cada
+// arquitectura tenian los mismos valores.	
 
 
 
@@ -160,6 +137,10 @@ int MemRedimensionar ( void ** p_p_vBloque, int iNumBytes )
 #  if ( defined ( WIN ) )
 	HANDLE  hMem;
 #  endif
+#  if ( defined ( MODO_DEPURACION ) )
+	void *	p_vBloqueViejo;
+	int		iNumBytesViejo;
+#  endif
 
 	iRes = 0;
 	if ( ( iNumBytes > 0 ) && ES_VALIDO ( p_p_vBloque ) )
@@ -184,16 +165,30 @@ int MemRedimensionar ( void ** p_p_vBloque, int iNumBytes )
 			hMem = GetProcessHeap ();
 			if ( hMem != NULL )
 			{
-				*p_p_vBloque = (void *) HeapReAlloc ( hMem, HEAP_ZERO_MEMORY, p_vBloque, iNumBytes );
-				if ( ES_VALIDO ( *p_p_vBloque ) )
+#			  if ( defined ( MODO_DEPURACION ) )
+				/* El tamano del bloque viejo hay que preguntarlo antes de
+				   reasignar: despues ya no existe. */
+				p_vBloqueViejo = p_vBloque;
+				iNumBytesViejo = HeapSize ( hMem, 0, (LPVOID) p_vBloque );
+#			  endif
+				p_vBloque = (void *) HeapReAlloc ( hMem, HEAP_ZERO_MEMORY, p_vBloque, iNumBytes );
+				if ( ES_VALIDO ( p_vBloque ) )
 				{
+					*p_p_vBloque = p_vBloque;
 					iRes = 1;
 #				  if ( defined ( MODO_DEPURACION ) )
+					/* Una reasignacion es una liberacion mas una reserva. Si no
+					   se da de baja el bloque viejo, la cuenta de InfoMemoria se
+					   desvia con cada redimension. */
+					_MemBloqueLiberado ( p_vBloqueViejo, (unsigned long) iNumBytesViejo );
 					_MemBloqueReservado ( *p_p_vBloque, (unsigned long) iNumBytes );
 #				  endif
 				}
 				else
 				{
+					/* HeapReAlloc ha fallado: el bloque original sigue siendo
+					   valido y *p_p_vBloque se deja intacto para no perder la
+					   referencia. */
 					if ( HeapValidate ( hMem, 0, NULL ) == FALSE )
 					{
 						// Error grave por heap del proceso corrupto:
@@ -211,12 +206,22 @@ int MemRedimensionar ( void ** p_p_vBloque, int iNumBytes )
 				ERROR_ESTABLECER ( ERR_MEMORIA_INVALIDA );
 			}
 #	  else
+#		  if ( defined ( MODO_DEPURACION ) )
+			/* El tamano del bloque viejo hay que preguntarlo antes de
+			   reasignar: despues ya no existe. */
+			p_vBloqueViejo = p_vBloque;
+			iNumBytesViejo = malloc_usable_size ( p_vBloque );
+#		  endif
 			p_vBloque = (void *) realloc ( p_vBloque, iNumBytes );
 			if ( ES_VALIDO ( p_vBloque ) )
 			{
 				*p_p_vBloque = p_vBloque;
 				iRes = 1;
 #			  if ( defined ( MODO_DEPURACION ) )
+				/* Una reasignacion es una liberacion mas una reserva. Si no se
+				   da de baja el bloque viejo, la cuenta de InfoMemoria se desvia
+				   con cada redimension. */
+				_MemBloqueLiberado ( p_vBloqueViejo, (unsigned long) iNumBytesViejo );
 				_MemBloqueReservado ( *p_p_vBloque, (unsigned long) iNumBytes );
 #			  endif
 			}
@@ -448,27 +453,11 @@ int MemEsValida ( void * p_vDireccion )
 {
 	int	iRes;
 
+	/* El control de rango que antes se hacia aqui esta ahora dentro de
+	   ES_VALIDO, en Memoria.h, para que lo aprovechen todos los llamantes. */
 	if ( ES_VALIDO ( p_vDireccion ) )
 	{
-		if ( ( (uintptr_t) p_vDireccion >= (uintptr_t) MEM_LIM_INF ) && ( (uintptr_t)  p_vDireccion <= (uintptr_t) MEM_LIM_SUP ) )
-		{
-#	  if ( defined ( VC ) )
-			if ( IsBadReadPtr ( p_vDireccion, sizeof ( unsigned int ) ) == 0 )
-			{
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
-#	  else
-			iRes = 1;
-#	  endif
-		}
-		else
-		{
-			iRes = 0;
-		}
+		iRes = 1;
 	}
 	else
 	{

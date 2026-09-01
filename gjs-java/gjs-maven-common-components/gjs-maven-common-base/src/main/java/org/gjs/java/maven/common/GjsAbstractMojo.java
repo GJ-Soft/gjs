@@ -15,6 +15,14 @@ import org.gjs.java.maven.exception.GjsMavenException;
 
 /**
  * The Class GjsAbstractMojo.
+ *
+ * Base de los goals de la libreria Gjs. Recoge los errores del goal, decide entre fallar el build o avisar segun
+ * getFail(), y deja a la subclase solo lo suyo.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
  */
 public abstract class GjsAbstractMojo extends AbstractMojo {
 
@@ -60,10 +68,18 @@ public abstract class GjsAbstractMojo extends AbstractMojo {
 	 * @param log           the log
 	 *
 	 * @param errorMessages the error messages
+	 *
+	 * @throws Exception cualquier fallo del goal; se recoge en execute() y se trata segun getFail()
 	 */
-	protected abstract void goalExecution(Log log, List<String> errorMessages) throws Throwable;
+	protected abstract void goalExecution(Log log, List<String> errorMessages) throws Exception;
 
-	protected void additionalInitializations() {
+	/**
+	 * Preparativos previos al goal. Se ejecuta dentro del control de errores de execute(), asi que lo que falle aqui se
+	 * trata igual que lo que falle en el propio goal.
+	 *
+	 * @throws Exception cualquier fallo en la preparacion
+	 */
+	protected void additionalInitializations() throws Exception {
 	}
 
 	/**
@@ -84,23 +100,24 @@ public abstract class GjsAbstractMojo extends AbstractMojo {
 		// PluginParameterExpressionEvaluator evaluator = new
 		// PluginParameterExpressionEvaluator(session, mojoExecution);
 
-		additionalInitializations();
-
 		List<String> errorMessages = new ArrayList<>();
+		Exception cause = null;
 		log.info(String.format("Executing %s.", getGoalName()));
 		try {
+			additionalInitializations();
 			goalExecution(log, errorMessages);
-		} catch (Throwable e) {
-			String goalMessage = createGoalMessage(e);
-			errorMessages.add(goalMessage);
+		} catch (Exception e) {
+			cause = e;
+			errorMessages.add(createGoalMessage(e));
 		}
 		if (errorMessages.isEmpty()) {
 			log.info(String.format("%s executed ok.", getGoalName()));
 		} else {
 			log.info(String.format("%s executed with errors.", getGoalName()));
 			if (getFail()) {
-				throw new GjsMavenException(
-						System.lineSeparator() + String.join(System.lineSeparator(), errorMessages));
+				String message = System.lineSeparator() + String.join(System.lineSeparator(), errorMessages);
+				// Con la causa enganchada, mvn -e y mvn -X pueden imprimir la traza real.
+				throw cause == null ? new GjsMavenException(message) : new GjsMavenException(message, cause);
 			} else {
 				errorMessages.forEach(log::warn);
 			}
@@ -115,7 +132,7 @@ public abstract class GjsAbstractMojo extends AbstractMojo {
 	 */
 	protected String createGoalMessage(Throwable e) {
 		StringBuilder result = new StringBuilder();
-		result.append("Goal ").append(getGoalName()).append(": ");
+		result.append("Goal ").append(getGoalName()).append(": ").append(e.getClass().getName());
 		if (e.getMessage() != null) {
 			result.append(" with message:").append(System.lineSeparator()).append(e.getMessage());
 		} else {

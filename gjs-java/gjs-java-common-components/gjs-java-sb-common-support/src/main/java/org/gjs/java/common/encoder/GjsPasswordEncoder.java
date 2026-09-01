@@ -17,22 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  *
  * Implementa el PasswordEncoder oficial de Semilla.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

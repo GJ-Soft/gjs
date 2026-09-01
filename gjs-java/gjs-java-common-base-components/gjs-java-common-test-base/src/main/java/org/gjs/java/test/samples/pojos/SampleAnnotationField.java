@@ -7,6 +7,18 @@ import org.gjs.java.test.samples.annotation.SampleAnnotation;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleAnnotationField.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Pojo con una anotación a nivel de campo.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class SampleAnnotationField implements Comparable<Object> {

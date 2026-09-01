@@ -9,6 +9,18 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleWithPKEntity.
+ *
+ * Clase de datos de ejemplo de la librería Gjs
+ *
+ * Entidad de ejemplo con clave primaria compuesta, la de SamplePK, y referencia a las dos entidades que enlaza.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 @Entity

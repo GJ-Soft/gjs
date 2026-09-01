@@ -5,6 +5,18 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleDerivedPojo.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Pojo derivado de SamplePojo, para las pruebas de herencia.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class SampleDerivedPojo extends SamplePojo {

@@ -4,68 +4,67 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.gjs</groupId>
+        <groupId>org.gjsoft</groupId>
         <artifactId>gjs-parent</artifactId>
         <version>1.0.0-RC.2</version>
         <relativePath>../../../gjs-parent</relativePath>
     </parent>
 
-    <groupId>org.gjs.java</groupId>
+    <groupId>org.gjsoft.java</groupId>
     <artifactId>gjs-java-base-parent</artifactId>
     <packaging>pom</packaging>
 
     <name>GJS common Java base parent</name>
     <description>
-		Maven Java general parent pom.
-		.
-		.	Pom organization:
-		.
-		.	gjs-parent
-		.		└── gjs-java-base-parent
-		.			   ├── gjs-java-parent
-		.			   │        └── gjs-java-artifact-parent
-		.			   │                   └── gjs-java-web-parent
-		.			   │                              ├── gjs-java-war-parent
-		.			   │                              ├── gjs-java-springboot-parent
-		.			   │                              │           ├── gjs-java-sb-artifact-parent
-		.			   │                              │           └── gjs-java-sb-war-parent
-		.			   │                              └── gjs-java-sb-test-parent
-		.			   ├── gjs-java-maven-base-parent
-		.			   │        └── gjs-java-maven-parent
-		.			   └── gjs-java-test-base-parent
-		.						└── gjs-java-test-parent
-		.
-		Maven quality, format and documentation commads provided:
-			* mvn checkstyle:check 
-			* mvn javadoc:javadoc		Generate javadoc site
-			* mvn javadoc:fix   		Add or correct Javadoc in src/main/java
-			* mvn javadoc:test-fix 		Add or correct Javadoc in src/test/java
-			* mvn formatter:format	-Dformatter.file=file-eclipse-likely.xml
-			* mvn fmt:format -Dcode.line.max.length=100	
-			* mvn spotless:apply   		Apply changes (organize imports)
-			* mvn spotless:check   		Just check
-			* mvn pmd:check
-			* mvn spotbugs:spotbugs
-			* mvn spotbugs:check		
-			
-		Profiles:
-			* java                  			         : It is automatically setted
-			* attach-sources                	         : Generates sources jar
-			* attach-javadoc	            	         : Generates javadoc jar
-			* jdk-8 | jdk-11 | jdk-17 | jdk-21 | jdk-25  : Java version
+	Maven Java general parent pom.
+	.
+	.	Pom organization:
+	.
+	.	gjs-parent
+	.		└── gjs-java-base-parent
+	.			   ├── gjs-java-parent
+	.			   │        └── gjs-java-artifact-parent
+	.			   │                   └── gjs-java-web-parent
+	.			   │                              ├── gjs-java-war-parent
+	.			   │                              ├── gjs-java-springboot-parent
+	.			   │                              │           ├── gjs-java-sb-artifact-parent
+	.			   │                              │           └── gjs-java-sb-war-parent
+	.			   │                              └── gjs-java-sb-test-parent
+	.			   ├── gjs-java-maven-base-parent
+	.			   │        └── gjs-java-maven-parent
+	.			   └── gjs-java-test-base-parent
+	.						└── gjs-java-test-parent
+	.
+	Maven quality, format and documentation commads provided:
+		* mvn checkstyle:check 
+		* mvn javadoc:javadoc		Generate javadoc site
+		* mvn javadoc:jar   		Generate javadoc jar (o el perfil attach-javadoc)
+		* mvn formatter:format	-Dformatter.file=file-eclipse-likely.xml
+		* mvn fmt:format -Dcode.line.max.length=100	
+		* mvn spotless:apply   		Apply changes (organize imports)
+		* mvn spotless:check   		Just check
+		* mvn pmd:check
+		* mvn spotbugs:spotbugs
+		* mvn spotbugs:check		
+		
+	Profiles:
+		* java                  			         : It is automatically setted
+		* attach-sources                	         : Generates sources jar
+		* attach-javadoc	            	         : Generates javadoc jar
+		* jdk-8 | jdk-11 | jdk-17 | jdk-21 | jdk-25  : Java version
 
-		
-		Needs profile cpp with special properties in settings.xml file: 
-		
-			* jdk25Dir : Directory of Java Jdk-25 installation
-		
-			* jdk21Dir : Directory of Java Jdk-21 installation
-		
-			* jdk17Dir : Directory of Java Jdk-17installation
-		
-			* jdk11Dir : Directory of Java Jdk-11 installation
-		
-			* jdk8Dir  : Directory of Java Jdk-8 installation
+	
+	Needs profile cpp with special properties in settings.xml file: 
+	
+		* jdk25Dir : Directory of Java Jdk-25 installation
+	
+		* jdk21Dir : Directory of Java Jdk-21 installation
+	
+		* jdk17Dir : Directory of Java Jdk-17installation
+	
+		* jdk11Dir : Directory of Java Jdk-11 installation
+	
+		* jdk8Dir  : Directory of Java Jdk-8 installation
 	</description>
 
     <properties>
@@ -93,35 +92,36 @@
 		<!-- Additional Maven plugins -->
 		<formatter-maven-plugin.version>2.29.0</formatter-maven-plugin.version>
 		<fmt-maven-plugin.version>2.29</fmt-maven-plugin.version>
-		<spotless-maven-plugin.version>2.43.0</spotless-maven-plugin.version>
-		<spotbugs-maven-plugin.version>4.9.8.2</spotbugs-maven-plugin.version>
+		<spotless-maven-plugin.version>3.10.0</spotless-maven-plugin.version>
+		<spotbugs-maven-plugin.version>4.10.4.0</spotbugs-maven-plugin.version>
 		
         <!-- Apache reporting plugins -->
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <maven-jxr-plugin.version>3.6.0</maven-jxr-plugin.version>
 
         <!-- Apache commons-->
-        <apache.commons-io.version>2.19.0</apache.commons-io.version>
-        <apache.commons-collections.version>4.4</apache.commons-collections.version>
-        <apache.commons-text.version>1.14.0</apache.commons-text.version>
+        <apache.commons-io.version>2.22.0</apache.commons-io.version>
+        <apache.commons-collections.version>4.6.0</apache.commons-collections.version>
+        <apache.commons-text.version>1.15.0</apache.commons-text.version>
+        <apache.commons-lang3.version>3.20.0</apache.commons-lang3.version>
 
         <!-- Xml serialization -->
         <xerces.version>2.12.2</xerces.version>
-        <xml-apis.version>1.0.b2</xml-apis.version>
+        <xml-apis.version>1.4.01</xml-apis.version>
 
         <!-- Logging -->
-        <slf4j.version>2.0.17</slf4j.version>
-        <logback.version>1.5.21</logback.version>
+        <slf4j.version>2.0.18</slf4j.version>
+        <logback.version>1.6.3</logback.version>
 
         <!-- JUnit -->
-        <junit-jupiter.version>6.0.1</junit-jupiter.version>
+        <junit-jupiter.version>6.1.3</junit-jupiter.version>
         <junit.version>${junit-jupiter.version}</junit.version>
 
         <!-- Mockito -->
-        <mockito.version>5.20.0</mockito.version>
+        <mockito.version>5.23.0</mockito.version>
 
         <!-- Lombok -->
-        <lombok.version>1.18.42</lombok.version>
+        <lombok.version>1.18.46</lombok.version>
 		
 		<!-- Fomatter -->
 		<code.line.max.length>120</code.line.max.length>
@@ -131,7 +131,7 @@
         <dependencies>
             <!-- Gjs -->
             <dependency>
-                <groupId>org.gjs.java.common</groupId>
+                <groupId>org.gjsoft.java.common</groupId>
                 <artifactId>gjs-java-common-base</artifactId>
                 <version>${gjs-java-common-base.version}</version>
             </dependency>
@@ -151,6 +151,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
                 <version>${apache.commons-text.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache.commons-lang3.version}</version>
             </dependency>
 
             <!-- Xml serialization -->
@@ -192,7 +197,7 @@
 
             <!-- Test -->
             <dependency>
-                <groupId>org.gjs.java.common</groupId>
+                <groupId>org.gjsoft.java.common</groupId>
                 <artifactId>gjs-java-common-test-base</artifactId>
                 <version>${gjs-java-common-test-base.version}</version>
                 <scope>test</scope>
@@ -363,20 +368,26 @@
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>${maven-checkstyle-plugin.version}</version>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>attach-javadocs</id>
-							<goals>
-								<goal>javadoc</goal>
-								<goal>fix</goal>         <!-- Añade/Arregla Javadoc en código -->
-								<goal>test-fix</goal>    <!-- Opcional para tests -->
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
+				<!--
+				  Aqui habia una ejecucion 'attach-javadocs' con los goals javadoc + fix
+				  + test-fix. Se ha retirado por dos motivos:
+
+				    1. 'fix' y 'test-fix' existen hasta maven-javadoc-plugin 3.11.2 y
+				       desaparecieron en la 3.12.0, que es la version que fija
+				       gjs-parent. Cualquier hijo que declarase el plugin fallaba con
+				       "Could not find goal 'fix'". Eso incluia al propio perfil
+				       attach-javadoc de este pom, cuya ejecucion se llama igual y por
+				       tanto fusionaba sus goals con los de aqui: mvn -Pattach-javadoc
+				       no llegaba a generar ningun jar.
+				    2. 'fix' no verifica nada: reescribe los .java insertando Javadoc
+				       de plantilla. Un build que modifica los fuentes es peligroso, y
+				       durante un release lo es mas, porque maven-release-plugin
+				       etiqueta y sube lo que quede en disco.
+
+				  La version del plugin la sigue gestionando el pluginManagement de
+				  gjs-parent, y el perfil attach-javadoc de mas abajo es el que adjunta
+				  el jar (goal 'jar', fase package).
+				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
@@ -592,6 +603,9 @@
         </profile>		
         <profile>
             <id>jdk-25</id>
+            <activation>
+				<jdk>[22,)</jdk>
+            </activation>
             <properties>
                 <!-- Compilation config -->
                 <java.version>25</java.version>
@@ -602,7 +616,7 @@
         <profile>
             <id>jdk-21</id>
             <activation>
-				<jdk>[21.0,)</jdk>
+				<jdk>[18,22)</jdk>
             </activation>
             <properties>
                 <!-- Compilation config -->
@@ -614,7 +628,7 @@
         <profile>
             <id>jdk-17</id>
             <activation>
-				<jdk>[27.0,21.0)</jdk>
+				<jdk>[12,18)</jdk>
             </activation>
             <properties>
                 <!-- Compilation config -->
@@ -626,7 +640,7 @@
         <profile>
             <id>jdk-11</id>
             <activation>
-				<jdk>[11.0,17.0)</jdk>
+				<jdk>[9,12)</jdk>
             </activation>
             <properties>
                 <!-- Compilation config -->
@@ -638,7 +652,7 @@
         <profile>
             <id>jdk-8</id>
             <activation>
-				<jdk>[8.0,11.0)</jdk>
+				<jdk>(,9)</jdk>
             </activation>
             <properties>
                 <!-- Compilation config -->

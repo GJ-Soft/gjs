@@ -12,9 +12,11 @@
 /******************************************************************************/
 
 #include "SNombre.h"
-#include "Cadenas.h"
+#include "ValidacionCadenas.h"
 
 #include "TextoConfig.h"
+
+
 
 
 SNombre * SNomCrearDef ()
@@ -31,7 +33,11 @@ SNombre * SNomCrear ( int iMaxTam )
 		p_nomObj = (SNombre *) MemReservar ( sizeof ( SNombre ) );
 		if ( ES_VALIDO ( p_nomObj ) )
 		{
-			p_nomObj->p_cadValor = SCadCrear ( iMaxTam );
+			p_nomObj->p_campValor = SCampCrear ( SCadEsNombreValido, iMaxTam );
+			if ( ES_NULO ( p_nomObj->p_campValor ) )
+			{
+				SNomDestruir ( &p_nomObj );
+			}
 		}
 	}
 	else
@@ -41,6 +47,53 @@ SNombre * SNomCrear ( int iMaxTam )
 	return ( p_nomObj );
 }
 
+SNombre * SNomCrearValor ( SCadena * p_cadValor )
+{
+	SNombre * p_nomObj;
+	
+	p_nomObj = SNomCrear ( SCadLongitud ( p_cadValor ) );
+	if ( SNomEstablecer ( p_nomObj, p_cadValor ) == 0 )
+	{
+		SNomDestruir ( &p_nomObj );
+	}
+	return ( p_nomObj );
+}
+
+SNombre * SNomCrearValorLit ( const char * p_cValor )
+{
+	SNombre * p_nomObj;
+	
+	p_nomObj = SNomCrear ( CadLongitud ( p_cValor ) );
+	if ( SNomEstablecerLit ( p_nomObj, p_cValor ) == 0 )
+	{
+		SNomDestruir ( &p_nomObj );
+	}
+	return ( p_nomObj );
+}
+
+SNombre * SNomCrearValorExt ( SCadena * p_cadValor, int iMaxTam )
+{
+	SNombre * p_nomObj;
+	
+	p_nomObj = SNomCrear ( iMaxTam );
+	if ( SNomEstablecer ( p_nomObj, p_cadValor ) == 0 )
+	{
+		SNomDestruir ( &p_nomObj );
+	}
+	return ( p_nomObj );
+}
+
+SNombre * SNomCrearValorLitExt ( const char * p_cValor, int iMaxTam )
+{
+	SNombre * p_nomObj;
+	
+	p_nomObj = SNomCrear ( iMaxTam );
+	if ( SNomEstablecerLit ( p_nomObj, p_cValor ) == 0 )
+	{
+		SNomDestruir ( &p_nomObj );
+	}
+	return ( p_nomObj );
+}
 
 void SNomDestruir ( SNombre ** p_p_nomObj )
 {
@@ -52,7 +105,7 @@ void SNomDestruir ( SNombre ** p_p_nomObj )
 
 		if ( ES_VALIDO ( p_nomObj ) )
 		{
-			SCadDestruir ( &(p_nomObj->p_cadValor) );
+			SCampDestruir ( &(p_nomObj->p_campValor) );
 			MemLiberar ( (void **) p_p_nomObj );
 		}
 	}
@@ -64,7 +117,7 @@ int SNomMaxLongitud ( SNombre * p_nomObj )
 
 	if ( ES_VALIDO ( p_nomObj ) )
 	{
-		iRes = SCadMaxTam ( p_nomObj->p_cadValor );
+		iRes = SCampMaxLongitud ( p_nomObj->p_campValor );
 	}
 	else
 	{
@@ -79,7 +132,7 @@ int SNomLongitud ( SNombre * p_nomObj )
 
 	if ( ES_VALIDO ( p_nomObj ) )
 	{
-		iRes = SCadLongitud ( p_nomObj->p_cadValor );
+		iRes = SCampLongitud ( p_nomObj->p_campValor );
 	}
 	else
 	{
@@ -88,14 +141,13 @@ int SNomLongitud ( SNombre * p_nomObj )
 	return ( iRes );
 }
 
-
 SCadena * SNomValor ( SNombre * p_nomObj )
 {
 	SCadena * p_cadRes;
 
 	if ( ES_VALIDO ( p_nomObj ) )
 	{
-		p_cadRes = p_nomObj->p_cadValor;
+		p_cadRes = SCampValor ( p_nomObj->p_campValor );
 	}
 	else
 	{
@@ -104,13 +156,13 @@ SCadena * SNomValor ( SNombre * p_nomObj )
 	return ( p_cadRes );
 }
 
-const char * SNomValorConstante ( SNombre * p_nomObj )
+const char * SNomValorLit ( SNombre * p_nomObj )
 {
 	const char * p_cRes;
 
 	if ( ES_VALIDO ( p_nomObj ) )
 	{
-		p_cRes = SCadValorConstante ( p_nomObj->p_cadValor );
+		p_cRes = SCampValorLit ( p_nomObj->p_campValor );
 	}
 	else
 	{
@@ -119,30 +171,13 @@ const char * SNomValorConstante ( SNombre * p_nomObj )
 	return ( p_cRes );
 }
 
-int SNomEstablecerCad ( SNombre * p_nomObj, SCadena * p_cadValor )
+int SNomEsValido ( SNombre * p_nomObj )
 {
 	int iRes;
 
-	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cadValor ) )
+	if ( ES_VALIDO ( p_nomObj ) )
 	{
-		if ( SCadLongitud ( p_cadValor ) <= SCadMaxTam ( p_nomObj->p_cadValor ) )
-		{
-			if ( ( SCadContieneBlancos ( p_cadValor ) == 0 ) &&
-				 ( SCadContieneCaracteresNoImprimibles ( p_cadValor ) == 0 ) &&
-				 ( SCadContieneCaracteresNoEstandar ( p_cadValor ) == 0 ) &&
-				 ( ASCIIEsLetra ( SCadCaracter ( p_cadValor, 0 ) ) == 1 ) )
-			{
-				iRes = SCadCopiar ( p_nomObj->p_cadValor, p_cadValor );
-			}
-			else
-			{
-				iRes = 0;
-			}
-		}
-		else
-		{
-			iRes = 0;
-		}
+		iRes = SCampEsValido ( p_nomObj->p_campValor );
 	}
 	else
 	{
@@ -151,30 +186,28 @@ int SNomEstablecerCad ( SNombre * p_nomObj, SCadena * p_cadValor )
 	return ( iRes );
 }
 
-int SNomEstablecer ( SNombre * p_nomObj, const char * p_cValor )
+int SNomEstablecer ( SNombre * p_nomObj, SCadena * p_cadValor )
 {
 	int iRes;
 
-	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cValor ) )
+	if ( ES_VALIDO ( p_nomObj ) )
 	{
-		if ( CadLongitud ( p_cValor ) <= SCadMaxTam ( p_nomObj->p_cadValor ) )
-		{
-			if ( ( CadContieneBlancos ( p_cValor ) == 0 ) &&
-				 ( CadContieneCaracteresNoImprimibles ( p_cValor ) == 0 ) &&
-				 ( CadContieneCaracteresNoEstandar ( p_cValor ) == 0 ) &&
-				 ( ASCIIEsLetra ( p_cValor [ 0 ] ) == 1 ) )
-			{
-				iRes = SCadCopiarLiteral ( p_nomObj->p_cadValor, p_cValor );
-			}
-			else
-			{
-				iRes = 0;
-			}
-		}
-		else
-		{
-			iRes = 0;
-		}
+		iRes = SCampEstablecer ( p_nomObj->p_campValor, p_cadValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEstablecerLit ( SNombre * p_nomObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) )
+	{
+		iRes = SCampEstablecerLit ( p_nomObj->p_campValor, p_cValor );
 	}
 	else
 	{
@@ -189,7 +222,7 @@ int SNomLimpiar ( SNombre * p_nomObj )
 
 	if ( ES_VALIDO ( p_nomObj ) )
 	{
-		iRes = SCadVaciar ( p_nomObj->p_cadValor );
+		iRes = SCampLimpiar ( p_nomObj->p_campValor );
 	}
 	else
 	{
@@ -204,7 +237,7 @@ int SNomEstaVacio ( SNombre * p_nomObj )
 
 	if ( ES_VALIDO ( p_nomObj ) )
 	{
-		iRes = SCadEstaVacia ( p_nomObj->p_cadValor );
+		iRes = SCampEstaVacio ( p_nomObj->p_campValor );
 	}
 	else
 	{
@@ -212,6 +245,530 @@ int SNomEstaVacio ( SNombre * p_nomObj )
 	}
 	return ( iRes );
 }
+
+int SNomAsignar ( SNombre * p_nomObj, SNombre * p_nomValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) )
+	{
+		iRes = SNomEstablecer ( p_nomObj, SNomValor ( p_nomValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomAsignarCampo ( SNombre * p_nomObj, SCampo * p_campValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) )
+	{
+		iRes = SNomEstablecer ( p_nomObj, SCampValor ( p_campValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+SNombre * SNomDuplicar ( SNombre * p_nomObj )
+{
+	SNombre * p_nomCopia;
+
+	if ( ES_VALIDO ( p_nomObj ) )
+	{
+		p_nomCopia = SNomCrearValorExt ( SNomValor ( p_nomObj ), SNomMaxLongitud ( p_nomObj ) );
+	}
+	else
+	{
+		p_nomCopia = NULL;
+	}
+	return ( p_nomCopia );
+}
+
+int SNomEsIgual ( SNombre * p_nomObj, SNombre * p_nomValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_nomValor ) )
+	{
+		iRes = SNomEsIgualCad ( p_nomObj, SNomValor ( p_nomValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMenor ( SNombre * p_nomObj, SNombre * p_nomValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_nomValor ) )
+	{
+		iRes = SNomEsMenorCad ( p_nomObj, SNomValor ( p_nomValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMayor ( SNombre * p_nomObj, SNombre * p_nomValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_nomValor ) )
+	{
+		iRes = SNomEsMayorCad ( p_nomObj, SNomValor ( p_nomValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsDiferente ( SNombre * p_nomObj, SNombre * p_nomValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_nomValor ) )
+	{
+		iRes = SNomEsDiferenteCad ( p_nomObj, SNomValor ( p_nomValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMenorIg ( SNombre * p_nomObj, SNombre * p_nomValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_nomValor ) )
+	{
+		iRes = SNomEsMenorIgCad ( p_nomObj, SNomValor ( p_nomValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMayorIg ( SNombre * p_nomObj, SNombre * p_nomValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_nomValor ) )
+	{
+		iRes = SNomEsMayorIgCad ( p_nomObj, SNomValor ( p_nomValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsIgualCampo ( SNombre * p_nomObj, SCampo * p_campValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_campValor ) )
+	{
+		iRes = SNomEsIgualCad ( p_nomObj, SCampValor ( p_campValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMenorCampo ( SNombre * p_nomObj, SCampo * p_campValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_campValor ) )
+	{
+		iRes = SNomEsMenorCad ( p_nomObj, SCampValor ( p_campValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMayorCampo ( SNombre * p_nomObj, SCampo * p_campValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_campValor ) )
+	{
+		iRes = SNomEsMayorCad ( p_nomObj, SCampValor ( p_campValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsDiferenteCampo ( SNombre * p_nomObj, SCampo * p_campValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_campValor ) )
+	{
+		iRes = SNomEsDiferenteCad ( p_nomObj, SCampValor ( p_campValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMenorIgCampo ( SNombre * p_nomObj, SCampo * p_campValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_campValor ) )
+	{
+		iRes = SNomEsMenorIgCad ( p_nomObj, SCampValor ( p_campValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMayorIgCampo ( SNombre * p_nomObj, SCampo * p_campValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_campValor ) )
+	{
+		iRes = SNomEsMayorIgCad ( p_nomObj, SCampValor ( p_campValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsIgualCad ( SNombre * p_nomObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadEsIgual ( SNomValor ( p_nomObj ), p_cadValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMenorCad ( SNombre * p_nomObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadEsMenor ( SNomValor ( p_nomObj ), p_cadValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMayorCad ( SNombre * p_nomObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadEsMayor ( SNomValor ( p_nomObj ), p_cadValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsDiferenteCad ( SNombre * p_nomObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadEsDiferente ( SNomValor ( p_nomObj ), p_cadValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMenorIgCad ( SNombre * p_nomObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadEsMenorIg ( SNomValor ( p_nomObj ), p_cadValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMayorIgCad ( SNombre * p_nomObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadEsMayorIg ( SNomValor ( p_nomObj ), p_cadValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsIgualLit ( SNombre * p_nomObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		iRes = SCadEsIgualLiteral ( SNomValor ( p_nomObj ), p_cValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMenorLit ( SNombre * p_nomObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		iRes = SCadEsMenorLiteral ( SNomValor ( p_nomObj ), p_cValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMayorLit ( SNombre * p_nomObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		iRes = SCadEsMayorLiteral ( SNomValor ( p_nomObj ), p_cValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsDiferenteLit ( SNombre * p_nomObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		iRes = SCadEsDiferenteLiteral ( SNomValor ( p_nomObj ), p_cValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMenorIgLit ( SNombre * p_nomObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		iRes = SCadEsMenorIgLiteral ( SNomValor ( p_nomObj ), p_cValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomEsMayorIgLit ( SNombre * p_nomObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		iRes = SCadEsMayorIgLiteral ( SNomValor ( p_nomObj ), p_cValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SNomComparar ( SNombre * p_nomObj, SNombre * p_nomValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_nomValor ) )
+	{
+		iRes = SNomCompararCad ( p_nomObj, SNomValor ( p_nomValor ) );
+	}
+	else if ( ES_VALIDO ( p_nomObj ) )
+	{
+		iRes = COMP_MAYOR;
+	}
+	else if ( ES_VALIDO ( p_nomValor ) )
+	{
+		iRes = COMP_MENOR;
+	}
+	else
+	{
+		iRes = COMP_IGUAL;
+	}
+	return ( iRes );
+}
+
+int SNomCompararCampo ( SNombre * p_nomObj, SCampo * p_campValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_campValor ) )
+	{
+		iRes = SCampComparar ( p_nomObj->p_campValor, p_campValor );
+	}
+	else if ( ES_VALIDO ( p_nomObj ) )
+	{
+		iRes = COMP_MAYOR;
+	}
+	else if ( ES_VALIDO ( p_campValor ) )
+	{
+		iRes = COMP_MENOR;
+	}
+	else
+	{
+		iRes = COMP_IGUAL;
+	}
+	return ( iRes );
+}
+
+int SNomCompararCad ( SNombre * p_nomObj, SCadena * p_cadValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = SCadComparar ( SNomValor ( p_nomObj ), p_cadValor );
+	}
+	else if ( ES_VALIDO ( p_nomObj ) )
+	{
+		iRes = COMP_MAYOR;
+	}
+	else if ( ES_VALIDO ( p_cadValor ) )
+	{
+		iRes = COMP_MENOR;
+	}
+	else
+	{
+		iRes = COMP_IGUAL;
+	}
+	return ( iRes );
+}
+
+int SNomCompararLit ( SNombre * p_nomObj, const char * p_cValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) && ES_VALIDO ( p_cValor ) )
+	{
+		iRes = SCadCompararLiteral ( SNomValor ( p_nomObj ), p_cValor );
+	}
+	else if ( ES_VALIDO ( p_nomObj ) )
+	{
+		iRes = COMP_MAYOR;
+	}
+	else if ( ES_VALIDO ( p_cValor ) )
+	{
+		iRes = COMP_MENOR;
+	}
+	else
+	{
+		iRes = COMP_IGUAL;
+	}
+	return ( iRes );
+}
+
+int SNomCumpleExpReg ( SNombre * p_nomObj, const char * p_cExpReg )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_nomObj ) )
+	{
+		iRes = SCadCumpleExpReg ( SNomValor ( p_nomObj ), p_cExpReg );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+unsigned int SNomHash ( SNombre * p_nomObj )
+{
+	unsigned int uiRes = 0;
+
+	if ( ES_VALIDO ( p_nomObj ) )
+	{
+		uiRes = HashCadena ( SNomValorLit ( p_nomObj ) );
+	}
+	return ( uiRes );
+}
+
 
 
 

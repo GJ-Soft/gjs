@@ -14,11 +14,11 @@ todo el stack.
 
 | Dato         | Valor                              |
 | ------------ | ---------------------------------- |
-| `groupId`    | `org.gjs.c.common`                 |
+| `groupId`    | `org.gjsoft.c.common`                 |
 | `artifactId` | `gjs-c-common`                     |
 | `version`    | `1.0.0-RC.2`                       |
 | `packaging`  | `nar` (biblioteca **shared**)      |
-| Pom padre    | `org.gjs.c:gjs-c-lib-parent`       |
+| Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`       |
 | Depende de   | **los diez componentes del stack** |
 
 `base`, `base-types`, `text`, `calculation`, `time`, `types`, `io`, `system`,

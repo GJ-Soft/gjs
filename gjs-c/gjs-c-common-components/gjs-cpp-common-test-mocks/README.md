@@ -13,11 +13,11 @@ componente más pequeño del stack C++ y el último de la cadena.
 
 | Dato         | Valor                                                              |
 | ------------ | ------------------------------------------------------------------ |
-| `groupId`    | `org.gjs.c.common`                                                 |
+| `groupId`    | `org.gjsoft.c.common`                                                 |
 | `artifactId` | `gjs-cpp-common-test-mocks`                                        |
 | `version`    | `1.0.0-RC.2`                                                       |
 | `packaging`  | `nar` (biblioteca **shared**)                                      |
-| Pom padre    | `org.gjs.c:gjs-cpp-lib-parent`                                     |
+| Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent`                                     |
 | Depende de   | `gjs-cpp-common-log`, `…-io`, `…-types`, **`gjs-cpp-common-test`** |
 
 Es **el único componente del stack que depende de

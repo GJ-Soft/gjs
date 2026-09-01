@@ -110,7 +110,7 @@ char * SisNombreProceso ()
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
 		hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, GetCurrentProcessId () );
-		if ( ES_VALIDO ( hProceso ) )
+		if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 		{
 			if ( EnumProcessModules ( hProceso, &hModulo, sizeof ( hModulo ), (LPDWORD) &dwTam ) != 0 )
 			{
@@ -162,7 +162,7 @@ char * SisRutaEjecutable ()
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
 		hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, GetCurrentProcessId () );
-		if ( ES_VALIDO ( hProceso ) )
+		if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 		{
 			iTam = (int) GetModuleFileNameEx ( hProceso, NULL, (LPTSTR) SBufDireccion ( p_bufDatos ), (DWORD) SBufTam ( p_bufDatos ) );
 			if ( iTam > 0 )
@@ -447,7 +447,7 @@ int SisNumSubprocesos ()
 			while ( iFinal == 0 )
 			{
 				hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) pe32Datos.th32ProcessID );
-				if ( ES_VALIDO ( hProceso ) )
+				if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 				{
 					iRes = iRes + 1;
 					CloseHandle ( hProceso );
@@ -673,7 +673,7 @@ int SisExisteSubproceso ( long lPID )
 	HANDLE hProceso;
 	// Se supone que sobre los subprocesos se tiene acceso total:
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( ES_VALIDO ( hProceso ) )
+	if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 	{
 		iRes = 1;
 		CloseHandle ( hProceso );
@@ -699,7 +699,7 @@ int SisFinalizarSubproceso ( long lPID )
 		HANDLE hProceso;
 		
 		hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-		if ( ES_VALIDO ( hProceso ) )
+		if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 		{
 			if ( TerminateProcess ( hProceso, 0 ) != 0 )
 			{
@@ -787,7 +787,7 @@ thread SisCrearHilo ( PTR_FUNCION_HILO p_funCodigo, void * p_vParam, int iSuspen
 			dwFlags = 0;
 		}
 		hHilo = CreateThread ( (LPSECURITY_ATTRIBUTES)NULL, (DWORD)0, (LPTHREAD_START_ROUTINE)p_funCodigo, lpParam, dwFlags, (LPDWORD)&dwId ); 
-		if ( ES_VALIDO ( hHilo ) ) 
+		if ( ES_MANEJADOR_VALIDO ( hHilo ) ) 
 		{
 			thHilo = (thread) dwId;
 		}
@@ -852,7 +852,7 @@ int SisExisteHilo ( thread thTID )
 		}
 	}
 #  endif
-	if ( ES_VALIDO ( hHilo ) )
+	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
 	{
 		iRes = 1;
 		CloseHandle ( hHilo );
@@ -912,7 +912,7 @@ int SisSuspenderHilo ( thread thTID )
 		hHilo = NULL;
 	}
 #  endif
-	if ( ES_VALIDO ( hHilo ) )
+	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
 	{
 		if ( SuspendThread ( hHilo ) != 0xFFFFFFFF )
 		{
@@ -968,7 +968,7 @@ int SisReanudarHilo ( thread thTID )
 		hHilo = NULL;
 	}
 #  endif
-	if ( ES_VALIDO ( hHilo ) )
+	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
 	{
 		if ( ResumeThread ( hHilo ) != 0xFFFFFFFF )
 		{
@@ -990,6 +990,159 @@ int SisReanudarHilo ( thread thTID )
 # endif
 	return ( iRes );
 }
+
+# if ( !defined ( WIN ) )
+/* Cierto si la cadena no esta vacia y es toda digitos. Se usa para quedarse con
+   las entradas de /proc que son un PID, descartando las demas ( cpuinfo, self,
+   registry... ). */
+static int _SisEsSoloDigitos ( const char * p_cNombre )
+{
+	int			iRes;
+	int			iPos;
+
+	iRes = 0;
+	if ( ES_VALIDO ( p_cNombre ) )
+	{
+		iPos = 0;
+		iRes = 1;
+		while ( ( p_cNombre [ iPos ] != '\0' ) && ( iRes == 1 ) )
+		{
+			if ( ( p_cNombre [ iPos ] < '0' ) || ( p_cNombre [ iPos ] > '9' ) )
+			{
+				iRes = 0;
+			}
+			iPos = iPos + 1;
+		}
+		if ( iPos == 0 )
+		{
+			iRes = 0;
+		}
+	}
+	return ( iRes );
+}
+# endif
+
+
+SListaEnterosLargos * SisListaProcesos ()
+{
+	SListaEnterosLargos * p_lislPID = NULL;
+# if ( defined ( WIN ) )
+	int						iError;
+#  if ( defined ( _EnumProcesses ) )
+ 	SBuffer	*				p_bufDatos;
+	DWORD					dwTamOcupado;
+	int						iNumProcesos;
+    int						iProceso;
+	DWORD *					p_dwProcesos;
+#  else
+	HANDLE					hSnapshot;
+	PROCESSENTRY32			pe32Datos;
+	int						iFinal;
+#  endif
+# else
+	DIR *					p_dirProc;
+	struct dirent *			p_entDato;
+# endif
+
+# if ( defined ( WIN ) )
+#  if ( defined ( _EnumProcesses ) )
+ 	p_bufDatos = SBufCrear ( SIS_SO_MAX_TAM_BUFFER );
+	if ( ES_VALIDO ( p_bufDatos ) )
+	{
+		p_lislPID = SLisEntlCrear ();
+		p_dwProcesos = (DWORD *) SBufDireccion ( p_bufDatos );
+		// PENDIENTE: Puede ser que sea necesario más tamaño (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
+		if ( EnumProcesses ( p_dwProcesos, (DWORD) SBufTam ( p_bufDatos ), &dwTamOcupado ) != 0 )
+		{
+			iNumProcesos = dwTamOcupado / sizeof ( DWORD );
+			iProceso = 0;
+			iError = 0;
+			while ( ( iProceso < iNumProcesos ) && ( iError == 0 ) )
+			{
+				if ( p_dwProcesos [ iProceso ] != 0 )
+				{
+					SLisEntlInsertar ( p_lislPID, ( long ) p_dwProcesos [iProceso] );
+				}
+				iProceso = iProceso + 1;
+			}
+		}
+		else
+		{
+			p_lislPID = NULL;
+		}
+		SBufDestruir ( &p_bufDatos );
+	}
+	else
+	{
+		p_lislPID = NULL;
+	}
+#  else
+	hSnapshot = CreateToolhelp32Snapshot ( TH32CS_SNAPPROCESS, 0 );
+	if ( hSnapshot != INVALID_HANDLE_VALUE )
+	{
+		p_lislPID = SLisEntlCrear ();
+		pe32Datos.dwSize = sizeof ( PROCESSENTRY32 );
+		if ( Process32First ( hSnapshot, &pe32Datos ) != 0 )
+		{
+			iError = 0;
+			iFinal = 0;
+			// Process32First ya ha dejado el primer proceso en pe32Datos: se
+			// mete y solo despues se pide el siguiente. Al reves se perdia uno.
+			while ( ( iFinal == 0 ) && ( iError == 0 ) )
+			{
+				SLisEntlInsertar ( p_lislPID, ( long ) pe32Datos.th32ProcessID );
+				if ( Process32Next ( hSnapshot, &pe32Datos ) == 0 )
+				{
+					iFinal = 1;
+				}
+			}
+		}
+		else
+		{
+			p_lislPID = NULL;
+		}
+		CloseHandle ( hSnapshot );
+	}
+	else
+	{
+		p_lislPID = NULL;
+	}
+
+#  endif
+# else
+	/* En POSIX la lista de procesos se saca recorriendo /proc: cada
+	   subdirectorio cuyo nombre es todo digitos es un PID.
+
+	   LIMITACION EN CYGWIN: el /proc de Cygwin solo lista los procesos Cygwin,
+	   no los del sistema. Compilando en modo Cygwin POSIX ( el de por defecto )
+	   esta funcion devuelve un punado de PID, mientras que en estilo Windows
+	   devuelve todos los del equipo. En Linux nativo si es la lista completa. */
+	p_dirProc = opendir ( "/proc" );
+	if ( ES_VALIDO ( p_dirProc ) )
+	{
+		p_lislPID = SLisEntlCrear ();
+		if ( ES_VALIDO ( p_lislPID ) )
+		{
+			p_entDato = readdir ( p_dirProc );
+			while ( ES_VALIDO ( p_entDato ) )
+			{
+				if ( _SisEsSoloDigitos ( p_entDato->d_name ) )
+				{
+					SLisEntlInsertar ( p_lislPID, atol ( p_entDato->d_name ) );
+				}
+				p_entDato = readdir ( p_dirProc );
+			}
+		}
+		closedir ( p_dirProc );
+	}
+	else
+	{
+		p_lislPID = NULL;
+	}
+# endif
+	return ( p_lislPID );
+}
+
 
 int SisFinalizarHilo ( thread thTID )
 {
@@ -1026,7 +1179,7 @@ int SisFinalizarHilo ( thread thTID )
 		hHilo = NULL;
 	}
 #  endif
-	if ( ES_VALIDO ( hHilo ) )
+	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
 	{
 		if ( TerminateThread ( hHilo, 0 ) != -1 )
 		{
@@ -1110,7 +1263,7 @@ int SisHiloPrioridad ( thread thTID )
 		hHilo = NULL;
 	}
 #  endif
-	if ( ES_VALIDO ( hHilo ) )
+	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
 	{
 		iRes = GetThreadPriority ( hHilo );
 		if ( iRes == THREAD_PRIORITY_ERROR_RETURN )
@@ -1231,9 +1384,11 @@ DWORD WINAPI ThreadProc(
 			TerminateThread ( hHilo, 0 );
 		}
 */
+
+
 int SisNumProcesos ()
 {
-	int			iRes;		
+	int			iRes;
 # if ( defined ( WIN ) )
 #  if ( defined ( _EnumProcesses ) )
  	SBuffer	*	p_bufDatos;
@@ -1241,7 +1396,15 @@ int SisNumProcesos ()
 	int			iNumProcesos;
     int			iProceso;
 	DWORD *		p_dwProcesos;
+#  endif
+# else
+	DIR *			p_dirProc;
+	struct dirent *	p_entDato;
+# endif
 
+	iRes = 0;
+# if ( defined ( WIN ) )
+#  if ( defined ( _EnumProcesses ) )
  	p_bufDatos = SBufCrear ( SIS_SO_MAX_TAM_BUFFER );
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
@@ -1305,194 +1468,26 @@ int SisNumProcesos ()
 	}
 #  endif
 # else
-	// PENDIENTE:
-	iRes = 0;
+	/* Mismo recorrido de /proc que SisListaProcesos, contando en vez de
+	   guardando. La misma LIMITACION EN CYGWIN: solo cuenta procesos Cygwin. */
+	p_dirProc = opendir ( "/proc" );
+	if ( ES_VALIDO ( p_dirProc ) )
+	{
+		p_entDato = readdir ( p_dirProc );
+		while ( ES_VALIDO ( p_entDato ) )
+		{
+			if ( _SisEsSoloDigitos ( p_entDato->d_name ) )
+			{
+				iRes = iRes + 1;
+			}
+			p_entDato = readdir ( p_dirProc );
+		}
+		closedir ( p_dirProc );
+	}
 # endif
 	return ( iRes );
 }
 
-#if ( defined ( CPP ) )
-CListaEnterosLargos * SisListaProcesos ()
-{
-	CListaEnterosLargos *	p_lislPID;
-	int						iError;
-
-# if ( defined ( WIN ) )
-#  if ( defined ( _EnumProcesses ) )
- 	SBuffer	*				p_bufDatos;
-	DWORD					dwTamOcupado;
-	int						iNumProcesos;
-    int						iProceso;
-	DWORD *					p_dwProcesos;
-#  else
-	HANDLE					hSnapshot;
-	PROCESSENTRY32			pe32Datos;
-	int						iFinal;
-#  endif
-# else
-#  if ( defined ( DEVPS_GET_NUM_PIDS ) )
-	int						iDesc;
-	int						iNumProcesos;
-    int						iProceso;
-#  endif
-# endif
-
-# if ( defined ( WIN ) )
-#  if ( defined ( _EnumProcesses ) )
- 	p_bufDatos = SBufCrear ( SIS_SO_MAX_TAM_BUFFER );
-	if ( ES_VALIDO ( p_bufDatos ) )
-	{
-		p_dwProcesos = (DWORD *) SBufDireccion ( p_bufDatos );
-		// PENDIENTE: Puede ser que sea necesario más tamaño (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
-		if ( EnumProcesses( p_dwProcesos, (DWORD) SBufTam ( p_bufDatos ), &dwTamOcupado ) != 0 )
-		{
-			iNumProcesos = dwTamOcupado / sizeof ( DWORD );
-			iProceso = 0;
-			iError = 0;
-			p_lislPID = new CListaEnterosLargos ();
-			if ( ES_VALIDO ( p_lislPID ) )
-			{
-				while ( ( iProceso < iNumProcesos ) && ( iError == 0 ) )
-				{
-					if ( p_dwProcesos [ iProceso ] != 0 )
-					{
-						if ( p_lislPID->Insertar ( (long) p_dwProcesos [ iProceso ] ) == 0 )
-						{
-							iError = 1;
-						}
-					}
-					iProceso = iProceso + 1;
-				}
-				if ( iError == 1 )
-				{
-					DESTRUIR ( CListaEnterosLargos, p_lislPID );
-				}
-			}
-		}
-		else
-		{
-			p_lislPID = NULL;
-		}
-		SBufDestruir ( &p_bufDatos );
-	}
-	else
-	{
-		p_lislPID = NULL;
-	}
-#  else
-	hSnapshot = CreateToolhelp32Snapshot ( TH32CS_SNAPPROCESS, 0 );
-	if ( hSnapshot != INVALID_HANDLE_VALUE )
-	{
-		p_lislPID = new CListaEnterosLargos ();
-		if ( ES_VALIDO ( p_lislPID ) )
-		{
-			pe32Datos.dwSize = sizeof ( PROCESSENTRY32 );
-			if ( Process32First ( hSnapshot, &pe32Datos ) != 0 )
-			{
-				iFinal = 0;
-				iError = 0;
-				while ( ( iFinal == 0 ) && ( iError == 0 ) )
-				{
-					if ( Process32Next ( hSnapshot, &pe32Datos ) != 0 )
-					{
-						if ( p_lislPID->Insertar ( (long) pe32Datos.th32ProcessID ) == 0 )
-						{
-							iError = 1;
-						}
-					}
-					else
-					{
-						iFinal = 1;
-					}
-				}
-				if ( iError == 1 )
-				{
-					DESTRUIR ( CListaEnterosLargos, p_lislPID );
-				}
-			}
-			else
-			{
-				p_lislPID = NULL;
-			}
-		}
-		else
-		{
-			p_lislPID = NULL;
-		}
-		CloseHandle ( hSnapshot );
-	}
-	else
-	{
-		p_lislPID = NULL;
-	}
-
-#  endif
-# else
-#  if ( defined ( DEVPS_GET_NUM_PIDS ) )
-	iDesc = open ( _DISP_TMP_INFO_PROCESOS, O_RDONLY );
-	if ( iDesc >= 0 ) 
-	{
-		if ( ioctl ( iDesc, DEVPS_GET_NUM_PIDS, &iNumProcesos ) >= 0 ) 
-		{
-			p_pidLista = (pid_t *) MemReservar ( iNumProcesos + 10, sizeof ( pid_t ) );
-			if ( ES_VALIDO ( p_pidLista ) )
-			{
-				p_pidLista [ 0 ] = iNumProcesos + 10;
-
-				if ( ioctl ( iDesc, DEVPS_GET_PID_LIST, p_pidLista ) >= 0 )
-				{
-					iProceso = 0;
-					iError = 0;
-					p_lislPID = new CListaEnterosLargos ();
-					if ( ES_VALIDO ( p_lislPID ) )
-					{
-						while ( ( iProceso < iNumProcesos + 10 ) && ( iError == 0 ) )
-						{
-							if ( p_pidLista [ iProceso ] >= 0 )
-							{
-								if ( p_lislPID->Insertar ( (long) p_pidLista [ iProceso ] ) == 0 )
-								{
-									iError = 1;
-								}
-							}
-							iProceso = iProceso + 1;
-						}
-						if ( iError == 1 )
-						{
-							DESTRUIR ( CListaEnterosLargos, p_lislPID );
-						}
-					}
-				}
-				else
-				{
-					p_lislPID = NULL;
-				}
-				MemLiberar ( (void **) &p_pidLista );
-			}
-			else
-			{
-				p_lislPID = NULL;
-			}
-		}
-		else
-		{
-			p_lislPID = NULL;
-		}
-		close ( iDesc );
-	}
-	else
-	{
-		p_lislPID = NULL;
-	}
-#  else
-	// PENDIENTE:
-	iError = 0;
-	p_lislPID = NULL;
-#  endif
-# endif
-	return ( p_lislPID );
-}
-#endif
 
 int SisExisteProceso ( long lPID )
 {
@@ -1502,7 +1497,7 @@ int SisExisteProceso ( long lPID )
 	HANDLE hProceso;
 	// Se supone que sobre los subprocesos se tiene acceso total:
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( ES_VALIDO ( hProceso ) )
+	if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 	{
 		iRes = 1;
 		CloseHandle ( hProceso );
@@ -1527,7 +1522,7 @@ int SisProcesoEnEjecucion ( long lPID )
 	DWORD	dwCodFin;
 
 	hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION, FALSE, (DWORD) lPID );
-	if ( ES_VALIDO ( hProceso ) )
+	if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 	{
 		if ( GetExitCodeProcess ( hProceso, (LPDWORD) &dwCodFin ) != 0 )
 		{
@@ -1722,7 +1717,7 @@ unsigned long SisProcesoTiempoCPU ( long lPID )
 	HANDLE		hProceso;
 		
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( ES_VALIDO ( hProceso ) )
+	if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 	{
 		if ( GetProcessTimes ( hProceso, &ftimCreacion, &ftimFinalizacion, 
 								&ftimSistema, &ftimUsuario ) != 0 )
@@ -1783,7 +1778,7 @@ unsigned long SisProcesoTiempoCPUModoNucleo ( long lPID )
 	HANDLE		hProceso;
 		
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( ES_VALIDO ( hProceso ) )
+	if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 	{
 		if ( GetProcessTimes ( hProceso, &ftimCreacion, &ftimFinalizacion, 
 								&ftimSistema, &ftimUsuario ) != 0 )
@@ -1830,7 +1825,7 @@ unsigned long SisProcesoTiempoCPUModoUsuario ( long lPID )
 	HANDLE		hProceso;
 		
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( ES_VALIDO ( hProceso ) )
+	if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 	{
 		if ( GetProcessTimes ( hProceso, &ftimCreacion, &ftimFinalizacion, 
 								&ftimSistema, &ftimUsuario ) != 0 )
@@ -1879,7 +1874,7 @@ llong SisProcesoHoraCreacion ( long lPID )
 	HANDLE		hProceso;
 		
 	hProceso = OpenProcess ( PROCESS_QUERY_INFORMATION, FALSE, (DWORD) lPID );
-	if ( ES_VALIDO ( hProceso ) )
+	if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 	{
 		if ( GetProcessTimes ( hProceso, &ftimCreacion, &ftimFinalizacion, 
 								&ftimSistema, &ftimUsuario ) != 0 )
@@ -1924,7 +1919,7 @@ unsigned long SisProcesoHoraCreacion ( long lPID )
 	HANDLE		hProceso;
 		
 	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( ES_VALIDO ( hProceso ) )
+	if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 	{
 		if ( GetProcessTimes ( hProceso, &ftimCreacion, &ftimFinalizacion, 
 								&ftimSistema, &ftimUsuario ) != 0 )
@@ -1968,7 +1963,7 @@ int SisFinalizarProceso ( long lPID )
 		HANDLE hProceso;
 		
 		hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-		if ( ES_VALIDO ( hProceso ) )
+		if ( ES_MANEJADOR_VALIDO ( hProceso ) )
 		{
 			if ( TerminateProcess ( hProceso, 0 ) != 0 )
 			{
@@ -2063,7 +2058,7 @@ void * _HiloVigilarPadre ( void * p_arg )
         if ( ES_NULO ( hPadre ) || ( WaitForSingleObject ( hPadre, 0 ) == WAIT_OBJECT_0 ) )
 		{
             /* El padre ha muerto, el hijo se autotermina */
-            if ( ES_VALIDO ( hPadre ) ) 
+            if ( ES_MANEJADOR_VALIDO ( hPadre ) ) 
 			{
 				CloseHandle(hPadre);
 			}

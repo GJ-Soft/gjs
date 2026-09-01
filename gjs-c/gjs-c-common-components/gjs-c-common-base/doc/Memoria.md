@@ -4,7 +4,7 @@
 | ------------ | --------------------------------------- |
 | Cabecera     | `src/main/include/Memoria.h`            |
 | Fuente       | `src/main/c/org/gjs/c/common/Memoria.c` |
-| Prefijo      | `Mem`, `ES_`                            |
+| Prefijo      | `Mem`, `MEM_`, `ES_`                    |
 | Incluido por | `Base.h`                                |
 | Test         | `MemoriaTest.c` → `TestMemoria()`       |
 
@@ -22,23 +22,57 @@ puntero del llamante al liberar y (d) contabilizar los bloques en modo depuraci�
 ([InfoMemoria](InfoMemoria.md)).
 
 También define los macros `ES_VALIDO` / `ES_NULO`, que son el idioma de
-validación de punteros usado en todo el proyecto.
+validación de punteros usado en todo el proyecto, y `ES_MANEJADOR_VALIDO` /
+`ES_MANEJADOR_NULO`, su equivalente para los manejadores del sistema en Windows.
 
 ## API
 
 ### Macros de validación
 
-| Macro                | Descripción                            |
-| -------------------- | -------------------------------------- |
-| `ES_VALIDO( p_Obj )` | Cierto si el puntero es utilizable.    |
-| `ES_NULO( p_Obj )`   | Cierto si el puntero no es utilizable. |
+| Macro                         | Descripción                                                              |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| `MEM_EN_RANGO( p_Obj )`       | Cierto si el valor cae en el espacio de direcciones de la aplicación.    |
+| `ES_VALIDO( p_Obj )`          | Cierto si el puntero es utilizable. Hoy es exactamente `MEM_EN_RANGO`.   |
+| `ES_NULO( p_Obj )`            | El contrario de `ES_VALIDO`.                                             |
+| `ES_MANEJADOR_VALIDO( hObj )` | Manejador distinto de `NULL` y de `INVALID_HANDLE_VALUE`. Sólo con `WIN`. |
+| `ES_MANEJADOR_NULO( hObj )`   | El contrario. Sólo con `WIN`.                                            |
 
-Con `GNU` (el caso normal) equivalen a `p_Obj != NULL` y `p_Obj == NULL`. Con
-`VC` sobre `WIN` comprueban además los patrones de memoria basura del *debug
-heap* de Visual C++ (`BAD_PTR`, `DELETED_PTR`, `BAD_STACK_PTR`,
-`MEM_DIN_LIBERADA`, `MEM_DIN_LIBERADA_2`), que la cabecera define como
-constantes documentadas (`0xCDCDCDCD`, `0xBAADF00D`, `0xDDDDDDDD`, `0xCCCCCCCC`,
-`0xFEEEFEEE`, `0xFDFDFDFD`).
+`ES_VALIDO` **ya no es `p_Obj != NULL`**. Comprueba que el *valor* del puntero
+caiga entre `MEM_LIM_INF` y `MEM_LIM_SUP`, los límites del espacio de
+direcciones utilizable por la aplicación:
+
+| Arquitectura | `MEM_LIM_INF` | `MEM_LIM_SUP`        |
+| ------------ | ------------- | -------------------- |
+| `A64`        | `0x10000`     | `0x00007FFFFFFFFFFF` |
+| resto        | `0x10000`     | `0x7FFFFFFF`         |
+
+Por debajo del inferior está la primera página, que ni Windows ni Linux
+(`mmap_min_addr` = `0x10000`) mapean nunca; por encima del superior están las
+direcciones no canónicas y el espacio del núcleo. No se consulta la memoria
+apuntada: son dos comparaciones, sin llamada ni *syscall*.
+
+A cambio se cazan tres cosas que el `!= NULL` anterior dejaba pasar:
+
+- El desplazamiento desde un nulo (`&p->campo` con `p` nulo), que quedaba como un
+  puntero pequeño pero distinto de `NULL`.
+- El puntero automático sin inicializar, **siempre que se compile con el perfil
+  `debug`**: es el que añade `-ftrivial-auto-var-init=pattern` (ver
+  `gjs-c-nar-parent`), que rellena toda variable automática sin inicializar con
+  `0xFEFEFEFEFEFEFEFE`, fuera de rango. Es el sustituto GNU de los rellenos
+  `0xCC` / `0xCD` del CRT de depuración de MSVC que miraba la versión anterior
+  de la macro. Sin ese perfil, un puntero sin inicializar puede caer dentro del
+  rango por casualidad y pasar el filtro.
+- La dirección no canónica y la del espacio de núcleo.
+
+Lo que sigue **sin** detectar es el puntero colgante: una dirección ya liberada
+está en rango, y `ES_VALIDO` la da por buena.
+
+> **No aplicar `ES_VALIDO` a manejadores del sistema** (`HANDLE`, `HKEY`,
+> `HINSTANCE`): el núcleo de Windows los reparte como valores pequeños (`0x4`,
+> `0x8`, `0x1C`…), por debajo de `MEM_LIM_INF`, así que los rechazaría todos.
+> Para ésos están `ES_MANEJADOR_VALIDO` / `ES_MANEJADOR_NULO`, que sólo existen
+> bajo `WIN` porque dependen de `INVALID_HANDLE_VALUE`. El propio `Memoria.c` no
+> los usa: comprueba su manejador de *heap* con un `hMem != NULL` directo.
 
 ### Reserva y liberación
 
@@ -89,6 +123,26 @@ darse en `WIN`.
 `MemReservarVector` y `MemReservarTabla` son envoltorios sobre `MemReservar` que
 multiplican los factores; **no comprueban desbordamiento** de la multiplicación.
 
+### `MemRedimensionar`
+
+Toma un **puntero a puntero**. Si el bloque de entrada es `ES_NULO`, delega en
+`MemReservar`. Si no, `HeapReAlloc` con `HEAP_ZERO_MEMORY` en `WIN` y `realloc`
+en el resto.
+
+Ante un fallo de la reasignación, las dos ramas dejan `*p_p_vBloque` **intacto**:
+el bloque original sigue siendo válido y no se pierde la referencia. El resultado
+de `HeapReAlloc` o de `realloc` se recoge primero en una variable local, y sólo
+se escribe sobre el puntero del llamante cuando es utilizable.
+
+Comparte con `MemReservar` la terminación del proceso si `HeapValidate` dice que
+el *heap* está corrupto.
+
+Bajo `MODO_DEPURACION` la reasignación se contabiliza como lo que es —una
+liberación más una reserva—, así que notifica a [InfoMemoria](InfoMemoria.md)
+`_MemBloqueLiberado` del bloque viejo y `_MemBloqueReservado` del nuevo. El
+tamaño del viejo se consulta **antes** de reasignar, con `HeapSize` o
+`malloc_usable_size`, porque después ya no existe.
+
 ### `MemLiberar`
 
 Toma un **puntero a puntero** y deja el puntero del llamante a `NULL`, lo que
@@ -99,20 +153,24 @@ char * p_cCad = CadDuplicar ( "algo" );
 MemLiberar ( (void **) &p_cCad );   /* p_cCad queda a NULL */
 ```
 
-Si el bloque ya era nulo o no supera `MemEsValida`, devuelve `1` (éxito) y anula
-el puntero igualmente: liberar dos veces es inocuo. Sólo devuelve `0` si el
-puntero a puntero es nulo, o si en Windows no se pudo obtener el *heap*.
+Si el bloque no supera `MemEsValida` —lo que ahora incluye cualquier valor fuera
+de rango, no sólo el nulo—, devuelve `1` (éxito) y anula el puntero igualmente:
+liberar dos veces es inocuo. Sólo devuelve `0` si el puntero a puntero no es
+válido, o si en Windows no se pudo obtener el *heap*.
 
-`MemLiberarUnicode` en `WIN` hace algo particular: antes de liberar recorre el
-bloque sobrescribiendo con `0x20` el byte alto de cada carácter mientras el bajo
-no sea nulo, y sólo entonces libera con `HeapFree`. Fuera de Windows delega
-directamente en `MemLiberar`.
+`MemLiberarUnicode` en `WIN` hace algo particular: si el segundo byte del bloque
+es `0x00` lo toma por Unicode, y antes de liberar lo recorre sobrescribiendo con
+`0x20` el byte alto de cada carácter mientras el bajo no sea nulo; sólo entonces
+libera con `HeapFree`. Si ese segundo byte no es nulo delega en `MemLiberar`, y
+fuera de Windows delega siempre.
 
 ### `MemEsValida`
 
-No consulta al sistema: comprueba que la dirección caiga en un rango fijo
-codificado en el `.c` (`MEM_LIM_INF` = `0x10000`, `MEM_LIM_SUP` = `0x7FFFFFFF` en
-32 bits, `0x00007FFFFFFFFFFF` en 64). Con `VC` añade `IsBadReadPtr`. Es una
+Desde que el control de rango vive en `ES_VALIDO`, esta función se ha quedado en
+un envoltorio de la macro: devuelve `1` si `ES_VALIDO ( p_vDireccion )` y `0` si
+no. Los `MEM_LIM_*` ya no están duplicados en el `.c` —estaban repetidos con los
+mismos valores en las ramas `WIN` y no-`WIN` de cada arquitectura— y la rama
+`IsBadReadPtr`, que sólo existía con `VC`, ha desaparecido. Sigue siendo una
 heurística de plausibilidad, no una garantía: descarta punteros claramente
 absurdos, no punteros colgantes.
 
@@ -120,15 +178,15 @@ absurdos, no punteros colgantes.
 
 Validan tamaño y punteros; si algo no cuadra anotan `ERR_PARAMETROS` y no hacen
 nada. En Windows usan `ZeroMemory`, `FillMemory` y `CopyMemory`; en el resto,
-`memset` y `memcpy`. `MemCopiar` valida el destino con `MemEsValida` pero el
-origen sólo con `ES_VALIDO`, y no comprueba solapamiento (es un `memcpy`, no un
-`memmove`).
+`memset` y `memcpy`. `MemCopiar` valida el destino con `ES_VALIDO` **y** con
+`MemEsValida` —que hoy son la misma comprobación— y el origen sólo con
+`ES_VALIDO`; no comprueba solapamiento (es un `memcpy`, no un `memmove`).
 
 ### `MemEsIgual`
 
 Comparación byte a byte con salida temprana. Con `iNumBytes == 0` devuelve `1`
-(dos bloques de longitud cero son iguales). Con punteros nulos devuelve `0` sin
-anotar error.
+(dos bloques de longitud cero son iguales). Si alguno de los punteros no supera
+`ES_VALIDO` devuelve `0` sin anotar error.
 
 ## Dependencias
 
@@ -149,10 +207,23 @@ necesita inicialización.
 
 ## Observaciones
 
+- `MemEsValida` y `ES_VALIDO` son ahora la misma comprobación, así que las
+  validaciones dobles que quedan en el fuente (`ES_VALIDO ( p_vDest ) && …
+  MemEsValida ( p_vDest ) == 1` en `MemCopiar`) son redundantes.
+- **La contabilidad de tamaños de [InfoMemoria](InfoMemoria.md) no cuadra del
+  todo, y no es cosa de un módulo.** Al reservar se suma el tamaño **pedido**
+  (`_MemBloqueReservado` recibe `iNumBytes`), pero al liberar se resta el tamaño
+  **utilizable** que devuelven `HeapSize` o `malloc_usable_size`, que es mayor o
+  igual. Cada pareja reserva-liberación deja el total un poco más bajo de lo que
+  toca; `_MemBloqueLiberado` lo corta en 0 para que no dé la vuelta. El recuento
+  de bloques sí es exacto: sólo se desvía el de bytes.
+- `MemLiberarUnicode`, cuando el puntero no supera `MemEsValida`, anota
+  `ERR_MEMORIA_INVALIDA` y aun así devuelve `1` (éxito). `MemLiberar`, en el
+  mismo caso, devuelve `1` sin anotar nada: los dos no se comportan igual.
 - `MemValorByte` ya no se declara: su implementación sigue comentada en
   `Memoria.c` porque la firma original (`unsigned long` como dirección) trunca
   punteros en Windows de 64 bits (LLP64). Si se quisiera recuperar, debería
-  tomar `uintptr_t`.
+  tomar `uintptr_t` — y además llama a `MemValida`, un nombre que no existe.
 - Bajo `MODO_DEPURACION` fuera de Windows se llama a `malloc_usable_size`, que
   requiere `<malloc.h>`; esa cabecera no se incluye en ningún punto de la
   compilación, así que ese modo no está probado en POSIX.

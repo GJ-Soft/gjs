@@ -35,6 +35,20 @@ siempre un `unsigned int`.
 | `unsigned int HashRealDoble ( double dVal )`                   | `double`                    |
 | `unsigned int HashCadena ( const char * p_cVal )`              | cadena terminada en cero    |
 
+### El tipo `PFUNHASH`
+
+La cabecera define además `PFUNHASH`, alias de `PFUNUINTPV`
+([Funciones.h](MODULOS.md#funcionesh)), es decir `unsigned int (*)(void *)`: el
+mismo retorno que toda la familia `Hash*`. Es el tipo del *callback* con el que
+una capa superior encargaría el hash de un contenido opaco. Como el argumento es
+genérico, asignarle una función que tome un puntero concreto —`HashCadena`, con
+su `const char *`— exige un cast en el punto de asignación.
+
+**Hoy no lo usa nadie.** Lo usaban los `SEnt*Hash` de `gjs-c-common-types`, que
+recibían uno para meter el contenido en el reparto; el parámetro se quitó porque
+el hash tiene que mirar lo mismo que `EsIgual`, y el contenido no forma parte de
+la identidad. El `typedef` se mantiene por si vuelve a hacer falta.
+
 ## Comportamiento
 
 ### El núcleo: `HashBinario`
@@ -77,6 +91,7 @@ siempre un valor entre 0 y 255.
 
 - [Memoria](Memoria.md) — sólo por `ES_VALIDO`.
 - [CadenasBase](CadenasBase.md) — `CadLongitud` en `HashCadena`.
+- `Funciones.h` — incluida por la cabecera, para `PFUNUINTPV`.
 
 ## Test
 

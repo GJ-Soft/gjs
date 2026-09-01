@@ -18,9 +18,16 @@ public class AbstractPojosTestTest extends BaseUnitTest<AbstractPojosTest> {
 			return logger;
 		}
 
+		/**
+		 * Paquete inexistente a proposito: lo que se comprueba aqui es que
+		 * AbstractPojosTest aguanta un paquete sin clases que validar, no las clases
+		 * en si. De eso se ocupan Pojos1Test y Pojos2Test sobre el paquete real.
+		 *
+		 * @return paquete vacio
+		 */
 		@Override
 		protected String getPojoPackage() {
-			return "es.mir.semill.util.test.pojos";
+			return "org.gjs.java.test.samples.vacio";
 		}
 
 		public void test() {

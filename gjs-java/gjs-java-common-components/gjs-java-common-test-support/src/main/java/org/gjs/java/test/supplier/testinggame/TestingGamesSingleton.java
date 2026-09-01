@@ -17,22 +17,6 @@ import org.slf4j.Logger;
  * Clase singleton pensada como proveedor global de juegos de pruebas para los
  * test. Se puede utilizar directamente a través de SemillaJunitExtension.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

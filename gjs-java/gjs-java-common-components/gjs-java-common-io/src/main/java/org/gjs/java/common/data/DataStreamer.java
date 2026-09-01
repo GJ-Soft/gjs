@@ -16,22 +16,6 @@ import org.slf4j.LoggerFactory;
  * InputStreamWriter/OutputStreamWriter para propiciar la entrada y salida
  * general de datos
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

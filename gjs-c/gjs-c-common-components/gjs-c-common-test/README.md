@@ -14,11 +14,11 @@ demás**.
 
 | Dato         | Valor                         |
 | ------------ | ----------------------------- |
-| `groupId`    | `org.gjs.c.common`            |
+| `groupId`    | `org.gjsoft.c.common`            |
 | `artifactId` | `gjs-c-common-test`           |
 | `version`    | `1.0.0-RC.2`                  |
 | `packaging`  | `nar` (biblioteca **shared**) |
-| Pom padre    | `org.gjs.c:gjs-c-lib-parent`  |
+| Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`  |
 | Depende de   | `gjs-c-common`                |
 
 Una sola dependencia, que arrastra el stack entero.

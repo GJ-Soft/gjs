@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.c</groupId>
+		<groupId>org.gjsoft.c</groupId>
 		<artifactId>gjs-c-nar-extension-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../gjs-c-nar-extension-parent</relativePath>
@@ -42,6 +42,12 @@
 		<!-- Optinal specific compilation options -->
 		<gjs.nar.locale.option>-DWITH_NO_C_LOCALE</gjs.nar.locale.option>
 		<gjs.nar.openssl.option>-DWITH_OPENSSL</gjs.nar.openssl.option>
+
+		<!-- Enganche para opciones extra del compilador. Se usa en los bloques
+		     <c> y <cpp> de mas abajo; vacio por defecto, lo rellenan los perfiles
+		     (ver el perfil 'debug'). Sin esta declaracion la propiedad quedaba
+		     sin resolver. -->
+		<gjs.compiler.additionalOptions></gjs.compiler.additionalOptions>
 		
 		<!-- Aggregational platform specific compilation options -->
 		<gjs.nar.platform.options>${platformOptions}</gjs.nar.platform.options>
@@ -76,16 +82,41 @@
 		<finalName.prefix.exe></finalName.prefix.exe>
 		<finalName.prefix></finalName.prefix>
 		<finalName>${finalName.prefix}${project.artifactId}-${project.version}</finalName>
-			
-		<!-- Ejecutables auxiliares -->
-		<gcovr>${cygwinDir}/usr/bin/gcovr</gcovr> 
+
+		<!-- CppChek values -->
+		<cpp.language.standard>${gjs.nar.language.standard}</cpp.language.standard>
+		<cpp.compiler>${gjs.nar.compiler}</cpp.compiler>
+		<cpp.compiler.language>${gjs.nar.compiler.language}</cpp.compiler.language>
+
+		<!-- GCovr values -->	
+		<!-- OJO: /usr/bin es un montaje virtual de Cygwin sobre /bin, no existe como
+		     directorio visto desde Windows. El fichero real esta en ${cygwinDir}/bin. -->
+		<cpp.gcovr>${cygwinDir}/bin/gcovr</cpp.gcovr>
+		<cpp.gcovr.dir>${gjs.nar.build.testDirectory}</cpp.gcovr.dir>
+		<cpp.gcovr.target>${gjs.nar.build.testReportsDirectory}</cpp.gcovr.target>
+		<cpp.gcovr.exe>Test${exeFinalExtension}</cpp.gcovr.exe>
+		<!-- Raiz de fuentes de gcovr (-r): los ficheros del informe se nombran
+		     relativos a ella, y ademas hace de filtro por defecto, con lo que deja
+		     fuera las cabeceras del sistema. No es el binario de test: gcovr no
+		     ejecuta nada, solo lee los .gcda/.gcno del directorio de trabajo. -->
+		<cpp.gcovr.root>${project.basedir}</cpp.gcovr.root>
+		<!-- gcovr es un script de Python (shebang #!/usr/bin/python3.9.exe), no un
+		     ejecutable: Ant lanza con CreateProcess, que no interpreta shebangs, asi
+		     que hay que invocarlo con su interprete. Tiene que ser el Python 3.9 de
+		     Cygwin, que es donde esta instalado el modulo gcovr; el de Windows no lo
+		     tiene. -->
+		<cpp.gcovr.python>${cygwinDir}/bin/python3.9.exe</cpp.gcovr.python>
+		<!-- Ese Python es POSIX: no reconoce C:\... ni C:/... como rutas absolutas y
+		     las concatena al directorio de trabajo. Todas las rutas que reciba se
+		     convierten antes con cygpath -u. -->
+		<cpp.gcovr.cygpath>${cygwinDir}/bin/cygpath.exe</cpp.gcovr.cygpath>
 	</properties>
 
 	<build>	
 		<pluginManagement>				
 			<plugins>
 				<plugin>
-					<groupId>org.gjs.maven.plugins</groupId>
+					<groupId>org.gjsoft.maven.plugins</groupId>
 					<artifactId>nar-maven-plugin</artifactId>
 					<configuration>
 						<os>${osName}</os>
@@ -205,7 +236,7 @@
 						
 						<tests>
 							<test>
-								<name>Test${exeFinalExtension}</name>
+								<name>Test</name>
 								<link>shared</link>
 								<args>
 									<arg>${test}</arg>
@@ -317,70 +348,29 @@
 
 	<profiles>
 		<profile>
-			<id>cobertura</id>
-			<!-- TODO compilar en un subdirectorio diferente y lanzar ejecucion de gcovr x -m despues de los test-->
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.gjs.maven.plugins</groupId>
-						<artifactId>nar-maven-plugin</artifactId>
-						<configuration>
-							<cpp>
-								<options combine.children="append">
-									<option>--coverage</option>
-									<!--	
-									<option>-fprofile-arcs</option>
-									<option>-ftest-coverage</option>
-									-->
-								</options>
-							</cpp>
-							<linker>
-								<options combine.children="append">
-									<option>-L${gcovLibDir}</option> 
-									<option>-lgcov</option> 
-								</options>
-								<testOptions combine.children="append">
-									<option>-L${gcovLibDir}</option> 
-									<option>-lgcov</option> 
-								</testOptions>
-							</linker>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>cobertura</id>
-								<phase>test</phase>
-								<configuration>
-									<target name="execute-gcovr">
-										<exec executable="${gcovr}" dir="${gjs.nar.build.testReporstDirectory}" failonerror="true">
-											<arg value="Test${exeFinalExtension}"/>
-										</exec>
-									</target>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
 			<id>debug</id>
             <properties>
                 <gjs.nar.optimization>none</gjs.nar.optimization>
-				<compilerExtraOptions>-g</compilerExtraOptions>
+				<!-- -g: la propiedad anterior era 'compilerExtraOptions', que no la
+				     leia nadie, asi que el -g no llegaba al compilador de C.
+				     -ftrivial-auto-var-init=pattern: rellena toda variable automatica
+				     sin inicializar; los punteros quedan en 0xFEFEFEFEFEFEFEFE, fuera
+				     del rango que acepta ES_VALIDO ( ver Memoria.h ). Es el sustituto
+				     GNU de los rellenos 0xCC / 0xCD del CRT de depuracion de MSVC.
+				     Comprobado con gcc 14.4 de Cygwin y de MinGW.
+				     La alternativa '=zero' deja los punteros a nulo: mas barata, y la
+				     detecta igual cualquier ES_VALIDO. -->
+				<gjs.compiler.additionalOptions>-g -ftrivial-auto-var-init=pattern</gjs.compiler.additionalOptions>
             </properties>
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.gjs.maven.plugins</groupId>
+						<groupId>org.gjsoft.maven.plugins</groupId>
 						<artifactId>nar-maven-plugin</artifactId>
 						<configuration>
+							<c combine.children="append">
+								<debug>true</debug>
+							</c>
 							<cpp combine.children="append">
 								<debug>true</debug>
 							</cpp>
@@ -400,6 +390,126 @@
             <properties>		
 				<gjs.nar.threads.option>-mthreads</gjs.nar.threads.option>
             </properties>
+		</profile>
+		<profile>
+			<id>cobertura</id>
+			<!-- TODO compilar en un subdirectorio diferente y lanzar ejecucion de gcovr x -m despues de los test-->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.gjsoft.maven.plugins</groupId>
+						<artifactId>nar-maven-plugin</artifactId>
+						<configuration>
+							<cpp>
+								<options combine.children="append">
+									<option>--coverage</option>
+									<!--	
+									<option>-fprofile-arcs</option>
+									<option>-ftest-coverage</option>
+									-->
+								</options>
+							</cpp>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>cobertura</id>
+								<phase>test</phase>
+								<configuration>
+									<target name="execute-gcovr">
+										<!-- Al estilo POSIX todas las rutas que va a ver el Python de Cygwin,
+										     la del propio script incluida. cygpath -u es idempotente: si la
+										     ruta ya viene en estilo POSIX, la deja igual. -->
+										<exec executable="${cpp.gcovr.cygpath}" outputproperty="cpp.gcovr.script.posix" failonerror="true">
+											<arg value="-u"/>
+											<arg value="${cpp.gcovr}"/>
+										</exec>
+										<exec executable="${cpp.gcovr.cygpath}" outputproperty="cpp.gcovr.root.posix" failonerror="true">
+											<arg value="-u"/>
+											<arg value="${cpp.gcovr.root}"/>
+										</exec>
+										<exec executable="${cpp.gcovr.cygpath}" outputproperty="cpp.gcovr.target.posix" failonerror="true">
+											<arg value="-u"/>
+											<arg value="${cpp.gcovr.target}"/>
+										</exec>
+										<mkdir dir="${cpp.gcovr.target}"/>
+										<exec executable="${cpp.gcovr.python}" dir="${cpp.gcovr.dir}" failonerror="true">
+											<arg value="${cpp.gcovr.script.posix}"/>
+											<arg value="-r"/>
+											<arg value="${cpp.gcovr.root.posix}"/>
+											<arg value="--html-details"/>
+											<arg value="-o${cpp.gcovr.target.posix}/coverage.html"/>
+										</exec>
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>eclipse</id>
+			<activation>
+				<property>
+					<name>m2e.version</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<!-- This plugin's configuration is used to store Eclipse m2e settings
+						 only. It has no influence on the Maven build itself. -->
+						<plugin>
+							<groupId>org.eclipse.m2e</groupId>
+							<artifactId>lifecycle-mapping</artifactId>
+							<version>1.0.0</version>
+							<configuration>
+								<lifecycleMappingMetadata>
+									<pluginExecutions combine.children="append">
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.gjsoft.maven.plugins</groupId>
+												<artifactId>nar-maven-plugin</artifactId>
+												<versionRange>[1.0.0,)</versionRange>
+												<goals>
+													<goal>nar-validate</goal>
+													<goal>nar-download</goal>
+													<goal>nar-unpack</goal>
+													<goal>nar-gnu-configure</goal>
+													<goal>nar-include-path</goal>
+													<goal>nar-system-generate</goal>
+													<goal>nar-resources</goal>
+													<goal>nar-gnu-resources</goal>
+													<goal>nar-gnu-make</goal>
+													<goal>nar-compile</goal>
+													<goal>nar-gnu-process</goal>
+													<goal>nar-process-libraries</goal>
+													<goal>nar-test-unpack</goal>
+													<goal>nar-test-include-path</goal>
+													<goal>nar-testCompile</goal>
+													<goal>nar-test</goal>
+													<goal>nar-prepare-package</goal>
+													<goal>nar-package</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+									</pluginExecutions>
+								</lifecycleMappingMetadata>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
 		</profile>
 	</profiles>	
 </project>

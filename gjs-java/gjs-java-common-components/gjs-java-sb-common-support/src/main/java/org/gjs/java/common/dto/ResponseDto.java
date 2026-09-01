@@ -9,7 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.gjs.java.common.constant.CommonBaseConstants;
-import org.gjs.java.common.contant.CommonErrors;
+import org.gjs.java.common.constant.CommonErrors;
 import org.gjs.java.common.util.StringUtils;
 import org.springframework.http.HttpStatus;
 
@@ -26,22 +26,6 @@ import lombok.Setter;
  * Clase de datos de la librería Gjs
  *
  * Clase DTO para representar una respuesta general de un método de la fachada.
- *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
  *
  * @author Gjs
  * @version 4.0.0

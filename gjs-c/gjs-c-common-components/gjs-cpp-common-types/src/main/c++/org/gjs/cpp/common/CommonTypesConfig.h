@@ -28,10 +28,6 @@
 #	include <termios.h>
 #endif
 
-#if ( defined ( VC ) )
-#	include <conio.h>
-#endif
-
 
 
 #define APL_MIN_TAM_COD_USUARIO				4

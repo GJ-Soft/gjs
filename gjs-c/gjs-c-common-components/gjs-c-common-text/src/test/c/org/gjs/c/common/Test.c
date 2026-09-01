@@ -2,16 +2,19 @@
 
 
 
-#define NUM_TESTS        15
+#define NUM_TESTS        18
 
 extern int TestCadenas ();
 extern int TestExpresionesRegulares ();
 extern int TestASCII ();
 extern int TestTiposCaracter ();
 extern int TestPatrones ();
+extern int TestValidacionCadenas ();
 extern int TestSCadena ();
 extern int TestSCadenaConv ();
 extern int TestSCadenaNumerica ();
+extern int TestSCampo ();
+extern int TestSCodigo ();
 extern int TestSDescripcion ();
 extern int TestSDivisor ();
 extern int TestSLinea ();
@@ -29,16 +32,19 @@ char ** testArrayInit ()
     p_p_cTests[ 2 ] = CadDuplicar ( "ASCIITest" );
     p_p_cTests[ 3 ] = CadDuplicar ( "TiposCaracterTest" );
     p_p_cTests[ 4 ] = CadDuplicar ( "PatronesTest" );
-    p_p_cTests[ 5 ] = CadDuplicar ( "SCadenaTest" );
-    p_p_cTests[ 6 ] = CadDuplicar ( "SCadenaConvTest" );
-    p_p_cTests[ 7 ] = CadDuplicar ( "SCadenaNumericaTest" );
-    p_p_cTests[ 8 ] = CadDuplicar ( "SDescripcionTest" );
-    p_p_cTests[ 9 ] = CadDuplicar ( "SDivisorTest" );
-    p_p_cTests[ 10 ] = CadDuplicar ( "SLineaTest" );
-    p_p_cTests[ 11 ] = CadDuplicar ( "SListaCadenasTest" );
-    p_p_cTests[ 12 ] = CadDuplicar ( "SNombreTest" );
-    p_p_cTests[ 13 ] = CadDuplicar ( "STextoTest" );
-    p_p_cTests[ 14 ] = CadDuplicar ( "STokenTest" );
+    p_p_cTests[ 5 ] = CadDuplicar ( "ValidacionCadenasTest" );
+    p_p_cTests[ 6 ] = CadDuplicar ( "SCadenaTest" );
+    p_p_cTests[ 7 ] = CadDuplicar ( "SCadenaConvTest" );
+    p_p_cTests[ 8 ] = CadDuplicar ( "SCadenaNumericaTest" );
+    p_p_cTests[ 9 ] = CadDuplicar ( "SCampoTest" );
+    p_p_cTests[ 10 ] = CadDuplicar ( "SCodigoTest" );
+    p_p_cTests[ 11 ] = CadDuplicar ( "SDescripcionTest" );
+    p_p_cTests[ 12 ] = CadDuplicar ( "SDivisorTest" );
+    p_p_cTests[ 13 ] = CadDuplicar ( "SLineaTest" );
+    p_p_cTests[ 14 ] = CadDuplicar ( "SListaCadenasTest" );
+    p_p_cTests[ 15 ] = CadDuplicar ( "SNombreTest" );
+    p_p_cTests[ 16 ] = CadDuplicar ( "STextoTest" );
+    p_p_cTests[ 17 ] = CadDuplicar ( "STokenTest" );
     return p_p_cTests;
 }
 
@@ -50,16 +56,19 @@ PFUNINTV * functionArrayInit ()
     p_fTests[ 2 ] = TestASCII;
     p_fTests[ 3 ] = TestTiposCaracter;
     p_fTests[ 4 ] = TestPatrones;
-    p_fTests[ 5 ] = TestSCadena;
-    p_fTests[ 6 ] = TestSCadenaConv;
-    p_fTests[ 7 ] = TestSCadenaNumerica;
-    p_fTests[ 8 ] = TestSDescripcion;
-    p_fTests[ 9 ] = TestSDivisor;
-    p_fTests[ 10 ] = TestSLinea;
-    p_fTests[ 11 ] = TestSListaCadenas;
-    p_fTests[ 12 ] = TestSNombre;
-    p_fTests[ 13 ] = TestSTexto;
-    p_fTests[ 14 ] = TestSToken;
+    p_fTests[ 5 ] = TestValidacionCadenas;
+    p_fTests[ 6 ] = TestSCadena;
+    p_fTests[ 7 ] = TestSCadenaConv;
+    p_fTests[ 8 ] = TestSCadenaNumerica;
+    p_fTests[ 9 ] = TestSCampo;
+    p_fTests[ 10 ] = TestSCodigo;
+    p_fTests[ 11 ] = TestSDescripcion;
+    p_fTests[ 12 ] = TestSDivisor;
+    p_fTests[ 13 ] = TestSLinea;
+    p_fTests[ 14 ] = TestSListaCadenas;
+    p_fTests[ 15 ] = TestSNombre;
+    p_fTests[ 16 ] = TestSTexto;
+    p_fTests[ 17 ] = TestSToken;
     return p_fTests;
 }
 

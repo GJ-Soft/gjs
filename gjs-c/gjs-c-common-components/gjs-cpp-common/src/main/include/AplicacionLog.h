@@ -19,8 +19,12 @@
 #define _ORG_GJS_C_CC_APLICACIONLOG_H
 
 
-#include <string>
+/* Log.h hace falta aqui porque las plantillas AplicLog* estan definidas en esta
+   cabecera y llaman a LogInfo / LogDepuracion / LogAviso / LogError. */
+#include <Log.h>
 
+#include <string>
+#include <utility>
 
 
 
@@ -48,10 +52,63 @@ bool AplicLogActivado ();
 int AplicLogNivel ();
 bool AplicLogEstablecerNivel ( int iNivel );
 
-template<typename... Args> bool AplicLogAnotar ( const std::string & sTexto, Args&&... argumentos );
-template<typename... Args> bool AplicLogAnotarDepuracion ( const std::string & sTexto, Args&&... argumentos );
-template<typename... Args> bool AplicLogAnotarAviso ( const std::string & sTexto, Args&&... argumentos );
-template<typename... Args> bool AplicLogAnotarError ( const std::string & sTexto, Args&&... argumentos );
+/* Las definiciones van aqui, en la cabecera, y no en AplicacionLog.cpp: una
+   plantilla solo se instancia donde se ve su cuerpo, asi que definidas en el
+   .cpp no las podia usar nadie de fuera del modulo.
+
+   En el .cpp miraban la variable g_bAplicLogInicializado, que es static y por
+   tanto invisible desde aqui: se usa el accesor publico AplicLogEstaInicializado.
+
+   Y devuelven true cuando anotan. En el .cpp bRes se quedaba en false pasara lo
+   que pasara, o sea que las cuatro devolvian siempre false. */
+
+template<typename... Args> bool AplicLogAnotar ( const std::string & sTexto, Args&&... argumentos )
+{
+	bool bRes = false;
+
+	if ( AplicLogEstaInicializado () )
+	{
+		log::LogInfo ( sTexto, std::forward<Args> ( argumentos )... );
+		bRes = true;
+	}
+	return ( bRes );
+}
+
+template<typename... Args> bool AplicLogAnotarDepuracion ( const std::string & sTexto, Args&&... argumentos )
+{
+	bool bRes = false;
+
+	if ( AplicLogEstaInicializado () )
+	{
+		log::LogDepuracion ( sTexto, std::forward<Args> ( argumentos )... );
+		bRes = true;
+	}
+	return ( bRes );
+}
+
+template<typename... Args> bool AplicLogAnotarAviso ( const std::string & sTexto, Args&&... argumentos )
+{
+	bool bRes = false;
+
+	if ( AplicLogEstaInicializado () )
+	{
+		log::LogAviso ( sTexto, std::forward<Args> ( argumentos )... );
+		bRes = true;
+	}
+	return ( bRes );
+}
+
+template<typename... Args> bool AplicLogAnotarError ( const std::string & sTexto, Args&&... argumentos )
+{
+	bool bRes = false;
+
+	if ( AplicLogEstaInicializado () )
+	{
+		log::LogError ( sTexto, std::forward<Args> ( argumentos )... );
+		bRes = true;
+	}
+	return ( bRes );
+}
 
 
 void AplicLogActivarSalidaPorConsola ();

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	
+    <groupId>org.gjs</groupId>
+    <artifactId>gjs</artifactId>
+    <version>1.0.0-RC.2</version>
+    <packaging>pom</packaging>
+
+    <name>GJS</name>
+    <description>
+		Grouper for GJS projects
+	</description>
+
+	<properties>
+		<!-- Los pom.xml agregadores no se despliegan -->
+		<maven.deploy.skip>true</maven.deploy.skip>
+		<!-- Los agregadores alernativos no hace falta instalarlos -->
+		<maven.install.skip>true</maven.install.skip>
+	</properties>
+
+    <modules>
+        <module>gjs-parent</module>
+        <module>gjs-no-java-parent</module>
+        <module>gjs-java/pomParents.xml</module>
+        <module>gjs-c/pomParents.xml</module>
+        <module>gjs-python/pomParents.xml</module>
+        <module>gjs-npm/pomParents.xml</module>
+        <module>gjs-archetypes/pomParents.xml</module>
+    </modules>
+</project>

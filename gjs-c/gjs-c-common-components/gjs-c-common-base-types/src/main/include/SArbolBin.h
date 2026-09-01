@@ -1,6 +1,6 @@
 
 #ifndef _ORG_GJS_C_CC_C_COMMON_SARBOLBIN_H
-#define _SARBOLBIN_H
+#define _ORG_GJS_C_CC_C_COMMON_SARBOLBIN_H
 
 
 

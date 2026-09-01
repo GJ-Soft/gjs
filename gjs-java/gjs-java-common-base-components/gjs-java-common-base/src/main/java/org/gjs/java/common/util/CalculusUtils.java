@@ -10,21 +10,6 @@ import org.gjs.java.common.constant.CommonBaseConstants;
  * Algunas funciones de ayuda para cálculos numéricos. En concreto, el cálculo
  * de los EPSILON de la máquina virtual para diferentes tipos numéricos.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

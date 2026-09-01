@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.java</groupId>
+		<groupId>org.gjsoft.java</groupId>
 		<artifactId>gjs-java-web-parent</artifactId>
 		<version>1.0.0-RC.2</version>    
 		<relativePath>../gjs-java-web-parent</relativePath>
@@ -57,12 +57,12 @@
 		
  			<!-- Gjs -->
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-sb-common</artifactId>
 				<version>${gjs-java-sb-common.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-sb-common-support</artifactId>
 				<version>${gjs-java-sb-common-support.version}</version>
 			</dependency>
@@ -77,19 +77,19 @@
 			<!-- Test -->
  			<!-- Gjs -->
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-sb-common-test-support</artifactId>
 				<version>${gjs-java-sb-common-test-support.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-sb-common-test-mocks</artifactId>
 				<version>${gjs-java-sb-common-test-mocks.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-sb-common-test</artifactId>
 				<version>${gjs-java-sb-common-test.version}</version>
 				<scope>test</scope>
@@ -114,15 +114,15 @@
 
 		<!-- Gjs -->
 		<dependency>
-			<groupId>org.gjs.java.common</groupId>
+			<groupId>org.gjsoft.java.common</groupId>
 			<artifactId>gjs-java-common-support</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.gjs.java.common</groupId>
+			<groupId>org.gjsoft.java.common</groupId>
 			<artifactId>gjs-java-common-io</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.gjs.java.common</groupId>
+			<groupId>org.gjsoft.java.common</groupId>
 			<artifactId>gjs-java-common</artifactId>
 		</dependency>
 

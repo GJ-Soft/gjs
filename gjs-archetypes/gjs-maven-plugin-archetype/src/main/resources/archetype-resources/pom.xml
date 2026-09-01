@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-		<groupId>org.gjs.java.maven</groupId>
+		<groupId>org.gjsoft.java.maven</groupId>
 		<artifactId>gjs-java-maven-parent</artifactId>
 		<version>1.0.0-RC.2</version>
         <relativePath />
@@ -40,6 +40,9 @@
 	</description>
 
     <properties>
+		<!-- Project management -->
+		<repository.name>${artifactId}</repository.name>
+
     </properties>
 
     <dependencyManagement>

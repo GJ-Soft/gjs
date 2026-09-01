@@ -20,22 +20,6 @@ import org.gjs.java.common.util.ConditionUtils;
  * Clase singleton destinada a gestionar un pool de objetos cualesquiera para
  * ser compartidos por todos los componentes de la librerúia y la aplicación.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

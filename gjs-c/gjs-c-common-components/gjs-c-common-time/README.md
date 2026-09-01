@@ -13,11 +13,11 @@ cronómetro.
 
 | Dato         | Valor                                           |
 | ------------ | ----------------------------------------------- |
-| `groupId`    | `org.gjs.c.common`                              |
+| `groupId`    | `org.gjsoft.c.common`                              |
 | `artifactId` | `gjs-c-common-time`                             |
 | `version`    | `1.0.0-RC.2`                                    |
 | `packaging`  | `nar` (biblioteca **shared**)                   |
-| Pom padre    | `org.gjs.c:gjs-c-lib-parent`                    |
+| Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`                    |
 | Depende de   | `gjs-c-common-calculation`, `gjs-c-common-text` |
 
 ---

@@ -5,6 +5,18 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleContainerWithRenamePojo.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Como SampleContainerPojo, pero con el campo contenido nombrado distinto que su tipo, para probar la correspondencia por nombre.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @SuppressWarnings("rawtypes")
 @Getter
 @Setter

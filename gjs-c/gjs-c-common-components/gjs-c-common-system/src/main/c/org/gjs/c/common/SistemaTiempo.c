@@ -41,20 +41,6 @@ void SisEsperar ( int iMiliSegs )
 
 
 
-#if ( defined ( VC ) )
-	
-#include <intrin.h>
-
-uint64_t SisCiclosCPU ()
-{
-    int dummy[4];
-
-    __cpuid(dummy, 0);
-    return __rdtsc();
-}
-
-#else
-
 uint64_t SisCiclosCPU ()
 {
 	uint64_t uiCiclos;
@@ -91,8 +77,6 @@ uint64_t SisCiclosCPU ()
 # endif
 	return ( uiCiclos );
 }
-
-#endif
 
 
 

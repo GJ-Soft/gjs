@@ -68,8 +68,6 @@ bool SisHayErrorDeMemoriaAgotada ( int iRefrescar )
 	bRes = ( g_iSisUltError == 8 );
 # elif ( defined ( UNIX ) )
 	bRes = ( g_iSisUltError == 12 );
-# elif ( defined ( VC ) )
-	bRes = ( g_iSisUltError == 25 );
 # else
 	bRes = ( g_iSisUltError == 25 );
 # endif
@@ -95,11 +93,6 @@ int SisErrTipo ()
 	}
 # elif ( defined ( UNIX ) )
 	else if ( ( g_iSisUltError == 12 ) || ( g_iSisUltError == 14 ) || ( g_iSisUltError == 49 ) )
-	{
-		iTipo = SIS_TIP_ERR_MEMORIA;
-	}
-# elif ( defined ( VC ) )
-	else if ( ( g_iSisUltError == 11 ) || ( g_iSisUltError == 25 ) )
 	{
 		iTipo = SIS_TIP_ERR_MEMORIA;
 	}

@@ -1,13 +1,13 @@
 # Entidades
 
-| Dato          | Valor                                              |
-| ------------- | -------------------------------------------------- |
-| Módulos       | 3                                                  |
-| Cabeceras     | `SEntidadId.h`, `SEntidadCod.h`, `SEntidadIdCod.h` |
-| Prefijos      | `SEntId`, `SEntCod`, `SEntIdCod`                   |
-| Funciones     | 9 + 9 + 13                                         |
-| Incluidos por | `TiposDatos.h`                                     |
-| Tests         | Uno por módulo                                     |
+| Dato          | Valor                                                                                                     |
+| ------------- | --------------------------------------------------------------------------------------------------------- |
+| Módulos       | 6                                                                                                         |
+| Cabeceras     | `SEntidad.h`, `SEntidadNom.h`, `SEntidadCod.h`, `SEntidadCodNom.h`, `SEntidadIdCod.h`, `SMensaje.h`       |
+| Prefijos      | `SEnt`, `SEntNom`, `SEntCod`, `SEntCodNom`, `SEntIdCod`, `SMsj`                                           |
+| Funciones     | 36 + 51 + 42 + 55 + 51 + 29                                                                               |
+| Incluidos por | `TiposDatos.h`                                                                                            |
+| Tests         | Uno por módulo                                                                                            |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)
 
@@ -15,89 +15,309 @@
 
 ## Propósito
 
-Una **entidad** es algo que se identifica y tiene nombre: un cliente, un
-artículo, una cuenta. Los tres módulos cubren las tres formas habituales de
-identificarla.
+Una **entidad** es algo que se identifica y lleva un contenido colgando: un
+cliente, un artículo, una cuenta. Son las clases base sobre las que se montan
+las colecciones ordenadas y las tablas asociativas del resto del stack.
 
-| Módulo          | Identificador   | Struct                        |
-| --------------- | --------------- | ----------------------------- |
-| `SEntidadId`    | Numérico        | `unsigned long ulId` + nombre |
-| `SEntidadCod`   | Código de texto | código + nombre               |
-| `SEntidadIdCod` | Ambos           | id + código + nombre          |
+Hay **dos raíces**, según cómo se identifique la entidad, y cada una tiene sus
+derivadas:
+
+```
+  SEntidad  ( identificador numerico )
+     ├── SEntidadNom      ( + nombre )
+     ├── SEntidadIdCod    ( + codigo )
+     └── SMensaje         ( + descripcion )
+
+  SEntidadCod  ( identificador de texto )
+     └── SEntidadCodNom   ( + nombre )
+```
+
+`SEntidadCod` **no** deriva de `SEntidad`: son dos jerarquías independientes. La
+distinción es la clásica de una base de datos, la clave técnica frente a la
+clave de negocio.
 
 ```c
 typedef struct
 {
-    unsigned long ulId;
-    SCadena *     p_cadNombre;
-} SEntidadId;
+    SId  *  p_idEntidad;
+    void *  p_vContenido;
+} SEntidad;
 
 typedef struct
 {
-    SCadena * p_cadCodigo;
-    SCadena * p_cadNombre;
+    SCodigo * p_codEntidad;
+    void *    p_vContenido;
 } SEntidadCod;
-
-typedef struct
-{
-    unsigned long ulId;
-    SCadena *     p_cadCodigo;
-    SCadena *     p_cadNombre;
-} SEntidadIdCod;
 ```
 
-La distinción es la clásica de una base de datos: la clave técnica (`ulId`), la
-clave de negocio (`p_cadCodigo`), o las dos.
+Las derivadas guardan un puntero a su base más el campo que añaden. El contenido
+vive siempre en la base:
+
+```c
+typedef struct
+{
+    SEntidad *  p_entInfo;
+    SNombre  *  p_nomEntidad;
+} SEntidadNom;
+
+typedef struct
+{
+    SEntidad *  p_entInfo;
+    SCodigo  *  p_codEntidad;
+} SEntidadIdCod;
+
+typedef struct
+{
+    SEntidadCod * p_entcInfo;
+    SNombre     * p_nomEntidad;
+} SEntidadCodNom;
+```
+
+## Identidad
+
+**La identidad de una entidad es su identificador, y nada más**: el `SId` en la
+rama de `SEntidad`, el `SCodigo` en la de `SEntidadCod`. Ni el nombre, ni el
+código secundario, ni el contenido entran en ella. El motivo es que no se
+permiten identificadores repetidos, así que el identificador ya distingue.
+
+De ahí salen tres reglas que conviene tener presentes:
+
+- `EsIgual`, `EsMenor`, `EsMayor`, `EsMenorIg` y `EsMayorIg` miran sólo el
+  identificador.
+- `Hash` mira sólo el identificador, y lo hace **delegando en la clase base**.
+  Una entidad derivada reparte exactamente igual que su base, así que las dos
+  pueden convivir en la misma tabla a través de `*Base`. Meter el nombre o el
+  código secundario en el hash rompería la tabla, porque son campos mutables: al
+  cambiar uno, la entidad quedaría fuera de la cubeta donde se guardó.
+- `Comparar` mira el identificador **y, sólo cuando empata, desempata por el
+  segundo campo**.
+
+Ese desempate es deliberado y **provisional**. Sirve para las situaciones de
+carga: listas cuyos elementos aún no tienen identificador asignado, unificar dos
+listas, o reasignar identificadores ordenando por nombre o por código. Como
+consecuencia, dos entidades con el mismo id y distinto nombre son iguales para
+`EsIgual` y distintas para `Comparar`. No es un descuido; es el andamio, y se
+retirará cuando el desarrollo esté más avanzado.
+
+## Validez
+
+`EsValida` comprueba **sólo el identificador**, en las seis clases. El contenido
+nunca entra, y el nombre tampoco.
+
+- Una entidad recién creada con `SEntCrearDef ()` **no** es válida: su id vale 0,
+  que aún no es un identificador asignado.
+- Una entidad con id y sin contenido **sí** es válida.
+- Para saber si el nombre o el código secundario sirven hay que preguntarles
+  aparte, con `SNomEsValido` o `SCodEsValido`.
+
+### Qué exige cada constructor
+
+Lo que `EsValida` no mira, los constructores sí pueden exigirlo. No es uniforme,
+y conviene tenerlo delante:
+
+| Clase            | Identificador | Segundo campo                                    |
+| ---------------- | ------------- | ------------------------------------------------ |
+| `SEntidad`       | Obligatorio   | —                                                |
+| `SEntidadCod`    | Obligatorio   | —                                                |
+| `SEntidadNom`    | Obligatorio   | Opcional: si falta, un `SNombre` vacío           |
+| `SEntidadCodNom` | Obligatorio   | Opcional: si falta, un `SNombre` vacío           |
+| `SEntidadIdCod`  | Obligatorio   | **Obligatorio**: sin código no se crea la entidad |
+| `SMensaje`       | Obligatorio   | Opcional: puede quedar a `NULL`                  |
+
+Sin identificador válido, las seis devuelven `NULL`.
+
+En `SEntidadNom` y `SEntidadCodNom`, un nombre que no supere la validación de
+`SNombre` **no impide crear la entidad**: `EncapsularExt` pone en su lugar un
+`SNomCrearDef ()`. Por eso `SEntNomNombre` nunca devuelve `NULL` sobre una
+entidad construida, y `SEntNomValorNombreLit` devuelve la cadena vacía, no
+`NULL`. Es lo que permite asignarle un nombre después con
+`SEntNomEstablecerValorNombre`: el objeto interno ya existe.
+
+`SEntidadIdCod` es la excepción: el código es su segundo identificador, no un
+adorno, así que `SEntIdCodEncapsularExt` exige que sea válido y devuelve `NULL`
+si no lo es. Un `SEntIdCodCrearLit ( 5, "COD-001", 10 )` con un código que no
+pasa la validación no da una entidad sin código: no da entidad.
+
+`SMensaje` sí admite quedarse sin texto, porque no tiene con qué sustituirlo y
+un mensaje sin texto sigue siendo localizable por su código.
 
 ## API
 
-Las tres siguen el mismo esquema:
+Las cinco siguen el mismo esquema. Se indican las de `SEntidad`; las demás
+cambian el prefijo y añaden lo suyo.
 
-| Función             | `SEntidadId`             | `SEntidadCod`             | `SEntidadIdCod`             |
-| ------------------- | ------------------------ | ------------------------- | --------------------------- |
-| Crear               | `SEntIdCrear`            | `SEntCodCrear`            | `SEntIdCodCrear`            |
-| Envolver sin copiar | `SEntIdEncapsular`       | `SEntCodEncapsular`       | `SEntIdCodEncapsular`       |
-| Destruir            | `SEntIdDestruir`         | `SEntCodDestruir`         | `SEntIdCodDestruir`         |
-| Validar             | `SEntIdEsValido`         | `SEntCodEsValido`         | `SEntIdCodEsValido`         |
-| Leer id             | `SEntIdId`               | —                         | `SEntIdCodId`               |
-| Leer código         | —                        | `SEntCodCodigo`           | `SEntIdCodCodigo`           |
-| Leer nombre         | `SEntIdNombre`           | `SEntCodNombre`           | `SEntIdCodNombre`           |
-| Fijar id            | `SEntIdEstablecerId`     | —                         | `SEntIdCodEstablecerId`     |
-| Fijar código        | —                        | `SEntCodEstablecerCodigo` | `SEntIdCodEstablecerCodigo` |
-| Fijar nombre        | `SEntIdEstablecerNombre` | `SEntCodEstablecerNombre` | `SEntIdCodEstablecerNombre` |
+### Ciclo de vida
 
-Más las variantes `…Lit` de los asignadores, que reciben `const char *` en lugar
-de [SCadena](../../gjs-c-common-text/doc/SCadena.md).
+| Función                                              | Descripción                                    |
+| ---------------------------------------------------- | ---------------------------------------------- |
+| `SEntCrearDef ()`                                    | Id a 0, sin contenido. No es válida todavía.   |
+| `SEntCrear ( unsigned long ulId )`                   | Con identificador, sin contenido.              |
+| `SEntCrearExt ( unsigned long ulId, void * )`        | Con identificador y contenido.                 |
+| `SEntEncapsular ( SId * )`                           | Toma la propiedad del identificador.           |
+| `SEntEncapsularExt ( SId *, void * )`                | Ídem, con contenido.                           |
+| `void * SEntDestruir ( SEntidad ** )`                | Destruye, **devuelve el contenido** y anula.   |
 
-`SEntidadIdCod` añade `SEntIdCodTipo`.
+### Propiedad de la memoria
 
-### `Crear` frente a `Encapsular`
+Es la parte que más conviene tener clara:
 
-La pareja se repite en los tres módulos y es la decisión de propiedad:
-`Crear` copia lo que se le da, `Encapsular` se queda con los objetos que recibe
-y los destruye con la entidad. Es el mismo criterio que
-[SContenido](../../gjs-c-common-base-types/doc/SContenido.md) en `base-types`.
+- **`Crear*` construye las piezas por su cuenta.** Si el encapsulado falla, las
+  destruye antes de devolver `NULL`: no se pierde nada.
+- **`Encapsular*` recibe piezas ya construidas y se queda con ellas.** Si falla,
+  **no las toca**: siguen siendo del llamante, que es quien debe destruirlas.
+- **`Destruir` devuelve el contenido sin destruirlo.** El contenido nunca ha sido
+  suyo. Lo demás —identificador, nombre, código— sí lo destruye.
+
+### Acceso
+
+`SEntId` (el `SId` interno), `SEntValorId` (el número), `SEntContenido`,
+`SEntEsValida`. Las derivadas añaden el suyo (`SEntNomNombre`,
+`SEntNomValorNombre`, `SEntNomValorNombreLit`…) y un accesor a la base.
+
+> **`SEntNomBase`, `SEntIdCodBase` y `SEntCodNomBase` devuelven el objeto
+> interno, no una copia.** Están para meter la entidad en colecciones que
+> trabajen con la clase base. No hay que destruirlos, ni usarlos después de
+> destruir la entidad que los contiene. De momento no son `const`, a propósito;
+> está pendiente de revisar.
+
+### Asignación
+
+`SEntEstablecerId`, `SEntEstablecerValorId`, `SEntEstablecerContenido`, más los
+del campo propio en cada derivada.
+
+**El retorno dice si se guardó, no si la entidad quedó completa.** Para lo
+segundo está `EsValida`, que es una pregunta distinta. `SEntEstablecerId` copia
+el valor del `SId` que se le pasa: no se queda con el puntero, que sigue siendo
+del llamante. `SEntEstablecerContenido` devuelve el contenido anterior.
+
+### Comparación
+
+Cuatro familias por cada clase, según con qué se compare:
+
+| Clase            | Contra sí misma | Contra la base | Contra el identificador | Contra el valor suelto |
+| ---------------- | --------------- | -------------- | ----------------------- | ---------------------- |
+| `SEntidad`       | `SEntEs…`       | —              | `SEntEs…Id`             | `SEntEs…Num`           |
+| `SEntidadNom`    | `SEntNomEs…`    | `SEntNomEs…Ent`| `SEntNomEs…Id`          | `SEntNomEs…Num`        |
+| `SEntidadIdCod`  | `SEntIdCodEs…`  | `SEntIdCodEs…Ent` | `SEntIdCodEs…Id`     | `SEntIdCodEs…Num`      |
+| `SEntidadCod`    | `SEntCodEs…`    | —              | `SEntCodEs…Codigo`      | `SEntCodEs…Cad` / `…Lit` |
+| `SEntidadCodNom` | `SEntCodNomEs…` | `SEntCodNomEs…Ent` | `SEntCodNomEs…Codigo` | `SEntCodNomEs…Cad` / `…Lit` |
+
+Las de tres estados llevan `Comparar` en lugar de `Es…` y devuelven `COMP_MENOR`,
+`COMP_IGUAL` o `COMP_MAYOR`. Ante punteros nulos, el nulo ordena antes: una
+entidad frente a `NULL` da `COMP_MAYOR`, `NULL` frente a una entidad da
+`COMP_MENOR`, y dos nulos dan `COMP_IGUAL`.
+
+Las ramas con identificador numérico añaden además `EstaEnRango…` y
+`EstaEnRangoIg…`, intervalo abierto y cerrado.
+
+### Hash
+
+`unsigned int SEntHash ( SEntidad * )`, y una por clase. Todas tienen la misma
+firma: **sólo el objeto**, sin parámetros añadidos.
+
+Es una consecuencia directa de la regla de identidad: el hash tiene que ir de la
+mano de `EsIgual`, así que mira lo mismo que él y nada más. El contenido no entra
+—no forma parte de la identidad, y la entidad ni siquiera sabe qué hay detrás de
+ese `void *`— y el segundo campo tampoco, por mutable. Hubo un parámetro
+opcional para pasar una función de hash del contenido; se quitó precisamente
+porque usarlo rompía el contrato con `EsIgual`.
+
+Cada clase delega hacia abajo hasta llegar al identificador:
+
+| Clase            | Delega en                                     |
+| ---------------- | --------------------------------------------- |
+| `SEntidad`       | `SIdHash` sobre el `SId`                      |
+| `SEntidadCod`    | `SCodHash` sobre el `SCodigo`                 |
+| `SEntidadNom`    | `SEntHash` sobre su `SEntidad` base           |
+| `SEntidadIdCod`  | `SEntHash` sobre su `SEntidad` base           |
+| `SEntidadCodNom` | `SEntCodHash` sobre su `SEntidadCod` base     |
+| `SMensaje`       | `SEntHash` sobre su `SEntidad` base           |
+
+Sobre un puntero nulo el resultado es **0**. Ojo, `EsValida` no interviene: una
+entidad recién creada con `SEntCrearDef ()`, que no es válida todavía, sí tiene
+hash —el de su id a 0—, y no es 0. Como en el resto del stack, 0 es a la vez el
+hash de una entrada inválida y un hash legítimo posible.
+
+## `SMensaje`
+
+Una entidad especializada: identificador numérico más el texto que le
+corresponde. Es el elemento de un catálogo de mensajes, y la usa
+[SMensajes](../../gjs-c-common/doc/SMensajes.md) de `gjs-c-common`.
+
+```c
+typedef struct
+{
+    SEntidad     * p_entInfo;
+    SDescripcion * p_descTexto;
+} SMensaje;
+```
+
+Sigue el contrato de la familia —identidad por el id, `EsValido` sólo sobre el
+id, `Crear*` limpia y `Encapsular` no— con cinco diferencias deliberadas:
+
+| Rasgo                   | La familia                | `SMensaje`                   |
+| ----------------------- | ------------------------- | ---------------------------- |
+| Contenido `void *`      | Sí, con variantes `*Ext`  | No lo expone                 |
+| `Destruir`              | Devuelve el contenido     | Devuelve `void`              |
+| `EstaEnRango…`          | Sí, abierto y cerrado     | No las tiene                 |
+| `*Base` y `Es…Ent`      | Sí                        | No las tiene                 |
+| Desempate en `Comparar` | Por el segundo campo      | **No desempata**: sólo el id |
+
+La última es la más importante y va a favor: como no desempata, `SMsjComparar` y
+`SMsjEsIgual` responden siempre lo mismo. `SMensaje` no arrastra el andamio
+provisional del resto de la familia.
+
+Las tres ausencias son intencionadas y responden a lo mismo: `SMensaje` es una
+clase de uso, no una clase base. Las `EstaEnRango…` sobran porque un catálogo se
+consulta por código exacto y no por tramos. `SMsjBase` y la familia `Es…Ent`
+sobran porque nadie va a meter mensajes en una colección ordenada por `SEntidad`:
+el catálogo es homogéneo. Si algún día hiciera falta, se añaden siguiendo el
+patrón de [`SEntNomBase`](#api).
+
+| Función                                                | Descripción                       |
+| ------------------------------------------------------ | --------------------------------- |
+| `SMsjCrear ( unsigned long, SCadena * )`               | Con id y texto.                   |
+| `SMsjCrearLit ( unsigned long, const char * )`         | Ídem desde un literal.            |
+| `SMsjEncapsular ( SId *, SDescripcion * )`             | Toma la propiedad de las dos.     |
+| `void SMsjDestruir ( SMensaje ** )`                    | Destruye y anula el puntero.      |
+| `SMsjEsValido`, `SMsjId`, `SMsjValorId`                | Identificador.                    |
+| `SMsjTexto`, `SMsjValorTexto`, `SMsjValorTextoLit`     | Texto, como objeto, cadena o literal. |
+| `SMsjEs…`, `SMsjEs…Id`, `SMsjEs…Num`                   | Comparación, siempre por el id.   |
+| `SMsjComparar`, `SMsjCompararId`, `SMsjCompararNum`    | Comparación de tres vías.         |
+| `unsigned int SMsjHash ( SMensaje * )`                 | Hash del id.                      |
+
+Un mensaje es **inmutable**: no hay `SMsjEstablecer…`. Para cambiar un texto hay
+que destruir el mensaje y crear otro.
 
 ## Dependencias
 
-- [SCadena](../../gjs-c-common-text/doc/SCadena.md) — nombre y código.
+- [Identificadores](../../gjs-c-common-base-types/doc/Identificadores.md) — `SId`.
+- [SDescripcion](../../gjs-c-common-text/doc/SDescripcion.md) — el texto de `SMensaje`.
+- [SCodigo](../../gjs-c-common-text/doc/SCodigo.md) y
+  [SNombre](../../gjs-c-common-text/doc/SNombre.md) — los campos de texto.
+- [Hash](../../gjs-c-common-base/doc/Hash.md) — indirecta: es donde acaban
+  `SIdHash` y `SCodHash`, en los que delega toda la familia.
 
 ## Tests
 
-`SEntidadIdTest.c`, `SEntidadCodTest.c`, `SEntidadIdCodTest.c`.
+`SEntidadTest.c`, `SEntidadNomTest.c`, `SEntidadCodTest.c`,
+`SEntidadCodNomTest.c`, `SEntidadIdCodTest.c`, `SMensajeTest.c`.
 
 ## Observaciones
 
-- **Ninguna de las tres tiene comparación ni `Duplicar`.** No hay
-  `SEntIdEsIgual` ni forma de copiar una entidad, pese a que casi todos los
-  objetos del stack ofrecen ambas cosas. Para comparar hay que sacar el id o el
-  código y compararlos aparte.
-- **`SEntidadIdCod` no es una composición de las otras dos**, sino una tercera
-  estructura que repite sus campos. Un cambio en el criterio de validación hay
-  que hacerlo en tres sitios.
-- `SEntIdCodTipo` existe sólo en la variante completa y la cabecera no dice a qué
-  tipo se refiere: presumiblemente el catálogo `TIP_*`, pero no hay campo `iTipo`
-  en la estructura.
-- El identificador numérico es `unsigned long`, que son 32 bits en Windows puro y
+- **Ninguna de las seis tiene `Duplicar`**, pese a que casi todos los objetos
+  del stack lo ofrecen. Copiar una entidad hay que hacerlo a mano, y hay que
+  decidir qué se hace con el contenido, que es un `void *` sin dueño conocido.
+- **Los `Establecer…` del segundo campo asignan sobre el objeto interno, no lo
+  sustituyen.** En `SEntidadNom` y `SEntidadCodNom` eso no da problema porque el
+  `SNombre` siempre existe. En `SMensaje` no aplica, porque es inmutable. Pero
+  `SEntIdCodEstablecerCodigo` usa `SCodAsignar` sobre el `SCodigo` interno, que
+  ahí siempre existe también por ser obligatorio, así que hoy ninguna de las
+  seis tiene el problema; conviene no perderlo de vista si alguna vez se
+  relaja la obligatoriedad del código.
+- El identificador numérico es `unsigned long`, que son 32 bits con MinGW-w64 y
   64 en Cygwin y Linux. Una entidad persistida con ids altos no es portable entre
   los dos modos de compilación.
+- `SEntidadCod` y `SEntidadNom` no se combinan: no hay una entidad con id, código
+  y nombre a la vez. La que más se le acerca es `SEntidadCodNom`, que renuncia al
+  id.

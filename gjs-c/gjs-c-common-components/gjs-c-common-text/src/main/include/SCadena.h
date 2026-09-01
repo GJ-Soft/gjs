@@ -165,11 +165,18 @@ int SCadEsIgual ( SCadena * p_cadObj, SCadena * p_cadValor );
 int SCadEsMenor ( SCadena * p_cadObj, SCadena * p_cadValor );
 int SCadEsMayor ( SCadena * p_cadObj, SCadena * p_cadValor );
 int SCadEsDiferente ( SCadena * p_cadObj, SCadena * p_cadValor );
+int SCadEsMenorIg ( SCadena * p_cadObj, SCadena * p_cadValor );
+int SCadEsMayorIg ( SCadena * p_cadObj, SCadena * p_cadValor );
 
 int SCadEsIgualLiteral ( SCadena * p_cadObj, const char * p_cValor );
 int SCadEsMenorLiteral ( SCadena * p_cadObj, const char * p_cValor );
 int SCadEsMayorLiteral ( SCadena * p_cadObj, const char * p_cValor );
 int SCadEsDiferenteLiteral ( SCadena * p_cadObj, const char * p_cValor );
+int SCadEsMenorIgLiteral ( SCadena * p_cadObj, const char * p_cValor );
+int SCadEsMayorIgLiteral ( SCadena * p_cadObj, const char * p_cValor );
+
+int SCadComparar ( SCadena * p_cadObj, SCadena * p_cadValor );
+int SCadCompararLiteral ( SCadena * p_cadObj, const char * p_cValor );
 
 int SCadEmpiezaPor ( SCadena * p_cadObj, SCadena * p_cadValor );
 int SCadEmpiezaPorLiteral ( SCadena * p_cadObj, const char * p_cValor );	

@@ -17,16 +17,16 @@ Archetype to generate the basic structure of a project in c++ language.
 ## Generating a project from the archetype
 
     mvn archetype:generate \
-		-DarchetypeGroupId=org.gjs.maven.archetypes \
+		-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 		-DarchetypeArtifactId=gjs-cpp-lib-archetype \
 		-DarchetypeVersion=1.0.0-RC.2 
 
     mvn archetype:generate \
-		-DarchetypeGroupId=org.gjs.maven.archetypes \
+		-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 		-DarchetypeArtifactId=gjs-cpp-lib-archetype \
 		-DarchetypeVersion=1.0.0-RC.2 \
 		-DshortName=test-project \ 
-		-DgroupId=org.gjs.test  \
+		-DgroupId=org.gjsoft.test  \
  		-DartifactId=test-project  \
 		-Dpackage=org.gjs.test \
 		-Dversion=1.0.0-SNAPSHOT \

@@ -21,22 +21,6 @@ import lombok.Setter;
  * Clase base para ser extendida por todos los DTO que representan una entida de
  * la base de datos.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @param <T> la clase de DTO de la clave primaria de la entidad
@@ -124,12 +108,6 @@ public abstract class EntityDto<T extends Serializable> extends BaseDto implemen
 		return ComparationUtils.compareTo((Objects.nonNull(id) ? Objects.toString(id) : null),
 				(Objects.nonNull(otherId) ? Objects.toString(otherId) : null));
 	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.dto.BaseDto#isValid()
-	 */
 
 	@Override
 	public boolean isValid() {

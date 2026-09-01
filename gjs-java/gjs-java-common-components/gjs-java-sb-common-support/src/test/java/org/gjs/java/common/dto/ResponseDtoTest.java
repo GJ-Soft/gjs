@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.Date;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.gjs.java.common.contant.CommonErrors;
+import org.gjs.java.common.constant.CommonErrors;
 import org.gjs.java.common.dto.ErrorDto;
 import org.gjs.java.common.dto.ResponseDto;
 import org.gjs.java.common.util.JsonUtils;

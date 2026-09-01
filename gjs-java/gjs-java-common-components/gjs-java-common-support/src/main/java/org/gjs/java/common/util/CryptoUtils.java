@@ -16,22 +16,6 @@ import org.gjs.java.common.exception.GjsException;
  * Función para calcular el hash de una secuencia de bytes en base a diferentes
  * algoritmos.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

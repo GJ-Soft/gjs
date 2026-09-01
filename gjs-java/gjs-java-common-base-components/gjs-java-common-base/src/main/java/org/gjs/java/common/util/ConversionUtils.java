@@ -25,20 +25,6 @@ import org.slf4j.LoggerFactory;
  * Rutinas genéricas seguras de conversión de tipos que se utilzan en las
  * rutinas de automatización de test de Gjs.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

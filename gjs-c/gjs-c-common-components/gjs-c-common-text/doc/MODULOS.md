@@ -1,6 +1,6 @@
 # Módulos de gjs-c-common-text
 
-Índice y orquestación de los 15 módulos de la librería: **15 fuentes** y **20
+Índice y orquestación de los 18 módulos de la librería: **18 fuentes** y **23
 cabeceras**.
 
 Volver al [README](../README.md).
@@ -11,15 +11,17 @@ Volver al [README](../README.md).
 
 ```
   ┌───────────────────────────────────────────────────────────────────────┐
-  │ 4. Documentos                                                         │
+  │ 5. Documentos                                                         │
   │    STexto (líneas + cursor) · SLinea                                  │
   ├───────────────────────────────────────────────────────────────────────┤
+  │ 4. Campos con regla de contenido                                      │
+  │    SCodigo · SNombre · SDescripcion                                   │
+  ├───────────────────────────────────────────────────────────────────────┤
   │ 3. Cadenas con propósito                                              │
-  │    SToken · SNombre · SDescripcion · SCadenaNumerica · SDivisor       │
-  │    SListaCadenas                                                      │
+  │    SCampo · SToken · SCadenaNumerica · SDivisor · SListaCadenas       │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 2. El objeto cadena                                                   │
-  │    SCadena · SCadenaConv                                              │
+  │    SCadena · SCadenaConv · ValidacionCadenas                          │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 1. Rutinas y clasificación                                            │
   │    Cadenas · ASCII · TiposCaracter · Patrones · ExpresionesRegulares  │
@@ -27,6 +29,10 @@ Volver al [README](../README.md).
   │ 0. gjs-c-common-base + gjs-c-common-base-types                        │
   └───────────────────────────────────────────────────────────────────────┘
 ```
+
+`SCampo` es la pieza que articula la capa 4: una cadena acotada más una función
+de validación. `SCodigo`, `SNombre` y `SDescripcion` son el mismo `SCampo` con
+una de las tres reglas de `ValidacionCadenas` fijada de fábrica.
 
 ---
 
@@ -44,21 +50,33 @@ Volver al [README](../README.md).
 
 ### El objeto cadena
 
-| Módulo        | Prefijo | Struct        | Funciones | Test | Documento                     |
-| ------------- | ------- | ------------- | --------- | ---- | ----------------------------- |
-| `SCadena`     | `SCad`  | `SCadena`     | 135       | ✔    | [SCadena](SCadena.md)         |
-| `SCadenaConv` | `SCadc` | `SCadenaConv` | 169       | ✔    | [SCadenaConv](SCadenaConv.md) |
+| Módulo               | Prefijo        | Struct        | Funciones | Test | Documento                                       |
+| -------------------- | -------------- | ------------- | --------- | ---- | ----------------------------------------------- |
+| `SCadena`            | `SCad`         | `SCadena`     | 137       | ✔    | [SCadena](SCadena.md)                           |
+| `SCadenaConv`        | `SCadc`        | `SCadenaConv` | 169       | ✔    | [SCadenaConv](SCadenaConv.md)                   |
+| `ValidacionCadenas`  | `SCad` / `Cad` | —             | 6         | ✔    | [ValidacionCadenas](ValidacionCadenas.md)       |
 
 ### Cadenas con propósito
 
 | Módulo            | Prefijo   | Struct            | Funciones | Test | Documento                             |
 | ----------------- | --------- | ----------------- | --------- | ---- | ------------------------------------- |
 | `SCadenaNumerica` | `SCadn`   | `SCadenaNumerica` | 13        | ✔    | [SCadenaNumerica](SCadenaNumerica.md) |
-| `SToken`          | `STok`    | `SToken`          | 38        | ✔    | [SToken](SToken.md)                   |
-| `SNombre`         | `SNom`    | `SNombre`         | 11        | ✔    | [SNombre](SNombre.md)                 |
-| `SDescripcion`    | `SDesc`   | `SDescripcion`    | 11        | ✔    | [SDescripcion](SDescripcion.md)       |
+| `SCampo`          | `SCamp`   | `SCampo`          | 30        | ✔    | [SCampo](SCampo.md)                   |
+| `SToken`          | `STok`    | `SToken`          | 39        | ✔    | [SToken](SToken.md)                   |
 | `SDivisor`        | `SDiv`    | `SDivisor`        | 16        | ✔    | [SDivisor](SDivisor.md)               |
 | `SListaCadenas`   | `SLisCad` | `SListaCadenas`   | 39        | ✔    | [SListaCadenas](SListaCadenas.md)     |
+
+### Campos con regla de contenido
+
+Los tres son [SCampo](SCampo.md) con una validación distinta. Misma estructura,
+mismas 39 funciones, mismo reparto: lo único que cambia es la regla y el tope
+por defecto.
+
+| Módulo         | Prefijo | Struct         | Funciones | Validación               | Tope por defecto        | Test | Documento                       |
+| -------------- | ------- | -------------- | --------- | ------------------------ | ----------------------- | ---- | ------------------------------- |
+| `SCodigo`      | `SCod`  | `SCodigo`      | 39        | `SCadEsCodigoValido`     | `COD_MAX_TAM_DEF` (10)  | ✔    | [SCodigo](SCodigo.md)           |
+| `SNombre`      | `SNom`  | `SNombre`      | 39        | `SCadEsNombreValido`     | `NOM_MAX_TAM_DEF` (35)  | ✔    | [SNombre](SNombre.md)           |
+| `SDescripcion` | `SDesc` | `SDescripcion` | 39        | `SCadEsDescripcionValida` | `DESC_MAX_TAM_DEF` (255) | ✔   | [SDescripcion](SDescripcion.md) |
 
 ### Documentos
 
@@ -76,7 +94,8 @@ Volver al [README](../README.md).
 Cabecera fachada. Incluye `TextoConstantes.h`, `JuegosCaracteres.h`, `ASCII.h`,
 `Cadenas.h`, `Patrones.h`, `ExpresionesRegulares.h`, `SCadena.h`,
 `SCadenaConv.h`, `SCadenaNumerica.h`, `SListaCadenas.h`, `SLinea.h`, `STexto.h`,
-`SToken.h`, `SNombre.h`, `SDescripcion.h` y `SDivisor.h`.
+`ValidacionCadenas.h`, `SCampo.h`, `SToken.h`, `SCodigo.h`, `SNombre.h`,
+`SDescripcion.h` y `SDivisor.h`.
 
 **No incluye** `ASCIIOEM850.h`, `PaginasCodigos.h` ni `TiposCaracter.h`, que hay
 que incluir a mano. Lo llamativo es lo tercero: `TiposCaracter` tiene fuente y

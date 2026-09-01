@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>    
     
 	<parent>
-		<groupId>org.gjs.maven.archetypes</groupId>    
+		<groupId>org.gjsoft.maven.archetypes</groupId>    
 		<artifactId>gjs-archetype-parent</artifactId>    
 		<version>1.0.0-RC.2</version>    
 		<relativePath/>
@@ -33,7 +33,7 @@
 		-DarchetypeArtifactId=${artifactId} \
 		-DarchetypeVersion=${version} \
 		-DshortName=test-project \
-		-DgroupId=org.gjs.test  \
+		-DgroupId=org.gjsoft.test  \
 		-DartifactId=test-project  \
 		-Dpackage=org.gjs.test \
 		-Dversion=1.0.0-SNAPSHOT

@@ -18,7 +18,8 @@ typedef struct
 
 
 
-SId * SIdCrear ();
+SId * SIdCrearDef ();
+SId * SIdCrear ( unsigned long ulValor );
 
 void SIdDestruir ( SId ** p_p_idObj );
 
@@ -26,6 +27,8 @@ int SIdEsValido ( SId * p_idObj );
 
 unsigned long SIdValor ( SId * p_idObj );
 int SIdEstablecer ( SId * p_idObj, unsigned long ulValor );
+
+int SIdAsignar ( SId * p_idObj, SId * p_idValor );
 
 int SIdEsIgual ( SId * p_idObj, SId * p_idVal );
 int SIdEsMenor ( SId * p_idObj, SId * p_idVal );
@@ -35,13 +38,16 @@ int SIdEsMenorIg ( SId * p_idObj, SId * p_idVal );
 int SIdEsMayorIg ( SId * p_idObj, SId * p_idVal );
 int SIdEstaEnRangoIg ( SId * p_idObj, SId * p_idVal1, SId * p_idVal2 );
 
-int SIdEsIgualEnt ( SId * p_idObj, unsigned long ulId );
-int SIdEsMenorEnt ( SId * p_idObj, unsigned long ulId );
-int SIdEsMayorEnt ( SId * p_idObj, unsigned long ulId );
-int SIdEstaEnRangoEnt ( SId * p_idObj, unsigned long ulId1, unsigned long ulId2 );
-int SIdEsMenorIgEnt ( SId * p_idObj, unsigned long ulId );
-int SIdEsMayorIgEnt ( SId * p_idObj, unsigned long ulId );
-int SIdEstaEnRangoIgEnt ( SId * p_idObj, unsigned long ulId1, unsigned long ulId2 );
+int SIdEsIgualNum ( SId * p_idObj, unsigned long ulId );
+int SIdEsMenorNum ( SId * p_idObj, unsigned long ulId );
+int SIdEsMayorNum ( SId * p_idObj, unsigned long ulId );
+int SIdEstaEnRangoNum ( SId * p_idObj, unsigned long ulId1, unsigned long ulId2 );
+int SIdEsMenorIgNum ( SId * p_idObj, unsigned long ulId );
+int SIdEsMayorIgNum ( SId * p_idObj, unsigned long ulId );
+int SIdEstaEnRangoIgNum ( SId * p_idObj, unsigned long ulId1, unsigned long ulId2 );
+
+int SIdComparar ( SId * p_idObj, SId * p_idVal );
+int SIdCompararNum ( SId * p_idObj, unsigned long ulId );
 
 unsigned int SIdHash ( SId * p_idObj );
 

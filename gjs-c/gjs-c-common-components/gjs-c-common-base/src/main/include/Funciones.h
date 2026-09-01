@@ -94,13 +94,13 @@ typedef int (* PFUNINTPVPV)(void *,void *);
 
 
 typedef long (* PFUNLONGV)(void);
-typedef long (* PFUNLONGI)(long);
+typedef long (* PFUNLONGI)(int);
 typedef long (* PFUNLONGL)(long);
 typedef long (* PFUNLONGS)(short);
 typedef long (* PFUNLONGF)(float);
 typedef long (* PFUNLONGD)(double);
 typedef long (* PFUNLONGC)(char);
-typedef long (* PFUNLONGUI)(unsigned long);
+typedef long (* PFUNLONGUI)(unsigned int);
 typedef long (* PFUNLONGUL)(unsigned long);
 typedef long (* PFUNLONGUS)(unsigned short);
 typedef long (* PFUNLONGPC)(char *);
@@ -113,6 +113,51 @@ typedef long (* PFUNLONGPPV)(void **);
 typedef long (* PFUNLONGLL)(long long);
 typedef long (* PFUNLONGULL)(unsigned long long);
 #endif
+
+
+typedef unsigned int (* PFUNUINTV)(void);
+typedef unsigned int (* PFUNUINTI)(int);
+typedef unsigned int (* PFUNUINTL)(long);
+typedef unsigned int (* PFUNUINTS)(short);
+typedef unsigned int (* PFUNUINTF)(float);
+typedef unsigned int (* PFUNUINTD)(double);
+typedef unsigned int (* PFUNUINTC)(char);
+typedef unsigned int (* PFUNUINTUI)(unsigned int);
+typedef unsigned int (* PFUNUINTUL)(unsigned long);
+typedef unsigned int (* PFUNUINTUS)(unsigned short);
+typedef unsigned int (* PFUNUINTPC)(char *);
+typedef unsigned int (* PFUNUINTT)(const char *);
+
+typedef unsigned int (* PFUNUINTPV)(void *);
+typedef unsigned int (* PFUNUINTPPV)(void **);
+
+#if ( defined ( LLONG ) )	
+typedef unsigned int (* PFUNUINTLL)(long long);
+typedef unsigned int (* PFUNUINTULL)(unsigned long long);
+#endif
+
+
+typedef unsigned long (* PFUNULONGV)(void);
+typedef unsigned long (* PFUNULONGI)(int);
+typedef unsigned long (* PFUNULONGL)(long);
+typedef unsigned long (* PFUNULONGS)(short);
+typedef unsigned long (* PFUNULONGF)(float);
+typedef unsigned long (* PFUNULONGD)(double);
+typedef unsigned long (* PFUNULONGC)(char);
+typedef unsigned long (* PFUNULONGUI)(unsigned int);
+typedef unsigned long (* PFUNULONGUL)(unsigned long);
+typedef unsigned long (* PFUNULONGUS)(unsigned short);
+typedef unsigned long (* PFUNULONGPC)(char *);
+typedef unsigned long (* PFUNULONGT)(const char *);
+
+typedef unsigned long (* PFUNULONGPV)(void *);
+typedef unsigned long (* PFUNULONGPPV)(void **);
+
+#if ( defined ( LLONG ) )	
+typedef unsigned long (* PFUNULONGLL)(long long);
+typedef unsigned long (* PFUNULONGULL)(unsigned long long);
+#endif
+
 
 typedef char (* PFUNCHARV)(void);
 typedef char (* PFUNCHARI)(char);

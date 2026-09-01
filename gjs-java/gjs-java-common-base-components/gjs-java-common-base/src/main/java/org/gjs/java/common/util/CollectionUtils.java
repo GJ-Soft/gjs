@@ -19,20 +19,6 @@ import org.slf4j.LoggerFactory;
  * Rutinas de ayuda para manejarse con clases que tengan atributos que sean
  * colecciones de objetos en las rutinas de automatización de test de Gjs.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

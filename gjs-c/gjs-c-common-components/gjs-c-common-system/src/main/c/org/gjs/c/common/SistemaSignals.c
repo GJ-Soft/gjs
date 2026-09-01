@@ -179,7 +179,15 @@ int SisSigId ( int iCod )
 
 	if ( SisSigEstanPermitidos () == 1 )
 	{
-		if ( iCod == SIS_COD_SIG_ABORTAR )
+		/* -1 no es un codigo de senal: es la marca de "en esta plataforma esa
+		   senal no existe", y en Windows la llevan ocho de las quince a la vez.
+		   Sin esta guarda caeria en la primera rama que valga -1 ( ALARMA ) y
+		   devolveria una senal plausible pero equivocada. */
+		if ( iCod == -1 )
+		{
+			iRes = -1;
+		}
+		else if ( iCod == SIS_COD_SIG_ABORTAR )
 		{
 			iRes = SIS_SIG_ABORTAR;
 		}
@@ -243,10 +251,6 @@ int SisSigId ( int iCod )
 		else if ( iCod == SIS_COD_SIG_ERROR_BUS )
 		{
 			iRes = SIS_SIG_ERROR_BUS;
-		}
-		else if ( iCod == SIS_COD_SIG_ERROR_PILA	 )
-		{
-			iRes = SIS_SIG_ERROR_PILA;
 		}
 		else if ( iCod == SIS_COD_SIG_CAMBIO_ESTADO_HIJO )
 		{
@@ -435,10 +439,6 @@ const char * SisSigNombre ( int iSignal )
 	{
 		return ( SIS_SIG_NOM_ERROR_BUS );
 	}
-	else if ( iSignal == SIS_SIG_ERROR_PILA	 )
-	{
-		return ( SIS_SIG_NOM_ERROR_PILA );
-	}
 	else if ( iSignal == SIS_SIG_CONTINUAR )
 	{
 		return ( SIS_SIG_NOM_CONTINUAR );
@@ -565,10 +565,6 @@ const char * SisSigDescripcion ( int iSignal )
 	else if ( iSignal == SIS_SIG_ERROR_BUS )
 	{
 		return ( SIS_SIG_TXT_ERROR_BUS );
-	}
-	else if ( iSignal == SIS_SIG_ERROR_PILA	 )
-	{
-		return ( SIS_SIG_TXT_ERROR_PILA );
 	}
 	else if ( iSignal == SIS_SIG_CAMBIO_ESTADO_HIJO )
 	{

@@ -19,22 +19,6 @@ import com.openpojo.validation.test.Tester;
  * Algunas funciones de ayuda para la implementación de los test Pojos
  * automatizados.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

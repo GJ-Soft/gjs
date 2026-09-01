@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.c</groupId>
+		<groupId>org.gjsoft.c</groupId>
 		<artifactId>gjs-c-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../gjs-c-parent</relativePath>
@@ -35,7 +35,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.gjs.maven.plugins</groupId>
+				<groupId>org.gjsoft.maven.plugins</groupId>
 				<artifactId>nar-maven-plugin</artifactId>
 				<configuration>
 					<libraries>

@@ -5,7 +5,7 @@
 
 
 
-SId * SIdCrear ()
+SId * SIdCrearDef ()
 {
 	SId * p_idObj;
 	
@@ -13,6 +13,18 @@ SId * SIdCrear ()
 	if ( ES_VALIDO ( p_idObj ) )
 	{
 		p_idObj->ulValor = 0;
+	}
+	return ( p_idObj );
+}
+
+SId * SIdCrear ( unsigned long ulValor )
+{
+	SId * p_idObj;
+	
+	p_idObj = SIdCrearDef ();
+	if ( ES_VALIDO ( p_idObj ) )
+	{
+		SIdEstablecer ( p_idObj, ulValor );
 	}
 	return ( p_idObj );
 }
@@ -85,13 +97,28 @@ int SIdEstablecer ( SId * p_idObj, unsigned long ulValor )
 	return ( iRes );
 }
 
+int SIdAsignar ( SId * p_idObj, SId * p_idValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_idObj ) && ES_VALIDO ( p_idValor ) )
+	{
+		iRes = SIdEstablecer ( p_idObj, SIdValor ( p_idValor ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int SIdEsIgual ( SId * p_idObj, SId * p_idVal )
 {
 	int iRes;
 
-	if ( ( SIdEsValido ( p_idObj ) == 1 ) && ( SIdEsValido ( p_idVal ) == 1 ) )
+	if ( ES_VALIDO ( p_idObj ) && ES_VALIDO ( p_idVal ) )
 	{
-		iRes = SIdEsIgualEnt ( p_idObj, SIdValor ( p_idVal ) );
+		iRes = SIdEsIgualNum ( p_idObj, SIdValor ( p_idVal ) );
 	}
 	else
 	{
@@ -104,9 +131,9 @@ int SIdEsMenor ( SId * p_idObj, SId * p_idVal )
 {
 	int iRes;
 
-	if ( ( SIdEsValido ( p_idObj ) == 1 ) && ( SIdEsValido ( p_idVal ) == 1 ) )
+	if ( ES_VALIDO ( p_idObj ) && ES_VALIDO ( p_idVal ) )
 	{
-		iRes = SIdEsMenorEnt ( p_idObj, SIdValor ( p_idVal ) );
+		iRes = SIdEsMenorNum ( p_idObj, SIdValor ( p_idVal ) );
 	}
 	else
 	{
@@ -119,9 +146,9 @@ int SIdEsMayor ( SId * p_idObj, SId * p_idVal )
 {
 	int iRes;
 
-	if ( ( SIdEsValido ( p_idObj ) == 1 ) && ( SIdEsValido ( p_idVal ) == 1 ) )
+	if ( ES_VALIDO ( p_idObj ) && ES_VALIDO ( p_idVal ) )
 	{
-		iRes = SIdEsMayorEnt ( p_idObj, SIdValor ( p_idVal ) );
+		iRes = SIdEsMayorNum ( p_idObj, SIdValor ( p_idVal ) );
 	}
 	else
 	{
@@ -134,10 +161,10 @@ int SIdEstaEnRango ( SId * p_idObj, SId * p_idVal1, SId * p_idVal2 )
 {
 	int iRes;
 
-	if ( ( SIdEsValido ( p_idObj ) == 1 ) && ( SIdEsValido ( p_idVal1 ) == 1 ) && 
-		 ( SIdEsValido ( p_idVal2 ) == 1 ) )
+	if ( ES_VALIDO ( p_idObj ) && ES_VALIDO ( p_idVal1 ) && 
+		 ES_VALIDO ( p_idVal2 ) )
 	{
-		iRes = SIdEstaEnRangoEnt ( p_idObj, SIdValor ( p_idVal1 ), SIdValor ( p_idVal2 ) );
+		iRes = SIdEstaEnRangoNum ( p_idObj, SIdValor ( p_idVal1 ), SIdValor ( p_idVal2 ) );
 	}
 	else
 	{
@@ -150,9 +177,9 @@ int SIdEsMenorIg ( SId * p_idObj, SId * p_idVal )
 {
 	int iRes;
 
-	if ( ( SIdEsValido ( p_idObj ) == 1 ) && ( SIdEsValido ( p_idVal ) == 1 ) )
+	if ( ES_VALIDO ( p_idObj ) && ES_VALIDO ( p_idVal ) )
 	{
-		iRes = SIdEsMenorIgEnt ( p_idObj, SIdValor ( p_idVal ) );
+		iRes = SIdEsMenorIgNum ( p_idObj, SIdValor ( p_idVal ) );
 	}
 	else
 	{
@@ -165,9 +192,9 @@ int SIdEsMayorIg ( SId * p_idObj, SId * p_idVal )
 {
 	int iRes;
 
-	if ( ( SIdEsValido ( p_idObj ) == 1 ) && ( SIdEsValido ( p_idVal ) == 1 ) )
+	if ( ES_VALIDO ( p_idObj ) && ES_VALIDO ( p_idVal ) )
 	{
-		iRes = SIdEsMayorIgEnt ( p_idObj, SIdValor ( p_idVal ) );
+		iRes = SIdEsMayorIgNum ( p_idObj, SIdValor ( p_idVal ) );
 	}
 	else
 	{
@@ -180,10 +207,10 @@ int SIdEstaEnRangoIg ( SId * p_idObj, SId * p_idVal1, SId * p_idVal2 )
 {
 	int iRes;
 
-	if ( ( SIdEsValido ( p_idObj ) == 1 ) && ( SIdEsValido ( p_idVal1 ) == 1 ) && 
-		 ( SIdEsValido ( p_idVal2 ) == 1 ) )
+	if ( ES_VALIDO ( p_idObj ) && ES_VALIDO ( p_idVal1 ) && 
+		 ES_VALIDO ( p_idVal2 ) )
 	{
-		iRes = SIdEstaEnRangoIgEnt ( p_idObj, SIdValor ( p_idVal1 ), SIdValor ( p_idVal2 ) );
+		iRes = SIdEstaEnRangoIgNum ( p_idObj, SIdValor ( p_idVal1 ), SIdValor ( p_idVal2 ) );
 	}
 	else
 	{
@@ -192,11 +219,11 @@ int SIdEstaEnRangoIg ( SId * p_idObj, SId * p_idVal1, SId * p_idVal2 )
 	return ( iRes );
 }
 
-int SIdEsIgualEnt ( SId * p_idObj, unsigned long ulId )
+int SIdEsIgualNum ( SId * p_idObj, unsigned long ulId )
 {
 	int iRes;
 
-	if ( SIdEsValido ( p_idObj ) == 1 ) 
+	if ( ES_VALIDO ( p_idObj ) ) 
 	{
 		if ( p_idObj->ulValor == ulId )
 		{
@@ -214,11 +241,11 @@ int SIdEsIgualEnt ( SId * p_idObj, unsigned long ulId )
 	return ( iRes );
 }
 
-int SIdEsMenorEnt ( SId * p_idObj, unsigned long ulId )
+int SIdEsMenorNum ( SId * p_idObj, unsigned long ulId )
 {
 	int iRes;
 
-	if ( SIdEsValido ( p_idObj ) == 1 ) 
+	if ( ES_VALIDO ( p_idObj ) ) 
 	{
 		if ( p_idObj->ulValor < ulId )
 		{
@@ -236,11 +263,11 @@ int SIdEsMenorEnt ( SId * p_idObj, unsigned long ulId )
 	return ( iRes );
 }
 
-int SIdEsMayorEnt ( SId * p_idObj, unsigned long ulId )
+int SIdEsMayorNum ( SId * p_idObj, unsigned long ulId )
 {
 	int iRes;
 
-	if ( SIdEsValido ( p_idObj ) == 1 ) 
+	if ( ES_VALIDO ( p_idObj ) ) 
 	{
 		if ( p_idObj->ulValor > ulId )
 		{
@@ -258,11 +285,11 @@ int SIdEsMayorEnt ( SId * p_idObj, unsigned long ulId )
 	return ( iRes );
 }
 
-int SIdEstaEnRangoEnt ( SId * p_idObj, unsigned long ulId1, unsigned long ulId2 )
+int SIdEstaEnRangoNum ( SId * p_idObj, unsigned long ulId1, unsigned long ulId2 )
 {
 	int iRes;
 
-	if ( SIdEsValido ( p_idObj ) == 1 ) 
+	if ( ES_VALIDO ( p_idObj ) ) 
 	{
 		if ( ( p_idObj->ulValor > ulId1 ) && ( p_idObj->ulValor < ulId2 ) )
 		{
@@ -280,11 +307,11 @@ int SIdEstaEnRangoEnt ( SId * p_idObj, unsigned long ulId1, unsigned long ulId2 
 	return ( iRes );
 }
 
-int SIdEsMenorIgEnt ( SId * p_idObj, unsigned long ulId )
+int SIdEsMenorIgNum ( SId * p_idObj, unsigned long ulId )
 {
 	int iRes;
 
-	if ( SIdEsValido ( p_idObj ) == 1 ) 
+	if ( ES_VALIDO ( p_idObj ) ) 
 	{
 		if ( p_idObj->ulValor <= ulId )
 		{
@@ -302,11 +329,11 @@ int SIdEsMenorIgEnt ( SId * p_idObj, unsigned long ulId )
 	return ( iRes );
 }
 
-int SIdEsMayorIgEnt ( SId * p_idObj, unsigned long ulId )
+int SIdEsMayorIgNum ( SId * p_idObj, unsigned long ulId )
 {
 	int iRes;
 
-	if ( SIdEsValido ( p_idObj ) == 1 ) 
+	if ( ES_VALIDO ( p_idObj ) ) 
 	{
 		if ( p_idObj->ulValor >= ulId )
 		{
@@ -324,11 +351,11 @@ int SIdEsMayorIgEnt ( SId * p_idObj, unsigned long ulId )
 	return ( iRes );
 }
 
-int SIdEstaEnRangoIgEnt ( SId * p_idObj, unsigned long ulId1, unsigned long ulId2 )
+int SIdEstaEnRangoIgNum ( SId * p_idObj, unsigned long ulId1, unsigned long ulId2 )
 {
 	int iRes;
 
-	if ( SIdEsValido ( p_idObj ) == 1 ) 
+	if ( ES_VALIDO ( p_idObj ) ) 
 	{
 		if ( ( p_idObj->ulValor >= ulId1 ) && ( p_idObj->ulValor <= ulId2 ) )
 		{
@@ -342,6 +369,55 @@ int SIdEstaEnRangoIgEnt ( SId * p_idObj, unsigned long ulId1, unsigned long ulId
 	else
 	{
 		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SIdComparar ( SId * p_idObj, SId * p_idVal )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_idObj ) && ES_VALIDO ( p_idVal ) )
+	{
+		iRes = SIdCompararNum ( p_idObj, SIdValor ( p_idVal ) );
+	}
+	else if  ( ES_VALIDO ( p_idObj ) )
+	{
+		iRes = COMP_MAYOR;
+	}
+	else if  ( ES_VALIDO ( p_idVal ) )
+	{
+		iRes = COMP_MENOR;
+	}
+	else
+	{
+		iRes = COMP_IGUAL;
+	}
+	return ( iRes );
+}
+
+int SIdCompararNum ( SId * p_idObj, unsigned long ulId )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_idObj ) ) 
+	{
+		if ( p_idObj->ulValor < ulId )
+		{
+			iRes = COMP_MENOR;
+		}
+		else if ( p_idObj->ulValor > ulId )
+		{
+			iRes = COMP_MAYOR;
+		}
+		else
+		{
+			iRes = COMP_IGUAL;
+		}
+	}
+	else
+	{
+		iRes = COMP_MENOR;
 	}
 	return ( iRes );
 }

@@ -2,13 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs</groupId>
+		<groupId>org.gjsoft</groupId>
 		<artifactId>gjs-no-java-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../../../gjs-no-java-parent</relativePath>
 	</parent>	
 
-	<groupId>org.gjs.npm</groupId>
+	<groupId>org.gjsoft.npm</groupId>
     <artifactId>gjs-npm-parent</artifactId>
 	<packaging>pom</packaging>
 
@@ -287,7 +287,7 @@
 
 		<extensions>
 			<extension>
-				<groupId>org.gjs.maven.extensions</groupId>
+				<groupId>org.gjsoft.maven.extensions</groupId>
 				<artifactId>tgz-maven-extension</artifactId>
 				<version>${tgz-maven-extension.version}</version>
 			</extension>

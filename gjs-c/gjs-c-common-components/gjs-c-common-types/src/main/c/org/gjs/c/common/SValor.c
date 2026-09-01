@@ -52,6 +52,21 @@ SValor * SValCrearExt ( int iTipo, int iMaxTam )
 	return ( p_valObj );
 }
 
+SValor * SValCrearByte ( byte byValor )
+{
+    SValor * p_valObj;
+
+    p_valObj = (SValor *) MemReservar ( sizeof ( SValor ) );
+    if ( ES_VALIDO ( p_valObj ) )
+    {
+		p_valObj->p_cadValor = NULL;
+		_SValInicializar ( p_valObj, TIP_BYTE, 0 );
+		SValEstablecerValorByte ( p_valObj, byValor );
+	}
+	return ( p_valObj );
+}
+
+
 SValor * SValCrearBooleano ( int iValor )
 {
     SValor * p_valObj;

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.c</groupId>
+		<groupId>org.gjsoft.c</groupId>
 		<artifactId>gjs-c-common-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../gjs-c-common-parent</relativePath>
@@ -35,9 +35,6 @@
 	
 	<properties>
 		<!-- NAR -->
-		<!--
-		<nar-maven-plugin.version>3.11.1-GJS</nar-maven-plugin.version>
-		-->
 		<nar-maven-plugin.version>4.0.0-SNAPSHOT</nar-maven-plugin.version>
 	</properties>
 
@@ -46,7 +43,7 @@
 		<pluginManagement>				
 			<plugins>
 				<plugin>
-					<groupId>org.gjs.maven.plugins</groupId>
+					<groupId>org.gjsoft.maven.plugins</groupId>
 					<artifactId>nar-maven-plugin</artifactId>
 					<version>${nar-maven-plugin.version}</version>
 					<extensions>true</extensions>
@@ -56,7 +53,7 @@
 		</pluginManagement>				
 		<plugins>
 			<plugin>
-				<groupId>org.gjs.maven.plugins</groupId>
+				<groupId>org.gjsoft.maven.plugins</groupId>
 				<artifactId>nar-maven-plugin</artifactId>
 			</plugin>
 		</plugins>

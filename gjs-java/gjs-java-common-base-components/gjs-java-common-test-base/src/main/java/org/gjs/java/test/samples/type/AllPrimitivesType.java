@@ -6,6 +6,18 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class AllPrimitivesType.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Tipo con un campo de cada tipo primitivo y envuelto.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class AllPrimitivesType {

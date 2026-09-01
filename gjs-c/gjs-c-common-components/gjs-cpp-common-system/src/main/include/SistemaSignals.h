@@ -119,26 +119,13 @@
 
 #else // Caso por defecto: ( defined ( WIN ) )
 
-#	if ( defined ( VC ) )
+/* En Windows hay dos <signal.h> distintos segun quien compile: el de Cygwin trae
+   el juego POSIX casi entero, y el de MinGW solo seis senales mas SIGBREAK ( que
+   a su vez no existe en Cygwin ). Comprobado con gcc y con
+   x86_64-w64-mingw32-gcc el 2026-08-05. Lo que no existe se queda en -1, que es
+   lo que SisSignal trata como senal no reconocida. */
 
-#		define SIS_COD_SIG_ABORTAR							SIGABRT
-#		define SIS_COD_SIG_ALARMA							-1
-#		define SIS_COD_SIG_ERROR_COMA_FLOTANTE				SIGFPE
-#		define SIS_COD_SIG_TERMINAL_DESCONECTADO			-1
-#		define SIS_COD_SIG_INSTRUCCION_ILEGAL				SIGILL
-#		define SIS_COD_SIG_INTERRUPCION						SIGINT
-#		define SIS_COD_SIG_FINALIZACION_OBLIGADA			-1
-#		define SIS_COD_SIG_ERROR_TUBERIA					-1
-#		define SIS_COD_SIG_SALIR							SIGBREAK
-#		define SIS_COD_SIG_REFERENCIA_MEMORIA_INVALIDA		SIGSEGV
-#		define SIS_COD_SIG_FINALIZACION						SIGTERM
-#		define SIS_COD_SIG_USUARIO_1						-1
-#		define SIS_COD_SIG_USUARIO_2						-1
-#		define SIS_COD_SIG_ERROR_BUS						-1
-#		define SIS_COD_SIG_TEMPORIZADOR						SIGPROF
-#		define SIS_COD_SIG_DEPURACION						-1
-
-#	else // Caso GNU:
+#	if ( defined ( CYGWIN ) )
 
 #		define SIS_COD_SIG_ABORTAR							SIGABRT
 #		define SIS_COD_SIG_ALARMA							SIGALRM
@@ -155,6 +142,24 @@
 #		define SIS_COD_SIG_USUARIO_2						SIGUSR2
 #		define SIS_COD_SIG_TEMPORIZADOR						SIGPROF
 #		define SIS_COD_SIG_DEPURACION						SIGTRAP
+
+#	else // MinGW:
+
+#		define SIS_COD_SIG_ABORTAR							SIGABRT
+#		define SIS_COD_SIG_ALARMA							-1
+#		define SIS_COD_SIG_ERROR_COMA_FLOTANTE				SIGFPE
+#		define SIS_COD_SIG_TERMINAL_DESCONECTADO			-1
+#		define SIS_COD_SIG_INSTRUCCION_ILEGAL				SIGILL
+#		define SIS_COD_SIG_INTERRUPCION						SIGINT
+#		define SIS_COD_SIG_FINALIZACION_OBLIGADA			-1
+#		define SIS_COD_SIG_ERROR_TUBERIA					-1
+#		define SIS_COD_SIG_SALIR							SIGBREAK
+#		define SIS_COD_SIG_REFERENCIA_MEMORIA_INVALIDA		SIGSEGV
+#		define SIS_COD_SIG_FINALIZACION						SIGTERM
+#		define SIS_COD_SIG_USUARIO_1						-1
+#		define SIS_COD_SIG_USUARIO_2						-1
+#		define SIS_COD_SIG_TEMPORIZADOR						-1
+#		define SIS_COD_SIG_DEPURACION						-1
 
 #	endif
 

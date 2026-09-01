@@ -72,7 +72,7 @@ SParametro * SParCrearExt  ( int iTipo, SCadena * p_cadNombre )
 	return ( p_parObj );
 }
 
-SParametro * SParCrearExtLit  ( int iTipo, const char * p_cNombre )
+SParametro * SParCrearLitExt  ( int iTipo, const char * p_cNombre )
 {
 	SParametro * p_parObj;
 	
@@ -241,7 +241,7 @@ int SParEstablecerValor ( SParametro * p_parObj, SValor * p_valDato )
 	return ( iRes );
 }
 
-int SParEstablecerValorExt (  SParametro * p_parObj, SCadena * p_cadValor )
+int SParEstablecerValorExt ( SParametro * p_parObj, SCadena * p_cadValor )
 {
 	int iRes;
 	
@@ -257,7 +257,7 @@ int SParEstablecerValorExt (  SParametro * p_parObj, SCadena * p_cadValor )
 	return ( iRes );
 }
 
-int SParEstablecerValorExtLit (  SParametro * p_parObj, const char * p_cValor )
+int SParEstablecerValorLitExt ( SParametro * p_parObj, const char * p_cValor )
 {
 	int iRes;
 	

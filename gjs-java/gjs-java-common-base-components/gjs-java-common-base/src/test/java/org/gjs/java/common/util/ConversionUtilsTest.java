@@ -21,6 +21,7 @@ import java.util.Properties;
 import org.gjs.java.common.enums.ManagedType;
 import org.gjs.java.common.enums.PrimitiveType;
 import org.gjs.java.common.exception.GjsException;
+import org.gjs.java.common.test.utils.AssertionUtils;
 import org.gjs.java.common.util.ConversionUtils;
 import org.gjs.java.test.BaseClassTest;
 import org.gjs.java.test.samples.pojos.SamplePojo;
@@ -380,7 +381,7 @@ class ConversionUtilsTest extends BaseClassTest<ConversionUtils> {
 			managedValue = ConversionUtils.toManagedValue(ManagedType.DATE.getClassName(), value);
 			assertNotNull(managedValue);
 			assertTrue(managedValue instanceof Date);
-			org.gjs.java.test.util.AssertionUtils.assertSameDay(new SimpleDateFormat("yyyyMMdd").parse(value),
+			AssertionUtils.assertSameDay(new SimpleDateFormat("yyyyMMdd").parse(value),
 					(Date) managedValue);
 
 			value = "test";
@@ -390,7 +391,7 @@ class ConversionUtilsTest extends BaseClassTest<ConversionUtils> {
 			managedValue = ConversionUtils.toManagedValue(ManagedType.LOCALDATETIME.getClassName(), value);
 			assertNotNull(managedValue);
 			assertTrue(managedValue instanceof LocalDateTime);
-			org.gjs.java.test.util.AssertionUtils.assertSameSecond(
+			AssertionUtils.assertSameSecond(
 					new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss").parse("2024-01-05T10:14:11"),
 					Date.from(((LocalDateTime) managedValue).atZone(ZoneId.systemDefault()).toInstant()));
 
@@ -401,14 +402,14 @@ class ConversionUtilsTest extends BaseClassTest<ConversionUtils> {
 			managedValue = ConversionUtils.toManagedValue(ManagedType.LOCALDATE.getClassName(), value);
 			assertNotNull(managedValue);
 			assertTrue(managedValue instanceof LocalDate);
-			org.gjs.java.test.util.AssertionUtils.assertSameSecond(
+			AssertionUtils.assertSameSecond(
 					new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-05"),
 					Date.from(((LocalDate) managedValue).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 			value = "11/02/23";
 			managedValue = ConversionUtils.toManagedValue(ManagedType.LOCALDATE.getClassName(), value);
 			assertNotNull(managedValue);
 			assertTrue(managedValue instanceof LocalDate);
-			org.gjs.java.test.util.AssertionUtils.assertSameSecond(
+			AssertionUtils.assertSameSecond(
 					new SimpleDateFormat("yyyy-MM-dd").parse("2023-02-11"),
 					Date.from(((LocalDate) managedValue).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 
@@ -419,7 +420,7 @@ class ConversionUtilsTest extends BaseClassTest<ConversionUtils> {
 			managedValue = ConversionUtils.toManagedValue(ManagedType.TIMESTAMP.getClassName(), value);
 			assertNotNull(managedValue);
 			assertTrue(managedValue instanceof Timestamp);
-			org.gjs.java.test.util.AssertionUtils.assertSameSecond(
+			AssertionUtils.assertSameSecond(
 					new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2024-01-05 10:14:29"),
 					new Date(((Timestamp) managedValue).getTime()));
 
@@ -444,7 +445,7 @@ class ConversionUtilsTest extends BaseClassTest<ConversionUtils> {
 			final Object managedValue = ConversionUtils.toManagedValue(ManagedType.LOCALDATE.getClassName(), value);
 			assertNotNull(managedValue);
 			assertTrue(managedValue instanceof LocalDate);
-			org.gjs.java.test.util.AssertionUtils.assertSameDay(new SimpleDateFormat("yy-MM-dd").parse("23-02-11"),
+			AssertionUtils.assertSameDay(new SimpleDateFormat("yy-MM-dd").parse("23-02-11"),
 					Date.from(((LocalDate) managedValue).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 
 		} catch (final Exception e) {

@@ -5,6 +5,18 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleEntityDto.
+ *
+ * Clase de datos de ejemplo de la librería Gjs
+ *
+ * DTO con los campos habituales de una entidad: identificador, nombre, descripción, fechas de alta y baja y marca de activo.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class SampleEntityDto {

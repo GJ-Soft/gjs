@@ -85,22 +85,6 @@ import org.slf4j.LoggerFactory;
  * generateSetManagedValue: genera un conjunto de longitud aleatoria de objetos
  * aleatorio de uno de los tipos incluidos en el enumerado ManagedType
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

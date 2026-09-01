@@ -3,33 +3,27 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-		<groupId>org.gjs.java.maven</groupId>
+		<groupId>org.gjsoft.java.maven</groupId>
 		<artifactId>gjs-java-maven-base-parent</artifactId>
 		<version>1.0.0-RC.2</version>
         <relativePath>../../gjs-java-base-parents/gjs-java-maven-base-parent</relativePath>
     </parent>
 
-    <groupId>org.gjs.java.maven.base</groupId>
+    <groupId>org.gjsoft.java.maven.base</groupId>
     <artifactId>gjs-maven-common-base</artifactId>
     <packaging>jar</packaging>
 	
     <name>GJS Maven base</name>
     <description>Base classes and tools for Maven plugins</description>
 
-    <properties>
-		<!-- Dependency versions -->
-		
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-        </dependencies>
-    </dependencyManagement>
-
-    <build>
-    </build>
-
-    <profiles>
-    </profiles>
+    <dependencies>
+        <!-- DirectoryScanner, en GjsAbstractFileSelectionMojo. La aporta Maven en
+             tiempo de ejecucion, de ahi el scope provided. -->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>

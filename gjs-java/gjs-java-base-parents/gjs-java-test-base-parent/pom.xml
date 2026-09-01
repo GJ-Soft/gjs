@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.java</groupId>
+		<groupId>org.gjsoft.java</groupId>
 		<artifactId>gjs-java-base-parent</artifactId>
 		<version>1.0.0-RC.2</version>    
 		<relativePath>../gjs-java-base-parent</relativePath>
@@ -26,13 +26,13 @@
 	<properties>
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->
-		<openpojo.version>1.0.0-SNAPSHOT</openpojo.version>
+		<openpojo.version>1.0.0-RC.2</openpojo.version>
 	</properties>
 	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.gjs.tools</groupId>
+				<groupId>org.gjsoft.java.tools</groupId>
 				<artifactId>openpojo</artifactId>
 				<version>${openpojo.version}</version>
 			</dependency>
@@ -40,7 +40,7 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- Las dependencias normales de test haxen falta en compile -->
+		<!-- Las dependencias normales de test hacen falta en compile -->
 	    <dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>

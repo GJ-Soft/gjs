@@ -433,7 +433,7 @@ long SisCrearSubproceso ( const string & sEjecutable, const string & sParametros
 			}
 			else
 			{
-				if ( execl ( sEjecutable.c_str(), NULL) < 0 )
+				if ( execl ( sEjecutable.c_str(), sEjecutable.c_str(), NULL) < 0 )
 				{
 					exit ( -1 );
 				}
@@ -449,7 +449,7 @@ long SisCrearSubproceso ( const string & sEjecutable, const string & sParametros
 		}
 		else
 		{
-			if ( execl ( sEjecutable.c_str(), NULL) < 0 )
+			if ( execl ( sEjecutable.c_str(), sEjecutable.c_str(), NULL) < 0 )
 			{
 				exit ( -1 );
 			}
@@ -562,7 +562,7 @@ thread_id SisCrearHilo ( PTR_FUNCION_HILO p_funCodigo, void * p_vParam, int iSus
 			dwFlags = 0;
 		}
 		hHilo = CreateThread ( (LPSECURITY_ATTRIBUTES)NULL, (DWORD)0, (LPTHREAD_START_ROUTINE)p_funCodigo, lpParam, dwFlags, (LPDWORD)&dwId ); 
-		if ( ES_VALIDO ( hHilo ) ) 
+		if ( ES_MANEJADOR_VALIDO ( hHilo ) ) 
 		{
 			thHilo = (thread_id) dwId;
 		}
@@ -630,7 +630,7 @@ bool SisExisteHilo ( thread_id thTID )
 		hHilo = NULL;
 	}
 #  endif
-	if ( ES_VALIDO ( hHilo ) )
+	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
 	{
 		bRes = true;
 		CloseHandle ( hHilo );
@@ -678,7 +678,7 @@ bool SisSuspenderHilo ( thread_id thTID )
 		hHilo = NULL;
 	}
 #  endif
-	if ( ES_VALIDO ( hHilo ) )
+	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
 	{
 		bRes = ( SuspendThread ( hHilo ) != 0xFFFFFFFF );
 		CloseHandle ( hHilo );
@@ -722,7 +722,7 @@ bool SisReanudarHilo ( thread_id thTID )
 		hHilo = NULL;
 	}
 #  endif
-	if ( ES_VALIDO ( hHilo ) )
+	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
 	{
 		bRes = ( ResumeThread ( hHilo ) != 0xFFFFFFFF );
 		CloseHandle ( hHilo );
@@ -768,7 +768,7 @@ bool SisFinalizarHilo ( thread_id thTID )
 		hHilo = NULL;
 	}
 #  endif
-	if ( ES_VALIDO ( hHilo ) )
+	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
 	{
 		bRes = ( TerminateThread ( hHilo, 0 ) != -1 );
 		CloseHandle ( hHilo );
@@ -829,7 +829,7 @@ int SisHiloPrioridad ( thread_id thTID )
 		hHilo = NULL;
 	}
 #  endif
-	if ( ES_VALIDO ( hHilo ) )
+	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
 	{
 		iRes = GetThreadPriority ( hHilo );
 		if ( iRes == THREAD_PRIORITY_ERROR_RETURN )
@@ -844,9 +844,41 @@ int SisHiloPrioridad ( thread_id thTID )
 	return ( iRes );
 }
 
+# if ( !defined ( WIN ) )
+/* Cierto si la cadena no esta vacia y es toda digitos. Se usa para quedarse con
+   las entradas de /proc que son un PID, descartando las demas ( cpuinfo, self,
+   registry... ). */
+static bool _SisEsSoloDigitos ( const char * p_cNombre )
+{
+	bool		bRes;
+	int			iPos;
+
+	bRes = false;
+	if ( ES_VALIDO ( p_cNombre ) )
+	{
+		iPos = 0;
+		bRes = true;
+		while ( ( p_cNombre [ iPos ] != '\0' ) && bRes )
+		{
+			if ( ( p_cNombre [ iPos ] < '0' ) || ( p_cNombre [ iPos ] > '9' ) )
+			{
+				bRes = false;
+			}
+			iPos = iPos + 1;
+		}
+		if ( iPos == 0 )
+		{
+			bRes = false;
+		}
+	}
+	return ( bRes );
+}
+# endif
+
+
 int SisNumProcesos ()
 {
-	int			iRes = 0;		
+	int			iRes = 0;
 # if ( defined ( WIN ) )
 #  if ( defined ( _EnumProcesses ) )
 	DWORD		dwTamOcupado;
@@ -897,7 +929,25 @@ int SisNumProcesos ()
 	}
 #  endif
 # else
-	// PENDIENTE:
+	/* Mismo recorrido de /proc que SisListaProcesos, contando en vez de
+	   guardando. La misma LIMITACION EN CYGWIN: solo cuenta procesos Cygwin. */
+	DIR *			p_dirProc;
+	struct dirent *	p_entDato;
+
+	p_dirProc = opendir ( "/proc" );
+	if ( ES_VALIDO ( p_dirProc ) )
+	{
+		p_entDato = readdir ( p_dirProc );
+		while ( ES_VALIDO ( p_entDato ) )
+		{
+			if ( _SisEsSoloDigitos ( p_entDato->d_name ) )
+			{
+				iRes = iRes + 1;
+			}
+			p_entDato = readdir ( p_dirProc );
+		}
+		closedir ( p_dirProc );
+	}
 # endif
 	return ( iRes );
 }
@@ -917,12 +967,6 @@ list<long> * SisListaProcesos ()
 	HANDLE					hSnapshot;
 	PROCESSENTRY32			pe32Datos;
 	int						iFinal;
-#  endif
-# else
-#  if ( defined ( DEVPS_GET_NUM_PIDS ) )
-	int						iDesc;
-	int						iNumProcesos;
-    int						iProceso;
 #  endif
 # endif
 
@@ -955,13 +999,12 @@ list<long> * SisListaProcesos ()
 		{
 			iError = 0;
 			iFinal = 0;
+			// Process32First ya ha dejado el primer proceso en pe32Datos: se
+			// mete y solo despues se pide el siguiente. Al reves se perdia uno.
 			while ( ( iFinal == 0 ) && ( iError == 0 ) )
 			{
-				if ( Process32Next ( hSnapshot, &pe32Datos ) != 0 )
-				{
-					p_lislPID->push_back ( ( long ) pe32Datos.th32ProcessID );
-				}
-				else
+				p_lislPID->push_back ( ( long ) pe32Datos.th32ProcessID );
+				if ( Process32Next ( hSnapshot, &pe32Datos ) == 0 )
 				{
 					iFinal = 1;
 				}
@@ -980,66 +1023,35 @@ list<long> * SisListaProcesos ()
 
 #  endif
 # else
-#  if ( defined ( DEVPS_GET_NUM_PIDS ) )
-	iDesc = open ( _DISP_TMP_INFO_PROCESOS, O_RDONLY );
-	if ( iDesc >= 0 ) 
-	{
-		if ( ioctl ( iDesc, DEVPS_GET_NUM_PIDS, &iNumProcesos ) >= 0 ) 
-		{
-			p_pidLista = (pid_t *) MemReservar ( iNumProcesos + 10, sizeof ( pid_t ) );
-			if ( ES_VALIDO ( p_pidLista ) )
-			{
-				p_pidLista [ 0 ] = iNumProcesos + 10;
+	/* En POSIX la lista de procesos se saca recorriendo /proc: cada
+	   subdirectorio cuyo nombre es todo digitos es un PID.
 
-				if ( ioctl ( iDesc, DEVPS_GET_PID_LIST, p_pidLista ) >= 0 )
-				{
-					iProceso = 0;
-					iError = 0;
-					p_lislPID = new CListaEnterosLargos ();
-					if ( ES_VALIDO ( p_lislPID ) )
-					{
-						while ( ( iProceso < iNumProcesos + 10 ) && ( iError == 0 ) )
-						{
-							if ( p_pidLista [ iProceso ] >= 0 )
-							{
-								if ( p_lislPID->Insertar ( (long) p_pidLista [ iProceso ] ) == 0 )
-								{
-									iError = 1;
-								}
-							}
-							iProceso = iProceso + 1;
-						}
-						if ( iError == 1 )
-						{
-							DESTRUIR ( CListaEnterosLargos, p_lislPID );
-						}
-					}
-				}
-				else
-				{
-					p_lislPID = NULL;
-				}
-				MemLiberar ( (void **) &p_pidLista );
-			}
-			else
-			{
-				p_lislPID = NULL;
-			}
-		}
-		else
+	   LIMITACION EN CYGWIN: el /proc de Cygwin solo lista los procesos Cygwin,
+	   no los del sistema. Compilando en modo Cygwin POSIX ( el de por defecto )
+	   esta funcion devuelve un punado de PID, mientras que en estilo Windows
+	   devuelve todos los del equipo. En Linux nativo si es la lista completa. */
+	DIR *			p_dirProc;
+	struct dirent *	p_entDato;
+
+	p_dirProc = opendir ( "/proc" );
+	if ( ES_VALIDO ( p_dirProc ) )
+	{
+		p_lislPID = new list<long> ();
+		p_entDato = readdir ( p_dirProc );
+		while ( ES_VALIDO ( p_entDato ) )
 		{
-			p_lislPID = NULL;
+			if ( _SisEsSoloDigitos ( p_entDato->d_name ) )
+			{
+				p_lislPID->push_back ( atol ( p_entDato->d_name ) );
+			}
+			p_entDato = readdir ( p_dirProc );
 		}
-		close ( iDesc );
+		closedir ( p_dirProc );
 	}
 	else
 	{
 		p_lislPID = NULL;
 	}
-#  else
-	// PENDIENTE:
-	p_lislPID = NULL;
-#  endif
 # endif
 	return ( p_lislPID );
 }

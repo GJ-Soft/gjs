@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-		<groupId>org.gjs.npm</groupId>
+		<groupId>org.gjsoft.npm</groupId>
 		<artifactId>gjs-npm-typescript-parent</artifactId>
 		<version>1.0.0-RC.2</version>
         <relativePath />
@@ -19,6 +19,9 @@
     <description>Project ${capitalizedName} in language typescript</description>
 
     <properties>
-    </properties>
+ 		<!-- Project management -->
+		<repository.name>${artifactId}</repository.name>
+
+   </properties>
 
 </project>

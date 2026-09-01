@@ -29,9 +29,8 @@ nivel o inferiores.
   │    Bits · Nibble · Byte · Word · DWord · Booleano · Intercambios      │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 0. Configuración (cabeceras sin fuente)                               │
-  │    Precompilacion · BaseConfig · API · Base · ConstantesBase          │
-  │    BaseErrores · ASCIICodigos · JuegosCaracteres · Objetos            │
-  │    Funciones · TerminalANSI                                           │
+  │    Precompilacion · BaseConfig · Base · ConstantesBase · BaseErrores  │
+  │    ASCIICodigos · JuegosCaracteres · Funciones · TerminalANSI         │
   └───────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -119,7 +118,7 @@ establece cuatro ejes:
 | ---------------- | ------------------------------------------------------- |
 | Máquina          | `A64`, `A32`, `A16`, `A8` — deducido de `INTPTR_MAX`    |
 | Sistema / estilo | `POSIX`, `WIN`, más `CYGWIN` como calificador adicional |
-| Compilador       | `GNU` (por defecto), `CC`, `VC`                         |
+| Compilador       | `GNU` (por defecto), `CC`                               |
 | Depuración       | `MODO_DEPURACION`, `MODO_DEPURACION_2`                  |
 | Otros            | `ALM_ERRORES`                                           |
 
@@ -129,7 +128,7 @@ Reglas de conmutación:
   (`CYGWIN_WIN` o `CYGWIN_POSIX`).
 - Con `CYGWIN`: `CYGWIN_WIN` → `WIN`; en cualquier otro caso → `POSIX`.
 - Sin `CYGWIN`, `WIN` y `POSIX`: se asume `WIN`.
-- `CC` fuerza `POSIX`; `VC` fuerza `WIN`.
+- `CC` fuerza `POSIX`.
 - `MODO_DEPURACION_2` implica `MODO_DEPURACION`.
 - En `WIN` se eleva `WINVER` y `_WIN32_WINNT` a `0x0500` como mínimo.
 
@@ -174,12 +173,6 @@ Cabecera fachada. Es la única que debería incluir el código cliente. Arrastra
 `BaseConfig.h` y las cabeceras de todos los módulos **salvo `SConversor.h`**,
 que hay que incluir aparte.
 
-### `API.h`
-
-Define `API_EXPORT` / `API_IMPORT` (`__declspec` con `VC`, `__attribute__` con
-GNU) y el macro `API`, que se expande a `API_EXPORT` si está definido `DLL` y a
-nada en caso contrario.
-
 ### `ConstantesBase.h`
 
 Resultados de comparación: `COMP_DIFERENTE` (0), `COMP_IGUAL` (1),
@@ -217,19 +210,16 @@ Constantes `JUEG_CAR_*` con los identificadores numéricos de las páginas de
 código (EBCDIC, OEM, ANSI, ISO-8859, Mac, EUC, ISCII, Unicode…), con la
 numeración de Windows. [UniChar](UniChar.md) usa `JUEG_CAR_OEM_LATIN_I` (850).
 
-### `Objetos.h`
-
-Macros `CREAR`, `DESTRUIR` y `VERIFICAR`, que sustituyen a `new`/`delete`.
-**Todo el contenido está bajo `#if defined ( CPP )`**, así que en una compilación
-C pura la cabecera queda vacía.
-
 ### `Funciones.h`
 
 Catálogo de `typedef` de punteros a función y procedimiento, nombrados por su
 firma: `PPRC<args>` para los que devuelven `void` y `PFUN<retorno><args>` para
-el resto (`PFUNINTV`, `PFUNLONGT`, `PFUNPCHARPV`…). También define los alias
-sencillos `PTR_FUNCION` y `PTR_PROCEDIMIENTO`. Los tests usan `PFUNINTV`
-(`int (*)(void)`) como tipo de cada caso de prueba.
+el resto (`PFUNINTV`, `PFUNLONGT`, `PFUNPCHARPV`…). Hay una familia por tipo de
+retorno: `INT`, `LONG`, `UINT`, `ULONG`, `CHAR`, `PCHAR`, `LIT`, `FLT`, `DBL` y
+`VOID`. También define los alias sencillos `PTR_FUNCION` y
+`PTR_PROCEDIMIENTO`. Los tests usan `PFUNINTV` (`int (*)(void)`) como tipo de
+cada caso de prueba, y [Hash](Hash.md) apoya en `PFUNUINTPV` su alias
+`PFUNHASH`.
 
 ### `TerminalANSI.h`
 

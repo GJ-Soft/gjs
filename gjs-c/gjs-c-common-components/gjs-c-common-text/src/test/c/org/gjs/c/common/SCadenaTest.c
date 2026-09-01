@@ -351,6 +351,91 @@ static int TestSCadGenerarConFormato01 ()
 
 
 
+static int TestSCadComparar01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCadComparar 01:\n" );
+
+	SCadena * p_cadA = SCadGenerar ( "abc" );
+	SCadena * p_cadB = SCadGenerar ( "abd" );
+	if ( ES_VALIDO ( p_cadA ) && ES_VALIDO ( p_cadB ) )
+	{
+		/* Comparacion de tres estados entre dos SCadena. */
+		if ( SCadComparar ( p_cadA, p_cadB ) != COMP_MENOR )
+		{
+			printf( "Error caso 1: se esperaba COMP_MENOR: %d\n", SCadComparar ( p_cadA, p_cadB ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadComparar ( p_cadB, p_cadA ) != COMP_MAYOR )
+		{
+			printf( "Error caso 2: se esperaba COMP_MAYOR: %d\n", SCadComparar ( p_cadB, p_cadA ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadComparar ( p_cadA, p_cadA ) != COMP_IGUAL )
+		{
+			printf( "Error caso 3: se esperaba COMP_IGUAL: %d\n", SCadComparar ( p_cadA, p_cadA ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Y contra un literal. */
+		if ( SCadCompararLiteral ( p_cadA, "abd" ) != COMP_MENOR )
+		{
+			printf( "Error caso 4: se esperaba COMP_MENOR contra el literal\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadCompararLiteral ( p_cadB, "abc" ) != COMP_MAYOR )
+		{
+			printf( "Error caso 5: se esperaba COMP_MAYOR contra el literal\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadCompararLiteral ( p_cadA, "abc" ) != COMP_IGUAL )
+		{
+			printf( "Error caso 6: se esperaba COMP_IGUAL contra el literal\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Una cadena valida es mayor que una nula. */
+		if ( SCadComparar ( p_cadA, NULL ) != COMP_MAYOR )
+		{
+			printf( "Error caso 7: una cadena valida deberia ser mayor que una nula\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadComparar ( NULL, p_cadB ) != COMP_MENOR )
+		{
+			printf( "Error caso 8: una cadena nula deberia ser menor que una valida\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadComparar ( NULL, NULL ) != COMP_IGUAL )
+		{
+			printf( "Error caso 9: dos cadenas nulas deberian ser iguales\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadCompararLiteral ( p_cadA, NULL ) != COMP_MAYOR )
+		{
+			printf( "Error caso 10: una cadena valida deberia ser mayor que un literal nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadCompararLiteral ( NULL, "abc" ) != COMP_MENOR )
+		{
+			printf( "Error caso 11: una cadena nula deberia ser menor que un literal valido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadCompararLiteral ( NULL, NULL ) != COMP_IGUAL )
+		{
+			printf( "Error caso 12: dos valores nulos deberian ser iguales\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron generar las cadenas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCadDestruir ( &p_cadA );
+	SCadDestruir ( &p_cadB );
+	return ( iRes );
+}
+
+
+
 int TestSCadena ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -359,6 +444,7 @@ int TestSCadena ()
 			( TestSCadGenerar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadCopiarConcatenar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadComparaciones01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCadComparar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadEmpiezaAcaba01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadTransformar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadCaracter01 () == BOOL_VAL_CIERTO ) &&

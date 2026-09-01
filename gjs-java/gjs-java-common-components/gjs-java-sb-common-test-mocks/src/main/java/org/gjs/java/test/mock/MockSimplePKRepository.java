@@ -14,22 +14,6 @@ import org.springframework.core.io.Resource;
  * Implementa un repositorio JPA de datos sencillo en memoria para cualquier
  * clase de objetos cuya clave primaria sea un Long.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @param <T> la clase de las entidad
  *
  * @author Gjs

@@ -8,6 +8,18 @@ import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SamplePK.
+ *
+ * Clase de datos de ejemplo de la librería Gjs
+ *
+ * Clave primaria compuesta de ejemplo, formada por los identificadores de las dos entidades que relaciona.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 @Embeddable

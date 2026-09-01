@@ -25,22 +25,6 @@ import org.slf4j.LoggerFactory;
  * y luego en los de Semilla de forma que en la aoplicación se podrían
  * sobrescribir los de Semilla.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

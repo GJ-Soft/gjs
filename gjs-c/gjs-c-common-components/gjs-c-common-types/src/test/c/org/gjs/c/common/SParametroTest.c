@@ -8,7 +8,7 @@ static int TestSParCrear01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SParCrear 01:\n" );
-	SParametro * p_parObj = SParCrearExtLit ( TIP_NUMERO_ENTERO, "param" );
+	SParametro * p_parObj = SParCrearLitExt ( TIP_NUMERO_ENTERO, "param" );
 	if ( ES_VALIDO ( p_parObj ) )
 	{
 		if ( SParTipo ( p_parObj ) != TIP_NUMERO_ENTERO )
@@ -45,7 +45,7 @@ static int TestSParEstablecer01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SParEstablecer 01:\n" );
-	SParametro * p_parObj = SParCrearExtLit ( TIP_CADENA, "nombre" );
+	SParametro * p_parObj = SParCrearLitExt ( TIP_CADENA, "nombre" );
 	if ( ES_VALIDO ( p_parObj ) )
 	{
 		if ( SParEstablecerNombreLit ( p_parObj, "otro" ) != 1 )
@@ -58,7 +58,7 @@ static int TestSParEstablecer01 ()
 			printf( "Error caso 2: se esperaba nombre \"otro\"\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( SParEstablecerValorExtLit ( p_parObj, "valor" ) != 1 )
+		if ( SParEstablecerValorLitExt ( p_parObj, "valor" ) != 1 )
 		{
 			printf( "Error caso 3: se esperaba establecer valor correcto\n" );
 			iRes = BOOL_VAL_FALSO;
@@ -77,7 +77,7 @@ static int TestSParDuplicar01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SParDuplicar 01:\n" );
-	SParametro * p_parObj = SParCrearExtLit ( TIP_NUMERO_ENTERO, "param" );
+	SParametro * p_parObj = SParCrearLitExt ( TIP_NUMERO_ENTERO, "param" );
 	if ( ES_VALIDO ( p_parObj ) )
 	{
 		SParametro * p_parDup = SParDuplicar ( p_parObj );

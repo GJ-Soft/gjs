@@ -21,22 +21,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Clase base para todos los test unitarios de repositorios JPA de la librería
  * Gjs
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @param <JPA> el repositorio JPA
  * @param <E>   la entidad JPA
  * @param <PK>  la clave primaria de la entidad JPA

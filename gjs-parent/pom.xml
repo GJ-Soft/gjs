@@ -1,14 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+		 child.project.url.inherit.append.path="false" >
     <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.gjs</groupId>
-		<artifactId>gjs</artifactId>
-		<version>1.0.0-RC.2</version>
-		<relativePath>..</relativePath>
-	</parent>
-	
+    <groupId>org.gjsoft</groupId>
     <artifactId>gjs-parent</artifactId>
+	<version>1.0.0-RC.2</version>
 	<packaging>pom</packaging>
 
     <name>GJS Parent</name>    
@@ -31,6 +29,17 @@
 	Special properties;
 	
 		* skip.if.not.source    :  true if packaging is pom, false otherwise
+
+		* repository.platform : Repository Management Platforms (GitHub, GitLab...)
+
+		* repository.url : Url of the Repository Management Platforms	
+
+		* repository.domain : Username or domain of the project's repository
+
+		* repository.name : Repository name of the project					
+
+		* repository.ciPath : Specific path to the CI/CD workflow of the project in the platform
+							  Example: actions (GitHub), -/pipelines (GitLab)	
 	
 	Environtment propeties:
 	
@@ -44,14 +53,17 @@
 					
 	Needs properties in settings.xml file: 
 		
-		* cygwinDir : Directory of Cygwin installation (indirectly, only for cygwin profile)
+		* cygwinDir : Directory of Cygwin installation. Windows style (C:\...), even when
+		              building from Cygwin: the auxiliary tools are launched as Windows
+		              processes and /cygdrive/... is not resolved.
 
-		* cygwinUser : Username for Cygwin (indirectly, only for cygwin profile)
-					
+		* systemUser : Username of the Cygwin / Unix home directory
+
 	</description>    
 
     <organization>    
-        <name>GJ Software</name>    
+        <name>GJ Software</name>  
+		<url>http://www.gjsoft.org/</url>
     </organization> 
 	
     <licenses>    
@@ -74,18 +86,16 @@
 			<timezone>+1</timezone>			
 		</developer>
 	</developers>
-	<issueManagement>
-		<system>GitHub Issues</system>
-		<url>https://github.com/GJ-Soft/gjs/issues</url>
-	</issueManagement>
-	<!--
-	<ciManagement>
-		<system>GitHub Actions</system>
-		<url>https://github.com/GJ-Soft/gjs/actions</url>
-	</ciManagement>
-	-->
+	<url>${repository.url}/${repository.domain}/${repository.name}</url>
 
     <properties>   
+		<!-- Project management -->
+		<repository.platform>GitHub</repository.platform>
+		<repository.url>https://github.com</repository.url>
+		<repository.domain>GJ-Soft</repository.domain>
+		<repository.ciPath>actions</repository.ciPath>
+		<repository.name>gjs</repository.name>
+
 		<!-- Encoding -->
  		<encoding>UTF-8</encoding>
  		<source.encoding>${encoding}</source.encoding>
@@ -116,43 +126,60 @@
 		<testResources.dir>${project.basedir}/src/test/resources</testResources.dir>
 		
 		<!-- Maven plugins -->
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-		<maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-site-plugin.version>3.11.0</maven-site-plugin.version>
-        <maven-scm-plugin.version>1.11.2</maven-scm-plugin.version>
-		<maven-help-plugin.version>3.5.1</maven-help-plugin.version>
-        <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
+        <maven-site-plugin.version>3.22.0</maven-site-plugin.version>
+        <maven-scm-plugin.version>2.2.1</maven-scm-plugin.version>
+		<maven-help-plugin.version>3.5.2</maven-help-plugin.version>
+        <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
 		<maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
-		<maven-dependency-plugin.version>3.9.0</maven-dependency-plugin.version>
+		<maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
 		<maven-source-plugin.version>3.4.0</maven-source-plugin.version>
-        <maven-assemby-plugin.version>3.7.1</maven-assemby-plugin.version>
-		<maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
-        <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+		<maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+        <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
-        <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
-        <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
-		<maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
+        <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
+        <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
+		<maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
 		<maven-verifier-plugin.version>1.1</maven-verifier-plugin.version>
-        <maven-project-info-reports-plugin.version>3.8.0</maven-project-info-reports-plugin.version>
-		<maven-release-plugin.version>3.2.0</maven-release-plugin.version>
+        <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
+		<maven-release-plugin.version>3.3.1</maven-release-plugin.version>
 		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
-		<maven-invoker-plugin.version>3.9.1</maven-invoker-plugin.version>
+		<maven-invoker-plugin.version>3.10.1</maven-invoker-plugin.version>
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
-		<properties-maven-plugin.version>1.2.1</properties-maven-plugin.version>
+		<properties-maven-plugin.version>1.3.0</properties-maven-plugin.version>
 
 		<!-- Additional Maven plugins -->
-        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
 		<copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
-        <gmavenplus-plugin.version>4.2.1</gmavenplus-plugin.version>
+        <gmavenplus-plugin.version>5.1.0</gmavenplus-plugin.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
         <maven-replacer-plugin.version>1.4.1</maven-replacer-plugin.version>
-		<maven-buildnumber-plugin.version>3.2.1</maven-buildnumber-plugin.version>
-		<license-maven-plugin.version>2.7.0</license-maven-plugin.version>
+		<maven-buildnumber-plugin.version>3.3.0</maven-buildnumber-plugin.version>
+		<license-maven-plugin.version>2.7.1</license-maven-plugin.version>
 		
 		<!-- Groovy -->
-		<groovy.version>4.0.29</groovy.version>
+		<groovy.version>5.1.1</groovy.version>
 	</properties>
+
+	<!-- Project Control Management -->
+	<scm child.scm.connection.inherit.append.path="false"
+			child.scm.developerConnection.inherit.append.path="false"
+			child.scm.url.inherit.append.path="false">
+        <connection>scm:git:${repository.url}/${repository.domain}/${repository.name}.git</connection>
+        <developerConnection>scm:git:${repository.url}/${repository.domain}/${repository.name}.git</developerConnection>
+        <url>${repository.url}/${repository.domain}/${repository.name}</url>
+        <tag>HEAD</tag>
+    </scm>
+	<issueManagement>
+		<system>${repository.platform} Issues</system>
+		<url>${repository.url}/${repository.domain}/${repository.name}/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>${repository.platform} CI/CD</system>
+		<url>${repository.url}/${repository.domain}/${repository.name}/${repository.ciPath}</url>
+	</ciManagement>
 
 	<build>
 		<defaultGoal>install</defaultGoal>
@@ -617,7 +644,13 @@
 			</activation>
             <properties>
 				<!-- Posix / Windows -->
-				<cygwinDir>/cygdrive/c/Desarrollo/Cygwin64</cygwinDir>
+				<!-- cygwinDir NO se define aqui. Viene del perfil activo del
+				     settings.xml, y tiene que estar en estilo Windows (C:\...):
+				     Maven y Ant lanzan los procesos con CreateProcess, que no
+				     entiende /cygdrive/..., y de esta propiedad salen las rutas
+				     de las herramientas auxiliares (cppcheck, gcovr, cygpath).
+				     Ademas los perfiles de settings.xml se inyectan despues que
+				     los del POM, con lo que un valor puesto aqui nunca ganaria. -->
 				<cygwin.style>posix</cygwin.style>
 				<environment>cygwin-${cygwin.style}</environment>
 				<environment.style>${cygwin.style}</environment.style>
@@ -688,88 +721,95 @@
 			<build>
 				<pluginManagement>
 					<plugins>
-				<!-- This plugin's configuration is used to store Eclipse m2e settings
-					 only. It has no influence on the Maven build itself. -->
-					<plugin>
-						<groupId>org.eclipse.m2e</groupId>
-						<artifactId>lifecycle-mapping</artifactId>
-						<version>1.0.0</version>
-						<configuration>
-							<lifecycleMappingMetadata>
-								<pluginExecutions>
-									<pluginExecution>
-										<pluginExecutionFilter>
-											<groupId>org.apache.maven.plugins</groupId>
-											<artifactId>maven-enforcer-plugin</artifactId>
-											<versionRange>[1.0.0,)</versionRange>
-											<goals>
-												<goal>enforce</goal>
-											</goals>
-										</pluginExecutionFilter>
-										<action>
-											<ignore />
-										</action>
-									</pluginExecution>
-									<pluginExecution>
-										<pluginExecutionFilter>
-											<groupId>org.apache.maven.plugins</groupId>
-											<artifactId>maven-help-plugin</artifactId>
-											<versionRange>[1.0.0,)</versionRange>
-											<goals>
-												<goal>active-profiles</goal>
-												<goal>system</goal>
-											</goals>
-										</pluginExecutionFilter>
-										<action>
-											<ignore />
-										</action>
-									</pluginExecution>
-									<pluginExecution>
-										<pluginExecutionFilter>
-											<groupId>org.codehaus.gmavenplus</groupId>
-											<artifactId>gmavenplus-plugin</artifactId>
-											<versionRange>[1.0.0,)</versionRange>
-											<goals>
-												<goal>unpack-dependencies</goal>
-											</goals>
-										</pluginExecutionFilter>
-										<action>
-											<ignore />
-										</action>
-									</pluginExecution>
-									<pluginExecution>
-										<pluginExecutionFilter>
-											<groupId>org.apache.maven.plugins</groupId>
-											<artifactId>maven-antrun-plugin</artifactId>
-											<versionRange>[1.0.0,)</versionRange>
-											<goals>
-												<goal>run</goal>
-											</goals>
-										</pluginExecutionFilter>
-										<action>
-											<ignore />
-										</action>
-									</pluginExecution>
-									<pluginExecution>
-										<pluginExecutionFilter>
-											<groupId>org.codehaus.gmaven</groupId>
-											<artifactId>groovy-maven-plugin</artifactId>
-											<versionRange>[1.0.0,)</versionRange>
-											<goals>
-												<goal>execute</goal>
-											</goals>
-										</pluginExecutionFilter>
-										<action>
-											<ignore />
-										</action>
-									</pluginExecution>
-								</pluginExecutions>
-							</lifecycleMappingMetadata>
-						</configuration>
-					</plugin>
-				  </plugins>
+						<!-- This plugin's configuration is used to store Eclipse m2e settings
+							 only. It has no influence on the Maven build itself. -->
+						<plugin>
+							<groupId>org.eclipse.m2e</groupId>
+							<artifactId>lifecycle-mapping</artifactId>
+							<version>1.0.0</version>
+							<configuration>
+								<lifecycleMappingMetadata>
+									<pluginExecutions>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.apache.maven.plugins</groupId>
+												<artifactId>maven-enforcer-plugin</artifactId>
+												<versionRange>[1.0.0,)</versionRange>
+												<goals>
+													<goal>enforce</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.apache.maven.plugins</groupId>
+												<artifactId>maven-help-plugin</artifactId>
+												<versionRange>[1.0.0,)</versionRange>
+												<goals>
+													<goal>active-profiles</goal>
+													<goal>system</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.codehaus.gmavenplus</groupId>
+												<artifactId>gmavenplus-plugin</artifactId>
+												<versionRange>[1.0.0,)</versionRange>
+												<goals>
+													<goal>unpack-dependencies</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.apache.maven.plugins</groupId>
+												<artifactId>maven-antrun-plugin</artifactId>
+												<versionRange>[1.0.0,)</versionRange>
+												<goals>
+													<goal>run</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.codehaus.gmaven</groupId>
+												<artifactId>groovy-maven-plugin</artifactId>
+												<versionRange>[1.0.0,)</versionRange>
+												<goals>
+													<goal>execute</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+									</pluginExecutions>
+								</lifecycleMappingMetadata>
+							</configuration>
+						</plugin>
+					</plugins>
 				</pluginManagement>
 			</build>
+		</profile>
+		<profile>
+			<id>solo-el-padre</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.este-es-el-padre</exists></file></activation>
+			<properties><repository.name>gjs-parent</repository.name></properties>
 		</profile>
 	</profiles>
 </project>

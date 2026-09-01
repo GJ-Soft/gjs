@@ -9,6 +9,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * The Class SamplePojoLombok.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Como SamplePojo, pero generado entero por Lombok: accesores, constructores, builder y toString.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @SuppressWarnings("rawtypes")
 @Getter
 @Setter

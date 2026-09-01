@@ -52,20 +52,6 @@ bool AplicConAbrir ()
 #	  if ( defined ( WIN ) )
 		AllocConsole ();
 #	 else
-#	   if ( defined ( VC ) )
-		iFilDesc = _open ( "/dev/tty", O_RDWR );
-		_dup2 ( iFilDesc, 0 );
-		_dup2 ( iFilDesc, 1 );
-		_dup2 ( iFilDesc, 2 );
-
-		stdin = _fdopen ( 0, "r" );
-		stdout = _fdopen ( 1, "w" );
-		stderr = _fdopen ( 2, "w" );
-
-		_setlinebuf ( stdin );
-		_setlinebuf ( stdout );
-		_setbuf ( stderr, NULL );
-#	   else // GNU:
 		iFilDesc = open ( "/dev/tty", O_RDWR );
 		tcgetattr ( iFilDesc, &trmioConsola );
 
@@ -78,7 +64,6 @@ bool AplicConAbrir ()
 		setbuf ( stderr, NULL );
 
 		tcsetattr ( iFilDesc, TCSANOW, &trmioConsola );
-#	   endif
 #	 endif
 		g_bAplicConsolaDisponible = true;
 	}
@@ -166,53 +151,45 @@ void AplicConLimpiar ()
 	}
 }
 
-int AplicConLeerNumero ()
+/* Lee el primer caracter de la linea y consume el resto, incluido el retorno,
+   para no dejarlo en la entrada y que lo recoja la lectura siguiente. Devuelve
+   ese primer caracter, o EOF si no habia nada que leer. */
+static int _AplicConLeerLineaPrimerCar ()
 {
-# if ( defined ( VC ) )
-	int		iValor;
-# else
-	char	cValor;
-# endif
-	int		iRes;
+	int		iPrimero;
+	int		iCar;
 
-	if ( g_bAplicConsolaDisponible )
+#  if ( defined ( UNICODE ) )
+	iPrimero = getwchar ();
+#  else
+	iPrimero = getchar ();
+#  endif
+	iCar = iPrimero;
+	while ( ( iCar != '\n' ) && ( iCar != EOF ) )
 	{
-#	  if ( defined ( VC ) )
-		iRes = -1;
-		while ( iRes == -1 )
-		{
-			while ( kbhit () == 0 )
-			{
-			}
-			iValor = getche ();
-			if ( iValor == 0 )
-			{
-				iValor = getche ();
-			}
-			else if ( ( iValor >= ((int) '0') ) && ( iValor <= ((int) '9') ) )
-			{
-				iRes = iValor - ((int) '0');
-			}
-		}
+#	  if ( defined ( UNICODE ) )
+		iCar = getwchar ();
 #	  else
-#	   if ( defined ( UNICODE ) )
-		cValor = getwchar ();
-#	   else
-		cValor = getchar ();
-#	   endif
-		if ( ( cValor >= '0' ) && ( cValor <= '9' ) )
-		{
-			iRes = ((int) cValor) - ((int) '0');
-		}
-		else
-		{
-			iRes = -1;
-		}
+		iCar = getchar ();
 #	  endif
 	}
-	else
+	return ( iPrimero );
+}
+
+
+int AplicConLeerNumero ()
+{
+	int		iPrimero;
+	int		iRes;
+
+	iRes = -1;
+	if ( g_bAplicConsolaDisponible )
 	{
-		iRes = -1;
+		iPrimero = _AplicConLeerLineaPrimerCar ();
+		if ( ( iPrimero >= ((int) '0') ) && ( iPrimero <= ((int) '9') ) )
+		{
+			iRes = iPrimero - ((int) '0');
+		}
 	}
 	return ( iRes );
 }
@@ -220,14 +197,28 @@ int AplicConLeerNumero ()
 int AplicConLeerNumeroEntre ( int iMin, int iMax )
 {
 	int iRes;
+	int iFinal;
 
 	iRes = -1;
-	while ( ( iRes < iMin ) && ( iRes > iMax ) )
+	iFinal = 0;
+	// El corte era ( iRes < iMin ) && ( iRes > iMax ), que no puede cumplirse
+	// nunca: el bucle no se ejecutaba y la funcion devolvia -1 siempre. La
+	// version C ya tenia el || correcto.
+	while ( ( ( iRes < iMin ) || ( iRes > iMax ) ) && ( iFinal == 0 ) )
 	{
 		iRes = AplicConLeerNumero ();
-		if ( ( iRes < iMin ) && ( iRes > iMax ) )
+		if ( ( iRes < iMin ) || ( iRes > iMax ) )
 		{
-			printf ( "\b" );
+			// Sin esto, con la entrada agotada getchar devuelve EOF sin fin y
+			// el bucle no saldria nunca.
+			if ( feof ( stdin ) != 0 )
+			{
+				iFinal = 1;
+			}
+			else
+			{
+				printf ( "\b" );
+			}
 		}
 	}
 	return ( iRes );
@@ -235,75 +226,23 @@ int AplicConLeerNumeroEntre ( int iMin, int iMax )
 
 string * AplicConLeerCadena ()
 {
-	int			iFinal;
-	int			iCar;
-# if ( defined ( VC ) )
-	char		cValor;
-	int			iValor;
-# endif
-	vector<char> buffer = vector<char> ( CON_MAX_TAM_CADENA );
-	iCar = 0;
-	iFinal = 0;
-	while ( ( iFinal == 0 ) && ( iCar < CON_MAX_TAM_CADENA ) )
+	string		sLinea;
+
+	if ( !getline ( cin, sLinea ) )
 	{
-#	  if ( defined ( VC ) )
-		while ( kbhit () == 0 )
-		{
-		}
-		iValor = getche ();
-		if ( ( iValor == 13 ) || ( iValor == 0 ) )
-		{
-			iFinal = 1;
-		}
-		else if ( iValor == 8 )
-		{
-			if ( iCar > 0 )
-			{
-				iCar = iCar - 1;
-			}
-		}
-		else
-		{
-			cValor = (char) iValor;
-			buffer [ iCar ] = cValor;
-			iCar = iCar + 1;
-		}
-#	  else
-		// PENDIENTE:
-		iFinal = 1;
-#	  endif
+		// Fin de entrada o error: cadena vacia.
+		sLinea.clear ();
 	}
-	return ( new string ( buffer.data() ) );
+	if ( sLinea.length () > (size_t) CON_MAX_TAM_CADENA )
+	{
+		sLinea = sLinea.substr ( 0, CON_MAX_TAM_CADENA );
+	}
+	return ( new string ( sLinea ) );
 }
 
 void AplicConEsperarRetorno ()
 {
-	int			iFinal;
-# if ( defined ( VC ) )
-	int			iValor;
-# endif
-
-	iFinal = 0;
-	while ( iFinal == 0  )
-	{
-#	  if ( defined ( VC ) )
-		while ( kbhit () == 0 )
-		{
-		}
-		iValor = getche ();
-		if ( iValor == 13 )
-		{
-			iFinal = 1;
-		}
-		else
-		{
-			cout << "\b";
-		}
-#	  else
-		// PENDIENTE:
-		iFinal = 1;
-#	  endif
-	}
+	cin.get ();
 }
 
 

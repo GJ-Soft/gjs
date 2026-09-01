@@ -156,7 +156,7 @@ Volver al [README](../README.md).
 | -------------- | -------- | -------------- | --------- | ---- | ------------------------------------------- |
 | `SPareja`      | `SPrj`   | `SPareja`      | 11        | ✔    | [ParejasReferencias](ParejasReferencias.md) |
 | `SReferencia`  | `SRef`   | `SReferencia`  | 16        | ✔    | [ParejasReferencias](ParejasReferencias.md) |
-| `SId`          | `SId`    | `SId`          | 20        | ✔    | [Identificadores](Identificadores.md)       |
+| `SId`          | `SId`    | `SId`          | 24        | ✔    | [Identificadores](Identificadores.md)       |
 | `SGeneradorId` | `SGenId` | `SGeneradorId` | 12        | ✔    | [Identificadores](Identificadores.md)       |
 
 ### Metadatos

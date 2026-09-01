@@ -27,7 +27,6 @@
 #include <Byte.h>
 #include <Word.h>
 #include <DWord.h>
-#include <Objetos.h>
 #include <Funciones.h>
 #include <OrdenBytes.h>
 #include <InfoMemoria.h>

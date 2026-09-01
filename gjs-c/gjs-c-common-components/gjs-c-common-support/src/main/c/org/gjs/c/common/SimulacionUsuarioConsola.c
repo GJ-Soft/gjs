@@ -2,6 +2,17 @@
 #include "SimulacionUsuarioConsola.h"
 
 
+/* MinGW no trae pipe (): su equivalente es _pipe (), que ademas pide tamano y
+   modo, y esta en <io.h>; _O_BINARY viene de <fcntl.h>. dup, dup2, close y write
+   si existen con su nombre POSIX. Cygwin ( en estilo POSIX y en estilo Windows )
+   tiene pipe () de verdad, asi que solo se distingue el caso de MinGW puro. */
+#if ( defined ( WIN ) && !defined ( CYGWIN ) )
+#	include <io.h>
+#	include <fcntl.h>
+#	define SIM_CREAR_TUBERIA( p_i )		_pipe ( ( p_i ), 4096, _O_BINARY )
+#else
+#	define SIM_CREAR_TUBERIA( p_i )		pipe ( p_i )
+#endif
 
 
 /* Descriptor de stdin original mientras hay una simulacion de entrada activa. */
@@ -16,13 +27,14 @@ static int g_iSimStdinOrig = -1;
    escribir, de modo que el lector ve la entrada y despues EOF: nunca se queda
    bloqueado, aunque lea de mas. Hay que llamar a RestaurarEntradaConsola tras
    la lectura para devolver stdin a su estado original. Devuelve 1 si prepara la
-   entrada, 0 en caso de error o si no aplica (WIN: getche/kbhit no pasan por
-   stdin). */
+   entrada, 0 en caso de error.
+
+   Antes renunciaba en WIN porque la consola no leia de stdin, sino con getche y
+   kbhit de conio.h. Eso era cosa de Visual C++ y ya no existe: AplicConLeerCadena
+   y compania leen de stdin en los cuatro modos de compilacion, asi que la
+   simulacion vale en todos. */
 int SimularEntradaConsola ( const char * p_cEntrada )
 {
-#if ( defined ( WIN ) )
-	return ( 0 );
-#else
 	int iRes;
 	int p_iTuberia [ 2 ];
 
@@ -31,7 +43,7 @@ int SimularEntradaConsola ( const char * p_cEntrada )
 		/* Ya hay una simulacion activa: no se anida. */
 		iRes = 0;
 	}
-	else if ( pipe ( p_iTuberia ) != 0 )
+	else if ( SIM_CREAR_TUBERIA ( p_iTuberia ) != 0 )
 	{
 		iRes = 0;
 	}
@@ -60,7 +72,6 @@ int SimularEntradaConsola ( const char * p_cEntrada )
 		clearerr ( stdin );
 	}
 	return ( iRes );
-#endif
 }
 
 
@@ -68,7 +79,6 @@ int SimularEntradaConsola ( const char * p_cEntrada )
    su descriptor original. Es inocuo llamarla si no habia simulacion activa. */
 void RestaurarEntradaConsola ()
 {
-#if ( !defined ( WIN ) )
 	if ( g_iSimStdinOrig != -1 )
 	{
 		fflush ( stdin );
@@ -77,5 +87,4 @@ void RestaurarEntradaConsola ()
 		g_iSimStdinOrig = -1;
 		clearerr ( stdin );
 	}
-#endif
 }

@@ -55,34 +55,6 @@
 #	endif
 //#		include <rld_interface.h>
 
-#elif ( defined ( VC ) )  // Asociado a WIN 
-
-#	if ( defined ( WIN ) )
-
-#		include <windef.h>
-#		include <winnt.h>
-#		include <Tlhelp32.h>
-#		include <shellapi.h>
-
-#		if ( WINVER >= 0x500 )
-#			include <Psapi.h>
-#			include <Shlwapi.h>
-#		endif
-
-#		include <lm.h>
-
-#	else
-
-#		include <process.h>
-#		define sleep		_sleep
-#		undef INC_DIRECT
-#		if ( !defined ( _STDC__ ) )
-#			define _STDC__		0
-#		endif
-#	endif
-
-#	include <intrin.h>
-
 #else // GNU:
 
 #	if ( defined ( POSIX ) )
@@ -120,19 +92,6 @@
 
 #	endif
 
-#endif
-
-// El Kernel32.lib (y otros) junto con los *.h, de VC++ suelen estar obsoletos: algunas funciones hay que obtenerlas
-// dinámicamente:
-#if ( defined ( VC ) ) 
-#	if ( defined ( OpenThread ) )
-#		define OPENTHREAD_INDEFINIDO	
-//#	if ( !defined ( OpenThread ) )
-//WINBASEAPI HANDLE WINAPI OpenThread ( DWORD dwDesiredAccess, BOOL bInheritHandle, DWORD dwThreadId );
-#	endif
-#	if ( !defined ( SwitchToThread ) )
-WINBASEAPI BOOL WINAPI SwitchToThread ();
-#	endif
 #endif
 
 

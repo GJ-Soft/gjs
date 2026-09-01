@@ -56,7 +56,6 @@
 
 #include <SListaOrdenada.h>
 #include <SListaOrdenadaPtr.h>
-#include <SListaHash.h>
 #include <SConjunto.h>
 #include <SConjuntoPtr.h>
 

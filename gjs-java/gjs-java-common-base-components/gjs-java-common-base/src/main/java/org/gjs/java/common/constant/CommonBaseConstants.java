@@ -4,6 +4,18 @@ import java.util.Locale;
 
 import org.apache.commons.lang3.LocaleUtils;
 
+/**
+ * The Class CommonBaseConstants.
+ *
+ * Clase de constantes de la librería Gjs
+ *
+ * Constantes del núcleo: mensajes genéricos, marcadores de valor nulo e informado, locale por defecto y patrones de fecha.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public final class CommonBaseConstants {
 
 	public static final String MSG_UTILITY_CLASS = "Non-instantable utility class";

@@ -323,10 +323,9 @@ string ToString ( map<string, T> * mapa )
 	}
 }
 
-template<typename... Args> string ToString ( const string & sFormato, Args&&... argumentos )
-{
-    return format( sFormato, forward<Args>( argumentos )... );
-}
+/* La variadica ToString ( sFormato, ... ) esta definida en ToString.h: aqui no
+   se instanciaba para nadie de fuera, y ademas usaba format con una cadena de
+   formato de tiempo de ejecucion, que no compila. */
 
 
 template string ToString ( list<string> & );

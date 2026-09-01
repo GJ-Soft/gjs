@@ -20,22 +20,6 @@ import org.gjs.java.common.util.ConditionUtils;
  * por eso se incluyen constructores mas limitados, de pocos parametros, pero
  * que no serian necesarios de no ser por eso.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0
@@ -114,12 +98,6 @@ public class GenericDto extends BaseDto {
 		return fields.size();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.dravy.util.dto.EntidadModeloDto#hashCode()
-	 */
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -129,12 +107,6 @@ public class GenericDto extends BaseDto {
 		}
 		return result;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.dravy.util.dto.EntidadModeloDto#equals(java.lang.Object)
-	 */
 
 	@Override
 	public boolean equals(Object obj) {
@@ -152,12 +124,6 @@ public class GenericDto extends BaseDto {
 		}
 		return result;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.dravy.util.dto.EntidadModeloDto#toString()
-	 */
 
 	@Override
 	public String toString() {

@@ -11,19 +11,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * Interfaz que debe implementar los generadores de datos aleatorios de la librería.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- * correspondiente licencia en los activos de la
- * SES. Los programas informáticos propiedad de la SES están protegidos por la propiedad intelectual, y por tanto está
- * estrictamente prohibida su reproducción, modificación, cesión o comunicación sin la debida autorización. Queda
- * estrictamente prohibido el uso, reproducción, cesión, transformación o comunicación pública de cualquier otro tipo de
- * obra o invención protegida por la propiedad intelectual sin la debida autorización.
- *
- *  Seguridad Ministerio del Interior
- * Gobierno de España
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @param <T>
  *            la clase que se suministra
  *
@@ -33,6 +20,18 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  */
 // @FunctionalInterface
+/**
+ * The Interface GjsSupplier.
+ *
+ * Interfaz de la librería Gjs
+ *
+ * Contrato de los generadores de datos de la librería. Sobre el get() de Supplier añade el valor vacío, el nulo y las variantes en array, con su tamaño configurable.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public interface GjsSupplier<T extends @Nullable Object> extends Supplier<T> {
 
     /**

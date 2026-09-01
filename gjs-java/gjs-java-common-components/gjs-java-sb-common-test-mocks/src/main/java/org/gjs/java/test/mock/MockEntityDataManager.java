@@ -43,22 +43,6 @@ import org.springframework.core.io.Resource;
  * Implementa un repositorio de datos sencillo en memoria para cualquier clase
  * de objetos.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @param <T>  la clase de la entidad
  * @param <PK> la clave primaria de la entidad
  *

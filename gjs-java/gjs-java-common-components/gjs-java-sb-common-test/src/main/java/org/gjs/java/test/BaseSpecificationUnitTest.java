@@ -26,22 +26,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * usen una clase especial para obtener los datos de filtrado diferente de la
  * entidad de la librería Gjs
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @param <T>  el repositorio JPA
  * @param <F>  el filtro
  * @param <E>  la entidad JPA

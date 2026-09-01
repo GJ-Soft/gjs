@@ -10,22 +10,6 @@ import org.gjs.java.common.constant.CommonBaseConstants;
  * Excepción generada por las clase del módulo de utilidades Hereda de
  * RuntimeException para poder ser utilizada en funciones lambda.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

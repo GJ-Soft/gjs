@@ -13,11 +13,11 @@ de ellas en `CalculoOperaciones`— y **ninguna clase**.
 
 | Dato         | Valor                          |
 | ------------ | ------------------------------ |
-| `groupId`    | `org.gjs.c.common`             |
+| `groupId`    | `org.gjsoft.c.common`             |
 | `artifactId` | `gjs-cpp-common-calculation`   |
 | `version`    | `1.0.0-RC.2`                   |
 | `packaging`  | `nar` (biblioteca **shared**)  |
-| Pom padre    | `org.gjs.c:gjs-cpp-lib-parent` |
+| Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent` |
 | Depende de   | `gjs-cpp-common-types`         |
 
 ---

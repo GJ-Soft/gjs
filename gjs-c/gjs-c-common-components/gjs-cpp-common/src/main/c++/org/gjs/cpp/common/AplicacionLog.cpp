@@ -105,49 +105,8 @@ bool AplicLogEstablecerNivel ( int iNivel )
 	return ( bRes );
 }
 
-template<typename... Args> bool AplicLogAnotar ( const string & sTexto, Args&&... argumentos )
-{
-	bool bRes = false;
-
-	if ( g_bAplicLogInicializado )
-	{
-		LogInfo ( sTexto, forward<Args>( argumentos )... );
-	}
-	return ( bRes );
-}
-
-template<typename... Args> bool AplicLogAnotarDepuracion ( const string & sTexto, Args&&... argumentos )
-{
-	bool bRes = false;
-
-	if ( g_bAplicLogInicializado )
-	{
-		LogDepuracion ( sTexto, forward<Args>( argumentos )... );
-	}
-	return ( bRes );
-}
-
-template<typename... Args> bool AplicLogAnotarAviso ( const string & sTexto, Args&&... argumentos )
-{
-	bool bRes = false;
-
-	if ( g_bAplicLogInicializado )
-	{
-		LogAviso ( sTexto, forward<Args>( argumentos )... );
-	}
-	return ( bRes );
-}
-			
-template<typename... Args> bool AplicLogAnotarError ( const string & sTexto, Args&&... argumentos )
-{
-	bool bRes = false;
-
-	if ( g_bAplicLogInicializado )
-	{
-		LogError ( sTexto, forward<Args>( argumentos )... );
-	}
-	return ( bRes );
-}
+/* Las cuatro variadicas AplicLog* estan definidas en AplicacionLog.h: aqui no se
+   instanciaban para nadie de fuera del modulo. */
 
 void AplicLogActivarSalidaPorConsola ()
 {

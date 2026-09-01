@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.gjs.java</groupId>
+		<artifactId>gjs-java</artifactId>
+		<version>1.0.0-RC.2</version>
+		<relativePath>../pomRemainingInstall.xml</relativePath>
+	</parent>
+	
+    <artifactId>gjs-java-parents</artifactId>
+    <packaging>pom</packaging>
+	
+    <name>GJS Java parent poms</name>
+    <description>
+		Pom parent's grouper for Java
+	</description>
+     
+    <modules>
+		<module>gjs-java-web-parent</module>
+		<module>gjs-java-war-parent</module>
+		<module>gjs-java-springboot-parent</module>
+        <module>gjs-java-sb-test-parent</module>
+		<module>gjs-java-sb-artifact-parent</module>
+		<module>gjs-java-sb-war-parent</module>
+    </modules>
+    
+ </project>

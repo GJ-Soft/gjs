@@ -2,13 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs</groupId>
+		<groupId>org.gjsoft</groupId>
 		<artifactId>gjs-no-java-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../../../gjs-no-java-parent</relativePath>
 	</parent>	
 
-    <groupId>org.gjs.python</groupId>
+    <groupId>org.gjsoft.python</groupId>
     <artifactId>gjs-python-parent</artifactId>
 	<packaging>pom</packaging>
 

@@ -10,7 +10,7 @@
           <lifecycle>
             <id>default</id>
             <phases>
-              <package>org.gjs.maven.plugin:tgz-maven-plugin:package-tgz</package>
+              <package>org.gjsoft.maven.plugins:tgz-maven-plugin:package-tgz</package>
             </phases>
           </lifecycle>
         </lifecycles>

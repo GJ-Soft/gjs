@@ -16,22 +16,6 @@ import ch.qos.logback.classic.Level;
  * librermente, se ofrecen funciones que formatean el registro en el log
  * siguiendo el estándar definido por la arquitectura de Semilla.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

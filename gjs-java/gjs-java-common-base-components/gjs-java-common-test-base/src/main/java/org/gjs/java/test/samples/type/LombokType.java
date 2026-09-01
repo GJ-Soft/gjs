@@ -10,6 +10,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * The Class LombokType.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Tipo generado entero por Lombok: accesores, constructores, builder y toString.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 @Builder

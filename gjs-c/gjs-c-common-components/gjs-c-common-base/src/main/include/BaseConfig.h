@@ -38,21 +38,6 @@
 #	include <math.h>
 #	include <float.h>
 
-#elif ( defined ( VC ) )  // Asociado a WIN:
-
-#	if ( _MSC_VER >= 1600 )     // Si fuese necesario hay que incluirlo antes del windows.h
-#		include <winsock2.h>
-#		include <ws2tcpip.h>
-#	endif
-
-#	include	<windows.h>
-#	undef RGB
-#	include <stdio.h>
-#	include <stdarg.h>
-#	include <limits.h>
-#	include <math.h>
-#	include <float.h>
-
 #else // GNU:
 
 #	if ( defined ( POSIX ) )
@@ -100,9 +85,6 @@
 #endif
 
 
-#include <API.h>
-
-
 
 #if ( !defined ( NULL ) )
 #	define 	NULL							0
@@ -136,25 +118,6 @@
 #endif
 
 
-#if ( defined ( VC ) )
-#	if ( !defined ( _TM_DEFINED ) )
-struct tm
-{
-    int tm_sec;     /* seconds after the minute - [0,59] */
-    int tm_min;     /* minutes after the hour - [0,59] */
-    int tm_hour;    /* hours since midnight - [0,23] */
-    int tm_mday;    /* day of the month - [1,31] */
-    int tm_mon;     /* months since January - [0,11] */
-    int tm_year;    /* years since 1900 */
-    int tm_wday;    /* days since Sunday - [0,6] */
-    int tm_yday;    /* days since January 1 - [0,365] */
-    int tm_isdst;   /* daylight savings time flag */
-};
-#	define _TM_DEFINED
-#	endif
-#endif
-
-
 #include <BaseErrores.h>
 #include <ASCIICodigos.h>
 #include <JuegosCaracteres.h>
@@ -178,43 +141,28 @@ typedef unsigned char	nibble;
 typedef unsigned char	byte;
 
 
-// PENDIENTE: EN VC NO FUNCIONA BIEN LAS COMPARACIONES DE CONSTANTES DE PRE_COMPILACION
-
-#if ( defined ( VC ) )
-
-#	define BYTE2
-#	define BYTE4
-#	define BYTE8
+#define BYTE2
+#if ( USHRT_MAX == 0xffff )
 	typedef unsigned short byte2;
-	typedef unsigned int byte4;
-	typedef unsigned __int64 byte8;
-
+#elif ( UINT_MAX == 0xffff )
+    typedef unsigned int byte2;
 #else
-
-#	define BYTE2
-#	if ( USHRT_MAX == 0xffff )
-		typedef unsigned short byte2;
-#	elif ( UINT_MAX == 0xffff )
-	    typedef unsigned int byte2;
-#	else
-#	   undef BYTE2
-#	endif
-
-#	define BYTE4
-#	if ( UINT_MAX == 0xffffffff )
-		typedef unsigned int byte4;
-#	elif ( ULONG_MAX == 0xffffffffUL )
-	    typedef unsigned long byte4;
-#	elif ( USHRT_MAX == 0xffffffff )
-		typedef unsigned short byte4;
-#	else
-#		undef BYTE4
-#	endif
-
-#	define BYTE8
-typedef unsigned long long  byte8;
-
+#   undef BYTE2
 #endif
+
+#define BYTE4
+#if ( UINT_MAX == 0xffffffff )
+	typedef unsigned int byte4;
+#elif ( ULONG_MAX == 0xffffffffUL )
+    typedef unsigned long byte4;
+#elif ( USHRT_MAX == 0xffffffff )
+	typedef unsigned short byte4;
+#else
+#	undef BYTE4
+#endif
+
+#define BYTE8
+typedef unsigned long long  byte8;
 
 typedef byte2	word;
 typedef byte4	dword;
@@ -222,19 +170,7 @@ typedef byte4	dword;
 
 
 
-#if ( defined ( VC ) )
-
-#	define LLONG
-	typedef __int64 llong;
-
-#	define	atoll	_atoi64
-
-#	if ( !defined ( LLONG_MIN ) )
-#		define LLONG_MIN	_I64_MIN		//(-9223372036854775807i64 - 1)
-#		define LLONG_MAX	_I64_MAX		//9223372036854775807i64
-#	endif
-
-#elif ( defined ( GNU ) )
+#if ( defined ( GNU ) )
 
 #	define LLONG
 	typedef long long 			llong;
@@ -243,17 +179,6 @@ typedef byte4	dword;
 #	define	atol	atoi
 
 
-#elif ( defined ( __int64 ) )
-
-#	define LLONG
-	typedef __int64 			llong;
-	typedef __uint64 			ullong;
-
-#	define LLONG_MIN	_I64_MIN		//(-9223372036854775807i64 - 1)
-#	define LLONG_MAX	_I64_MAX		//9223372036854775807i64
-#	define ULLONG_MAX	_UI64_MAX		
-
-	// PENDIENTE: Ver si está definido atoll o atoi64
 #else
 #	undef LLONG
 #endif

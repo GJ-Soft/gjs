@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-		<groupId>org.gjs.c</groupId>
+		<groupId>org.gjsoft.c</groupId>
 		<artifactId>gjs-c-lib-parent</artifactId>
 		<version>1.0.0-RC.2</version>
         <relativePath />
@@ -19,6 +19,9 @@
     <description>Project ${capitalizedName} in language C</description>
 
     <properties>
+		<!-- Project management -->
+		<repository.name>${artifactId}</repository.name>
+
 		<!-- Language features -->
 		<gjs.source.language>c</gjs.source.language>
 		<gjs.source.extension>c</gjs.source.extension>
@@ -32,14 +35,14 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.gjs.c.common</groupId>
+			<groupId>org.gjsoft.c.common</groupId>
 			<artifactId>gjs-c-common</artifactId>
 			<type>nar</type>
 		</dependency>
 		
 		<!-- Test -->
 		<dependency>
-			<groupId>org.gjs.c.common</groupId>
+			<groupId>org.gjsoft.c.common</groupId>
 			<artifactId>gjs-c-common-test</artifactId>
 			<type>nar</type>
 		</dependency>

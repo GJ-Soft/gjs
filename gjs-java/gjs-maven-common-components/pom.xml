@@ -2,13 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>org.gjs.java</groupId>
+		<groupId>org.gjsoft.java</groupId>
 		<artifactId>gjs-java</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>..</relativePath>
 	</parent>
 	
-    <groupId>org.gjs.java.maven</groupId>
+    <groupId>org.gjsoft.java.maven</groupId>
     <artifactId>gjs-maven-common-components</artifactId>
     <packaging>pom</packaging>
 	

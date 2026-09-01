@@ -3,9 +3,16 @@
 
 #include <MDC.h>
 
+/* ToString.h hace falta aqui porque las plantillas Log* estan definidas en esta
+   cabecera y lo llaman; <exception>, <type_traits> y <utility>, por la guarda de
+   LogError / LogFatal y por el forward. */
+#include <ToString.h>
 
 #include <string>
 #include <map>
+#include <exception>
+#include <type_traits>
+#include <utility>
 
 
 
@@ -82,12 +89,47 @@ namespace org
             void LogError ( const std::exception & exInfo );
             void LogFatal ( const std::exception & exInfo );
 
-            template<typename... Args> void LogInfo ( const std::string & sFormato, Args&&... argumentos );
-            template<typename... Args> void LogDepuracion ( const std::string & sFormato, Args&&... argumentos );
-            template<typename... Args> void LogTraza ( const std::string & sFormato, Args&&... argumentos );
-            template<typename... Args> void LogAviso ( const std::string & sFormato, Args&&... argumentos );
-            template<typename... Args> void LogError ( const std::string & sFormato, Args&&... argumentos );
-            template<typename... Args> void LogFatal ( const std::string & sFormato, Args&&... argumentos );
+            /* Las definiciones van aqui, en la cabecera, y no en Log.cpp: una
+               plantilla solo se instancia donde se ve su cuerpo, asi que definidas
+               en el .cpp no las podia usar nadie de fuera del modulo. */
+
+            template<typename... Args> void LogInfo ( const std::string & sFormato, Args&&... argumentos )
+            {
+            	LogInfo ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
+            }
+
+            template<typename... Args> void LogDepuracion ( const std::string & sFormato, Args&&... argumentos )
+            {
+            	LogDepuracion ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
+            }
+
+            template<typename... Args> void LogTraza ( const std::string & sFormato, Args&&... argumentos )
+            {
+            	LogTraza ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
+            }
+
+            template<typename... Args> void LogAviso ( const std::string & sFormato, Args&&... argumentos )
+            {
+            	LogAviso ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
+            }
+
+            /* LogError y LogFatal llevan guarda: si alguno de los argumentos es una
+               excepcion, esta plantilla se descarta y gana la sobrecarga
+               LogError ( const std::exception & ). Sin ella, LogError ( unaExcepcion )
+               entraria aqui y acabaria en vformat, que no sabe formatear una
+               excepcion. Ojo: la cabecera las declaraba void y Log.cpp las definia
+               con este tipo de retorno; se conserva el del .cpp, que es el bueno. */
+            template<typename... Args> auto LogError ( const std::string & sFormato, Args&&... argumentos )
+             -> std::enable_if_t<!(... || std::is_base_of_v<std::exception, std::decay_t<Args>>)>
+            {
+            	LogError ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
+            }
+
+            template<typename... Args> auto LogFatal ( const std::string & sFormato, Args&&... argumentos )
+             -> std::enable_if_t<!(... || std::is_base_of_v<std::exception, std::decay_t<Args>>)>
+            {
+            	LogFatal ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
+            }
 
             Nivel LogGetNivel ();
             void LogSetNivel ( Nivel nivel );

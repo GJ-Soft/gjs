@@ -1096,10 +1096,18 @@ int CadContieneCaracteresNoAlfanumericosExt ( const char * p_cAsciiz, int iMax )
 	{
 		iCar = 0;
 		iRes = 0;
-		while ( ( iCar < iLong ) && ( iRes == 0 ) ) 
+		while ( ( iCar < iLong ) && ( iRes == 0 ) )
 		{
 			uiVal = (unsigned int) p_cAsciiz [ iCar ];
-			if ( ( uiVal < 32 ) || ( uiVal == 127 ) )  
+			if ( ( ( uiVal >= ASCII_0 ) && ( uiVal <= ASCII_9 ) ) ||
+				 ( ( uiVal >= ASCII_A_MAY ) && ( uiVal <= ASCII_Z_MAY ) ) ||
+				 ( ( uiVal >= ASCII_A_MIN ) && ( uiVal <= ASCII_Z_MIN ) ) ||
+				 ( uiVal == ASCII_RALLA_INF ) ||
+				 ( uiVal == ASCII_DOS_PUNTOS ) )
+			{
+				iRes = 0;
+			}
+			else
 			{
 				iRes = 1;
 			}

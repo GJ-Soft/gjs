@@ -14,11 +14,11 @@ API que **no está implementada**.
 
 | Dato         | Valor                                                                |
 | ------------ | -------------------------------------------------------------------- |
-| `groupId`    | `org.gjs.c.common`                                                   |
+| `groupId`    | `org.gjsoft.c.common`                                                   |
 | `artifactId` | `gjs-c-common-calculation`                                           |
 | `version`    | `1.0.0-RC.2`                                                         |
 | `packaging`  | `nar` (biblioteca **shared**)                                        |
-| Pom padre    | `org.gjs.c:gjs-c-lib-parent`                                         |
+| Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`                                         |
 | Depende de   | `gjs-c-common-base-types` (y a través de él, de `gjs-c-common-base`) |
 
 ---

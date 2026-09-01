@@ -2,13 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.c</groupId>
+		<groupId>org.gjsoft.c</groupId>
 		<artifactId>gjs-c-lib-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../../gjs-c-parents/gjs-c-lib-parent</relativePath>
 	</parent>	
 
-	<groupId>org.gjs.c.common</groupId>
+	<groupId>org.gjsoft.c.common</groupId>
 	<artifactId>gjs-c-common-base-types</artifactId>
 	<packaging>nar</packaging>
 
@@ -21,7 +21,7 @@
 
     <dependencies>
 		<dependency>
-			<groupId>org.gjs.c.common</groupId>
+			<groupId>org.gjsoft.c.common</groupId>
 			<artifactId>gjs-c-common-base</artifactId>
 			<type>nar</type>
 		</dependency>

@@ -13,22 +13,6 @@ import java.lang.annotation.Target;
  * Anotación para incluir un método en la auditoría de tiempos. Los métodos de
  * fachadas y servicios ya están incluidos sin necesidad de la anotación.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

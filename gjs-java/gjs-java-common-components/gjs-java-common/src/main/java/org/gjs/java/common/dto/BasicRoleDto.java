@@ -16,22 +16,6 @@ import lombok.Setter;
  *
  * Clase DTO para almacenar los datos de un rol.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0
@@ -60,12 +44,6 @@ public class BasicRoleDto implements Comparable<BasicRoleDto> {
 		this.name = name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.dto.EntidadDto#equals(java.lang.Object)
-	 */
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -77,12 +55,6 @@ public class BasicRoleDto implements Comparable<BasicRoleDto> {
 		return (compareTo(other) == 0);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.dto.EntidadDto#hashCode()
-	 */
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -90,13 +62,6 @@ public class BasicRoleDto implements Comparable<BasicRoleDto> {
 		result = prime * result + Objects.hash(name);
 		return result;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.dto.EntidadDto#compareTo(es.mir.semilla.util.dto.
-	 * EntidadDto)
-	 */
 
 	@Override
 	public int compareTo(BasicRoleDto o) {

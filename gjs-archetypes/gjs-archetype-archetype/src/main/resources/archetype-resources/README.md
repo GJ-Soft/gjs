@@ -34,7 +34,7 @@ ${symbol_pound}${symbol_pound} Generating a project from the archetype
 		-DarchetypeArtifactId=${infoArtifactId} \
 		-DarchetypeVersion=${infoVersion} \
 		-DshortName=test-project \ 
-		-DprojectGroupId=org.gjs.test 
+		-DprojectGroupId=org.gjsoft.test 
     
 	Archetype Parameters:
 

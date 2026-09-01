@@ -10,6 +10,18 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.logging.Logger;
 
+/**
+ * The Class TgzArtifactExtension.
+ *
+ * Clase funcional de la librería Gjs
+ *
+ * Participante del ciclo de vida de Maven para el empaquetado tgz: apunta el artefacto del proyecto al fichero .tgz generado en target y le asigna su ArtifactHandler.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public class TgzArtifactExtension extends AbstractMavenLifecycleParticipant {
 
 	@Inject

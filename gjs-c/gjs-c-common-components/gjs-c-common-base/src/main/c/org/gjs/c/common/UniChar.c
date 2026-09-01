@@ -40,11 +40,7 @@ char * CadUnicodeAAsciiz ( const unichar * p_ucUnicode )
 		p_cRes = NULL;
 #    if ( defined ( WIN ) )
 		SetLastError ( 0 );
-#	  if ( defined ( VC ) && ( _MSC_VER < 1600 ) )
-		iLong = WideCharToMultiByte ( JUEG_CAR_OEM_LATIN_I, 0, (const unsigned short *) p_ucUnicode, -1, p_cRes, 0, NULL, NULL );
-#	  else // GNU
 		iLong = WideCharToMultiByte ( JUEG_CAR_OEM_LATIN_I, 0, (LPCWSTR) p_ucUnicode, -1, (LPSTR) p_cRes, 0, NULL, NULL );
-#	  endif
 		if ( ( iLong == 0 ) && ( GetLastError () != 0 ) )
 		{
 			iLong = -1;
@@ -58,11 +54,7 @@ char * CadUnicodeAAsciiz ( const unichar * p_ucUnicode )
 			   asi que se reserva siempre uno de mas para no escribir fuera. */
 			p_cRes = (char *) MemReservar ( ( iLong + 1 ) * sizeof ( char ) );
 #	     if ( defined ( WIN ) )
-#		  if ( defined ( VC ) && ( _MSC_VER < 1600 ) )
-			if ( WideCharToMultiByte ( JUEG_CAR_OEM_LATIN_I, 0, (const unsigned short *) p_ucUnicode, -1, p_cRes, iLong, NULL, NULL ) == 0 )
-#		  else // GNU
 			if ( WideCharToMultiByte ( JUEG_CAR_OEM_LATIN_I, 0, (LPCWSTR) p_ucUnicode, -1, (LPSTR) p_cRes, iLong, NULL, NULL ) == 0 )
-#		  endif
 #		 else
 			if ( wcstombs ( p_cRes, p_ucUnicode, iLong + 1 ) == (size_t) -1 )
 #	     endif
@@ -96,11 +88,7 @@ unichar * CadAsciizAUnicode ( const char * p_cAsciiz )
 #    if ( defined ( WIN ) )
 		iLong = CadLongitud ( p_cAsciiz );
 		SetLastError ( 0 );
-#	  if ( defined ( VC ) && ( _MSC_VER < 1600 ) )
-		iLongWC = MultiByteToWideChar ( JUEG_CAR_OEM_LATIN_I, 0, p_cAsciiz, iLong + 1, (unsigned short *) p_ucRes, 0 );
-#	  else // GNU
 		iLongWC = MultiByteToWideChar ( JUEG_CAR_OEM_LATIN_I, 0, (LPCSTR) p_cAsciiz, iLong + 1, (LPWSTR) p_ucRes, 0 );
-#	  endif
 		if ( ( iLongWC == 0 ) && ( GetLastError () != 0 ) )
 		{
 			iLongWC = -1;
@@ -112,11 +100,7 @@ unichar * CadAsciizAUnicode ( const char * p_cAsciiz )
 		{
 			p_ucRes = (unichar *) MemReservar ( ( iLongWC + 1 ) * sizeof ( unichar ) );
 #	     if ( defined ( WIN ) )
-#		  if ( defined ( VC ) && ( _MSC_VER < 1600 ) )
-			if ( MultiByteToWideChar ( JUEG_CAR_OEM_LATIN_I, 0, p_cAsciiz, iLong + 1, (unsigned short *) p_ucRes, iLongWC ) == 0)
-#		  else // GNU
 			if ( MultiByteToWideChar ( JUEG_CAR_OEM_LATIN_I, 0, (LPCSTR) p_cAsciiz, iLong + 1, (LPWSTR) p_ucRes, iLongWC ) == 0)
-#		  endif
 #		 else
 			if ( mbstowcs( p_ucRes, p_cAsciiz, iLongWC + 1 ) == (size_t) -1 )
 #	     endif

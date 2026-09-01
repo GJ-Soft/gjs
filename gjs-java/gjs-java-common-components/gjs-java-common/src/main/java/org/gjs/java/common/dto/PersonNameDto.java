@@ -6,6 +6,18 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class PersonNameDto.
+ *
+ * Clase abstracta de datos de la librería Gjs
+ *
+ * Base de los nombres de persona. Aporta el nombre y el primer apellido, y deja a cada variante nacional la forma de componer el nombre completo.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public abstract class PersonNameDto {

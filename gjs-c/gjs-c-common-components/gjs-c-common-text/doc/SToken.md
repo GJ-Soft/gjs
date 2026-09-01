@@ -3,10 +3,10 @@
 | Dato         | Valor                                               |
 | ------------ | --------------------------------------------------- |
 | Cabecera     | `src/main/include/SToken.h`                         |
-| Fuente       | `src/main/c/org/gjs/c/common/SToken.c` (755 líneas) |
+| Fuente       | `src/main/c/org/gjs/c/common/SToken.c` (809 líneas) |
 | Prefijo      | `STok`                                              |
 | Struct       | `SToken`                                            |
-| Funciones    | 38                                                  |
+| Funciones    | 39                                                  |
 | Incluido por | `Texto.h`                                           |
 | Test         | `STokenTest.c` → `TestSToken()`                     |
 
@@ -35,7 +35,7 @@ typedef struct
 | --------------------------------------------- | -------------------------------- |
 | `SToken * STokCrear ( int iLong )`            | Token vacío con longitud máxima. |
 | `SToken * STokGenerar ( SCadena * )`          | A partir de una `SCadena`.       |
-| `SToken * STokGenerarExt ( const char * )`    | A partir de un literal.          |
+| `SToken * STokGenerarLit ( const char * )`    | A partir de un literal.          |
 | `SToken * STokDuplicar ( SToken * )`          | Copia independiente.             |
 | `void STokDestruir ( SToken ** )`             | Destruye y anula el puntero.     |
 | `int STokInicializar ( SToken *, int iLong )` | Reinicia con nueva longitud.     |
@@ -45,9 +45,8 @@ typedef struct
 
 | Función                                                   | Descripción                        |
 | --------------------------------------------------------- | ---------------------------------- |
-| `SCadena * STokCadena ( SToken * )`                       | Cadena interna.                    |
-| `char * STokValor ( SToken * )`                           | Contenido modificable.             |
-| `const char * STokValorConstante ( SToken * )`            | Contenido de sólo lectura.         |
+| `SCadena * STokValor ( SToken * )`                        | Cadena interna, **modificable**.   |
+| `const char * STokValorLit ( SToken * )`                  | Contenido de sólo lectura.         |
 | `char STokCaracter ( SToken *, int iCar )`                | Carácter por posición.             |
 | `int STokEstablecerCaracter ( SToken *, int iCar, char )` | Cambia un carácter.                |
 | `int STokLongitud ( SToken * )`                           | Longitud actual.                   |
@@ -58,22 +57,32 @@ typedef struct
 
 ### Asignación
 
-`STokCopiar`, `STokCopiarCadena`, `STokCopiarLiteral`, `STokCopiarCaracter`,
-`STokCopiarConFormato`, `STokAsignar`, `STokAsignarCadena`,
-`STokAsignarLiteral`.
+Dos familias, y **no hacen lo mismo**:
+
+| Familia       | Funciones                                                                         | Efecto sobre el tope    |
+| ------------- | --------------------------------------------------------------------------------- | ----------------------- |
+| `STokCopiar…` | `STokCopiar`, `STokCopiarCadena`, `STokCopiarLiteral`, `STokCopiarCaracter`, `STokCopiarConFormato` | Lo respeta.             |
+| `STokEstablecer…` | `STokAsignar`, `STokEstablecer`, `STokEstablecerLit`                          | Lo **redimensiona**.    |
+
+Las tres de la segunda fila vacían el token antes de copiar, y vaciar libera el
+buffer: el token queda con el tamaño del nuevo valor, no con el que tenía.
 
 ### Comparación
 
 Cuatro operaciones por tres tipos de argumento, doce funciones en total:
 
-| Operación | Contra `SToken *` | Contra `SCadena *`      | Contra `const char *`    |
-| --------- | ----------------- | ----------------------- | ------------------------ |
-| Igual     | `STokEsIgual`     | `STokCadenaEsIgual`     | `STokLiteralEsIgual`     |
-| Menor     | `STokEsMenor`     | `STokCadenaEsMenor`     | `STokLiteralEsMenor`     |
-| Mayor     | `STokEsMayor`     | `STokCadenaEsMayor`     | `STokLiteralEsMayor`     |
-| Diferente | `STokEsDiferente` | `STokCadenaEsDiferente` | `STokLiteralEsDiferente` |
+| Operación | Contra `SToken *` | Contra `SCadena *`   | Contra `const char *` |
+| --------- | ----------------- | -------------------- | --------------------- |
+| Igual     | `STokEsIgual`     | `STokEsIgualCad`     | `STokEsIgualLit`      |
+| Menor     | `STokEsMenor`     | `STokEsMenorCad`     | `STokEsMenorLit`      |
+| Mayor     | `STokEsMayor`     | `STokEsMayorCad`     | `STokEsMayorLit`      |
+| Diferente | `STokEsDiferente` | `STokEsDiferenteCad` | `STokEsDiferenteLit`  |
 
-Más `STokCumpleExpReg ( SToken *, const char * p_cExpReg )`.
+Más las tres de tres estados (`COMP_MENOR` / `COMP_IGUAL` / `COMP_MAYOR`):
+`STokComparar`, `STokCompararCad`, `STokCompararLit`. Un token válido es
+**mayor** que uno nulo, y dos nulos son **iguales**.
+
+Y `STokCumpleExpReg ( SToken *, const char * p_cExpReg )`.
 
 ## Dependencias
 
@@ -86,18 +95,31 @@ Más `STokCumpleExpReg ( SToken *, const char * p_cExpReg )`.
 
 ## Observaciones
 
-- **El convenio de sufijos cambia de posición.** En [SCadena](SCadena.md) el
-  tipo va al final (`SCadEsIgualLiteral`); aquí va en medio
-  (`STokLiteralEsIgual`, `STokCadenaEsIgual`). Es el tercer convenio distinto del
-  módulo, tras el `…Literal` de `SCadena` y el `…Lit` de
-  [SCadenaConv](SCadenaConv.md).
-- `STokGenerarExt` toma un literal y `STokGenerar` una `SCadena`, cuando en el
-  resto del stack el sufijo `Ext` indica un parámetro adicional, no un cambio de
-  tipo. Lo esperable habría sido `STokGenerarLiteral`.
+- **Los nombres se alinearon con el resto de los objetos `S*`.** El convenio de
+  sufijos, que antes iba en medio (`STokCadenaEsIgual`, `STokLiteralEsIgual`),
+  ahora va al final, como en [SCampo](SCampo.md) y [SCodigo](SCodigo.md):
+
+  | Antes                    | Ahora                |
+  | ------------------------ | -------------------- |
+  | `STokCadena`             | `STokValor`          |
+  | `STokValor` (`char *`)   | `STokValorLit`       |
+  | `STokValorConstante`     | `STokValorLit`       |
+  | `STokAsignarCadena`      | `STokEstablecer`     |
+  | `STokAsignarLiteral`     | `STokEstablecerLit`  |
+  | `STokCadenaEs…`          | `STokEs…Cad`         |
+  | `STokLiteralEs…`         | `STokEs…Lit`         |
+  | `STokGenerarExt`         | `STokGenerarLit`     |
+
+  Ojo con `STokValor`, que ha **cambiado de tipo de retorno**: antes devolvía el
+  `char *` modificable y ahora la `SCadena *` interna. Una llamada antigua
+  pasada a `printf ( "%s", … )` compila con aviso y imprime basura.
+- **El tope no sobrevive a `STokEstablecer…`.** Ver la tabla de asignación: un
+  `STokCrear ( 20 )` seguido de `STokEstablecerLit ( p_tok, "segundo" )` deja
+  `STokMaxTam` en 7. Si hace falta conservarlo, hay que usar `STokCopiarLiteral`.
 - No hay ninguna función que **trocee** texto en tokens: el módulo representa el
   token, no lo produce. Para dividir está [SDivisor](SDivisor.md), que devuelve
   literales y no tokens.
 - La comparación hereda de [SCadena](SCadena.md) la sensibilidad a mayúsculas,
   que es propiedad de la cadena interna. `SToken` no expone forma de
-  configurarla: hay que llegar a ella con `STokCadena` y usar
+  configurarla: hay que llegar a ella con `STokValor` y usar
   `SCadActivarDistincionTipoLetra`.

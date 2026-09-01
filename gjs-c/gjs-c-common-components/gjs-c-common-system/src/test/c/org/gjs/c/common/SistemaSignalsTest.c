@@ -67,7 +67,10 @@ static int TestSisSigCodigo01 ()
 			printf( "Error caso 1: se esperaba codigo valido para ABORTAR\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( SisSigId ( iCod ) != SIS_SIG_ABORTAR )
+		/* La ida y vuelta solo tiene sentido si la senal existe en esta
+		   plataforma: si no existe su codigo es -1, que no identifica a ninguna
+		   ( en Windows lo comparten ocho de las quince ). */
+		if ( ( iCod >= 0 ) && ( SisSigId ( iCod ) != SIS_SIG_ABORTAR ) )
 		{
 			printf( "Error caso 2: SisSigId no invierte SisSigCodigo\n" );
 			iRes = BOOL_VAL_FALSO;

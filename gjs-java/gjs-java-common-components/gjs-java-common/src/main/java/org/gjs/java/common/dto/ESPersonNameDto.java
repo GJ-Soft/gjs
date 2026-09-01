@@ -5,6 +5,18 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class ESPersonNameDto.
+ *
+ * Clase de datos de la librería Gjs
+ *
+ * Nombre de persona a la española: añade el segundo apellido.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class ESPersonNameDto extends PersonNameDto {

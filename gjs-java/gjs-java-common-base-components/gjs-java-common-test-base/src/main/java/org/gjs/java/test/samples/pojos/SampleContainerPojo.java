@@ -5,6 +5,18 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleContainerPojo.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Pojo que contiene otro pojo, para las pruebas de anidamiento.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @SuppressWarnings("rawtypes")
 @Getter
 @Setter

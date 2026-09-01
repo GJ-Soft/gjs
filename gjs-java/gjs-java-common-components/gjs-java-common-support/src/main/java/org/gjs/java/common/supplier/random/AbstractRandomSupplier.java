@@ -14,21 +14,6 @@ import org.slf4j.LoggerFactory;
  *
  * Clase abstracta base para los generadores de datos aleatorios de la librería.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @param <T> la clase de datos a generar
  *
  * @author Gjs

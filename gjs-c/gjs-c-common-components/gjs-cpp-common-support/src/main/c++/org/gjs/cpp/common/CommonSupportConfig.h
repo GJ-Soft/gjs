@@ -14,13 +14,9 @@
 #	include <sys/ioctl.h>
 #endif
 
-#if ( defined ( VC ) )
-#	include <conio.h>
-#else
-#	include <fcntl.h>
-#	include <unistd.h>
-#   include <stdio.h>
-#endif
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
 
 
 

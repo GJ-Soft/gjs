@@ -10,22 +10,6 @@ import org.gjs.java.common.log.BaseLogger;
  * Clase abstracta que sirve de base para implementar una tarea de un job o
  * proceso batch del sistema automatizado de jobs de Semilla.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

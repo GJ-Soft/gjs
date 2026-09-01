@@ -2,7 +2,6 @@ package org.gjs.maven.plugins.tgz;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -14,13 +13,13 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.gjs.java.maven.common.GjsAbstractMojo;
+import org.gjs.java.maven.common.GjsAbstractFileSelectionMojo;
 
 /**
  * This goal executes the defined enforcer-rules once per module.
  */
 @Mojo(name = "tgz-package", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true)
-public class TgzMojo extends GjsAbstractMojo {
+public class TgzMojo extends GjsAbstractFileSelectionMojo {
 
 	/** Flag to easily skip all checks. */
 	@Parameter(property = "tgz.skip", defaultValue = "false")
@@ -31,15 +30,6 @@ public class TgzMojo extends GjsAbstractMojo {
 	 */
 	@Parameter(property = "tgz.fail", defaultValue = "true")
 	private boolean fail = true;
-
-	@Parameter
-	private List<String> includes;
-
-	@Parameter
-	private List<String> excludes;
-
-	@Parameter(defaultValue = "true")
-	private boolean includeBaseDirectory;
 
 	@Override
 	protected String getGoalName() {
@@ -58,7 +48,8 @@ public class TgzMojo extends GjsAbstractMojo {
 
 	@Override
 	protected void goalExecution(Log log, List<String> arg0) {
-		File outputFile = new File(outputDirectory, finalName + ".tar.gz");
+		// La extension tgz-maven-extension apunta el artefacto a este mismo nombre.
+		File outputFile = new File(outputDirectory, finalName + ".tgz");
 
 		log.info("Creando TGZ: " + outputFile);
 
@@ -69,23 +60,19 @@ public class TgzMojo extends GjsAbstractMojo {
 
 			Path basePath = baseDirectory.toPath();
 
-			Files.walk(basePath).filter(Files::isRegularFile).forEach(path -> {
-				try {
-					Path relativePath = basePath.relativize(path);
+			for (String includedFile : includedFiles) {
+				Path path = basePath.resolve(includedFile);
 
-					String entryName = includeBaseDirectory ? baseDirectory.getName() + "/" + relativePath
-							: relativePath.toString();
+				// El separador de las entradas tar es siempre la barra, tambien en Windows.
+				String relativePath = includedFile.replace(File.separatorChar, '/');
+				String entryName = includeBaseDirectory ? baseDirectory.getName() + "/" + relativePath : relativePath;
 
-					TarArchiveEntry entry = new TarArchiveEntry(path.toFile(), entryName);
+				TarArchiveEntry entry = new TarArchiveEntry(path.toFile(), entryName);
 
-					tarOut.putArchiveEntry(entry);
-					Files.copy(path, tarOut);
-					tarOut.closeArchiveEntry();
-
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			});
+				tarOut.putArchiveEntry(entry);
+				Files.copy(path, tarOut);
+				tarOut.closeArchiveEntry();
+			}
 
 		} catch (Exception e) {
 			throw new RuntimeException("Error creando TGZ", e);

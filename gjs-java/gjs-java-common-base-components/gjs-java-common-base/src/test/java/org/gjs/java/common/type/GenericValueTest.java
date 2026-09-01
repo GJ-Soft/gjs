@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.gjs.java.common.enums.ManagedType;
+import org.gjs.java.common.test.utils.AssertionUtils;
 import org.gjs.java.common.type.GenericValue;
 import org.gjs.java.test.BaseClassTest;
 
@@ -208,7 +209,7 @@ class GenericValueTest extends BaseClassTest<GenericValue> {
         assertNull(value.toShort());
         assertNull(value.toInt());
         assertNotNull(value.toFloat());
-        org.gjs.java.test.util.AssertionUtils.assertEqualsNumeric((float) -1.01, value.toFloat().floatValue());
+        AssertionUtils.assertEqualsNumeric((float) -1.01, value.toFloat().floatValue());
         assertNotNull(value.toDouble());
         assertEquals(-1.01, value.toDouble().doubleValue());
         assertNotNull(value.toBoolean());
@@ -231,7 +232,7 @@ class GenericValueTest extends BaseClassTest<GenericValue> {
         assertNull(value.toShort());
         assertNull(value.toInt());
         assertNotNull(value.toFloat());
-        org.gjs.java.test.util.AssertionUtils.assertEqualsNumeric((float) 821.0100541,
+        AssertionUtils.assertEqualsNumeric((float) 821.0100541,
                 value.toFloat().floatValue());
         assertNotNull(value.toDouble());
         assertEquals(821.0100541, value.toDouble().doubleValue());
@@ -393,11 +394,11 @@ class GenericValueTest extends BaseClassTest<GenericValue> {
         assertEquals(false, value.toBoolean().booleanValue());
         assertNotNull(value.toChar());
         assertNotNull(value.toByte());
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(date, value.toDate());
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(date,
+        AssertionUtils.assertSameSecond(date, value.toDate());
+        AssertionUtils.assertSameSecond(date,
                 Date.from(value.toLocalDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(date, new Date(value.toTimestamp().getTime()));
-        org.gjs.java.test.util.AssertionUtils.assertSameDay(date,
+        AssertionUtils.assertSameSecond(date, new Date(value.toTimestamp().getTime()));
+        AssertionUtils.assertSameDay(date,
                 Date.from(value.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
     }
 
@@ -425,14 +426,13 @@ class GenericValueTest extends BaseClassTest<GenericValue> {
         assertEquals(false, value.toBoolean().booleanValue());
         assertNotNull(value.toChar());
         assertNotNull(value.toByte());
-        org.gjs.java.test.util.AssertionUtils
-                .assertSameSecond(Date.from(date.atZone(ZoneId.systemDefault()).toInstant()), value.toDate());
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(
+        AssertionUtils.assertSameSecond(Date.from(date.atZone(ZoneId.systemDefault()).toInstant()), value.toDate());
+        AssertionUtils.assertSameSecond(
                 Date.from(date.atZone(ZoneId.systemDefault()).toInstant()),
                 Date.from(value.toLocalDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(
+        AssertionUtils.assertSameSecond(
                 Date.from(date.atZone(ZoneId.systemDefault()).toInstant()), new Date(value.toTimestamp().getTime()));
-        org.gjs.java.test.util.AssertionUtils.assertSameDay(
+        AssertionUtils.assertSameDay(
                 Date.from(date.atZone(ZoneId.systemDefault()).toInstant()),
                 Date.from(value.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
     }
@@ -460,12 +460,12 @@ class GenericValueTest extends BaseClassTest<GenericValue> {
         assertEquals(false, value.toBoolean().booleanValue());
         assertNotNull(value.toChar());
         assertNotNull(value.toByte());
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(new Date(date.getTime()), value.toDate());
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(new Date(date.getTime()),
+        AssertionUtils.assertSameSecond(new Date(date.getTime()), value.toDate());
+        AssertionUtils.assertSameSecond(new Date(date.getTime()),
                 Date.from(value.toLocalDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(new Date(date.getTime()),
+        AssertionUtils.assertSameSecond(new Date(date.getTime()),
                 new Date(value.toTimestamp().getTime()));
-        org.gjs.java.test.util.AssertionUtils.assertSameDay(new Date(date.getTime()),
+        AssertionUtils.assertSameDay(new Date(date.getTime()),
                 Date.from(value.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
     }
 
@@ -493,11 +493,11 @@ class GenericValueTest extends BaseClassTest<GenericValue> {
         assertEquals(false, value.toBoolean().booleanValue());
         assertNotNull(value.toChar());
         assertNotNull(value.toByte());
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(date, value.toDate());
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(date,
+        AssertionUtils.assertSameSecond(date, value.toDate());
+        AssertionUtils.assertSameSecond(date,
                 Date.from(value.toLocalDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(date, new Date(value.toTimestamp().getTime()));
-        org.gjs.java.test.util.AssertionUtils.assertSameDay(date,
+        AssertionUtils.assertSameSecond(date, new Date(value.toTimestamp().getTime()));
+        AssertionUtils.assertSameDay(date,
                 Date.from(value.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
     }
 
@@ -525,11 +525,11 @@ class GenericValueTest extends BaseClassTest<GenericValue> {
         assertEquals(false, value.toBoolean().booleanValue());
         assertNotNull(value.toChar());
         assertNotNull(value.toByte());
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(date, value.toDate());
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(date,
+        AssertionUtils.assertSameSecond(date, value.toDate());
+        AssertionUtils.assertSameSecond(date,
                 Date.from(value.toLocalDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        org.gjs.java.test.util.AssertionUtils.assertSameSecond(date, new Date(value.toTimestamp().getTime()));
-        org.gjs.java.test.util.AssertionUtils.assertSameDay(date,
+        AssertionUtils.assertSameSecond(date, new Date(value.toTimestamp().getTime()));
+        AssertionUtils.assertSameDay(date,
                 Date.from(value.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
     }
 

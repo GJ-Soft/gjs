@@ -34,12 +34,8 @@
 #	include <sys/ioctl.h>
 #endif
 
-#if ( defined ( VC ) )
-#	include <conio.h>
-#else
-#	include <unistd.h>
-#	include <ncurses.h>
-#endif
+#include <unistd.h>
+#include <ncurses.h>
 
 
 

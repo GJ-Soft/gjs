@@ -21,22 +21,6 @@ import org.slf4j.LoggerFactory;
  * ObjectSupplierManager que proveen de juegos de pruebas aleatorios que se
  * indiquen en el fichero testinggames.properties.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

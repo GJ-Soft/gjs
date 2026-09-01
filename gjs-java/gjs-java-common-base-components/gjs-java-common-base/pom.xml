@@ -3,26 +3,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-		<groupId>org.gjs.java</groupId>
+		<groupId>org.gjsoft.java</groupId>
 		<artifactId>gjs-java-base-parent</artifactId>
 		<version>1.0.0-RC.2</version>
         <relativePath>../../gjs-java-base-parents/gjs-java-base-parent</relativePath>
     </parent>
 
-    <groupId>org.gjs.java.common</groupId>
+    <groupId>org.gjsoft.java.common</groupId>
     <artifactId>gjs-java-common-base</artifactId>
     <packaging>jar</packaging>
 	
     <name>GJS Java common base</name>
     <description>Base classes and tools for Java applications</description>
 
-    <properties>
-    </properties>
-
 	<dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
@@ -30,7 +27,7 @@
 		</dependency>
 		
         <dependency>
-            <groupId>org.gjs.java.common</groupId>
+            <groupId>org.gjsoft.java.common</groupId>
             <artifactId>gjs-java-common-test-base</artifactId>
         </dependency>
 	</dependencies>

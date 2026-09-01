@@ -15,11 +15,11 @@ C++ a C: muchos ficheros `.c` conservan en su cabecera el nombre original `.cpp`
 
 | Dato         | Valor                         |
 | ------------ | ----------------------------- |
-| `groupId`    | `org.gjs.c.common`            |
+| `groupId`    | `org.gjsoft.c.common`            |
 | `artifactId` | `gjs-c-common-base`           |
 | `version`    | `1.0.0-RC.2`                  |
 | `packaging`  | `nar` (biblioteca **shared**) |
-| Pom padre    | `org.gjs.c:gjs-c-lib-parent`  |
+| Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`  |
 
 El artefacto se empaqueta con el `nar-maven-plugin`; las cabeceras de
 `src/main/include` se publican en el NAR `noarch` y quedan disponibles para los
@@ -38,7 +38,7 @@ gjs-c-common-base
 │   └── <Modulo>.md               ← un documento por módulo
 └── src
     ├── main
-    │   ├── include/              ← 34 cabeceras (API pública)
+    │   ├── include/              ← 32 cabeceras (API pública)
     │   └── c/org/gjs/c/common/   ← 23 fuentes
     └── test
         └── c/org/gjs/c/common/   ← Test.c (main) + 21 ficheros *Test.c
@@ -158,7 +158,7 @@ con las cabeceras.
 > último `mvn install`, sea cual sea el modo con el que se compiló.
 
 El modo determina los macros que ve el preprocesador
-(`POSIX`/`WIN`, `CYGWIN`, `A64`/`A32`, `GNU`/`CC`/`VC`); la normalización la
+(`POSIX`/`WIN`, `CYGWIN`, `A64`/`A32`, `GNU`/`CC`); la normalización la
 hace `Precompilacion.h` a partir de los `-D` que inyecta el pom padre. Ver el
 detalle en [`doc/MODULOS.md`](doc/MODULOS.md#cabeceras-de-configuración).
 

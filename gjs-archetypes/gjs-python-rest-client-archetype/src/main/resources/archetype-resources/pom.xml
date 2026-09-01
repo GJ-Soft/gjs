@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-		<groupId>org.gjs.python</groupId>
+		<groupId>org.gjsoft.python</groupId>
 		<artifactId>gjs-python-rest-parent</artifactId>
 		<version>1.0.0-RC.2</version>
         <relativePath />
@@ -20,6 +20,9 @@
     <description>Project  Rest Client ${capitalizedName} in language python</description>
 
     <properties>		
+		<!-- Project management -->
+		<repository.name>${artifactId}</repository.name>
+
 		<gjs.python.artifact.src.path>src/main/python</gjs.python.artifact.src.path>
 		<gjs.python.artifact.main>${package}.${mainFunction}</gjs.python.artifact.main>
 		<gjs.python.artifact.src.package.path>${packagePath}</gjs.python.artifact.src.package.path>

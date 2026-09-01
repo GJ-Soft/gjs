@@ -10,22 +10,6 @@ import org.gjs.java.common.util.ComparationUtils;
  * Clase base para ser extendida por todos los DTO que representan una entida de
  * la base de datos con clave primaria entera.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0
@@ -60,22 +44,10 @@ public abstract class EntityPkLongDto extends EntityDto<Long> {
 		super(id);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.dto.EntidadDto#validId(java.io.Serializable)
-	 */
-
 	@Override
 	protected boolean validId(Long id) {
 		return (id > 0);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.dto.EntidadDto#compareId(java.lang.Object)
-	 */
 
 	@Override
 	public int compareId(Object otherId) {

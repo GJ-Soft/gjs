@@ -17,16 +17,16 @@ Archetype to generate the basic structure of a basic project in typescript langu
 ## Generación de un proyecto a partir del arquetipo
 
     mvn -B archetype:generate \
-							-DarchetypeGroupId=org.gjs.maven.archetypes \
+							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-typescript-lib-archetype \
 							-DarchetypeVersion=1.0.0-RC.2 
 
     mvn -B archetype:generate \
-							-DarchetypeGroupId=org.gjs.maven.archetypes \
+							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-typescript-lib-archetype \
 							-DarchetypeVersion=1.0.0-RC.2 \
 							-DshortName=test \ 
-							-DgroupId=org.gjs.test 
+							-DgroupId=org.gjsoft.test 
   
 	Archetype Parameters:
 

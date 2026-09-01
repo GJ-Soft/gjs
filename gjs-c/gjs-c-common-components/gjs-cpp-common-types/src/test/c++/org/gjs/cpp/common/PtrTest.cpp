@@ -106,7 +106,8 @@ static bool TestPtr03 ()
 			cout << "Error caso 2" << endl;
 			bRes = false;
 		}
-		delete ptr;
+		// Esta en el Heap porque el dato interno lo esta
+		//delete ptr;
 	}
 	catch ( exception & ex )
 	{
@@ -154,7 +155,8 @@ static bool TestPtr04 ()
 			cout << "Error caso 2" << endl;
 			bRes = false;
 		}
-		delete ptr;
+		// Esta en el Heap porque el dato interno lo esta
+		// delete ptr;
 	}
 	catch ( exception & ex )
 	{

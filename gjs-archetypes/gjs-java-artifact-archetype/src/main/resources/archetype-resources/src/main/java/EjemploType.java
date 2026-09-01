@@ -53,22 +53,10 @@ public class EjemploType {
 		return (EjemploUtils.isValidNombre(nombre));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.type.EntidadType${symbol_pound}hashCode()
-	 */
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(nombre);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.type.EntidadType${symbol_pound}equals(java.lang.Object)
-	 */
 
 	@Override
 	public boolean equals(Object obj) {

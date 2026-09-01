@@ -7,9 +7,30 @@ import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryUsage;
 import java.util.List;
 
+import org.gjs.java.common.constant.CommonBaseConstants;
+
 import com.sun.management.HotSpotDiagnosticMXBean;
 
+/**
+ * The Class JvmUtils.
+ *
+ * Clase de utilidades generales de la libreria Gjs
+ *
+ * Informacion sobre la maquina virtual en marcha: memoria del heap, del non-heap y de cada pool.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public final class JvmUtils {
+
+	/**
+	 * Clase no instanciable.
+	 */
+	private JvmUtils() {
+		throw new IllegalStateException(CommonBaseConstants.MSG_UTILITY_CLASS);
+	}
 
 	public static String jvmInfo() {
 		StringBuilder sb = new StringBuilder();

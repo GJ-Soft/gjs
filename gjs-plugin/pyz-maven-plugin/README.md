@@ -17,7 +17,7 @@ Define the pyz packaging for maven projects
 ## Pom plugin definition:
 
 	<plugin>
-		<groupId>org.gjs.maven</groupId>
+		<groupId>org.gjsoft.maven</groupId>
 		<artifactId>pyz-maven-plugin</artifactId>
 		<version>1.0.0-RC.2</version>
 	</plugin>
@@ -30,7 +30,7 @@ Define the pyz packaging for maven projects
 <build>
 	<extensions>
 		<extension>
-			<groupId>org.gjs.maven</groupId>
+			<groupId>org.gjsoft.maven</groupId>
 			<artifactId>pyz-maven-plugin</artifactId>
 			<version>1.0.0-RC.2</version>
 		</extension>
@@ -42,7 +42,7 @@ Define the pyz packaging for maven projects
 ## Configuration
 
     <plugin>
-		<groupId>org.gjs.maven</groupId>
+		<groupId>org.gjsoft.maven</groupId>
 		<artifactId>pyz-maven-plugin</artifactId>
 		<version>1.0.0-RC.2</version>
 

@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
      <parent>
-		<groupId>org.gjs.java.maven</groupId>
+		<groupId>org.gjsoft.java.maven</groupId>
 		<artifactId>gjs-java-maven-extension-parent</artifactId>
 		<version>1.0.0-RC.2</version>
         <relativePath />
     </parent>
 
-	<groupId>org.gjs.maven.extensions</groupId>
+	<groupId>org.gjsoft.maven.extensions</groupId>
 	<artifactId>property-bootstrap-maven-extension</artifactId>
 	<packaging>jar</packaging>
 
@@ -27,7 +27,7 @@
 
   Pom extension definition:
 
-		groupId      : org.gjs.maven.extensions
+		groupId      : org.gjsoft.maven.extensions
 		artifactId   : property-bootstrap-maven-extension
 		version      : 1.0.0-RC.2
 

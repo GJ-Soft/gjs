@@ -18,16 +18,16 @@ Archetype to generate the structure of a archetype of project im any programming
 ## Generating an archetype from the archetype
 
     mvn archetype:generate \
-		-DarchetypeGroupId=org.gjs.maven.archetypes \
+		-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 		-DarchetypeArtifactId=gjs-archetype-archetype \
 		-DarchetypeVersion=1.0.0-RC.2 							    
 
     mvn archetype:generate \
-		-DarchetypeGroupId=org.gjs.maven.archetypes \
+		-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 		-DarchetypeArtifactId=gjs-archetype-archetype \
 		-DarchetypeVersion=1.0.0-RC.2  \
 		-Dprefix=gjs -DshortName=c-lib -Dlan=c -Dext=c -Dpackaging=nar \
-		-DprojectParentGroupId=org.gjs \
+		-DprojectParentGroupId=org.gjsoft \
 		-DprojectParentArtifactId=gjs-parent \
 		-DprojectParentVersion=1.0.0-SNAPSHOT 							    
     

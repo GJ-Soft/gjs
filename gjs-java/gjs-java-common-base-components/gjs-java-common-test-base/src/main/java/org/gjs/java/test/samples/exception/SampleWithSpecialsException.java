@@ -2,6 +2,18 @@ package org.gjs.java.test.samples.exception;
 
 import org.gjs.java.test.samples.pojos.SamplePojo;
 
+/**
+ * The Class SampleWithSpecialsException.
+ *
+ * Excepción de ejemplo de la librería Gjs
+ *
+ * Excepción comprobada cuyo constructor por defecto ya trae mensaje, para las pruebas que no admiten un mensaje nulo.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public class SampleWithSpecialsException extends Exception {
 
     /**

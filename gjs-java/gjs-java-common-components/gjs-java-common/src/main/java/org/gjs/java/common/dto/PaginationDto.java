@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.gjs.java.common.contant.CommonConstants;
+import org.gjs.java.common.constant.CommonConstants;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,22 +16,6 @@ import lombok.Setter;
  * Clase de datos de la librería Gjs
  *
  * Clase DTO para almacenar los datos de paginación.
- *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
  *
  * @author Gjs
  * @version 4.0.0

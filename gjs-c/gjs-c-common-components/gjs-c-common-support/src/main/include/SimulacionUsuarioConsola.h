@@ -15,8 +15,7 @@
    escribir, de modo que el lector ve la entrada y despues EOF: nunca se queda
    bloqueado, aunque lea de mas. Hay que llamar a RestaurarEntradaConsola tras
    la lectura para devolver stdin a su estado original. Devuelve 1 si prepara la
-   entrada, 0 en caso de error o si no aplica (WIN: getche/kbhit no pasan por
-   stdin). */
+   entrada y 0 en caso de error. Vale en los cuatro modos de compilacion. */
 int SimularEntradaConsola ( const char * p_cEntrada );
 void RestaurarEntradaConsola ();
 

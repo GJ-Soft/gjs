@@ -27,6 +27,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.gjs.java.common.test.utils.AssertionUtils;
 import org.gjs.java.common.type.FieldInfo;
 import org.gjs.java.common.util.DateUtils;
 import org.gjs.java.common.util.ReflectionUtils;
@@ -539,7 +540,7 @@ class ReflectionUtilsTest extends BaseClassTest<ReflectionUtils> {
 			list = new LinkedList<>();
 			copied = ReflectionUtils.clone(list);
 			assertNotNull(copied);
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(list, copied, "Lista vacia");
+			AssertionUtils.assertCollectionEquals(list, copied, "Lista vacia");
 
 			list.add(Long.valueOf(1));
 			list.add(Long.valueOf(2));
@@ -548,7 +549,7 @@ class ReflectionUtilsTest extends BaseClassTest<ReflectionUtils> {
 			for (final Long item : copied) {
 				logger.debug("Item={}", item);
 			}
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(list, copied, "Lista llena");
+			AssertionUtils.assertCollectionEquals(list, copied, "Lista llena");
 
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
@@ -566,13 +567,13 @@ class ReflectionUtilsTest extends BaseClassTest<ReflectionUtils> {
 			set = new HashSet<>();
 			copied = ReflectionUtils.clone(set);
 			assertNotNull(copied);
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(set, copied, "Conjunto vacio");
+			AssertionUtils.assertCollectionEquals(set, copied, "Conjunto vacio");
 
 			set.add(Long.valueOf(1));
 			set.add(Long.valueOf(2));
 			copied = ReflectionUtils.clone(set);
 			assertNotNull(copied);
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(set, copied, "Conjunto lleno");
+			AssertionUtils.assertCollectionEquals(set, copied, "Conjunto lleno");
 
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
@@ -590,13 +591,13 @@ class ReflectionUtilsTest extends BaseClassTest<ReflectionUtils> {
 			map = new TreeMap<>();
 			copied = ReflectionUtils.clone(map);
 			assertNotNull(copied);
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(map, copied, "Mapa vacio");
+			AssertionUtils.assertCollectionEquals(map, copied, "Mapa vacio");
 
 			map.put("1", "Valor1");
 			map.put("2", "Valor2");
 			copied = ReflectionUtils.clone(map);
 			assertNotNull(copied);
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(map, copied, "Conjunto lleno");
+			AssertionUtils.assertCollectionEquals(map, copied, "Conjunto lleno");
 
 		} catch (final Exception e) {
 			logger.error(e.getMessage(), e);
@@ -613,10 +614,10 @@ class ReflectionUtilsTest extends BaseClassTest<ReflectionUtils> {
 			final SampleCollectionsPojo obj = new SampleCollectionsPojo();
 			SampleCollectionsPojo copied = (SampleCollectionsPojo) ReflectionUtils.clone(obj);
 			assertNotNull(copied);
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(obj.getIds(), copied.getIds(), "Ids");
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(obj.getNombres(), copied.getNombres(),
+			AssertionUtils.assertCollectionEquals(obj.getIds(), copied.getIds(), "Ids");
+			AssertionUtils.assertCollectionEquals(obj.getNombres(), copied.getNombres(),
 					"Nombre");
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(obj.getObjetos(), copied.getObjetos(),
+			AssertionUtils.assertCollectionEquals(obj.getObjetos(), copied.getObjetos(),
 					"Objetos nulos");
 
 			obj.setIds(ids);
@@ -624,10 +625,10 @@ class ReflectionUtilsTest extends BaseClassTest<ReflectionUtils> {
 			obj.setObjetos(objetos);
 			copied = (SampleCollectionsPojo) ReflectionUtils.clone(obj);
 			assertNotNull(copied);
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(obj.getIds(), copied.getIds(), "Ids");
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(obj.getNombres(), copied.getNombres(),
+			AssertionUtils.assertCollectionEquals(obj.getIds(), copied.getIds(), "Ids");
+			AssertionUtils.assertCollectionEquals(obj.getNombres(), copied.getNombres(),
 					"Nombre");
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(obj.getObjetos(), copied.getObjetos(),
+			AssertionUtils.assertCollectionEquals(obj.getObjetos(), copied.getObjetos(),
 					"Objetos vacios");
 
 			ids.add(Long.valueOf(1));
@@ -637,10 +638,10 @@ class ReflectionUtilsTest extends BaseClassTest<ReflectionUtils> {
 			objetos.put("key2", new SamplePojo(1, "objeto2"));
 			copied = (SampleCollectionsPojo) ReflectionUtils.clone(obj);
 			assertNotNull(copied);
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(obj.getIds(), copied.getIds(), "Ids");
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(obj.getNombres(), copied.getNombres(),
+			AssertionUtils.assertCollectionEquals(obj.getIds(), copied.getIds(), "Ids");
+			AssertionUtils.assertCollectionEquals(obj.getNombres(), copied.getNombres(),
 					"Nombre");
-			org.gjs.java.test.util.AssertionUtils.assertCollectionEquals(obj.getObjetos(), copied.getObjetos(),
+			AssertionUtils.assertCollectionEquals(obj.getObjetos(), copied.getObjetos(),
 					"Objetos llenos");
 
 		} catch (final Exception e) {

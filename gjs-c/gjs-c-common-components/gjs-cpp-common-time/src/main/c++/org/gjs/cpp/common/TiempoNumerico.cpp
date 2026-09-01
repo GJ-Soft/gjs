@@ -148,8 +148,8 @@ void TmpFormDescomponer ( double dTiempo, long * p_lFecha, long * p_lHora )
 
 void TmpFormDescomponerExt ( double dTiempo, int * p_iA, int * p_iM, int * p_iD, int * p_iH, int * p_iMi, int * p_iS )
 {
-	long lFecha;
-	long lHora;
+	long lFecha = 0;
+	long lHora = 0;
 
 	TmpFormDescomponer ( dTiempo, &lFecha, &lHora );
 	FecFormDescomponer ( lFecha, p_iA, p_iM, p_iD );
@@ -196,8 +196,8 @@ void TmpFormDescomponerLL ( long long llTiempo, long * p_lFecha, long * p_lHora 
 
 void TmpFormDescomponerExtLL ( long long llTiempo, int * p_iA, int * p_iM, int * p_iD, int * p_iH, int * p_iMi, int * p_iS )
 {
-	long lFecha;
-	long lHora;
+	long lFecha = 0;
+	long lHora = 0;
 
 	TmpFormDescomponerLL ( llTiempo, &lFecha, &lHora );
 	FecFormDescomponer ( lFecha, p_iA, p_iM, p_iD );
@@ -296,8 +296,8 @@ double TmpFormEstablecerValor ( double dValor )
 
 bool TmpFormEsValido ( double dTiempo )
 {
-	long	lFecha;
-	long	lHora;
+	long lFecha = 0;
+	long lHora = 0;
 
 	TmpFormDescomponer ( dTiempo, &lFecha, &lHora );
 	return ( FecFormEsValida ( lFecha ) && HorFormEsValida ( lHora ) );
@@ -384,8 +384,8 @@ int TmpFormSegundos ( double dTiempo )
 double TmpFormObtenerValorLL ( long long llTiempo )
 {
 	double	dRes;
-	long	lFecha;
-	long	lHora;
+	long 	lFecha = 0;
+	long 	lHora = 0;
 
 	if ( TmpFormEsValidoLL ( llTiempo ) )
 	{
@@ -402,8 +402,8 @@ double TmpFormObtenerValorLL ( long long llTiempo )
 long long TmpFormEstablecerValorLL ( double dValor )
 {
 	long long	llRes;
-	long	lFecha;
-	long	lHora;
+	long 		lFecha = 0;
+	long 		lHora = 0;
 
 
 	TmpFormDescomponer ( TmpFormEstablecerValor ( dValor ), &lFecha, &lHora );
@@ -413,8 +413,8 @@ long long TmpFormEstablecerValorLL ( double dValor )
 
 bool TmpFormEsValidoLL ( long long llTiempo )
 {
-	long	lFecha;
-	long	lHora;
+	long lFecha = 0;
+	long lHora = 0;
 
 	TmpFormDescomponerLL ( llTiempo, &lFecha, &lHora );
 	return ( FecFormEsValida ( lFecha ) && HorFormEsValida ( lHora ) );

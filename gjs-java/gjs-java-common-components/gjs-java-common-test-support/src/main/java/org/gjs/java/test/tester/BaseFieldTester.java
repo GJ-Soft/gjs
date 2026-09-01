@@ -12,21 +12,6 @@ import com.openpojo.reflection.PojoClass;
  *
  * Clase abstracta base para implementar tester customizados sobre atributos.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

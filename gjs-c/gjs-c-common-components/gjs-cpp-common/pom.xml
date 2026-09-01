@@ -2,14 +2,14 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.c</groupId>
+		<groupId>org.gjsoft.c</groupId>
 		<artifactId>gjs-cpp-lib-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../../gjs-c-parents/gjs-cpp-lib-parent</relativePath>
 	</parent>	
 
 
-	<groupId>org.gjs.c.common</groupId>
+	<groupId>org.gjsoft.c.common</groupId>
 	<artifactId>gjs-cpp-common</artifactId>
 	<packaging>nar</packaging>
 
@@ -23,42 +23,42 @@
 
     <dependencies>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-cpp-common-base</artifactId>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-cpp-common-time</artifactId>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-cpp-common-types</artifactId>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-cpp-common-io</artifactId>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-cpp-common-system</artifactId>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-cpp-common-support</artifactId>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-cpp-common-log</artifactId>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-cpp-common-database</artifactId>
 				<type>nar</type>
 			</dependency>

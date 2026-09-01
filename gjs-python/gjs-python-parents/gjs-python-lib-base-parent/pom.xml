@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.python</groupId>
+		<groupId>org.gjsoft.python</groupId>
 		<artifactId>gjs-python-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../gjs-python-parent</relativePath>
@@ -78,7 +78,7 @@
 
 		<extensions>
 			<extension>
-				<groupId>org.gjs.maven.extensions</groupId>
+				<groupId>org.gjsoft.maven.extensions</groupId>
 				<artifactId>whl-maven-extension</artifactId>
 				<version>${whl-maven-extension.version}</version>
 			</extension>

@@ -48,9 +48,12 @@ Volver al [README](../README.md).
 
 | Módulo          | Prefijo     | Struct          | Funciones | Test | Documento                 |
 | --------------- | ----------- | --------------- | --------- | ---- | ------------------------- |
-| `SEntidadId`    | `SEntId`    | `SEntidadId`    | 9         | ✔    | [Entidades](Entidades.md) |
-| `SEntidadCod`   | `SEntCod`   | `SEntidadCod`   | 9         | ✔    | [Entidades](Entidades.md) |
-| `SEntidadIdCod` | `SEntIdCod` | `SEntidadIdCod` | 13        | ✔    | [Entidades](Entidades.md) |
+| `SEntidad`       | `SEnt`       | `SEntidad`       | 36        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadNom`    | `SEntNom`    | `SEntidadNom`    | 51        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadCod`    | `SEntCod`    | `SEntidadCod`    | 42        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadCodNom` | `SEntCodNom` | `SEntidadCodNom` | 55        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadIdCod`  | `SEntIdCod`  | `SEntidadIdCod`  | 51        | ✔    | [Entidades](Entidades.md) |
+| `SMensaje`       | `SMsj`       | `SMensaje`       | 29        | ✔    | [Entidades](Entidades.md) |
 
 ### Errores
 

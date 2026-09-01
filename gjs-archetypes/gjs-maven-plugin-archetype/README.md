@@ -17,12 +17,12 @@ Archetype to generate the basic structure of a maven plugin.
 ## Generación de un proyecto a partir del arquetipo
 
     mvn -B archetype:generate \
-							-DarchetypeGroupId=org.gjs.maven.archetypes \
+							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-maven-plugin-archetype \
 							-DarchetypeVersion=1.0.0-RC.2 
 
     mvn -B archetype:generate \
-							-DarchetypeGroupId=org.gjs.maven.archetypes \
+							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-maven-plugin-archetype \
 							-DarchetypeVersion=1.0.0-RC.2 \
 							-DshortName=test -Drule=test -Dphase=test

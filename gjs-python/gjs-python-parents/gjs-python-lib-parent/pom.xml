@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.python</groupId>
+		<groupId>org.gjsoft.python</groupId>
 		<artifactId>gjs-python-lib-base-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../gjs-python-lib-base-parent</relativePath>
@@ -33,7 +33,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.gjs.python.common</groupId>
+				<groupId>org.gjsoft.python.common</groupId>
 				<artifactId>gjs-python-common</artifactId>
 				<version>${gjs-python-common.version}</version>
 				<type>whl</type>
@@ -43,7 +43,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.gjs.python.common</groupId>
+			<groupId>org.gjsoft.python.common</groupId>
 			<artifactId>gjs-python-common</artifactId>
 			<type>whl</type>
 		</dependency>

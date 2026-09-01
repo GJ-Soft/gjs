@@ -17,19 +17,19 @@ typedef struct
 
 
 
-SMensajes * SMsjCrear ();
+SMensajes * SMsjsCrear ();
 
-void SMsjDestruir ( SMensajes ** p_p_msjObj );
+void SMsjsDestruir ( SMensajes ** p_p_msjObj );
 
-int SMsjInsertar ( SMensajes * p_msjObj, unsigned long uiCodigo, SCadena * p_cadTexto );
-int SMsjInsertarLit ( SMensajes * p_msjObj, unsigned long uiCodigo, const char * p_cTexto );
+int SMsjsInsertar ( SMensajes * p_msjObj, unsigned long uiCodigo, SCadena * p_cadTexto );
+int SMsjsInsertarLit ( SMensajes * p_msjObj, unsigned long uiCodigo, const char * p_cTexto );
 
-int SMsjExisteCodigo ( SMensajes * p_msjObj, unsigned long uiCodigo );
-int SMsjNumMensajes ( SMensajes * p_msjObj );
-SCadena * SMsjTexto ( SMensajes * p_msjObj, unsigned long uiCodigo );
+int SMsjsExisteCodigo ( SMensajes * p_msjObj, unsigned long uiCodigo );
+int SMsjsNumMensajes ( SMensajes * p_msjObj );
+SCadena * SMsjsTexto ( SMensajes * p_msjObj, unsigned long uiCodigo );
 
-void SMsjLimpiar ( SMensajes * p_msjObj );
-int SMsjCargar ( SMensajes * p_msjObj, const char * p_cFichero );
+void SMsjsLimpiar ( SMensajes * p_msjObj );
+int SMsjsCargar ( SMensajes * p_msjObj, const char * p_cFichero );
 
 
 

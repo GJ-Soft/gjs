@@ -44,8 +44,8 @@ static int TestSLisParInsertar01 ()
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		/* La lista toma la propiedad de los parametros insertados. */
-		SLisParInsertarAlFinal ( p_lisObj, SParCrearExtLit ( TIP_NUMERO_ENTERO, "uno" ) );
-		SLisParInsertarAlFinal ( p_lisObj, SParCrearExtLit ( TIP_NUMERO_ENTERO, "dos" ) );
+		SLisParInsertarAlFinal ( p_lisObj, SParCrearLitExt ( TIP_NUMERO_ENTERO, "uno" ) );
+		SLisParInsertarAlFinal ( p_lisObj, SParCrearLitExt ( TIP_NUMERO_ENTERO, "dos" ) );
 		if ( SLisParNumElementos ( p_lisObj ) != 2 )
 		{
 			printf( "Error caso 1: se esperaban 2 elementos: %d\n", SLisParNumElementos ( p_lisObj ) );

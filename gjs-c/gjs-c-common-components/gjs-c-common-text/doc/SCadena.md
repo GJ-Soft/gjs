@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SCadena.c` (2.658 líneas) |
 | Prefijo      | `SCad`                                                 |
 | Struct       | `SCadena`                                              |
-| Funciones    | 135                                                    |
+| Funciones    | 137                                                    |
 | Incluido por | `Texto.h`                                              |
 | Test         | `SCadenaTest.c` → `TestSCadena()`                      |
 
@@ -80,6 +80,7 @@ Afecta a toda la familia `SCadEs…`, `SCadBuscar…`, `SCadExiste…` y
 | ----------------------------------------------------- | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Eliminar…`                                           | 16  | Apariciones, blancos, tramos, por carácter o literal                                                                                                 |
 | `Es…`                                                 | 11  | `EsIgual`, `EsMayor`, `EsMenor`, `EsDiferente`, cada uno con variante `Literal`                                                                      |
+| `Comparar…`                                           | 2   | `SCadComparar` y `SCadCompararLiteral`, de tres estados                                                                                              |
 | `Buscar…`                                             | 8   | Subcadena o carácter, hacia delante y hacia atrás (`Desc`)                                                                                           |
 | `Extraer…`                                            | 7   | Subcadenas por posición o hasta/desde un carácter                                                                                                    |
 | `Contiene…`                                           | 6   | Blancos, no alfanuméricos, no estándar, no imprimibles                                                                                               |
@@ -134,7 +135,13 @@ contenido a texto hexadecimal y recuperarlo.
 - `SCadValor` devuelve el buffer **modificable**: escribir en él directamente
   puede dejar la cadena en un estado que el objeto no controla, por ejemplo sin
   terminador o más larga que `iMaxTam`.
-- El módulo ofrece 135 funciones y [SCadenaConv](SCadenaConv.md) otras 169 con
+- **`SCadComparar` y `SCadCompararLiteral` tratan el nulo como un valor**: una
+  cadena válida es `COMP_MAYOR` que una nula, y dos nulas son `COMP_IGUAL`. Los
+  predicados `SCadEs…` no hacen eso: con un nulo por medio devuelven `0` sin
+  distinguir. Las dos funciones nuevas son las que usan
+  [SCampo](SCampo.md), [SToken](SToken.md) y la familia de campos para su propia
+  comparación de tres estados.
+- El módulo ofrece 137 funciones y [SCadenaConv](SCadenaConv.md) otras 169 con
   un solapamiento muy alto. Ver ese documento para la diferencia real entre
   ambos.
 - No hay operaciones sobre `unichar`: la parte Unicode se queda en las ocho

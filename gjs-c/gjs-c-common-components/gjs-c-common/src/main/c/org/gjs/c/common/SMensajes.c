@@ -2,61 +2,61 @@
 
 #include "CommonConfig.h"
 
-#include <SEntidadId.h>
+#include <SMensaje.h>
 #include <SFicTexto.h>
 
 
 
 
-SMensajes * SMsjCrear ()
+SMensajes * SMsjsCrear ()
 {
-	SMensajes * p_msjObj;
+	SMensajes * p_msjsObj;
 
-	p_msjObj = ( SMensajes * ) MemReservar ( sizeof ( SMensajes ) );
-	if ( ES_VALIDO ( p_msjObj ) )
+	p_msjsObj = ( SMensajes * ) MemReservar ( sizeof ( SMensajes ) );
+	if ( ES_VALIDO ( p_msjsObj ) )
 	{
-		p_msjObj->p_lisMensajes = SLispCrear ();
-		if ( ES_VALIDO ( p_msjObj->p_lisMensajes ) )
+		p_msjsObj->p_lisMensajes = SLispCrear ();
+		if ( ES_VALIDO ( p_msjsObj->p_lisMensajes ) )
 		{
-			SLispDesactivarLiberacionMemoria ( p_msjObj->p_lisMensajes );
+			SLispDesactivarLiberacionMemoria ( p_msjsObj->p_lisMensajes );
 		}
 		else
 		{
-			MemLiberar ( ( void ** ) &p_msjObj );
+			MemLiberar ( ( void ** ) &p_msjsObj );
 		}
 	}
-	return ( p_msjObj );
+	return ( p_msjsObj );
 }
 
-void SMsjDestruir ( SMensajes ** p_p_msjObj )
+void SMsjsDestruir ( SMensajes ** p_p_msjsObj )
 {
-	SMensajes * 	p_msjObj;
+	SMensajes * 	p_msjsObj;
 
-	if ( ES_VALIDO ( p_p_msjObj ) )
+	if ( ES_VALIDO ( p_p_msjsObj ) )
 	{
-		p_msjObj = *p_p_msjObj;
-		if ( ES_VALIDO ( p_msjObj ) )
+		p_msjsObj = *p_p_msjsObj;
+		if ( ES_VALIDO ( p_msjsObj ) )
 		{
-			SMsjLimpiar ( p_msjObj );
-			SLispDestruir ( &( p_msjObj->p_lisMensajes ) );
-			MemLiberar ( ( void ** ) p_p_msjObj );
+			SMsjsLimpiar ( p_msjsObj );
+			SLispDestruir ( &( p_msjsObj->p_lisMensajes ) );
+			MemLiberar ( ( void ** ) p_p_msjsObj );
 		}
 	}
 }
 
-int SMsjInsertar ( SMensajes * p_msjObj, unsigned long ulCodigo, SCadena * p_cadTexto )
+int SMsjsInsertar ( SMensajes * p_msjsObj, unsigned long ulCodigo, SCadena * p_cadTexto )
 {
-	int				iRes;
-	SEntidadId *	p_entDatos;
+	int			iRes;
+	SMensaje *	p_msjDatos;
 
-	if ( ES_VALIDO ( p_msjObj ) && ( ulCodigo > 0 ) && ( SCadLongitud ( p_cadTexto ) > 0 ) )
+	if ( ES_VALIDO ( p_msjsObj ) && ( ulCodigo > 0 ) && ( SCadLongitud ( p_cadTexto ) > 0 ) )
 	{
-		if ( SMsjExisteCodigo ( p_msjObj, ulCodigo ) == 0 )
+		if ( SMsjsExisteCodigo ( p_msjsObj, ulCodigo ) == 0 )
 		{
-			p_entDatos = SEntIdEncapsular ( ulCodigo, p_cadTexto );
-			if ( ES_VALIDO ( p_entDatos ) )
+			p_msjDatos = SMsjCrear ( ulCodigo, p_cadTexto );
+			if ( ES_VALIDO ( p_msjDatos ) )
 			{
-				iRes = SLispInsertarDetras ( p_msjObj->p_lisMensajes, ( void * ) p_entDatos );
+				iRes = SLispInsertarDetras ( p_msjsObj->p_lisMensajes, ( void * ) p_msjDatos );
 			}
 			else
 			{
@@ -75,13 +75,13 @@ int SMsjInsertar ( SMensajes * p_msjObj, unsigned long ulCodigo, SCadena * p_cad
 	return ( iRes );
 }
 
-int SMsjInsertarLit ( SMensajes * p_msjObj, unsigned long ulCodigo, const char * p_cTexto )
+int SMsjsInsertarLit ( SMensajes * p_msjsObj, unsigned long ulCodigo, const char * p_cTexto )
 {
 	int 		iRes;
 	SCadena *	p_cadTexto;
 	
 	p_cadTexto = SCadGenerar ( p_cTexto );
-	if ( SMsjInsertar ( p_msjObj, ulCodigo, p_cadTexto ) == 1 )
+	if ( SMsjsInsertar ( p_msjsObj, ulCodigo, p_cadTexto ) == 1 )
 	{
 		iRes = 1;
 	}
@@ -93,32 +93,32 @@ int SMsjInsertarLit ( SMensajes * p_msjObj, unsigned long ulCodigo, const char *
 	return ( iRes );
 }
 
-int SMsjExisteCodigo ( SMensajes * p_msjObj, unsigned long ulCodigo )
+int SMsjsExisteCodigo ( SMensajes * p_msjsObj, unsigned long ulCodigo )
 {
 	int				iRes;
 	int				iEnc;
 	int 			iFin;
-	SEntidadId *	p_entDatos;
+	SMensaje *	p_msjDatos;
 
-	if ( ES_VALIDO ( p_msjObj ) )
+	if ( ES_VALIDO ( p_msjsObj ) )
 	{
 		iEnc = 0;
 		iFin = 0;
-		SLispInicio ( p_msjObj->p_lisMensajes );
+		SLispInicio ( p_msjsObj->p_lisMensajes );
 		while ( ( iEnc == 0 ) && ( iFin == 0 ) )
 		{
-			p_entDatos = ( SEntidadId * ) SLispActual ( p_msjObj->p_lisMensajes );
-			if ( SEntIdId ( p_entDatos ) == ulCodigo )
+			p_msjDatos = ( SMensaje * ) SLispActual ( p_msjsObj->p_lisMensajes );
+			if ( SMsjValorId ( p_msjDatos ) == ulCodigo )
 			{
 				iEnc = 1;
 			}
-			else if ( SLispEstaEnFinal ( p_msjObj->p_lisMensajes ) == 1 )
+			else if ( SLispEstaEnFinal ( p_msjsObj->p_lisMensajes ) == 1 )
 			{
 				iFin = 1;
 			}
 			else
 			{
-				SLispSiguiente ( p_msjObj->p_lisMensajes );
+				SLispSiguiente ( p_msjsObj->p_lisMensajes );
 			}
 		}
 		iRes = iEnc;
@@ -130,13 +130,13 @@ int SMsjExisteCodigo ( SMensajes * p_msjObj, unsigned long ulCodigo )
 	return ( iRes );
 }
 
-int SMsjNumMensajes ( SMensajes * p_msjObj )
+int SMsjsNumMensajes ( SMensajes * p_msjsObj )
 {
 	int	iRes;
 
-	if ( ES_VALIDO ( p_msjObj ) )
+	if ( ES_VALIDO ( p_msjsObj ) )
 	{
-		iRes = SLispNumElementos ( p_msjObj->p_lisMensajes );
+		iRes = SLispNumElementos ( p_msjsObj->p_lisMensajes );
 	}
 	else
 	{
@@ -146,34 +146,34 @@ int SMsjNumMensajes ( SMensajes * p_msjObj )
 }
 
 
-SCadena * SMsjTexto ( SMensajes * p_msjObj, unsigned long ulCodigo )
+SCadena * SMsjsTexto ( SMensajes * p_msjsObj, unsigned long ulCodigo )
 {
-	SEntidadId *	p_entDatos;
-	SCadena *		p_cadTexto;
-	int				iEnc;
-	int 			iFin;
+	SMensaje *	p_msjDatos;
+	SCadena *	p_cadTexto;
+	int			iEnc;
+	int 		iFin;
 
-	if ( ES_VALIDO ( p_msjObj ) )
+	if ( ES_VALIDO ( p_msjsObj ) )
 	{
 		p_cadTexto = NULL;
 		iEnc = 0;
 		iFin = 0;
-		SLispInicio ( p_msjObj->p_lisMensajes );
+		SLispInicio ( p_msjsObj->p_lisMensajes );
 		while ( ( iEnc == 0 ) && ( iFin == 0 ) )
 		{
-			p_entDatos = ( SEntidadId * ) SLispActual ( p_msjObj->p_lisMensajes );
-			if ( SEntIdId ( p_entDatos ) == ulCodigo )
+			p_msjDatos = ( SMensaje * ) SLispActual ( p_msjsObj->p_lisMensajes );
+			if ( SMsjValorId ( p_msjDatos ) == ulCodigo )
 			{
 				iEnc = 1;
-				p_cadTexto = SEntIdNombre ( p_entDatos );
+				p_cadTexto = SMsjValorTexto ( p_msjDatos );
 			}
-			else if ( SLispEstaEnFinal ( p_msjObj->p_lisMensajes ) == 1 )
+			else if ( SLispEstaEnFinal ( p_msjsObj->p_lisMensajes ) == 1 )
 			{
 				iFin = 1;
 			}
 			else
 			{
-				SLispSiguiente ( p_msjObj->p_lisMensajes );
+				SLispSiguiente ( p_msjsObj->p_lisMensajes );
 			}
 		}
 	}
@@ -184,24 +184,24 @@ SCadena * SMsjTexto ( SMensajes * p_msjObj, unsigned long ulCodigo )
 	return ( p_cadTexto );
 }
 
-void SMsjLimpiar ( SMensajes * p_msjObj )
+void SMsjsLimpiar ( SMensajes * p_msjsObj )
 {
-	SEntidadId *	p_entObj;
-	int				iNumElems;
+	SMensaje *	p_msjObj;
+	int			iNumElems;
 
-	if ( ES_VALIDO ( p_msjObj ) )
+	if ( ES_VALIDO ( p_msjsObj ) )
 	{
-		iNumElems = SLispNumElementos ( p_msjObj->p_lisMensajes );
+		iNumElems = SLispNumElementos ( p_msjsObj->p_lisMensajes );
 		for ( int iElem = 0; iElem < iNumElems; iElem = iElem + 1 )
 		{
-			p_entObj = ( SEntidadId * ) SLispElemento ( p_msjObj->p_lisMensajes, iElem );
-			SEntIdDestruir ( &p_entObj );
+			p_msjObj = ( SMensaje * ) SLispElemento ( p_msjsObj->p_lisMensajes, iElem );
+			SMsjDestruir ( &p_msjObj );
 		}
-		SLispVaciar ( p_msjObj->p_lisMensajes );
+		SLispVaciar ( p_msjsObj->p_lisMensajes );
 	}
 }
 
-int SMsjCargar ( SMensajes * p_msjObj, const char * p_cFichero )
+int SMsjsCargar ( SMensajes * p_msjsObj, const char * p_cFichero )
 {
 	int					iRes;
 	SFicTexto *			p_ficMsj;
@@ -245,7 +245,7 @@ int SMsjCargar ( SMensajes * p_msjObj, const char * p_cFichero )
 								if ( SCadcEsNumerica ( p_cadCodigo ) == 1 )
 								{
 									ulCodigo = SCadcValorEntero ( p_cadCodigo );
-									iCargado = SMsjInsertar ( p_msjObj, ulCodigo, p_cadTexto );
+									iCargado = SMsjsInsertar ( p_msjsObj, ulCodigo, p_cadTexto );
 								}
 
 								SCadcDestruir ( & p_cadCodigo );

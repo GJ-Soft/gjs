@@ -20,21 +20,6 @@ import org.slf4j.Logger;
  * Gestor de generadores de objetos aleatorios: puede manejar tantos generadores
  * de objetos como se quiera.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

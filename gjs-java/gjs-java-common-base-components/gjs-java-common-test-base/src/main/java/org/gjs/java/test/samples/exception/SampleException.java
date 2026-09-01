@@ -1,5 +1,17 @@
 package org.gjs.java.test.samples.exception;
 
+/**
+ * The Class SampleException.
+ *
+ * Excepción de ejemplo de la librería Gjs
+ *
+ * Excepción comprobada con los constructores corrientes.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public class SampleException extends Exception {
 
     /**

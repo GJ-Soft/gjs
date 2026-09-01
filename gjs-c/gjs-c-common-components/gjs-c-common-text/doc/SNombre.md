@@ -1,14 +1,14 @@
 # SNombre
 
-| Dato         | Valor                                   |
-| ------------ | --------------------------------------- |
-| Cabecera     | `src/main/include/SNombre.h`            |
-| Fuente       | `src/main/c/org/gjs/c/common/SNombre.c` |
-| Prefijo      | `SNom`                                  |
-| Struct       | `SNombre`                               |
-| Funciones    | 11                                      |
-| Incluido por | `Texto.h`                               |
-| Test         | `SNombreTest.c` → `TestSNombre()`       |
+| Dato         | Valor                                                |
+| ------------ | ---------------------------------------------------- |
+| Cabecera     | `src/main/include/SNombre.h`                         |
+| Fuente       | `src/main/c/org/gjs/c/common/SNombre.c` (643 líneas) |
+| Prefijo      | `SNom`                                               |
+| Struct       | `SNombre`                                            |
+| Funciones    | 39                                                   |
+| Incluido por | `Texto.h`                                            |
+| Test         | `SNombreTest.c` → `TestSNombre()`                    |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)
 
@@ -17,47 +17,83 @@
 ## Propósito
 
 Una cadena corta con el papel de **nombre o identificador**: el rótulo de un
-campo, de una tabla o de una variable. Es una [SCadena](SCadena.md) con un tope
-por defecto pensado para eso.
+campo, de una tabla o de una variable. Es un [SCampo](SCampo.md) con la
+validación `SCadEsNombreValido` puesta de fábrica.
 
 ```c
 typedef struct
 {
-    SCadena * p_cadValor;
+    SCampo * p_campValor;
 } SNombre;
 ```
+
+Un nombre es una cadena **no vacía, sin blancos, imprimible, dentro del ASCII de
+7 bits y que empieza por letra**. Admite signos de puntuación, que un
+[SCodigo](SCodigo.md) no admite. La regla entera está en
+[ValidacionCadenas](ValidacionCadenas.md).
 
 El tope por defecto es `NOM_MAX_TAM_DEF`, **35 caracteres**
 (`TextoConstantes.h`).
 
-## API
-
-| Función                                          | Descripción                          |
-| ------------------------------------------------ | ------------------------------------ |
-| `SNombre * SNomCrearDef ()`                      | Nombre con el tope por defecto (35). |
-| `SNombre * SNomCrear ( int iMaxTam )`            | Nombre con el tope indicado.         |
-| `void SNomDestruir ( SNombre ** )`               | Destruye y anula el puntero.         |
-| `int SNomMaxLongitud ( SNombre * )`              | Longitud máxima.                     |
-| `int SNomLongitud ( SNombre * )`                 | Longitud actual.                     |
-| `SCadena * SNomValor ( SNombre * )`              | Cadena interna.                      |
-| `const char * SNomValorConstante ( SNombre * )`  | Contenido de sólo lectura.           |
-| `int SNomEstablecerCad ( SNombre *, SCadena * )` | Fija el valor desde una `SCadena`.   |
-| `int SNomEstablecer ( SNombre *, const char * )` | Fija el valor desde un literal.      |
-| `int SNomLimpiar ( SNombre * )`                  | Vacía el nombre.                     |
-| `int SNomEstaVacio ( SNombre * )`                | 1 si está vacío.                     |
-
 ```c
 SNombre * p_nomObj = SNomCrearDef ();
 
-SNomEstablecer ( p_nomObj, "importe_total" );
-printf ( "%s (%d)\n", SNomValorConstante ( p_nomObj ), SNomLongitud ( p_nomObj ) );
+SNomEstablecerLit ( p_nomObj, "importe_total" );
+printf ( "%s (%d)\n", SNomValorLit ( p_nomObj ), SNomLongitud ( p_nomObj ) );
 
 SNomDestruir ( &p_nomObj );
 ```
 
+## API
+
+### Ciclo de vida
+
+| Función                                                     | Descripción                              |
+| ----------------------------------------------------------- | ---------------------------------------- |
+| `SNombre * SNomCrearDef ()`                                 | Vacío, con el tope por defecto (35).     |
+| `SNombre * SNomCrear ( int iMaxTam )`                       | Vacío, con el tope indicado.             |
+| `SNombre * SNomCrearValor ( SCadena * )`                    | Con valor; el tope queda en su longitud. |
+| `SNombre * SNomCrearValorLit ( const char * )`              | Igual, desde un literal.                 |
+| `SNombre * SNomCrearValorExt ( SCadena *, int iMaxTam )`    | Con valor y tope independientes.         |
+| `SNombre * SNomCrearValorLitExt ( const char *, int )`      | Igual, desde un literal.                 |
+| `SNombre * SNomDuplicar ( SNombre * )`                      | Copia independiente.                     |
+| `void SNomDestruir ( SNombre ** )`                          | Destruye y anula el puntero.             |
+
+Las cuatro variantes con valor devuelven `NULL` si el valor no supera la
+validación.
+
+### Acceso y estado
+
+`SNomMaxLongitud`, `SNomLongitud`, `SNomValor` (la `SCadena` interna),
+`SNomValorLit` (sólo lectura), `SNomEsValido`, `SNomEstaVacio`.
+
+### Asignación
+
+`SNomEstablecer` (desde `SCadena *`), `SNomEstablecerLit` (desde literal),
+`SNomAsignar` (desde otro `SNombre *`), `SNomAsignarCampo` (desde un
+[SCampo](SCampo.md)), `SNomLimpiar`.
+
+### Comparación
+
+Cuatro operaciones por cuatro tipos de argumento, dieciséis funciones:
+
+| Operación | Contra `SNombre *` | Contra `SCampo *`      | Contra `SCadena *`   | Contra `const char *` |
+| --------- | ------------------ | ---------------------- | -------------------- | --------------------- |
+| Igual     | `SNomEsIgual`      | `SNomEsIgualCampo`     | `SNomEsIgualCad`     | `SNomEsIgualLit`      |
+| Menor     | `SNomEsMenor`      | `SNomEsMenorCampo`     | `SNomEsMenorCad`     | `SNomEsMenorLit`      |
+| Mayor     | `SNomEsMayor`      | `SNomEsMayorCampo`     | `SNomEsMayorCad`     | `SNomEsMayorLit`      |
+| Diferente | `SNomEsDiferente`  | `SNomEsDiferenteCampo` | `SNomEsDiferenteCad` | `SNomEsDiferenteLit`  |
+
+Más las cuatro de tres estados (`COMP_MENOR` / `COMP_IGUAL` / `COMP_MAYOR`):
+`SNomComparar`, `SNomCompararCampo`, `SNomCompararCad`, `SNomCompararLit`. Un
+nombre válido es **mayor** que uno nulo, y dos nulos son **iguales**.
+
+Y `SNomCumpleExpReg ( SNombre *, const char * p_cExpReg )`.
+
 ## Dependencias
 
-- [SCadena](SCadena.md) — el almacenamiento y todas las operaciones.
+- [SCampo](SCampo.md) — toda la mecánica; `SNombre` sólo reetiqueta.
+- [ValidacionCadenas](ValidacionCadenas.md) — `SCadEsNombreValido`.
 
 ## Test
 
@@ -65,14 +101,20 @@ SNomDestruir ( &p_nomObj );
 
 ## Observaciones
 
-- **Es idéntico a [SDescripcion](SDescripcion.md) salvo en el tope por
-  defecto** (35 frente a 255) y en el prefijo. Mismos once métodos, misma
-  estructura de un solo campo, misma delegación. Son dos módulos donde bastaría
-  uno con el tope como parámetro.
-- **No valida que el nombre sea un identificador válido**, pese a que
-  [Cadenas](Cadenas.md) ofrece `CadEsIdentificadorValido`. Un `SNombre` acepta
-  espacios, signos y cualquier carácter que quepa.
-- `SNomValor` devuelve la `SCadena` interna modificable, así que se puede
-  saltar el tope escribiendo directamente sobre ella.
-- No hay comparación: para saber si dos nombres son iguales hay que bajar a las
-  cadenas con `SNomValor` y usar `SCadEsIgual`.
+- **Un nombre recién creado no es válido**: `SNomEsValido` devuelve `0` mientras
+  esté vacío, porque la regla exige longitud. Es el comportamiento de
+  [SCodigo](SCodigo.md) y lo contrario del de [SDescripcion](SDescripcion.md).
+- **Duplicar un nombre vacío devuelve `NULL`**, por el mismo motivo:
+  `SNomDuplicar` pasa por `SNomCrearValorExt`, que exige un valor válido.
+- **`SNomCrearValor` deja el tope clavado en la longitud del valor inicial.**
+  Para separar valor y tope hay que usar la variante `Ext`.
+- **`SNomEstablecer` devuelve `0` con un nombre inválido, pero lo establece.**
+  El retorno dice si lo que hay dentro vale, no si se ha guardado; sólo lo que
+  excede el tope se queda fuera. `SNomEsValido` lo consulta después. Ver
+  [SCampo](SCampo.md).
+- `SNomValor` devuelve la `SCadena` interna modificable, así que se puede saltar
+  tanto el tope como la validación escribiendo directamente sobre ella.
+- **Es el mismo módulo que [SCodigo](SCodigo.md) y
+  [SDescripcion](SDescripcion.md)**, con otra función de validación y otro
+  prefijo: treinta y nueve funciones que delegan en un único `SCampo *`. Son tres
+  módulos donde bastaría `SCampo` con la validación como parámetro.

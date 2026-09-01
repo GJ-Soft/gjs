@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.c</groupId>
+		<groupId>org.gjsoft.c</groupId>
 		<artifactId>gjs-c-nar-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../gjs-c-nar-parent</relativePath>
@@ -63,67 +63,67 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-base</artifactId>
 				<version>${gjs-c-common-base.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-base-types</artifactId>
 				<version>${gjs-c-common-base-types.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-text</artifactId>
 				<version>${gjs-c-common-text.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-calculation</artifactId>
 				<version>${gjs-c-common-calculation.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-time</artifactId>
 				<version>${gjs-c-common-time.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-types</artifactId>
 				<version>${gjs-c-common-types.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-io</artifactId>
 				<version>${gjs-c-common-io.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-system</artifactId>
 				<version>${gjs-c-common-system.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-support</artifactId>
 				<version>${gjs-c-common-support.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-log</artifactId>
 				<version>${gjs-c-common-log.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common</artifactId>
 				<version>${gjs-c-common.version}</version>
 				<type>nar</type>
@@ -131,7 +131,7 @@
 			
 			<!-- Test -->
 			<dependency>
-				<groupId>org.gjs.c.common</groupId>
+				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-test</artifactId>
 				<version>${gjs-c-common-test.version}</version>
 				<type>nar</type>
@@ -143,7 +143,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.gjs.maven.plugins</groupId>
+				<groupId>org.gjsoft.maven.plugins</groupId>
 				<artifactId>nar-maven-plugin</artifactId>
 				<configuration>
 					<libraries>

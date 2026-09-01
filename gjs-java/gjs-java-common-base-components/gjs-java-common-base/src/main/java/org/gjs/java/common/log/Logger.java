@@ -3,6 +3,18 @@ package org.gjs.java.common.log;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
+/**
+ * The Interface Logger.
+ *
+ * Interfaz de la librería Gjs
+ *
+ * Amplía el Logger de SLF4J con métodos que aceptan directamente una excepción, y trae la implementación que delega en el logger real.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public interface Logger extends org.slf4j.Logger {
 	void error(Exception ex);
 

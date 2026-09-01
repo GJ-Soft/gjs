@@ -5,6 +5,18 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SamplePojoNativeClass.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Como SamplePojo, con el identificador en su clase envolvente ( Long ) en lugar de primitivo.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @SuppressWarnings("rawtypes")
 @Getter
 @Setter

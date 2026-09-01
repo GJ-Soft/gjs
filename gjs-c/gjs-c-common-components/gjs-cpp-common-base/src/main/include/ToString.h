@@ -61,7 +61,18 @@ namespace org
             std::string ToString ( const char * );
 	
 			// Pendiente de test
-			template<typename... Args> std::string ToString ( const std::string & sFormato, Args&&... argumentos );
+			/* La definicion va aqui, en la cabecera, y no en el .cpp: una plantilla
+			   solo se instancia donde se ve su cuerpo, asi que definida en el .cpp
+			   no la podia usar nadie de fuera del modulo.
+
+			   Es vformat y no format porque sFormato llega en tiempo de ejecucion y
+			   format exige que la cadena de formato sea una expresion constante. Y
+			   los argumentos se pasan SIN forward: make_format_args toma referencias
+			   no constantes, asi que necesita lvalues con nombre. */
+			template<typename... Args> std::string ToString ( const std::string & sFormato, Args&&... argumentos )
+			{
+				return ( std::vformat ( sFormato, std::make_format_args ( argumentos... ) ) );
+			}
 
 			}
 		}

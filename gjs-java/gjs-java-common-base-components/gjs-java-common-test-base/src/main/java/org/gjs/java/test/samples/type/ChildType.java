@@ -1,5 +1,17 @@
 package org.gjs.java.test.samples.type;
 
+/**
+ * The Class ChildType.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Tipo derivado de ParentType, para las pruebas de herencia.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public class ChildType extends ParentType {
 
     private String name;

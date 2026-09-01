@@ -2,13 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.java</groupId>
+		<groupId>org.gjsoft.java</groupId>
 		<artifactId>gjs-java-base-parent</artifactId>
 		<version>1.0.0-RC.2</version>    
 		<relativePath>../gjs-java-base-parent</relativePath>
 	</parent>	
 
-    <groupId>org.gjs.java.maven</groupId>
+    <groupId>org.gjsoft.java.maven</groupId>
     <artifactId>gjs-java-maven-base-parent</artifactId>
 	<packaging>pom</packaging>
 
@@ -27,18 +27,24 @@
 
 	<properties>
 		<!-- Apache Maven libraries -->
-		<maven.version>3.9.11</maven.version>
-		<maven-plugin-tools.version>3.3</maven-plugin-tools.version>
-		
+		<maven.version>3.9.16</maven.version>
+		<maven-plugin-tools.version>3.15.2</maven-plugin-tools.version>
+
+		<!-- Plexus. Aqui arriba porque la usan las dos ramas: gjs-maven-common-base
+		     y los plugins que cuelgan de gjs-java-maven-parent. -->
+		<plexus-utils.version>4.0.2</plexus-utils.version>
+
 		<!-- Apache Maven plugins -->
-		<maven-plugin-plugin.version>3.11.0</maven-plugin-plugin.version>
+		<maven-plugin-plugin.version>3.15.2</maven-plugin-plugin.version>
 
 		<!-- Sisu plugin -->
-		<sisu-maven-plugin.version>0.3.5</sisu-maven-plugin.version>
+		<sisu-maven-plugin.version>1.1.0</sisu-maven-plugin.version>
 	</properties>
   
+	<!-- El minimo que se anuncia a quien use los plugins tiene que ser la misma
+	     API contra la que se compilan, ni mas ni menos. Una sola fuente. -->
 	<prerequisites>
-		<maven>3.8.5</maven>
+		<maven>${maven.version}</maven>
 	</prerequisites>
 
 	<dependencyManagement>
@@ -61,6 +67,13 @@
 				<artifactId>maven-plugin-annotations</artifactId>
 				<version>${maven-plugin-tools.version}</version>
 				<scope>provided</scope>
+			</dependency>
+
+			<!-- Plexus -->
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-utils</artifactId>
+				<version>${plexus-utils.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -113,11 +126,38 @@
 					</executions>
 				</plugin>
 			</plugins>
-		</pluginManagement>		
+		</pluginManagement>
+
+		<plugins>
+			<!-- El Maven que ejecuta nunca puede ser mas viejo que la API contra
+			     la que se compilan los plugins. Se deriva de maven.version, asi
+			     que subir esa propiedad sube tambien el minimo exigido. Se suma
+			     al requireMavenVersion generico de gjs-parent, no lo sustituye. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce-maven-api-version</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>[${maven.version},)</version>
+								</requireMavenVersion>
+							</rules>
+							<fail>true</fail>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 
 		<extensions>
 		</extensions>
-	</build>	
+	</build>
 			
 	<profiles>
 		<profile>
@@ -149,7 +189,7 @@
 											<pluginExecutionFilter>
 												<groupId>org.apache.maven.plugins</groupId>
 												<artifactId>maven-plugin-plugin</artifactId>
-												<versionRange>3.11.0</versionRange>
+												<versionRange>3.15.2</versionRange>
 												<goals>
 													<goal>descriptor</goal>
 													<goal>helpmojo</goal>

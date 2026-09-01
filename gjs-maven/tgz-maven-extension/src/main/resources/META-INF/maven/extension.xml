@@ -3,6 +3,6 @@
 		<exportedPackage>org.gjs.maven.extensions.tgz</exportedPackage>
 	</exportedPackages>
 	<exportedArtifacts>
-		<exportedArtifact>org.gjs.maven.extensions:tgz-maven-extension</exportedArtifact>
+		<exportedArtifact>org.gjsoft.maven.extensions:tgz-maven-extension</exportedArtifact>
 	</exportedArtifacts>
 </extension>

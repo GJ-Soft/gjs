@@ -16,22 +16,6 @@ import org.slf4j.LoggerFactory;
  * Implementa un conjunto de repositorio de datos sencillo en memoria. Esta
  * pensado para actuar como base de datos mock.
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

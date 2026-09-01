@@ -21,22 +21,6 @@ import lombok.Setter;
  *
  * Clase DTO para almacenar los datos de un usuario.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0
@@ -132,12 +116,6 @@ public class BasicUserDto implements Comparable<BasicUserDto> {
 		return roles;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.dto.EntidadDto#hashCode()
-	 */
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -145,12 +123,6 @@ public class BasicUserDto implements Comparable<BasicUserDto> {
 		result = prime * result + Objects.hash(alias);
 		return result;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.semilla.util.dto.EntidadDto#equals(java.lang.Object)
-	 */
 
 	@Override
 	public boolean equals(Object obj) {

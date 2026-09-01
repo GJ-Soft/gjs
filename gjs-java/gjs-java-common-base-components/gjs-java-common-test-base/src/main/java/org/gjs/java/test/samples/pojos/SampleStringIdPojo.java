@@ -7,6 +7,18 @@ import org.apache.commons.lang3.ObjectUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleStringIdPojo.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Pojo con el identificador de tipo cadena.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @SuppressWarnings("rawtypes")
 @Getter
 @Setter

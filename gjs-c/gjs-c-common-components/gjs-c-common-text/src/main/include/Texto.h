@@ -35,7 +35,11 @@
 #include <SLinea.h>
 #include <STexto.h>
 
+#include <ValidacionCadenas.h>
+
+#include <SCampo.h>
 #include <SToken.h>
+#include <SCodigo.h>
 #include <SNombre.h>
 #include <SDescripcion.h>
 

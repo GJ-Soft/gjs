@@ -6,6 +6,18 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class AllArraysType.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Tipo con un array de cada tipo primitivo y envuelto.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class AllArraysType {

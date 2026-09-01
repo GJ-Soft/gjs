@@ -13,11 +13,11 @@ clase.
 
 | Dato         | Valor                          |
 | ------------ | ------------------------------ |
-| `groupId`    | `org.gjs.c.common`             |
+| `groupId`    | `org.gjsoft.c.common`             |
 | `artifactId` | `gjs-cpp-common-log`           |
 | `version`    | `1.0.0-RC.2`                   |
 | `packaging`  | `nar` (biblioteca **shared**)  |
-| Pom padre    | `org.gjs.c:gjs-cpp-lib-parent` |
+| Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent` |
 | Depende de   | `gjs-cpp-common-base`          |
 | Externa      | **log4cxx** (`liblog4cxx`)     |
 
@@ -149,7 +149,7 @@ de 2026**— recoge un `BUILD FAILURE`, y de ahí viene la nota de que este mód
    | 23-jul | `output.txt` — el fallo que quedó anotado                                           |
    | 24-jul | El pom del módulo añade `<binDirectory>${log4cxxDirBin}</binDirectory>`             |
    | 26-jul | `NarTestMojo.addLinkerLibPaths` mete ese directorio en el `PATH` del test           |
-   | 27-jul | Se instala `org.gjs.maven.plugins:nar-maven-plugin:4.0.0-SNAPSHOT`, que ya lo lleva |
+   | 27-jul | Se instala `org.gjsoft.maven.plugins:nar-maven-plugin:4.0.0-SNAPSHOT`, que ya lo lleva |
 
    Comprobado sobre el jar instalado: `NarTestMojo.class` contiene
    `addLinkerLibPaths`, y `Lib.class` y `NarInfo.class` contienen

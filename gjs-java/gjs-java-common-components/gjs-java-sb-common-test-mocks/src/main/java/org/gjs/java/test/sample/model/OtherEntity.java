@@ -11,6 +11,18 @@ import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class OtherEntity.
+ *
+ * Clase de datos de ejemplo de la librería Gjs
+ *
+ * Entidad de ejemplo, hermana de SampleEntity, para las pruebas que necesitan dos tablas distintas.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 @Entity

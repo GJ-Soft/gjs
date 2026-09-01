@@ -5,6 +5,18 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleWithFKEntityDto.
+ *
+ * Clase de datos de ejemplo de la librería Gjs
+ *
+ * DTO con una referencia a otro DTO, para las pruebas que necesitan una clave ajena.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class SampleWithFKEntityDto {

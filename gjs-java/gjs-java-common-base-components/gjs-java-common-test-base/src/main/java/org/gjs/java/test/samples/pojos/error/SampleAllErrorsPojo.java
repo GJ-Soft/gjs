@@ -1,5 +1,17 @@
 package org.gjs.java.test.samples.pojos.error;
 
+/**
+ * The Class SampleAllErrorsPojo.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Pojo que incumple a propósito las reglas de validación, para los casos negativos. Vive fuera del paquete pojos precisamente para que no lo recoja el escaneo que valida a los demás.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public class SampleAllErrorsPojo implements Comparable<Object> {
 
     private long codigo;

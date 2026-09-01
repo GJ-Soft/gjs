@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs</groupId>
+		<groupId>org.gjsoft</groupId>
 		<artifactId>gjs-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../gjs-parent</relativePath>

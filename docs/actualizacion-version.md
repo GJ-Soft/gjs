@@ -4,7 +4,7 @@ Procedimiento para subir la version de **todo** el repositorio `gjs` (por ejempl
 de `1.0.0-RC.1` a `1.0.0-RC.2`).
 
 Todos los artefactos del repositorio comparten una unica version. Conviene
-comprobarlo antes de empezar: no debe haber ninguna coordenada `org.gjs` con una
+comprobarlo antes de empezar: no debe haber ninguna coordenada `org.gjsoft` con una
 version distinta de la vigente.
 
 > **Aviso**: `mvn versions:set` solo toca las coordenadas de los poms del reactor.
@@ -73,7 +73,7 @@ Tras el paso 1 quedan ~91 ficheros con la version vieja, en estas categorias:
 
 	grep -rho "<[a-zA-Z0-9._-]*\.version>1\.0\.0-RC\.1<" --include=pom.xml . | sort -u
 
-Como *todas* las ocurrencias de la version pertenecen a `org.gjs` (comprobado en
+Como *todas* las ocurrencias de la version pertenecen a `org.gjsoft` (comprobado en
 el paso 0), la sustitucion literal en los ficheros versionados es segura:
 
 	git ls-files -z | xargs -0 sed -i 's/1\.0\.0-RC\.1/1\.0\.0-RC\.2/g'

@@ -60,16 +60,12 @@ void SEtxDestruir ( SEntradaExt ** p_p_etxObj )
 
 		if ( ES_VALIDO ( p_etxObj ) )
 		{
-			printf ( "***1 \n");
 			fflush(stdout);
 			MemLiberar ( (void **) &(p_etxObj->p_cNombre) );
-			printf ( "***2 \n");
 			fflush(stdout);
 			SLisLitDestruir ( &(p_etxObj->p_lisDefiniciones) );
-			printf ( "***3 \n");
 			fflush(stdout);
 			MemLiberar ( (void **) p_p_etxObj );
-			printf ( "***4 \n");
 			fflush(stdout);
 		}
 	}

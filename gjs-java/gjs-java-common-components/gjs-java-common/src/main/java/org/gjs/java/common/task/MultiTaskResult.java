@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.gjs.java.common.contant.CommonConstants;
+import org.gjs.java.common.constant.CommonConstants;
 import org.gjs.java.common.type.DocumentTemplate;
 
 import lombok.Getter;
@@ -19,22 +19,6 @@ import lombok.Getter;
  * Clase que almacena los resultados de una tarea multi-tarea, es decir, una
  * tarea que puede agrupar varias tareas. Está pensada para obtener el
  * resultados de los jobs que incorporan varias tareas.
- *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
  *
  * @author Gjs
  * @version 4.0.0

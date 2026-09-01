@@ -34,22 +34,6 @@ import com.openpojo.validation.rule.impl.SetterMustExistRule;
  * Clase abstracta base para todos los test unitarios Pojos de la librería
  * Gjs
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 1.0.0
  * @since 1.0.0

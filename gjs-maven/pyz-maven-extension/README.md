@@ -21,7 +21,7 @@ Define the pyz packaging for maven projects
 <build>
 	<extensions>
 		<extension>
-			<groupId>org.gjs.maven.extensions</groupId>
+			<groupId>org.gjsoft.maven.extensions</groupId>
 			<artifactId>pyz-maven-extension</artifactId>
 			<version>1.0.0-RC.2</version>
 		</extension>

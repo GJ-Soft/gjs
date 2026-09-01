@@ -5,6 +5,18 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class ENPersonNameDto.
+ *
+ * Clase de datos de la librería Gjs
+ *
+ * Nombre de persona a la inglesa: añade el nombre intermedio.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class ENPersonNameDto extends PersonNameDto {

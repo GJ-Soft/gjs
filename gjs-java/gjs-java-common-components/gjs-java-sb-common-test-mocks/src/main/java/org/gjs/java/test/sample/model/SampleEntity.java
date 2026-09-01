@@ -11,6 +11,18 @@ import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleEntity.
+ *
+ * Clase de datos de ejemplo de la librería Gjs
+ *
+ * Entidad de ejemplo con clave numérica y los campos habituales: nombre, descripción y fechas de alta y baja.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 @Entity

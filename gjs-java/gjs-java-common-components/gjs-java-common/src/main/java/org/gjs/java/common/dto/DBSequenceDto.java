@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.gjs.java.common.contant.CommonConstants;
+import org.gjs.java.common.constant.CommonConstants;
 import org.gjs.java.common.util.ComparationUtils;
 import org.gjs.java.common.util.ConditionUtils;
 
@@ -18,22 +18,6 @@ import org.gjs.java.common.util.ConditionUtils;
  * Clase de datos de la librería Gjs
  *
  * Clase DTO para almacenar el estado de un secuencia de la base de datos.
- *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
  *
  * @author Gjs
  * @version 4.0.0

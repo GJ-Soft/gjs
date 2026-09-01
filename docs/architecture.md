@@ -58,8 +58,10 @@ Common parent pom for all kind of projects and archetypes.
 					
 #### Needs properties in settings.xml file: 
 		
-	* cygwinDir : Directory of Cygwin installation (indirectly, only for cygwin profile)
-	* cygwinUser : Username for Cygwin (indirectly, only for cygwin profile)
+	* cygwinDir : Directory of Cygwin installation. Windows style (C:\...), even when
+	              building from Cygwin: the auxiliary tools are launched as Windows
+	              processes and /cygdrive/... is not resolved.
+	* systemUser : Username of the Cygwin / Unix home directory
 					
 
 
@@ -174,8 +176,7 @@ gjs-java-base-parent
 
  	* mvn checkstyle:check 
 	* mvn javadoc:javadoc		Generate javadoc site
-	* mvn javadoc:fix   		Add or correct Javadoc in src/main/java
-	* mvn javadoc:test-fix 		Add or correct Javadoc in src/test/java
+	* mvn javadoc:jar   		Generate javadoc jar (o el perfil attach-javadoc)
 	* mvn formatter:format	-Dformatter.file=file-eclipse-likely.xml
 	* mvn fmt:format -Dcode.line.max.length=100	
 	* mvn spotless:apply   		Apply changes (organize imports)
@@ -256,7 +257,7 @@ Pom grouper for Maven extensions to handle alternative packaging.
 	
 	```xml
 		<extension>
-			<groupId>org.gjs.maven.extensions</groupId>
+			<groupId>org.gjsoft.maven.extensions</groupId>
 			<artifactId>tgz-maven-extension</artifactId>
 			<version>${tgz-maven-extension.version}</version>
 		</extension>
@@ -268,7 +269,7 @@ Pom grouper for Maven extensions to handle alternative packaging.
 
 	```xml
 		<extension>
-			<groupId>org.gjs.maven.extensions</groupId>
+			<groupId>org.gjsoft.maven.extensions</groupId>
 			<artifactId>pyz-maven-extension</artifactId>
 			<version>${pyz-maven-extension.version}</version>
 		</extension>
@@ -280,7 +281,7 @@ Pom grouper for Maven extensions to handle alternative packaging.
 
 	```xml
 		<extension>
-			<groupId>org.gjs.maven.extensions</groupId>
+			<groupId>org.gjsoft.maven.extensions</groupId>
 			<artifactId>gz-maven-extension</artifactId>
 			<version>${gz-maven-extension.version}</version>
 		</extension>
@@ -292,7 +293,7 @@ Pom grouper for Maven extensions to handle alternative packaging.
 
 	```xml
 		<extension>
-			<groupId>org.gjs.maven.extensions</groupId>
+			<groupId>org.gjsoft.maven.extensions</groupId>
 			<artifactId>whl-maven-extension</artifactId>
 			<version>${whl-maven-extension.version}</version>
 		</extension>
@@ -322,7 +323,7 @@ Pom grouper for Maven plugins.
 	
 	```xml
 		<plugin>
-			<groupId>org.gjs.maven.plugin</groupId>
+			<groupId>org.gjsoft.maven.plugins</groupId>
 			<artifactId>tgz-maven-plugin</artifactId>
 			<version>${tgz-maven-plugin.version}</version>
 		</plugin>
@@ -334,7 +335,7 @@ Pom grouper for Maven plugins.
 	
 	```xml
 		<plugin>
-			<groupId>org.gjs.maven.plugin</groupId>
+			<groupId>org.gjsoft.maven.plugins</groupId>
 			<artifactId>pyz-maven-plugin</artifactId>
 			<version>${pyz-maven-plugin.version}</version>
 		</plugin>
@@ -377,9 +378,8 @@ gjs-c-common-parent
 ##### Needs properties in settings.xml file: 
 		
 	* cygwinDir : Directory of Cygwin installation (from gjs-parent)
-	* cygwinUser : Username for Cygwin (indirectly, only for cygwin profile)
-	* oracleDir : Directory of Oracle installation
-	* visualStudioVCDir : Directory of VC header and lib files (if is present)
+	* systemUser : Username for Cygwin, or Linux/Unix system
+	* oraDir : Directory of Oracle client installation
 					
 					
 
@@ -605,11 +605,11 @@ Description.
 	```bash
      
     mvn archetype:generate \
-		-DarchetypeGroupId=org.gjs.maven.archetypes \
+		-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 		-DarchetypeArtifactId=gjs-archetype-archetype \
 		-DarchetypeVersion=1.0.0-RC.2  \
 		-Dprefix=gjs -DshortName=c-lib -Dlan=c -Dext=c -Dpackaging=nar \
-		-DprojectParentGroupId=org.gjs \
+		-DprojectParentGroupId=org.gjsoft \
 		-DprojectParentArtifactId=gjs-parent \
 		-DprojectParentVersion=1.0.0-SNAPSHOT 							    
     ```
@@ -649,4 +649,4 @@ gjs-parent
 ## Related Links
 
 * [Return to Main Index](../README.md)
-* [Go to Installation Guide](instalation.md)
+* [Go to Installation Guide](instalacion.md)

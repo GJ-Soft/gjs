@@ -14,22 +14,6 @@ import org.gjs.java.common.util.ConditionUtils;
  * clave de tipo Long que usen una clase especial para obtener los datos de
  * filtrado diferente de la entidad de la librería Gjs
  *
- * --------------------------------------------------------------------------------------------------------------------
- *
- *
- *
- *
- *
- *
- *
- * Gj Software
- * 2025
- * 
- *
- * 
- * 
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @param <T> el repositorio JPA
  * @param <F> el filtro
  * @param <E> la entidad JPA

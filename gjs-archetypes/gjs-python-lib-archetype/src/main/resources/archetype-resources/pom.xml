@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-		<groupId>org.gjs.python</groupId>
+		<groupId>org.gjsoft.python</groupId>
 		<artifactId>gjs-python-lib-parent</artifactId>
 		<version>1.0.0-RC.2</version>
         <relativePath />
@@ -20,6 +20,9 @@
     <description>Project ${capitalizedName} in language python</description>
 
     <properties>
+		<!-- Project management -->
+		<repository.name>${artifactId}</repository.name>
+
 		<!-- Python/Pip configuration -->
 		<gjs.python.artifact.src.package.path>${packagePath}</gjs.python.artifact.src.package.path>
     </properties>

@@ -3,7 +3,7 @@
 
 
 	<parent>
-		<groupId>org.gjs.java.maven</groupId>
+		<groupId>org.gjsoft.java.maven</groupId>
 		<artifactId>gjs-java-maven-base-parent</artifactId>
 		<version>1.0.0-RC.2</version>    
 		<relativePath>../../gjs-java-base-parents/gjs-java-maven-base-parent</relativePath>
@@ -40,7 +40,6 @@
 		<!-- Plexus -->
 		<plexus-compiler-api.version>2.16.1</plexus-compiler-api.version>
 		<plexus-container-default.version>2.1.1</plexus-container-default.version>
-		<plexus-utils.version>4.0.2</plexus-utils.version>
 		<plexus-archiver.version>4.10.4</plexus-archiver.version>
 		<plexus-build-api.version>1.2.0</plexus-build-api.version>
 		<sisu-guava.version>0.11.1</sisu-guava.version>
@@ -54,7 +53,7 @@
 		<dependencies>
 			<!-- Gjs -->
 			<dependency>
-				<groupId>org.gjs.java.maven.base</groupId>
+				<groupId>org.gjsoft.java.maven.base</groupId>
 				<artifactId>gjs-maven-common-base</artifactId>
 				<version>${gjs-maven-base.version}</version>
 			</dependency>
@@ -151,11 +150,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.plexus</groupId>
-				<artifactId>plexus-utils</artifactId>
-				<version>${plexus-utils.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.plexus</groupId>
 				<artifactId>plexus-archiver</artifactId>
 				<version>${plexus-archiver.version}</version>
 				<exclusions>
@@ -192,7 +186,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.gjs.java.maven.base</groupId>
+			<groupId>org.gjsoft.java.maven.base</groupId>
 			<artifactId>gjs-maven-common-base</artifactId>
 		</dependency>
 		

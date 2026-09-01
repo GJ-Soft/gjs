@@ -104,6 +104,13 @@ formato antes de volcarla.
   (8191) buscando el terminador: si el destino es menor y el origen no está
   terminado, escribe fuera. La variante `Ext` existe precisamente para eso y es
   la que conviene usar siempre.
+- **`CadContieneCaracteresNoAlfanumericos` no comprobaba nada alfanumérico.**
+  Era una copia literal de `CadContieneCaracteresNoImprimibles` —sólo miraba los
+  códigos de control—, así que daba por buenos los espacios, los guiones y la
+  puntuación. Se ha reescrito contra el conjunto `[A-Za-z0-9_:]`, el mismo que el
+  `[^\w:]` del gemelo C++ de `gjs-cpp-common-base`. Es la rutina de la que cuelga
+  `CadEsCodigoValido` en [ValidacionCadenas](ValidacionCadenas.md), que hasta
+  entonces aceptaba como código cualquier cosa que empezara por letra.
 - Tener 205 funciones en una cabecera plana, sin secciones ni agrupación, hace
   difícil encontrar la adecuada. La tabla de arriba suple esa falta.
 - El nombre `Cadenas` colisiona conceptualmente con `CadenasBase` de la

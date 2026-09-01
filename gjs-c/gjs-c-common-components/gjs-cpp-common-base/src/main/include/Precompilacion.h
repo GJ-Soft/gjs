@@ -15,7 +15,7 @@
 /*  Nivel Máquina:          A64 | A32 | A16 | A8                              */
 /*  Nivel Sistema/Entorno:  POSIX | WIN                                       */
 /*							CYGWIN (adicional)                                */
-/*  Nivel Compilador:       GNU | CC | VC				                      */
+/*  Nivel Compilador:       GNU | CC					                      */
 /*  Estilo:  				POSIX | WIN                                       */
 /*                                                                            */
 /*  Depuración:             MODO_DEPURACION                                   */
@@ -73,17 +73,13 @@
 
 
 /* Por defecto se considera que se compila con GNU: */
-#if ( !defined ( GNU ) && !defined ( CC ) && !defined ( VC ) )
+#if ( !defined ( GNU ) && !defined ( CC ) )
 #	define	GNU
-#else // Para CC sólo se permite UNIX y para VC sólo se permite WIN:
+#else // Para CC sólo se permite UNIX:
 #	if ( defined ( CC ) )
 #		undef CYGWIN
 #		undef WIN
 #		define POSIX
-#	elif ( defined ( VC ) )
-#		undef CYGWIN
-#		undef POSIX
-#		define WIN
 #	endif
 #endif
 

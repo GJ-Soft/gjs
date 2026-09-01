@@ -21,12 +21,6 @@
 
 #include <stdarg.h>
 
-/*
-#if ( !defined ( VC ) )
-extern typedef char * va_list;
-#endif
-*/
-
 
 
 

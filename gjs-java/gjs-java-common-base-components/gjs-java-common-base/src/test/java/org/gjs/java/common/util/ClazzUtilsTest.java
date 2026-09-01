@@ -15,7 +15,7 @@ import org.gjs.java.test.samples.pojos.SampleMaterialized1;
 import org.gjs.java.test.samples.pojos.SamplePojo;
 import org.gjs.java.test.samples.type.AllPrimitivesType;
 import org.gjs.java.test.samples.type.LombokType;
-import org.gjs.java.test.samples.type.WithoutDefaultConstructorype;
+import org.gjs.java.test.samples.type.WithoutDefaultConstructorType;
 import org.junit.jupiter.api.Test;
 
 class ClazzUtilsTest extends BaseClassTest<ClazzUtils> {
@@ -60,8 +60,8 @@ class ClazzUtilsTest extends BaseClassTest<ClazzUtils> {
 
 	@Test
 	void testCreateInstance7() {
-		final WithoutDefaultConstructorype sample = (WithoutDefaultConstructorype) ClazzUtils
-				.createInstance("org.gjs.java.test.samples.type.WithoutDefaultConstructorype");
+		final WithoutDefaultConstructorType sample = (WithoutDefaultConstructorType) ClazzUtils
+				.createInstance("org.gjs.java.test.samples.type.WithoutDefaultConstructorType");
 		assertNotNull(sample);
 	}
 

@@ -9,6 +9,18 @@ import lombok.Setter;
 
 // NOTA: @Getter y @Setter generan nombres diferentes de los que se generan segun
 // el estandar JEE cuando sólo hay una minúscula inicial
+/**
+ * The Class SampleArraysPojo.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Pojo con un array de cada tipo primitivo.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class SampleArraysPojo {

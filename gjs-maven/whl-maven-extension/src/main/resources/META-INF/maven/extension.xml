@@ -3,6 +3,6 @@
 		<exportedPackage>org.gjs.maven.extensions.whl</exportedPackage>
 	</exportedPackages>
 	<exportedArtifacts>
-		<exportedArtifact>org.gjs.maven.extensions:whl-maven-extension</exportedArtifact>
+		<exportedArtifact>org.gjsoft.maven.extensions:whl-maven-extension</exportedArtifact>
 	</exportedArtifacts>
 </extension>

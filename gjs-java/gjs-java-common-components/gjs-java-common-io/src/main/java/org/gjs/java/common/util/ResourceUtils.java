@@ -22,22 +22,6 @@ import org.slf4j.LoggerFactory;
  * Algunas funciones de ayuda para localizar ficheros de recursos multi-idioma
  * de maneras transparente.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

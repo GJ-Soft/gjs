@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-        <groupId>org.gjs.java</groupId>
+        <groupId>org.gjsoft.java</groupId>
         <artifactId>gjs-java-sb-test-parent</artifactId>
 		<version>1.0.0-RC.2</version>
         <relativePath>../../gjs-java-parents/gjs-java-sb-test-parent</relativePath>
 	</parent>
 
-    <groupId>org.gjs.java.common</groupId>
+    <groupId>org.gjsoft.java.common</groupId>
     <artifactId>gjs-java-sb-common-test-support</artifactId>
 	<packaging>jar</packaging>
 
@@ -19,16 +19,16 @@
     <dependencies>
         <!-- Gjs -->
         <dependency>
-            <groupId>org.gjs.java.common</groupId>
+            <groupId>org.gjsoft.java.common</groupId>
             <artifactId>gjs-java-sb-common-support</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.gjs.java.common</groupId>
+            <groupId>org.gjsoft.java.common</groupId>
             <artifactId>gjs-java-common-test-base</artifactId>
             <scope>compile</scope>
         </dependency>
          <dependency>
-            <groupId>org.gjs.java.common</groupId>
+            <groupId>org.gjsoft.java.common</groupId>
             <artifactId>gjs-java-common-test-support</artifactId>
             <scope>compile</scope>
         </dependency>       
@@ -72,8 +72,16 @@
             <artifactId>jjwt-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.gjs.tools</groupId>
+            <groupId>org.gjsoft.java.tools</groupId>
             <artifactId>openpojo</artifactId>
+        </dependency>
+
+        <!-- AnnotationSupport, en las condiciones de las anotaciones Gjs*Test. Llega
+             de todos modos por junit-jupiter-api, pero aqui se usa directamente. -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-commons</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

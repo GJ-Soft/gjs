@@ -22,22 +22,6 @@ import org.slf4j.LoggerFactory;
  * decir, que necesiten actuar al inicio y al final de un método, termine como
  * termine (retornao normal o excepción).
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

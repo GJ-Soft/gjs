@@ -12,22 +12,6 @@ import org.gjs.java.common.constant.CommonBaseConstants;
  *
  * Algunas funciones de ayuda para el uso de expresiones regulares.
  *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
- *
  * @author Gjs
  * @version 4.0.0
  * @since 3.0.0

@@ -1,11 +1,27 @@
 package org.gjs.java.test.annotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
+/**
+ * Test que solo se ejecuta sobre Unix. Complementario de {@link GjsNotUnixTest}: macOS queda fuera de esta lista, asi
+ * que cuenta como "no Unix" y tiene ademas su propia {@link GjsMacTest}.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
+@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
+@Retention(RetentionPolicy.RUNTIME)
 @Test
-@DisabledOnOs({ OS.AIX, OS.FREEBSD, OS.LINUX, OS.OPENBSD, OS.SOLARIS })
+@EnabledOnOs({ OS.AIX, OS.FREEBSD, OS.LINUX, OS.OPENBSD, OS.SOLARIS })
 public @interface GjsUnixTest {
 
 }

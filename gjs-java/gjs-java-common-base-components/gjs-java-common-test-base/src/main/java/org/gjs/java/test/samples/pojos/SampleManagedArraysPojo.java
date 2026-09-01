@@ -7,6 +7,18 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleManagedArraysPojo.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Pojo con arrays de tipos gestionados: cadenas, fechas y decimales.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class SampleManagedArraysPojo {

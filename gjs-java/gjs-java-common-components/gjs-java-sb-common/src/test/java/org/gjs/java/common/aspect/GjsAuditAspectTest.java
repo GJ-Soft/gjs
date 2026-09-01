@@ -10,7 +10,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.gjs.java.common.annotation.GjsAudit;
 import org.gjs.java.common.aspect.GjsAuditAspect;
-import org.gjs.java.common.contant.CommonConstants;
+import org.gjs.java.common.constant.CommonConstants;
 import org.gjs.java.common.singleton.GlobalObjectsManager;
 import org.gjs.java.test.BaseUnitTest;
 import org.gjs.java.test.samples.aspect.TargetAspectSample;

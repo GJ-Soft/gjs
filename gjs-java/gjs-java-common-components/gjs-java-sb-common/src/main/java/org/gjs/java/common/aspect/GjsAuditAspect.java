@@ -11,8 +11,8 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.gjs.java.common.annotation.GjsAudit;
-import org.gjs.java.common.contant.CommonConstants;
-import org.gjs.java.common.contant.CommonLiterals;
+import org.gjs.java.common.constant.CommonConstants;
+import org.gjs.java.common.constant.CommonLiterals;
 import org.gjs.java.common.dto.AuditDto;
 import org.gjs.java.common.dto.AvisoDto;
 import org.gjs.java.common.enums.AuditLogType;
@@ -35,22 +35,6 @@ import org.springframework.stereotype.Component;
  * generar el aviso. Eso sería útil para facilitar las excepciones como métodos
  * especiales que realicen envíos de correo que no pueden tratarse como los
  * demñas ya que pueden llegar a tardar varios segundos.
- *
- * --------------------------------------------------------------------------------------------------------------------
- * Gj Software
- *
- * 2025
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * --------------------------------------------------------------------------------------------------------------------
  *
  * @author Gjs
  * @version 4.0.0
@@ -174,12 +158,6 @@ public class GjsAuditAspect extends BaseGjsAspect {
 		doLogThrow(joinPoint, error);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.Gjs.util.aspect.BaseGjsAspect#criticalTime()
-	 */
-
 	@Override
 	protected long criticalTime() {
 		long res = 0;
@@ -189,13 +167,6 @@ public class GjsAuditAspect extends BaseGjsAspect {
 		}
 		return res;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see es.mir.Gjs.util.aspect.BaseGjsAspect#whenTimeWarn(es.mir.Gjs.util.dto.
-	 * AuditDto)
-	 */
 
 	@Override
 	protected void whenTimeWarn(AuditDto auditDto) {

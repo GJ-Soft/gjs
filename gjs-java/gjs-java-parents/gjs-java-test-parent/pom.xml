@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.java</groupId>
+		<groupId>org.gjsoft.java</groupId>
 		<artifactId>gjs-java-test-base-parent</artifactId>
 		<version>1.0.0-RC.2</version>    
 		<relativePath>../../gjs-java-base-parents/gjs-java-test-base-parent</relativePath>
@@ -36,17 +36,17 @@
 		<dependencies>
  			<!-- Gjs -->
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-common-support</artifactId>
 				<version>${gjs-java-common-support.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-common-io</artifactId>
 				<version>${gjs-java-common-io.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-common</artifactId>
 				<version>${gjs-java-common.version}</version>
 			</dependency>
@@ -54,7 +54,7 @@
 			<!-- Test -->
  			<!-- Gjs -->
 			<dependency>
-				<groupId>org.gjs.java.common</groupId>
+				<groupId>org.gjsoft.java.common</groupId>
 				<artifactId>gjs-java-common-test-support</artifactId>
 				<version>${gjs-java-common-test-support.version}</version>
 				<scope>compile</scope>

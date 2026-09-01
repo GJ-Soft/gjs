@@ -87,18 +87,24 @@ static bool TestSisSigCodigos01 ()
 				cout << "Error caso 5: la finalizacion obligada no deberia ser programable" << endl;
 				bRes = false;
 			}
-			// Inversa codigo -> id ( estable para todas las senales, incluida ABORTAR ).
-			if ( SisSigId ( SisSigCodigo ( SIS_SIG_INTERRUPCION ) ) != SIS_SIG_INTERRUPCION )
+			// Inversa codigo -> id, estable para toda senal que exista en esta
+			// plataforma. Si no existe, su codigo es -1, que no identifica a
+			// ninguna ( en Windows lo comparten ocho de las quince ), asi que no
+			// hay ida y vuelta posible y el caso se salta.
+			int iCodInterrupcion = SisSigCodigo ( SIS_SIG_INTERRUPCION );
+			if ( ( iCodInterrupcion >= 0 ) && ( SisSigId ( iCodInterrupcion ) != SIS_SIG_INTERRUPCION ) )
 			{
 				cout << "Error caso 6: la inversa codigo/id de INTERRUPCION deberia ser estable" << endl;
 				bRes = false;
 			}
-			if ( SisSigId ( SisSigCodigo ( SIS_SIG_USUARIO_1 ) ) != SIS_SIG_USUARIO_1 )
+			int iCodUsuario1 = SisSigCodigo ( SIS_SIG_USUARIO_1 );
+			if ( ( iCodUsuario1 >= 0 ) && ( SisSigId ( iCodUsuario1 ) != SIS_SIG_USUARIO_1 ) )
 			{
 				cout << "Error caso 7: la inversa codigo/id de USUARIO_1 deberia ser estable" << endl;
 				bRes = false;
 			}
-			if ( SisSigId ( SisSigCodigo ( SIS_SIG_ABORTAR ) ) != SIS_SIG_ABORTAR )
+			int iCodAbortar = SisSigCodigo ( SIS_SIG_ABORTAR );
+			if ( ( iCodAbortar >= 0 ) && ( SisSigId ( iCodAbortar ) != SIS_SIG_ABORTAR ) )
 			{
 				cout << "Error caso 8: la inversa codigo/id de ABORTAR deberia ser estable" << endl;
 				bRes = false;

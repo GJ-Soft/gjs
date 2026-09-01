@@ -3,6 +3,18 @@ package org.gjs.java.test.samples.type;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * The Class NotJEEType.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Tipo con todos los campos públicos y sin accesores, que incumple a propósito el convenio JavaBean.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 public class NotJEEType {
     public boolean bVal;
     public int iVal;

@@ -2,13 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs</groupId>
+		<groupId>org.gjsoft</groupId>
 		<artifactId>gjs-no-java-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../../../gjs-no-java-parent</relativePath>
 	</parent>	
 
-    <groupId>org.gjs.c</groupId>
+    <groupId>org.gjsoft.c</groupId>
     <artifactId>gjs-c-common-parent</artifactId>
 	<packaging>pom</packaging>
 
@@ -38,9 +38,7 @@
 
 			* systemUser : Username for Cygwin, or Linux/Unix system
 						
-			* oracleDir : Directory of Oracle installation
-			
-			* visualStudioVCDir : Directory of VC header and lib files (if is present)
+			* oraDir : Directory of Oracle client installation
 		.
 		To compile on pure Windows (without Cygwin) the gcc and g++ compiler executables need to be accessible
 		in the PATH. 
@@ -132,9 +130,6 @@
 		<unix.dir.include.installed>${cygwinDir}/usr/local/include</unix.dir.include.installed>
 		<unix.dir.include.additional></unix.dir.include.additional>
 		
-		<!-- CppCheck Tool directory -->
-		<cpp.checkDir>${cygwinDir}${unix.home}/bin</cpp.checkDir>
-		
 		<!-- Apache Log4cxx directory -->
 		<log4cxxDir>${cygwin.dir.lib.custom}/log4cxx</log4cxxDir>
 		<log4cxxDirInclude>${log4cxxDir}/include</log4cxxDirInclude>
@@ -154,11 +149,17 @@
 		<sslDirInclude>${sslDir}/include</sslDirInclude>
 
 		<!-- Oracle client directory -->
-		<oraClientDir>${oraDir}/instantclient_19_12</oraClientDir>
 		<oraDirInclude>${oraDir}/sdk/include</oraDirInclude>
 		
-		<!-- Checkstyle -->
+		<!-- Checkstyle: CppCheck Tool directory -->
+		<cpp.checkDir>${cygwinDir}${unix.home}/bin</cpp.checkDir>
 		<cpp.check>${cpp.checkDir}/cppcheck</cpp.check>
+		<cpp.platform.options>${platformOptions}</cpp.platform.options>
+		<!-- To be defined in child pom -->
+		<cpp.language.standard />
+		<cpp.compiler />
+		<cpp.compiler.language />
+
 		<!-- Informe HTML navegable: una pagina por fichero con el fuente anotado.
 		     El script es autocontenido, solo necesita la libreria Pygments. -->
 		<cpp.check.report>${cpp.checkDir}/cppcheck-htmlreport</cpp.check.report>
@@ -172,50 +173,15 @@
 		<cpp.check.execute>false</cpp.check.execute>
 		<cpp.check.severity>all</cpp.check.severity>	
 		<cpp.check.configurations>1</cpp.check.configurations>
-
 	</properties>
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<!-- Apache Maven plugins -->
-
-				<!--
-				<plugin>
-					<groupId>org.sonatype.plugins</groupId>
-					<artifactId>nexus-staging-maven-plugin</artifactId>
-					<version>1.6.13</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>wagon-maven-plugin</artifactId>
-					<version>2.0.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>wagon-ssh-external</artifactId>
-					<version>3.5.2</version>
-				</plugin>
-				-->
-			</plugins>
-		</pluginManagement>		
-
 		<extensions>
 			<extension>
-				<groupId>org.gjs.maven.extensions</groupId>
+				<groupId>org.gjsoft.maven.extensions</groupId>
 				<artifactId>property-bootstrap-maven-extension</artifactId>
 				<version>1.0.0-RC.2</version>
 			</extension>
-			<!--
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ftp</artifactId>
-			</extension>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-			</extension>
-			-->
 		</extensions>
 
 		<plugins>
@@ -349,22 +315,22 @@
 								     que esto se ajusta solo a C/C++ y al modo (gcc de Cygwin o de MinGW).
 								     El fichero vacio hace de /dev/null, que no existe en Windows puro. -->
 								<touch file="${project.basedir}/target/check/empty.c"/>
-								<exec executable="${gjs.nar.compiler}" output="${project.basedir}/target/check/compiler-defines.h" failonerror="false">
+								<exec executable="${cpp.compiler}" output="${project.basedir}/target/check/compiler-defines.h" failonerror="false">
 									<arg value="-dM"/>
 									<arg value="-E"/>
 									<arg value="-x"/>
-									<arg value="${gjs.nar.compiler.language}"/>
+									<arg value="${cpp.compiler.language}"/>
 									<arg value="${project.basedir}/target/check/empty.c"/>
 								</exec>
 								<exec executable="${cpp.check}" dir="${project.basedir}/src/main/${gjs.source.language}" failonerror="false">
-									<arg value="--language=${gjs.nar.compiler.language}"/>
+									<arg value="--language=${cpp.compiler.language}"/>
 									<arg value="--include=${project.basedir}/target/check/compiler-defines.h"/>
 									<!-- Los mismos -D de plataforma que recibe el compilador (CYGWIN_POSIX /
 									     CYGWIN_WIN), para que se analicen las ramas WIN/POSIX que se compilan
 									     de verdad. Por defecto esta vacio, y vacio no anade ningun argumento. -->
-									<arg line="${gjs.nar.platform.options}"/>
+									<arg line="${cpp.platform.options}"/>
 									<!-- TODO: Asegurar que cppcheck es la última version -->
-									<arg value="--std=${gjs.nar.language.standard}"/>
+									<arg value="--std=${cpp.language.standard}"/>
 									<arg value="--platform=native"/>
 									<arg value="--enable=${cpp.check.severity}"/>
 									<arg value="--max-configs=${cpp.check.configurations}"/>

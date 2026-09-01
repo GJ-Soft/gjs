@@ -5,6 +5,18 @@ import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SampleLocalDatePojo.
+ *
+ * Clase de ejemplo de la librería Gjs
+ *
+ * Pojo con un único campo LocalDate.
+ *
+ * @author Gjs
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 public class SampleLocalDatePojo {

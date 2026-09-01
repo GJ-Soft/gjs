@@ -2,13 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.gjs.c</groupId>
+		<groupId>org.gjsoft.c</groupId>
 		<artifactId>gjs-cpp-lib-parent</artifactId>
 		<version>1.0.0-RC.2</version>
 		<relativePath>../../gjs-c-parents/gjs-cpp-lib-parent</relativePath>
 	</parent>	
 
-	<groupId>org.gjs.c.common</groupId>
+	<groupId>org.gjsoft.c.common</groupId>
 	<artifactId>gjs-cpp-common-test</artifactId>
 	<packaging>nar</packaging>
 
@@ -22,7 +22,7 @@
 
     <dependencies>
 		<dependency>
-			<groupId>org.gjs.c.common</groupId>
+			<groupId>org.gjsoft.c.common</groupId>
 			<artifactId>gjs-cpp-common</artifactId>
 			<type>nar</type>
 		</dependency>
