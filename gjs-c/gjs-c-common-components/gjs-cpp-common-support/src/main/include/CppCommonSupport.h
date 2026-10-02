@@ -3,6 +3,7 @@
 
 
 #include <Version.h>
+#include <Configuracion.h>
 
 #include <AplicacionValidaciones.h>
 #include <AplicacionInformacion.h>
@@ -13,5 +14,7 @@
 
 #include <ConsolaDepuracion.h>
 #include <SimulacionUsuarioConsola.h>
+
+#include <UtilidadesRecursos.h>
 
 #endif

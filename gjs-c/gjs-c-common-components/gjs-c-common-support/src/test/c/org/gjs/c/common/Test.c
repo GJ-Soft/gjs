@@ -2,7 +2,7 @@
 
 
 
-#define NUM_TESTS        8
+#define NUM_TESTS        9
 
 extern int TestTiposCajaMensajes ();
 extern int TestCajaMensajes ();
@@ -12,6 +12,7 @@ extern int TestAplicacionInformacion ();
 extern int TestAplicacionPortapapeles ();
 extern int TestSVersion ();
 extern int TestSPropiedades ();
+extern int TestUtilidadesRecursos ();
 
 char ** testArrayInit ()
 {
@@ -24,6 +25,7 @@ char ** testArrayInit ()
     p_p_cTests[ 5 ] = CadDuplicar ( "AplicacionPortapapelesTest" );
     p_p_cTests[ 6 ] = CadDuplicar ( "SVersionTest" );
     p_p_cTests[ 7 ] = CadDuplicar ( "SPropiedadesTest" );
+    p_p_cTests[ 8 ] = CadDuplicar ( "UtilidadesRecursosTest" );
     return p_p_cTests;
 }
 
@@ -38,6 +40,7 @@ PFUNINTV * functionArrayInit ()
     p_fTests[ 5 ] = TestAplicacionPortapapeles;
     p_fTests[ 6 ] = TestSVersion;
     p_fTests[ 7 ] = TestSPropiedades;
+    p_fTests[ 8 ] = TestUtilidadesRecursos;
     return p_fTests;
 }
 

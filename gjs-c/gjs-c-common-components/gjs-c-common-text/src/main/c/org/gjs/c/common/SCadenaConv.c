@@ -556,10 +556,9 @@ long SCadcValorEnteroLargo ( SCadenaConv * p_cadObj )
 	return ( lValor );
 }
 
-#  if ( defined ( LLONG ) )
-llong SCadcValorEnteroDobleLargo ( SCadenaConv * p_cadObj )
+long long SCadcValorEnteroDobleLargo ( SCadenaConv * p_cadObj )
 {
-	llong llValor;
+	long long llValor;
 
 	if ( ES_VALIDO ( p_cadObj ) )
 	{
@@ -578,7 +577,6 @@ llong SCadcValorEnteroDobleLargo ( SCadenaConv * p_cadObj )
 	}
 	return ( llValor );
 }
-#  endif
 
 unsigned int SCadcValorEnteroSinSigno ( SCadenaConv * p_cadObj )
 {
@@ -883,9 +881,8 @@ void SCadcConcatenarRealDoble ( SCadenaConv * p_cadObj, double dValor )
 		SCadConcatenarLiteral ( p_cadObj->p_cadInfo, SConvCadena ( p_cadObj->p_convValores ) );
 	}
 }
-#  if ( defined ( LLONG ) )
 
-void SCadcCopiarEnteroDobleLargo ( SCadenaConv * p_cadObj, llong llValor )
+void SCadcCopiarEnteroDobleLargo ( SCadenaConv * p_cadObj, long long llValor )
 {
 	if ( ES_VALIDO ( p_cadObj ) )
 	{
@@ -894,7 +891,7 @@ void SCadcCopiarEnteroDobleLargo ( SCadenaConv * p_cadObj, llong llValor )
 	}
 }
 
-void SCadcConcatenarEnteroDobleLargo ( SCadenaConv * p_cadObj, llong llValor )
+void SCadcConcatenarEnteroDobleLargo ( SCadenaConv * p_cadObj, long long llValor )
 {
 	if ( ES_VALIDO ( p_cadObj ) )
 	{
@@ -903,7 +900,6 @@ void SCadcConcatenarEnteroDobleLargo ( SCadenaConv * p_cadObj, llong llValor )
 	}
 }
 
-#endif
 
 int SCadcCopiarConFormato ( SCadenaConv * p_cadObj, const char * p_cFormato, ... )
 {

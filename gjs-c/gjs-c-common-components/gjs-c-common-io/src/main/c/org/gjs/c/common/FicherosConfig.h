@@ -18,6 +18,7 @@
 
 #	include <sys/param.h>
 #	include <sys/dir.h>
+#	include <sys/stat.h>
 #	include <unistd.h>
 	
 #else
@@ -45,6 +46,19 @@
 #	define INVALID_FILE_ATTRIBUTES		((DWORD)0xFFFFFFFFUL)
 #endif
 
+
+/* Desplazamiento de fichero de 64 bits. fseek y ftell trabajan con long,
+   que en Windows mide 32 bits y en los tres modos deja fuera la mitad del
+   rango de un unsigned long: por eso no se usan en SFicAleatorio. */
+#if ( defined ( WIN ) )
+#	define FIC_DESP					__int64
+#	define FIC_SITUAR( f, d, o )		_fseeki64 ( (f), (d), (o) )
+#	define FIC_POSICION( f )			_ftelli64 ( (f) )
+#else
+#	define FIC_DESP					off_t
+#	define FIC_SITUAR( f, d, o )		fseeko ( (f), (d), (o) )
+#	define FIC_POSICION( f )			ftello ( (f) )
+#endif
 
 #include <FicherosDefs.h>
 
@@ -80,6 +94,12 @@
 #define SF_PATRON_RUTA_WIN			"?:\\(?*\\)(?*)"
 #define SF_PATRON_RUTA_REL_WIN		".(\\?*)"		
 #define SF_PATRON_RUTA_REL_WIN_2	"..(\\?*)"	
+/* Directorio de estilo UNIX o DOS, para SRutEsEstiloUNIX / SRutEsEstiloDOS:
+   separadores opcionales al principio y despues tramos separados. El motor
+   no puede excluir caracteres, asi que el separador del otro estilo y la
+   unidad ( "C:" ) se descartan aparte. */
+#define SF_PATRON_DIR_UNIX		"(/)?*(/?*)"
+#define SF_PATRON_DIR_DOS		"(\\)?*(\\?*)"
 #define SF_PATRON_SUBDIRECTORIO		"?*"
 #define SF_PATRON_FICHERO			"?*.?*"
 #define SF_PATRON_FICHERO_2			"?*"

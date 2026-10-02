@@ -72,7 +72,7 @@ int VarEntEstValor ( const char * p_cVariable, const char * p_cValor )
 
 	if ( ES_VALIDO ( p_cVariable ) )
 	{
-#	 if ( defined ( WIN ) && ! defined ( CYGWIN ) )
+#	 if ( defined ( WIN ) )
 		/* _putenv_s copia las cadenas en el entorno del CRT (getenv las lee);
 		   no hay problema de tiempo de vida como con putenv sobre un buffer
 		   que despues se libera. */

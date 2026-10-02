@@ -18,18 +18,28 @@
 #define _ORG_GJS_C_CC_CPP_SISTEMASIGNALS_H
 
 
+
+#include <Precompilacion.h> 
+
+
+#if ( !defined ( WIN ) )
+#	include <signal.h>
+#	define  SIGNALS_PERMITIDOS
+#else
+#	undef	SIGNALS_PERMITIDOS
+#endif
+
+
+
+#if ( defined ( SIGNALS_PERMITIDOS ) )
+
+
+
 #include <BaseConfig.h>
 #include <Funciones.h>
 
 #include <string>
 
-
-#if ( !defined ( WIN ) )
-#	include <csignal>
-#	define  SIGNALS_PERMITIDOS
-#else
-#	undef	SIGNALS_PERMITIDOS
-#endif
 
 #ifndef SIGSTKSZ
 #	define SIGSTKSZ 8192
@@ -124,7 +134,7 @@
    a su vez no existe en Cygwin ). Comprobado con gcc y con
    x86_64-w64-mingw32-gcc el 2026-08-05. Lo que no existe se queda en -1, que es
    lo que SisSignal trata como senal no reconocida. */
-
+/*
 #	if ( defined ( CYGWIN ) )
 
 #		define SIS_COD_SIG_ABORTAR							SIGABRT
@@ -162,6 +172,24 @@
 #		define SIS_COD_SIG_DEPURACION						-1
 
 #	endif
+*/
+
+
+#	define SIS_COD_SIG_ABORTAR								-1
+#	define SIS_COD_SIG_ALARMA								-1
+#	define SIS_COD_SIG_ERROR_COMA_FLOTANTE					-1
+#	define SIS_COD_SIG_TERMINAL_DESCONECTADO				-1
+#	define SIS_COD_SIG_INSTRUCCION_ILEGAL					-1
+#	define SIS_COD_SIG_INTERRUPCION							-1
+#	define SIS_COD_SIG_FINALIZACION_OBLIGADA				-1
+#	define SIS_COD_SIG_ERROR_TUBERIA						-1
+#	define SIS_COD_SIG_SALIR								-1
+#	define SIS_COD_SIG_REFERENCIA_MEMORIA_INVALIDA			-1
+#	define SIS_COD_SIG_FINALIZACION							-1
+#	define SIS_COD_SIG_USUARIO_1							-1
+#	define SIS_COD_SIG_USUARIO_2							-1
+#	define SIS_COD_SIG_TEMPORIZADOR							-1
+#	define SIS_COD_SIG_DEPURACION							-1
 
 #endif
 
@@ -214,17 +242,11 @@ namespace org
             namespace common
             {
 
-
-bool SisSigEstanPermitidos ();
-
-
 int SisSigCodigo ( int iSignal );
 int SisSigId ( int iCod );
 bool SisSigEsProgramable ( int iSignal );
 bool SisSigEsValida ( int iSignal );
 std::string SisSigDescripcion ( int iSignal );
-
-#if ( defined ( SIGNALS_PERMITIDOS ) )
 
 
 bool SisSigEnviar ( long lProceso, int iSignal );
@@ -235,13 +257,13 @@ bool SisSigAdmiteEspera ();
 bool SisDesactivarSignal ( int iSignal, PPRCI * p_p_procRutAnterior = NULL );
 bool SisAsignarSignal ( int iSignal, PPRCI p_procRutAtencion, PPRCI * p_p_procRutAnterior = NULL );
 
-#endif
-
 
  			}
 		}
 	}
 }
+
+#endif
  
 #endif
 

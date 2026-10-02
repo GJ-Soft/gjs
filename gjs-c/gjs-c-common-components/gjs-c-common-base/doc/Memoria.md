@@ -225,8 +225,12 @@ necesita inicialización.
   punteros en Windows de 64 bits (LLP64). Si se quisiera recuperar, debería
   tomar `uintptr_t` — y además llama a `MemValida`, un nombre que no existe.
 - Bajo `MODO_DEPURACION` fuera de Windows se llama a `malloc_usable_size`, que
-  requiere `<malloc.h>`; esa cabecera no se incluye en ningún punto de la
-  compilación, así que ese modo no está probado en POSIX.
+  se declara en `<malloc.h>`. Hasta el 2026-10-01 esa cabecera no se incluía
+  y `Memoria.c` no compilaba en ese modo en Cygwin (declaración implícita, que
+  en C23 es error). Ahora se incluye bajo `MODO_DEPURACION` y `!WIN`.
+  Comprobado en Cygwin y en Windows puro; en Linux no se ha podido probar.
+  El perfil `-Pdebug` **no** define `MODO_DEPURACION`: hay que pasarlo a
+  mano.
 - El comentario `// TODO: MemValida HEAP` de la cabecera y el `PENDIENTE` sobre
   `HeapWalk` del fuente apuntan a la misma carencia: no hay recorrido del *heap*
   para liberar bloques pendientes.

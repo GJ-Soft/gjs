@@ -183,6 +183,37 @@ static bool TestSocket02 ()
 	return( bRes );
 }
 
+static bool TestResolverIP01 ()
+{
+	cout << "Test ResolverIP01:" << endl;
+	bool bRes = true;
+
+	string sTest1( "127.0.0.1" );
+	string sTest2( "localhost" );
+
+	try
+	{
+		int  iTest1 = ResolverIP( sTest1 );
+		int  iTest2 = ResolverIP( sTest2 );
+		if ( iTest1 != 16777343 )
+		{
+			cout << "Error caso 1: IP[" << sTest1 << "] = " << iTest1 << endl;
+			bRes = false;
+		}
+		if ( iTest2 != 16777343 )
+		{
+			cout << "Error caso 2: IP[" << sTest2 << "] = " << iTest2 << endl;
+			bRes = false;
+		}
+	}
+	catch ( ... )
+	{
+		cout << "Error al recuperar la hora local del sistema" << endl;
+		bRes = false;
+	}
+	return( bRes );
+}
+
 bool TestSocket ()
 {
 	bool bRes = true;
@@ -197,6 +228,15 @@ bool TestSocket ()
 		bRes = false;
 	}
 	if ( TestSocket02() )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestResolverIP01() )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
 	}

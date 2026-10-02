@@ -81,7 +81,8 @@ Los tres modos habituales
 
 ### El obstáculo de `winsock2.h`, resuelto
 
-En modo Cygwin estilo Windows (`-Dcygwin.style=windows`) el stack no compilaba:
+En el modo que entonces se llamaba Cygwin estilo Windows
+(`-Dcygwin.style=windows`) el stack no compilaba:
 
 ```
 winsock2.h:1031: error: conflicting declaration of C function 'int select(...)'
@@ -104,6 +105,11 @@ temprano de todo el stack. Comprobado con compilación aislada
 (`g++ -fsyntax-only -DCYGWIN_WIN`) sobre una unidad que incluye `CppEntorno.h`:
 0 errores, y el modo POSIX sigue en 0. **El stack entero no se ha compilado en
 modo Windows**, así que esto sólo quita ese obstáculo concreto.
+
+> Nota de 2026-09-19: ese modo **ya no existe** —`CYGWIN` y `WIN` a la vez son
+> hoy un `#error`— y `-DCYGWIN_WIN` no lo entiende nadie. El arreglo sigue
+> valiendo para Windows puro, que es donde se compila con `WIN`. Se deja el
+> relato porque explica por qué `BaseConfig.h` incluye `winsock2.h`.
 
 > Nota para quien lo retome: invertir `<string>` y `<CppCommon.h>` dentro de
 > `CppEntorno.h` —que fue lo primero que se probó— **no arregla nada**. El cambio

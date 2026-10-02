@@ -11,6 +11,7 @@
 #include <SistemaComandos.h>
 #include <SistemaSignals.h>
 
+#include <SistemaRegistro.h>
 
 #include <CVariablesEntorno.h>
 #include <CTemporizador.h>

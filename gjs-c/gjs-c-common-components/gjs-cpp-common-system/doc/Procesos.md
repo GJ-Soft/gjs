@@ -2,8 +2,8 @@
 
 | Dato      | Valor                                                         |
 | --------- | ------------------------------------------------------------- |
-| Cabeceras | `SistemaProcesos.h` (140), `SistemaComandos.h` (52)           |
-| Fuentes   | `SistemaProcesos.cpp` (**1.331**), `SistemaComandos.cpp` (99) |
+| Cabeceras | `SistemaProcesos.h` (132), `SistemaComandos.h` (52)           |
+| Fuentes   | `SistemaProcesos.cpp` (**1.514**), `SistemaComandos.cpp` (99) |
 | Espacio   | `org::gjs::cpp::common`                                       |
 | Prefijo   | `Sis`                                                         |
 | Declara   | 36 + 1                                                        |
@@ -22,7 +22,7 @@ máquina. Es el módulo más grande del componente que sí compila.
 std::cout << SisPID () << " " << SisNombreProceso () << std::endl;
 
 long lHijo = SisCrearSubproceso ( "procesador.exe", "-v datos.csv" );
-if ( SisExisteSubproceso ( lHijo ) ) { ... }
+if ( SisExisteSubproceso ( lHijo ) ) { ... }		// existe Y es hijo mio
 
 std::list<long> * pProcs = SisListaProcesos ();
 ```
@@ -67,7 +67,7 @@ también. Es fiel a las dos API de debajo —`_beginthreadex` devuelve `unsigned
 
 ## Test
 
-`SistemaProcesosTest.cpp` es corto —79 líneas— para un módulo de 1.331: prueba
+`SistemaProcesosTest.cpp` es corto —79 líneas— para un módulo de 1.514: prueba
 lo que se puede probar sin efectos, es decir, que el PID sea positivo, que el
 nombre del ejecutable no esté vacío y que el proceso actual se encuentre a sí
 mismo en la lista. Crear subprocesos, matar procesos y suspender hilos no se
@@ -82,11 +82,23 @@ programa de verdad.
 
 ### Portabilidad
 
-- **Es el módulo con más trabajo pendiente del componente: 26 marcas
-  `PENDIENTE` o `TODO`** en 1.331 líneas, casi todas en ramas POSIX vacías o en
-  apaños de la rama Windows. Dos de ellas son explícitas sobre lo que falta:
-  «No se puede hacer igual: hay que montar una historia», en las funciones de
-  tiempo de CPU por proceso.
+- **Ya no es el módulo con más trabajo pendiente: quedan 4 marcas** en 1.514
+  líneas, y **ninguna** está en una rama que sólo se compila en POSIX. Eran 26.
+  Las funciones de tiempo de CPU por proceso,
+  que llevaban un «No se puede hacer igual: hay que montar una historia», salen
+  hoy de los campos `utime` y `stime` de `/proc/<pid>/stat`, pasados a
+  milisegundos con `sysconf ( _SC_CLK_TCK )` —que **no** se puede dar por 100:
+  en Cygwin son 1000.
+- **`SisTituloProceso` es sólo de Windows**: está dentro de un
+  `#if ( defined ( WIN ) )` en la cabecera y en el fuente, así que fuera de
+  Windows no existe. En Windows el título es un dato *del proceso*, que se lee
+  con `GetStartupInfo`; en POSIX no existe nada equivalente —lo más parecido es
+  el título de la ventana del terminal, que es del emulador, se pone con una
+  secuencia de escape y no se puede leer de vuelta.
+- **Limitación de Cygwin**: su `/proc` sólo lista los procesos de Cygwin (medido:
+  6 frente a los cientos de la máquina), así que todo lo que recorre `/proc`
+  —enumerar procesos, buscarlos por nombre, contar hijos— da una respuesta
+  parcial ahí y completa en Linux.
 - **`SisCrearSubproceso` toma la ruta como `const char *` en Windows** y el log
   de compilación avisa: `invalid conversion from const char* to LPSTR`, que sólo
   pasa porque el pom compila con `-fpermissive`. Sin esa opción el módulo no

@@ -128,7 +128,7 @@ void TmpFormDescomponer ( double dTiempo, long * p_lFecha, long * p_lHora )
 	if ( ES_VALIDO ( p_lFecha ) && ES_VALIDO ( p_lHora ) )
 	{
 		*p_lFecha = ConvRealDobleAEnteroLargo ( dTiempo / 1000000, 1 );
-		*p_lHora = ConvRealDobleAEnteroLargo ( dTiempo - *p_lFecha * 1000000, 0 );
+		*p_lHora = ConvRealDobleAEnteroLargo ( dTiempo - (double) ( *p_lFecha ) * 1000000, 0 );
 	} 
 }
 
@@ -145,14 +145,13 @@ void TmpFormDescomponerExt ( double dTiempo, int * p_iA, int * p_iM, int * p_iD,
 }
 
 
-#if ( defined ( LLONG ) )
-llong TmpFormConstruirLL ( long lFecha, long lHora )
+long long TmpFormConstruirLL ( long lFecha, long lHora )
 {
-	llong llRes;
+	long long llRes;
 
 	if ( ( HorFormEsValida ( lHora ) == 1 ) && ( FecFormEsValida ( lFecha ) == 1 ) )
 	{
-		llRes = ((llong)lFecha) * 1000000 + ((llong)lHora);
+		llRes = ((long long)lFecha) * 1000000 + ((long long)lHora);
 	}
 	else
 	{
@@ -161,9 +160,9 @@ llong TmpFormConstruirLL ( long lFecha, long lHora )
 	return ( llRes );
 }
 
-llong TmpFormConstruirExtLL ( int iA, int iM, int iD, int iH, int iMi, int iS )
+long long TmpFormConstruirExtLL ( int iA, int iM, int iD, int iH, int iMi, int iS )
 {
-	llong	llRes;
+	long long	llRes;
 	long	lHora;
 	long	lFecha;
 
@@ -173,7 +172,7 @@ llong TmpFormConstruirExtLL ( int iA, int iM, int iD, int iH, int iMi, int iS )
 	return ( llRes );
 }
 
-void TmpFormDescomponerLL ( llong llTiempo, long * p_lFecha, long * p_lHora )
+void TmpFormDescomponerLL ( long long llTiempo, long * p_lFecha, long * p_lHora )
 {
 	if ( ES_VALIDO ( p_lFecha ) && ES_VALIDO ( p_lHora ) )
 	{
@@ -182,7 +181,7 @@ void TmpFormDescomponerLL ( llong llTiempo, long * p_lFecha, long * p_lHora )
 	} 
 }
 
-void TmpFormDescomponerExtLL ( llong llTiempo, int * p_iA, int * p_iM, int * p_iD, int * p_iH, int * p_iMi, int * p_iS )
+void TmpFormDescomponerExtLL ( long long llTiempo, int * p_iA, int * p_iM, int * p_iD, int * p_iH, int * p_iMi, int * p_iS )
 {
 	long lFecha;
 	long lHora;
@@ -194,7 +193,6 @@ void TmpFormDescomponerExtLL ( llong llTiempo, int * p_iA, int * p_iM, int * p_i
 	HorFormDescomponer ( lHora, p_iH, p_iMi, p_iS );
 }
 
-#endif
 
 double TmpFormObtenerValor ( double dTiempo )
 {
@@ -374,9 +372,8 @@ int TmpFormSegundos ( double dTiempo )
 	return ( iRes );
 }
 
-#if ( defined ( LLONG ) )
 
-double TmpFormObtenerValorLL ( llong llTiempo )
+double TmpFormObtenerValorLL ( long long llTiempo )
 {
 	double	dRes;
 	long	lFecha;
@@ -396,9 +393,9 @@ double TmpFormObtenerValorLL ( llong llTiempo )
 	return ( dRes );
 }
 
-llong TmpFormEstablecerValorLL ( double dValor )
+long long TmpFormEstablecerValorLL ( double dValor )
 {
-	llong	llRes;
+	long long	llRes;
 	long	lFecha;
 	long	lHora;
 
@@ -409,7 +406,7 @@ llong TmpFormEstablecerValorLL ( double dValor )
 	return ( llRes );
 }
 
-int TmpFormEsValidoLL ( llong llTiempo )
+int TmpFormEsValidoLL ( long long llTiempo )
 {
 	int		iRes;
 	long	lFecha;
@@ -429,7 +426,7 @@ int TmpFormEsValidoLL ( llong llTiempo )
 	return ( iRes );
 }
 
-long TmpFormFechaLL ( llong llTiempo )
+long TmpFormFechaLL ( long long llTiempo )
 {
 	long	lFecha;
 
@@ -437,7 +434,7 @@ long TmpFormFechaLL ( llong llTiempo )
 	return ( lFecha );
 }
 
-long TmpFormHoraLL ( llong llTiempo )
+long TmpFormHoraLL ( long long llTiempo )
 {
 	long	lHora;
 
@@ -445,7 +442,7 @@ long TmpFormHoraLL ( llong llTiempo )
 	return ( lHora );
 }
 
-int TmpFormAnosLL ( llong llTiempo )
+int TmpFormAnosLL ( long long llTiempo )
 {
 	long	lFecha;
 	int		iRes;
@@ -455,7 +452,7 @@ int TmpFormAnosLL ( llong llTiempo )
 	return ( iRes );
 }
 
-int TmpFormMesesLL ( llong llTiempo )
+int TmpFormMesesLL ( long long llTiempo )
 {
 	long	lFecha;
 	int		iRes;
@@ -465,7 +462,7 @@ int TmpFormMesesLL ( llong llTiempo )
 	return ( iRes );
 }
 
-int TmpFormDiasLL ( llong llTiempo )
+int TmpFormDiasLL ( long long llTiempo )
 {
 	long	lFecha;
 	int		iRes;
@@ -475,7 +472,7 @@ int TmpFormDiasLL ( llong llTiempo )
 	return ( iRes );
 }
 
-int TmpFormHorasLL ( llong llTiempo )
+int TmpFormHorasLL ( long long llTiempo )
 {
 	long	lHora;
 	int		iRes;
@@ -485,7 +482,7 @@ int TmpFormHorasLL ( llong llTiempo )
 	return ( iRes );
 }
 
-int TmpFormMinutosLL ( llong llTiempo )
+int TmpFormMinutosLL ( long long llTiempo )
 {
 	long	lHora;
 	int		iRes;
@@ -495,7 +492,7 @@ int TmpFormMinutosLL ( llong llTiempo )
 	return ( iRes );
 }
 
-int TmpFormSegundosLL ( llong llTiempo )
+int TmpFormSegundosLL ( long long llTiempo )
 {
 	long	lHora;
 	int		iRes;
@@ -505,4 +502,3 @@ int TmpFormSegundosLL ( llong llTiempo )
 	return ( iRes );
 }
 
-# endif

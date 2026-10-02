@@ -90,7 +90,6 @@ bool TestContextoTest ()
 {
 	bool bRes = true;
 	cout << endl << ANSI::AMARILLO << "[Test ContextoTest]" << ANSI::RESETEAR << endl;
-	LogIniConsola ();
 	if ( TestContexto01 () )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
@@ -100,6 +99,5 @@ bool TestContextoTest ()
 		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
 		bRes = false;
 	}
-	LogFin ();
 	return ( bRes );
 }

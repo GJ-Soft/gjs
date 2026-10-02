@@ -480,7 +480,6 @@ bool TestUtilesTest ()
 {
 	bool bRes = true;
 	cout << endl << ANSI::AMARILLO << "[Test UtilesTest]" << ANSI::RESETEAR << endl;
-	LogIniConsola ();
 	if ( TestVerificarValor01 () &&
 			TestVerificarValor02 () &&
 			TestVerificarValor03 () &&
@@ -498,6 +497,5 @@ bool TestUtilesTest ()
 		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
 		bRes = false;
 	}
-	LogFin ();
 	return ( bRes );
 }

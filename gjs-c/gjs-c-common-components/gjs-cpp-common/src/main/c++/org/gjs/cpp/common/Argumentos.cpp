@@ -94,6 +94,32 @@ Argumentos::Argumentos ( int iNumArgs, char ** p_p_cArg )
 	}
 }
 
+Argumentos::Argumentos ( const vector <string> & vecArgs )
+{
+	// NOTA: size () no tiene signo. Con el vector vacio, size () - 1 no es -1, es SIZE_MAX:
+	iNumArgumentos = 0;
+	if ( vecArgs.size () > 1 )
+	{
+		vecArgumentos = vector<string> ( vecArgs.size () - 1 );
+		for ( size_t iArg = 0; iArg < vecArgs.size () - 1; iArg = iArg + 1 )
+		{
+			string sArg = vecArgs [ iArg + 1 ];
+			sArg = EliminarCaracteresNoEstandar ( sArg );
+			sArg = EliminarBlancos ( sArg );
+			if ( ( sArg.length () >= 0 ) &&
+				 ( sArg != "\\" ) )
+			{
+				vecArgumentos [ iNumArgumentos ] = sArg;
+				iNumArgumentos = iNumArgumentos + 1;
+			}
+		}
+	}
+	else
+	{
+		vecArgumentos = vector<string> ( 0 );
+	}
+}
+
 Argumentos::~Argumentos ()
 {
 }

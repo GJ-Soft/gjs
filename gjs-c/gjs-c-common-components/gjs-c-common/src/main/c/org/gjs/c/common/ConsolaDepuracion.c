@@ -107,7 +107,8 @@ int ConDepEscribir ( const char * p_cTexto, ... )
 				if ( FrmCadena ( p_cValor, p_cTexto, valArgumentos, iAncho ) == 1 )
 				{
 					iRes = 1;			
-					printf ( p_cValor ); 
+					/* p_cValor ya viene formateado: como formato, un % suyo leeria basura. */
+					printf ( "%s", p_cValor );
 				}
 				else
 				{
@@ -153,7 +154,8 @@ int ConDepEscribirLinea ( const char * p_cTexto, ... )
 				if ( FrmCadena ( p_cValor, p_cTexto, valArgumentos, iAncho ) == 1 )
 				{
 					iRes = 1;			
-					printf ( p_cValor ); 
+					/* p_cValor ya viene formateado: como formato, un % suyo leeria basura. */
+					printf ( "%s", p_cValor );
 					printf ( "\n" );
 				}
 				else

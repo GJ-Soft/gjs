@@ -6,8 +6,8 @@ contenedores sobre el que se construyen las capas superiores: bloques de
 memoria, listas, secuencias, vectores, tablas, pilas, colas, conjuntos, árboles
 y grafos.
 
-Es el módulo más grande del stack C: **71 módulos** en 4.505 líneas de cabeceras
-y algo más de 31.000 de implementación.
+Es el módulo más grande del stack C: **72 módulos** en 4.602 líneas de cabeceras
+y casi 34.000 de implementación.
 
 ---
 
@@ -109,11 +109,11 @@ retorno.
 Igual que el resto del repositorio, con Maven y en los mismos tres modos
 (ver [gjs-c-common-base](../gjs-c-common-base/README.md#compilación)):
 
-| Modo                         | Consola          | Comando                                    | Estado                                          |
-| ---------------------------- | ---------------- | ------------------------------------------ | ----------------------------------------------- |
-| Cygwin POSIX (**el normal**) | mintty (Cygwin)  | `mvn clean install`                        | **Verificado**: `BUILD SUCCESS`, 70/70 tests OK |
-| Cygwin estilo Windows        | mintty (Cygwin)  | `mvn clean install -Dcygwin.style=windows` | Sin verificar                                   |
-| Windows puro                 | PowerShell / cmd | `mvn clean install`                        | Sin verificar                                   |
+| Modo                    | Consola          | Comando             | Estado                                          |
+| ----------------------- | ---------------- | ------------------- | ----------------------------------------------- |
+| Cygwin (**el normal**)  | mintty (Cygwin)  | `mvn clean install` | **Verificado**: `BUILD SUCCESS`, 70/70 tests OK |
+| Windows puro            | PowerShell / cmd | `mvn clean install` | **Verificado** (2026-09)                        |
+| Linux                   | consola Linux    | `mvn clean install` | Sin verificar: no hay máquina                   |
 
 Requiere tener instalado antes `gjs-c-common-base`.
 
@@ -122,7 +122,7 @@ Requiere tener instalado antes `gjs-c-common-base`.
 ## Tests
 
 Mismo arnés que el resto del stack C: un ejecutable propio cuyo `main` está en
-`src/test/c/.../Test.c` y que registra **70 suites**.
+`src/test/c/.../Test.c` y que registra **71 suites**.
 
 ```
 Test.exe               # todas
@@ -137,7 +137,7 @@ Sin test asociado: `SArbolB`, `SListaHash`, `Tipos`, `TiposBasicosConstantes`,
 
 ## Documentación de los módulos
 
-Los 71 módulos son en su mayoría variantes de un mismo contenedor, así que la
+Los 72 módulos son en su mayoría variantes de un mismo contenedor, así que la
 documentación se organiza **por familias**: cada documento cubre el contenedor
 base y tabula en qué se diferencian sus especializaciones.
 

@@ -9,6 +9,14 @@
 
 
 
+static int _SFicRetornoCarroImplicito ()
+{
+#if ( defined ( WINDOWS ) )
+		return ( 1 );
+#else
+		return ( 0 );
+#endif	
+}
 
 
 SFicTexto * SFicTxtCrear ( const char * p_cRuta )
@@ -22,7 +30,12 @@ SFicTexto * SFicTxtCrear ( const char * p_cRuta )
 		p_ficObj= (SFicTexto *) MemReservar ( sizeof ( SFicTexto ) );
 		if ( ES_VALIDO ( p_ficObj ) )
 		{
+#         if (  defined ( WIN ) || defined ( CYGWIN ) )
 			p_ficObj->iEstilo = EST_FTXT_DOS;
+#         else
+			p_ficObj->iEstilo = EST_FTXT_UNIX;
+#         endif
+			p_ficObj->iEstricto = 0;
 			p_ficObj->p_ficObj = p_ficSec;
 		}
 		else
@@ -285,6 +298,37 @@ int SFicTxtEsEstiloDOS ( SFicTexto * p_ficObj )
 	return ( iRes );
 }
 
+int SFicTxtLecturaEstricta ( SFicTexto * p_ficObj )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_ficObj ) )
+	{
+		iRes = p_ficObj->iEstricto;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+void SFicTxtActivarLecturaEstricta ( SFicTexto * p_ficObj )
+{
+	if ( ES_VALIDO ( p_ficObj ) )
+	{
+		p_ficObj->iEstricto = 1;
+	}
+}
+
+void SFicTxtDesactivarLecturaEstricta ( SFicTexto * p_ficObj )
+{
+	if ( ES_VALIDO ( p_ficObj ) )
+	{
+		p_ficObj->iEstricto = 0;
+	}
+}
+
 int SFicTxtAbrir ( SFicTexto * p_ficObj, int iModo )
 {
 	int iRes;
@@ -414,6 +458,7 @@ char * SFicTxtLeerLinea ( SFicTexto * p_ficObj )
 	int		iCar;
 	int		iFinal;
 	int		iSalto;
+	int		iPosibleSalto;
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
@@ -424,6 +469,7 @@ char * SFicTxtLeerLinea ( SFicTexto * p_ficObj )
 			{
 				iFinal = 0;
 				iSalto = 0;
+				iPosibleSalto = 0;
 				iCar = 0;
 				while ( ( iSalto == 0 ) && ( iFinal == 0 ) && ( iCar < FIC_TXT_MAX_TAM_LINEA ) )
 				{
@@ -432,15 +478,23 @@ char * SFicTxtLeerLinea ( SFicTexto * p_ficObj )
 					{
 						iFinal = 1;
 					}
-					else
+					else 
 					{
-						if ( p_ficObj->iEstilo == EST_FTXT_UNIX )
+						// En Windows se pone automáticamente el /r al escribir el /n
+						if ( ( SFicTxtEsEstiloUNIX ( p_ficObj ) == 1 ) || 
+								( _SFicRetornoCarroImplicito () == 1 ) )
 						{
 							if ( cVal == (char) 0x0A )
 							{
+								if ( ( iCar > 0 ) && ( p_cAux [ iCar - 1 ] == (char) 0x0D ) && 
+									( SFicTxtLecturaEstricta ( p_ficObj ) == 0 ) )
+								{
+									iCar = iCar - 1;
+									p_cAux [ iCar ] = '\0';
+								}
 								iSalto = 1;
 							}
-							else
+							else  
 							{
 								p_cAux [ iCar ] = cVal;
 								iCar = iCar + 1;
@@ -450,9 +504,30 @@ char * SFicTxtLeerLinea ( SFicTexto * p_ficObj )
 						{
 							if ( cVal == (char) 0x0D )
 							{
-								iSalto = 1;
+								if ( iPosibleSalto == 0 )
+								{				
+									iPosibleSalto = 1;
+								}
+								else
+								{
+									p_cAux [ iCar ] = cVal;
+									iCar = iCar + 1;
+								}
 							}
-							else if ( cVal != (char) 0x0A )
+							else if ( cVal == (char) 0x0A )
+							{
+								if ( ( iPosibleSalto == 1 ) ||
+									( SFicTxtLecturaEstricta ( p_ficObj ) == 0 ) )
+								{				
+									iSalto = 1;
+								}
+								else 
+								{
+									p_cAux [ iCar ] = cVal;
+									iCar = iCar + 1;
+								}
+							}
+							else 
 							{
 								p_cAux [ iCar ] = cVal;
 								iCar = iCar + 1;
@@ -547,7 +622,9 @@ int SFicTxtEscribirLinea ( SFicTexto * p_ficObj, const char * p_cLinea )
 		{
 			if ( ulTam == (unsigned long) CadLongitud ( p_cLinea ) )
 			{
-				if ( p_ficObj->iEstilo == EST_FTXT_UNIX ) 
+				// En Windows se pone automáticamente el /r al escribir el /n
+				if ( ( SFicTxtEsEstiloUNIX ( p_ficObj ) == 1 ) || 
+						( _SFicRetornoCarroImplicito () == 1 ) )
 				{
 					iRes = SFicSecEscribir ( p_ficObj->p_ficObj, 0x0A );
 				}

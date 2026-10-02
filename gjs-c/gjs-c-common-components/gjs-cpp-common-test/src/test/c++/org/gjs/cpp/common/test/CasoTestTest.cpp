@@ -103,7 +103,6 @@ bool TestCasoTest ()
 {
 	bool bRes = true;
 	cout << endl << ANSI::AMARILLO << "[Test CasoTest]" << ANSI::RESETEAR << endl;
-	LogIniConsola ();
 	if ( TestCasoTest01 () )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
@@ -122,6 +121,5 @@ bool TestCasoTest ()
 		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
 		bRes = false;
 	}
-	LogFin ();
 	return ( bRes );
 }

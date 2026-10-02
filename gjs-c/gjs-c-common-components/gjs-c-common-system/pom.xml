@@ -58,10 +58,10 @@
 
 	<profiles>
 		<profile>
-			<id>cygwin-win</id>
+			<id>runtime-win</id>
 			<activation>
-				<property>
-					<name>cygwin.style</name>
+                <property>
+					<name>environment.style</name>
 					<value>windows</value>
 				</property>
 			</activation>
@@ -76,22 +76,34 @@
 									<lib>
 										<name>netapi32</name>
 										<type>shared</type>
-										<directory>${cygwin-windows.dir.lib.system}</directory>
+										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
 									</lib>
 									<lib>
 										<name>psapi</name>
 										<type>shared</type>
-										<directory>${cygwin-windows.dir.lib.system}</directory>
+										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
 									</lib>
 									<lib>
 										<name>gdi32</name>
 										<type>shared</type>
-										<directory>${cygwin-windows.dir.lib.system}</directory>
+										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
 									</lib>
 									<lib>
 										<name>comdlg32</name>
 										<type>shared</type>
-										<directory>${cygwin-windows.dir.lib.system}</directory>
+										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
+									</lib>
+									<!-- COM: StringFromCLSID y CoTaskMemFree, que usa SistemaRegistro.c
+									     para los GUID. MinGW no la enlaza por defecto. -->
+									<lib>
+										<name>ole32</name>
+										<type>shared</type>
+										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
 									</lib>
 								</libs>					
 							</linker>

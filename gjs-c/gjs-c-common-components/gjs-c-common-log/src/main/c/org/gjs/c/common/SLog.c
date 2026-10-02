@@ -1219,11 +1219,11 @@ void SLogGestionarCambioFichero ( SLog * p_logObj )
 			( p_logObj->ulNumLineas >= LOG_MAX_LINEAS ) )
 	{
 		iGestionando = 1;
-		SLogAnotarLitForzado ( p_logObj, "(Continua en el fichero siguiente)." );
+		SLogAnotarLitForzado ( p_logObj, LOG_MSJ_TXT_CAMBIO_FICHERO );
 		SLogFinalizar ( p_logObj );
 		SLogGenerarNombreFichero ( p_logObj );
 		SLogIniciar ( p_logObj );
-		SLogAnotarLitForzado ( p_logObj, "(Continuacion del fichero anterior)." );
+		SLogAnotarLitForzado ( p_logObj, LOG_MSJ_TXT_CONTINUACION_FICHERO );
 		iGestionando = 0;
 	}
 }
@@ -1241,6 +1241,10 @@ static const char * _LogTxtNivelMensaje ( int iNivel )
 	else if ( iNivel == LOG_NIVEL_ERROR )
 	{
 		return ( LOG_TXT_NIVEL_ERROR );
+	}
+	else if ( iNivel == LOG_NIVEL_DEPURACION )
+	{
+		return ( LOG_TXT_NIVEL_DEPURACION );
 	}
 	else
 	{

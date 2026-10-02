@@ -469,6 +469,7 @@ int SGrfMoverAPrimeraEntrada ( SGrafo * p_grfObj )
 			{
 				SAriGrfMarcarComoRecorrida ( p_arigObj );
 				p_grfObj->p_nodgActual = SAriGrfNodoInicial ( p_arigObj );
+				iRes = 1;
 			}
 			else
 			{
@@ -501,6 +502,7 @@ int SGrfMoverAPrimeraSalida ( SGrafo * p_grfObj )
 			{
 				SAriGrfMarcarComoRecorrida ( p_arigObj );
 				p_grfObj->p_nodgActual = SAriGrfNodoFinal ( p_arigObj );
+				iRes = 1;
 			}
 			else
 			{
@@ -532,6 +534,7 @@ int SGrfMoverAUltimaEntrada ( SGrafo * p_grfObj )
 			if ( ES_VALIDO ( p_arigObj ) )
 			{
 				p_grfObj->p_nodgActual = SAriGrfNodoInicial ( p_arigObj );
+				iRes = 1;
 			}
 			else
 			{
@@ -563,6 +566,7 @@ int SGrfMoverAUltimaSalida ( SGrafo * p_grfObj )
 			if ( ES_VALIDO ( p_arigObj ) )
 			{
 				p_grfObj->p_nodgActual = SAriGrfNodoFinal ( p_arigObj );
+				iRes = 1;
 			}
 			else
 			{
@@ -597,6 +601,7 @@ int SGrfMoverAPrimeraEntradaPorRecorrer ( SGrafo * p_grfObj )
 			{
 				SAriGrfMarcarComoRecorrida ( p_arigObj );
 				p_grfObj->p_nodgActual = SAriGrfNodoInicial ( p_arigObj );
+				iRes = 1;
 			}
 			else
 			{
@@ -631,6 +636,7 @@ int SGrfMoverAPrimeraSalidaPorRecorrer ( SGrafo * p_grfObj )
 			{
 				SAriGrfMarcarComoRecorrida ( p_arigObj );
 				p_grfObj->p_nodgActual = SAriGrfNodoFinal ( p_arigObj );
+				iRes = 1;
 			}
 			else
 			{
@@ -664,6 +670,7 @@ int SGrfMoverAUltimaEntradaRecorrida ( SGrafo * p_grfObj )
 			if ( ES_VALIDO ( p_arigObj ) )
 			{
 				p_grfObj->p_nodgActual = SAriGrfNodoInicial ( p_arigObj );
+				iRes = 1;
 			}
 			else
 			{
@@ -697,6 +704,7 @@ int SGrfMoverAUltimaSalidaRecorrida ( SGrafo * p_grfObj )
 			if ( ES_VALIDO ( p_arigObj ) )
 			{
 				p_grfObj->p_nodgActual = SAriGrfNodoFinal ( p_arigObj );
+				iRes = 1;
 			}
 			else
 			{

@@ -2,6 +2,13 @@
 #define _ORG_GJS_C_CC_CPP_COMMON_TYPES_CONFIG
 
 
+/* CppBase.h va ANTES que las cabeceras estandar: en modo WIN es quien acaba
+   metiendo winsock2.h (via BaseConfig.h), y tiene que llegar antes de que nada
+   arrastre sys/types.h. El <string> y el <thread> de aqui abajo lo hacen, via
+   pthread.h, y entonces fd_set queda definido por Cygwin: winsock2 avisa de
+   que sus sockets W32 pueden fallar, y el select de los dos choca. */
+#include <CppBase.h>
+
 #include <string>
 #include <list>
 #include <initializer_list>
@@ -20,7 +27,6 @@
 #include <cstdio>
 #include <algorithm>
 
-#include <CppBase.h>
 
 
 

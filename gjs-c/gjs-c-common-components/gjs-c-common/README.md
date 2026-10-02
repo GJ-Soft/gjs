@@ -1,6 +1,6 @@
 # gjs-c-common
 
-**La cabecera del stack C de GJS.** Reúne los diez componentes anteriores en una
+**La cabecera del stack C de GJS.** Reúne los once componentes anteriores en una
 sola fachada, `CCommon.h`, y añade lo que le faltaba a una aplicación completa:
 inicialización del entorno, log global, argumentos de línea de órdenes, catálogo
 de mensajes y consola de depuración.
@@ -19,10 +19,10 @@ todo el stack.
 | `version`    | `1.0.0-RC.2`                       |
 | `packaging`  | `nar` (biblioteca **shared**)      |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`       |
-| Depende de   | **los diez componentes del stack** |
+| Depende de   | **los once componentes del stack** |
 
-`base`, `base-types`, `text`, `calculation`, `time`, `types`, `io`, `system`,
-`support` y `log`.
+`base`, `base-types`, `text`, `calculation`, `time`, `types`, `database`, `io`,
+`system`, `support` y `log`.
 
 ---
 
@@ -41,7 +41,7 @@ segundo modo es el primero más una capa.
 
 ### Modo 1: sólo las clases — `CCommon.h`
 
-Trae los diez componentes del stack y los cuatro módulos propios: cadenas,
+Trae los once componentes del stack y los cuatro módulos propios: cadenas,
 contenedores, fechas, ficheros, valores con tipo, el log, los argumentos, el
 catálogo de mensajes… Todo son **objetos que se crean, se usan y se destruyen**,
 sin estado global que montar antes.
@@ -130,7 +130,7 @@ hay que subir a `CEntorno.h`.
 
 ---
 
-## Qué añade sobre los diez componentes
+## Qué añade sobre los once componentes
 
 | Módulo              | Qué aporta                                                        |
 | ------------------- | ----------------------------------------------------------------- |
@@ -174,7 +174,7 @@ Dos cabeceras conservan la `C` inicial de la época C++: `CCommon.h` y
 
 Los tres modos habituales
 (ver [gjs-c-common-base](../gjs-c-common-base/README.md#compilación)). Requiere
-los diez componentes anteriores instalados.
+los once componentes anteriores instalados.
 
 ---
 

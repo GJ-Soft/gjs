@@ -17,7 +17,11 @@ namespace org
 			{
 				OK = 0,
 				KO = 1,
-				FAIL = 2
+				FAIL = 2,
+				/* El caso no se puede ejecutar en esta plataforma. Ni correcto ni
+				   erroneo: se cuenta aparte para no dar por bueno lo que no se ha
+				   ejecutado. */
+				NO_SOPORTADO = 3
 			};
 
  				}

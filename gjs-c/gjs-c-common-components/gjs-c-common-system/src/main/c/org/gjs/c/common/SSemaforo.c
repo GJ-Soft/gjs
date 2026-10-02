@@ -38,12 +38,10 @@ SSemaforo * SSemCrearExt ( const char * p_cNombre, long lValorMaximo )
 		if ( CadLongitud ( p_semObj->p_cNombre ) > 0 )
 		{
 #	 if ( defined ( WIN ) )
+			/* Y nada mas: OpenSemaphore ya deja el manejador a NULL si falla, asi que
+			   no hay que normalizar nada. La rama POSIX de abajo si lo necesita porque
+			   sem_open no devuelve NULL sino SEM_FAILED. */
 			p_semObj->hSemaforo = OpenSemaphore ( SYNCHRONIZE, 0, p_semObj->p_cNombre );
-			if ( ES_VALIDO ( p_semObj->hSemaforo ) )
-			{
-				long lContador;
-				ReleaseSemaphore ( p_semObj->hSemaforo, 0, (LPLONG) &lContador );
-			}
 #	 elif ( defined ( POSIX ) )
 			p_semObj->p_semObj = sem_open ( p_semObj->p_cNombre, 0 );
 			if ( p_semObj->p_semObj == SEM_FAILED )
@@ -77,7 +75,7 @@ SSemaforo * SSemCrearExt ( const char * p_cNombre, long lValorMaximo )
 #    endif
 
 #	 if ( defined ( WIN ) )
-				if ( ES_VALIDO ( p_semObj->hSemaforo ) )
+				if ( ES_MANEJADOR_VALIDO ( p_semObj->hSemaforo ) )
 #	 elif ( defined ( POSIX ) )
 				if ( ES_VALIDO ( p_semObj->p_semObj ) )
 #    else
@@ -117,7 +115,7 @@ void SSemDestruir ( SSemaforo ** p_p_semObj )
 		if ( ES_VALIDO ( p_semObj ) )
 		{
 #		 if ( defined ( WIN ) )
-			if ( ES_VALIDO ( p_semObj->hSemaforo ) )
+			if ( ES_MANEJADOR_VALIDO ( p_semObj->hSemaforo ) )
 			{
 				CloseHandle ( p_semObj->hSemaforo );
 			}
@@ -162,7 +160,7 @@ int SSemEsValido ( SSemaforo * p_semObj )
 	if ( ES_VALIDO ( p_semObj ) )
 	{
 #	 if ( defined ( WIN ) )
-		if ( ES_VALIDO ( p_semObj->hSemaforo ) )
+		if ( ES_MANEJADOR_VALIDO ( p_semObj->hSemaforo ) )
 #	 elif ( defined ( POSIX ) )
 		// NOTA: Es una direcci�n de un espacio reservado del sistema:
 		if ( p_semObj->p_semObj != NULL )
@@ -224,13 +222,14 @@ int SSemAbrir ( SSemaforo * p_semObj )
 		if ( CadLongitud ( p_semObj->p_cNombre ) > 0 )
 		{
 #		  if ( defined ( WIN ) )
-			if ( ES_NULO ( p_semObj->hSemaforo ) )
+			if ( ES_MANEJADOR_NULO ( p_semObj->hSemaforo ) )
 			{
 				p_semObj->hSemaforo = OpenSemaphore ( SYNCHRONIZE, 0, p_semObj->p_cNombre );
-				if ( ES_VALIDO ( p_semObj->hSemaforo ) )
+				/* La de fuera comprueba que NO estuviera ya abierto; esta comprueba que
+				   la apertura haya ido bien. Las dos son ES_MANEJADOR_*, que es lo que
+				   toca con un HANDLE, pero no dicen lo mismo. */
+				if ( ES_MANEJADOR_VALIDO ( p_semObj->hSemaforo ) )
 				{
-					long lContador;
-					ReleaseSemaphore ( p_semObj->hSemaforo, 0, (LPLONG) &lContador );
 					iRes = 1;
 				}
 				else
@@ -243,14 +242,24 @@ int SSemAbrir ( SSemaforo * p_semObj )
 				iRes = 0;
 			}
 #		  elif ( defined ( POSIX ) )
-			p_semObj->p_semObj = sem_open ( p_semObj->p_cNombre, 0x0 );
-			if ( p_semObj->p_semObj == SEM_FAILED )
+			/* El guardian de la rama WIN: si el semaforo ya esta en uso no se toca y
+			   se devuelve 0. Aqui no estaba, asi que un segundo SSemAbrir pisaba el
+			   descriptor anterior y lo perdia sin cerrarlo. */
+			if ( ES_NULO ( p_semObj->p_semObj ) )
 			{
-				p_semObj->p_semObj = NULL;
-			}
-			if ( ES_VALIDO ( p_semObj->p_semObj ) )
-			{
-				iRes = 1;
+				p_semObj->p_semObj = sem_open ( p_semObj->p_cNombre, 0x0 );
+				if ( p_semObj->p_semObj == SEM_FAILED )
+				{
+					p_semObj->p_semObj = NULL;
+				}
+				if ( ES_VALIDO ( p_semObj->p_semObj ) )
+				{
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
 			}
 			else
 			{
@@ -283,10 +292,10 @@ int SSemInicializar ( SSemaforo * p_semObj )
 		if ( CadLongitud ( p_semObj->p_cNombre ) > 0 )
 		{
 #		  if ( defined ( WIN ) )
-			if ( ES_NULO ( p_semObj->hSemaforo ) ) 
+			if ( ES_MANEJADOR_NULO ( p_semObj->hSemaforo ) ) 
 			{
 				p_semObj->hSemaforo = CreateSemaphore ( NULL, p_semObj->lValMax, p_semObj->lValMax, p_semObj->p_cNombre );
-				if ( ES_VALIDO ( p_semObj->hSemaforo ) )
+				if ( ES_MANEJADOR_VALIDO ( p_semObj->hSemaforo ) )
 				{
 					p_semObj->iCreado = 1;
 					iRes = 1;
@@ -301,15 +310,24 @@ int SSemInicializar ( SSemaforo * p_semObj )
 				iRes = 0;
 			}
 #		  elif ( defined ( POSIX ) )
-			p_semObj->p_semObj = sem_open ( p_semObj->p_cNombre, O_CREAT, 0777, p_semObj->lValMax );
-			if ( p_semObj->p_semObj == SEM_FAILED )
+			/* Mismo guardian que la rama WIN de aqui arriba: si ya esta en uso, no se
+			   toca y se devuelve 0. */
+			if ( ES_NULO ( p_semObj->p_semObj ) )
 			{
-				p_semObj->p_semObj = NULL;
-			}
-			if ( ES_VALIDO  ( p_semObj->p_semObj ) )
-			{
-				p_semObj->iCreado = 1;
-				iRes = 1;
+				p_semObj->p_semObj = sem_open ( p_semObj->p_cNombre, O_CREAT, 0777, p_semObj->lValMax );
+				if ( p_semObj->p_semObj == SEM_FAILED )
+				{
+					p_semObj->p_semObj = NULL;
+				}
+				if ( ES_VALIDO ( p_semObj->p_semObj ) )
+				{
+					p_semObj->iCreado = 1;
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
 			}
 			else
 			{
@@ -411,7 +429,7 @@ int SSemBaja ( SSemaforo * p_semObj )
 #		  if ( defined ( WIN ) )
 			long lValor;
 		
-			if ( ReleaseSemaphore ( p_semObj->hSemaforo, 1, (LPLONG) &lValor ) != 0 )
+			if ( ReleaseSemaphore ( p_semObj->hSemaforo, 1, &lValor ) != 0 )
 #		  elif ( defined ( POSIX ) )
 			if ( sem_post ( p_semObj->p_semObj ) == 0 )
 #		  else

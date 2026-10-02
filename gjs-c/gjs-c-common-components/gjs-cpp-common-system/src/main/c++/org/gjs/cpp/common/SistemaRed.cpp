@@ -76,7 +76,7 @@ wstring SisRedNombreDNSOrdenador ()
 # endif	
 # if ( defined ( WIN ) )
 	dwTam = (DWORD) buffer.size();
-	if ( GetComputerNameEx ( ComputerNameDnsFullyQualified, (LPTSTR) buffer.data(), (LPDWORD) &dwTam ) > 0 )
+	if ( GetComputerNameEx ( ComputerNameDnsFullyQualified, (LPTSTR) buffer.data(), &dwTam ) > 0 )
 	{
 		sRes = wstring ( buffer.data () );
 	}
@@ -104,30 +104,43 @@ wstring SisRedNombreDNSOrdenador ()
 	return ( sRes );
 }
 
-// PENDIENTE: La siguiente rutina no parce funcionar.
+/* Solo en Windows. Se apoya en NetMessageBufferSend, el servicio de
+   mensajeria de Windows, que no tiene equivalente en POSIX: no existe un
+   mecanismo estandar para hacerle llegar un aviso emergente a otra maquina.
+   Fuera de Windows la funcion no se declara, para que quien la llame se
+   encuentre un error de compilacion en vez de un false que no significa nada.
+
+   OJO, sigue en pie la nota de siempre: tampoco en Windows se la ha visto
+   funcionar. El servicio de mensajeria ( Messenger ) esta desactivado por
+   defecto desde Windows Vista, asi que NetMessageBufferSend contesta error
+   salvo que alguien lo levante a mano. Eso es del sistema, no del codigo. */
+#if ( defined ( WIN ) )
 bool SisRedEnviarMensaje ( const wstring & sDestino, const wstring & sOrigen, const string & sMensaje )
 {
 	bool	bRes = false;
-# if ( defined ( WIN ) )
 	DWORD	dwTam;
 	DWORD	dwRes;
-# endif	
+
 	if ( !sDestino.empty() && ! sOrigen.empty () && ! sMensaje.empty () )
 	{
-#	 if ( defined ( WIN ) )
 		dwTam = (DWORD) sMensaje.length();
 		dwRes = NetMessageBufferSend ( (LPCWSTR) NULL, (LPCWSTR) sDestino.c_str(), ( LPCWSTR ) sOrigen.c_str (), ( LPBYTE ) sMensaje.c_str (), dwTam);
 		if ( dwRes == 0 ) // NERR_Success )
 		{
 			bRes = true;
 		}
-#	 else
-		// PENDIENTE:
-#	 endif
 	}
 	return ( bRes );
 }
+#endif
 
+/* OJO: en POSIX devuelve la lista VACIA, y eso es una limitacion conocida, no
+   un descuido. En Windows lo contesta NetServerEnum, que interroga al servicio
+   de navegacion de SMB de la red local. Fuera de Windows no hay nada
+   equivalente en la biblioteca estandar: enumerar las maquinas de la red pide
+   o hablar SMB ( libsmbclient ) o mDNS ( Avahi ), dependencias externas que
+   este stack no tiene. Se deja asi a proposito; quien necesite la lista, que
+   pregunte maquina a maquina con SisRedServidorEsAccesible. */
 list<wstring> * SisRedOrdenadoresAccesibles ()
 {
 	list<wstring> * 		p_lisOrdenadores = new list<wstring>;
@@ -139,7 +152,7 @@ list<wstring> * SisRedOrdenadoresAccesibles ()
 
 # if ( defined ( WIN ) )
 	if ( NetServerEnum( NULL, 100, (LPBYTE *) &p_srvInfo, MAX_PREFERRED_LENGTH, 
-					(LPDWORD) &dwRead, (LPDWORD) &dwTotal, SV_TYPE_ALL, NULL, NULL ) == NERR_Success )
+					&dwRead, &dwTotal, SV_TYPE_ALL, NULL, NULL ) == NERR_Success )
 	{
 		for ( unsigned int i = 0; i < dwRead; i = i + 1 )
 		{
@@ -151,10 +164,108 @@ list<wstring> * SisRedOrdenadoresAccesibles ()
 	{
 		NetApiBufferFree( p_srvInfo );
 	}
-# else
 # endif
 	return ( p_lisOrdenadores );
 }
+
+# if ( ! defined ( WIN ) )
+
+/******************************************************************************/
+/* Accesibilidad de una maquina                                               */
+/*----------------------------------------------------------------------------*/
+/* En Windows lo contestan NetServerGetInfo y NetWkstaGetInfo: le preguntan al */
+/* servicio de la maquina y, si responde, es que esta ahi. En POSIX no hay una */
+/* llamada equivalente, asi que se hace lo mismo por debajo: resolver el       */
+/* nombre e intentar una conexion TCP al puerto de SMB, que es el servicio al  */
+/* que pregunta Windows.                                                      */
+/*                                                                            */
+/* NO se usa ICMP ( el ping ), que seria lo primero que viene a la cabeza:     */
+/* abrir un socket de ese tipo pide privilegios de root, y una libreria no     */
+/* puede contar con eso.                                                      */
+/******************************************************************************/
+
+#include <sys/select.h>
+#include <fcntl.h>
+
+#define SIS_RED_PUERTO_SMB			"445"
+#define SIS_RED_ESPERA_SEGUNDOS		2
+
+/* Espera a que el socket termine de conectar, como mucho los segundos que se
+   digan. Cierto si la conexion cuajo. */
+static bool _SisRedEsperarConexion ( int iSocket, int iSegundos )
+{
+	bool			bRes = false;
+	fd_set			fdsEscritura;
+	struct timeval	tvEspera;
+
+	FD_ZERO ( &fdsEscritura );
+	FD_SET ( iSocket, &fdsEscritura );
+	tvEspera.tv_sec = iSegundos;
+	tvEspera.tv_usec = 0;
+
+	if ( select ( iSocket + 1, NULL, &fdsEscritura, NULL, &tvEspera ) > 0 )
+	{
+		/* El socket se vuelve escribible tanto si conecto como si fallo: hay
+		   que preguntarle a el por el resultado. */
+		int			iError = 0;
+		socklen_t	sklTam = ( socklen_t ) sizeof ( iError );
+
+		if ( getsockopt ( iSocket, SOL_SOCKET, SO_ERROR, &iError, &sklTam ) == 0 )
+		{
+			bRes = ( iError == 0 );
+		}
+	}
+	return ( bRes );
+}
+
+/* Cierto si la maquina responde en ese puerto. Se prueba con cada direccion
+   que devuelva la resolucion del nombre, que pueden ser varias ( IPv4 e IPv6 ),
+   y basta con que una conteste. */
+static bool _SisRedResponde ( const wstring & sMaquina, const char * p_cPuerto )
+{
+	bool				bRes = false;
+	string				sNombre = UnicodeAUtf8 ( sMaquina );
+	struct addrinfo		addrinfPistas;
+	struct addrinfo *	p_addrinfLista = NULL;
+
+	MemLimpiar ( ( void * ) &addrinfPistas, ( int ) sizeof ( addrinfPistas ) );
+	addrinfPistas.ai_family = AF_UNSPEC;
+	addrinfPistas.ai_socktype = SOCK_STREAM;
+
+	if ( getaddrinfo ( sNombre.c_str (), p_cPuerto, &addrinfPistas, &p_addrinfLista ) == 0 )
+	{
+		struct addrinfo * p_addrinfAct = p_addrinfLista;
+
+		while ( ( p_addrinfAct != NULL ) && ( ! bRes ) )
+		{
+			int iSocket = socket ( p_addrinfAct->ai_family, p_addrinfAct->ai_socktype,
+								   p_addrinfAct->ai_protocol );
+			if ( iSocket >= 0 )
+			{
+				/* Sin bloquear: si la maquina esta apagada, un connect normal
+				   se queda colgado hasta que el sistema se rinde, que pueden
+				   ser minutos. */
+				int iBanderas = fcntl ( iSocket, F_GETFL, 0 );
+				fcntl ( iSocket, F_SETFL, iBanderas | O_NONBLOCK );
+
+				if ( connect ( iSocket, p_addrinfAct->ai_addr, p_addrinfAct->ai_addrlen ) == 0 )
+				{
+					bRes = true;
+				}
+				else if ( errno == EINPROGRESS )
+				{
+					bRes = _SisRedEsperarConexion ( iSocket, SIS_RED_ESPERA_SEGUNDOS );
+				}
+				close ( iSocket );
+			}
+			p_addrinfAct = p_addrinfAct->ai_next;
+		}
+		freeaddrinfo ( p_addrinfLista );
+	}
+	return ( bRes );
+}
+
+# endif
 
 bool SisRedServidorEsAccesible ( const wstring & sServidor )
 {
@@ -176,7 +287,7 @@ bool SisRedServidorEsAccesible ( const wstring & sServidor )
 			NetApiBufferFree( p_srvinfDatos );
 		}
 #	 else
-		// PENDIENTE:
+		bRes = _SisRedResponde ( sServidor, SIS_RED_PUERTO_SMB );
 #	 endif
 	}
 	return ( bRes );
@@ -201,7 +312,7 @@ bool SisRedEstacionEsAccesible ( const wstring & sEstacion )
 			NetApiBufferFree( p_estinfDatos );
 		}
 #	 else
-		// PENDIENTE:
+		bRes = _SisRedResponde ( sEstacion, SIS_RED_PUERTO_SMB );
 #	 endif
 	}
 	return ( bRes );

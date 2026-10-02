@@ -86,18 +86,16 @@ unsigned int HashEnteroLargoSinSigno ( unsigned long ulVal )
     return ( HashBinario ( (byte *) &ulVal, sizeof ( unsigned long ) ) );
 }
 
-#if ( defined ( LLONG ) )
-unsigned int HashEnteroDobleLargo ( llong llVal )
+unsigned int HashEnteroDobleLargo ( long long llVal )
 {
-    return ( HashBinario ( (byte *) &llVal, sizeof ( llong ) ) );
+    return ( HashBinario ( (byte *) &llVal, sizeof ( long long ) ) );
 }
 
-unsigned int HashEnteroDobleLargoSinSigno ( ullong ullVal )
+unsigned int HashEnteroDobleLargoSinSigno ( unsigned long long ullVal )
 {
-    return ( HashBinario ( (byte *) &ullVal, sizeof ( ullong ) ) );
+    return ( HashBinario ( (byte *) &ullVal, sizeof ( unsigned long long ) ) );
 }
 
-#endif
 
 unsigned int HashReal ( float fVal )
 {

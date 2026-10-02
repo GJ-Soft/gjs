@@ -114,14 +114,14 @@ char * SCnjLitElemento ( SConjuntoLiterales * p_cnjObj, int iElem )
 	return ( p_cRes );
 }
 
-int SCnjLitInsertar ( SConjuntoLiterales * p_cnjObj, const char * p_cDatos )
+int SCnjLitInsertar ( SConjuntoLiterales * p_cnjObj, const char * p_cDato )
 {
 	int		iRes;
 	char *	p_cElem;
 
-	if ( ES_VALIDO ( p_cnjObj ) && ES_VALIDO ( p_cDatos ) )
+	if ( ES_VALIDO ( p_cnjObj ) && ES_VALIDO ( p_cDato ) )
 	{
-		p_cElem = CadDuplicar ( p_cDatos );
+		p_cElem = CadDuplicar ( p_cDato );
 		if ( ES_VALIDO ( p_cElem ) )
 		{
 			iRes = SCnjpInsertarElem ( p_cnjObj->p_cnjDatos, (byte *) p_cElem );

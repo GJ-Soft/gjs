@@ -1,6 +1,12 @@
 #include "CppCommonIo.h"
 #include <CppBase.h>
 
+/* Para montar el caso de "solo lectura": ponerlo NO es parte de la API, lo
+   tiene que hacer el propio test. Ver _PonerSoloLectura. */
+#if ( ! defined ( WIN ) )
+#	include <sys/stat.h>
+#endif
+
 
 
 
@@ -121,7 +127,9 @@ static bool TestSisFicherosE2E01 ()
 			cout << "Error caso 2: el directorio deberia existir" << endl;
 			bRes = false;
 		}
-		// Un directorio no es un fichero regular.
+		// SisExisteFichero pregunta "existe y NO es un directorio", asi que un
+		// directorio tiene que dar que no. Ojo, no pregunta "es un fichero
+		// regular": un FIFO o un dispositivo si cuentan.
 		if ( SisExisteFichero ( sDir ) )
 		{
 			cout << "Error caso 3: un directorio no deberia detectarse como fichero" << endl;
@@ -565,6 +573,259 @@ static bool TestSisResolverDirRelativo01 ()
 	return ( bRes );
 }
 
+/* --- Atributos de fichero ---------------------------------------------------
+   Las nueve consultas de atributos tienen la misma forma, asi que se recorren
+   con una tabla y el mensaje de error dice siempre que funcion fallo.
+   SisRutaDesactivarModoSoloLectura no esta en la tabla porque modifica. */
+struct ATRIBUTO
+{
+	const char *	p_cNombre;
+	bool	( * pfnConsulta ) ( const string & );
+	bool			bEnFicheroNormal;	// lo que debe dar en un fichero recien creado
+};
+
+static const ATRIBUTO g_atributos [] =
+{
+	{ "SisRutaComprimida",					SisRutaComprimida,					false },
+	{ "SisRutaEncriptada",					SisRutaEncriptada,					false },
+	{ "SisRutaOculta",						SisRutaOculta,						false },
+	{ "SisRutaDelSistema",					SisRutaDelSistema,					false },
+	{ "SisFicheroEsTemporal",				SisFicheroEsTemporal,				false },
+	{ "SisFicheroAsociadoAAplicacion",		SisFicheroAsociadoAAplicacion,		false },
+	{ "SisFicheroConOptimizacionEspacial",	SisFicheroConOptimizacionEspacial,	false },
+	{ "SisRutaDeSoloLectura",				SisRutaDeSoloLectura,				false },
+	{ "SisFicheroEsAccesible",				SisFicheroEsAccesible,				true }
+};
+
+static const string DIR_ATRIB ( "../results" );
+
+
+/* Poner un fichero en solo lectura no es parte de la API: es el montaje del
+   test. Y hay que hacerlo con las herramientas del modo en que se compila,
+   porque en Cygwin un chmod 0444 NO enciende el atributo de NTFS ( medido ), y
+   en modo WIN es justo ese atributo el que consulta la funcion. */
+static bool _PonerSoloLectura ( const string & sRuta )
+{
+	bool	bRes = false;
+
+# if ( defined ( WIN ) )
+	DWORD	dwAtributos = GetFileAttributes ( sRuta.c_str () );
+
+	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	{
+		bRes = ( SetFileAttributes ( sRuta.c_str (),
+									 dwAtributos | FILE_ATTRIBUTE_READONLY ) != 0 );
+	}
+# else
+	bRes = ( chmod ( sRuta.c_str (), 0444 ) == 0 );
+# endif
+	return ( bRes );
+}
+
+# if ( defined ( WIN ) )
+/* Solo hace falta en modo WIN: en POSIX "oculto" se consigue con el nombre. */
+static bool _PonerOculto ( const string & sRuta )
+{
+	bool	bRes = false;
+	DWORD	dwAtributos = GetFileAttributes ( sRuta.c_str () );
+
+	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	{
+		bRes = ( SetFileAttributes ( sRuta.c_str (),
+									 dwAtributos | FILE_ATTRIBUTE_HIDDEN ) != 0 );
+	}
+	return ( bRes );
+}
+# endif
+
+/* Recorre la tabla comprobando que ninguna consulta dice que si. */
+static bool _AtributosTodosFalsos ( const string & sRuta, const string & sQue )
+{
+	bool	bRes = true;
+
+	for ( const ATRIBUTO & atr : g_atributos )
+	{
+		if ( atr.pfnConsulta ( sRuta ) )
+		{
+			cout << "Error: " << atr.p_cNombre << " ( " << sQue
+				 << " ) dijo que si, se esperaba que no" << endl;
+			bRes = false;
+		}
+	}
+	return ( bRes );
+}
+
+
+/* Una ruta que no existe y una ruta vacia: ninguna consulta debe decir que si,
+   y ninguna debe reventar. */
+static bool TestSisAtributos01 ()
+{
+	cout << "Test SisAtributos 01 ( ruta inexistente y ruta vacia ):" << endl;
+	bool bRes = true;
+
+	const string sFichero ( DIR_ATRIB + "/atrib_no_existe.tmp" );
+	SisEliminarFichero ( sFichero );
+
+	if ( ! _AtributosTodosFalsos ( sFichero, "ruta inexistente" ) )
+	{
+		bRes = false;
+	}
+	if ( ! _AtributosTodosFalsos ( "", "ruta vacia" ) )
+	{
+		bRes = false;
+	}
+	if ( SisRutaDesactivarModoSoloLectura ( sFichero ) )
+	{
+		cout << "Error: SisRutaDesactivarModoSoloLectura de una ruta inexistente dijo que si" << endl;
+		bRes = false;
+	}
+	return ( bRes );
+}
+
+/* Un fichero recien creado: legible, y sin ninguno de los demas atributos. */
+static bool TestSisAtributos02 ()
+{
+	cout << "Test SisAtributos 02 ( fichero normal ):" << endl;
+	bool bRes = true;
+
+	const string sFichero ( DIR_ATRIB + "/atrib_normal.tmp" );
+	SisEliminarFichero ( sFichero );
+
+	if ( ! SisCrearFichero ( sFichero ) )
+	{
+		cout << "Error caso 1: no se pudo crear el fichero: " << sFichero << endl;
+		bRes = false;
+	}
+	else
+	{
+		for ( const ATRIBUTO & atr : g_atributos )
+		{
+			bool bObtenido = atr.pfnConsulta ( sFichero );
+
+			if ( bObtenido != atr.bEnFicheroNormal )
+			{
+				cout << "Error caso 2: " << atr.p_cNombre << " devolvio "
+					 << ( bObtenido ? "cierto" : "falso" ) << ", se esperaba "
+					 << ( atr.bEnFicheroNormal ? "cierto" : "falso" ) << endl;
+				bRes = false;
+			}
+		}
+		SisEliminarFichero ( sFichero );
+	}
+	return ( bRes );
+}
+
+/* El solo lectura, ida y vuelta: se pone, se detecta, se quita con la API y
+   deja de detectarse. Es el unico atributo que la API sabe modificar. */
+static bool TestSisAtributos03 ()
+{
+	cout << "Test SisAtributos 03 ( solo lectura, ida y vuelta ):" << endl;
+	bool bRes = true;
+
+	const string sFichero ( DIR_ATRIB + "/atrib_solectura.tmp" );
+	SisEliminarFichero ( sFichero );
+
+	if ( ! SisCrearFichero ( sFichero ) )
+	{
+		cout << "Error caso 1: no se pudo crear el fichero: " << sFichero << endl;
+		bRes = false;
+	}
+	else
+	{
+		if ( SisRutaDeSoloLectura ( sFichero ) )
+		{
+			cout << "Error caso 2: un fichero recien creado no deberia ser de solo lectura" << endl;
+			bRes = false;
+		}
+		if ( ! _PonerSoloLectura ( sFichero ) )
+		{
+			cout << "Error caso 3: el propio test no pudo poner el solo lectura" << endl;
+			bRes = false;
+		}
+		else
+		{
+			if ( ! SisRutaDeSoloLectura ( sFichero ) )
+			{
+				cout << "Error caso 4: no se detecto el solo lectura" << endl;
+				bRes = false;
+			}
+			// Seguir siendo legible es parte del trato.
+			if ( ! SisFicheroEsAccesible ( sFichero ) )
+			{
+				cout << "Error caso 5: un fichero de solo lectura sigue siendo legible" << endl;
+				bRes = false;
+			}
+			if ( ! SisRutaDesactivarModoSoloLectura ( sFichero ) )
+			{
+				cout << "Error caso 6: SisRutaDesactivarModoSoloLectura fallo" << endl;
+				bRes = false;
+			}
+			if ( SisRutaDeSoloLectura ( sFichero ) )
+			{
+				cout << "Error caso 7: seguia de solo lectura despues de desactivarlo" << endl;
+				bRes = false;
+			}
+		}
+		// Se borra despues de quitar el solo lectura, que si no Windows no deja.
+		SisEliminarFichero ( sFichero );
+	}
+	return ( bRes );
+}
+
+/* "Oculto" no significa lo mismo en los dos mundos, y es a proposito: en WIN es
+   el atributo de NTFS, y en POSIX ( Linux y Cygwin-POSIX ) es el punto delante
+   del nombre. El caso fija las dos lecturas para que el dia que alguien las
+   cambie se entere aqui. */
+static bool TestSisAtributos04 ()
+{
+	cout << "Test SisAtributos 04 ( oculto ):" << endl;
+	bool bRes = true;
+
+	const string sFichero ( DIR_ATRIB + "/.atrib_oculto.tmp" );
+	SisEliminarFichero ( sFichero );
+
+	if ( ! SisCrearFichero ( sFichero ) )
+	{
+		cout << "Error caso 1: no se pudo crear el fichero: " << sFichero << endl;
+		bRes = false;
+	}
+	else
+	{
+# if ( defined ( WIN ) )
+		const bool bEsperado = false;
+# else
+		const bool bEsperado = true;
+# endif
+		if ( SisRutaOculta ( sFichero ) != bEsperado )
+		{
+			cout << "Error caso 2: SisRutaOculta del fichero con punto devolvio "
+				 << ( SisRutaOculta ( sFichero ) ? "cierto" : "falso" )
+				 << ", se esperaba " << ( bEsperado ? "cierto" : "falso" ) << endl;
+			bRes = false;
+		}
+
+# if ( defined ( WIN ) )
+		// Y con el atributo de NTFS puesto, que si lo vea.
+		if ( ! _PonerOculto ( sFichero ) )
+		{
+			cout << "Error caso 3: el propio test no pudo poner el atributo de oculto" << endl;
+			bRes = false;
+		}
+		else
+		{
+			if ( ! SisRutaOculta ( sFichero ) )
+			{
+				cout << "Error caso 4: SisRutaOculta no vio el atributo de NTFS" << endl;
+				bRes = false;
+			}
+		}
+# endif
+		SisEliminarFichero ( sFichero );
+	}
+	return ( bRes );
+}
+
+
 bool TestSistemaFicheros ()
 {
 	bool bRes = true;
@@ -651,6 +912,42 @@ bool TestSistemaFicheros ()
 		bRes = false;
 	}
 	if ( TestSisResolverDirRelativo01 () )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestSisAtributos01 () )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestSisAtributos02 () )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestSisAtributos03 () )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestSisAtributos04 () )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
 	}

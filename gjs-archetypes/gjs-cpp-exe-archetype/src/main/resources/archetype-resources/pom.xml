@@ -29,6 +29,9 @@
 		<!-- Compiler options -->
 		<gjs.compiler.additionalOptions></gjs.compiler.additionalOptions>
 		
+		<!-- Log -->
+		<gjs.log.directory>./log</gjs.log.directory>
+		
 		<!-- Dependency versions -->
 		
     </properties>

@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <initializer_list>
+#include <iostream>
 
 #include <CasoTest.h>
 #include <CasoTestAislado.h>
@@ -46,6 +47,7 @@ namespace org
 					int 				iCorrectos = 0;
 					int 				iErroneos = 0;
 					int 				iFallidos = 0;
+					int 				iNoSoportados = 0;
 
 				public:
 					Test ( const std::string & sNombre, PROCEDIMIENTO procInicializar = NULL, PROCEDIMIENTO procFinalizar = NULL, PROCEDIMIENTO_1CAD procInicializarCaso = NULL, PROCEDIMIENTO_1CAD procFinalizarCaso = NULL );
@@ -74,6 +76,7 @@ namespace org
 					int CasosCorrectos ();
 					int CasosErroneos ();
 					int CasosFallidos ();
+					int CasosNoSoportados ();
 
 			};
 

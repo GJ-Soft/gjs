@@ -15,6 +15,7 @@
 #include <Real.h>
 #include <IToString.h>
 #include <ToString.h>
+#include <ToBool.h>
 #include <ToInt.h>
 #include <ToReal.h>
 #include <Concatenar.h>

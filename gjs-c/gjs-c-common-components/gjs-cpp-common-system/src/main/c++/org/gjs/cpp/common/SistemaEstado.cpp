@@ -52,25 +52,14 @@ long SisHoraInicio ()
 
 
 /*
-#if ( defined ( LLONG ) )
-llong SisFechaHoraInicio ()
+long long SisFechaHoraInicio ()
 {
-	llong llRes;
+	long long llRes;
 
 	llRes = SisProcesoHoraCreacion ( 8 );
 	return ( llRes );
 }
 
-#else
-unsigned long SisFechaHoraInicio ()
-{
-	unsigned long ulRes;
-
-	ulRes = SisProcesoHoraCreacion ( 8 );
-	return ( ulRes );
-}
-
-#endif
 */
 
 /*

@@ -14,13 +14,15 @@ import httpx
 
 from urllib.parse import urlunparse
 
-from org.gjs.python.common.properties import ApplicationProperties, applicationProperties
+from org.gjs.python.common.configuration import ApplicationProperties, getApplicationProperties
 
 # Inyectar ruta de modelos generados
 from ${package}.models.Models import ServerStatus
 
 class ${capitalizedName}Client:
-    def __init__(self, protocol=applicationProperties.get("client.protocol","http"), hostname= applicationProperties.get("client.hostname","localhost"), port=applicationProperties.get("client.port","8000")):
+    def __init__(self, protocol=getApplicationProperties().get("client.protocol","http"), 
+                       hostname= getApplicationProperties().get("client.hostname","localhost"), 
+                       port=getApplicationProperties().get("client.port","8000")):
         netloc = f"{hostname}:{port}"
         self.base_url = urlunparse(
             (protocol, netloc, "", "", "", ""))

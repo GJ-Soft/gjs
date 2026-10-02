@@ -44,7 +44,6 @@ int main( int argc, char * argv[] )
 			cerr << "Test [ " << sTest << " ] no encontrado." << endl;
 			iRes = -1;
 		}
-		log::LogLiberar ();
 		return( iRes );
 	}
 
@@ -57,6 +56,5 @@ int main( int argc, char * argv[] )
 			iRes = -1;
 		}
 	}
-	log::LogLiberar ();
 	return ( iRes );
 }

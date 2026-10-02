@@ -4,6 +4,12 @@
 #include "SistemaFicheros.h"
 #include "TestConfig.h"
 
+/* Para montar el caso de "solo lectura": ponerlo NO es parte de la API, lo
+   tiene que hacer el propio test. Ver _PonerSoloLectura. */
+#if ( ! defined ( WIN ) )
+#	include <sys/stat.h>
+#endif
+
 
 
 static int TestSisNombreFichero01 ()
@@ -57,10 +63,7 @@ static int TestSisFichero01 ()
 	printf ( "* FICHERO: %s\n", p_cFichero );
 //	SisCrearDirectorio ( p_cDirectorio );
 	/* Punto de partida limpio. */
-	printf ( "1----------------------- Eliminar\n" );
 	SisEliminarFichero ( p_cFichero );
-
-	printf ( "2----------------------- Crear\n" );
 	if ( SisCrearFichero ( p_cFichero ) != 1 )
 	{
 		printf( "Error caso 1: no se pudo crear el fichero: %s\n", p_cFichero );
@@ -68,19 +71,16 @@ static int TestSisFichero01 ()
 	} 
 	else
 	{
-		printf ( "3----------------------- Existe\n" );
 		if ( SisExisteFichero ( p_cFichero ) != 1 )
 		{
 			printf( "Error caso 2: se esperaba que exista el fichero: %s\n", p_cFichero );
 			iRes = BOOL_VAL_FALSO;
 		}
-		printf ( "4----------------------- Eliminar\n" );
 		if ( SisEliminarFichero ( p_cFichero ) != 1 )
 		{
 			printf( "Error caso 3: no se pudo eliminar el fichero: %s\n", p_cFichero );
 			iRes = BOOL_VAL_FALSO;
 		}
-		printf ( "5----------------------- Existe\n" );
 		if ( SisExisteFichero ( p_cFichero ) != 0 )
 		{
 			printf( "Error caso 4: no se esperaba que exista el fichero tras eliminar\n" );
@@ -363,6 +363,313 @@ static int TestSisResolverDirRelativo01 ()
 	return ( iRes );
 }
 
+/* --- Atributos de fichero ---------------------------------------------------
+   Las nueve consultas de atributos tienen la misma forma, asi que se recorren
+   con una tabla y el mensaje de error dice siempre que funcion fallo.
+   SisRutaDesactivarModoSoloLectura no esta en la tabla porque modifica. */
+typedef struct
+{
+	const char *	p_cNombre;
+	int	( * pfnConsulta ) ( const char * );
+	int				iEnFicheroNormal;	/* lo que debe dar en un fichero recien creado */
+} SIS_ATRIBUTO;
+
+static const SIS_ATRIBUTO g_atributos [] =
+{
+	{ "SisRutaComprimida",					SisRutaComprimida,					0 },
+	{ "SisRutaEncriptada",					SisRutaEncriptada,					0 },
+	{ "SisRutaOculta",						SisRutaOculta,						0 },
+	{ "SisRutaDelSistema",					SisRutaDelSistema,					0 },
+	{ "SisFicheroEsTemporal",				SisFicheroEsTemporal,				0 },
+	{ "SisFicheroAsociadoAAplicacion",		SisFicheroAsociadoAAplicacion,		0 },
+	{ "SisFicheroConOptimizacionEspacial",	SisFicheroConOptimizacionEspacial,	0 },
+	{ "SisRutaDeSoloLectura",				SisRutaDeSoloLectura,				0 },
+	{ "SisFicheroEsAccesible",				SisFicheroEsAccesible,				1 }
+};
+
+#define SIS_NUM_ATRIBUTOS	( sizeof ( g_atributos ) / sizeof ( g_atributos [ 0 ] ) )
+
+
+/* Devuelve la ruta de un fichero de trabajo dentro del directorio de resultados. */
+static char * _RutaDePrueba ( const char * p_cFichero )
+{
+	char *	p_cDirActual;
+	char *	p_cDirectorio;
+	char *	p_cRes;
+
+	p_cDirActual = SisDirectorioActual ();
+	p_cDirectorio = SisResolverDirectorioRelativo ( p_cDirActual, FIC_TEST_DIR_RESULTS );
+	p_cRes = SisComponerRuta ( p_cDirectorio, p_cFichero, 0 );
+	MemLiberarCadena ( &p_cDirectorio );
+	MemLiberarCadena ( &p_cDirActual );
+	return ( p_cRes );
+}
+
+/* Poner un fichero en solo lectura no es parte de la API: es el montaje del
+   test. Y hay que hacerlo con las herramientas del modo en que se compila,
+   porque en Cygwin un chmod 0444 NO enciende el atributo de NTFS ( medido ), y
+   en modo WIN es justo ese atributo el que consulta la funcion. */
+static int _PonerSoloLectura ( const char * p_cRuta )
+{
+	int		iRes;
+
+# if ( defined ( WIN ) )
+	DWORD	dwAtributos;
+
+	dwAtributos = GetFileAttributes ( p_cRuta );
+	if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+	{
+		iRes = 0;
+	}
+	else
+	{
+		if ( SetFileAttributes ( p_cRuta, dwAtributos | FILE_ATTRIBUTE_READONLY ) != 0 )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+# else
+	if ( chmod ( p_cRuta, 0444 ) == 0 )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+# endif
+	return ( iRes );
+}
+
+# if ( defined ( WIN ) )
+/* Solo hace falta en modo WIN: en POSIX "oculto" se consigue con el nombre. */
+static int _PonerOculto ( const char * p_cRuta )
+{
+	int		iRes;
+	DWORD	dwAtributos;
+
+	dwAtributos = GetFileAttributes ( p_cRuta );
+	if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+	{
+		iRes = 0;
+	}
+	else
+	{
+		if ( SetFileAttributes ( p_cRuta, dwAtributos | FILE_ATTRIBUTE_HIDDEN ) != 0 )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	return ( iRes );
+}
+# endif
+
+/* Recorre la tabla comprobando que ninguna consulta dice que si. */
+static int _AtributosTodosFalsos ( const char * p_cRuta, const char * p_cQue )
+{
+	int			iRes = BOOL_VAL_CIERTO;
+	unsigned	uIdx;
+
+	for ( uIdx = 0; uIdx < SIS_NUM_ATRIBUTOS; uIdx++ )
+	{
+		if ( g_atributos [ uIdx ].pfnConsulta ( p_cRuta ) != 0 )
+		{
+			printf ( "Error: %s ( %s ) dijo que si, se esperaba que no\n",
+					 g_atributos [ uIdx ].p_cNombre, p_cQue );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	return ( iRes );
+}
+
+
+/* Una ruta que no existe y una ruta nula: ninguna consulta debe decir que si,
+   y ninguna debe reventar. */
+static int TestSisAtributos01 ()
+{
+	char *	p_cFichero;
+	int		iRes = BOOL_VAL_CIERTO;
+
+	printf ( "Test SisAtributos 01 ( ruta inexistente y ruta nula ):\n" );
+	p_cFichero = _RutaDePrueba ( "atrib_no_existe.tmp" );
+	SisEliminarFichero ( p_cFichero );
+
+	if ( _AtributosTodosFalsos ( p_cFichero, "ruta inexistente" ) != BOOL_VAL_CIERTO )
+	{
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( _AtributosTodosFalsos ( NULL, "ruta nula" ) != BOOL_VAL_CIERTO )
+	{
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SisRutaDesactivarModoSoloLectura ( p_cFichero ) != 0 )
+	{
+		printf ( "Error: SisRutaDesactivarModoSoloLectura de una ruta inexistente dijo que si\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	MemLiberarCadena ( &p_cFichero );
+	return ( iRes );
+}
+
+/* Un fichero recien creado: legible, y sin ninguno de los demas atributos. */
+static int TestSisAtributos02 ()
+{
+	char *		p_cFichero;
+	int			iRes = BOOL_VAL_CIERTO;
+	int			iObtenido;
+	unsigned	uIdx;
+
+	printf ( "Test SisAtributos 02 ( fichero normal ):\n" );
+	p_cFichero = _RutaDePrueba ( "atrib_normal.tmp" );
+	SisEliminarFichero ( p_cFichero );
+
+	if ( SisCrearFichero ( p_cFichero ) != 1 )
+	{
+		printf ( "Error caso 1: no se pudo crear el fichero: %s\n", p_cFichero );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		for ( uIdx = 0; uIdx < SIS_NUM_ATRIBUTOS; uIdx++ )
+		{
+			iObtenido = g_atributos [ uIdx ].pfnConsulta ( p_cFichero );
+			if ( iObtenido != g_atributos [ uIdx ].iEnFicheroNormal )
+			{
+				printf ( "Error caso 2: %s devolvio %d, se esperaba %d\n",
+						 g_atributos [ uIdx ].p_cNombre, iObtenido,
+						 g_atributos [ uIdx ].iEnFicheroNormal );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		SisEliminarFichero ( p_cFichero );
+	}
+	MemLiberarCadena ( &p_cFichero );
+	return ( iRes );
+}
+
+/* El solo lectura, ida y vuelta: se pone, se detecta, se quita con la API y
+   deja de detectarse. Es el unico atributo que la API sabe modificar. */
+static int TestSisAtributos03 ()
+{
+	char *	p_cFichero;
+	int		iRes = BOOL_VAL_CIERTO;
+
+	printf ( "Test SisAtributos 03 ( solo lectura, ida y vuelta ):\n" );
+	p_cFichero = _RutaDePrueba ( "atrib_solectura.tmp" );
+	SisEliminarFichero ( p_cFichero );
+
+	if ( SisCrearFichero ( p_cFichero ) != 1 )
+	{
+		printf ( "Error caso 1: no se pudo crear el fichero: %s\n", p_cFichero );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( SisRutaDeSoloLectura ( p_cFichero ) != 0 )
+		{
+			printf ( "Error caso 2: un fichero recien creado no deberia ser de solo lectura\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( _PonerSoloLectura ( p_cFichero ) != 1 )
+		{
+			printf ( "Error caso 3: el propio test no pudo poner el solo lectura\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			if ( SisRutaDeSoloLectura ( p_cFichero ) != 1 )
+			{
+				printf ( "Error caso 4: no se detecto el solo lectura\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			/* Seguir siendo legible es parte del trato. */
+			if ( SisFicheroEsAccesible ( p_cFichero ) != 1 )
+			{
+				printf ( "Error caso 5: un fichero de solo lectura sigue siendo legible\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			if ( SisRutaDesactivarModoSoloLectura ( p_cFichero ) != 1 )
+			{
+				printf ( "Error caso 6: SisRutaDesactivarModoSoloLectura fallo\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			if ( SisRutaDeSoloLectura ( p_cFichero ) != 0 )
+			{
+				printf ( "Error caso 7: seguia de solo lectura despues de desactivarlo\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		/* Se borra despues de quitar el solo lectura, que si no Windows no deja. */
+		SisEliminarFichero ( p_cFichero );
+	}
+	MemLiberarCadena ( &p_cFichero );
+	return ( iRes );
+}
+
+/* "Oculto" no significa lo mismo en los dos mundos, y es a proposito: en WIN es
+   el atributo de NTFS, y en POSIX ( Linux y Cygwin-POSIX ) es el punto delante
+   del nombre. El caso fija las dos lecturas para que el dia que alguien las
+   cambie se entere aqui. */
+static int TestSisAtributos04 ()
+{
+	char *	p_cFichero;
+	int		iRes = BOOL_VAL_CIERTO;
+	int		iEsperado;
+
+	printf ( "Test SisAtributos 04 ( oculto ):\n" );
+	p_cFichero = _RutaDePrueba ( ".atrib_oculto.tmp" );
+	SisEliminarFichero ( p_cFichero );
+
+	if ( SisCrearFichero ( p_cFichero ) != 1 )
+	{
+		printf ( "Error caso 1: no se pudo crear el fichero: %s\n", p_cFichero );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+# if ( defined ( WIN ) )
+		iEsperado = 0;
+# else
+		iEsperado = 1;
+# endif
+		if ( SisRutaOculta ( p_cFichero ) != iEsperado )
+		{
+			printf ( "Error caso 2: SisRutaOculta del fichero con punto devolvio %d, se esperaba %d\n",
+					 SisRutaOculta ( p_cFichero ), iEsperado );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+# if ( defined ( WIN ) )
+		/* Y con el atributo de NTFS puesto, que si lo vea. */
+		if ( _PonerOculto ( p_cFichero ) != 1 )
+		{
+			printf ( "Error caso 3: el propio test no pudo poner el atributo de oculto\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			if ( SisRutaOculta ( p_cFichero ) != 1 )
+			{
+				printf ( "Error caso 4: SisRutaOculta no vio el atributo de NTFS\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+# endif
+		SisEliminarFichero ( p_cFichero );
+	}
+	MemLiberarCadena ( &p_cFichero );
+	return ( iRes );
+}
+
+
 int TestSistemaFicheros ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -373,7 +680,11 @@ int TestSistemaFicheros ()
 			( TestSisFichero01 () == BOOL_VAL_CIERTO ) &&
 			( TestSisDirectorio01 () == BOOL_VAL_CIERTO ) &&
 			( TestSisValido01 () == BOOL_VAL_CIERTO ) &&
-			( TestSisNulo01 () == BOOL_VAL_CIERTO ) )
+			( TestSisNulo01 () == BOOL_VAL_CIERTO ) &&
+			( TestSisAtributos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSisAtributos02 () == BOOL_VAL_CIERTO ) &&
+			( TestSisAtributos03 () == BOOL_VAL_CIERTO ) &&
+			( TestSisAtributos04 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

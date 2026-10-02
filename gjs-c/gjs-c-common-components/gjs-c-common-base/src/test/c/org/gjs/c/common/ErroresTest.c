@@ -177,6 +177,56 @@ static int TestErrImprimir01 ()
 
 
 
+/* Los codigos estan declarados en BaseErrores.h, pero eso no basta: hasta que
+   no aparecen en _ErrPredefinido y _ErrDescripcion, ErrDescripcion devuelve
+   NULL y ErrImprimir no dice nada util. Son dos funciones distintas y es facil
+   dar de alta el codigo en una y olvidarse de la otra.
+
+   Aqui va la lista COMPLETA de los que deben tener descripcion. Al anadir un
+   codigo predefinido hay que anadirlo tambien aqui; si se olvida el alta, este
+   caso se pone rojo. */
+static int TestErrCodigosDadosDeAlta01 ()
+{
+	int		iRes = BOOL_VAL_CIERTO;
+	int		iCodigos [] = { ERR_OK,
+							ERR_MEMORIA_INVALIDA,
+							ERR_MEMORIA_INSUFICIENTE,
+							ERR_MEMORIA_PROCESO,
+							ERR_PARAMETROS,
+							ERR_POSICION_INVALIDA,
+							ERR_ESTRUCTURA_INVALIDA,
+							ERR_CONVERSION_IMPOSIBLE,
+							ERR_GENERAL_OPERATIVO };
+	int		iNumCodigos = (int) ( sizeof ( iCodigos ) / sizeof ( iCodigos [ 0 ] ) );
+	int		iIdx;
+
+	printf ( "Test ErrCodigosDadosDeAlta 01:\n" );
+
+	for ( iIdx = 0; iIdx < iNumCodigos; iIdx = iIdx + 1 )
+	{
+		ErrLimpiar ();
+		ErrEstablecer ( __FILE__, __LINE__, iCodigos [ iIdx ] );
+		if ( ErrCodigo () != iCodigos [ iIdx ] )
+		{
+			printf( "Error caso 1: se esperaba el codigo %d: %d\n",
+					iCodigos [ iIdx ], ErrCodigo () );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_NULO ( ErrDescripcion () ) )
+		{
+			printf( "Error caso 2: el codigo %d no tiene descripcion\n", iCodigos [ iIdx ] );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else if ( CadLongitud ( ErrDescripcion () ) == 0 )
+		{
+			printf( "Error caso 3: el codigo %d tiene la descripcion vacia\n", iCodigos [ iIdx ] );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	ErrLimpiar ();
+	return ( iRes );
+}
+
 int TestErrores ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -185,7 +235,8 @@ int TestErrores ()
 			( TestErrLimpiar01 () == BOOL_VAL_CIERTO ) &&
 			( TestErrEstablecerConFormato01 () == BOOL_VAL_CIERTO ) &&
 			( TestErrMensaje01 () == BOOL_VAL_CIERTO ) &&
-			( TestErrImprimir01 () == BOOL_VAL_CIERTO ) )
+			( TestErrImprimir01 () == BOOL_VAL_CIERTO ) &&
+			( TestErrCodigosDadosDeAlta01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

@@ -1,8 +1,12 @@
 
+/* BaseConfig.h va PRIMERO, antes que cualquier otra cabecera: en modo WIN es
+   quien mete winsock2.h, y tiene que llegar antes de que nada arrastre
+   sys/types.h. El <string> de las cabeceras de aqui abajo ya lo hace, via
+   pthread.h, y entonces Cygwin declara el select POSIX y winsock2 choca. */
+#include "BaseConfig.h"
+
 #include "Memoria.h"
 #include "Excepcion.h"
-
-#include "BaseConfig.h"
 
 
 
@@ -79,7 +83,7 @@ void * MemReservar ( int iNumBytes )
 			throw ( Excepcion ( "Memoria", "MemReservar", "Memoria invalida" ) );
 		}
 #	  else
-		p_vBloque = (void *) malloc ( iNumBytes );
+		p_vBloque = malloc ( iNumBytes );
 		if ( ES_VALIDO ( p_vBloque ) )
 		{
 			memset ( p_vBloque, 0, iNumBytes );

@@ -6,7 +6,7 @@
 		<groupId>org.gjsoft.java.maven</groupId>
 		<artifactId>gjs-java-maven-extension-parent</artifactId>
 		<version>1.0.0-RC.2</version>
-        <relativePath />
+        <relativePath>../../gjs-java/gjs-java-parents/gjs-java-maven-extension-parent </relativePath>
     </parent>
 
 	<groupId>org.gjsoft.maven.extensions</groupId>

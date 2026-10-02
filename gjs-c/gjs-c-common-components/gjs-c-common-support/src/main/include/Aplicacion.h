@@ -31,6 +31,7 @@
 #include <CajaMensajes.h>
 
 #include <UtilidadesFicheros.h>
+#include <UtilidadesRecursos.h>
 #include <SimulacionUsuarioConsola.h>
 
 

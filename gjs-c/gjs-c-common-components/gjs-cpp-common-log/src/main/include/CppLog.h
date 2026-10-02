@@ -3,6 +3,13 @@
 
 
 #include <MDC.h>
+
+#include <NivelLog.h>
+#include <LogAppender.h>
+#include <LogEncabezado.h>
+#include <LogConsola.h>
+#include <LogFichero.h>
+
 #include <Log.h>
 
 

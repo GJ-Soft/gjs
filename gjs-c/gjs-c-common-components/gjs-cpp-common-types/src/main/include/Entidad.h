@@ -41,10 +41,10 @@ namespace org
 
 				virtual bool EsValida () const;
 
-				int NumAtributos ();
+				int NumAtributos () const;
 				bool TieneAtributo ( const std::string & sAtributo );
-				Atributo * getAtributo ( const std::string & sAtributo );
-				Atributo * getAtributo ( int iIndice );
+				Atributo * getAtributo ( const std::string & sAtributo ) const;
+				Atributo * getAtributo ( int iIndice ) const;
 				std::vector<std::string> * ListaAtributos ();
 				int getIndiceAtributo ( const std::string & sAtributo );
 				void InsertarAtributo ( Atributo * atributo );

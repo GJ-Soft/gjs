@@ -42,6 +42,10 @@
 
 
 
+//#define ERR_TXT_INSERCION					"Se ha producido un error al insertar un elemento."
+
+
+
 
 #endif
 

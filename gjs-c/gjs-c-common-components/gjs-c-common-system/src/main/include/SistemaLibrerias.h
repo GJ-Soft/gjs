@@ -37,8 +37,9 @@ SListaLiterales * SisLibCargadas ();
 char * SisLibRutaFichero ( const char * p_cLibreria );
 char * SisLibDirectorioFichero ( const char * p_cLibreria );
 char * SisLibFichero ( const char * p_cLibreria );
-
+#if ( defined ( WIN ) )
 void * SisLibRutinaPuntoDeEntrada ( const char * p_cLibreria );
+#endif
 void * SisLibDireccionMemoria ( const char * p_cLibreria );
 unsigned long SisLibTamMemoria ( const char * p_cLibreria );
 

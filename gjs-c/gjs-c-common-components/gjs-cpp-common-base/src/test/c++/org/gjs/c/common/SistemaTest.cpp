@@ -73,7 +73,13 @@ static bool TestDirectorioActual01 ()
 		{
 			EstablecerDirectorio ( "/" );
 			sDir2 = DirectorioActual();
-			if ( sDir2 != "/" )
+			/* "/" es la raiz de la unidad actual, y cada plataforma la escribe a
+			   su manera: "/" en POSIX y "C:\\" en Windows. Comparar con "/" a
+			   secas daba KO en Windows por un directorio que era el correcto. Se
+			   comprueba lo que de verdad se pedia: que el directorio actual haya
+			   pasado a ser una raiz, sea cual sea su forma. */
+			filesystem::path pathDir2 ( sDir2 );
+			if ( pathDir2 != pathDir2.root_path () )
 			{
 				cout << "Directorio actual establecido con errores: [" << sDir2 << "]" << endl;
 				bRes = false;
@@ -479,37 +485,6 @@ static bool TestPuedeLiberarse01 ()
 	return( bRes );
 }
 
-static bool TestResolverIP01 ()
-{
-	cout << "Test ResolverIP01:" << endl;
-	bool bRes = true;
-
-	string sTest1( "127.0.0.1" );
-	string sTest2( "localhost" );
-
-	try
-	{
-		int  iTest1 = ResolverIP( sTest1 );
-		int  iTest2 = ResolverIP( sTest2 );
-		if ( iTest1 != 16777343 )
-		{
-			cout << "Error caso 1: IP[" << sTest1 << "] = " << iTest1 << endl;
-			bRes = false;
-		}
-		if ( iTest2 != 16777343 )
-		{
-			cout << "Error caso 2: IP[" << sTest2 << "] = " << iTest2 << endl;
-			bRes = false;
-		}
-	}
-	catch ( ... )
-	{
-		cout << "Error al recuperar la hora local del sistema" << endl;
-		bRes = false;
-	}
-	return( bRes );
-}
-
 static bool TestEjecutarComando01 ()
 {
 	cout << "Test EjecutarComando01:" << endl;
@@ -628,15 +603,6 @@ bool TestSistema ()
 		bRes = false;
 	}
 	if ( TestPuedeLiberarse01() )
-	{
-		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
-	}
-	else
-	{
-		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
-		bRes = false;
-	}
-	if ( TestResolverIP01() )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
 	}

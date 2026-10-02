@@ -14,13 +14,13 @@ static bool TestFecha01 ()
 	bool bRes = true;
 	string sDia = string ( FECHA_DIA );
 	string sMes = string ( FECHA_MES );
-	string sAño = string ( FECHA_AÑO );
+	string sAno = string ( FECHA_ANO );
 	string sFecha = string ( FECHA );
 	cout << "Dia  : [" << sDia << "]" << endl;
 	cout << "Mes  : [" << sMes << "]" << endl;
-	cout << "Ano  : [" << sAño << "]" << endl;
+	cout << "Ano  : [" << sAno << "]" << endl;
 	cout << "Fecha: [" << sFecha << "]" << endl;
-	if ( sFecha != sAño + sMes + sDia )
+	if ( sFecha != sAno + sMes + sDia )
 	{
 		cout << "Error: fecha mal calculada" << endl;
 		bRes = false;

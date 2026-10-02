@@ -66,6 +66,12 @@
 		
 		<!-- Extensions versions -->
 		<tgz-maven-extension.version>1.0.0-RC.2</tgz-maven-extension.version>
+		<!-- No se firma lo que no se publica. Estos artefactos quedan fuera del bundle
+		     de Central por el excludeArtifacts del perfil deploy-central en gjs-parent,
+		     asi que firmarlos seria trabajo tirado: son 25 modulos y gpg tarda. Es el
+		     hermano del <skip> del maven-deploy-plugin que hay mas abajo, y como aquel,
+		     provisional: si algun dia estos artefactos se publican, quitar los dos. -->
+		<gpg.skip>true</gpg.skip>
 	</properties>
 	
 	<build>
@@ -101,6 +107,7 @@
 							</goals>
 							<configuration>
 								<outputDirectory>${npm.build.dir}</outputDirectory>
+								<changeDetection>always</changeDetection>
 								<resources>
 									<resource>
 										<directory>${project.basedir}</directory>
@@ -238,6 +245,13 @@
 
 		<plugins>
 			<plugin>
+			   <groupId>org.apache.maven.plugins</groupId>
+			   <artifactId>maven-deploy-plugin</artifactId>
+			   <configuration>
+				  <skip>true</skip>
+			   </configuration>
+			</plugin>		
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<executions>
@@ -274,15 +288,6 @@
 					<skip>${skip.if.not.source}</skip>
 				</configuration>
             </plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default-jar</id>
-						<phase>none</phase>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 
 		<extensions>

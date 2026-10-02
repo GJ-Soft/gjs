@@ -70,17 +70,18 @@ bool EntInicializar ( bool bConsola, const string & sNombre, int iVersion, int i
 # if ( ! defined ( WIN ) )
 		SisProcInicializar ( sNomProceso );
 #  endif
-
 		if ( AplicInicializar ( sNombre, iVersion, iSubversion, iRevision, ulFecha, bConsola ) )
 		{
-#		  if ( defined ( WIN )  )
-			//if ( _WinSckInicializar () == 0 )
-			//{
-			//	// PENDIENTE: Tratar el error:
-			//}
-#		  elif ( ( defined ( UNIX ) ) || ( defined ( LINUX ) ) )
+#		 if ( defined ( WIN ) )
+			if ( !SockInicializar() )
+			{
+				throw ( Excepcion ( "Entorno", "EntInicializar", "No se ha podido inicializar la capa de Winsockets" ) );
+			}
+#		 endif
+
+#		 if ( ( defined ( UNIX ) ) || ( defined ( LINUX ) ) )
 			//signal ( SIGPIPE, sigpipe_handle );
-#		  endif
+#		 endif
 
 			if ( bVaciarDirTemporal )
 			{
@@ -96,6 +97,9 @@ void EntFinalizar ()
 {
 	if ( g_bEntInicializado )
 	{
+#	 if ( defined ( WIN ) )
+		SockFinalizar();
+#	 endif
 		delete g_p_sEntDirDatos;
 		g_p_sEntDirDatos = NULL;
 		delete g_p_sEntDirSeguridad;
@@ -103,10 +107,6 @@ void EntFinalizar ()
 		delete g_p_sEntDirLog;
 		g_p_sEntDirLog = NULL;
 		AplicFinalizar ();
-
-#	  if ( defined ( WIN )  )
-		//_WinSckFinalizar ();
-#	  endif
 
 		SisFinalizar ();
 		//ErrLimpiar ();
@@ -128,7 +128,6 @@ void EntFinalizar ()
 			cout << endl << endl;
 		}
 #	 endif
-		log::LogLiberar ();
 	}
 }
 

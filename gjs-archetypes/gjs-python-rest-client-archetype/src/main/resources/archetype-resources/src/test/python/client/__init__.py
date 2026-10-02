@@ -11,7 +11,7 @@ ${symbol_pound}
 ${symbol_pound} Program Rest Client ${capitalizedName} 
 ${symbol_pound}
 
-__version__ = "${pythonVersion}"
+
 
 
 

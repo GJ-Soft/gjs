@@ -21,7 +21,7 @@
 
 
 
-#if ( defined ( POSIX ) )
+#if ( defined ( SIGNALS_PERMITIDOS ) )
 
 
 using namespace std;

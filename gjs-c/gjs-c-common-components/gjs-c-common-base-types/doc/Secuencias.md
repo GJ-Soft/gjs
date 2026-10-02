@@ -135,3 +135,22 @@ en lugar de quedarse con el puntero. Es distinto del criterio de
   `SSecEntElemento` atraviesa `SSecuencia` → `SLista` → `SElemento` → `SBloque`
   para leer un entero. Para vectores de enteros grandes,
   [SVectorEnteros](Vectores.md) es más directo.
+
+---
+
+## Funciones de conjunto
+
+`SSecuenciaEnteros`, `SSecuenciaEnterosLargos` y
+`SSecuenciaEnterosLargosSinSigno` tienen desde septiembre de 2026 las mismas
+funciones de conjunto que las listas de enteros —`Min`, `Max`,
+`ObtenerParametros`, `TieneRepetidos`, `ExtraerUnicos`, `DefinidaPositiva` y
+`SemidefinidaPositiva`—, salvo las que dependen del orden. Están descritas, con
+sus casos límite, en [Listas](Listas.md#funciones-de-conjunto-de-listas-y-secuencias-de-enteros).
+
+> **Una secuencia va montada sobre una `SLista`**, así que hereda su coste de
+> acceso: el índice no es de coste constante, y un barrido por índice sale
+> cuadrático. Las funciones de conjunto recorren la cadena de elementos por eso
+> (2026-09-21); medido, el barrido de una secuencia de 32 000 elementos pasó de
+> 1,42 s a no poder medirse. Quien necesite recorrer una secuencia entera desde
+> fuera debería hacer lo mismo: entrar una vez por `SSecElemento ( …, 0 )` y
+> avanzar con `SElmSucesor`, en vez de pedir el elemento `i` en un bucle.

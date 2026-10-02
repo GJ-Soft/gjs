@@ -114,7 +114,7 @@ int SisEsFicheroDBF ( const char * p_cRuta );
 char * SisResolverDirectorioRelativo ( const char * p_cRutaBase, const char * p_cRutaRelativa );
 
 char * SisDirectorioRaiz ();
-#if ( defined ( WIN ) )
+#if ( defined ( WIN ) || defined ( CYGWIN ) )
 char * SisDirectorioRaizExt ( char cUnidad );
 #endif
 char SisSeparadorRutaFicheros ();

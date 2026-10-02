@@ -307,7 +307,7 @@ char * SisUsrObtenerUsuarioLogin ()
     static char
         user_name [256];
 
-    if ( !GetUserName (user_name, (LPDWORD) &user_name_max) )
+    if ( !GetUserName (user_name, &user_name_max) )
 	{
         strncpy (user_name, "unknown", sizeof (user_name));
 	}

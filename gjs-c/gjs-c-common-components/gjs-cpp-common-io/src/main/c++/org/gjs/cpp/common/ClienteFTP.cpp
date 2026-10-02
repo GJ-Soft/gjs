@@ -252,7 +252,10 @@ bool ClienteFTP::ContenidoDirectorioRemoto( vector<string> & vecContenido )
 					{
 						if ( Trim( vecContenido[ vecContenido.size()-1 ] ).size() == 0 )
 						{
-							vecContenido.erase( vecContenido.end() );
+							/* Era erase ( end () ), que es comportamiento indefinido: a erase
+							   hay que darle un iterador desreferenciable, y end () no lo es.
+							   Para quitar el ultimo, pop_back (). */
+							vecContenido.pop_back();
 						}
 					}
 
@@ -366,23 +369,27 @@ bool ClienteFTP::SubirFichero( const string & sFichero, const string & sRutaLoca
 				{
 					if ( sCodigo.compare( IETF_FICHERO_PREPARADO ) == 0 )
 					{
-						long lTam = fichero.tellg();
+						/* El fichero se abrio con ios::ate para poder medirlo; ahora
+						   el tamano ya no se usa para nada ( el bucle de abajo va por
+						   gcount () ), pero hay que volver al principio igual. */
 						fichero.seekg( 0, fichero.beg );
 
 						sockDatos = AbrirSocketDatos();
-						char cBuffer [ 2048 + 1 ];
+						char cBuffer [ 2048 ];
 						string sDatos;
-						while ( lTam > 0 )
+
+						/* Se envia lo que read () haya dejado de verdad, que es lo que
+						   dice gcount (), y no lo que se le pidio. Mismo defecto y
+						   mismo arreglo que en el RETR de ServidorFTP: en Windows, con
+						   el fichero en modo texto ( TYPE A, sin ios::binary ), cada
+						   \r\n del disco llega como un solo \n, read () devuelve menos
+						   caracteres de los pedidos, y assign () copiaba bytes del
+						   buffer sin inicializar. Se veia como \0 de mas al final del
+						   fichero subido, uno por cada salto de linea. */
+						while ( fichero.read ( cBuffer, sizeof ( cBuffer ) ) || ( fichero.gcount () > 0 ) )
 						{
-							long lEnviar = 2048;
-							if ( lTam < lEnviar )
-							{
-								lEnviar = lTam;
-							}
-							fichero.read( cBuffer, lEnviar );
-							sDatos.assign( cBuffer, lEnviar );
+							sDatos.assign ( cBuffer, fichero.gcount () );
 							*sockDatos << sDatos;
-							lTam = lTam - lEnviar;
 						}
 						fichero.close();
 

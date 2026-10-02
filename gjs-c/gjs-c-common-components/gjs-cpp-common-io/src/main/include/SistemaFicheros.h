@@ -74,7 +74,12 @@ bool SisEsRutaRelativa ( const std::string & sRuta );
 std::string SisDirectorioActual ();
 bool SisEstDirectorioActual ( const std::string & sDirectorio );
 
+/* Solo en Windows: el "directorio del sistema" es C:\Windows\System32, un
+   concepto que no tiene equivalente en POSIX. Su gemela del stack C,
+   SisDirectorioSistema, ya estaba declarada solo bajo WIN. */
+#if ( defined ( WIN ) )
 std::string SisCadenaDirectorioSistema ();
+#endif
 std::string SisCadenaDirectorioFuentes ();
 
 bool SisExisteFichero ( const std::string & sRuta );
@@ -123,7 +128,7 @@ bool SisEsFicheroDBF ( const std::string & sRuta );
 std::string SisResolverDirectorioRelativo ( const std::string & sRutaBase, const std::string & sRutaRelativa );
 
 std::string SisDirectorioRaiz ();
-#if ( defined ( WIN ) )
+#if ( defined ( WIN ) || defined ( CYGWIN ) )
 std::string SisDirectorioRaizExt ( char cUnidad );
 #endif
 char SisSeparadorRutaFicheros ();

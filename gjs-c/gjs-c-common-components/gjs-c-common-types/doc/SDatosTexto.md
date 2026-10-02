@@ -120,7 +120,7 @@ crece.
   secuencial** sobre memoria contigua. Elegir mal lleva a echar en falta la mitad
   de la API.
 - **`SDatTxtEncapsular` no dice si se queda con el `SDatos`** que recibe. En
-  [Entidades](Entidades.md) ese mismo verbo significa tomar posesión, y en
+  [Entidades](../../gjs-c-common-database/doc/Entidades.md) ese mismo verbo significa tomar posesión, y en
   [SCadenaConv](../../gjs-c-common-text/doc/SCadenaConv.md) el equivalente
   destruye lo que recibe; conviene comprobarlo antes de reutilizar el objeto.
 - Las funciones de escritura devuelven `int`, pero la cabecera no aclara si es

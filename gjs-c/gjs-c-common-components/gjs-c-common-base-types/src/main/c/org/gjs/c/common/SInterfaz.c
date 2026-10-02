@@ -33,9 +33,9 @@ SInterfaz * SIntrfzCrear ( unsigned long ulId, const char * p_cNombre )
 void SIntrfzDestruir ( SInterfaz ** p_p_intrfzObj )
 {
 	SInterfaz *		p_intrfzObj;
-	int				iNumPrimitivas;
-	int				iPrimitiva;
 	SDefPrimitiva *	p_dprimObj;
+	SElementoPtr *	p_elpObj;
+	SElementoPtr *	p_elpSig;
 	
 	if ( ES_VALIDO ( p_p_intrfzObj ) )
 	{
@@ -44,11 +44,16 @@ void SIntrfzDestruir ( SInterfaz ** p_p_intrfzObj )
 		if ( ES_VALIDO ( p_intrfzObj ) )
 		{
 			MemLiberar ( (void **) &(p_intrfzObj->p_cNombre) );
-			iNumPrimitivas = SSecpNumElementos ( p_intrfzObj->p_secPrimitivas );
-			for ( iPrimitiva = 0; iPrimitiva < iNumPrimitivas; iPrimitiva = iPrimitiva + 1 )
+			/* Por la CADENA: SSecuenciaPtr es encadenada, asi que recorrerla
+			   por indice sale cuadratico. Y el sucesor se coge ANTES de
+			   destruir. */
+			p_elpObj = SSecpElementoPtr ( p_intrfzObj->p_secPrimitivas, 0 );
+			while ( ES_VALIDO ( p_elpObj ) )
 			{
-				p_dprimObj = (SDefPrimitiva *) SSecpElemento ( p_intrfzObj->p_secPrimitivas, iPrimitiva );
-				SDefPrimDestruir ( &p_dprimObj ); 				
+				p_elpSig = SElpSucesor ( p_elpObj );
+				p_dprimObj = (SDefPrimitiva *) SElpDatos ( p_elpObj );
+				SDefPrimDestruir ( &p_dprimObj );
+				p_elpObj = p_elpSig; 				
 			}
 			SSecpDestruir ( &(p_intrfzObj->p_secPrimitivas) );
 			MemLiberar ( (void **) p_p_intrfzObj );

@@ -17,6 +17,7 @@
 typedef struct
 {
 	int					iEstilo;
+	int					iEstricto;
 	SFicSecuencial *	p_ficObj;
 } SFicTexto;
 
@@ -42,6 +43,10 @@ int SFicTxtEstablecerRutaExt ( SFicTexto * p_ficObj, const char * p_cDir, const 
 int SFicTxtEstilo ( SFicTexto * p_ficObj );
 int SFicTxtEsEstiloUNIX ( SFicTexto * p_ficObj );
 int SFicTxtEsEstiloDOS ( SFicTexto * p_ficObj );
+
+int SFicTxtLecturaEstricta ( SFicTexto * p_ficObj );
+void SFicTxtActivarLecturaEstricta ( SFicTexto * p_ficObj );
+void SFicTxtDesactivarLecturaEstricta ( SFicTexto * p_ficObj );
 
 int SFicTxtAbrir ( SFicTexto * p_ficObj, int iModo );
 int SFicTxtCerrar ( SFicTexto * p_ficObj );

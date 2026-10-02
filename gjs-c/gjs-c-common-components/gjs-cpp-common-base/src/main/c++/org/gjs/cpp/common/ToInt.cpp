@@ -30,7 +30,7 @@ long ToInt ( float t )
 
 long ToInt ( char * t )
 {
-	return ( ToInt( (const char *)t ) );
+	return ( ToInt( static_cast < const char * > ( t ) ) );
 }
 
 long ToInt ( const char * t )
@@ -88,7 +88,7 @@ long ToInt ( const wstring & t )
 
 long ToInt ( wchar_t * t )
 {
-	return ( ToInt ( (const wchar_t *) t ) );
+	return ( ToInt ( static_cast < const wchar_t * > ( t ) ) );
 }
 
 long ToInt ( const wchar_t * t )
@@ -103,7 +103,7 @@ long ToInt ( const wchar_t * t )
 
 long long ToLLong ( char * t )
 {
-	return ( ToLLong( (const char *)t ) );
+	return ( ToLLong( static_cast < const char * > ( t ) ) );
 }
 
 long long ToLLong ( const char * t )
@@ -161,7 +161,7 @@ long long ToLLong ( const wstring & t )
 
 long long ToLLong ( wchar_t * t )
 {
-	return ( ToLLong ( (const wchar_t *) t ) );
+	return ( ToLLong ( static_cast < const wchar_t * > ( t ) ) );
 }
 
 long long ToLLong ( const wchar_t * t )

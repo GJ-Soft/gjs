@@ -27,6 +27,7 @@ typedef struct
 	int 		iCorrectos;
 	int 		iErroneos;
 	int 		iFallidos;
+	int 		iNoSoportados;
 
 } STest;
 
@@ -51,6 +52,7 @@ int STestCasosEjecutados ( STest * p_testObj );
 int STestCasosCorrectos ( STest * p_testObj );
 int STestCasosErroneos ( STest * p_testObj );
 int STestCasosFallidos ( STest * p_testObj );
+int STestCasosNoSoportados ( STest * p_testObj );
 
 
 int STestEjecutar ( STest * p_testObj );

@@ -2,7 +2,7 @@
 
 
 
-#define NUM_TESTS        23
+#define NUM_TESTS        22
 
 extern int TestTiposSistema ();
 extern int TestSistemaSignals ();
@@ -21,7 +21,6 @@ extern int TestSistemaSincronizacion ();
 extern int TestSContadorCiclos ();
 extern int TestSTemporizador ();
 extern int TestSProceso ();
-extern int TestSSistema ();
 extern int TestSMutex ();
 extern int TestSSemaforo ();
 extern int TestSMemoriaCompartida ();
@@ -48,12 +47,11 @@ char ** testArrayInit ()
     p_p_cTests[ 14 ] = CadDuplicar ( "SContadorCiclosTest" );
     p_p_cTests[ 15 ] = CadDuplicar ( "STemporizadorTest" );
     p_p_cTests[ 16 ] = CadDuplicar ( "SProcesoTest" );
-    p_p_cTests[ 17 ] = CadDuplicar ( "SSistemaTest" );
-    p_p_cTests[ 18 ] = CadDuplicar ( "SMutexTest" );
-    p_p_cTests[ 19 ] = CadDuplicar ( "SSemaforoTest" );
-    p_p_cTests[ 20 ] = CadDuplicar ( "SMemoriaCompartidaTest" );
-    p_p_cTests[ 21 ] = CadDuplicar ( "SRelojProgramableTest" );
-    p_p_cTests[ 22 ] = CadDuplicar ( "SGestorSignalsTest" );
+    p_p_cTests[ 17 ] = CadDuplicar ( "SMutexTest" );
+    p_p_cTests[ 18 ] = CadDuplicar ( "SSemaforoTest" );
+    p_p_cTests[ 19 ] = CadDuplicar ( "SMemoriaCompartidaTest" );
+    p_p_cTests[ 20 ] = CadDuplicar ( "SRelojProgramableTest" );
+    p_p_cTests[ 21 ] = CadDuplicar ( "SGestorSignalsTest" );
     return p_p_cTests;
 }
 
@@ -77,12 +75,11 @@ PFUNINTV * functionArrayInit ()
     p_fTests[ 14 ] = TestSContadorCiclos;
     p_fTests[ 15 ] = TestSTemporizador;
     p_fTests[ 16 ] = TestSProceso;
-    p_fTests[ 17 ] = TestSSistema;
-    p_fTests[ 18 ] = TestSMutex;
-    p_fTests[ 19 ] = TestSSemaforo;
-    p_fTests[ 20 ] = TestSMemoriaCompartida;
-    p_fTests[ 21 ] = TestSRelojProgramable;
-    p_fTests[ 22 ] = TestSGestorSignals;
+    p_fTests[ 17 ] = TestSMutex;
+    p_fTests[ 18 ] = TestSSemaforo;
+    p_fTests[ 19 ] = TestSMemoriaCompartida;
+    p_fTests[ 20 ] = TestSRelojProgramable;
+    p_fTests[ 21 ] = TestSGestorSignals;
     return p_fTests;
 }
 

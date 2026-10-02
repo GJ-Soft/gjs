@@ -4,6 +4,7 @@
 
 
 
+#if ( defined ( WIN ) )
 static int TestAplicPples01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -11,16 +12,15 @@ static int TestAplicPples01 ()
 	/* El portapapeles solo existe bajo WIN. Prueba conservadora para no depender
 	   del estado previo del portapapeles ni de la escritura (que usa memoria
 	   GMEM_FIXED): tras limpiar, el contenido debe ser nulo. */
-#if ( defined ( WIN ) )
 	AplicPplesLimpiar ();
 	if ( ES_VALIDO ( AplicPplesContenido ( 0 ) ) )
 	{
 		printf( "Error caso 1: tras limpiar se esperaba contenido nulo\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
-#endif
 	return ( iRes );
 }
+#endif
 
 
 

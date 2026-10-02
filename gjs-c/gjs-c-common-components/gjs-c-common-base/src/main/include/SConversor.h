@@ -18,10 +18,8 @@ typedef struct
 	double			dValor;
 	char *			p_cValor;
 
-# if ( defined ( LLONG ) )
-	llong			llValor;
-	ullong			ullValor;
-# endif
+	long long		llValor;
+	unsigned long long	ullValor;
 
 	int				iConvValida;
 } SConversor;
@@ -36,9 +34,8 @@ SConversor * SConvCrearReal ( float fValor );
 SConversor * SConvCrearRealDoble ( double dValor );
 SConversor * SConvCrearCadena ( char * p_cValor );
 SConversor * SConvCrearCadenaConstante ( const char * p_cValor );
-# if ( defined ( LLONG ) )
-SConversor * SConvCrearEnteroDobleLargo ( llong llValor );
-SConversor * SConvCrearEnteroDobleLargoSinSigno ( ullong ullValor );
+SConversor * SConvCrearEnteroDobleLargo ( long long llValor );
+SConversor * SConvCrearEnteroDobleLargoSinSigno ( unsigned long long ullValor );
 
 #   define SConvCrear(x) _Generic((x), \
         int : SConvCrearEntero, \
@@ -49,24 +46,11 @@ SConversor * SConvCrearEnteroDobleLargoSinSigno ( ullong ullValor );
         double: SConvCrearRealDoble, \
         char *: SConvCrearCadena, \
         const char *: SConvCrearCadenaConstante, \
-        llong: SConvCrearEnteroDobleLargo, \
-        ullong: SConvCrearEnteroDobleLargoSinSigno, \
+        long long: SConvCrearEnteroDobleLargo, \
+        unsigned long long: SConvCrearEnteroDobleLargoSinSigno, \
         default: SConvCrearDef \
     )(x)
 
-#else
-#   define SConvCrear(x) _Generic((x), \
-        int : SConvCrearEntero, \
-        long: SConvCrearEnteroLargo, \
-        unsigned int: SConvCrearEnteroSinSigno, \
-        unsigned long: SConvCrearEnteroLargoSinSigno, \
-        float: SConvCrearReal, \
-        double: SConvCrearRealDoble, \
-        char *: SConvCrearCadena, \
-        const char *: SConvCrearCadenaConstante, \
-        default: SConvCrearDef \
-    )(x)
-# endif
 
 void SConvDestruir ( SConversor ** p_p_convObj );
 
@@ -78,10 +62,8 @@ float SConvReal ( SConversor * p_convObj );
 double SConvRealDoble ( SConversor * p_convObj );
 const char * SConvCadena ( SConversor * p_convObj );
 const char * SConvCadenaHex ( SConversor * p_convObj );
-# if ( defined ( LLONG ) )
-llong SConvEnteroDobleLargo ( SConversor * p_convObj );
-ullong SConvEnteroDobleLargoSinSigno ( SConversor * p_convObj );
-# endif
+long long SConvEnteroDobleLargo ( SConversor * p_convObj );
+unsigned long long SConvEnteroDobleLargoSinSigno ( SConversor * p_convObj );
 
 void SConvEstablecerValorEntero (  SConversor * p_convObj, int iValor );
 void SConvEstablecerValorEnteroLargo ( SConversor * p_convObj, long lValor );
@@ -93,9 +75,8 @@ void SConvEstablecerValorCadena ( SConversor * p_convObj, char * p_cValor );
 void SConvEstablecerValorCadenaConstante ( SConversor * p_convObj, const char * p_cValor );
 void SConvEstablecerValorCadenaHex ( SConversor * p_convObj, char * p_cValor );
 void SConvEstablecerValorCadenaHexConstante ( SConversor * p_convObj, const char * p_cValor );
-# if ( defined ( LLONG ) )
-void SConvEstablecerValorEnteroDobleLargo ( SConversor * p_convObj, llong llValor );
-void SConvEstablecerValorEnteroDobleLargoSinSigno ( SConversor * p_convObj, ullong ullValor );
+void SConvEstablecerValorEnteroDobleLargo ( SConversor * p_convObj, long long llValor );
+void SConvEstablecerValorEnteroDobleLargoSinSigno ( SConversor * p_convObj, unsigned long long ullValor );
 
 #   define SConvEstablecerValor(x, y) _Generic((x), \
         default: _Generic((y), \
@@ -107,24 +88,10 @@ void SConvEstablecerValorEnteroDobleLargoSinSigno ( SConversor * p_convObj, ullo
             double: SConvEstablecerValorRealDoble, \
             char *: SConvEstablecerValorCadena, \
             const char *: SConvEstablecerValorCadenaConstante, \
-            llong: SConvEstablecerValorEnteroDobleLargo, \
-            ullong: SConvEstablecerValorEnteroDobleLargoSinSigno ) \
+            long long: SConvEstablecerValorEnteroDobleLargo, \
+            unsigned long long: SConvEstablecerValorEnteroDobleLargoSinSigno ) \
     )(x, y)
 
-#else
-#   define SConvEstablecerValor(x, y) _Generic((x), \
-        default: _Generic((y), \
-            int : SConvEstablecerValorEntero, \
-            long: SConvEstablecerValorEnteroLargo, \
-            unsigned int: SConvEstablecerValorEnteroSinSigno, \
-            unsigned long: SConvEstablecerValorEnteroLargoSinSigno, \
-            float: SConvEstablecerValorReal, \
-            double: SConvEstablecerValorRealDoble, \
-            char *: SConvEstablecerValorCadena, \
-            const char *: SConvEstablecerValorCadenaConstante ) \
-    )(x, y)
-
-# endif
 
 
 int SConvEsCadenaNumerica ( SConversor * p_convObj );

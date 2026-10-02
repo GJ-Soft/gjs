@@ -90,7 +90,10 @@ string ToString ( const wchar_t * t )
 
 string ToString ( const unsigned char t[] )
 {
-    return ( ToString ( (const char *) t ) );
+    /* reinterpret_cast, no static_cast: el parametro es const unsigned char *,
+       y pasarlo a const char * es reinterpretar los bytes, no convertirlos. El
+       cast al estilo C lo hacia igual pero sin decirlo. */
+    return ( ToString ( reinterpret_cast < const char * > ( t ) ) );
 }
 
 string ToString ( const tm * t )

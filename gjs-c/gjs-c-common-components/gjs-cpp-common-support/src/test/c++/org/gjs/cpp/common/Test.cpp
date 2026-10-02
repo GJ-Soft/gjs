@@ -11,6 +11,8 @@ extern bool TestAplicacionInformacion ();
 extern bool TestAplicacionConsola ();
 extern bool TestConsolaDepuracion ();
 extern bool TestCajaMensajes ();
+extern bool TestConfiguracion ();
+extern bool TestUtilidadesRecursos ();
 
 int main( int argc, char * argv[] )
 {
@@ -25,6 +27,11 @@ int main( int argc, char * argv[] )
 	mapTests[ "AplicacionConsolaTest" ] = TestAplicacionConsola;
 	mapTests[ "ConsolaDepuracionTest" ] = TestConsolaDepuracion;
 	mapTests[ "CajaMensajesTest" ] = TestCajaMensajes;
+	/* Estaba declarada arriba pero se registraba DENTRO de la rama de un solo
+	   test, y encima despues del find: no se ejecutaba ni en la pasada completa ni
+	   pidiendola por nombre. */
+	mapTests[ "ConfiguracionTest" ] = TestConfiguracion;
+	mapTests[ "UtilidadesRecursosTest" ] = TestUtilidadesRecursos;
 
 
 	string sTest( "null" );

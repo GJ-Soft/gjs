@@ -3,7 +3,7 @@
 | Dato          | Valor                                                 |
 | ------------- | ----------------------------------------------------- |
 | Cabeceras     | `SistemaProcesos.h`, `SProceso.h`                     |
-| Fuentes       | `SistemaProcesos.c` (2.092 líneas), `SProceso.c` (73) |
+| Fuentes       | `SistemaProcesos.c` (2.309 líneas), `SProceso.c` (73) |
 | Prefijos      | `Sis` / `SisProc`, `SPrc`                             |
 | Funciones     | 35 + 3                                                |
 | Incluidos por | `Sistema.h`                                           |
@@ -16,7 +16,7 @@
 ## Propósito
 
 Procesos, subprocesos e hilos. Es el módulo más grande del componente con
-diferencia: 2.092 líneas para cubrir tres modelos de concurrencia que Windows y
+diferencia: 2.355 líneas para cubrir tres modelos de concurrencia que Windows y
 POSIX resuelven de forma incompatible.
 
 ## Los tipos que cambian
@@ -59,7 +59,7 @@ el nombre.
 | Función                                                                                          | Descripción        |
 | ------------------------------------------------------------------------------------------------ | ------------------ |
 | `long SisCrearSubproceso ( p_cEjecutable, p_cParametros, iHeredarDescriptores, iCerrarConsola )` | Lanza un programa. |
-| `int SisExisteSubproceso ( long lPID )`                                                          | 1 si sigue vivo.   |
+| `int SisExisteSubproceso ( long lPID )`                                                          | 1 si sigue vivo **y es hijo de este proceso**. |
 | `int SisFinalizarSubproceso ( long lPID )`                                                       | Lo mata.           |
 | `int SisNumSubprocesos ()`                                                                       | Cuántos hay.       |
 
@@ -122,24 +122,61 @@ de procesos, y `SBuffer` en la rama Windows.
 
 ## Observaciones
 
-> **Dieciocho de las 35 funciones son un `PENDIENTE` fuera de Windows**, es decir
-> en el modo de compilación normal. La rama Windows está resuelta con
-> `CreateToolhelp32Snapshot`, `EnumProcesses` y `GetThreadPriority`; la rama
-> POSIX devuelve un valor fijo:
+> **Las dieciocho funciones que estaban sin hacer fuera de Windows están
+> resueltas.** Diecisiete se implementaron entre el 2026-09-17 y el 2026-09-18;
+> la decimoctava, `SisTituloProceso`, pasó a declararse **sólo bajo `WIN`**.
 >
-> - Hilos: `SisNumHilos`, `SisExisteHilo`, `SisSuspenderHilo`,
->   `SisReanudarHilo`, `SisCambiarASiguienteHilo`, `SisHiloPrioridad`.
-> - Subprocesos: `SisNumSubprocesos`, `SisExisteSubproceso`,
->   `SisFinalizarSubproceso`.
-> - Otros procesos: `SisNumProcesos`, `SisListaProcesos`, `SisExisteProceso`,
->   `SisProgramaEnEjecucion`, `SisProcesoPID`, `SisProcesoTiempoCPU` y sus dos
->   variantes.
-> - Del proceso actual: `SisTituloProceso`.
+> De dónde sale ahora lo que faltaba:
+>
+> - **Hilos**: `pthread` y un registro propio de hilos del módulo.
+> - **Subprocesos y otros procesos**: `kill ( pid, 0 )` para saber si existen, y
+>   `/proc` para todo lo demás —enumerar, el nombre del ejecutable de cada uno,
+>   el padre y los tiempos de CPU (campos `utime` y `stime` de
+>   `/proc/<pid>/stat`, pasados a milisegundos con `sysconf ( _SC_CLK_TCK )`,
+>   que **no** se puede dar por 100: en Cygwin son 1000).
+> - **Del proceso actual**: `SisNombreProceso` sale de `/proc/self/exe`.
+>
+> **`SisTituloProceso` es sólo de Windows.** Está dentro de un
+> `#if ( defined ( WIN ) )` en la cabecera y en el fuente: fuera de Windows
+> **no existe**, y un código que la llame no compila, en vez de recibir un
+> `NULL` que no distingue "no hay título" de "aquí eso no significa nada".
+>
+> El motivo: en Windows el título es un dato *del proceso* —se lo pasa quien lo
+> arranca y se lee con `GetStartupInfo`—. En POSIX no existe tal cosa; lo más
+> parecido es el título de la ventana del terminal, que no es del proceso sino
+> del emulador, se pone mandándole una secuencia de escape y **no se puede leer
+> de vuelta**.
+>
+> **Limitación de Cygwin que afecta a todo lo que recorre `/proc`**: ahí solo se
+> listan los procesos de Cygwin, no los del resto de Windows (medido: 6 frente a
+> los cientos que hay en la máquina). Así que `SisNumProcesos`,
+> `SisListaProcesos`, `SisNumSubprocesos`, `SisProgramaEnEjecucion` y
+> `SisProcesoPID` dan una respuesta **parcial** en ese modo, y completa en Linux.
+> `SisExisteSubproceso` está en la misma lista desde el 2026-09-20, cuando se le
+> completó la rama POSIX leyendo el PID del padre de `/proc`. La que no depende
+> de `/proc` es `SisExisteProceso`, que va por `kill ( pid, 0 )`.
 >
 > Lo que **sí funciona** en los dos modos es lo esencial: `SisPID`, `SisTID`,
 > `SisRutaEjecutable`, `SisCrearHilo`, `SisFinalizarHilo`, `SisCrearSubproceso`
 > y `SisFinalizarProceso`.
 
+- **`SisExisteSubproceso` pregunta dos cosas, no una**: que el PID exista **y que
+  sea hijo de este proceso**. La segunda mitad la añadió el usuario el 2026-09-19
+  para Windows —recorriendo la foto de procesos de `CreateToolhelp32Snapshot`,
+  que es la única API que trae el PID del padre— y se completó la rama POSIX el
+  2026-09-20, leyendo el campo 4 de `/proc/<pid>/stat` con la ayuda
+  `_SisPPIDDeProceso` que ya estaba en el fichero. Antes de eso significaban
+  cosas distintas en cada modo.
+
+  Se quitó de paso el `OpenProcess ( PROCESS_ALL_ACCESS )` que precedía a la
+  comprobación en Windows: la foto de Toolhelp ya contesta si el PID existe, así
+  que no añadía nada, y sí quitaba —pedir acceso total falla contra un proceso
+  elevado o protegido, y entonces contestaba «no existe» sobre un hijo que sí
+  existía—.
+
+  **Y sí depende de `/proc`**, al contrario de lo que decía el párrafo de arriba
+  hasta el 2026-09-20: en Cygwin un hijo lanzado fuera de Cygwin no aparece en
+  `/proc` y la función contesta que no lo es.
 - **`SisSuspenderHilo` y `SisReanudarHilo` no tienen equivalente POSIX**, y el
   comentario del código lo dice: *"No se puede hacer igual: hay que montar una
   historia"*. Es cierto —`pthread` no ofrece suspender/reanudar— así que aquí no

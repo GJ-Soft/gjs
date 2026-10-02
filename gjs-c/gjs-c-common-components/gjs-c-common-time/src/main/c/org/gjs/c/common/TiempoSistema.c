@@ -157,11 +157,10 @@ double TiempoHoyAhora ()
 	return ( dRes );
 }
 
-#if ( defined ( LLONG ) )
 
-llong TiempoHoyAhoraLL ()
+long long TiempoHoyAhoraLL ()
 {
-	llong	llRes;
+	long long	llRes;
 	long	lHora;
 	long	lFecha;
 	long	lMulH;
@@ -178,8 +177,8 @@ llong TiempoHoyAhoraLL ()
 	lFecha = TiempoHoy ();
 	if ( lHora >= 0 )
 	{
-		llRes = ((llong)( lFecha + lSumF )) * lMulF + 
-				((llong)( lHora + lSumH )) * lMulH;
+		llRes = ((long long)( lFecha + lSumF )) * lMulF + 
+				((long long)( lHora + lSumH )) * lMulH;
 	}
 	else
 	{
@@ -188,7 +187,6 @@ llong TiempoHoyAhoraLL ()
 	return ( llRes );
 }
 
-#endif
 
 
 void TiempoEsperar ( unsigned long ulSegundos )

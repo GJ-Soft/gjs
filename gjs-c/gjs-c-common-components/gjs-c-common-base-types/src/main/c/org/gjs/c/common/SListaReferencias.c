@@ -176,16 +176,24 @@ int SLisRefInsertarExt ( SListaReferencias * p_lisObj, const char * p_cAlias, vo
 int SLisRefVaciar ( SListaReferencias * p_lisObj )
 {
 	int 			iRes;
-	int 			iNumElems;
 	SReferencia * 	p_refObj;
+	SElementoPtr *	p_elpObj;
+	SElementoPtr *	p_elpSig;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		iNumElems = SLisRefNumElementos ( p_lisObj );
-		for ( int iElem = 0; iElem < iNumElems; iElem = iElem + 1 )
+		/* Por la CADENA, no por indice: el indice entra por el extremo mas
+		   cercano, asi que un recorrido completo sale cuadratico. */
+		p_elpObj = SLispElementoPtr ( p_lisObj->p_lisDatos, 0 );
+		while ( ES_VALIDO ( p_elpObj ) )
 		{
-			p_refObj = SLisRefElemento ( p_lisObj, iElem );
+			/* El sucesor, ANTES de destruir: aqui solo se suelta el dato, no el
+			   nodo, pero cogerlo antes deja la funcion a salvo de que eso
+			   cambie. */
+			p_elpSig = SElpSucesor ( p_elpObj );
+			p_refObj = (SReferencia *) SElpDatos ( p_elpObj );
 			SRefDestruir ( &p_refObj );
+			p_elpObj = p_elpSig;
 		}
 		iRes = SLispVaciar ( p_lisObj->p_lisDatos );
 	}
@@ -201,24 +209,33 @@ int SLisRefEliminar ( SListaReferencias * p_lisObj, const char * p_cAlias )
 	int				iEnc;
 	int				iElem;
 	int				iRes;
-	int 			iNumElems;
 	SReferencia *	p_refRes;
+	SElementoPtr *	p_elpObj;
 
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cAlias ) )
 	{
 		iEnc = 0;
 		iElem = 0;
 		iRes = 0;
-		iNumElems = SLisRefNumElementos ( p_lisObj );
-		while ( ( iElem < iNumElems ) && ( iEnc == 0 ) )
+		/* Por la CADENA, no por indice: el indice entra por el extremo mas
+		   cercano, asi que un recorrido completo sale cuadratico. */
+		p_elpObj = SLispElementoPtr ( p_lisObj->p_lisDatos, 0 );
+		while ( ES_VALIDO ( p_elpObj ) && ( iEnc == 0 ) )
 		{
-			p_refRes = SLisRefElemento ( p_lisObj, iElem );
+			p_refRes = (SReferencia *) SElpDatos ( p_elpObj );
 			if ( CadComparar ( SRefObtenerAlias ( p_refRes ), p_cAlias ) == COMP_IGUAL )
 			{
 				iEnc = 1;
+				/* Se sigue eliminando por indice, que es lo que sabe hacer
+				   EliminarElem; por eso se lleva la cuenta. Y NO se avanza
+				   despues: al eliminar, p_elpObj queda colgando. */
 				iRes = SLisRefEliminarElem ( p_lisObj, iElem );
 			}
-			iElem = iElem + 1;
+			else
+			{
+				iElem = iElem + 1;
+				p_elpObj = SElpSucesor ( p_elpObj );
+			}
 		}
 	}
 	else
@@ -248,22 +265,22 @@ int SLisRefEliminarElem ( SListaReferencias * p_lisObj, int iElem )
 
 int SLisRefExiste ( SListaReferencias * p_lisObj, const char * p_cAlias )
 {
-	int iRes;
-	int iElem;
-	int iNumElems;
+	int				iRes;
+	SElementoPtr *	p_elpObj;
 
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cAlias )  )
 	{
 		iRes = 0;
-		iElem = 0;
-		iNumElems = SLisRefNumElementos ( p_lisObj );
-		while ( ( iElem < iNumElems ) && ( iRes == 0 ) )
+		/* Por la CADENA, no por indice: el indice entra por el extremo mas
+		   cercano, asi que un recorrido completo sale cuadratico. */
+		p_elpObj = SLispElementoPtr ( p_lisObj->p_lisDatos, 0 );
+		while ( ES_VALIDO ( p_elpObj ) && ( iRes == 0 ) )
 		{
-			if ( CadComparar ( SRefObtenerAlias ( SLisRefElemento ( p_lisObj, iElem ) ), p_cAlias ) == COMP_IGUAL )
+			if ( CadComparar ( SRefObtenerAlias ( (SReferencia *) SElpDatos ( p_elpObj ) ), p_cAlias ) == COMP_IGUAL )
 			{
 				iRes = 1;
 			}
-			iElem = iElem + 1;
+			p_elpObj = SElpSucesor ( p_elpObj );
 		}
 	}
 	else
@@ -276,21 +293,25 @@ int SLisRefExiste ( SListaReferencias * p_lisObj, const char * p_cAlias )
 SReferencia * SLisRefBuscar ( SListaReferencias * p_lisObj, const char * p_cAlias )
 {
 	SReferencia *	p_refRes;
-	int 			iElem;
-	int 			iNumElems;
+	SReferencia *	p_refAct;
+	SElementoPtr *	p_elpObj;
 
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cAlias )  )
 	{
 		p_refRes = NULL;
-		iElem = 0;
-		iNumElems = SLisRefNumElementos ( p_lisObj );
-		while ( ( iElem < iNumElems ) && ( p_refRes == NULL ) )
+		/* Por la CADENA, no por indice: el indice entra por el extremo mas
+		   cercano, asi que un recorrido completo sale cuadratico. */
+		p_elpObj = SLispElementoPtr ( p_lisObj->p_lisDatos, 0 );
+		while ( ES_VALIDO ( p_elpObj ) && ( p_refRes == NULL ) )
 		{
-			if ( CadComparar ( SRefObtenerAlias ( SLisRefElemento ( p_lisObj, iElem ) ), p_cAlias ) == COMP_IGUAL )
+			/* Una sola lectura: antes se pedia el elemento dos veces, una para
+			   comparar y otra para devolverlo. */
+			p_refAct = (SReferencia *) SElpDatos ( p_elpObj );
+			if ( CadComparar ( SRefObtenerAlias ( p_refAct ), p_cAlias ) == COMP_IGUAL )
 			{
-				p_refRes = SLisRefElemento ( p_lisObj, iElem );
+				p_refRes = p_refAct;
 			}
-			iElem = iElem + 1;
+			p_elpObj = SElpSucesor ( p_elpObj );
 		}
 	}
 	else

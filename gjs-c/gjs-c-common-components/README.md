@@ -1,19 +1,19 @@
 # gjs-c-common-components
 
 Los **componentes comunes** de GJS, en dos stacks paralelos: uno en **C** y otro
-en **C++**. Veinticuatro módulos Maven, cada uno con su documentación.
+en **C++**. Veinticinco módulos Maven, cada uno con su documentación.
 
 |                      | C       | C++    |
 | -------------------- | ------- | ------ |
-| Módulos              | 12      | 12     |
-| Líneas de `src/main` | 131.554 | 46.729 |
-| Documentos           | 159     | 125    |
+| Módulos              | 13      | 12     |
+| Líneas de `src/main` | 140.634 | 46.729 |
+| Documentos           | 165     | 125    |
 
 ---
 
 ## Los dos stacks
 
-Diez módulos tienen versión en los dos lenguajes; cuatro existen sólo en uno.
+Once módulos tienen versión en los dos lenguajes; tres existen sólo en uno.
 
 | Módulo          | C                                                              | C++                                                                | Qué es                                      |
 | --------------- | -------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------- |
@@ -27,7 +27,7 @@ Diez módulos tienen versión en los dos lenguajes; cuatro existen sólo en uno.
 | **io**          | [gjs-c-common-io](gjs-c-common-io/README.md)                   | [gjs-cpp-common-io](gjs-cpp-common-io/README.md)                   | Sockets, FTP, HTTP y sistema de ficheros    |
 | **system**      | [gjs-c-common-system](gjs-c-common-system/README.md)           | [gjs-cpp-common-system](gjs-cpp-common-system/README.md)           | Procesos, memoria, señales, red             |
 | **support**     | [gjs-c-common-support](gjs-c-common-support/README.md)         | [gjs-cpp-common-support](gjs-cpp-common-support/README.md)         | Versión, consola, cajas de mensaje          |
-| **database**    | —                                                              | [gjs-cpp-common-database](gjs-cpp-common-database/README.md)       | Tabla y ocurrencia en memoria               |
+| **database**    | [gjs-c-common-database](gjs-c-common-database/README.md)       | [gjs-cpp-common-database](gjs-cpp-common-database/README.md)       | Entidades; en C++, tabla y ocurrencia       |
 | **common**      | [gjs-c-common](gjs-c-common/README.md)                         | [gjs-cpp-common](gjs-cpp-common/README.md)                         | La fachada que agrupa el stack              |
 | **test**        | [gjs-c-common-test](gjs-c-common-test/README.md)               | [gjs-cpp-common-test](gjs-cpp-common-test/README.md)               | Armazón de pruebas                          |
 | **test-mocks**  | —                                                              | [gjs-cpp-common-test-mocks](gjs-cpp-common-test-mocks/README.md)   | Dobles de prueba                            |

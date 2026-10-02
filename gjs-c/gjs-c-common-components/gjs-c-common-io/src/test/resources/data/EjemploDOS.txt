@@ -1,0 +1,4 @@
+Este es
+un fichero
+de ejemplo
+en formato DOS

@@ -21,6 +21,13 @@
 
 
 static int					g_iSisUltError = 0;
+#if ( defined ( WIN ) )
+/* La descripcion de Windows hay que copiarla del buffer de FormatMessage, y el
+   puntero que devuelve SisErrDescripcion () es prestado, como el de strerror ().
+   Se guarda aqui y se reemplaza en cada llamada, en vez de repartir copias que
+   nadie libera. Ver el comentario de SisErrDescripcion (). */
+static char *				g_p_cSisDescError = NULL;
+#endif
 static SPilaLiterales	*	g_pillitErrores = NULL;
 
 
@@ -134,12 +141,50 @@ const char * SisErrDescripcion ()
 	if ( g_iSisUltError != 0 )
 	{
 #     if ( defined ( WIN ) )
-		LPTSTR lpMsgBuf;
+		LPTSTR	lpMsgBuf = NULL;
+		DWORD	dwTam;
+		int		iPos;
 
-		FormatMessage ( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, (DWORD) g_iSisUltError,
-						MAKELANGID ( LANG_NEUTRAL, SUBLANG_DEFAULT ), (LPTSTR) &lpMsgBuf, 0, NULL );
-		p_cRes = CadDuplicar ( (const char *) lpMsgBuf );
-		LocalFree ( lpMsgBuf );
+		/* El LocalFree de aqui abajo ya estaba y es correcto, pero la copia que
+		   hace CadDuplicar no la liberaba nadie: ni SisErrMensaje () ni
+		   SisErrMensajeExt (), que son los dos unicos llamadores, y no podrian,
+		   porque las otras ramas devuelven punteros prestados ( strerror,
+		   sys_errlist, ERR_MSJ_DEFECTO ) que no se deben liberar. Asi que la copia
+		   se guarda en el modulo y se reemplaza en cada llamada: el puntero que
+		   sale sigue siendo prestado, igual en las tres ramas, y deja de perderse
+		   memoria en cada error. Vale hasta la siguiente llamada, como strerror. */
+		MemLiberarCadena ( &g_p_cSisDescError );
+
+		/* IGNORE_INSERTS: sin el, un mensaje con parametros ( %1 ) manda a
+		   FormatMessage a buscarlos a una lista que no le hemos pasado. */
+		dwTam = FormatMessage ( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+								FORMAT_MESSAGE_IGNORE_INSERTS, NULL, (DWORD) g_iSisUltError,
+								MAKELANGID ( LANG_NEUTRAL, SUBLANG_DEFAULT ), (LPTSTR) &lpMsgBuf, 0, NULL );
+		/* El puntero arrancaba sin inicializar y se duplicaba sin mirar si
+		   FormatMessage habia hecho algo: cuando falla no lo toca. */
+		if ( ( dwTam > 0 ) && ES_VALIDO ( lpMsgBuf ) )
+		{
+			g_p_cSisDescError = CadDuplicar ( (const char *) lpMsgBuf );
+			if ( ES_VALIDO ( g_p_cSisDescError ) )
+			{
+				/* FormatMessage remata con ".\r\n", y este texto acaba dentro de
+				   una linea de SisErrMensaje (). El stack C no tiene un CadRecortar,
+				   asi que va a mano. El cast a unsigned char no sobra: char es con
+				   signo en gcc y isspace () con un negativo es comportamiento
+				   indefinido, y aqui entran mensajes con acentos. */
+				iPos = CadLongitud ( g_p_cSisDescError );
+				while ( ( iPos > 0 ) && ( isspace ( (unsigned char) g_p_cSisDescError [ iPos - 1 ] ) != 0 ) )
+				{
+					iPos--;
+					g_p_cSisDescError [ iPos ] = 0;
+				}
+				p_cRes = (const char *) g_p_cSisDescError;
+			}
+		}
+		if ( ES_VALIDO ( lpMsgBuf ) )
+		{
+			LocalFree ( lpMsgBuf );
+		}
 
 #     elif ( defined ( GNU ) )
 		p_cRes = (const char *) strerror ( g_iSisUltError );

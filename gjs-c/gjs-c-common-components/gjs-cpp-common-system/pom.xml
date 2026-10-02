@@ -63,22 +63,35 @@
 									<lib>
 										<name>netapi32</name>
 										<type>shared</type>
-										<directory>${cygwin-windows.dir.lib.system}</directory>
+										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
 									</lib>
 									<lib>
 										<name>psapi</name>
 										<type>shared</type>
-										<directory>${cygwin-windows.dir.lib.system}</directory>
+										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
 									</lib>
 									<lib>
 										<name>gdi32</name>
 										<type>shared</type>
-										<directory>${cygwin-windows.dir.lib.system}</directory>
+										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
 									</lib>
 									<lib>
 										<name>comdlg32</name>
 										<type>shared</type>
-										<directory>${cygwin-windows.dir.lib.system}</directory>
+										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
+									</lib>
+									<!-- StringFromCLSID y CoTaskMemFree, que usa SistemaRegistro para
+									     los GUID. La misma que ya declara gjs-c-common-system: hasta
+									     ahora no hacia falta porque ese fuente no llegaba a compilar. -->
+									<lib>
+										<name>ole32</name>
+										<type>shared</type>
+										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
 									</lib>
 								</libs>					
 							</linker>

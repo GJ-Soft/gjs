@@ -41,8 +41,11 @@ había antes, guarda el puntero recibido: al liberar el búfer la entrada del
 entorno quedaba apuntando a memoria muerta. El comentario del código lo deja
 anotado.
 
-La condición `defined ( WIN ) && ! defined ( CYGWIN )` es la que distingue
-Cygwin estilo Windows —donde hay que usar `setenv`— de Windows puro.
+La condición `defined ( WIN ) && ! defined ( CYGWIN )` distingue Windows puro
+—donde va `_putenv_s`— de Cygwin, donde hay que usar `setenv`. Desde que
+desapareció el modo "Cygwin estilo Windows", `CYGWIN` y `WIN` no pueden darse a
+la vez, así que la segunda mitad de la condición es redundante; se deja porque
+no estorba y documenta la intención.
 
 En lectura, `VarEntObtValor` no devuelve `getenv` tal cual: pasa el valor por
 [SCadena](../../gjs-c-common-text/doc/SCadena.md) para quitarle los caracteres

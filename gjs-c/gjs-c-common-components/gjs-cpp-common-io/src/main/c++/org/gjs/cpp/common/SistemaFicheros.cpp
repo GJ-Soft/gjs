@@ -40,15 +40,12 @@
 #include "CommonIoConfig.h"
 
 #include "SistemaFicheros.h"
+#include "SistemaFicherosWin32.h"
 
 #include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <vector>
-
-
-// PENDIENTe: En unix/linux SisExisteFichero no distingue entre ficheros y directorios lo que puede
-// llevar a confusi�n.
 
 
 using namespace std;
@@ -469,13 +466,29 @@ string SisRutaEstiloWindowsExt ( const string & sRuta, char cUnidad )
 	{
 		if ( ! SisRutaEsEstiloWindows ( sRuta ) )
 		{
-			vector<string> vecPartes = SisDividirEnPartes ( sRuta, '/' );
+			vector<string>	vecPartes = SisDividirEnPartes ( sRuta, '/' );
+			bool			bRelativa = SisEsRutaRelativa ( sRuta );
 
-			sResultado.push_back ( static_cast<char>(toupper ( cUnidad )) );
-			sResultado.append ( ":\\" );
+			/* La unidad solo se antepone si la ruta es ABSOLUTA. Antes se ponia
+			   siempre, y toda ruta relativa salia convertida en otra cosa: "../log"
+			   daba "C:\\..\log", que no existe, y por ahi SisExisteDirectorio
+			   contestaba que no a directorios que si estaban. La version C de este
+			   mismo modulo ya lo hacia bien: la comprobacion se perdio al pasarlo a
+			   C++.
+
+			   De paso desaparece la barra doble: el ":\\" de aqui y el '\\' del
+			   bucle se sumaban, y "/tmp" salia como "C:\\tmp". */
+			if ( ! bRelativa )
+			{
+				sResultado.push_back ( static_cast<char>(toupper ( cUnidad )) );
+				sResultado.append ( ":" );
+			}
 			for ( size_t i = 0; i < vecPartes.size (); i = i + 1 )
 			{
-				sResultado.push_back ( '\\' );
+				if ( ( ! bRelativa ) || ( i > 0 ) )
+				{
+					sResultado.push_back ( '\\' );
+				}
 				sResultado.append ( vecPartes [ i ] );
 			}
 		}
@@ -651,17 +664,17 @@ bool SisEstDirectorioActual ( const string & sDirectorio )
 	return ( bRes );
 }
 
+/* Solo en Windows: el "directorio del sistema" es C:\Windows\System32, un
+   concepto que no tiene equivalente en POSIX. Su gemela del stack C,
+   SisDirectorioSistema, ya estaba declarada solo bajo WIN. */
+#if ( defined ( WIN ) )
 string SisCadenaDirectorioSistema ()
 {
-# if ( defined ( WIN ) )
 	vector<char> buffer ( SF_MAX_TAM_RUTA );
 	unsigned int uiTam = GetSystemDirectoryA ( buffer.data (), (UINT) buffer.size () );
 	return ( string ( buffer.data (), uiTam ) );
-# else
-	// PENDIENTE
-	return ( string ( "" ) );
-# endif
 }
+#endif
 
 string SisCadenaDirectorioFuentes ()
 {
@@ -675,10 +688,14 @@ bool SisExisteFichero ( const string & sRuta )
 
 	try
 	{
+		/* Se pregunta "existe y NO es un directorio". Con is_regular_file no
+		   valia: es mas estricto y dejaba fuera FIFOs, sockets y dispositivos,
+		   que si cuentan como fichero. Mismo criterio que la rama POSIX de
+		   SisExisteFichero del stack C. */
 		fs::path ruta ( sRutaNorm );
 		if ( fs::exists ( ruta ) )
 		{
-			bRes = fs::is_regular_file ( ruta );
+			bRes = ( ! fs::is_directory ( ruta ) );
 		}
 	}
 	catch ( ... )
@@ -927,26 +944,34 @@ bool SisMoverFicheroExt ( const string & sDirOrig, const string & sFicOrig,
 		SisComponerRuta ( sDirDest, sFicD, 0 ), bEliminar ) );
 }
 
-// PENDIENTE: UNIX/Linux
 bool SisRutaComprimida ( const string & sRuta )
 {
 	bool bRes = false;
 	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
-	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
+	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
-		if ( ( dwAtributos & FILE_ATTRIBUTE_COMPRESSED ) == FILE_ATTRIBUTE_COMPRESSED )
+		if ( ( uiAtributos & SFW32_ATRIB_COMPRIMIDO ) == SFW32_ATRIB_COMPRIMIDO )
 		{
 			bRes = true;
 		}
 	}
 
 # else
-	// PENDIENTE
+	// LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	// que no. Decidido asi el 2026-09-19.
+	// Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	// que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	// que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	// como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	// montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	// existe en el build; cuando exista se revisa entero, y con el la cuestion
+	// de fondo: que este false no distingue "no lo tiene" de "aqui no se puede
+	// saber".
 # endif
 	return ( bRes );
 }
@@ -956,20 +981,29 @@ bool SisRutaEncriptada ( const string & sRuta )
 	bool bRes = false;
 	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
-	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
+	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
-		if ( ( dwAtributos & FILE_ATTRIBUTE_ENCRYPTED ) == FILE_ATTRIBUTE_ENCRYPTED )
+		if ( ( uiAtributos & SFW32_ATRIB_ENCRIPTADO ) == SFW32_ATRIB_ENCRIPTADO )
 		{
 			bRes = true;
 		}
 	}
 
 # else
-	// PENDIENTE
+	// LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	// que no. Decidido asi el 2026-09-19.
+	// Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	// que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	// que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	// como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	// montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	// existe en el build; cuando exista se revisa entero, y con el la cuestion
+	// de fondo: que este false no distingue "no lo tiene" de "aqui no se puede
+	// saber".
 # endif
 	return ( bRes );
 }
@@ -980,18 +1014,43 @@ bool SisRutaOculta ( const string & sRuta )
 	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
-	DWORD		dwAtributos;
+	unsigned int	uiAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
-	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
+	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
-		if ( ( dwAtributos & FILE_ATTRIBUTE_HIDDEN ) == FILE_ATTRIBUTE_HIDDEN )
+		if ( ( uiAtributos & SFW32_ATRIB_OCULTO ) == SFW32_ATRIB_OCULTO )
 		{
 			bRes = true;
 		}
 	}
 # else
-	// PENDIENTE
+	// En POSIX "oculto" no es un atributo del fichero sino una convencion del
+	// nombre: lo esta el que empieza por punto. El directorio actual ( "." ) y
+	// el padre ( ".." ) no cuentan, igual que hace ls.
+	// Esta rama la usa tambien Cygwin-POSIX, donde conviven dos nociones de
+	// "oculto" que NO se solapan: el punto y el atributo de NTFS ( medido: un
+	// fichero con punto delante no queda marcado en NTFS ). Se elige el punto
+	// a proposito, que es la semantica del modo en que se compilo. En
+	// Windows puro manda el atributo, que es la rama de arriba.
+	if ( access ( sRutaNorm.c_str (), F_OK ) == 0 )
+	{
+		string sFichero = fs::path ( sRutaNorm ).filename ().string ();
+
+		if ( ! sFichero.empty () )
+		{
+			if ( sFichero [ 0 ] == SF_FIC_SEPARADOR )
+			{
+				if ( sFichero != SF_DIR_ACTUAL )
+				{
+					if ( sFichero != SF_DIR_PADRE )
+					{
+						bRes = true;
+					}
+				}
+			}
+		}
+	}
 # endif
 	return ( bRes );
 }
@@ -1003,31 +1062,27 @@ bool SisFicheroEsAccesible ( const string & sRuta )
 	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
-	DWORD		dwAtributos;
+	unsigned int	uiAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
-	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
+	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
 		// Accesible == NO est� offline.
-		if ( ( dwAtributos & FILE_ATTRIBUTE_OFFLINE ) != FILE_ATTRIBUTE_OFFLINE )
+		if ( ( uiAtributos & SFW32_ATRIB_FUERA_DE_LINEA ) != SFW32_ATRIB_FUERA_DE_LINEA )
 		{
 			bRes = true;
 		}
 	}
 
 # else
-	try
+	// En POSIX no existe el "fuera de linea" de Windows. Lo que si se puede
+	// preguntar es lo que la funcion promete: si el proceso puede leer la ruta.
+	// <filesystem> no vale para esto: status ().permissions () dice que bits
+	// tiene el fichero, no si ESTE proceso puede con el.
+	// La usa tambien Cygwin-POSIX, por lo mismo que SisRutaDeSoloLectura.
+	if ( access ( sRutaNorm.c_str (), R_OK ) == 0 )
 	{
-		// TODO: No es exactamente lo mismo
-		fs::path ruta ( sRutaNorm );
-		fs::file_status estado = fs::status ( ruta );
-
-		// Verificar permisos de lectura
-		auto permisos = estado.permissions ();
-		bRes = ( permisos != fs::perms::none );
-	}
-	catch ( ... )
-	{
+		bRes = true;
 	}
 # endif
 	return ( bRes );
@@ -1039,30 +1094,33 @@ bool SisRutaDeSoloLectura ( const string & sRuta )
 	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
-	DWORD		dwAtributos;
+	unsigned int	uiAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
-	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
+	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
-		if ( ( dwAtributos & FILE_ATTRIBUTE_READONLY ) == FILE_ATTRIBUTE_READONLY )
+		if ( ( uiAtributos & SFW32_ATRIB_SOLO_LECTURA ) == SFW32_ATRIB_SOLO_LECTURA )
 		{
 			bRes = true;
 		}
 	}
 
 # else
-	try
+	// "Solo lectura" en POSIX es no tener permiso de escritura. Se comprueba
+	// antes que la ruta exista: una ruta que no esta no es de solo lectura.
+	// Se usa access y no <filesystem> por lo mismo que en SisFicheroEsAccesible:
+	// el bit owner_write es el del propietario, y quien pregunta puede no serlo.
+	// Ojo: access mira el usuario REAL del proceso, asi que ejecutando como
+	// root sale que se puede escribir aunque el modo sea 0444.
+	// Esta rama la usa tambien Cygwin-POSIX, y ahi es MEJOR que la de Win32:
+	// medido, access ve tanto el atributo de solo lectura de NTFS ( que Cygwin
+	// refleja en el modo ) como un chmod 0444 que no llega a tocar NTFS.
+	if ( access ( sRutaNorm.c_str (), F_OK ) == 0 )
 	{
-		// TODO: No es exactamente lo mismo
-		fs::path ruta ( sRutaNorm );
-		fs::file_status estado = fs::status ( ruta );
-
-		// Verificar permisos de escritura
-		auto permisos = estado.permissions ();
-		bRes = ( ( permisos & fs::perms::owner_write ) == fs::perms::none );
-	}
-	catch ( ... )
-	{
+		if ( access ( sRutaNorm.c_str (), W_OK ) != 0 )
+		{
+			bRes = true;
+		}
 	}
 # endif
 	return ( bRes );
@@ -1073,20 +1131,29 @@ bool SisRutaDelSistema ( const string & sRuta )
 	bool bRes = false;
 	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
-	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
+	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
-		if ( ( dwAtributos & FILE_ATTRIBUTE_SYSTEM ) == FILE_ATTRIBUTE_SYSTEM )
+		if ( ( uiAtributos & SFW32_ATRIB_SISTEMA ) == SFW32_ATRIB_SISTEMA )
 		{
 			bRes = true;
 		}
 	}
 
 # else
-	// PENDIENTE
+	// LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	// que no. Decidido asi el 2026-09-19.
+	// Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	// que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	// que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	// como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	// montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	// existe en el build; cuando exista se revisa entero, y con el la cuestion
+	// de fondo: que este false no distingue "no lo tiene" de "aqui no se puede
+	// saber".
 # endif
 	return ( bRes );
 }
@@ -1096,13 +1163,13 @@ bool SisFicheroEsTemporal ( const string & sRuta )
 	bool bRes = false;
 	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
-	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
+	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
-		if ( ( dwAtributos & FILE_ATTRIBUTE_TEMPORARY ) == FILE_ATTRIBUTE_TEMPORARY )
+		if ( ( uiAtributos & SFW32_ATRIB_TEMPORAL ) == SFW32_ATRIB_TEMPORAL )
 		{
 			bRes = true;
 		}
@@ -1111,7 +1178,11 @@ bool SisFicheroEsTemporal ( const string & sRuta )
 # else
 	try
 	{
-		// TODO: No es exactamente lo mismo
+		/* LIMITACION CONOCIDA, igual que en los demas atributos de NTFS: en
+		   POSIX puro no hay marca de "fichero temporal", asi que se contesta
+		   otra cosa parecida —si esta colgando del directorio temporal—, que
+		   NO es lo mismo. En Cygwin si se lee el atributo de verdad, por la
+		   rama de arriba. */
 		fs::path ruta ( sRutaNorm );
 		fs::path dirTemp = fs::temp_directory_path ();
 
@@ -1130,20 +1201,29 @@ bool SisFicheroAsociadoAAplicacion ( const string & sRuta )
 	bool bRes = false;
 	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
-	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
+	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
-		if ( ( dwAtributos & FILE_ATTRIBUTE_REPARSE_POINT ) == FILE_ATTRIBUTE_REPARSE_POINT )
+		if ( ( uiAtributos & SFW32_ATRIB_PUNTO_ANALISIS ) == SFW32_ATRIB_PUNTO_ANALISIS )
 		{
 			bRes = true;
 		}
 	}
 
 # else
-	// PENDIENTE
+	// LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	// que no. Decidido asi el 2026-09-19.
+	// Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	// que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	// que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	// como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	// montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	// existe en el build; cuando exista se revisa entero, y con el la cuestion
+	// de fondo: que este false no distingue "no lo tiene" de "aqui no se puede
+	// saber".
 # endif
 	return ( bRes );
 }
@@ -1153,20 +1233,29 @@ bool SisFicheroConOptimizacionEspacial ( const string & sRuta )
 	bool bRes = false;
 	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 
-	dwAtributos = GetFileAttributesA ( sRutaNorm.c_str () );
-	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
+	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
-		if ( ( dwAtributos & FILE_ATTRIBUTE_SPARSE_FILE ) == FILE_ATTRIBUTE_SPARSE_FILE )
+		if ( ( uiAtributos & SFW32_ATRIB_DISPERSO ) == SFW32_ATRIB_DISPERSO )
 		{
 			bRes = true;
 		}
 	}
 
 # else
-	// PENDIENTE
+	// LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	// que no. Decidido asi el 2026-09-19.
+	// Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	// que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	// que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	// como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	// montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	// existe en el build; cuando exista se revisa entero, y con el la cuestion
+	// de fondo: que este false no distingue "no lo tiene" de "aqui no se puede
+	// saber".
 # endif
 	return ( bRes );
 }
@@ -1177,31 +1266,36 @@ bool SisRutaDesactivarModoSoloLectura ( const string & sRuta )
 	string sRutaNorm = SisRutaEstiloSistema ( sRuta );
 
 # if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-	DWORD		dwMascara;
+	unsigned int	uiAtributos;
+	unsigned int	uiMascara;
 
-	dwAtributos = GetFileAttributes ( sRutaNorm.c_str () );
-	if ( dwAtributos != INVALID_FILE_ATTRIBUTES )
+	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
+	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
-		dwMascara = FILE_ATTRIBUTE_READONLY;
-		dwMascara = 0xFFFFFFFF ^ dwMascara;
-		dwAtributos = dwAtributos & dwMascara;
-		if ( SetFileAttributes ( sRutaNorm.c_str (), dwAtributos ) != 0 )
+		uiMascara = SFW32_ATRIB_SOLO_LECTURA;
+		uiMascara = 0xFFFFFFFF ^ uiMascara;
+		uiAtributos = uiAtributos & uiMascara;
+		if ( SFW32PonerAtributos ( sRutaNorm.c_str (), uiAtributos ) )
 		{
 			bRes = true;
 		}
 	}
 # else
+	// Quitar el solo lectura en POSIX es dar permiso de escritura. Solo al
+	// propietario: tocar tambien el de grupo, como se hacia antes, abre mas de
+	// lo que se pide. Se mira que la ruta exista para no usar la excepcion
+	// como via normal cuando simplemente no esta.
+	// La usa tambien Cygwin-POSIX: medido, ahi fs::permissions limpia ademas
+	// el atributo de solo lectura de NTFS, asi que cubre los dos casos.
 	try
 	{
-		// NOTA: Esto deber�a servir para todos los casos
 		fs::path ruta ( sRutaNorm );
 
-		// A�adir permisos de escritura
-		fs::permissions ( ruta,
-		                fs::perms::owner_write | fs::perms::group_write,
-		                fs::perm_options::add );
-		bRes = true;
+		if ( fs::exists ( ruta ) )
+		{
+			fs::permissions ( ruta, fs::perms::owner_write, fs::perm_options::add );
+			bRes = true;
+		}
 	}
 	catch ( ... )
 	{
@@ -1421,7 +1515,7 @@ string SisDirectorioRaiz ()
 # endif
 }
 
-# if ( defined ( WIN ) )
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
 string SisDirectorioRaizExt ( char cUnidad )
 {
 # if ( defined ( CYGWIN ) )

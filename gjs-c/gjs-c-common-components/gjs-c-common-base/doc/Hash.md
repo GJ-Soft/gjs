@@ -20,20 +20,20 @@ siempre un `unsigned int`.
 
 ## API
 
-| Función                                                        | Entrada                     |
-| -------------------------------------------------------------- | --------------------------- |
-| `unsigned int HashByte ( byte byVal )`                         | un byte                     |
-| `unsigned int HashCaracter ( char cVal )`                      | un carácter                 |
-| `unsigned int HashBinario ( byte * p_byVal, int iTam )`        | bloque de memoria           |
-| `unsigned int HashEntero ( int iVal )`                         | `int`                       |
-| `unsigned int HashEnteroLargo ( long lVal )`                   | `long`                      |
-| `unsigned int HashEnteroSinSigno ( unsigned int uiVal )`       | `unsigned int`              |
-| `unsigned int HashEnteroLargoSinSigno ( unsigned long ulVal )` | `unsigned long`             |
-| `unsigned int HashEnteroDobleLargo ( llong llVal )`            | `llong` (sólo con `LLONG`)  |
-| `unsigned int HashEnteroDobleLargoSinSigno ( ullong ullVal )`  | `ullong` (sólo con `LLONG`) |
-| `unsigned int HashReal ( float fVal )`                         | `float`                     |
-| `unsigned int HashRealDoble ( double dVal )`                   | `double`                    |
-| `unsigned int HashCadena ( const char * p_cVal )`              | cadena terminada en cero    |
+| Función                                                                   | Entrada                  |
+| ------------------------------------------------------------------------- | ------------------------ |
+| `unsigned int HashByte ( byte byVal )`                                    | un byte                  |
+| `unsigned int HashCaracter ( char cVal )`                                 | un carácter              |
+| `unsigned int HashBinario ( byte * p_byVal, int iTam )`                   | bloque de memoria        |
+| `unsigned int HashEntero ( int iVal )`                                    | `int`                    |
+| `unsigned int HashEnteroLargo ( long lVal )`                              | `long`                   |
+| `unsigned int HashEnteroSinSigno ( unsigned int uiVal )`                  | `unsigned int`           |
+| `unsigned int HashEnteroLargoSinSigno ( unsigned long ulVal )`            | `unsigned long`          |
+| `unsigned int HashEnteroDobleLargo ( long long llVal )`                   | `long long`              |
+| `unsigned int HashEnteroDobleLargoSinSigno ( unsigned long long ullVal )` | `unsigned long long`     |
+| `unsigned int HashReal ( float fVal )`                                    | `float`                  |
+| `unsigned int HashRealDoble ( double dVal )`                              | `double`                 |
+| `unsigned int HashCadena ( const char * p_cVal )`                         | cadena terminada en cero |
 
 ### El tipo `PFUNHASH`
 

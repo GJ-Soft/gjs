@@ -74,7 +74,7 @@ int CalendMesCambioAHorarioInvierno ( int iA );
 int CalendMesCambioAHorarioVerano ( int iA );
 bool CalendEsDiaCambioAHorarioInvierno ( int iA, int iM, int iD );
 bool CalendEsDiaCambioAHorarioVerano ( int iA, int iM, int iD );
-int CalendAplicarUnaHoraMas ( int iA, int iM, int iD );
+bool CalendAplicarUnaHoraMas ( int iA, int iM, int iD );
 
 bool CalendEsDiaDeSegundoIntercalar ( int iA, int iM, int iD );
 int CalendSegundosIntercalaresAcumulados ( int iA, int iM, int iD );

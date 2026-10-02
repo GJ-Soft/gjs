@@ -26,6 +26,13 @@ extern bool TestSistemaFicheros ();
 int main ( int argc, char * argv[] )
 {
 	InicializarBase();
+# if ( defined ( WIN ) )
+	if ( !SockInicializar() )
+	{
+		cerr << "No se ha podido inicializar la capa de WinSockets." << endl;
+		return ( -1 );
+	}
+# endif
 	int iRes = 0;
 
 	map<std::string, FUNCION_BOOL> mapTests;
@@ -65,6 +72,9 @@ int main ( int argc, char * argv[] )
 			cerr << "Test [ " << sTest << " ] no encontrado." << endl;
 			iRes = -1;
 		}
+#	 if ( defined ( WIN ) )
+		SockFinalizar();
+#	 endif
 		return( iRes );
 	}
 
@@ -77,6 +87,9 @@ int main ( int argc, char * argv[] )
 			iRes = -1;
 		}
 	}
+# if ( defined ( WIN ) )
+	SockFinalizar();
+# endif
 	fflush ( stdout );
 	return ( iRes );
 }

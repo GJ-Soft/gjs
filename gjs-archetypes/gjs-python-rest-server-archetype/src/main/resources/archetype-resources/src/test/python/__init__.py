@@ -11,7 +11,6 @@ ${symbol_pound}
 ${symbol_pound} Program Rest Server ${capitalizedName} 
 ${symbol_pound}
 
-__version__ = "${pythonVersion}"
 
 
 

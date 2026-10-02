@@ -64,7 +64,7 @@ FecFormDescomponer ( lFecha, &iA, &iM, &iD );          /* formato → componente
 ```
 
 Para fecha y hora juntas, [TiempoNumerico](doc/TiempoNumerico.md) añade una
-cuarta: un `double` que combina ambas, con variantes `LL` sobre `llong`.
+cuarta: un `double` que combina ambas, con variantes `LL` sobre `long long`.
 
 ---
 

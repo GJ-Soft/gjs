@@ -108,7 +108,7 @@ bool Atributo::EsValido () const
 bool Atributo::EsCompatible ( const Atributo & atributo ) const
 {
 	bool bRes = false;
-	if ( Tipo::EsCompatible( (Tipo &)atributo ) )
+	if ( Tipo::EsCompatible( atributo ) )
 	{
 		bRes = isAnulable() || !atributo.isAnulable();
 	}

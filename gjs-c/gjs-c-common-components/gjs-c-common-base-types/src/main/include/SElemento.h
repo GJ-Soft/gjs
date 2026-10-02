@@ -82,4 +82,10 @@ SElemento * SElmDuplicar ( SElemento * p_elmObj );
 
 unsigned int SElmHash ( SElemento * p_elmObj );
 
+/* iInc eslabones hacia atras o hacia delante. Con iInc = 0 devuelven el propio
+   elemento; NULL si se sale por el extremo o si iInc es negativo. Sus gemelas
+   de SElementoPtr se comportan igual. */
+SElemento * SElmAntecesorExt ( SElemento * p_elmObj, int iInc );
+SElemento * SElmSucesorExt ( SElemento * p_elmObj, int iInc );
+
 #endif

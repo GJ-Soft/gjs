@@ -43,9 +43,6 @@ int SisEjecutarComando ( const char * p_cComando, const char * p_cParametros, in
 #	  else
 		hwndProceso = GetForegroundWindow ();
 #	  endif
-		// PENDIENTE: Mejorar separando el directorio del programa y de los parámetros:
-		//hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, NULL, NULL, SW_SHOW );
-		//hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, p_cParametros, NULL, SW_SHOW );
 		hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, p_cParametros, NULL, SW_HIDE );
 		if ( (INT_PTR)hinsExec > 32 )
 		{

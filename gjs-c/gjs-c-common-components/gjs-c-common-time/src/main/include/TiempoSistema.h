@@ -34,9 +34,7 @@ long TiempoHoy ();
 long TiempoAhora ();
 
 double TiempoHoyAhora ();
-#if ( defined ( LLONG ) )
-llong TiempoHoyAhoraLL ();
-#endif
+long long TiempoHoyAhoraLL ();
 
 void TiempoEsperar ( unsigned long ulSegundos );
 

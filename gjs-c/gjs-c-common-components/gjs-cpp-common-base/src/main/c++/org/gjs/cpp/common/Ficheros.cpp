@@ -6,7 +6,6 @@
 #include "Colecciones.h"
 #include "Cadenas.h"
 #include <filesystem>
-#include <sys/utsname.h>
 
 using namespace std;
 

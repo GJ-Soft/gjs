@@ -48,7 +48,20 @@ decide cuándo consultarlo.
 Definidos en `BaseErrores.h`: `ERR_OK` (0), `ERR_MEMORIA_INVALIDA` (1),
 `ERR_MEMORIA_INSUFICIENTE` (2), `ERR_MEMORIA_PROCESO` (3), `ERR_PARAMETROS` (4),
 `ERR_POSICION_INVALIDA` (5), `ERR_ESTRUCTURA_INVALIDA` (6),
+`ERR_CONVERSION_IMPOSIBLE` (7), `ERR_GENERAL_OPERATIVO` (90),
 `ERR_IMPOSIBLE_ABRIR_FICHERO` (100).
+
+> **El comentario del rango no cuadra con los códigos.** `BaseErrores.h` dice
+> *«El rango de errores asignado para esta librería es de 0-10»* y ya hay dos
+> códigos fuera: el 90 y el 100. No colisionan con nada —el siguiente ocupado es
+> `ERR_LIS_ELEMENTO_NULO` (300), en `gjs-c-common-types`— pero es el único sitio
+> del repo donde hay un reparto de rangos escrito, así que o se corrige el
+> comentario o se renumeran esos dos.
+
+`ERR_GENERAL_OPERATIVO` es el «no se pudo completar la operación» genérico, y lo
+usan las funciones de conjunto de
+[listas y secuencias de enteros](../../gjs-c-common-base-types/doc/Listas.md)
+cuando les falla una reserva a mitad.
 
 ## Comportamiento
 
@@ -73,14 +86,21 @@ llamar a `ErrLimpiar()` antes del bloque de código que se quiere vigilar.
 `_ErrPredefinido` distingue dos familias:
 
 - **Predefinidos** (`ERR_OK`, `ERR_MEMORIA_INVALIDA`, `ERR_MEMORIA_INSUFICIENTE`,
-  `ERR_MEMORIA_PROCESO`, `ERR_PARAMETROS`): la descripción la genera la propia
-  librería con `_ErrDescripcion`, y se ignora cualquier texto que se pase.
+  `ERR_MEMORIA_PROCESO`, `ERR_PARAMETROS`, `ERR_POSICION_INVALIDA`,
+  `ERR_ESTRUCTURA_INVALIDA`, `ERR_CONVERSION_IMPOSIBLE`,
+  `ERR_GENERAL_OPERATIVO`): la descripción la genera la propia librería con
+  `_ErrDescripcion`, y se ignora cualquier texto que se pase.
 - **Cualquier otro código**: se guarda la descripción que aporte el llamante. Si
   se usa `ERROR_ESTABLECER` (que no pasa texto), la descripción queda a `NULL`.
 
-Obsérvese que `ERR_POSICION_INVALIDA`, `ERR_ESTRUCTURA_INVALIDA` y
-`ERR_IMPOSIBLE_ABRIR_FICHERO` **no** tienen descripción predefinida pese a estar
-declarados: con ellos hay que usar `ErrEstablecerConFormato`.
+Los cuatro últimos se dieron de alta en septiembre de 2026; antes estaban
+declarados pero sin descripción, y con ellos había que usar
+`ErrEstablecerConFormato`. El que sigue **sin** descripción predefinida es
+`ERR_IMPOSIBLE_ABRIR_FICHERO`.
+
+`TestErrCodigosDadosDeAlta01` recorre los códigos que deben tener descripción y
+comprueba que ninguno la devuelva nula o vacía: es lo que evita que se declare
+un código nuevo y se olvide el alta en las dos funciones.
 
 ### Memoria
 

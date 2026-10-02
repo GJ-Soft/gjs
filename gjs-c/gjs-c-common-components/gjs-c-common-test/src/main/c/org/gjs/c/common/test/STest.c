@@ -184,6 +184,7 @@ int STestEjecutar( STest * p_testObj )
 		p_testObj->iCorrectos = 0;
 		p_testObj->iErroneos = 0;
 		p_testObj->iFallidos = 0;
+		p_testObj->iNoSoportados = 0;
 		iRes = 1;
 		printf ( "%s[Test %s]%s\n", ANSI_AMARILLO, p_testObj->p_cNombreTest, ANSI_RESETEAR );
 		STestInicializar ( p_testObj );
@@ -207,6 +208,11 @@ int STestEjecutar( STest * p_testObj )
 				printf ( "%sResultado: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
 				iRes = 0;
 			}
+			else if ( iResCaso == RESULTADO_CASO_TEST_NO_SOPORTADO )
+			{
+				p_testObj->iNoSoportados = p_testObj->iNoSoportados + 1;
+				printf ( "%sResultado: NO SOPORTADO%s\n", ANSI_AMARILLO, ANSI_RESETEAR );
+			}
 			else
 			{
 				p_testObj->iFallidos = p_testObj->iFallidos + 1;
@@ -222,8 +228,9 @@ int STestEjecutar( STest * p_testObj )
 		//AplicLogAnotar ( "Ejecutados = %d/%d; Correctos = %d; Erroneos = %d; Fallidos = %d", 
 		//	p_testObj->iEjecutados, p_testObj->iCorrectos, p_testObj->iErroneos, p_testObj->iFallidos );
 		//AplicLogAnotar ( "" );
-		printf ( "%sCasos Ejecutados = %d; Correctos = %d; Erroneos = %d; Fallidos = %d %s\n", ANSI_AMARILLO, 
-				p_testObj->iEjecutados, p_testObj->iCorrectos, p_testObj->iErroneos, p_testObj->iFallidos, ANSI_RESETEAR );
+		printf ( "%sCasos Ejecutados = %d; Correctos = %d; Erroneos = %d; Fallidos = %d; No soportados = %d %s\n", ANSI_AMARILLO, 
+				p_testObj->iEjecutados, p_testObj->iCorrectos, p_testObj->iErroneos, p_testObj->iFallidos,
+				p_testObj->iNoSoportados, ANSI_RESETEAR );
 	}
 	else
 	{
@@ -296,6 +303,21 @@ int STestCasosErroneos ( STest * p_testObj )
 	if ( ES_VALIDO ( p_testObj ) )
 	{
 		iRes = p_testObj->iErroneos;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int STestCasosNoSoportados ( STest * p_testObj )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_testObj ) )
+	{
+		iRes = p_testObj->iNoSoportados;
 	}
 	else
 	{

@@ -373,6 +373,51 @@ unsigned long long SisMemoriaHeapTotal ()
 	return ( SisMemoriaHeapMax () - SisMemoriaHeapMin () );
 }
 
+# if ( ! defined ( WIN ) )
+
+#	define SIS_MAX_TAM_LINEA_MAPS		512
+
+/* Limites del monton segun /proc/self/maps. Antes se leia con un fscanf suelto
+   que se quedaba con la PRIMERA linea del fichero, que no es el monton sino el
+   primer mapeo del proceso: Min y Max salian de esa misma linea, y por eso
+   SisMemoriaHeapTotal () daba el tamano de esa region y no el del monton.
+
+   Las lineas del monton son las que llevan [heap] al final. En Linux hay una; en
+   Cygwin hay dos, la parte con paginas confirmadas y la reservada a continuacion,
+   asi que se toma el principio de la primera y el final de la ultima. Ojo con
+   buscar solo "heap": [cygheap] y [win heap 0 default grow] son otras regiones, y
+   ninguna de las dos contiene "[heap]". */
+static int _SisMemoriaHeapLimites ( unsigned long long * p_ullMin, unsigned long long * p_ullMax )
+{
+	int					iRes = 0;
+	FILE *				fProc;
+	char				cLinea [ SIS_MAX_TAM_LINEA_MAPS ];
+	unsigned long long	ullIni;
+	unsigned long long	ullFin;
+
+	fProc = fopen ( "/proc/self/maps", "r" );
+	if ( ES_VALIDO ( fProc ) )
+	{
+		while ( ES_VALIDO ( fgets ( cLinea, sizeof ( cLinea ), fProc ) ) )
+		{
+			if ( ES_VALIDO ( strstr ( cLinea, "[heap]" ) ) &&
+				 ( sscanf ( cLinea, "%llx-%llx", &ullIni, &ullFin ) == 2 ) )
+			{
+				if ( iRes == 0 )
+				{
+					*p_ullMin = ullIni;
+					iRes = 1;
+				}
+				*p_ullMax = ullFin;
+			}
+		}
+		fclose ( fProc );
+	}
+	return ( iRes );
+}
+
+# endif
+
 unsigned long long SisMemoriaHeapMin ()
 {
 	unsigned long long ullRes;
@@ -381,25 +426,16 @@ unsigned long long SisMemoriaHeapMin ()
 	// Error:
 	ullRes = 0;
 # else
-    FILE * 				fProc;
 	unsigned long long  ullMin;
 	unsigned long long  ullMax;
-	
-    fProc = fopen( "/proc/self/maps", "r" );
-    if ( ES_VALIDO ( fProc ) )
-    {
-        if ( fscanf ( fProc, "%llx-%llx", &ullMin, &ullMax ) == 2 )
-		{
-			ullRes = ullMin;
-		}
-		else
-		{
-			ullRes = 0;
-		}
-        fclose(fProc);
-    }
+
+	if ( _SisMemoriaHeapLimites ( &ullMin, &ullMax ) == 1 )
+	{
+		ullRes = ullMin;
+	}
 	else
 	{
+		// Error:
 		ullRes = 0;
 	}
 # endif
@@ -415,25 +451,16 @@ unsigned long long SisMemoriaHeapMax ()
 	// Error:
 	ullRes = 0;
 # else
-    FILE * 				fProc;
 	unsigned long long  ullMin;
 	unsigned long long  ullMax;
-	
-    fProc = fopen( "/proc/self/maps", "r" );
-    if ( ES_VALIDO ( fProc ) )
-    {
-        if ( fscanf ( fProc, "%llx-%llx", &ullMin, &ullMax ) == 2 )
-		{
-			ullRes = ullMax;
-		}
-		else
-		{
-			ullRes = 0;
-		}
-        fclose(fProc);
-    }
+
+	if ( _SisMemoriaHeapLimites ( &ullMin, &ullMax ) == 1 )
+	{
+		ullRes = ullMax;
+	}
 	else
 	{
+		// Error:
 		ullRes = 0;
 	}
 # endif

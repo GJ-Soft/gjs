@@ -24,7 +24,6 @@ static void Inicializar ()
 {
 	if ( ! bInicializado )
 	{
-		LogIniConsola ();
 		bInicializado = true;
 	}
 	else
@@ -221,22 +220,39 @@ bool TestTest04 ()
 {
 	cout << "Test Test04: " << endl;
 	bool bRes = true;
+
+	/* Los dos casos aislados necesitan fork (), que en Windows no existe: alli
+	   CasoTestAislado::Ejecutar () no los ejecuta y los da por buenos. Suman como
+	   correctos los tres, el normal y los dos aislados, y no hay no soportados. */
+# if ( defined ( WIN ) )
+	const bool	bEsperado = true;
+	const int	iCorrectosEsperados = 3;
+	const int	iErroneosEsperados = 0;
+	const int	iNoSoportadosEsperados = 0;
+# else
+	const bool	bEsperado = false;
+	const int	iCorrectosEsperados = 2;
+	const int	iErroneosEsperados = 1;
+	const int	iNoSoportadosEsperados = 0;
+# endif
+
 	try
 	{
 		Test * p_test = new Test ( "Test 4", Inicializar, Finalizar );
 		p_test->NuevoCaso ( "Caso 1", EjemploTestOK );
 		p_test->NuevoCasoAislado ( "Caso 2", EjemploTestAislado, EXIT_SUCCESS );
 		p_test->NuevoCasoAislado ( "Caso 3", EjemploTestAislado, EXIT_FAILURE );
-		if ( p_test->Ejecutar () )
+		if ( p_test->Ejecutar () != bEsperado )
 		{
 			cout << "Error: Resultado incorrecto" << endl;
 			bRes = false;
 		}
 		if ( ( p_test->CasosEjecutados () != 3 ) ||
-			p_test->Resultado () ||
-			( p_test->CasosCorrectos () != 2 ) ||
-			( p_test->CasosErroneos () != 1 ) ||
-			( p_test->CasosFallidos () != 0 ) )
+			( p_test->Resultado () != bEsperado ) ||
+			( p_test->CasosCorrectos () != iCorrectosEsperados ) ||
+			( p_test->CasosErroneos () != iErroneosEsperados ) ||
+			( p_test->CasosFallidos () != 0 ) ||
+			( p_test->CasosNoSoportados () != iNoSoportadosEsperados ) )
 		{
 			cout << "Error: Contadores de resultados incorrectos" << endl;
 			bRes = false;

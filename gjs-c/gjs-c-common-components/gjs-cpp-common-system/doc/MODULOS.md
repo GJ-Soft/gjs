@@ -23,7 +23,7 @@ libres, repartidas en 150 declaraciones públicas.
 | `CContadorCiclos`       | `CContadorCiclos.h`       | 4       | 99           | `CContadorCiclosTest.cpp`       | [Tiempo](Tiempo.md)                     |
 | `CTemporizador`         | `CTemporizador.h`         | 4       | 93           | `CTemporizadorTest.cpp`         | [Tiempo](Tiempo.md)                     |
 | `CVariablesEntorno`     | `CVariablesEntorno.h`     | 4       | 111          | `CVariablesEntornoTest.cpp`     | [VariablesEntorno](VariablesEntorno.md) |
-| `SistemaEstado`         | `SistemaEstado.h`         | 3       | 176          | `SistemaEstadoTest.cpp`         | [Errores](Errores.md)                   |
+| `SistemaEstado`         | `SistemaEstado.h`         | 3       | 165          | `SistemaEstadoTest.cpp`         | [Errores](Errores.md)                   |
 | `SistemaTiempo`         | `SistemaTiempo.h`         | 2       | 85           | `SistemaTiempoTest.cpp`         | [Tiempo](Tiempo.md)                     |
 | `SistemaComandos`       | `SistemaComandos.h`       | 1       | 99           | **—**                           | [Procesos](Procesos.md)                 |
 | `Sistema`               | — (la fachada)            | 2       | 72           | **—**                           | esta página                             |

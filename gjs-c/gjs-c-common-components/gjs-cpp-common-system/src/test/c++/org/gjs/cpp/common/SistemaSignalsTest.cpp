@@ -10,6 +10,7 @@ using namespace std;
 using namespace org::gjs::cpp::common;
 
 
+#if ( defined ( SIGNALS_PERMITIDOS ) )
 
 
 static bool TestSisSigDescripcion01 ()
@@ -57,77 +58,55 @@ static bool TestSisSigCodigos01 ()
 
 	try
 	{
-		if ( SisSigEstanPermitidos () )
+		// El codigo de una senal base coincide con la constante del sistema.
+		if ( SisSigCodigo ( SIS_SIG_ABORTAR ) != SIS_COD_SIG_ABORTAR )
 		{
-			// El codigo de una senal base coincide con la constante del sistema.
-			if ( SisSigCodigo ( SIS_SIG_ABORTAR ) != SIS_COD_SIG_ABORTAR )
-			{
-				cout << "Error caso 1: el codigo de ABORTAR es incorrecto" << endl;
-				bRes = false;
-			}
-			// Una senal valida tiene codigo >= 0; una invalida no.
-			if ( ! SisSigEsValida ( SIS_SIG_INTERRUPCION ) )
-			{
-				cout << "Error caso 2: INTERRUPCION deberia ser una senal valida" << endl;
-				bRes = false;
-			}
-			if ( SisSigEsValida ( 9999 ) )
-			{
-				cout << "Error caso 3: 9999 no deberia ser una senal valida" << endl;
-				bRes = false;
-			}
-			// Programable: la mayoria si, la finalizacion obligada ( SIGKILL ) no.
-			if ( ! SisSigEsProgramable ( SIS_SIG_INTERRUPCION ) )
-			{
-				cout << "Error caso 4: INTERRUPCION deberia ser programable" << endl;
-				bRes = false;
-			}
-			if ( SisSigEsProgramable ( SIS_SIG_FINALIZACION_OBLIGADA ) )
-			{
-				cout << "Error caso 5: la finalizacion obligada no deberia ser programable" << endl;
-				bRes = false;
-			}
-			// Inversa codigo -> id, estable para toda senal que exista en esta
-			// plataforma. Si no existe, su codigo es -1, que no identifica a
-			// ninguna ( en Windows lo comparten ocho de las quince ), asi que no
-			// hay ida y vuelta posible y el caso se salta.
-			int iCodInterrupcion = SisSigCodigo ( SIS_SIG_INTERRUPCION );
-			if ( ( iCodInterrupcion >= 0 ) && ( SisSigId ( iCodInterrupcion ) != SIS_SIG_INTERRUPCION ) )
-			{
-				cout << "Error caso 6: la inversa codigo/id de INTERRUPCION deberia ser estable" << endl;
-				bRes = false;
-			}
-			int iCodUsuario1 = SisSigCodigo ( SIS_SIG_USUARIO_1 );
-			if ( ( iCodUsuario1 >= 0 ) && ( SisSigId ( iCodUsuario1 ) != SIS_SIG_USUARIO_1 ) )
-			{
-				cout << "Error caso 7: la inversa codigo/id de USUARIO_1 deberia ser estable" << endl;
-				bRes = false;
-			}
-			int iCodAbortar = SisSigCodigo ( SIS_SIG_ABORTAR );
-			if ( ( iCodAbortar >= 0 ) && ( SisSigId ( iCodAbortar ) != SIS_SIG_ABORTAR ) )
-			{
-				cout << "Error caso 8: la inversa codigo/id de ABORTAR deberia ser estable" << endl;
-				bRes = false;
-			}
+			cout << "Error caso 1: el codigo de ABORTAR es incorrecto" << endl;
+			bRes = false;
 		}
-		else
+		// Una senal valida tiene codigo >= 0; una invalida no.
+		if ( ! SisSigEsValida ( SIS_SIG_INTERRUPCION ) )
 		{
-			// Plataforma sin senales ( p.ej. WIN ): las consultas dan -1/false.
-			if ( SisSigCodigo ( SIS_SIG_ABORTAR ) != -1 )
-			{
-				cout << "Error caso 1: sin senales el codigo deberia ser -1" << endl;
-				bRes = false;
-			}
-			if ( SisSigEsValida ( SIS_SIG_ABORTAR ) )
-			{
-				cout << "Error caso 2: sin senales ninguna es valida" << endl;
-				bRes = false;
-			}
-			if ( SisSigEsProgramable ( SIS_SIG_INTERRUPCION ) )
-			{
-				cout << "Error caso 3: sin senales ninguna es programable" << endl;
-				bRes = false;
-			}
+			cout << "Error caso 2: INTERRUPCION deberia ser una senal valida" << endl;
+			bRes = false;
+		}
+		if ( SisSigEsValida ( 9999 ) )
+		{
+			cout << "Error caso 3: 9999 no deberia ser una senal valida" << endl;
+			bRes = false;
+		}
+		// Programable: la mayoria si, la finalizacion obligada ( SIGKILL ) no.
+		if ( ! SisSigEsProgramable ( SIS_SIG_INTERRUPCION ) )
+		{
+			cout << "Error caso 4: INTERRUPCION deberia ser programable" << endl;
+			bRes = false;
+		}
+		if ( SisSigEsProgramable ( SIS_SIG_FINALIZACION_OBLIGADA ) )
+		{
+			cout << "Error caso 5: la finalizacion obligada no deberia ser programable" << endl;
+			bRes = false;
+		}
+		// Inversa codigo -> id, estable para toda senal que exista en esta
+		// plataforma. Si no existe, su codigo es -1, que no identifica a
+		// ninguna ( en Windows lo comparten ocho de las quince ), asi que no
+		// hay ida y vuelta posible y el caso se salta.
+		int iCodInterrupcion = SisSigCodigo ( SIS_SIG_INTERRUPCION );
+		if ( ( iCodInterrupcion >= 0 ) && ( SisSigId ( iCodInterrupcion ) != SIS_SIG_INTERRUPCION ) )
+		{
+			cout << "Error caso 6: la inversa codigo/id de INTERRUPCION deberia ser estable" << endl;
+			bRes = false;
+		}
+		int iCodUsuario1 = SisSigCodigo ( SIS_SIG_USUARIO_1 );
+		if ( ( iCodUsuario1 >= 0 ) && ( SisSigId ( iCodUsuario1 ) != SIS_SIG_USUARIO_1 ) )
+		{
+			cout << "Error caso 7: la inversa codigo/id de USUARIO_1 deberia ser estable" << endl;
+			bRes = false;
+		}
+		int iCodAbortar = SisSigCodigo ( SIS_SIG_ABORTAR );
+		if ( ( iCodAbortar >= 0 ) && ( SisSigId ( iCodAbortar ) != SIS_SIG_ABORTAR ) )
+		{
+			cout << "Error caso 8: la inversa codigo/id de ABORTAR deberia ser estable" << endl;
+			bRes = false;
 		}
 	}
 	catch ( exception & ex )
@@ -143,12 +122,13 @@ static bool TestSisSigCodigos01 ()
 	return ( bRes );
 }
 
-
+#endif
 
 bool TestSistemaSignals ()
 {
 	bool bRes = true;
 	cout << endl << ANSI::AMARILLO << "[Test SistemaSignals]" << ANSI::RESETEAR << endl;
+#if ( defined ( SIGNALS_PERMITIDOS ) )
 	if ( TestSisSigDescripcion01 () )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
@@ -167,6 +147,9 @@ bool TestSistemaSignals ()
 		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
 		bRes = false;
 	}
+#else
+		cout  << ANSI::MAGENTA << "En este entorno los Signal no estan permitidos" << ANSI::RESETEAR << endl;
+#endif
 	cout << ANSI::AMARILLO << "[Fin]" << ANSI::RESETEAR << endl;
 	return ( bRes );
 }

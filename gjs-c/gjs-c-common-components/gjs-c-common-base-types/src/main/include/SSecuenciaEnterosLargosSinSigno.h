@@ -22,22 +22,30 @@ typedef struct
 
 
 
-SSecuenciaEnterosLargosSinSigno * SSecEntLSSCrear ();
+SSecuenciaEnterosLargosSinSigno * SSecEntLssCrear ();
 
 
-void SSecEntLSSDestruir ( SSecuenciaEnterosLargosSinSigno ** p_p_secObj );
+void SSecEntLssDestruir ( SSecuenciaEnterosLargosSinSigno ** p_p_secObj );
 
-int SSecEntLSSEsValida ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+int SSecEntLssEsValida ( SSecuenciaEnterosLargosSinSigno * p_secObj );
 
-int SSecEntLSSNumElementos ( SSecuenciaEnterosLargosSinSigno * p_secObj );
-unsigned long SSecEntLSSElemento ( SSecuenciaEnterosLargosSinSigno * p_secObj, int iElem );
+int SSecEntLssNumElementos ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+unsigned long SSecEntLssElemento ( SSecuenciaEnterosLargosSinSigno * p_secObj, int iElem );
 
-int SSecEntLSSInsertar ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato );
-int SSecEntLSSEliminar ( SSecuenciaEnterosLargosSinSigno * p_secObj, int iElem );
-int SSecEntLSSVaciar ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+int SSecEntLssInsertar ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato );
+int SSecEntLssEliminar ( SSecuenciaEnterosLargosSinSigno * p_secObj, int iElem );
+int SSecEntLssVaciar ( SSecuenciaEnterosLargosSinSigno * p_secObj );
 
-int SSecEntLSSExiste ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato );
+int SSecEntLssExiste ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato );
 
+SSecuenciaEnterosLargosSinSigno * SSecEntLssExtraerUnicos ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+int SSecEntLssTieneRepetidos ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+
+unsigned long SSecEntLssMin ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+unsigned long SSecEntLssMax ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+void SSecEntLssObtenerParametros ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long * p_ulMin, unsigned long * p_ulMax, double * p_dMed ); 
+
+int SSecEntLssDefinidaPositiva ( SSecuenciaEnterosLargosSinSigno * p_secObj );
 
 
 #endif

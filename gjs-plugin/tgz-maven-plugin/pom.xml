@@ -6,7 +6,7 @@
 		<groupId>org.gjsoft.java.maven</groupId>
 		<artifactId>gjs-java-maven-parent</artifactId>
 		<version>1.0.0-RC.2</version>
-        <relativePath />
+        <relativePath>../../gjs-java/gjs-java-parents/gjs-java-maven-parent </relativePath>
     </parent>
 
 	<groupId>org.gjsoft.maven.plugins</groupId>

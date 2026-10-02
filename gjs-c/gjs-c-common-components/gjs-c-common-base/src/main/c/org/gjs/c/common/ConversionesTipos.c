@@ -19,9 +19,10 @@
 #include "Memoria.h"
 #include "CadenasBase.h"
 #include "Numeros.h"
+#include "Errores.h"
 
+#include <errno.h>		/* ERANGE, para detectar el desbordamiento */
 
-// PENDIENTE: Al convertir desde cadena asegurarse de que el número de dígitos no sobrepasa el máximo.
 
 
 char ConvDigitoACaracter ( int iDigito )
@@ -59,10 +60,9 @@ int ConvRealAEntero ( float fVal, int iTruncar )
 	return ( (int) ConvRealAEnteroLargo ( fVal, iTruncar ) );
 }
 
-#if ( defined ( LLONG ) )
-llong ConvRealAEnteroDobleLargo ( float fVal, int iTruncar )
+long long ConvRealAEnteroDobleLargo ( float fVal, int iTruncar )
 {
-	llong	llRes;
+	long long	llRes;
 	float	fEntero;
 
 	fEntero = NumParteEnteraReal ( fVal );
@@ -93,14 +93,14 @@ llong ConvRealAEnteroDobleLargo ( float fVal, int iTruncar )
 	}
 	else
 	{
-		llRes = (llong) fEntero;
+		llRes = (long long) fEntero;
 	}
 	return ( llRes );
 }
 
-ullong ConvRealAEnteroDobleLargoSinSigno ( float fVal, int iTruncar )
+unsigned long long ConvRealAEnteroDobleLargoSinSigno ( float fVal, int iTruncar )
 {
-	ullong	ullRes;
+	unsigned long long	ullRes;
 	float	fEntero;
 
 	fEntero = NumParteEnteraReal ( fVal );
@@ -127,7 +127,7 @@ ullong ConvRealAEnteroDobleLargoSinSigno ( float fVal, int iTruncar )
 	}
 	else if ( fEntero > 0 )
 	{
-		ullRes = (ullong) fEntero;
+		ullRes = (unsigned long long) fEntero;
 	}
 	else
 	{
@@ -135,7 +135,6 @@ ullong ConvRealAEnteroDobleLargoSinSigno ( float fVal, int iTruncar )
 	}
 	return ( ullRes );
 }
-#endif
 
 long ConvRealAEnteroLargo ( float fVal, int iTruncar )
 {
@@ -180,10 +179,9 @@ int ConvRealDobleAEntero ( double dVal, int iTruncar )
 	return ( (int) ConvRealDobleAEnteroLargo ( dVal, iTruncar ) );
 }
 
-#if ( defined ( LLONG ) )
-llong ConvRealDobleAEnteroDobleLargo ( double dVal, int iTruncar )
+long long ConvRealDobleAEnteroDobleLargo ( double dVal, int iTruncar )
 {
-	llong	llRes;
+	long long	llRes;
 	double	dEntero;
 
 	dEntero = NumParteEnteraRealDoble ( dVal );
@@ -214,14 +212,14 @@ llong ConvRealDobleAEnteroDobleLargo ( double dVal, int iTruncar )
 	}
 	else
 	{
-		llRes = (llong) dEntero;
+		llRes = (long long) dEntero;
 	}
 	return ( llRes );
 }
 
-ullong ConvRealDobleAEnteroDobleLargoSinSigno ( double dVal, int iTruncar )
+unsigned long long ConvRealDobleAEnteroDobleLargoSinSigno ( double dVal, int iTruncar )
 {
-	ullong	ullRes;
+	unsigned long long	ullRes;
 	double	dEntero;
 
 	dEntero = NumParteEnteraRealDoble ( dVal );
@@ -248,7 +246,7 @@ ullong ConvRealDobleAEnteroDobleLargoSinSigno ( double dVal, int iTruncar )
 	}
 	else if ( dEntero > 0 )
 	{
-		ullRes = (ullong) dEntero;
+		ullRes = (unsigned long long) dEntero;
 	}
 	else
 	{
@@ -256,7 +254,6 @@ ullong ConvRealDobleAEnteroDobleLargoSinSigno ( double dVal, int iTruncar )
 	}
 	return ( ullRes );
 }
-#endif
 
 long ConvRealDobleAEnteroLargo ( double dVal, int iTruncar )
 {
@@ -345,160 +342,436 @@ unsigned long ConvRealDobleAEnteroLargoSinSigno ( double dVal, int iTruncar )
 	return ( ulRes );
 }
 
+/* --- Conversiones de cadena a numero ----------------------------------------
+   Todas tienen el mismo contrato: devuelven 0 si la cadena no es un numero del
+   tipo pedido, y eso incluye el desbordamiento.
+
+   Se usa la familia strtol y no sscanf, y el motivo no es de estilo: ante un
+   desbordamiento, sscanf con "%d" es COMPORTAMIENTO INDEFINIDO segun el
+   estandar, no un error que se pueda detectar. strtol lo senala con
+   errno == ERANGE, y de paso deja en el puntero de fin donde acabo el numero,
+   con lo que tambien se caza la basura del final: "12abc", que sscanf aceptaba
+   devolviendo 12, aqui se rechaza.
+
+   Antes habia una comprobacion de longitud contra MaxDigitos*, y no bastaba:
+   "9999999999" tiene diez digitos, los mismos que INT_MAX, y no cabe en un
+   int. Ya no hace falta. */
+
+#define CONV_BASE_DECIMAL		10
+#define CONV_BASE_HEX			16
+
+/* El '&' inicial es la notacion hexadecimal de Basic: "&FF" es lo mismo que
+   "FF". Se admite solo en la primera posicion, como hasta ahora. Devuelve
+   donde empieza el numero de verdad. */
+static const char * _ConvSaltarPrefijoHex ( const char * p_cVal )
+{
+	const char *	p_cRes;
+
+	if ( p_cVal [ 0 ] == '&' )
+	{
+		p_cRes = p_cVal + 1;
+	}
+	else
+	{
+		p_cRes = p_cVal;
+	}
+	return ( p_cRes );
+}
+
+/* Las conversiones sin signo tienen que rechazar el menos A MANO: strtoul y
+   strtoull lo ACEPTAN y devuelven el complemento, sin senalar error ninguno.
+   Comprobado el 2026-09-19: strtoul ( "-1" ) devuelve 18446744073709551615 y
+   deja errno a cero. Hay que saltarse los blancos igual que hace strtoul para
+   llegar al signo. */
+static int _ConvNoEmpiezaPorMenos ( const char * p_cVal )
+{
+	int				iRes;
+	const char *	p_cPrimero;
+
+	p_cPrimero = p_cVal;
+	while ( ( *p_cPrimero == ' ' ) || ( *p_cPrimero == ASCII_TAB ) )
+	{
+		p_cPrimero = p_cPrimero + 1;
+	}
+	if ( *p_cPrimero == '-' )
+	{
+		iRes = 0;
+	}
+	else
+	{
+		iRes = 1;
+	}
+	return ( iRes );
+}
+
 unsigned int ConvCadenaAEnteroSinSigno ( const char * p_cVal )
 {
-	unsigned int uiVal;
+	unsigned int 	uiRes;
+	unsigned long	ulVal;
+	char *			p_cFin;
 
-	uiVal = 0;
+	uiRes = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		if ( sscanf ( p_cVal, "%u", &uiVal ) != 1 )
+		if ( _ConvNoEmpiezaPorMenos ( p_cVal ) == 1 )
 		{
-			uiVal = 0;
+			errno = 0;
+			ulVal = strtoul ( p_cVal, &p_cFin, CONV_BASE_DECIMAL );
+			if ( p_cFin != p_cVal )
+			{
+				if ( *p_cFin == ASCII_NUL )
+				{
+					if ( errno != ERANGE )
+					{
+						if ( ulVal <= ( unsigned long ) UINT_MAX )
+						{
+							uiRes = ( unsigned int ) ulVal;
+						}
+						else
+						{
+							ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+						}
+					}
+					else
+					{
+						ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+					}
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
 		}
 	}
-	return ( uiVal );
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+	}
+	return ( uiRes );
 }
 
 unsigned long ConvCadenaAEnteroLargoSinSigno ( const char * p_cVal )
 {
-	unsigned long ulVal;
+	unsigned long 	ulRes;
+	unsigned long	ulVal;
+	char *			p_cFin;
 
-	ulVal = 0;
+	ulRes = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		if ( sscanf ( p_cVal, "%lu", &ulVal ) != 1 )
+		if ( _ConvNoEmpiezaPorMenos ( p_cVal ) == 1 )
 		{
-			ulVal = 0;
+			errno = 0;
+			ulVal = strtoul ( p_cVal, &p_cFin, CONV_BASE_DECIMAL );
+			if ( p_cFin != p_cVal )
+			{
+				if ( *p_cFin == ASCII_NUL )
+				{
+					if ( errno != ERANGE )
+					{
+						ulRes = ulVal;
+					}
+					else
+					{
+						ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+					}
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
 		}
 	}
-	return ( ulVal );
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+	}
+	return ( ulRes );
 }
 
 int	ConvCadenaAEntero ( const char * p_cVal )
 {
-	int iVal;
+	int		iRes;
+	long	lVal;
+	char *	p_cFin;
 
-	iVal = 0;
+	iRes = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		if ( sscanf ( p_cVal, "%d", &iVal ) != 1 )
+		errno = 0;
+		lVal = strtol ( p_cVal, &p_cFin, CONV_BASE_DECIMAL );
+		if ( p_cFin != p_cVal )
 		{
-			iVal = 0;
+			if ( *p_cFin == ASCII_NUL )
+			{
+				if ( errno != ERANGE )
+				{
+					/* strtol devuelve long, que en 64 bits es mas ancho que
+					   int: el rango hay que comprobarlo aparte. */
+					if ( ( lVal >= ( long ) INT_MIN ) && ( lVal <= ( long ) INT_MAX ) )
+					{
+						iRes = ( int ) lVal;
+					}
+					else
+					{
+						ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+					}
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
 		}
 	}
-	return ( iVal );
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+	}
+	return ( iRes );
 }
 
 long ConvCadenaAEnteroLargo ( const char * p_cVal )
 {
-	long lVal;
+	long 	lRes;
+	long	lVal;
+	char *	p_cFin;
 
-	lVal = 0;
+	lRes = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		if ( sscanf ( p_cVal, "%ld", &lVal ) != 1 )
+		errno = 0;
+		lVal = strtol ( p_cVal, &p_cFin, CONV_BASE_DECIMAL );
+		if ( p_cFin != p_cVal )
 		{
-			lVal = 0;
-		}
-	}
-	return ( lVal );
-}
-
-#if ( defined ( LLONG ) )
-llong ConvCadenaAEnteroDobleLargo ( const char * p_cVal )
-{
-	llong	llVal;
-	int		iPos;
-	llong	llPeso;
-	int		iRes;
-	int		iDig;
-	int		iPosMin;
-
-	if ( ES_VALIDO ( p_cVal ) )
-	{
-		iPos = CadLongitud ( p_cVal ) - 1;
-		llVal = 0;
-		llPeso = 1;
-		if ( p_cVal [ 0 ] == '-' )
-		{
-			iPosMin = 1;
+			if ( *p_cFin == ASCII_NUL )
+			{
+				if ( errno != ERANGE )
+				{
+					lRes = lVal;
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+			}
 		}
 		else
 		{
-			iPosMin = 0;
-		}
-		iRes = 1;
-		while ( ( iPos >= iPosMin ) && ( iRes == 1 ) )
-		{
-			if ( ( p_cVal [ iPos ] >= '0' ) && ( p_cVal [ iPos ] <= '9' ) )
-			{
-				iDig = ((int) p_cVal [ iPos ]) - ((int) '0');
-				llVal = llVal + iDig * llPeso;
-				llPeso = llPeso * 10;
-				iPos = iPos - 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
-		}	
-		if ( iRes == 0 )
-		{
-			llVal = 0;
-		}
-		else if ( p_cVal [ 0 ] == '-' )
-		{
-			llVal = - llVal;
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
 		}
 	}
 	else
 	{
-		llVal = 0;
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
 	}
-	return ( llVal );
+	return ( lRes );
 }
 
-ullong ConvCadenaAEnteroDobleLargoSinSigno ( const char * p_cVal )
+long long ConvCadenaAEnteroDobleLargo ( const char * p_cVal )
 {
-	ullong	ullVal;
-	int		iPos;
-	ullong	ullPeso;
-	int		iRes;
-	int		iDig;
+	long long	llRes;
+	long long	llVal;
+	char *	p_cFin;
 
+	llRes = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		iPos = CadLongitud ( p_cVal ) - 1;
-		ullVal = 0;
-		ullPeso = 1;
-		iRes = 1;
-		while ( ( iPos >= 0 ) && ( iRes == 1 ) )
+		errno = 0;
+		llVal = strtoll ( p_cVal, &p_cFin, CONV_BASE_DECIMAL );
+		if ( p_cFin != p_cVal )
 		{
-			if ( ( p_cVal [ iPos ] >= '0' ) && ( p_cVal [ iPos ] <= '9' ) )
+			if ( *p_cFin == ASCII_NUL )
 			{
-				iDig = ((int) p_cVal [ iPos ]) - ((int) '0');
-				ullVal = ullVal + iDig * ullPeso;
-				ullPeso = ullPeso * 10;
-				iPos = iPos - 1;
+				if ( errno != ERANGE )
+				{
+					llRes = llVal;
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
 			}
 			else
 			{
-				iRes = 0;
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
 			}
-		}	
-		if ( iRes == 0 )
+		}
+		else
 		{
-			ullVal = 0;
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
 		}
 	}
 	else
 	{
-		ullVal = 0;
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
 	}
-	return ( ullVal );
+	return ( llRes );
 }
-#endif
+
+unsigned long long ConvCadenaAEnteroDobleLargoSinSigno ( const char * p_cVal )
+{
+	unsigned long long	ullRes;
+	unsigned long long	ullVal;
+	char *	p_cFin;
+
+	ullRes = 0;
+	if ( ES_VALIDO ( p_cVal ) )
+	{
+		if ( _ConvNoEmpiezaPorMenos ( p_cVal ) == 1 )
+		{
+			errno = 0;
+			ullVal = strtoull ( p_cVal, &p_cFin, CONV_BASE_DECIMAL );
+			if ( p_cFin != p_cVal )
+			{
+				if ( *p_cFin == ASCII_NUL )
+				{
+					if ( errno != ERANGE )
+					{
+						ullRes = ullVal;
+					}
+					else
+					{
+						ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+					}
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+		}
+	}
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+	}
+	return ( ullRes );
+}
+
+float ConvCadenaAReal ( const char * p_cVal )
+{
+	float	fRes;
+	float	fVal;
+	char *	p_cFin;
+
+	fRes = 0.0f;
+	if ( ES_VALIDO ( p_cVal ) )
+	{
+		errno = 0;
+		fVal = strtof ( p_cVal, &p_cFin );
+		if ( p_cFin != p_cVal )
+		{
+			if ( *p_cFin == ASCII_NUL )
+			{
+				/* ERANGE aqui cubre las dos puntas: desbordamiento por arriba
+				   ( devolveria HUGE_VALF ) y por abajo. En los dos casos el
+				   numero no es representable y se contesta 0, como el resto de
+				   la familia. */
+				if ( errno != ERANGE )
+				{
+					fRes = fVal;
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+		}
+	}
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+	}
+	return ( fRes );
+}
+
+double ConvCadenaARealDoble ( const char * p_cVal )
+{
+	double	dRes;
+	double	dVal;
+	char *	p_cFin;
+
+	dRes = 0.0;
+	if ( ES_VALIDO ( p_cVal ) )
+	{
+		errno = 0;
+		dVal = strtod ( p_cVal, &p_cFin );
+		if ( p_cFin != p_cVal )
+		{
+			if ( *p_cFin == ASCII_NUL )
+			{
+				if ( errno != ERANGE )
+				{
+					dRes = dVal;
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+		}
+	}
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+	}
+	return ( dRes );
+}
 
 char * ConvEnteroACadena ( int iVal )
 {
@@ -632,8 +905,7 @@ char * ConvEnteroLargoSinSignoACadena ( unsigned long ulVal )
 	return ( p_cRes );
 }
 
-#if ( defined ( LLONG ) )
-char * ConvEnteroDobleLargoACadena ( llong llVal )
+char * ConvEnteroDobleLargoACadena ( long long llVal )
 {
 	int			iDig;
 	int			iPosMin;
@@ -706,7 +978,7 @@ char * ConvEnteroDobleLargoACadena ( llong llVal )
 	return ( p_cRes );
 }
 
-char * ConvEnteroDobleLargoSinSignoACadena ( ullong ullVal )
+char * ConvEnteroDobleLargoSinSignoACadena ( unsigned long long ullVal )
 {
 	int			iDig;
 	int			iPosMin;
@@ -754,7 +1026,6 @@ char * ConvEnteroDobleLargoSinSignoACadena ( ullong ullVal )
 	}
 	return ( p_cRes );
 }
-#endif
 
 char * ConvRealACadena ( float fVal )
 {
@@ -1119,50 +1390,109 @@ char * ConvEnteroLargoSinSignoACadenaHex ( unsigned long ulVal )
 
 unsigned int ConvCadenaHexAEnteroSinSigno ( const char * p_cVal )
 {
-	unsigned int uiVal;
-	int			 iCampos;
+	unsigned int	uiRes;
+	unsigned long	ulVal;
+	const char *	p_cNumero;
+	char *			p_cFin;
 
-	uiVal = 0;
+	uiRes = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		if ( p_cVal [ 0 ] == '&' )
+		p_cNumero = _ConvSaltarPrefijoHex ( p_cVal );
+		if ( _ConvNoEmpiezaPorMenos ( p_cNumero ) == 1 )
 		{
-			iCampos = sscanf ( p_cVal, "&%x", &uiVal );
+			errno = 0;
+			ulVal = strtoul ( p_cNumero, &p_cFin, CONV_BASE_HEX );
+			if ( p_cFin != p_cNumero )
+			{
+				if ( *p_cFin == ASCII_NUL )
+				{
+					if ( errno != ERANGE )
+					{
+						if ( ulVal <= ( unsigned long ) UINT_MAX )
+						{
+							uiRes = ( unsigned int ) ulVal;
+						}
+						else
+						{
+							ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+						}
+					}
+					else
+					{
+						ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+					}
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+			}
 		}
 		else
 		{
-			iCampos = sscanf ( p_cVal, "%x", &uiVal );
-		}
-		if ( iCampos != 1 )
-		{
-			uiVal = 0;
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
 		}
 	}
-	return ( uiVal );
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+	}
+	return ( uiRes );
 }
 
 unsigned long ConvCadenaHexAEnteroLargoSinSigno ( const char * p_cVal )
 {
-	unsigned long ulVal;
-	int			  iCampos;
+	unsigned long	ulRes;
+	unsigned long	ulVal;
+	const char *	p_cNumero;
+	char *			p_cFin;
 
-	ulVal = 0;
+	ulRes = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		if ( p_cVal [ 0 ] == '&' )
+		p_cNumero = _ConvSaltarPrefijoHex ( p_cVal );
+		if ( _ConvNoEmpiezaPorMenos ( p_cNumero ) == 1 )
 		{
-			iCampos = sscanf ( p_cVal, "&%lx", &ulVal );
+			errno = 0;
+			ulVal = strtoul ( p_cNumero, &p_cFin, CONV_BASE_HEX );
+			if ( p_cFin != p_cNumero )
+			{
+				if ( *p_cFin == ASCII_NUL )
+				{
+					if ( errno != ERANGE )
+					{
+						ulRes = ulVal;
+					}
+					else
+					{
+						ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+					}
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+			}
 		}
 		else
 		{
-			iCampos = sscanf ( p_cVal, "%lx", &ulVal );
-		}
-		if ( iCampos != 1 )
-		{
-			ulVal = 0;
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
 		}
 	}
-	return ( ulVal );
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+	}
+	return ( ulRes );
 }
 
 int	ConvCadenaHexAEntero ( const char * p_cVal )
@@ -1175,35 +1505,59 @@ long ConvCadenaHexAEnteroLargo ( const char * p_cVal )
 	return ( (long) ConvCadenaHexAEnteroLargoSinSigno ( p_cVal ) );
 }
 
-#if ( defined ( LLONG ) )
-ullong ConvCadenaHexAEnteroDobleLargoSinSigno ( const char * p_cVal )
+unsigned long long ConvCadenaHexAEnteroDobleLargoSinSigno ( const char * p_cVal )
 {
-	ullong	ullVal;
-	int		iCampos;
+	unsigned long long	ullRes;
+	unsigned long long	ullVal;
+	const char *		p_cNumero;
+	char *				p_cFin;
 
-	ullVal = 0;
+	ullRes = 0;
 	if ( ES_VALIDO ( p_cVal ) )
 	{
-		if ( p_cVal [ 0 ] == '&' )
+		p_cNumero = _ConvSaltarPrefijoHex ( p_cVal );
+		if ( _ConvNoEmpiezaPorMenos ( p_cNumero ) == 1 )
 		{
-			iCampos = sscanf ( p_cVal, "&%llx", &ullVal );
+			errno = 0;
+			ullVal = strtoull ( p_cNumero, &p_cFin, CONV_BASE_HEX );
+			if ( p_cFin != p_cNumero )
+			{
+				if ( *p_cFin == ASCII_NUL )
+				{
+					if ( errno != ERANGE )
+					{
+						ullRes = ullVal;
+					}
+					else
+					{
+						ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+					}
+				}
+				else
+				{
+					ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
+			}
 		}
 		else
 		{
-			iCampos = sscanf ( p_cVal, "%llx", &ullVal );
-		}
-		if ( iCampos != 1 )
-		{
-			ullVal = 0;
+			ERROR_ESTABLECER ( ERR_CONVERSION_IMPOSIBLE );
 		}
 	}
-	return ( ullVal );
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+	}
+	return ( ullRes );
 }
 
-llong ConvCadenaHexAEnteroDobleLargo( const char * p_cVal )
+long long ConvCadenaHexAEnteroDobleLargo( const char * p_cVal )
 {
-	return ( (llong) ConvCadenaHexAEnteroDobleLargoSinSigno ( p_cVal ) );
+	return ( (long long) ConvCadenaHexAEnteroDobleLargoSinSigno ( p_cVal ) );
 }
-#endif
 
 

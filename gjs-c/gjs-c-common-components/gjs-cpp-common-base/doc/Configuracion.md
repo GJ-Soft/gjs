@@ -2,7 +2,7 @@
 
 | Dato      | Valor                                                                                                          |
 | --------- | -------------------------------------------------------------------------------------------------------------- |
-| Cabeceras | `Precompilacion.h` (129), `BaseConfig.h` (66), `Funciones.h` (253), `Prototipos.h` (31), `TerminalANSI.h` (53) |
+| Cabeceras | `Precompilacion.h` (129), `BaseConfig.h` (66), `Funciones.h` (247), `Prototipos.h` (31), `TerminalANSI.h` (53) |
 | Fuente    | **Ninguno**                                                                                                    |
 | Espacios  | `org::gjs::cpp::common` y `…::ansi`                                                                            |
 | Test      | **Ninguno**                                                                                                    |
@@ -23,12 +23,14 @@ Normaliza los macros del compilador a los del stack: `WIN` o `POSIX`, `CYGWIN`,
 que hace que el resto del código pregunte siempre por lo mismo sin importar
 quién compile.
 
-| Modo                     | Macros resultantes |
-| ------------------------ | ------------------ |
-| Cygwin POSIX (el normal) | `POSIX` + `CYGWIN` |
-| Cygwin estilo Windows    | `WIN` + `CYGWIN`   |
-| Windows puro             | `WIN`              |
-| Linux (futuro)           | `POSIX`            |
+| Modo         | Macros resultantes |
+| ------------ | ------------------ |
+| Cygwin       | `CYGWIN` + `POSIX` |
+| Windows puro | `WIN`              |
+| Linux        | `POSIX`            |
+
+> Hubo un modo "Cygwin estilo Windows" que daba `WIN` + `CYGWIN`. **Se quito**:
+> `CYGWIN` y `WIN` a la vez son hoy un `#error`.
 
 ## `BaseConfig.h`
 

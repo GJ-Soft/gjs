@@ -2,11 +2,11 @@
 
 | Dato      | Valor                                                           |
 | --------- | --------------------------------------------------------------- |
-| Cabeceras | `Argumentos.h` (75 líneas), `ArgumentoInvalidoExcepcion.h` (29) |
-| Fuentes   | `Argumentos.cpp` (170), `ArgumentoInvalidoExcepcion.cpp` (34)   |
+| Cabeceras | `Argumentos.h` (77 líneas), `ArgumentoInvalidoExcepcion.h` (29) |
+| Fuentes   | `Argumentos.cpp` (196), `ArgumentoInvalidoExcepcion.cpp` (34)   |
 | Espacio   | `org::gjs::cpp::common`                                         |
-| Métodos   | 8 + 1                                                           |
-| Tests     | `ArgumentosTest.cpp` (220 líneas), `ExcepcionTest.cpp` (53)     |
+| Métodos   | 9 + 1                                                           |
+| Tests     | `ArgumentosTest.cpp` (302 líneas), `ExcepcionTest.cpp` (53)     |
 
 [Índice](MODULOS.md) · [README](../README.md)
 
@@ -37,13 +37,27 @@ int main ( int argc, char ** argv )
 
 | Grupo        | Métodos                                                                                                 |
 | ------------ | ------------------------------------------------------------------------------------------------------- |
-| Construcción | `Argumentos ( argc, argv )`, y `Argumentos ()` **sólo en Windows**                                      |
+| Construcción | `Argumentos ( argc, argv )`, `Argumentos ( vector<string> )`, y `Argumentos ()` **sólo en Windows**     |
 | Consulta     | `NumArgumentos`, `Argumento`                                                                            |
 | Conversión   | `EsArgumentoNumerico`, `ArgumentoEntero`, `ArgumentoEnteroLargo`, `ArgumentoReal`, `ArgumentoRealDoble` |
 
 **El índice 0 es el primer argumento de verdad, no el nombre del programa**: el
 constructor arranca en `argv[1]`. Es el convenio de la versión C, y conviene
 tenerlo presente porque va al revés que `argv`.
+
+El constructor desde `vector<string>` sigue ese mismo convenio: espera el vector
+tal cual lo entrega `main`, con el nombre del programa en el elemento 0, y lo
+descarta igual. Es el que permite que un `main` en C++ se quede en una línea
+
+```cpp
+int main ( int iNumArgs, char * p_p_cArgs [] )
+{
+    return ( executePrograma ( vector<string> ( p_p_cArgs, p_p_cArgs + iNumArgs ) ) );
+}
+```
+
+y que el cuerpo del programa se pueda llamar desde un test sin montar un `argv`
+de mentira. Es lo que hace el `gjs-cpp-exe-archetype`.
 
 `Argumento` lanza `ArgumentoInvalidoExcepcion` si el índice se sale, en vez de
 devolver una cadena vacía. Es la única clase de datos del stack que señala el
@@ -59,9 +73,11 @@ constructor con módulo, rutina y el argumento que falló.
 
 ## Tests
 
-`ArgumentosTest.cpp` —220 líneas, el más largo del componente— construye desde
+`ArgumentosTest.cpp` —302 líneas, el más largo del componente— construye desde
 un `argv` de mentira y prueba la cuenta, el acceso, las conversiones y la
-excepción. `ExcepcionTest.cpp` prueba el mensaje.
+excepción. El caso 04 hace lo propio con el constructor desde `vector<string>`,
+e incluye el vector de un solo elemento y el vector vacío, que son los que
+desbordaban. `ExcepcionTest.cpp` prueba el mensaje.
 
 ---
 
@@ -102,7 +118,7 @@ if ( ( sArg.length () >= 0 ) && ( sArg != "\\" ) )
 `length()` devuelve un `size_t`, que no puede ser negativo: **`>= 0` es cierto
 siempre**. La intención era descartar los argumentos que quedaran vacíos tras el
 saneado —es lo que hace la versión C—, y lo único que se descarta hoy es la barra
-invertida suelta. Cambiar `>=` por `>` lo arregla, y está en los dos
+invertida suelta. Cambiar `>=` por `>` lo arregla, y está en los tres
 constructores.
 
 ### Otras
@@ -121,7 +137,12 @@ constructores.
   dos cosas hay que corregir.
 - **Con `argc == 1` no se construye nada.** El constructor exige `iNumArgs > 1`,
   lo cual es correcto —no hay argumentos que guardar— y deja `iNumArgumentos` a
-  cero, que es lo que se espera.
+  cero, que es lo que se espera. El constructor desde `vector<string>` nació sin
+  esa guarda y era mucho peor que un descuido: `size ()` no tiene signo, así que
+  con el vector vacío `size () - 1` no da −1 sino `SIZE_MAX`, y
+  `vector<string> ( SIZE_MAX )` lanza `length_error`. El `for` tampoco protegía,
+  porque comparaba un `int` con un `size_t` y el índice se promocionaba a sin
+  signo. Lleva ya la misma guarda que el de `argv`, y el índice es `size_t`.
 - **`EsArgumentoNumerico` y las cuatro conversiones no dicen qué hacen con un
   índice inválido.** `Argumento` lanza; si las otras cinco también lanzan, o
   devuelven cero, hay que ir al `.cpp` para saberlo, y son las que más se usan.

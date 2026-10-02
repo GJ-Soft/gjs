@@ -64,8 +64,6 @@ void InicializarEntorno ()
 	{
 		_iEntornoTestInicializado = _iEntornoTestInicializado + 1;
 	}
-	printf ( "** CONTADOR=%d\n", _iEntornoTestInicializado );
-		fflush(stdout);
 	tar	( &_iControlAcceso );
 }
 
@@ -75,8 +73,6 @@ void FinalizarEntorno ()
 	if ( _iEntornoTestInicializado > 0 )
 	{
 		_iEntornoTestInicializado = _iEntornoTestInicializado - 1;
-		printf ( "** CONTADOR=%d\n", _iEntornoTestInicializado );
-		fflush(stdout);
 		if ( _iEntornoTestInicializado == 0 )
 		{
 			_LiberarContexto();

@@ -28,10 +28,13 @@
 #define LOG_MSJ_TXT_INICIO					"Iniciado bloque de anotacion en el fichero"
 #define LOG_MSJ_TXT_FINAL					"Finalizado bloque de anotacion en el fichero"
 #define LOG_MSJ_TXT_TRUNCADO				"(mensaje truncado: demasiadas lineas)"
+#define LOG_MSJ_TXT_CAMBIO_FICHERO			"(Continua en el fichero siguiente)."
+#define LOG_MSJ_TXT_CONTINUACION_FICHERO	"(Continuacion del fichero anterior)."
 
 #define LOG_TXT_NIVEL_INFORMACION			"INFOR"
 #define LOG_TXT_NIVEL_AVISO					"AVISO"
 #define LOG_TXT_NIVEL_ERROR					"ERROR"
+#define LOG_TXT_NIVEL_DEPURACION			"DEPUR"
 
 #define LOG_TXT_CONSULTA_SQL				"Consulta SQL"
 #define LOG_TXT_CONSULTA_CAMPOS_SQL			"Campos"

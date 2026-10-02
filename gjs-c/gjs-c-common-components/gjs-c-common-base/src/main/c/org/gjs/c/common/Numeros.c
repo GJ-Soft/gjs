@@ -57,8 +57,7 @@ int NumDigitosEnteroLargo ( long lVal )
 	return ( iDigs );
 }
 
-#if ( defined ( LLONG ) )
-int NumDigitosEnteroDobleLargo ( llong llVal )
+int NumDigitosEnteroDobleLargo ( long long llVal )
 {
 	int iDigs;
 
@@ -89,7 +88,7 @@ int NumDigitosEnteroDobleLargo ( llong llVal )
 	return ( iDigs );
 }
 
-int NumDigitosEnteroDobleLargoSinSigno ( ullong ullVal )
+int NumDigitosEnteroDobleLargoSinSigno ( unsigned long long ullVal )
 {
 	int iDigs;
 
@@ -108,7 +107,6 @@ int NumDigitosEnteroDobleLargoSinSigno ( ullong ullVal )
 	}
 	return ( iDigs );
 }
-#endif
 
 int NumDigitosEnteroSinSigno ( unsigned int uiVal )
 {
@@ -333,6 +331,74 @@ double NumParteDecimalRealDoble ( double dVal )
 		}
 	}
 	return ( dRes );
+}
+
+int MaxDigitosEntero ()
+{
+	return ( NumDigitosEntero ( INT_MAX ) );
+}
+
+int MaxDigitosEnteroLargo ()
+{
+	return ( NumDigitosEnteroLargo ( LONG_MAX ) );
+}
+
+int MaxDigitosEnteroDobleLargo ()
+{
+	return ( NumDigitosEnteroDobleLargo ( LLONG_MAX ) );
+}
+
+int MaxDigitosEnteroDobleLargoSinSigno ()
+{
+	return ( NumDigitosEnteroDobleLargoSinSigno ( ULLONG_MAX ) );
+}
+
+int MaxDigitosEnteroSinSigno ()
+{
+	return ( NumDigitosEnteroSinSigno ( UINT_MAX ) );
+}
+
+int MaxDigitosEnteroLargoSinSigno ()
+{
+	return ( NumDigitosEnteroLargoSinSigno ( ULONG_MAX ) );
+}
+
+/* Los digitos que el usuario puede escribir y recuperar intactos: la ida y
+   vuelta decimal -> binario -> decimal. Ver el comentario de la cabecera. */
+int MaxDigitosSignificativosReal ()
+{
+	return ( FLT_DIG );
+}
+
+int MaxDigitosSignificativosRealDoble ()
+{
+	return ( DBL_DIG );
+}
+
+/* Los digitos que hay que imprimir para no perder nada del valor que ya esta
+   en memoria: la ida y vuelta binario -> decimal -> binario. Son mas que los
+   significativos ( 9 frente a 6, 17 frente a 15 ), y es la cifra que hace
+   falta al serializar. */
+int MaxDigitosReproducirReal ()
+{
+	return ( FLT_DECIMAL_DIG );
+}
+
+int MaxDigitosReproducirRealDoble ()
+{
+	return ( DBL_DECIMAL_DIG );
+}
+
+/* La potencia de diez mas alta representable. No acota la longitud de una
+   cadena valida: ver la cabecera. */
+int MaxExponenteReal ()
+{
+	return ( FLT_MAX_10_EXP );
+}
+
+int MaxExponenteRealDoble ()
+{
+	return ( DBL_MAX_10_EXP );
 }
 
 

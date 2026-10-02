@@ -53,4 +53,7 @@ int	SElpLiberacionMemoriaActivada ( SElementoPtr * p_elpObj );
 
 SElementoPtr * SElpDuplicar ( SElementoPtr * p_elpObj );
 
+SElementoPtr * SElpAntecesorExt ( SElementoPtr * p_elpObj, int iInc );
+SElementoPtr * SElpSucesorExt ( SElementoPtr * p_elpObj, int iInc );
+
 #endif

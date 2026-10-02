@@ -119,7 +119,7 @@ void ServidorHTTP::ProcesarComandoSesion( Comando & comando, bool & bResponder, 
 				try
 				{
 					pathSitio = pathDirectorioRaiz / uri.getRuta();
-					if ( ExisteFichero( pathSitio.c_str() ) )
+					if ( ExisteFichero( pathSitio.string() ) )
 					{
 						bResultado = true;
 					}
@@ -144,7 +144,7 @@ void ServidorHTTP::ProcesarComandoSesion( Comando & comando, bool & bResponder, 
 						bool bSoloCabecera = comando.isComando ( IETF_CMD_METODO_HEAD );
 						bool bInicio = true;
 						unsigned long ulTam = 0;
-						vector<string> vecLineas = LeerFichero ( pathSitio.c_str() );
+						vector<string> vecLineas = LeerFichero ( pathSitio.string() );
 						for ( const string & sLinea : vecLineas )
 						{
 							if ( !bInicio || ( sLinea.size() > 0 ) )

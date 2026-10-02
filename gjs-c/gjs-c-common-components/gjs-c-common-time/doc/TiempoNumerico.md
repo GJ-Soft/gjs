@@ -3,7 +3,7 @@
 | Dato         | Valor                                                       |
 | ------------ | ----------------------------------------------------------- |
 | Cabecera     | `src/main/include/TiempoNumerico.h`                         |
-| Fuente       | `src/main/c/org/gjs/c/common/TiempoNumerico.c` (496 líneas) |
+| Fuente       | `src/main/c/org/gjs/c/common/TiempoNumerico.c` (504 líneas) |
 | Prefijos     | `Tmp` (30) y `Tiempo` (2) — **dos**                         |
 | Funciones    | 32                                                          |
 | Incluido por | `Tiempo.h`                                                  |
@@ -21,10 +21,10 @@ y guardarlas como un escalar. Es la representación que usa
 
 Ofrece dos tipos para ese número, con API paralela:
 
-| Tipo     | Sufijo      | Cuándo                             |
-| -------- | ----------- | ---------------------------------- |
-| `double` | *(ninguno)* | Uso general                        |
-| `llong`  | `LL`        | Cuando importa la exactitud entera |
+| Tipo        | Sufijo      | Cuándo                             |
+| ----------- | ----------- | ---------------------------------- |
+| `double`    | *(ninguno)* | Uso general                        |
+| `long long` | `LL`        | Cuando importa la exactitud entera |
 
 ## API
 
@@ -37,7 +37,7 @@ Ofrece dos tipos para ese número, con API paralela:
 | `void TmpFormDescomponer ( double dTiempo, long * p_lFecha, long * p_lHora )`     | A fecha y hora empaquetadas.     |
 | `void TmpFormDescomponerExt ( double, int *, int *, int *, int *, int *, int * )` | A componentes.                   |
 
-Y las cuatro equivalentes con sufijo `LL` sobre `llong`.
+Y las cuatro equivalentes con sufijo `LL` sobre `long long`.
 
 ### Extracción de partes
 
@@ -92,10 +92,6 @@ long lHora  = TmpFormHora  ( dTiempo );    /* 143005   */
 - **`TiempoHoraSolarEsp` es específica de España** y lo lleva en el nombre, lo
   cual es honesto, pero queda mezclada con 31 funciones de propósito general en
   el mismo fichero.
-- Las variantes `LL` **no están protegidas por `#if defined ( LLONG )`**, a
-  diferencia de `TiempoHoyAhoraLL` en
-  [TiempoSistema](TiempoSistema.md). En un entorno sin `llong` el módulo no
-  compilaría; con el `gcc` del proyecto siempre está definido.
 - Guardar fecha y hora en un `double` tiene un límite de precisión: la mantisa de
   53 bits alcanza para segundos enteros en el rango de años habitual, pero no
   para fracciones de segundo. La API no ofrece milisegundos, así que la

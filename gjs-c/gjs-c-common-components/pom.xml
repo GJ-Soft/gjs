@@ -24,6 +24,7 @@
 		<module>gjs-c-common-calculation</module>
 		<module>gjs-c-common-time</module>
 		<module>gjs-c-common-types</module>
+		<module>gjs-c-common-database</module>
 		<module>gjs-c-common-io</module>
 		<module>gjs-c-common-system</module>
 		<module>gjs-c-common-support</module>
@@ -36,9 +37,9 @@
 		<module>gjs-cpp-common-types</module>
 		<module>gjs-cpp-common-time</module>
 		<module>gjs-cpp-common-calculation</module>
-		<module>gjs-cpp-common-log</module>
 		<module>gjs-cpp-common-io</module>
 		<module>gjs-cpp-common-system</module>
+		<module>gjs-cpp-common-log</module>
 		<module>gjs-cpp-common-support</module>
 		<module>gjs-cpp-common-database</module>
 		<module>gjs-cpp-common</module>

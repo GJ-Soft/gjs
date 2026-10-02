@@ -170,20 +170,6 @@ typedef byte4	dword;
 
 
 
-#if ( defined ( GNU ) )
-
-#	define LLONG
-	typedef long long 			llong;
-	typedef unsigned long long 	ullong;
-
-#	define	atol	atoi
-
-
-#else
-#	undef LLONG
-#endif
-
-
 #if ( !defined ( MAX ) )
 #	define MAX( a, b )						(((a) > (b)) ? (a) : (b))
 #endif
@@ -243,9 +229,7 @@ typedef byte4	dword;
 #define TIP_MAX_DIG_ENTERO_LARGO			((int) ceil ( log10 ( ((double)LONG_MAX * 1.0) ) ))
 #define TIP_MAX_DIG_ENTERO_SIN_SIGNO		((int) ceil ( log10 ( ((double)UINT_MAX * 1.0) ) ))
 #define TIP_MAX_DIG_ENTERO_LARGO_SIN_SIGNO	((int) ceil ( log10 ( ((double)ULONG_MAX * 1.0) ) ))
-#if ( defined ( LLONG ) )
 #define TIP_MAX_DIG_ENTERO_DOBLE_LARGO		((int) ceil ( log10 ( (double) LLONG_MAX ) ))
-#endif
 #define TIP_MAX_DIG_MAN_REAL				FLT_MANT_DIG
 #define TIP_MAX_DIG_MAN_REAL_DOBLE			DBL_MANT_DIG
 #define TIP_MAX_DIG_EXP_REAL				((int) ceil ( log10 ( ((double)FLT_MAX_EXP * 1.0) ) ))

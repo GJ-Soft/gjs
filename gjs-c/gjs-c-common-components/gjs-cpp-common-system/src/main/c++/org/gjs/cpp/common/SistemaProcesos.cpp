@@ -23,6 +23,19 @@
 
 #include "SistemaProcesos.h"
 
+#include <map>
+#include <mutex>
+#include <chrono>
+#include <sstream>
+#include <system_error>
+/* pthread_cancel y pthread_getschedparam: los dos compiladores usan el modelo
+   de hilos posix, tambien el cruzado de MinGW-w64 sobre winpthreads. */
+#include <pthread.h>
+/* kill () y SIGTERM, para las funciones de subproceso en POSIX. errno, para
+   distinguir 'no existe' de 'existe pero no es mio'. */
+#include <csignal>
+#include <cerrno>
+
 
 
 
@@ -87,6 +100,216 @@ string SisPIDCadena ()
 	return ( ToString ( SisPID () ) );
 }
 
+# if ( !defined ( WIN ) )
+/* Cierto si la cadena no esta vacia y es toda digitos. Se usa para quedarse con
+   las entradas de /proc que son un PID, descartando las demas ( cpuinfo, self,
+   registry... ). */
+static bool _SisEsSoloDigitos ( const char * p_cNombre )
+{
+	bool		bRes;
+	int			iPos;
+
+	bRes = false;
+	if ( ES_VALIDO ( p_cNombre ) )
+	{
+		iPos = 0;
+		bRes = true;
+		while ( ( p_cNombre [ iPos ] != '\0' ) && bRes )
+		{
+			if ( ( p_cNombre [ iPos ] < '0' ) || ( p_cNombre [ iPos ] > '9' ) )
+			{
+				bRes = false;
+			}
+			iPos = iPos + 1;
+		}
+		if ( iPos == 0 )
+		{
+			bRes = false;
+		}
+	}
+	return ( bRes );
+}
+
+/******************************************************************************/
+/* Lectura de /proc                                                           */
+/*----------------------------------------------------------------------------*/
+/* Linux y Cygwin tienen /proc con el mismo formato. Con una DIFERENCIA        */
+/* IMPORTANTE en Cygwin: solo lista los procesos de Cygwin, no los del resto   */
+/* de Windows ( medido: 6 frente a los cientos que hay en la maquina ). Por eso*/
+/* las funciones que RECORREN /proc buscando otros procesos dan una respuesta  */
+/* parcial en ese modo, y asi queda dicho en cada una. Las que preguntan por el*/
+/* proceso actual, o por uno cuyo PID ya se tiene, van bien en los dos.        */
+/******************************************************************************/
+
+/* Numero de campo dentro de /proc/<pid>/stat contando el estado como el 1
+   ( o sea, saltandose el pid y el nombre ). Ver _SisCampoStat. */
+#define SIS_PROC_CAMPO_PPID			2
+#define SIS_PROC_CAMPO_UTIME		12
+#define SIS_PROC_CAMPO_STIME		13
+
+/* Que parte del tiempo de CPU se quiere. */
+#define SIS_CPU_COMPLETO				0
+#define SIS_CPU_NUCLEO				1
+#define SIS_CPU_USUARIO				2
+
+
+/* Contenido de /proc/<pid>/<que>, o cadena vacia si no se pudo leer. */
+static string _SisLeerDeProc ( long lPID, const string & sQue )
+{
+	string			sRes;
+	ostringstream	ossRuta;
+
+	ossRuta << "/proc/" << lPID << "/" << sQue;
+	ifstream ficDato ( ossRuta.str () );
+	if ( ficDato.is_open () )
+	{
+		getline ( ficDato, sRes );
+	}
+	return ( sRes );
+}
+
+/* Devuelve el campo numero iCampo de /proc/<pid>/stat contando DESDE EL ESTADO,
+   que es el 1. Hay que empezar a contar ahi porque el campo anterior es el
+   nombre del ejecutable, va entre parentesis y puede llevar espacios y hasta
+   parentesis dentro; contar desde el principio de la linea no vale. Por eso se
+   busca el ULTIMO parentesis de cierre. Devuelve 0 si no lo encuentra. */
+static unsigned long _SisCampoStat ( const string & sStat, int iCampo )
+{
+	unsigned long	ulRes = 0;
+	size_t			uCierre = sStat.rfind ( ')' );
+
+	if ( uCierre != string::npos )
+	{
+		istringstream	issCampos ( sStat.substr ( uCierre + 1 ) );
+		string			sCampo;
+		int				iActual = 0;
+
+		while ( issCampos >> sCampo )
+		{
+			iActual = iActual + 1;
+			if ( iActual == iCampo )
+			{
+				try
+				{
+					ulRes = stoul ( sCampo );
+				}
+				catch ( ... )
+				{
+					ulRes = 0;
+				}
+				break;
+			}
+		}
+	}
+	return ( ulRes );
+}
+
+/* PID del padre de un proceso, o 0 si no se pudo averiguar. */
+static long _SisPPIDDeProceso ( long lPID )
+{
+	long	lRes = 0;
+	string	sStat = _SisLeerDeProc ( lPID, "stat" );
+
+	if ( ! sStat.empty () )
+	{
+		lRes = ( long ) _SisCampoStat ( sStat, SIS_PROC_CAMPO_PPID );
+	}
+	return ( lRes );
+}
+
+/* Nombre del fichero ejecutable de un proceso, sin la ruta, leyendo el enlace
+   /proc/<pid>/exe. Cadena vacia si no se pudo. */
+static string _SisNombreEjecutableDeProceso ( long lPID )
+{
+	string			sRes;
+	ostringstream	ossRuta;
+	vector<char>	vecDestino ( MAXPATHLEN );
+
+	ossRuta << "/proc/" << lPID << "/exe";
+	ssize_t sLongitud = readlink ( ossRuta.str ().c_str (), vecDestino.data (),
+								   vecDestino.size () - 1 );
+	if ( sLongitud > 0 )
+	{
+		vecDestino [ sLongitud ] = '\0';
+		sRes = SisRutaFichero ( string ( vecDestino.data () ) );
+	}
+	return ( sRes );
+}
+
+/* Tiempo de CPU de un proceso, en MILISEGUNDOS, que es lo que devuelve la rama
+   de Windows. */
+static unsigned long _SisTiempoCPUDeProceso ( long lPID, int iModo )
+{
+	unsigned long	ulRes = 0;
+	string			sStat = _SisLeerDeProc ( lPID, "stat" );
+
+	if ( ! sStat.empty () )
+	{
+		unsigned long ulTics = 0;
+
+		if ( iModo != SIS_CPU_NUCLEO )
+		{
+			ulTics = ulTics + _SisCampoStat ( sStat, SIS_PROC_CAMPO_UTIME );
+		}
+		if ( iModo != SIS_CPU_USUARIO )
+		{
+			ulTics = ulTics + _SisCampoStat ( sStat, SIS_PROC_CAMPO_STIME );
+		}
+		/* Los campos vienen en tics de reloj. Cuantos hay por segundo lo dice el
+		   sistema y NO se puede dar por sabido: son 100 en Linux y 1000 en
+		   Cygwin ( medido el 2026-09-18 ). */
+		long lTicsPorSegundo = sysconf ( _SC_CLK_TCK );
+		if ( lTicsPorSegundo > 0 )
+		{
+			ulRes = ( ulTics * 1000UL ) / ( unsigned long ) lTicsPorSegundo;
+		}
+	}
+	return ( ulRes );
+}
+
+/* Recorre /proc. Si bContar es cierto cuenta los procesos cuyo padre es lPadre
+   y devuelve la cuenta; si no, busca uno cuyo ejecutable se llame como se pide
+   y devuelve su PID, o -1. */
+static long _SisRecorrerProcesos ( const string & sEjecutable, long lPadre, bool bContar )
+{
+	long	lRes = bContar ? 0 : -1;
+	DIR *	p_dirProc = opendir ( "/proc" );
+
+	if ( ES_VALIDO ( p_dirProc ) )
+	{
+		struct dirent * p_entDato = readdir ( p_dirProc );
+
+		while ( ES_VALIDO ( p_entDato ) )
+		{
+			if ( _SisEsSoloDigitos ( p_entDato->d_name ) )
+			{
+				long lPID = strtol ( p_entDato->d_name, NULL, 10 );
+
+				if ( bContar )
+				{
+					if ( _SisPPIDDeProceso ( lPID ) == lPadre )
+					{
+						lRes = lRes + 1;
+					}
+				}
+				else if ( lRes < 0 )
+				{
+					if ( _SisNombreEjecutableDeProceso ( lPID ) == sEjecutable )
+					{
+						lRes = lPID;
+					}
+				}
+			}
+			p_entDato = readdir ( p_dirProc );
+		}
+		closedir ( p_dirProc );
+	}
+	return ( lRes );
+}
+
+# endif
+
+
 string SisNombreProceso ()
 {
 	string		sRes = "";
@@ -113,10 +336,17 @@ string SisNombreProceso ()
 		CloseHandle ( hProceso );
 	}
 # else
-	// PENDIENTE: Mejorar para obtenerlo din�micamente:
+	/* Si alguien fijo el nombre a mano con el setter, manda ese. Si no, se saca
+	   del sistema, que era justo lo que faltaba: SisRutaEjecutable ya
+	   resuelve /proc/self/exe, y de ahi el nombre del fichero, que es lo que
+	   devuelve GetModuleBaseName en la rama de Windows. */
 	if ( ES_VALIDO ( _g_p_sSisNomProceso ) )
 	{
 		sRes = *_g_p_sSisNomProceso;
+	}
+	else
+	{
+		sRes = SisRutaFichero ( SisRutaEjecutable () );
 	}
 # endif
 	return ( sRes );
@@ -204,25 +434,25 @@ string SisFicheroEjecutable ()
 	return ( sRes );
 }
 
+/* Solo en Windows. El titulo es un dato DEL PROCESO: se lo pasa quien lo
+   arranca y se lee con GetStartupInfo. En POSIX no existe tal cosa; lo mas
+   parecido es el titulo de la ventana del terminal, que no es del proceso
+   sino del emulador, se pone mandandole una secuencia de escape y NO se
+   puede leer de vuelta. Devolver otra cosa seria mentir, asi que la funcion
+   simplemente no se declara fuera de Windows. */
+#if ( defined ( WIN ) )
 string SisTituloProceso ()
 {
 	string sRes = "";
-
-# if ( defined ( WIN ) )
 	STARTUPINFO		stupinfDatos;
 
-	GetStartupInfo ( (LPSTARTUPINFO) &stupinfDatos );
+	GetStartupInfo ( &stupinfDatos );
 	if ( ES_VALIDO ( stupinfDatos.lpTitle ) )
 	{
 		sRes = string ( stupinfDatos.lpTitle );
 	}
-# else
-	// PENDIENTE:
-# endif
 	return ( sRes );
 }
-
-#if ( defined ( WIN ) )
 
 HINSTANCE SisWinIdProceso ()
 {
@@ -239,7 +469,7 @@ int SisProcesoEsDeGUI ()
 # if ( defined ( WIN ) )
 	STARTUPINFO		stupinfDatos;
 
-	GetStartupInfo ( (LPSTARTUPINFO) &stupinfDatos );
+	GetStartupInfo ( &stupinfDatos );
 	if ( stupinfDatos.dwFlags & STARTF_USESHOWWINDOW != 0 )
 	{
 		iRes = 1;
@@ -262,7 +492,7 @@ int SisProcesoEsDeConsola ()
 # if ( defined ( WIN ) )
 	STARTUPINFO		stupinfDatos;
 
-	GetStartupInfo ( (LPSTARTUPINFO) &stupinfDatos );
+	GetStartupInfo ( &stupinfDatos );
 	if ( stupinfDatos.dwFlags & STARTF_USESHOWWINDOW != 0 )
 	{
 		iRes = 1;
@@ -279,32 +509,34 @@ int SisProcesoEsDeConsola ()
 }
 */
 
-thread_id SisTID ()
+std::thread::id SisTID ()
 {
-	thread_id thTID;
-
-# if ( defined ( WIN ) )
-	thTID = (thread_id) GetCurrentThreadId ();
-# else
-	thTID = (thread_id) pthread_self ();
-# endif
-	return ( thTID );
+	return ( std::this_thread::get_id() );
 }
 
 string SisTIDCadena ()
 {
-	return ( ToString ( SisTID () ) );
+	/* ToString no tiene sobrecarga para thread::id, que solo sabe volcarse a
+	   un flujo. */
+	std::ostringstream ossRes;
+	ossRes << SisTID ();
+	return ( ossRes.str () );
 }
 
 int SisNumSubprocesos ()
 {
-	int			iRes;		
+	int			iRes;
 # if ( defined ( WIN ) )
-	HANDLE				hProceso;
 	HANDLE				hSnapshot;
 	PROCESSENTRY32		pe32Datos;
 	int					iFinal;
+	DWORD				dwYo;
 
+	/* Cuenta los procesos HIJOS de este, que es lo que dice la cabecera al
+	   agrupar esta funcion bajo "Subprocesos" y lo que la distingue de
+	   SisNumProcesos. Antes contaba todos los procesos de la maquina que se
+	   pudieran abrir, que no es ni una cosa ni la otra. */
+	dwYo = GetCurrentProcessId ();
 	hSnapshot = CreateToolhelp32Snapshot ( TH32CS_SNAPPROCESS, 0 );
 	if ( hSnapshot != INVALID_HANDLE_VALUE )
 	{
@@ -315,11 +547,9 @@ int SisNumSubprocesos ()
 			iRes = 0;
 			while ( iFinal == 0 )
 			{
-				hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) pe32Datos.th32ProcessID );
-				if ( hProceso != NULL )
+				if ( pe32Datos.th32ParentProcessID == dwYo )
 				{
 					iRes = iRes + 1;
-					CloseHandle ( hProceso );
 				}
 				if ( Process32Next ( hSnapshot, &pe32Datos ) == 0 )
 				{
@@ -338,8 +568,10 @@ int SisNumSubprocesos ()
 		iRes = 0;
 	}
 # else
-	// PENDIENTE:
-	iRes = 0;
+	/* Recorriendo /proc y mirando el padre de cada uno. LIMITACION EN CYGWIN:
+	   /proc solo lista procesos de Cygwin, asi que un hijo lanzado que no lo
+	   sea no se cuenta. En Linux la cuenta es completa. */
+	iRes = ( int ) _SisRecorrerProcesos ( "", ( long ) getpid (), true );
 # endif
 	return ( iRes );
 }
@@ -361,7 +593,6 @@ long SisCrearSubproceso ( const string & sEjecutable, const string & sParametros
 	int					iDescrip;
 #  if ( defined ( GNU ) )
 	string			sArg;
-	int				iNumArgs;
 #  endif
 #endif
 
@@ -425,27 +656,31 @@ long SisCrearSubproceso ( const string & sEjecutable, const string & sParametros
 
 		if ( ! sParametros.empty () )
 		{
-#		  if ( defined ( GNU ) )
-			iNumArgs = NumPalabras ( sParametros, ' ' );
-			if ( iNumArgs > 0 )
-			{ 
-				// TODO 
-			}
-			else
+			/* Portado del stack C, que ya armaba el argv a mano con CadPalabraExt y
+			   MemReservar. Aqui sale mas corto: Separar da los trozos y el vector se
+			   encarga de la memoria. execv quiere un array terminado en NULL cuyo
+			   primer elemento es el propio ejecutable.
+
+			   Se hace igual con GNU y sin el: la version C tenia dos ramas porque una
+			   estaba a medias, no porque hicieran falta. */
+			vector < string > vecArgs = Separar ( sParametros, { " " } );
+			vector < char * > vecArgv;
+
+			vecArgv.push_back ( const_cast < char * > ( sEjecutable.c_str () ) );
+			for ( string & sArg : vecArgs )
 			{
-				if ( execl ( sEjecutable.c_str(), sEjecutable.c_str(), NULL) < 0 )
+				if ( ! sArg.empty () )
 				{
-					exit ( -1 );
+					vecArgv.push_back ( const_cast < char * > ( sArg.c_str () ) );
 				}
 			}
-#		  else
-			// PENDIENTE: Hacer lo mismo para el paso como cadenas:
-			if ( execv ( sEjecutable.c_str(), sParametros.c_str ()  ) < 0 )
+			vecArgv.push_back ( NULL );
+
+			if ( execv ( sEjecutable.c_str (), vecArgv.data () ) < 0 )
 			{
-				// Error: Destruir el hijo;
+				/* Solo se llega aqui si execv falla: si va bien no vuelve. */
 				exit ( -1 );
 			}
-#		  endif
 		}
 		else
 		{
@@ -459,22 +694,78 @@ long SisCrearSubproceso ( const string & sEjecutable, const string & sParametros
 	return ( lPID );
 }
 
-// PENDIUENTE: Determinar que sea un proceso hijo
+/* Cierto si lPIDHijo es hijo de lPIDPadre.
+
+   En Windows hay que recorrerse la foto de procesos de Toolhelp, que es la unica
+   que trae el PID del padre. En POSIX lo dice el campo 4 de /proc/<pid>/stat, que
+   es lo que ya lee _SisPPIDDeProceso.
+
+   OJO en Cygwin: /proc solo lista procesos de Cygwin ( no los nativos de
+   Windows ), asi que un hijo lanzado fuera de Cygwin no aparece y esto contesta
+   que no lo es. Es la misma limitacion que arrastran SisProgramaEnEjecucion y
+   SisProcesoPID. */
+static bool _SisEsSubproceso ( long lPIDPadre, long lPIDHijo )
+{
+    bool bRes = false;
+
+# if ( !defined ( WIN ) )
+    bRes = ( _SisPPIDDeProceso ( lPIDHijo ) == lPIDPadre );
+# else
+    HANDLE hSnapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
+    if ( ES_MANEJADOR_VALIDO ( hSnapshot ) )
+	{
+		PROCESSENTRY32 pe;
+		pe.dwSize = sizeof(PROCESSENTRY32);
+
+		if ( Process32First( hSnapshot, &pe )  ) 
+		{
+			do 
+			{
+				if ( pe.th32ProcessID == (DWORD) lPIDHijo )
+				{
+					if ( pe.th32ParentProcessID == (DWORD) lPIDPadre )
+					{
+						bRes = true;
+					}
+					break; 
+				}
+			} 
+			while ( Process32Next( hSnapshot, &pe ) );
+		}
+		CloseHandle(hSnapshot);
+	}
+# endif
+    return ( bRes );
+}
+
+
 bool SisExisteSubproceso ( long lPID )
 {
 	bool bRes = false;
 
 # if ( defined ( WIN ) )
-	HANDLE hProceso;
-	// Se supone que sobre los subprocesos se tiene acceso total:
-	hProceso = OpenProcess ( PROCESS_ALL_ACCESS, FALSE, (DWORD) lPID );
-	if ( hProceso != NULL )
+	/* Sin OpenProcess previo: la foto de Toolhelp que mira _SisEsSubproceso ya
+	   contesta las dos cosas —si el PID existe y quien es su padre—, asi que
+	   abrirlo antes no anadia nada. Y si quitaba: pedir PROCESS_ALL_ACCESS falla
+	   contra un proceso elevado o protegido, y entonces esto contestaba "no
+	   existe" sobre un hijo que si existia. */
+	bRes = _SisEsSubproceso ( SisPID (), lPID );
+# else
+	/* kill con la senal 0 no manda nada: solo comprueba que el proceso existe y
+	   que se le podria senalar. Si falla con EPERM el proceso existe, lo que pasa
+	   es que es de otro usuario, y a efectos de 'existe' cuenta igual.
+
+	   Antes esta rama no tocaba bRes, asi que en POSIX contestaba siempre que no:
+	   y SisFinalizarSubproceso, que esta guardada por su resultado, no llegaba a
+	   intentar nada. */
+	if ( kill ( (pid_t) lPID, 0 ) == 0 )
 	{
 		bRes = true;
-		CloseHandle ( hProceso );
 	}
-# else
-	// PENDIENTE:
+	else
+	{
+		bRes = ( errno == EPERM );
+	}
 # endif
 	return ( bRes );
 }
@@ -483,7 +774,7 @@ bool SisFinalizarSubproceso ( long lPID )
 {
 	bool bRes = false;
 
-	if ( SisExisteSubproceso ( lPID ) == 1 )
+	if ( SisExisteSubproceso ( lPID ) )
 	{
 # if ( defined ( WIN ) )
 		HANDLE hProceso;
@@ -495,385 +786,155 @@ bool SisFinalizarSubproceso ( long lPID )
 			CloseHandle ( hProceso );
 		}
 # else
-	// PENDIENTE:
+		/* SIGTERM es el equivalente de lo que hace TerminateProcess arriba: pedir
+		   al proceso que termine. Si la ignora no hay mas que hacer desde aqui;
+		   matarla a la fuerza seria SIGKILL, y eso es otra decision. */
+		bRes = ( kill ( (pid_t) lPID, SIGTERM ) == 0 );
 # endif
 	}
 	return ( bRes );
+}
+
+/* ---------------------------------------------------------------------------
+   Hilos.
+
+   std::thread::id es un identificador opaco a proposito: no se construye a
+   partir de nada, no convierte a entero, y el estandar no ofrece ninguna
+   operacion que actue sobre un hilo teniendo solo su id. Por eso el modulo
+   lleva su propio registro de los hilos que ha creado: es lo unico que permite
+   recuperar el native_handle () y, con el, hacer lo que el estandar no cubre.
+
+   Los dos compiladores que se usan ( el de Cygwin y el cruzado de MinGW-w64 )
+   declaran "Thread model: posix", asi que native_handle () es un pthread_t en
+   las dos plataformas y la implementacion es la misma. De ahi que aqui no haya
+   ni una rama #if de plataforma.
+   --------------------------------------------------------------------------- */
+
+static std::map < std::thread::id, std::thread >	_mapHilos;
+static std::mutex									_mtxHilos;
+
+/* Da de baja el hilo. Hay que soltarlo antes de borrarlo: destruir un
+   std::thread todavia unible llama a terminate (). */
+static void _OlvidarHilo ( std::thread::id thTID )
+{
+	std::lock_guard < std::mutex > lckGuarda ( _mtxHilos );
+	auto itHilo = _mapHilos.find ( thTID );
+	if ( itHilo != _mapHilos.end () )
+	{
+		if ( itHilo->second.joinable () )
+		{
+			itHilo->second.detach ();
+		}
+		_mapHilos.erase ( itHilo );
+	}
+}
+
+/* Envoltura del codigo del usuario, para darse de baja al terminar. El mutex
+   evita la carrera del hilo tan corto que acaba antes de que SisCrearHilo lo
+   haya llegado a registrar: la baja no puede adelantarse al alta. */
+static void _EjecutarHilo ( PTR_FUNCION_HILO p_funCodigo, void * p_vParam )
+{
+	p_funCodigo ( p_vParam );
+	_OlvidarHilo ( std::this_thread::get_id () );
 }
 
 int SisNumHilos ()
 {
-	int iRes;
-
-# if ( defined ( WIN ) )
-	HANDLE				hSnapshot;
-	PROCESSENTRY32		pe32Datos;
-
-	hSnapshot = CreateToolhelp32Snapshot ( TH32CS_SNAPPROCESS, 0 );
-	if ( hSnapshot != INVALID_HANDLE_VALUE )
-	{
-		pe32Datos.dwSize = sizeof ( PROCESSENTRY32 );
-		if ( Process32First ( hSnapshot, &pe32Datos ) != 0 )
-		{
-			iRes = (int) pe32Datos.cntThreads;
-		}
-		else
-		{
-			iRes = 0;
-		}
-		CloseHandle ( hSnapshot );
-	}
-	else
-	{
-		iRes = 0;
-	}
-# else
-	//PENDIENTE:
-	iRes = 0;
-# endif
-	return ( iRes );
+	std::lock_guard < std::mutex > lckGuarda ( _mtxHilos );
+	return ( (int) _mapHilos.size () );
 }
 
-// PENDIENTE: GetThreadId s�lo funciona en VISTA:
-thread_id SisCrearHilo ( PTR_FUNCION_HILO p_funCodigo, void * p_vParam, int iSuspender )
+std::thread::id SisCrearHilo ( PTR_FUNCION_HILO p_funCodigo, void * p_vParam )
 {
-	thread_id			thHilo;
-# if ( defined ( WIN ) )
-	HANDLE			hHilo;
-	DWORD			dwId;
-	LPVOID			lpParam;
-	DWORD			dwFlags;
-# else
-	pthread_t		thId;
-	pthread_attr_t  thattHilo;
-# endif
+	std::thread::id thHilo;
 
 	if ( ES_VALIDO ( p_funCodigo ) )
 	{
-# if ( defined ( WIN ) )
-		lpParam = (LPVOID) p_vParam;
-		dwId = 0;
-		if ( iSuspender == 1 )
+		try
 		{
-			dwFlags = CREATE_SUSPENDED;
+			std::lock_guard < std::mutex > lckGuarda ( _mtxHilos );
+			std::thread thNuevo ( _EjecutarHilo, p_funCodigo, p_vParam );
+			thHilo = thNuevo.get_id ();
+			_mapHilos.emplace ( thHilo, std::move ( thNuevo ) );
 		}
-		else
+		catch ( const std::system_error & )
 		{
-			dwFlags = 0;
+			/* No se pudo lanzar: se devuelve el id vacio. */
+			thHilo = std::thread::id ();
 		}
-		hHilo = CreateThread ( (LPSECURITY_ATTRIBUTES)NULL, (DWORD)0, (LPTHREAD_START_ROUTINE)p_funCodigo, lpParam, dwFlags, (LPDWORD)&dwId ); 
-		if ( ES_MANEJADOR_VALIDO ( hHilo ) ) 
-		{
-			thHilo = (thread_id) dwId;
-		}
-		else
-		{
-			thHilo = (thread_id) 0;
-		}
-# else
-		thId = 0;
-		pthread_attr_init ( &thattHilo );
-		pthread_attr_setdetachstate ( &thattHilo, PTHREAD_CREATE_DETACHED );
-
-		if ( pthread_create ( &thId, &thattHilo, p_funCodigo, p_vParam ) == 0 )
-		{
-			thHilo = (thread_id) thId;
-		}
-		else
-		{
-			thHilo = (thread_id) 0;
-		}
-		pthread_attr_destroy ( &thattHilo );
-# endif
-	}
-	else
-	{
-		thHilo = 0;
 	}
 	return ( thHilo );
 }
 
-bool SisExisteHilo ( thread_id thTID )
+bool SisExisteHilo ( std::thread::id thTID )
 {
-	bool bRes = false;
-
-# if ( defined ( WIN ) )
-	HANDLE		hHilo;
-# else
-	pthread_t	thId;
-#  if ( defined ( pthread_getcpuclockid ) )
-	clockid_t	clkCPU;
-#  endif
-# endif
-
-# if ( defined ( WIN ) )
-//#  if ( !defined ( OPENTHREAD_INDEFINIDO ) )
-#  if ( defined ( OpenThread ) )
-	{
-		hHilo = OpenThread ( SYNCHRONIZE, FALSE, thTID );
-	}
-#  else
-	{
-	/*
-		PFUNHNDDWBDW p_fOpenThread;
-
-		p_fOpenThread = (PFUNHNDDWBDW) SisLibPrimitiva ( "kernel32", "OpenThread" );
-		if ( ES_VALIDO ( p_fOpenThread ) )
-		{
-			hHilo = p_fOpenThread ( SYNCHRONIZE, FALSE, thTID );
-		}
-		else
-		{
-			hHilo = NULL;
-		}
-	*/
-		hHilo = NULL;
-	}
-#  endif
-	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
-	{
-		bRes = true;
-		CloseHandle ( hHilo );
-	}
-# else
-	thId = (pthread_t) thTID;
-#  if ( defined ( pthread_getcpuclockid ) )
-	bRes = ( pthread_getcpuclockid ( thId, &clkCPU ) == 0 );
-#  else
-	// PEDNIENTE
-#  endif
-# endif
-	return ( bRes );
+	std::lock_guard < std::mutex > lckGuarda ( _mtxHilos );
+	return ( _mapHilos.find ( thTID ) != _mapHilos.end () );
 }
 
-bool SisSuspenderHilo ( thread_id thTID )
+/* Suspender y reanudar no tienen forma portable: POSIX nunca tuvo equivalente
+   de SuspendThread, y en Windows tampoco se alcanza, porque con el modelo de
+   hilos posix native_handle () da un pthread_t y no un HANDLE de Win32 ( el
+   puente pthread_getw32threadhandle_np no esta en este winpthreads ). Se
+   devuelve false en lugar de fingir que funciona. */
+bool SisSuspenderHilo ( std::thread::id thTID )
 {
-	bool bRes = false;
-
-# if ( defined ( WIN ) )
-	HANDLE		hHilo;
-# else
-	//pthread_t	thId;
-# endif
-
-# if ( defined ( WIN ) )
-#  if ( defined ( OpenThread ) )
-	{
-		hHilo = OpenThread ( SYNCHRONIZE, FALSE, thTID );
-	}
-#  else
-	{
-		/*
-		PFUNHNDDWBDW p_fOpenThread;
-
-		p_fOpenThread = (PFUNHNDDWBDW) SisLibPrimitiva ( "kernel32", "OpenThread" );
-		if ( ES_VALIDO ( p_fOpenThread ) )
-		{
-			hHilo = p_fOpenThread ( SYNCHRONIZE, FALSE, thTID );
-		}
-		else
-		{
-		}
-		*/
-		hHilo = NULL;
-	}
-#  endif
-	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
-	{
-		bRes = ( SuspendThread ( hHilo ) != 0xFFFFFFFF );
-		CloseHandle ( hHilo );
-	}
-# else
-	//PENDIENTE: No se puede hacer igual: hay que montar una historia
-# endif
-	return ( bRes );
+	( void ) thTID;
+	return ( false );
 }
 
-bool SisReanudarHilo ( thread_id thTID )
+bool SisReanudarHilo ( std::thread::id thTID )
 {
-	bool bRes = false;
-
-# if ( defined ( WIN ) )
-	HANDLE		hHilo;
-# else
-	//pthread_t	thId;
-# endif
-
-# if ( defined ( WIN ) )
-#  if ( defined ( OpenThread ) )
-	{
-		hHilo = OpenThread ( SYNCHRONIZE, FALSE, thTID );
-	}
-#  else
-	{
-		/*
-		PFUNHNDDWBDW p_fOpenThread;
-
-		p_fOpenThread = (PFUNHNDDWBDW) SisLibPrimitiva ( "kernel32", "OpenThread" );
-		if ( ES_VALIDO ( p_fOpenThread ) )
-		{
-			hHilo = p_fOpenThread ( SYNCHRONIZE, FALSE, thTID );
-		}
-		else
-		{
-			hHilo = NULL;
-		}
-		*/
-		hHilo = NULL;
-	}
-#  endif
-	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
-	{
-		bRes = ( ResumeThread ( hHilo ) != 0xFFFFFFFF );
-		CloseHandle ( hHilo );
-	}
-# else
-	//PENDIENTE: No se puede hacer igual: hay que montar una historia
-# endif
-	return ( bRes );
+	( void ) thTID;
+	return ( false );
 }
 
-bool SisFinalizarHilo ( thread_id thTID )
+/* Cancela el hilo. Solo surte efecto cuando el hilo alcanza un punto de
+   cancelacion ( sleep, read, wait... ); un hilo en un bucle de calculo puro
+   puede no enterarse nunca. Al cancelarse no pasa por _EjecutarHilo, asi que
+   la baja del registro se hace aqui. */
+bool SisFinalizarHilo ( std::thread::id thTID )
 {
 	bool bRes = false;
 
-# if ( defined ( WIN ) )
-	HANDLE		hHilo;
-	//DWORD		dwIdHilo;
-# else
-	pthread_t	thId;
-# endif
-
-# if ( defined ( WIN ) )
-#  if ( defined ( OpenThread ) )
+	std::lock_guard < std::mutex > lckGuarda ( _mtxHilos );
+	auto itHilo = _mapHilos.find ( thTID );
+	if ( itHilo != _mapHilos.end () )
 	{
-		hHilo = OpenThread ( SYNCHRONIZE, FALSE, thTID );
-	}
-#  else
-	{
-		/*
-		PFUNHNDDWBDW p_fOpenThread;
-
-		p_fOpenThread = (PFUNHNDDWBDW) SisLibPrimitiva ( "kernel32", "OpenThread" );
-		if ( ES_VALIDO ( p_fOpenThread ) )
+		bRes = ( pthread_cancel ( itHilo->second.native_handle () ) == 0 );
+		if ( itHilo->second.joinable () )
 		{
-			dwIdHilo = (DWORD) thTID;
-			hHilo = p_fOpenThread ( SYNCHRONIZE, FALSE, dwIdHilo );
+			itHilo->second.detach ();
 		}
-		else
-		{
-			hHilo = NULL;
-		}
-		*/
-		hHilo = NULL;
+		_mapHilos.erase ( itHilo );
 	}
-#  endif
-	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
-	{
-		bRes = ( TerminateThread ( hHilo, 0 ) != -1 );
-		CloseHandle ( hHilo );
-	}
-# else
-	thId = (pthread_t) thTID;
-	bRes = ( pthread_cancel ( thId ) == 0 );
-# endif
 	return ( bRes );
 }
 
 bool SisCambiarASiguienteHilo ()
 {
-	bool bRes = false;
-
-# if ( defined ( WIN ) )
-	//if ( SwitchToThread () != 0 )
-	if ( false )
-	{
-		bRes = true;
-	}
-# else
-	//PENDIENTE:
-# endif
-	return ( bRes );
+	std::this_thread::yield ();
+	return ( true );
 }
 
-int SisHiloPrioridad ( thread_id thTID )
+int SisHiloPrioridad ( std::thread::id thTID )
 {
-	int			iRes = 0;
+	int					iRes = 0;
+	int					iPolitica;
+	struct sched_param	schpDatos;
 
-# if ( defined ( WIN ) )
-	HANDLE		hHilo;
-# else
-	//pthread_t	thId;
-# endif
-
-# if ( defined ( WIN ) )
-#  if ( defined ( OpenThread ) )
+	std::lock_guard < std::mutex > lckGuarda ( _mtxHilos );
+	auto itHilo = _mapHilos.find ( thTID );
+	if ( itHilo != _mapHilos.end () )
 	{
-		hHilo = OpenThread ( SYNCHRONIZE, FALSE, thTID );
-	}
-#  else
-	{
-		/*
-		PFUNHNDDWBDW p_fOpenThread;
-
-		p_fOpenThread = (PFUNHNDDWBDW) SisLibPrimitiva ( "kernel32", "OpenThread" );
-		if ( ES_VALIDO ( p_fOpenThread ) )
+		if ( pthread_getschedparam ( itHilo->second.native_handle (), &iPolitica, &schpDatos ) == 0 )
 		{
-			hHilo = p_fOpenThread ( SYNCHRONIZE, FALSE, thTID );
+			iRes = schpDatos.sched_priority;
 		}
-		else
-		{
-			hHilo = NULL;
-		}
-		*/
-		hHilo = NULL;
 	}
-#  endif
-	if ( ES_MANEJADOR_VALIDO ( hHilo ) )
-	{
-		iRes = GetThreadPriority ( hHilo );
-		if ( iRes == THREAD_PRIORITY_ERROR_RETURN )
-		{
-			iRes = 0;
-		}
-		CloseHandle ( hHilo );
-	}
-# else
-	//PENDIENTE:
-# endif
 	return ( iRes );
 }
 
-# if ( !defined ( WIN ) )
-/* Cierto si la cadena no esta vacia y es toda digitos. Se usa para quedarse con
-   las entradas de /proc que son un PID, descartando las demas ( cpuinfo, self,
-   registry... ). */
-static bool _SisEsSoloDigitos ( const char * p_cNombre )
-{
-	bool		bRes;
-	int			iPos;
-
-	bRes = false;
-	if ( ES_VALIDO ( p_cNombre ) )
-	{
-		iPos = 0;
-		bRes = true;
-		while ( ( p_cNombre [ iPos ] != '\0' ) && bRes )
-		{
-			if ( ( p_cNombre [ iPos ] < '0' ) || ( p_cNombre [ iPos ] > '9' ) )
-			{
-				bRes = false;
-			}
-			iPos = iPos + 1;
-		}
-		if ( iPos == 0 )
-		{
-			bRes = false;
-		}
-	}
-	return ( bRes );
-}
-# endif
 
 
 int SisNumProcesos ()
@@ -1027,9 +1088,9 @@ list<long> * SisListaProcesos ()
 	   subdirectorio cuyo nombre es todo digitos es un PID.
 
 	   LIMITACION EN CYGWIN: el /proc de Cygwin solo lista los procesos Cygwin,
-	   no los del sistema. Compilando en modo Cygwin POSIX ( el de por defecto )
-	   esta funcion devuelve un punado de PID, mientras que en estilo Windows
-	   devuelve todos los del equipo. En Linux nativo si es la lista completa. */
+	   no los del sistema, asi que bajo Cygwin esta funcion devuelve un punado
+	   de PID. Windows nativo toma la rama de arriba, que si los ve todos, y en
+	   Linux nativo /proc si da la lista completa. */
 	DIR *			p_dirProc;
 	struct dirent *	p_entDato;
 
@@ -1070,7 +1131,19 @@ bool SisExisteProceso ( long lPID )
 		CloseHandle ( hProceso );
 	}
 # else
-	// PENDIENTE:
+	/* Lo mismo que hace SisExisteSubproceso: kill con la senal 0 no manda nada,
+	   solo comprueba. Y si falla con EPERM el proceso esta, lo que pasa es que
+	   es de otro usuario; a efectos de "existe" cuenta igual.
+	   Esta via NO depende de /proc, asi que en Cygwin tambien ve los procesos
+	   que no son de Cygwin. */
+	if ( kill ( ( pid_t ) lPID, 0 ) == 0 )
+	{
+		bRes = true;
+	}
+	else if ( errno == EPERM )
+	{
+		bRes = true;
+	}
 # endif
 	return ( bRes );
 }
@@ -1142,7 +1215,11 @@ bool SisProgramaEnEjecucion ( const string & sEjecutable )
 			CloseHandle ( hSnapshot );
 		}
 #		 else
-			// PENDIENTE:
+			/* Recorriendo /proc y comparando con el nombre del ejecutable de
+			   cada proceso, que es lo que compara la rama de Windows con
+			   szExeFile. LIMITACION EN CYGWIN: /proc solo lista procesos de
+			   Cygwin, con lo que aqui la respuesta es parcial en ese modo. */
+			bRes = ( _SisRecorrerProcesos ( sEjecutable, 0, false ) >= 0 );
 #		 endif
  	}
 	return ( bRes );
@@ -1183,7 +1260,9 @@ long SisProcesoPID ( const string & sEjecutable )
 			CloseHandle ( hSnapshot );
 		}
 #	 else
-		// PENDIENTE:
+		/* Mismo recorrido que SisProgramaEnEjecucion, quedandose con el PID en
+		   vez de con el si o el no. Misma LIMITACION EN CYGWIN. */
+		lRes = _SisRecorrerProcesos ( sEjecutable, 0, false );
 #	 endif
 	}
 	return ( lRes );
@@ -1232,7 +1311,9 @@ unsigned long SisProcesoTiempoCPU ( long lPID )
 		CloseHandle ( hProceso );
 	}
 # else
-	// PENDIENTE:
+	/* De /proc/<pid>/stat, que da el tiempo total: nucleo mas usuario, como
+	   hace la rama de Windows. */
+	ulRes = _SisTiempoCPUDeProceso ( lPID, SIS_CPU_COMPLETO );
 # endif
 	return ( ulRes );
 }
@@ -1266,7 +1347,8 @@ unsigned long SisProcesoTiempoCPUModoNucleo ( long lPID )
 		CloseHandle ( hProceso );
 	}
 # else
-	// PENDIENTE:
+	/* De /proc/<pid>/stat: solo el tiempo de nucleo, el campo stime. */
+	ulRes = _SisTiempoCPUDeProceso ( lPID, SIS_CPU_NUCLEO );
 # endif
 	return ( ulRes );
 }
@@ -1300,7 +1382,8 @@ unsigned long SisProcesoTiempoCPUModoUsuario ( long lPID )
 		CloseHandle ( hProceso );
 	}
 # else
-	// PENDIENTE:
+	/* De /proc/<pid>/stat: solo el tiempo de usuario, el campo utime. */
+	ulRes = _SisTiempoCPUDeProceso ( lPID, SIS_CPU_USUARIO );
 # endif
 	return ( ulRes );
 }
@@ -1323,17 +1406,105 @@ bool SisFinalizarProceso ( long lPID )
 		}
 	}
 # else
+	/* Portado del stack C, que ya lo tenia resuelto. SIGKILL y no SIGTERM porque
+	   esta es la equivalente de TerminateProcess: finaliza, no pide que termine.
+	   El waitpid recoge al hijo para no dejar un zombi; con WNOHANG no bloquea si
+	   el proceso no era hijo nuestro. */
 	int iEstado;
 
-	// TODO
-	//if ( ::kill  ( lPID, SIGKILL ) == 0 )
-	if ( false )
+	if ( kill ( (pid_t) lPID, SIGKILL ) == 0 )
 	{
-		waitpid ( lPID, &iEstado, WNOHANG );
+		waitpid ( (pid_t) lPID, &iEstado, WNOHANG );
 		bRes = true;
 	}
 # endif
 	return ( bRes );
+}
+
+static void * _HiloVigilarPadre ( void * p_arg )
+{
+# if ( defined ( WIN ) ) 
+    DWORD       pidPadre;
+    HANDLE      hPadre;
+    HANDLE      hSnap;
+    PROCESSENTRY32 pe;
+    DWORD       pidPropio;
+# else
+	pid_t pidPadre;
+# endif
+
+# if ( defined ( WIN ) )
+	pidPadre = 0;
+	hPadre  = NULL;
+
+    hSnap = CreateToolhelp32Snapshot ( TH32CS_SNAPPROCESS, 0 );
+    if ( hSnap != INVALID_HANDLE_VALUE ) 
+	{
+        pe.dwSize = sizeof(pe);
+        pidPropio = GetCurrentProcessId ();
+
+        if ( Process32First( hSnap, &pe ) ) 
+		{
+            do {
+                if ( pe.th32ProcessID == pidPropio ) 
+				{
+                    pidPadre = pe.th32ParentProcessID;
+                    break;
+                }
+            } while ( Process32Next( hSnap, &pe ) );
+        }
+        CloseHandle ( hSnap );
+    }
+
+    /* Abrir handle al padre para poder vigilarlo */
+    if ( pidPadre != 0 ) 
+	{
+        hPadre = OpenProcess ( SYNCHRONIZE, FALSE, pidPadre );
+    }
+# else
+	pidPadre = getppid ();
+# endif
+
+# if ( defined ( WIN ) )
+	/* Sin manejador no hay a quien vigilar. Que OpenProcess falle ( permisos,
+	   o el padre ya no esta cuando arranca el hilo ) NO es lo mismo que el
+	   padre haya muerto, asi que se abandona la vigilancia en lugar de matar
+	   al proceso, que es lo que hacia antes. */
+	if ( ES_MANEJADOR_NULO ( hPadre ) )
+	{
+		return ( NULL );
+	}
+# endif
+
+    while ( 1 )
+    {
+		/* Una sola espera para las dos plataformas. */
+		std::this_thread::sleep_for ( std::chrono::seconds ( 1 ) );
+
+# if ( defined ( WIN ) )
+
+        if ( WaitForSingleObject ( hPadre, 0 ) == WAIT_OBJECT_0 )
+		{
+            /* El padre ha muerto, el hijo se autotermina. En Windows se sale
+               sin senales, a proposito. */
+			CloseHandle ( hPadre );
+            ExitProcess ( 1 );
+        }
+# else
+		// SisConAsincEscribirConFormato ( "BUCLE HILO %lu/%lu\n",  getppid (), pidPadre );
+        if ( getppid () != pidPadre )
+        {
+            /* El padre ha muerto, el hijo se autotermina */
+            raise ( SIGTERM );
+        }
+# endif
+    }
+	return ( NULL );
+}
+
+thread::id SisLanzarHiloVigilanciaPadre ()
+{
+	return ( SisCrearHilo ( _HiloVigilarPadre, NULL ) );
 }
 
 

@@ -3,7 +3,7 @@
 | Dato         | Valor                                                  |
 | ------------ | ------------------------------------------------------ |
 | Cabecera     | `src/main/include/Cadenas.h`                           |
-| Fuente       | `src/main/c/org/gjs/c/common/Cadenas.c` (3.709 líneas) |
+| Fuente       | `src/main/c/org/gjs/c/common/Cadenas.c` (3.718 líneas) |
 | Prefijo      | `Cad`                                                  |
 | Funciones    | 205                                                    |
 | Incluido por | `Texto.h`                                              |

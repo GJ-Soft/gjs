@@ -16,7 +16,7 @@ namespace org
             {
 
 
-const char FECHA_AÑO[4+1] =
+const char FECHA_ANO[4+1] =
 {
    __DATE__[7], __DATE__[8], __DATE__[9], __DATE__[10], '\0'
 };

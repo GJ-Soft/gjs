@@ -2,11 +2,11 @@
 
 | Dato          | Valor                                                                |
 | ------------- | -------------------------------------------------------------------- |
-| Fuente        | `src/main/c++/org/gjs/cpp/common/SistemaRegistro.cpp` (1.861 líneas) |
-| Cabecera      | **no existe**                                                        |
-| Espacio       | **ninguno**                                                          |
+| Fuente        | `src/main/c++/org/gjs/cpp/common/SistemaRegistro.cpp` (1.060 líneas) |
+| Cabecera      | `src/main/include/SistemaRegistro.h`, más `RegistroConstantes.h`     |
+| Espacio       | `org::gjs::cpp::common`                                              |
 | Prefijo       | `SisReg`                                                             |
-| En la fachada | no                                                                   |
+| En la fachada | sí (`CppCommonSystem.h`)                                             |
 | Test          | **—**                                                                |
 
 [Índice](MODULOS.md) · [README](../README.md)
@@ -18,60 +18,78 @@
 El acceso al **registro de Windows**: crear y borrar claves, leer y escribir
 valores de cadena y numéricos.
 
-```c
-int SisRegExisteClave ( const char * p_cClave, int iClavePrinc );
-int SisRegCrearClave ( const char * p_cClave, int iClavePrinc );
-int SisRegEliminarClave ( const char * p_cClave, int iClavePrinc );
+```cpp
+bool SisRegExisteClave ( const std::string & sClave, int iClavePrinc = REG_CLV_LOCAL_MACHINE );
+bool SisRegCrearClave ( const std::string & sClave, int iClavePrinc = REG_CLV_LOCAL_MACHINE );
+bool SisRegEliminarClave ( const std::string & sClave, int iClavePrinc = REG_CLV_LOCAL_MACHINE );
 
-const char * SisRegObtValorCadena ( const char * p_cClave, const char * p_cValor, int iClavePrinc );
-unsigned long SisRegObtValorNumerico ( const char * p_cClave, const char * p_cValor, int iClavePrinc );
+std::string SisRegObtValorCadena ( const std::string & sClave, const std::string & sValor, int iClavePrinc = REG_CLV_LOCAL_MACHINE );
+unsigned long SisRegObtValorNumerico ( const std::string & sClave, const std::string & sValor, int iClavePrinc = REG_CLV_LOCAL_MACHINE );
 
-int SisRegEstValorCadena ( const char * p_cClave, const char * p_cValor, const char * p_cDato, int iClavePrinc );
-int SisRegEstValorNumerico ( const char * p_cClave, const char * p_cValor, unsigned long ulDato, int iClavePrinc );
+bool SisRegEstValorCadena ( const std::string & sClave, const std::string & sValor, const std::string & sDato, int iClavePrinc = REG_CLV_LOCAL_MACHINE );
+bool SisRegEstValorNumerico ( const std::string & sClave, const std::string & sValor, unsigned long ulDato, int iClavePrinc = REG_CLV_LOCAL_MACHINE );
 ```
 
-Es el fichero más grande del componente.
+Son 45 funciones públicas. Es el segundo fichero más grande del componente,
+detrás de `SistemaProcesos.cpp`.
 
 ---
 
-## Qué le pasa
+## Qué le pasaba, y cómo quedó
 
-**No puede compilar.** Su segunda línea es:
+**Resuelto el 2026-09-14.** El fichero no compilaba: incluía
+`"SistemaRegistro.h"`, que no existía en este módulo, y además era el fuente de
+la versión C copiado sin convertir —cero espacios de nombres, cero
+`std::string`, 46 `char *`—. No saltaba en el build porque otros ficheros del
+componente abortaban la compilación antes de que le llegara el turno.
+
+La cabecera se recuperó de la librería original y se adaptó al idioma del
+módulo, y el fuente se convirtió entero.
+
+| Medida | Antes | Después |
+| --- | --- | --- |
+| Líneas | 1.861 | 1.060 |
+| Espacios de nombres | 0 | 4 anidados |
+| `char *` | 46 | 0 |
+| Errores de compilación | 91 | 0 |
+
+Se trajo también `RegistroConstantes.h`, que sólo estaba en el stack C y del que
+el fuente usa 26 constantes.
+
+### Lo que cambió en la API
+
+- Las cadenas entran por `const std::string &` y salen por valor.
+- El `int` de cierto/falso pasa a `bool`.
+- Los pares `Xxx` / `XxxExt` de la cabecera de 2008 se funden en una sola
+  función con `int iClavePrinc = REG_CLV_LOCAL_MACHINE`. La implementación ya las
+  tenía fundidas desde hacía tiempo: la cabecera iba por detrás.
+- `SisRegConsultarClave` y `SisRegConsultarValor` pierden el `uiMaxTamValor` y
+  devuelven el dato por parámetro de salida.
+- `EstaRegistradoGUID` pasa a llamarse `SisRegEstaRegistradoGUID`.
+- Pasar un dato nulo a `SisRegEstValorCadena` ya no borra el valor; para eso
+  está `SisRegEliminarValor`.
+
+### El ProgId, resuelto el 2026-09-16
+
+`SisRegRegistrarGUID` escribe el ProgId como `ficheroModulo.nombre`, pero
+`SisRegDesregistrarGUID` y `SisRegEstaRegistradoGUID` lo reconstruían como
+`nombre.nombre`, porque en su firma no entraba el fichero del módulo: no
+encontraban nada de lo que había registrado la primera salvo que nombre y fichero
+coincidieran por casualidad.
+
+Las dos reciben ahora `sFicModulo` como último parámetro:
 
 ```cpp
-#include "SistemaRegistro.h"
+void SisRegDesregistrarGUID ( const GUID & guidCodigo, const std::string & sNombre,
+							  const std::string & sFicModulo );
+bool SisRegEstaRegistradoGUID ( const GUID & guidCodigo, const std::string & sNombre,
+								const std::string & sFicModulo );
 ```
 
-y esa cabecera **no existe en este módulo**. Las comillas hacen que el
-preprocesador busque primero en el directorio del propio fichero
-—`src/main/c++/org/gjs/cpp/common/`, donde sólo está `CommonSystemConfig.h`— y
-después en las rutas de inclusión, que son `src/main/include` de este módulo y
-los `include` publicados por sus cuatro dependencias. En ninguna está.
-
-Los únicos `SistemaRegistro.h` del repositorio pertenecen al **stack C**, dentro
-de árboles `target/` de los arquetipos. El módulo C++ no depende del C, así que
-no llegan.
-
-### Y además no está convertido
-
-Tres medidas sobre el fichero dicen lo mismo:
-
-| Medida                         | `SistemaRegistro.cpp` | El resto del componente |
-| ------------------------------ | --------------------- | ----------------------- |
-| Espacios de nombres declarados | **0**                 | 4 anidados              |
-| Usos de `std::string`          | **0**                 | por todas partes        |
-| Usos de `char *`               | **37**                | residuales              |
-
-Es el fuente de la versión C copiado tal cual al árbol C++: mismas firmas con
-`const char *`, mismo estilo de retorno con `int` como código, y sin envolver en
-`org::gjs::cpp::common`.
-
-### Por qué no salta en el build
-
-El `output.txt` del 9 de julio **no lo menciona ni una vez**. La razón está en
-las últimas líneas del log: los errores de `SistemaComandos.cpp` y
-`SistemaInformacion.cpp` abortaron la compilación —«Core 0 interrupted», «Core 6
-interrupted»…— antes de que le llegara el turno. El fallo sigue ahí, esperando a
+El mismo cambio se aplicó al stack **C**, que tenía el defecto idéntico. Allí,
+además, la cabecera declaraba `SisRegEstaRegistradoGUID` con un solo parámetro
+mientras la implementación se llamaba `EstaRegistradoGUID`, sin el prefijo: ni
+casaban ni había forma de llegar a ella desde fuera. Ahora sí.
 que se arreglen los que van delante.
 
 ---

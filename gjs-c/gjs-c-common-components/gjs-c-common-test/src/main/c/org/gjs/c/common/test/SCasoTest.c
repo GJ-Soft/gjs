@@ -64,21 +64,13 @@ void SCasTstDestruir ( SCasoTest ** p_p_caststObj )
 		{
 			if ( p_caststObj->iTipo == 0 )
 			{
-				printf ( "DESTRUYENDO CASO TEST TIPO 0\n" );
-				fflush(stdout);
 				SCasTstsDestruir ( &(p_caststObj->p_caststsObj) );
 			}
 			else if ( p_caststObj->iTipo == 1 )
 			{
-				printf ( "DESTRUYENDO CASO TEST TIPO 1\n" );
-				fflush(stdout);
 				SCasTstaDestruir ( &(p_caststObj->p_caststaObj) );
 			}
-			printf ( "LIBERANDO CASO TEST\n" );
-			fflush(stdout);
 			MemLiberar ( (void **) p_p_caststObj );
-			printf ( "LIBERADO CASO TEST!\n" );
-			fflush(stdout);
 		}
 	}
 }

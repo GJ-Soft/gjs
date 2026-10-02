@@ -82,7 +82,7 @@ int SMtxEsValido ( SMutex * p_mtxObj )
 	if ( ES_VALIDO ( p_mtxObj ) )
 	{
 #	  if ( defined ( WIN ) )
-		if ( ES_VALIDO ( p_mtxObj->hMutex ) )
+		if ( ES_MANEJADOR_VALIDO ( p_mtxObj->hMutex ) )
 #	  elif ( defined ( POSIX ) )
 		// NOTA: Es una dirección de un espacio reservado del sistema:
 		if ( p_mtxObj->p_semMutex != NULL )
@@ -288,15 +288,15 @@ void _SMtxInicializar ( SMutex * p_mtxObj, int iMaxVal )
 
 #	  if ( defined ( WIN ) )
 		p_mtxObj->hMutex = OpenMutex ( SYNCHRONIZE, TRUE, p_mtxObj->p_cNombre );
-		if ( ES_NULO ( p_mtxObj->hMutex ) )
+		if ( ES_MANEJADOR_NULO ( p_mtxObj->hMutex ) )
 		{
 			p_mtxObj->hMutex = CreateMutex ( NULL, FALSE, p_mtxObj->p_cNombre );
-			if ( ES_VALIDO ( p_mtxObj->hMutex ) )
+			if ( ES_MANEJADOR_VALIDO ( p_mtxObj->hMutex ) )
 			{
 				p_mtxObj->iCreado = 1;
 			}
 		}
-		if ( ES_VALIDO ( p_mtxObj->hMutex ) )
+		if ( ES_MANEJADOR_VALIDO ( p_mtxObj->hMutex ) )
 		{
 			if ( iMaxVal <= 0 )
 			{
@@ -336,7 +336,7 @@ void _SMtxFinalizar ( SMutex * p_mtxObj )
 	{
 		SMtxDejarLibre ( p_mtxObj );
 #	  if ( defined ( WIN ) )
-		if (ES_VALIDO ( p_mtxObj->hMutex ) )
+		if (ES_MANEJADOR_VALIDO ( p_mtxObj->hMutex ) )
 		{
 			CloseHandle ( p_mtxObj->hMutex );
 		}

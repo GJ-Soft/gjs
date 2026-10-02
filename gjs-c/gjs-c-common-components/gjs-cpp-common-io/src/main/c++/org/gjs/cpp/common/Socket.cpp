@@ -16,6 +16,52 @@ namespace org
 		{
             namespace common
             {
+#if ( defined ( WIN ) )
+bool SockInicializar()
+{
+    WSADATA wsaData;
+
+    int result = WSAStartup( MAKEWORD( 2, 2 ), &wsaData );
+    return ( result == 0 ); 
+}
+
+void SockFinalizar()
+{
+	WSACleanup();
+}
+#endif	
+
+/* Los simbolos que usa ( sockaddr_in, inet_addr, gethostbyname, hostent,
+   AF_INET, INADDR_ANY ) los da CommonIoConfig.h: winsock2.h en Windows
+   nativo, netdb.h y arpa/inet.h en POSIX. */
+int ResolverIP( const string & sIP )
+{
+	int iIP = INADDR_ANY;
+	if ( sIP.size() > 0 )
+	{
+		struct sockaddr_in inaddr;
+
+		memset ((char * ) &inaddr, 0, sizeof( inaddr ) );
+		inaddr.sin_addr.s_addr = inet_addr( sIP.c_str() );
+		if ( (int)( inaddr.sin_addr.s_addr ) == -1 )
+		{
+			struct hostent *hostp = gethostbyname( sIP.c_str() );
+			if ( hostp != NULL )
+			{
+				if ( hostp->h_addrtype == AF_INET)
+				{
+					memcpy( (char * ) &inaddr.sin_addr, (char * ) hostp->h_addr, sizeof( inaddr.sin_addr ) );
+					iIP = inaddr.sin_addr.s_addr;
+				}
+			}
+		}
+		else
+		{
+			iIP = inaddr.sin_addr.s_addr;
+		}
+	}
+	return( iIP );
+}
 
 Socket::Socket()
 {
@@ -222,7 +268,7 @@ bool Socket::Cerrar()
 	{
 #if ( defined ( WIN ) )
 		// shutdown explicito antes de cerrar: fuerza el envio del FIN para que el
-		// extremo remoto detecte el cierre (en Cygwin/winsock, closesocket a secas
+		// extremo remoto detecte el cierre (en winsock, closesocket a secas
 		// no siempre hace que un recv() bloqueado del cliente devuelva EOF).
 		shutdown ( iSocket, SD_BOTH );
 		bRes = ( closesocket ( iSocket ) == 0 );

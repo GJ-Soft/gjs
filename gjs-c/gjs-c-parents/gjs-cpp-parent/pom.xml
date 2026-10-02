@@ -32,6 +32,7 @@
 	<properties>
 		<!-- Language features -->
 		<gjs.source.language>c++</gjs.source.language>
+		<cpp.doxygen.optimize.c>NO</cpp.doxygen.optimize.c>
 		<gjs.source.extension>cpp</gjs.source.extension>
 
 		<!-- Compiler options -->
@@ -40,7 +41,6 @@
 		<gjs.nar.compiler.language>c++</gjs.nar.compiler.language>
 		<gjs.nar.language.version>20</gjs.nar.language.version>
 		<gjs.nar.language.standard>gnu++${gjs.nar.language.version}</gjs.nar.language.standard>
-		<gjs.nar.language.aol>gpp</gjs.nar.language.aol>
 		
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->

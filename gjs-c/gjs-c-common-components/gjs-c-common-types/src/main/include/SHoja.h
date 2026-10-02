@@ -31,10 +31,10 @@ SHoja * SHojCrear ( int iMaxElems );
 
 void SHojDestruir ( SHoja ** p_p_hojObj );
 
-int SHojInsertar ( SHoja * p_hojObj, const char * p_cClave, int iPosicion );
-int SHojBuscar ( SHoja * p_hojObj, const char * p_cClave );
+int SHojInsertar ( SHoja * p_hojObj, const char * p_cClave, unsigned long ulPosicion );
+unsigned long SHojBuscar ( SHoja * p_hojObj, const char * p_cClave );
 int SHojEliminar ( SHoja * p_hojObj, const char * p_cClave );
-int SHojModificar ( SHoja * p_hojObj, const char * p_cClave, int iPosicion );
+int SHojModificar ( SHoja * p_hojObj, const char * p_cClave, unsigned long ulPosicion );
 
 int SHojCompleta ( SHoja * p_hojObj );
 int SHojExiste ( SHoja * p_hojObj, const char * p_cClave );

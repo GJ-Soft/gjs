@@ -494,9 +494,11 @@ int SCadConcatenarCaracter ( SCadena * p_cadObj, char cValor )
 
 	if ( ES_VALIDO ( p_cadObj ) )
 	{
+		/* Ninguno de estos caminos asignaba iRes: la funcion devolvia basura justo
+		   cuando hacia su trabajo, y 0 solo cuando el objeto no era valido. */
 		if ( ES_NULO ( p_cadObj->p_cValor ) )
 		{
-			SCadCopiarCaracter ( p_cadObj, cValor );
+			iRes = SCadCopiarCaracter ( p_cadObj, cValor );
 		}
 		else
 		{
@@ -505,6 +507,12 @@ int SCadConcatenarCaracter ( SCadena * p_cadObj, char cValor )
 			{
 				p_cadObj->p_cValor [ iLong ] = cValor;
 				p_cadObj->p_cValor [ iLong + 1 ] = (char) 0;
+				iRes = 1;
+			}
+			else
+			{
+				/* No cabe: no se concatena nada, asi que tampoco es un exito. */
+				iRes = 0;
 			}
 		}
 	}
@@ -1097,6 +1105,8 @@ int SCadExpanderCaracter ( SCadena * p_cadObj, char cVal )
 				{	
 					p_cadObj->p_cValor [ iLong + iPos ] = (char) cVal; 
 				} 
+				/* Faltaba: este es el unico camino de exito de la funcion. */
+				iRes = 1;
 			}
 			else
 			{

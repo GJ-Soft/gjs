@@ -24,6 +24,7 @@ extern bool TestReal ();
 extern bool TestASCIIEstandar ();
 extern bool TestExpresionesRegulares ();
 extern bool TestMemoria ();
+extern bool TestToBool ();
 
 int main ( int argc, char * argv[] )
 {
@@ -61,6 +62,7 @@ int main ( int argc, char * argv[] )
 		if ( mapTests.find( sTest ) != mapTests.end() )
 		{
 			FUNCION_BOOL fTest = mapTests[ sTest ];
+	mapTests[ "ToBoolTest" ] = TestToBool;
 			if( !fTest () )
 			{
 				iRes = -1;

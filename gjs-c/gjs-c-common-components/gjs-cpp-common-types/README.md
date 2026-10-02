@@ -134,7 +134,10 @@ normal): **BUILD SUCCESS**, sin un solo KO.
   memoria que no es del montón.** Ver [Ptr](doc/Ptr.md).
 - **`Secuencias::SonIguales` compara dos arrays sin recibir el tamaño.** Ver
   [Secuencias](doc/Secuencias.md).
-- **`Constantes.h` declara `FECHA_AÑO`**, con eñe en el identificador.
+- ~~**`Constantes.h` declara `FECHA_AÑO`**, con eñe en el identificador.~~
+  **Renombrado a `FECHA_ANO` el 2026-09-16**: era el único identificador no ASCII
+  del stack, y hacía que cppcheck marcase cada ejecución como «con errores
+  críticos» ( `unhandledChar` ).
 - **`MemoriaGlobal` es el MDC que `gjs-c-common-log` declaró y nunca
   implementó.** Ver [MemoriaGlobal](doc/MemoriaGlobal.md).
 - Cada documento tiene una sección *Observaciones* con el detalle.

@@ -1,6 +1,10 @@
-#include "Depurador.h"
-
+/* BaseConfig.h va PRIMERO, antes que cualquier otra cabecera: en modo WIN es
+   quien mete winsock2.h, y tiene que llegar antes de que nada arrastre
+   sys/types.h. El <string> de las cabeceras de aqui abajo ya lo hace, via
+   pthread.h, y entonces Cygwin declara el select POSIX y winsock2 choca. */
 #include "BaseConfig.h"
+
+#include "Depurador.h"
 #include "InfoMemoria.h"
 
 

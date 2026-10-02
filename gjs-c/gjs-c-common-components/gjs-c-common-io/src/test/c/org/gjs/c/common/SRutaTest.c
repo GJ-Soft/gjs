@@ -267,6 +267,121 @@ static int TestSRutNulo01 ()
 	return ( iRes );
 }
 
+/* Estilo del directorio. Antes las dos funciones usaban expresiones PCRE
+   que este motor no entiende y daban siempre 0. Un directorio sin
+   separadores ni unidad es de los dos estilos; uno que mezcla, de ninguno. */
+static int TestSRutEstilo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SRutEstilo 01:\n" );
+	SRuta * p_rutObj = SRutCrearDirectorioLit ( "/tmp" );
+	SRutEstablecerDirectorioLit ( p_rutObj, "/tmp" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 1 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 0 ) )
+	{
+		printf( "Error caso 1: [/tmp] se esperaba UNIX 1 y DOS 0: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "/tmp/datos" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 1 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 0 ) )
+	{
+		printf( "Error caso 2: [/tmp/datos] se esperaba UNIX 1 y DOS 0: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "/" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 1 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 0 ) )
+	{
+		printf( "Error caso 3: [/] se esperaba UNIX 1 y DOS 0: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "./a" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 1 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 0 ) )
+	{
+		printf( "Error caso 4: [./a] se esperaba UNIX 1 y DOS 0: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "../a/b" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 1 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 0 ) )
+	{
+		printf( "Error caso 5: [../a/b] se esperaba UNIX 1 y DOS 0: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "C:\\Temp" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 0 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 1 ) )
+	{
+		printf( "Error caso 6: [C:\\Temp] se esperaba UNIX 0 y DOS 1: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "C:\\" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 0 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 1 ) )
+	{
+		printf( "Error caso 7: [C:\\] se esperaba UNIX 0 y DOS 1: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "C:" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 0 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 1 ) )
+	{
+		printf( "Error caso 8: [C:] se esperaba UNIX 0 y DOS 1: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "\\\\srv\\sh" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 0 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 1 ) )
+	{
+		printf( "Error caso 9: [\\\\srv\\sh] se esperaba UNIX 0 y DOS 1: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "..\\a" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 0 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 1 ) )
+	{
+		printf( "Error caso 10: [..\\a] se esperaba UNIX 0 y DOS 1: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "tmp" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 1 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 1 ) )
+	{
+		printf( "Error caso 11: [tmp] se esperaba UNIX 1 y DOS 1: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "C:/dir" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 0 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 0 ) )
+	{
+		printf( "Error caso 12: [C:/dir] se esperaba UNIX 0 y DOS 0: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutEstablecerDirectorioLit ( p_rutObj, "a/b\\c" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 0 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 0 ) )
+	{
+		printf( "Error caso 13: [a/b\\c] se esperaba UNIX 0 y DOS 0: %d y %d\n",
+				SRutEsEstiloUNIX ( p_rutObj ), SRutEsEstiloDOS ( p_rutObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* Sin directorio no es de ningun estilo. */
+	SRutEstablecerDirectorioLit ( p_rutObj, "" );
+	if ( ( SRutEsEstiloUNIX ( p_rutObj ) != 0 ) || ( SRutEsEstiloDOS ( p_rutObj ) != 0 ) )
+	{
+		printf( "Error caso 15: un directorio vacio no deberia ser de ningun estilo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRutDestruir ( &p_rutObj );
+	if ( ( SRutEsEstiloUNIX ( NULL ) != 0 ) || ( SRutEsEstiloDOS ( NULL ) != 0 ) )
+	{
+		printf( "Error caso 14: con nulo se esperaba 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
 int TestSRuta ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -277,7 +392,8 @@ int TestSRuta ()
 			( TestSRutExtension02 () == BOOL_VAL_CIERTO ) &&
 			( TestSRutEstablecer01 () == BOOL_VAL_CIERTO ) &&
 			( TestSRutValida01 () == BOOL_VAL_CIERTO ) &&
-			( TestSRutNulo01 () == BOOL_VAL_CIERTO ) )
+			( TestSRutNulo01 () == BOOL_VAL_CIERTO ) &&
+			( TestSRutEstilo01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

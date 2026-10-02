@@ -6,7 +6,7 @@
 | Fuentes       | `src/main/c/org/gjs/c/common/SElemento.c`, `SElementoPtr.c`       |
 | Prefijos      | `SElm`, `SElp`                                                    |
 | Structs       | `SElemento`, `SElementoPtr`                                       |
-| Funciones     | 46 + 17                                                           |
+| Funciones     | 47 + 19                                                           |
 | Incluidos por | `Tipos.h`                                                         |
 | Tests         | `SElementoTest.c`, `SElementoPtrTest.c`                           |
 
@@ -96,6 +96,20 @@ Modificación del bloque completo: `SElmModificar ( SElemento *, SBloque * )` y
 | `int SElmDesencadenarSucesor ( SElemento * )`             | Rompe el enlace siguiente.            |
 | `int SElmDesencadenar ( SElemento * )`                    | Se saca de la cadena por ambos lados. |
 | `void SElmDeposicionar ( SElemento * )`                   | Deja el elemento sin posición.        |
+| `SElemento * SElmAntecesorExt ( SElemento *, int iInc )`  | El que está `iInc` eslabones atrás.   |
+| `SElemento * SElmSucesorExt ( SElemento *, int iInc )`    | El que está `iInc` eslabones delante. |
+
+Las dos `…Ext` recorren la cadena dando saltos. Con **`iInc = 0` devuelven el
+propio elemento**, que es la respuesta natural a «avanza cero eslabones».
+Devuelven **`NULL`** si el elemento de partida no es válido, si se sale por el
+extremo de la cadena o si `iInc` es negativo; esos tres casos no se distinguen
+entre sí.
+
+Nacieron con el avance escrito sobre el elemento de partida en vez de sobre el
+que ya se había alcanzado, así que daban el vecino inmediato para cualquier
+`iInc`. Arreglado el 2026-09-20, con un caso de test —`Test…AntecesorSucesorExt01`,
+en los dos tipos— que salta dos y tres eslabones: con uno solo, la versión rota
+también acertaba.
 
 ### Comparación
 
@@ -120,7 +134,9 @@ Mismo esquema, reducido a lo que tiene sentido sin conocer el tamaño:
 Encadenado idéntico al de `SElemento`: `SElpAntecesor`, `SElpSucesor`,
 `SElpTieneAntecesor`, `SElpTieneSucesor`, `SElpEncadenarAntecesor`,
 `SElpEncadenarSucesor`, `SElpDesencadenarAntecesor`, `SElpDesencadenarSucesor`,
-`SElpDesencadenar`.
+`SElpDesencadenar`, `SElpAntecesorExt` y `SElpSucesorExt`. Estas dos últimas
+tienen la misma firma y el mismo comportamiento que sus gemelas de `SElemento`,
+casos límite incluidos.
 
 Comparación: `SElpEsIgual ( SElementoPtr *, SElementoPtr *, int iNumBytes )` y
 `SElpEsIgualExt ( SElementoPtr *, byte *, int iNumBytes )`.

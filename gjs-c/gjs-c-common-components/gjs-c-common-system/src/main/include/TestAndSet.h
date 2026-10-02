@@ -25,8 +25,8 @@
 #if ( defined ( WIN ) )
 
 #	if ( !defined ( tas ) )
-#		define tas(ptr) (InterlockedExchange((ptr), 1))
-#		define tar(ptr) (InterlockedExchange((ptr), 0))
+#		define tas(ptr) (InterlockedExchange((volatile LONG *)(ptr), 1))
+#		define tar(ptr) (InterlockedExchange((volatile LONG *)(ptr), 0))
 #	endif
 
 #elif ( defined ( POSIX ) )

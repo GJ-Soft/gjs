@@ -524,6 +524,98 @@ static int TestSLisExtraer01 ()
 
 
 
+
+
+/* SLisElemento entra por el extremo mas cercano al indice, asi que hay que
+   probar TODOS los indices, no solo los primeros: el off-by-one que tuvo la
+   rama de entrada por el final solo se veia pidiendo un indice de la segunda
+   mitad. Y con el cursor FRIO, porque mientras estuviera caliente la funcion
+   tomaba el otro camino.
+
+   Se comprueba ademas el contrato nuevo: consultar por indice NO mueve el
+   cursor. Antes lo movia, y de ahi salio que InsertarOrdenado dejara de
+   ordenar en cuanto se quito ese efecto. */
+static int TestSLisElementoIndice01 ()
+{
+	int			iRes = BOOL_VAL_CIERTO;
+	int			iPos;
+	SLista *	p_lisObj;
+	SElemento *	p_elmObj;
+
+	printf( "Test SLisElementoIndice 01:\n" );
+
+	/* Siete elementos: 100, 101 … 106. Impar a proposito, para que el reparto
+	   entre las dos mitades no sea simetrico. */
+	p_lisObj = SLisCrear ();
+	for ( iPos = 0; iPos < 7; iPos = iPos + 1 )
+	{
+		SLisInsertarAlFinal ( p_lisObj, CrearElementoEntero ( 100 + iPos ) );
+	}
+
+	/* De atras hacia delante y con el cursor recien puesto al principio cada
+	   vez, para forzar la entrada por el final. */
+	for ( iPos = 6; iPos >= 0; iPos = iPos - 1 )
+	{
+		SLisInicio ( p_lisObj );
+		p_elmObj = SLisElemento ( p_lisObj, iPos );
+		if ( ES_NULO ( p_elmObj ) )
+		{
+			printf( "Error caso 1: el indice %d no deberia dar nulo\n", iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else if ( SElmEntero ( p_elmObj ) != 100 + iPos )
+		{
+			printf( "Error caso 2: en el indice %d se esperaba %d: %d\n",
+					iPos, 100 + iPos, SElmEntero ( p_elmObj ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	/* Y de delante hacia atras. */
+	for ( iPos = 0; iPos < 7; iPos = iPos + 1 )
+	{
+		p_elmObj = SLisElemento ( p_lisObj, iPos );
+		if ( ES_VALIDO ( p_elmObj ) && ( SElmEntero ( p_elmObj ) != 100 + iPos ) )
+		{
+			printf( "Error caso 3: en el indice %d se esperaba %d: %d\n",
+					iPos, 100 + iPos, SElmEntero ( p_elmObj ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	/* Fuera de rango, nulo. */
+	if ( ES_VALIDO ( SLisElemento ( p_lisObj, 7 ) ) )
+	{
+		printf( "Error caso 4: el indice 7 no existe\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SLisElemento ( p_lisObj, -1 ) ) )
+	{
+		printf( "Error caso 5: el indice -1 no existe\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+
+	/* El contrato nuevo: consultar por indice no mueve el cursor. */
+	SLisInicio ( p_lisObj );
+	SLisSiguiente ( p_lisObj );
+	SLisSiguiente ( p_lisObj );
+	if ( SLisPosicion ( p_lisObj ) != 2 )
+	{
+		printf( "Error caso 6: el cursor deberia estar en 2: %d\n", SLisPosicion ( p_lisObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisElemento ( p_lisObj, 6 );
+	SLisElemento ( p_lisObj, 0 );
+	if ( SLisPosicion ( p_lisObj ) != 2 )
+	{
+		printf( "Error caso 7: consultar por indice no deberia mover el cursor, y esta en %d\n",
+				SLisPosicion ( p_lisObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisDestruir ( &p_lisObj );
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+
 int TestSLista ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -537,7 +629,8 @@ int TestSLista ()
 			( TestSLisEliminar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisExtraer01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisVaciar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSLisInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSLisInvalidos01 () == BOOL_VAL_CIERTO )  &&
+			( TestSLisElementoIndice01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

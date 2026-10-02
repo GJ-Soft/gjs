@@ -1,7 +1,12 @@
 #ifndef _ORG_GJS_C_CC_CPP_LOG_LOG_H
 #define _ORG_GJS_C_CC_CPP_LOG_LOG_H
 
-#include <MDC.h>
+#include <NivelLog.h>
+#include <LogAppender.h>
+#include <LogConsola.h>
+#include <LogFichero.h>
+
+#include <memory>
 
 /* ToString.h hace falta aqui porque las plantillas Log* estan definidas en esta
    cabecera y lo llaman; <exception>, <type_traits> y <utility>, por la guarda de
@@ -14,17 +19,6 @@
 #include <type_traits>
 #include <utility>
 
-
-
-#define LOG_PROP_FICHERO				"logFilename"
-#define LOG_PROP_DIRECTORIO				"logDirectory"
-
-#define LOG_VAR_DIRECTORIO				"LOG_DIR"
-
-
-#ifdef ERROR
-#	undef ERROR
-#endif
 
 
 
@@ -40,25 +34,14 @@ namespace org
                 namespace log
                 {
 					
-            enum Nivel
-            {
-                TODOS = 0,
-                TRAZA = 1,
-                DEPUR = 2,
-                INFO = 3,
-                AVISO = 4,
-                ERROR = 5,
-                FATAL = 6,
-                NINGUNO = 7
-            };
-
-
-            std::map<std::string, std::string> LogPropiedadesDefecto ( std::string sNombreFichero = "", std::string sDirectorio = "" );
+			/* La cabecera declaraba dos parametros y la implementacion tiene cuatro: eran
+			   dos sobrecargas distintas, y la de dos no la define nadie. */
+			std::map<std::string, std::string> LogPropiedadesDefecto ( bool bConsola, bool bFichero,
+																			std::string sNombre,
+																			std::string sDirectorio );
 
             bool LogIni ();
             bool LogIni ( const std::string & sRutaFicheroCfg );
-
-            // TODO: Por un bug en log4cxx no funciona la substitucion de propiedades y no se pueden usar xml de configuración customizados
             bool LogIni ( std::map<std::string, std::string> & mapPropiedades );
             bool LogIni ( const std::string & sRutaFicheroCfg, std::map<std::string, std::string> & mapPropiedades );
 
@@ -66,28 +49,33 @@ namespace org
 			void LogActivar ();
             void LogDesactivar ();
 
+            NivelLog LogNivel ();
+            void LogEstablecerNivel ( NivelLog nivel );
+            void LogEstablecerNivel ( int iNivel );
 
-            bool LogIniConsola ( bool bSoloMensaje = false );
+            void LogFin ();
+
+			/* Puntero compartido y no referencia: LogAppender es abstracta y los
+			   appenders se guardan en una lista que sobrevive a quien los creo. */
+			bool LogIncluirAppender ( std::shared_ptr < LogAppender > p_logger );
+			
+            bool LogIniConsola ( const std::string & sNomProceso );
 			bool LogHaySalidaPorConsola ();
 			bool LogSalidaPorConsolaActivada ();
 			void LogActivarConsola ();
             void LogDesactivarConsola ();
 			
-            bool LogIniFichero ( const std::string & sFicLog, bool consola = false );
-
-            void LogFin ();
-			void LogLiberar ();
+            bool LogIniFichero ( const std::string & sNomProceso, const std::string & sDirectorio );
 
             void LogInfo ( const std::string & sMensaje );
             void LogDepuracion ( const std::string & sMensaje );
             void LogTraza ( const std::string & sMensaje );
             void LogAviso ( const std::string & sMensaje );
+            void LogAvisoEx ( const std::string & sMensaje, const std::exception & exInfo );
             void LogError ( const std::string & sMensaje );
-            void LogFatal ( const std::string & sMensaje );
             void LogErrorEx ( const std::string & sMensaje, const std::exception & exInfo );
-            void LogFatalEx ( const std::string & sMensaje, const std::exception & exInfo );
             void LogError ( const std::exception & exInfo );
-            void LogFatal ( const std::exception & exInfo );
+            void LogAviso ( const std::exception & exInfo );
 
             /* Las definiciones van aqui, en la cabecera, y no en Log.cpp: una
                plantilla solo se instancia donde se ve su cuerpo, asi que definidas
@@ -108,12 +96,7 @@ namespace org
             	LogTraza ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
             }
 
-            template<typename... Args> void LogAviso ( const std::string & sFormato, Args&&... argumentos )
-            {
-            	LogAviso ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
-            }
-
-            /* LogError y LogFatal llevan guarda: si alguno de los argumentos es una
+            /* LogError y LogAviso llevan guarda: si alguno de los argumentos es una
                excepcion, esta plantilla se descarta y gana la sobrecarga
                LogError ( const std::exception & ). Sin ella, LogError ( unaExcepcion )
                entraria aqui y acabaria en vformat, que no sabe formatear una
@@ -125,24 +108,12 @@ namespace org
             	LogError ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
             }
 
-            template<typename... Args> auto LogFatal ( const std::string & sFormato, Args&&... argumentos )
+            template<typename... Args> auto LogAviso ( const std::string & sFormato, Args&&... argumentos )
              -> std::enable_if_t<!(... || std::is_base_of_v<std::exception, std::decay_t<Args>>)>
             {
-            	LogFatal ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
+            	LogAviso ( ToString ( sFormato, std::forward<Args> ( argumentos )... ) );
             }
 
-            Nivel LogGetNivel ();
-            void LogSetNivel ( Nivel nivel );
-            void LogSetNivel ( int iNivel );
-
-			Nivel ToNivel ( int iNivel );
-			int ToInt ( Nivel nivel );
-            /*
-                TODO:
-                    Colores en caso consola
-                    Reconfiguracion forzada
-                    Test reconfiguración periodica y forzada
-             */
 			 
                 }
             }

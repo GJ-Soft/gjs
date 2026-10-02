@@ -33,13 +33,14 @@ funciones.
 
 ### `CCommon.h`
 
-La fachada de todo el stack C. Trae los diez componentes y los cuatro módulos
+La fachada de todo el stack C. Trae los once componentes y los cuatro módulos
 propios:
 
 ```c
 #include <Base.h>            /* gjs-c-common-base        */
 #include <Tipos.h>
 #include <TiposDatos.h>      /* gjs-c-common-types       */
+#include <TiposBaseDatos.h>  /* gjs-c-common-database    */
 #include <Texto.h>           /* gjs-c-common-text        */
 #include <Tiempo.h>          /* gjs-c-common-time        */
 #include <Ficheros.h>        /* gjs-c-common-io          */

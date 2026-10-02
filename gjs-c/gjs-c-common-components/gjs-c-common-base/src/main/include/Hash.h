@@ -19,10 +19,8 @@ unsigned int HashEntero ( int iVal );
 unsigned int HashEnteroLargo ( long lVal );
 unsigned int HashEnteroSinSigno ( unsigned int uiVal );
 unsigned int HashEnteroLargoSinSigno ( unsigned long ulVal );
-#if ( defined ( LLONG ) )
-unsigned int HashEnteroDobleLargo ( llong llVal );
-unsigned int HashEnteroDobleLargoSinSigno ( ullong ullVal );
-#endif
+unsigned int HashEnteroDobleLargo ( long long llVal );
+unsigned int HashEnteroDobleLargoSinSigno ( unsigned long long ullVal );
 unsigned int HashReal ( float fVal );
 unsigned int HashRealDoble ( double dVal );
 

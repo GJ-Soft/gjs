@@ -379,4 +379,59 @@ SElementoPtr * SElpDuplicar ( SElementoPtr * p_elpObj )
 	return ( p_elpDup );
 }
 
+/* Salta iInc eslabones en la cadena. Devuelve NULL si se sale por el extremo
+   y si iInc es negativo. Con iInc = 0 se devuelve el PROPIO elemento, que es
+   la respuesta natural a "avanza cero eslabones".
+
+   El avance tiene que hacerse sobre p_elpRes, no sobre p_elpObj: partiendo
+   siempre del original, el bucle daba iInc vueltas para acabar en el vecino
+   inmediato, con lo que la funcion hacia lo mismo que SElpAntecesor con cualquier
+   valor de iInc. */
+SElementoPtr * SElpAntecesorExt ( SElementoPtr * p_elpObj, int iInc )
+{
+	SElementoPtr * p_elpRes;
+
+	if ( ES_VALIDO ( p_elpObj ) && ( iInc >= 0 ) )
+	{
+		p_elpRes = p_elpObj;
+		while ( ES_VALIDO ( p_elpRes ) && ( iInc > 0 ) )
+		{
+			p_elpRes = (SElementoPtr *) p_elpRes->p_elpAnt;
+			iInc = iInc - 1;
+		}
+	}
+	else
+	{
+		p_elpRes = NULL;
+	}
+	return ( p_elpRes );
+}
+
+/* Salta iInc eslabones en la cadena. Devuelve NULL si se sale por el extremo
+   y si iInc es negativo. Con iInc = 0 se devuelve el PROPIO elemento, que es
+   la respuesta natural a "avanza cero eslabones".
+
+   El avance tiene que hacerse sobre p_elpRes, no sobre p_elpObj: partiendo
+   siempre del original, el bucle daba iInc vueltas para acabar en el vecino
+   inmediato, con lo que la funcion hacia lo mismo que SElpSucesor con cualquier
+   valor de iInc. */
+SElementoPtr * SElpSucesorExt ( SElementoPtr * p_elpObj, int iInc )
+{
+	SElementoPtr * p_elpRes;
+
+	if ( ES_VALIDO ( p_elpObj ) && ( iInc >= 0 ) )
+	{
+		p_elpRes = p_elpObj;
+		while ( ES_VALIDO ( p_elpRes ) && ( iInc > 0 ) )
+		{
+			p_elpRes = (SElementoPtr *) p_elpRes->p_elpSig;
+			iInc = iInc - 1;
+		}
+	}
+	else
+	{
+		p_elpRes = NULL;
+	}
+	return ( p_elpRes );
+}
 

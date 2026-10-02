@@ -121,11 +121,30 @@ string SisErrDescripcion ()
 	if ( g_iSisUltError != 0 )
 	{
 #     if ( defined ( WIN ) )
-		LPTSTR lpMsgBuf;
+		LPTSTR	lpMsgBuf = NULL;
+		DWORD	dwTam;
 
-		FormatMessage ( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, (DWORD) g_iSisUltError,
-						MAKELANGID ( LANG_NEUTRAL, SUBLANG_DEFAULT ), (LPTSTR) &lpMsgBuf, 0, NULL );
-		sRes = string ( (const char *) lpMsgBuf );
+		/* IGNORE_INSERTS: sin el, un mensaje con parametros ( %1 ) manda a
+		   FormatMessage a buscarlos a una lista que no le hemos pasado. */
+		dwTam = FormatMessage ( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+								FORMAT_MESSAGE_IGNORE_INSERTS, NULL, (DWORD) g_iSisUltError,
+								MAKELANGID ( LANG_NEUTRAL, SUBLANG_DEFAULT ), (LPTSTR) &lpMsgBuf, 0, NULL );
+		/* El puntero arrancaba sin inicializar y se construia el string sobre el
+		   sin mirar si FormatMessage habia hecho algo: cuando falla no lo toca. */
+		if ( ( dwTam > 0 ) && ES_VALIDO ( lpMsgBuf ) )
+		{
+			sRes = string ( (const char *) lpMsgBuf, dwTam );
+			/* FormatMessage remata con ".\r\n", y este texto acaba dentro de una
+			   linea de SisErrMensaje (). Mismo recorte que en SistemaExcepcion. */
+			sRes.erase ( sRes.find_last_not_of ( " \t\r\n" ) + 1 );
+		}
+		if ( ES_VALIDO ( lpMsgBuf ) )
+		{
+			/* Con ALLOCATE_BUFFER el buffer lo reserva FormatMessage y hay que
+			   soltarlo: sin esto se perdia memoria en cada error. La version C de
+			   este mismo modulo si lo hacia. */
+			LocalFree ( lpMsgBuf );
+		}
 
 #     elif ( defined ( GNU ) )
 		sRes = string ( (const char *) strerror ( g_iSisUltError ) );

@@ -563,7 +563,7 @@
         </profile>
         <profile>
             <id>attach-sources</id>
-            <build>
+			<build>
                 <plugins>
                     <plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -585,6 +585,39 @@
             <id>attach-javadoc</id>
             <build>
                 <plugins>
+                    <plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+						</executions>
+					</plugin>
+                </plugins>
+            </build>
+        </profile>		
+        <profile>
+            <id>deploy-central</id>
+            <build>
+                <plugins>
+                    <plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+						</executions>
+                    </plugin>
                     <plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>

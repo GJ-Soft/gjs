@@ -38,11 +38,15 @@ SLog * AplicLog ();
 int AplicLogNivel ();
 int AplicLogEstablecerNivel ( int iNivel );
 
-int AplicLogAnotar ( const char * p_cTexto, ... );
-int AplicLogAnotarForzado ( const char * p_cTexto, ... );
-int AplicLogAnotarDepuracion ( const char * p_cTexto, ... );
-int AplicLogAnotarAviso ( const char * p_cTexto, ... );
-int AplicLogAnotarError ( const char * p_cTexto, ... );
+/* El atributo format hace que el compilador compruebe el formato y los argumentos
+   de estas cinco, igual que en printf: sin el no avisaba de nada, ni siquiera con
+   -Wformat=2. El juego de conversiones es el de printf del sistema, que es lo
+   correcto en los tres modos (Cygwin, MinGW y Linux), porque es quien formatea. */
+int AplicLogAnotar ( const char * p_cTexto, ... ) __attribute__ (( format ( printf, 1, 2 ) ));
+int AplicLogAnotarForzado ( const char * p_cTexto, ... ) __attribute__ (( format ( printf, 1, 2 ) ));
+int AplicLogAnotarDepuracion ( const char * p_cTexto, ... ) __attribute__ (( format ( printf, 1, 2 ) ));
+int AplicLogAnotarAviso ( const char * p_cTexto, ... ) __attribute__ (( format ( printf, 1, 2 ) ));
+int AplicLogAnotarError ( const char * p_cTexto, ... ) __attribute__ (( format ( printf, 1, 2 ) ));
 int AplicLogAnotarPilaErrores ();
 int AplicLogAnotarSaltoLinea ();
 

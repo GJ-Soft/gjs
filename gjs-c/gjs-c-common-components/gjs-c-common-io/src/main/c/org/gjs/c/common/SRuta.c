@@ -273,13 +273,33 @@ int SRutEsRelativa ( SRuta * p_rutObj )
 	return ( iRes );
 }
 
+/* Las dos siguientes miraban el directorio con expresiones de estilo PCRE
+   ( ^, [^/], +, $ ) que ExpRegSeCumple no entiende, y devolvian siempre 0.
+   Ahora usan su sintaxis: SF_PATRON_DIR_UNIX / SF_PATRON_DIR_DOS. Un
+   directorio sin separadores ni unidad ( "tmp" ) es de los dos estilos. */
 int SRutEsEstiloUNIX ( SRuta * p_rutObj )
 {
-	int iRes;
-	
+	int				iRes;
+	const char *	p_cDir;
+
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
-        iRes = ExpRegSeCumple ( "^(/|\\./|\\.\\./|)(([^/\\0]+/)*$", SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
+		p_cDir = SCadValorConstante ( p_rutObj->p_cadDirectorio );
+		if ( CadContieneCaracter ( p_cDir, '\\' ) == 0 )
+		{
+			if ( CadCaracter ( p_cDir, 1 ) != ':' )
+			{
+				iRes = ExpRegSeCumple ( SF_PATRON_DIR_UNIX, p_cDir );
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
 	}
 	else
 	{
@@ -290,11 +310,20 @@ int SRutEsEstiloUNIX ( SRuta * p_rutObj )
 
 int SRutEsEstiloDOS ( SRuta * p_rutObj )
 {
-	int iRes;
-	
+	int				iRes;
+	const char *	p_cDir;
+
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
-        iRes = ExpRegSeCumple ( "^([a-zA-Z]:\\\\|\\\\\\\\[^\\\\]+\\\\[^\\\\]+\\\\)(([^\\\\/:\\*\\?\"<>\\|\\0]+)\\\\)*$", SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
+		p_cDir = SCadValorConstante ( p_rutObj->p_cadDirectorio );
+		if ( CadContieneCaracter ( p_cDir, '/' ) == 0 )
+		{
+			iRes = ExpRegSeCumple ( SF_PATRON_DIR_DOS, p_cDir );
+		}
+		else
+		{
+			iRes = 0;
+		}
 	}
 	else
 	{

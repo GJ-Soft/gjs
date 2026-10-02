@@ -9,7 +9,7 @@
 #include <SistemaSignals.h>
 
 
-#if ( defined ( POSIX ) )
+#if ( defined ( SIGNALS_PERMITIDOS ) )
 
 typedef struct _SGestorSignals
 {

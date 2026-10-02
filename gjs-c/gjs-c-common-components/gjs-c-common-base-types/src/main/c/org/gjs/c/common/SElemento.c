@@ -786,4 +786,58 @@ unsigned int SElmHash ( SElemento * p_elmObj )
 	return ( uiRes );
 }
 
+/* Salta iInc eslabones en la cadena. Devuelve NULL si se sale por el extremo
+   y si iInc es negativo. Con iInc = 0 se devuelve el PROPIO elemento, que es
+   la respuesta natural a "avanza cero eslabones".
 
+   El avance tiene que hacerse sobre p_elmRes, no sobre p_elmObj: partiendo
+   siempre del original, el bucle daba iInc vueltas para acabar en el vecino
+   inmediato, con lo que la funcion hacia lo mismo que SElmAntecesor con cualquier
+   valor de iInc. */
+SElemento * SElmAntecesorExt ( SElemento * p_elmObj, int iInc )
+{
+	SElemento * p_elmRes;
+
+	if ( ES_VALIDO ( p_elmObj ) && ( iInc >= 0 ) )
+	{
+		p_elmRes = p_elmObj;
+		while ( ES_VALIDO ( p_elmRes ) && ( iInc > 0 ) )
+		{
+			p_elmRes = (SElemento *) p_elmRes->p_elmAnt;
+			iInc = iInc - 1;
+		}
+	}
+	else
+	{
+		p_elmRes = NULL;
+	}
+	return ( p_elmRes );
+}
+
+/* Salta iInc eslabones en la cadena. Devuelve NULL si se sale por el extremo
+   y si iInc es negativo. Con iInc = 0 se devuelve el PROPIO elemento, que es
+   la respuesta natural a "avanza cero eslabones".
+
+   El avance tiene que hacerse sobre p_elmRes, no sobre p_elmObj: partiendo
+   siempre del original, el bucle daba iInc vueltas para acabar en el vecino
+   inmediato, con lo que la funcion hacia lo mismo que SElmSucesor con cualquier
+   valor de iInc. */
+SElemento * SElmSucesorExt ( SElemento * p_elmObj, int iInc )
+{
+	SElemento * p_elmRes;
+
+	if ( ES_VALIDO ( p_elmObj ) && ( iInc >= 0 ) )
+	{
+		p_elmRes = p_elmObj;
+		while ( ES_VALIDO ( p_elmRes ) && ( iInc > 0 ) )
+		{
+			p_elmRes = (SElemento *) p_elmRes->p_elmSig;
+			iInc = iInc - 1;
+		}
+	}
+	else
+	{
+		p_elmRes = NULL;
+	}
+	return ( p_elmRes );
+}

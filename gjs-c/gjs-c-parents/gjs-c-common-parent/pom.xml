@@ -53,36 +53,6 @@
 		<exeFinalPrefix></exeFinalPrefix>
 		<libFinalPrefix>lib</libFinalPrefix>
 		
-		<!-- Windows parameters -->
-		<!-- SDK -->
-		<windows.dir.sdk>C:\Program Files (x86)\Windows Kits\${windows.sdk.version}</windows.dir.sdk>		
-
-		<!-- External installed libs -->
-		<windows.dir.lib.custom>C:\CustomLibs</windows.dir.lib.custom>		
-		
-		<!-- System Libraries directories -->
-		<windows.dir.lib>${windows.dir.sdk}\Lib\10.0.26100.0</windows.dir.lib>		
-		<windows.dir.include>${windows.dir.sdk}\Include\10.0.26100.0</windows.dir.include>		
-		<windows-crt.dir.lib.runtime>${windows.dir.lib}\ucrt\${windows.sdk.architecture}</windows-crt.dir.lib.runtime>		
-		<windows-crt.dir.lib.system>${windows.dir.lib}\um\${windows.sdk.architecture}</windows-crt.dir.lib.system>		
-		<windows-crt.dir.lib.installed></windows-crt.dir.lib.installed>		
-		<windows-crt.dir.include.additional>${windows.dir.include}\shared</windows-crt.dir.include.additional>		
-		<windows-crt.dir.include.runtime>${windows.dir.include}\ucrt</windows-crt.dir.include.runtime>		
-		<windows-crt.dir.include.system>${windows.dir.include}\um</windows-crt.dir.include.system>		
-		<windows-winrt.dir.lib.runtime>${windows.dir.lib}\ucrt\${windows.sdk.architecture}</windows-winrt.dir.lib.runtime>		
-		<windows-winrt.dir.lib.system>${windows.dir.lib}\um\${windows.sdk.architecture}</windows-winrt.dir.lib.system>		
-		<windows-crt.dir.lib.installed></windows-crt.dir.lib.installed>		
-		<windows-winrt.dir.include.additional>${windows.dir.include}\shared</windows-winrt.dir.include.additional>		
-		<windows-winrt.dir.include.runtime>${windows.dir.include}\ucrt</windows-winrt.dir.include.runtime>		
-		<windows-winrt.dir.include.runtime>${windows.dir.include}\winrt</windows-winrt.dir.include.runtime>		
-		<windows-winrt.dir.include.system>${windows.dir.include}\um</windows-winrt.dir.include.system>		
-		<windows-cppwinrt.dir.lib.runtime>${windows.dir.lib}\ucrt\${windows.sdk.architecture}</windows-cppwinrt.dir.lib.runtime>		
-		<windows-cppwinrt.dir.lib.system>${windows.dir.lib}\um\${windows.sdk.architecture}</windows-cppwinrt.dir.lib.system>		
-		<windows-cppwinrt.dir.include.additional>${windows.dir.include}\shared</windows-cppwinrt.dir.include.additional>		
-		<windows-cppwinrt.dir.include.runtime>${windows.dir.include}\ucrt</windows-cppwinrt.dir.include.runtime>		
-		<windows-cppwinrt.dir.include.cpp.runtime>${windows.dir.include}\cppwinrt</windows-cppwinrt.dir.include.cpp.runtime>		
-		<windows-cppwinrt.dir.lib.system>${windows.dir.lib}\um\${windows.sdk.architecture}</windows-cppwinrt.dir.lib.system>		
-
 		<!-- Cygwin parameters -->
 		<!-- User home -->
 		<cygwin.home>${cygwinDir}/home/${systemUser}</cygwin.home>		
@@ -91,29 +61,18 @@
 		<cygwin.dir.lib.custom>${cygwin.home}/lib</cygwin.dir.lib.custom>		
 		
 		<!-- System Libraries directories -->
-		<cygwin-posix.dir.lib.runtime></cygwin-posix.dir.lib.runtime>
-		<cygwin-posix.dir.lib.system>${cygwinDir}/usr/x86_64-w64-mingw32/sys-root/mingw/bin</cygwin-posix.dir.lib.system>		
-		<cygwin-posix.dir.lib.system.additional>${cygwinDir}/lib</cygwin-posix.dir.lib.system.additional>		
-		<cygwin-posix.dir.lib.installed>${cygwinDir}/usr/local/share</cygwin-posix.dir.lib.installed>
-		<cygwin-posix.dir.include.system>${cygwinDir}/usr/include</cygwin-posix.dir.include.system>
-		<cygwin-posix.dir.include.installed>${cygwinDir}/usr/local/include</cygwin-posix.dir.include.installed>
-		<cygwin-posix.dir.include.additional></cygwin-posix.dir.include.additional>
-		<cygwin-windows.dir.lib.runtime></cygwin-windows.dir.lib.runtime>
-		<cygwin-windows.dir.lib.system>${cygwinDir}/usr/x86_64-w64-mingw32/sys-root/mingw/bin</cygwin-windows.dir.lib.system>		
-		<cygwin-windows.dir.lib.system.additional>${cygwinDir}/lib</cygwin-windows.dir.lib.system.additional>		
-		<cygwin-windows.dir.lib.installed>${cygwinDir}/usr/local/share</cygwin-windows.dir.lib.installed>
-		<cygwin-windows.dir.include.system>${cygwinDir}/usr/include</cygwin-windows.dir.include.system>
-		<cygwin-windows.dir.include.installed>${cygwinDir}/usr/local/include</cygwin-windows.dir.include.installed>
-		<cygwin-windows.dir.include.additional></cygwin-windows.dir.include.additional>
-		<!--
-		<cygwin-windows.dir.lib.runtime>${windows-crt.dir.lib.runtime}</cygwin-windows.dir.lib.runtime>
-		<cygwin-windows.dir.lib.system>${windows-crt.dir.lib.system}</cygwin-windows.dir.lib.system>		
-		<cygwin-windows.dir.lib.system.additional></cygwin-windows.dir.lib.system.additional>
-		<cygwin-windows.dir.lib.installed>${cygwinDir}/usr/local/lib</cygwin-windows.dir.lib.installed>
-		<cygwin-windows.dir.include.system>${windows-crt.dir.include.system}</cygwin-windows.dir.include.system>
-		<cygwin-windows.dir.include.installed>${cygwinDir}/usr/local/include</cygwin-windows.dir.include.installed>
-		<cygwin-windows.dir.include.additional>${windows-crt.dir.include.additional}</cygwin-windows.dir.include.additional>
-		-->
+		<!-- .dir.lib.system  : donde estan las librerias de importacion ( .a ), para el -L.
+		     .dir.lib.runtime : donde estan las DLL que el binario necesita AL EJECUTARSE.
+		     Sale por <binDirectory> de cada <lib> y el nar lo mete en el PATH de los
+		     tests. Sin el, un Test.exe de MinGW muere con 0xC0000135 buscando
+		     libwinpthread-1.dll. NO es el antiguo "sabor de CRT" de Visual C++. -->
+		<cygwin.dir.lib.system>${cygwinDir}/lib</cygwin.dir.lib.system>		
+		<cygwin.dir.lib.runtime>${cygwinDir}/bin</cygwin.dir.lib.runtime>
+
+		<!-- Windows parameters -->
+		<windows.dir.lib.system>${cygwinDir}/usr/x86_64-w64-mingw32/sys-root/mingw/lib</windows.dir.lib.system>		
+		<windows.dir.lib.runtime>${cygwinDir}/usr/x86_64-w64-mingw32/sys-root/mingw/bin</windows.dir.lib.runtime>
+
 		<!-- Unix / Linux parameters -->
 		<!-- User home -->
 		<unix.home>/home/${systemUser}</unix.home>		
@@ -122,20 +81,9 @@
 		<unix.dir.lib.custom>${unix.home}/lib</unix.dir.lib.custom>		
 		
 		<!-- System Libraries directories -->
-		<unix.dir.lib.runtime></unix.dir.lib.runtime>		
 		<unix.dir.lib.system>${cygwinDir}/lib</unix.dir.lib.system>		
-		<unix.dir.lib.system.additional></unix.dir.lib.system.additional>
-		<unix.dir.lib.installed>${cygwinDir}/usr/local/lib</unix.dir.lib.installed>
-		<unix.dir.include.system>${cygwinDir}/usr/include</unix.dir.include.system>
-		<unix.dir.include.installed>${cygwinDir}/usr/local/include</unix.dir.include.installed>
-		<unix.dir.include.additional></unix.dir.include.additional>
+		<unix.dir.lib.runtime>/usr/lib</unix.dir.lib.runtime>
 		
-		<!-- Apache Log4cxx directory -->
-		<log4cxxDir>${cygwin.dir.lib.custom}/log4cxx</log4cxxDir>
-		<log4cxxDirInclude>${log4cxxDir}/include</log4cxxDirInclude>
-		<log4cxxDirLib>${log4cxxDir}/lib</log4cxxDirLib>
-		<log4cxxDirBin>${log4cxxDir}/bin</log4cxxDirBin>
-	
 		<!-- GLib  directory -->
 		<glibDir>${cygwinDir}/lib/glib-2.0</glibDir>
 		<glibDirInclude>${glibDir}/include</glibDirInclude>
@@ -155,6 +103,20 @@
 		<cpp.checkDir>${cygwinDir}${unix.home}/bin</cpp.checkDir>
 		<cpp.check>${cpp.checkDir}/cppcheck</cpp.check>
 		<cpp.platform.options>${platformOptions}</cpp.platform.options>
+
+		<!-- Prefijo del juego de herramientas. Vacio = gcc/g++ del PATH. El perfil
+		     win lo cambia al cruzado de MinGW: si no, en Windows nativo sale el gcc
+		     de Cygwin, que con -DWIN compila Cygwin con macros de Windows. -->
+		<gjs.nar.toolchain.prefix></gjs.nar.toolchain.prefix>
+
+		<!-- Triplete del objetivo. Alimenta <architecture> del nar y con el el AOL,
+		     que es el clasificador del artefacto: si no cambia por plataforma, el nar
+		     de Windows y el de Cygwin comparten nombre y se pisan. Lo fijan los
+		     perfiles win / cygwin / unix; este valor solo actua si no hay ninguno. -->
+		<gjs.nar.architecture>x86_64-pc-cygwin</gjs.nar.architecture>
+		<!-- Emulacion del enlazador. i386pep es PE de 64 bits: la unica que admiten
+		     el ld de Cygwin y el de MinGW ( binutils 2.46.1 ). Linux es ELF. -->
+		<gjs.nar.emulation>i386pep</gjs.nar.emulation>
 		<!-- To be defined in child pom -->
 		<cpp.language.standard />
 		<cpp.compiler />
@@ -173,6 +135,29 @@
 		<cpp.check.execute>false</cpp.check.execute>
 		<cpp.check.severity>all</cpp.check.severity>	
 		<cpp.check.configurations>1</cpp.check.configurations>
+
+		<!-- Doxygen: el equivalente al javadoc para C/C++. Solo lo usa el perfil
+		     deploy-central. Viene con la instalacion de Cygwin, no es una herramienta
+		     compilada a mano, asi que no vive en ${cpp.checkDir}. -->
+		<cpp.doxygen>${cygwinDir}/bin/doxygen.exe</cpp.doxygen>
+		<cpp.doxygen.dir>${project.build.directory}/doxygen</cpp.doxygen.dir>
+		<!-- Presentacion. En NO, doxygen lee un "typedef struct {...} SConversor;"
+		     como una clase de C++: lo lista bajo "Class List" y le genera su pagina
+		     de miembros. En YES pasa a "Data Structures" y no la genera; el indice de
+		     ficheros y los globals_* salen igual en los dos modos. Va en YES por
+		     defecto, como gjs.source.language, y gjs-cpp-parent lo pone en NO. -->
+		<cpp.doxygen.optimize.c>YES</cpp.doxygen.optimize.c>
+		<!-- OJO: doxygen es un binario de Cygwin y, a diferencia de cppcheck, NO
+		     reconoce C:/... como absoluto en OUTPUT_DIRECTORY ni en INPUT: lo trata
+		     como relativo y lo cuelga del directorio de trabajo. Hay que convertir
+		     esas rutas con cygpath -u, igual que se hace con gcovr. -->
+		<cpp.cygpath>${cygwinDir}/bin/cygpath.exe</cpp.cygpath>
+		<!-- No se firma lo que no se publica. Estos artefactos quedan fuera del bundle
+		     de Central por el excludeArtifacts del perfil deploy-central en gjs-parent,
+		     asi que firmarlos seria trabajo tirado: son 25 modulos y gpg tarda. Es el
+		     hermano del <skip> del maven-deploy-plugin que hay mas abajo, y como aquel,
+		     provisional: si algun dia estos artefactos se publican, quitar los dos. -->
+		<gpg.skip>true</gpg.skip>
 	</properties>
 
 	<build>
@@ -211,45 +196,22 @@
 									def env = project.properties['environment']
 									
 									// 2. Resolver dinámicamente el valor de las propiedades anidadas
-									def dirRuntime   = project.properties["${env}.dir.lib.runtime"]
+										def dirRuntime   = project.properties["${env}.dir.lib.runtime"]
 									def dirSystem    = project.properties["${env}.dir.lib.system"]
-									def dirSystemAdd    = project.properties["${env}.dir.lib.system.additional"]
-									def dirInst    = project.properties["${env}.dir.lib.installed"]
-									def includeSys   = project.properties["${env}.dir.include.system"]
-									def includeInst   = project.properties["${env}.dir.include.installed"]
-									def includeAdd   = project.properties["${env}.dir.include.additional"]
 									
 									// 3. Crear el directorio destino (Equivalente al <mkdir>)
 									def customDir = new File(project.build.directory, "custom")
 									if (!customDir.exists()) customDir.mkdirs()
 									
 									// 4. Se definen las propiedades generales independientes del entorno
-									project.properties["cpp.dir.lib.runtime"] = dirRuntime ?: ""
+										project.properties["cpp.dir.lib.runtime"] = dirRuntime ?: ""
 									project.properties["cpp.dir.lib.system"] = dirSystem ?: ""
-									project.properties["cpp.dir.lib.system.additional"] = dirSystemAdd ?: ""
-									project.properties["cpp.dir.lib.installed"] = dirInst ?: ""
-									project.properties["cpp.dir.include.system"] = includeSys ?: ""
-									project.properties["cpp.dir.include.installed"] = includeInst ?: ""
-									project.properties["cpp.dir.include.additional"] = includeAdd ?: ""
 
-									// 4.b Opciones -I ya montadas y filtradas. Un directorio vacio NO puede generar
-									//     un "-I" suelto: cppcheck aborta con "argument to '-I' is missing".
-									def includeOptions = [includeSys, includeInst, includeAdd]
-										.findAll { it }
-										.collect { "-I" + it }
-										.join(" ")
-									project.properties["cpp.dir.include.options"] = includeOptions
 
 									// 5. Usar el AntBuilder nativo de GMaven para escribir el archivo de propiedades
 									ant.propertyfile(file: "${customDir.absolutePath}/compile-context.properties") {
-										entry(key: "cpp.dir.lib.runtime", value: dirRuntime ?: "")
+											entry(key: "cpp.dir.lib.runtime", value: dirRuntime ?: "")
 										entry(key: "cpp.dir.lib.system", value: dirSystem ?: "")
-										entry(key: "cpp.dir.lib.system.additional", value: dirSystemAdd ?: "")
-										entry(key: "cpp.dir.lib.installed", value: dirInst ?: "")
-										entry(key: "cpp.dir.include.system", value: includeSys ?: "")
-										entry(key: "cpp.dir.include.installed", value: includeInst ?: "")
-										entry(key: "cpp.dir.include.additional", value: includeAdd ?: "")
-										entry(key: "cpp.dir.include.options", value: includeOptions)
 									}
 									
 									log.info "Contexto de C/C++ generado exitosamente en Groovy para el entorno: ${env}"
@@ -290,7 +252,7 @@
 					
 					<execution>
 						<id>check</id>
-						<!-- NO usar 'validate': el contexto C/C++ (cpp.dir.include.*) lo genera el script
+						<!-- NO usar 'validate': el contexto C/C++ (cpp.dir.lib.*) lo genera el script
 						     Groovy de gmavenplus en 'initialize', que va despues. Vale cualquier fase
 						     posterior a 'initialize'; se elige una explicita para no depender del orden
 						     de declaracion de los plugins dentro de una misma fase. -->
@@ -339,12 +301,26 @@
 									<arg value="-I${sslDirInclude}"/>
 									<arg value="-I${oraDirInclude}"/>
 									<arg value="-I${xmlDirInclude}"/>
-									<arg value="-I${log4cxxDirInclude}"/>											
-									<!-- Las -I del contexto van en una sola cadena ya filtrada por el script Groovy:
-									     un directorio vacio generaria un "-I" suelto y cppcheck aborta con
-									     "argument to '-I' is missing". arg line reparte por espacios (ninguna de
-									     estas rutas los tiene) y con la cadena vacia no anade ningun argumento. -->
-									<arg line="${cpp.dir.include.options}"/>
+									<!-- NO se le dan al check las cabeceras del sistema ( antes entraban aqui las
+									     ${cpp.dir.include.options} del contexto ). cppcheck no las necesita: se
+									     apoya en sus propios .cfg, y las reales le hacen mas mal que bien.
+									
+									     Medido el 2026-09-15 sobre gjs-cpp-common-support:
+									
+									       - con las de MinGW  : ABORTA. psdk_inc/intrin-impl.h:599 le rompe el
+									                             preprocesado ( __INTRINSIC_PROLOG ).
+									       - con las de Cygwin : funciona, pero mete avisos de ficheros que no son
+									                             nuestros ( 8 en modo WIN, 31 en POSIX ), y encima
+									                             en modo WIN son las cabeceras de la plataforma
+									                             equivocada: el build usa MinGW.
+									       - sin ninguna        : 92 avisos, los mismos en WIN que en POSIX, sin
+									                             ruido y sin abortar.
+									
+									     Esto solo se puede hacer desde que Precompilacion.h saca el tamano de
+									     puntero de __SIZEOF_POINTER__ y no de INTPTR_MAX: mientras dependia de
+									     <stdint.h>, quitarle los includes hacia saltar su #error y el analisis del
+									     fichero moria en silencio. Las -I de las librerias externas de aqui arriba
+									     ( glib, ssl, oracle, xml ) se quedan: esas si son codigo que analizamos. -->
 									<arg value="--suppress=virtualCallInConstructor"/>
 									<arg value="--suppress=uninitMemberVar"/>		
 									<arg value="--suppress=useInitializationList"/>		
@@ -397,30 +373,6 @@
 			</activation>
 		</profile>
 		<profile>
-			<id>cygwin-posix</id>
-			<activation>
-				<property>
-					<name>cygwin.style</name>
-					<value>!windows</value>
-				</property>
-			</activation>
-			<properties>
-				<platformOptions>-DCYGWIN_POSIX</platformOptions>
-			</properties>
-		</profile>
-		<profile>
-			<id>cygwin-win</id>
-			<activation>
-				<property>
-					<name>cygwin.style</name>
-					<value>windows</value>
-				</property>
-			</activation>
-			<properties>
-				<platformOptions>-DCYGWIN_WIN</platformOptions>
-			</properties>
-		</profile>
-		<profile>
 			<id>win</id>
 			<activation>
                 <property>
@@ -431,8 +383,44 @@
 				</os>
 			</activation>
             <properties>
-				<!-- Apache Log4cxx directory -->
-				<log4cxxDir>${log4cxxInstallDir}</log4cxxDir>
+				<platformOptions>-DWIN</platformOptions>
+				<gjs.nar.toolchain.prefix>x86_64-w64-mingw32-</gjs.nar.toolchain.prefix>
+				<gjs.nar.architecture>x86_64-w64-mingw32</gjs.nar.architecture>
+				<gjs.nar.emulation>i386pep</gjs.nar.emulation>
+				<platformLinkOptions></platformLinkOptions>
+            </properties>
+		</profile>
+		<profile>
+			<id>cygwin</id>
+			<activation>
+                <property>
+					<name>env.CYGWIN</name>
+				</property>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+            <properties>
+				<platformOptions>-DCYGWIN -DPOSIX</platformOptions>
+				<gjs.nar.toolchain.prefix></gjs.nar.toolchain.prefix>
+				<gjs.nar.architecture>x86_64-pc-cygwin</gjs.nar.architecture>
+				<gjs.nar.emulation>i386pep</gjs.nar.emulation>
+				<platformLinkOptions></platformLinkOptions>
+           </properties>
+		</profile>
+		<profile>
+			<id>unix</id>
+			<activation>
+				<os>
+					<family>Unix</family>
+				</os>
+			</activation>
+            <properties>
+				<platformOptions>-DPOSIX</platformOptions>
+				<gjs.nar.toolchain.prefix></gjs.nar.toolchain.prefix>
+				<gjs.nar.architecture>x86_64-pc-linux-gnu</gjs.nar.architecture>
+				<gjs.nar.emulation>elf_x86_64</gjs.nar.emulation>
+				<platformLinkOptions></platformLinkOptions>
             </properties>
 		</profile>
 		<profile>
@@ -440,6 +428,123 @@
 			<properties>
 				<cpp.check.execute>true</cpp.check.execute>
 			</properties>
+		</profile>
+		<profile>
+			<id>deploy-central</id>
+			<!-- Central exige un -sources.jar por cada artefacto que no sea pom. Aqui no
+			     sirve maven-source-plugin: trabaja sobre los compileSourceRoots de Java, y
+			     estos modulos no tienen ni un .java (el jar principal del packaging nar sale
+			     vacio, solo con el MANIFEST). Se empaquetan las fuentes de verdad, que ademas
+			     es lo util: los depuradores y los IDE las buscan. El -javadoc.jar se genera
+			     con Doxygen, que es el equivalente aqui. -->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>doxygen</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target xmlns:if="ant:if">
+										<!-- Sin fuentes, doxygen genera igualmente sus 17 ficheros de
+										     plantilla (css, js, index) y sale con 0: skipIfEmpty no
+										     salvaria al jar. Por eso los parents de este arbol, que
+										     heredan la ejecucion y no tienen src/main, se descartan
+										     aqui con if:set (atributo de Ant, no de antrun). -->
+										<available file="${project.basedir}/src/main/${gjs.source.language}" type="dir" property="cpp.doxygen.fuentes"/>
+										<mkdir if:set="cpp.doxygen.fuentes" dir="${cpp.doxygen.dir}"/>
+										<!-- A POSIX: ver la nota de cpp.cygpath en las propiedades. -->
+										<exec if:set="cpp.doxygen.fuentes" executable="${cpp.cygpath}" outputproperty="cpp.doxygen.dir.posix" failonerror="true">
+											<arg value="-u"/>
+											<arg value="${cpp.doxygen.dir}"/>
+										</exec>
+										<exec if:set="cpp.doxygen.fuentes" executable="${cpp.cygpath}" outputproperty="cpp.doxygen.fuentes.posix" failonerror="true">
+											<arg value="-u"/>
+											<arg value="${project.basedir}/src/main/${gjs.source.language}"/>
+										</exec>
+										<exec if:set="cpp.doxygen.fuentes" executable="${cpp.cygpath}" outputproperty="cpp.doxygen.include.posix" failonerror="true">
+											<arg value="-u"/>
+											<arg value="${project.basedir}/src/main/include"/>
+										</exec>
+										<!-- Doxyfile parcial: lo que no aparece toma el valor por defecto.
+										     Las dos INPUT van con += y no en la misma linea, para no
+										     depender de que ninguna ruta lleve espacios. Las propiedades
+										     .posix las resuelve Ant, no Maven: Maven las deja literales
+										     por no conocerlas, igual que en el bloque de gcovr. -->
+										<echo if:set="cpp.doxygen.fuentes" file="${cpp.doxygen.dir}/Doxyfile">PROJECT_NAME           = "${project.artifactId}"
+											PROJECT_NUMBER         = ${project.version}
+											PROJECT_BRIEF          = "${project.description}"
+											OUTPUT_DIRECTORY       = ${cpp.doxygen.dir.posix}
+											INPUT                  = ${cpp.doxygen.fuentes.posix}
+											INPUT                 += ${cpp.doxygen.include.posix}
+											RECURSIVE              = YES
+											OPTIMIZE_OUTPUT_FOR_C  = ${cpp.doxygen.optimize.c}
+											EXTRACT_ALL            = YES
+											EXTRACT_STATIC         = YES
+											GENERATE_HTML          = YES
+											GENERATE_LATEX         = NO
+											WARN_IF_UNDOCUMENTED   = NO
+											QUIET                  = YES
+										</echo>
+										<!-- El Doxyfile si puede ir en estilo Windows: esa ruta la abre
+										     el runtime de Cygwin, no el canonizador de doxygen. -->
+										<exec if:set="cpp.doxygen.fuentes" executable="${cpp.doxygen}" failonerror="true">
+											<arg value="${cpp.doxygen.dir}/Doxyfile"/>
+										</exec>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<classifier>sources</classifier>
+									<!-- maven-jar-plugin solo admite una raiz, asi que se toma src/main
+									     entera y se filtra: el lenguaje (c o c++, segun gjs.source.language,
+									     que gjs-c-parent y gjs-cpp-parent ya distinguen) y las cabeceras
+									     publicas. src/main/resources se queda fuera a proposito. -->
+									<classesDirectory>${project.basedir}/src/main</classesDirectory>
+									<includes>
+										<include>${gjs.source.language}/**</include>
+										<include>include/**</include>
+									</includes>
+									<!-- Los parents de este arbol heredan tambien esta ejecucion, y una
+									     <execution> con <phase> se ejecuta aunque el packaging sea pom.
+									     Sin esto adjuntarian un sources.jar vacio. -->
+									<skipIfEmpty>true</skipIfEmpty>
+								</configuration>
+							</execution>
+							<execution>
+								<id>attach-javadoc</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<classifier>javadoc</classifier>
+									<classesDirectory>${cpp.doxygen.dir}/html</classesDirectory>
+									<!-- Donde no corrio doxygen, este directorio no existe. -->
+									<skipIfEmpty>true</skipIfEmpty>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>

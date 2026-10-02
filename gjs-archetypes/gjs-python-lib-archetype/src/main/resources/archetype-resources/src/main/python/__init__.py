@@ -13,6 +13,5 @@ ${symbol_pound}
 from .Sample import es_par, sumar
 from .SampleType import SampleType
 
-__version__ = "${pythonVersion}"
 __all__ = ["sumar", "es_par", "SampleType"]
 

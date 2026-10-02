@@ -191,7 +191,28 @@ string * FechaHora::ValorCadena ()
 
 string * FechaHora::Cadena ( const string & formato )
 {
-    return ( new string ( vformat ( formato, make_format_args( tpFechaHora ) ) ) );
+	/* Dos correcciones sobre el time_point crudo:
+
+	   - Truncado a segundos. system_clock tiene precision de nanosegundos y %S
+	     los sacaba todos: una linea de log salia con "17:00:01.517053600" y un
+	     nombre de fichero por instante.
+	   - Pasado a hora LOCAL. std::format sobre un system_clock::time_point
+	     formatea en UTC, asi que con el reloj en las 19:00 escribia las 17:00.
+	     No se usa current_zone (): no esta en la libstdc++ de Cygwin. Se
+	     reconstruye el instante desde los campos de localtime, que es lo que ya
+	     usa TiempoSistema, y se formatea como local_time; asi no hay aritmetica
+	     de desfases ni casos raros de horario de verano. */
+	auto	tpSegundos = chrono::floor < chrono::seconds > ( tpFechaHora );
+	time_t	ttValor = chrono::system_clock::to_time_t ( tpSegundos );
+	tm		tmLocal = *localtime ( &ttValor );
+
+	auto tpLocal = chrono::local_days ( chrono::year ( tmLocal.tm_year + 1900 ) /
+										( tmLocal.tm_mon + 1 ) / tmLocal.tm_mday ) +
+				   chrono::hours ( tmLocal.tm_hour ) +
+				   chrono::minutes ( tmLocal.tm_min ) +
+				   chrono::seconds ( tmLocal.tm_sec );
+
+	return ( new string ( vformat ( formato, make_format_args ( tpLocal ) ) ) );
 }
 
 Fecha * FechaHora::Fecha ()

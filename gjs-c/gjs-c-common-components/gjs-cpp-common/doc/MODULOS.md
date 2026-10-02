@@ -12,7 +12,7 @@
 | ---------------------------- | ------------------------------ | ---------------------- | ------- | ------ | ----------------------- | --------------------------------- |
 | `Entorno`                    | `CppEntorno.h`                 | fachada + 10 funciones | 10      | 221    | `EntornoTest.cpp`       | [Entorno](Entorno.md)             |
 | `AplicacionLog`              | `AplicacionLog.h`              | funciones              | 15      | 199    | `AplicacionLogTest.cpp` | [AplicacionLog](AplicacionLog.md) |
-| `Argumentos`                 | `Argumentos.h`                 | clase                  | 8       | 170    | `ArgumentosTest.cpp`    | [Argumentos](Argumentos.md)       |
+| `Argumentos`                 | `Argumentos.h`                 | clase                  | 9       | 196    | `ArgumentosTest.cpp`    | [Argumentos](Argumentos.md)       |
 | `Mensajes`                   | `Mensajes.h`                   | clase                  | 8       | 134    | `MensajesTest.cpp`      | [Mensajes](Mensajes.md)           |
 | `ArgumentoInvalidoExcepcion` | `ArgumentoInvalidoExcepcion.h` | clase                  | 1       | 34     | `ExcepcionTest.cpp`     | [Argumentos](Argumentos.md)       |
 

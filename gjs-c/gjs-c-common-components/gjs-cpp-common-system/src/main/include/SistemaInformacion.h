@@ -40,8 +40,8 @@ namespace org
 
 
 int SisTipo ();
-int	SisSistema ();
-double SisVersion ();
+const char * SisSistema ();
+const char * SisVersion ();
 
 bool SisEsDos ();
 bool SisEsWindows ();
@@ -77,6 +77,43 @@ std::string * SisDirectorioTemporal ();
 
 void SisInicializarDirectorios ( const char * p_cDirTemporal );
 void SisInicializarDirectorios ( const std::string &sDirTemporal );
+
+
+int SisTamPalabraMemoria ();
+bool SisEsArquitectura64Bits ();
+bool SisEsArquitectura32Bits ();
+
+int SisOrdenBytes ();
+bool SisOrdenBytesEsNormal ();
+bool SisOrdenBytesEsInvertido ();
+
+long SisMaxNumProcesosPorUsuario ();
+bool SisAdmiteSubprocesos ();
+
+/* Limites y estado.
+   -----------------
+   Esta libreria informa del SISTEMA. Cuando un dato es del proceso que
+   pregunta y no del sistema, el nombre lleva "Proceso" detras. Si alguna vez
+   se pueden dar las dos cosas, se duplica la funcion: SisXxx para la general y
+   SisXxxProceso para la del proceso.
+
+   Las que devuelven long tienen TRES respuestas, no dos:
+     - un valor;
+     - LONG_MAX, que significa "no hay limite" ( no es un limite enorme );
+     - -1, que significa "no se ha podido averiguar".
+
+   De descriptores solo existe la version del proceso. La general —cuantos hay
+   abiertos en toda la maquina— solo se puede saber en Linux, con
+   /proc/sys/fs/file-nr; Cygwin no lo trae ( su /proc/sys es el espacio de
+   nombres de objetos de NT, no el sysctl de Linux ) y Windows no publica ese
+   numero. Si algun dia hace falta y basta con Linux, ahi esta la via. */
+
+long SisMaxTamFicheroProceso ();
+long SisMaxTiempoCPUProceso ();
+
+long SisDescriptoresESTotalesProceso ();
+long SisDescriptoresESUtilizadosProceso ();
+long SisDescriptoresESDisponiblesProceso ();
 
 double SisVelocidadCPU ();
     

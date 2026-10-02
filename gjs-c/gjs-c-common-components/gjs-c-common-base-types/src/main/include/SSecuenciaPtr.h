@@ -25,6 +25,7 @@ int SSecpEsValida ( SSecuenciaPtr * p_secObj );
 int SSecpNumElementos ( SSecuenciaPtr * p_secObj );
 int SSecpEstaVacia ( SSecuenciaPtr * p_secObj );
 byte * SSecpElemento ( SSecuenciaPtr * p_secObj, int iElem );
+SElementoPtr * SSecpElementoPtr ( SSecuenciaPtr * p_secObj, int iElem );
 
 int SSecpInsertar ( SSecuenciaPtr * p_secObj, byte * p_byDatos );
 int SSecpEliminar ( SSecuenciaPtr * p_secObj, int iElem );

@@ -18,8 +18,8 @@ if user_site not in sys.path:
 
 from ${package}.server.${capitalizedName}Server import ${capitalizedName}Server
  
-def inicializar(applicationProperties):
-    print(f"Se inicia el ejecutable {applicationProperties.app_name}-{applicationProperties.app_version} ")
+def inicializar( applicationProperties ):
+    print(f"Se inicia el ejecutable {applicationProperties.appName}-{applicationProperties.appVersion} ")
     print(f"Sistema operativo: {platform.system()}")
     print(f"Versión de Python: {platform.python_version()}")
 
@@ -30,9 +30,9 @@ def inicializar(applicationProperties):
  
 def main():
     try:
-        from org.gjs.python.common.properties import applicationProperties
+        from org.gjs.python.common.configuration import getApplicationProperties
 
-        inicializar(applicationProperties)
+        inicializar( getApplicationProperties() )
         
         server = ${capitalizedName}Server()
         server.start()

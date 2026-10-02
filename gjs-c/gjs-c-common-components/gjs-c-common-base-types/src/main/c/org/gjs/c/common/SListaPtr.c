@@ -116,17 +116,51 @@ int SLispEstaVacia ( SListaPtr * p_lisObj )
 	return ( iRes );
 }
 
+/* Acceso por indice SIN tocar el cursor. Antes se resolvia con SLispMoverA, que
+   mueve el cursor de la lista, y eso convertia cualquier consulta —Elemento,
+   Min, Max, EstaOrdenada…— en una operacion que le cambiaba la posicion al que
+   estuviera iterando.
+
+   Se entra por el extremo mas cercano al indice pedido, asi que una llamada
+   suelta cuesta como mucho media lista. OJO: eso hace que recorrer la lista
+   ENTERA por indice sea cuadratico, porque ya no se aprovecha la posicion de la
+   llamada anterior. Para recorrer de principio a fin hay que usar el cursor
+   ( SLispInicio / SLispSiguiente / SLispActual ), no esta. */
 byte * SLispElemento ( SListaPtr * p_lisObj, int iElem )
 {
 	byte *			p_byRes;
 	SElementoPtr *	p_elpDatos;
+	int				iPos;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		if ( ( iElem >= 0 ) && ( iElem < p_lisObj->iNumElementos ) )
 		{
-			SLispMoverA ( p_lisObj, iElem );
-			p_elpDatos = p_lisObj->p_elpActual;
+			if ( iElem < p_lisObj->iNumElementos / 2 )
+			{
+				p_elpDatos = p_lisObj->p_elpPrimero;
+				iPos = 0;
+				while ( ( iPos < iElem ) && 
+						ES_VALIDO ( p_elpDatos ) )
+				{
+					p_elpDatos = SElpSucesor ( p_elpDatos );
+					iPos = iPos + 1;
+				}
+			}
+			else
+			{
+				p_elpDatos = p_lisObj->p_elpUltimo;
+				iPos = p_lisObj->iNumElementos - 1;
+				/* > y no >=: con >= se da un paso de mas y se acaba en
+				   iElem - 1. La rama de arriba, la que entra por el principio,
+				   ya usaba la comparacion estricta. */
+				while ( ( iPos > iElem ) &&
+						ES_VALIDO ( p_elpDatos ) )
+				{
+					p_elpDatos = SElpAntecesor ( p_elpDatos );
+					iPos = iPos - 1;
+				}
+			}
 			if ( ES_VALIDO ( p_elpDatos ) )
 			{
 				p_byRes = SElpDatos ( p_elpDatos );
@@ -146,6 +180,57 @@ byte * SLispElemento ( SListaPtr * p_lisObj, int iElem )
 		p_byRes = NULL;
 	}
 	return ( p_byRes );
+}
+
+/* El ELEMENTO en esa posicion, no el dato: para eso esta SLispElemento, que
+   devuelve el byte * guardado. Hace falta para poder recorrer la cadena desde
+   los tipos que se montan encima —literales, referencias, parejas—, que si no
+   tienen que ir por indice y eso sale cuadratico.
+
+   Gemela de SLisElemento en SLista. Como ella, entra por el extremo mas cercano
+   y NO toca el cursor. */
+SElementoPtr * SLispElementoPtr ( SListaPtr * p_lisObj, int iElem )
+{
+	SElementoPtr *	p_elpRes;
+	int				iPos;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		if ( ( iElem >= 0 ) && ( iElem < p_lisObj->iNumElementos ) )
+		{
+			if ( iElem < p_lisObj->iNumElementos / 2 )
+			{
+				p_elpRes = p_lisObj->p_elpPrimero;
+				iPos = 0;
+				while ( ( iPos < iElem ) && 
+						ES_VALIDO ( p_elpRes ) )
+				{
+					p_elpRes = SElpSucesor ( p_elpRes );
+					iPos = iPos + 1;
+				}
+			}
+			else
+			{
+				p_elpRes = p_lisObj->p_elpUltimo;
+				iPos = p_lisObj->iNumElementos - 1;
+				while ( ( iPos > iElem ) &&
+						ES_VALIDO ( p_elpRes ) )
+				{
+					p_elpRes = SElpAntecesor ( p_elpRes );
+					iPos = iPos - 1;
+				}
+			}
+		}
+		else
+		{
+			p_elpRes = NULL;
+		}
+	}
+	else
+	{
+		p_elpRes = NULL;
+	}
+	return ( p_elpRes );
 }
 
 int SLispEstablecerElem ( SListaPtr * p_lisObj, int iElem, byte * p_byDatos )
@@ -444,7 +529,10 @@ void SLispMoverA ( SListaPtr * p_lisObj, int iElem )
 				{
 					p_lisObj->p_elpActual = p_lisObj->p_elpUltimo;
 					p_lisObj->iPos = p_lisObj->iNumElementos - 1;
-					while ( ( p_lisObj->iPos >= iElem ) && 
+					/* > y no >=: con >= se da un paso de mas y se acaba en
+					   iElem - 1. La rama de arriba, la que entra por el principio,
+					   ya usaba la comparacion estricta. */
+					while ( ( p_lisObj->iPos > iElem ) &&
 							ES_VALIDO ( p_lisObj->p_elpActual ) )
 					{
 						p_lisObj->p_elpActual = SElpAntecesor ( p_lisObj->p_elpActual );

@@ -103,7 +103,7 @@ Los parámetros siguen una notación húngara:
 | ------------------------- | -------------------------------------------- |
 | `i` / `l` / `s`           | `int` / `long` / `short`                     |
 | `ui` / `ul`               | `unsigned int` / `unsigned long`             |
-| `ll` / `ull`              | `llong` / `ullong`                           |
+| `ll` / `ull`              | `long long` / `unsigned long long`           |
 | `f` / `d`                 | `float` / `double`                           |
 | `c` / `uc`                | `char` / `unichar`                           |
 | `by` / `w` / `dw` / `nib` | `byte` / `word` / `dword` / `nibble`         |
@@ -143,11 +143,11 @@ devuelta por `MemReservar` viene puesta a cero.
 Se compila con Maven, como el resto del repositorio. Hay tres modos operativos
 (el cuarto, Linux/POSIX nativo, está pendiente):
 
-| Modo                         | Consola          | Comando                                    | Estado                                          |
-| ---------------------------- | ---------------- | ------------------------------------------ | ----------------------------------------------- |
-| Cygwin POSIX (**el normal**) | mintty (Cygwin)  | `mvn clean install`                        | **Verificado**: `BUILD SUCCESS`, 21/21 tests OK |
-| Cygwin estilo Windows        | mintty (Cygwin)  | `mvn clean install -Dcygwin.style=windows` | **Verificado**: `BUILD SUCCESS`, 21/21 tests OK |
-| Windows puro                 | PowerShell / cmd | `mvn clean install`                        | Sin verificar                                   |
+| Modo                    | Consola          | Comando             | Estado                                          |
+| ----------------------- | ---------------- | ------------------- | ----------------------------------------------- |
+| Cygwin (**el normal**)  | mintty (Cygwin)  | `mvn clean install` | **Verificado**: `BUILD SUCCESS`, 21/21 tests OK |
+| Windows puro            | PowerShell / cmd | `mvn clean install` | **Verificado** (2026-09)                        |
+| Linux                   | consola Linux    | `mvn clean install` | Sin verificar: no hay máquina                   |
 
 El artefacto resultante es un NAR de biblioteca compartida más el NAR `noarch`
 con las cabeceras.

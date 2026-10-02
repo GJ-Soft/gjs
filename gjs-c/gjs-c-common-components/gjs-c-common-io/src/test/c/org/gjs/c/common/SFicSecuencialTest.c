@@ -151,13 +151,51 @@ static int TestSFicSecFicheroVacio01 ()
 	return ( iRes );
 }
 
+
+static int TestSFicSecEstaEnFinal01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SFicSecEstaEnFinal 01:\n" );
+	SFicSecuencial * p_ficObj = SFicSecCrearExt ( FIC_TEST_DIR_DATA, "ejemploUNIX.txt" );
+	if ( ES_VALIDO ( p_ficObj ) )
+	{
+		if ( SFicSecAbrir ( p_ficObj, MOD_APR_LECTURA ) != 1 )
+		{
+			printf( "Error caso 1: no se pudo abrir el fichero vacio para lectura\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			while ( SFicSecLeer ( p_ficObj ) != 0x00 )
+			{
+			}
+			if ( SFicSecEstaEnFinal ( p_ficObj ) == 0 )
+			{
+				printf( "Error caso 2: se esperaba estar en el final\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			SFicSecCerrar ( p_ficObj );
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el objeto\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* El fichero vacio es un recurso de entrada compartido: solo se destruye
+	   el objeto, nunca se elimina el fichero. */
+	SFicSecDestruir ( &p_ficObj );
+	return ( iRes );
+}
+
 int TestSFicSecuencial ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SFicSecuencial]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSFicSecEscribirLeer01 () == BOOL_VAL_CIERTO ) &&
 			( TestSFicSecFicheroVacio01 () == BOOL_VAL_CIERTO ) &&
-			( TestSFicSecNulo01 () == BOOL_VAL_CIERTO ) )
+			( TestSFicSecNulo01 () == BOOL_VAL_CIERTO ) && 
+			( TestSFicSecEstaEnFinal01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

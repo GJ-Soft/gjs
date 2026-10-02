@@ -24,6 +24,7 @@
 #include "SistemaFicheros.h"
 
 #include "FicherosConfig.h"
+#include "SistemaFicherosWin32.h"
 
 #include <SBuffer.h>
 
@@ -31,8 +32,8 @@
 
 #define MAX_PARTES 256
 
-// PENDIENTe: En unix/linux SisExisteFichero no distingue entre ficheros y directorios lo que puede
-// llevar a confusi�n.
+// PENDIENTE: En unix/linux tratar LINKS S_ISLNK. Cuando sea un link hay que gestionar por debajo
+// el dichero o directorio que hay enlazado 
 
 
 int SisEsSubdirectorioValido ( const char * p_cSubdirectorio )
@@ -965,14 +966,25 @@ int SisExisteFichero ( const char * p_cRuta )
 		}
 
 #	 else
-		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRutaNorm, &statInfo ) < 0 )
+		/* Se pregunta "existe y NO es un directorio", que es lo mismo que mira
+		   la rama de arriba con FILE_ATTRIBUTE_DIRECTORY. Con S_ISREG no valia:
+		   es mas estricto y dejaba fuera FIFOs, sockets y dispositivos, que en
+		   Windows si cuentan como fichero. */
+		memset ( &statInfo, 0, sizeof( struct stat ) );
+		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
 		{
 			  iRes = 0;
 		}
 		else 
 		{
-			iRes = 1;
+			if ( S_ISDIR ( statInfo.st_mode ) ) 
+			{
+				iRes = 0;
+			}
+			else
+			{
+				  iRes = 1;
+			}
 		}
 #	 endif
 		MemLiberarCadena ( &p_cRutaNorm );
@@ -1043,7 +1055,7 @@ int SisExisteDirectorio ( const char * p_cRuta )
 		}
 		else 
 		{
-			if ( ( statInfo.st_mode & S_IFDIR ) == S_IFDIR )
+			if ( S_ISDIR ( statInfo.st_mode ) ) 
 			{
 				iRes = 1;
 			}
@@ -1465,20 +1477,36 @@ int SisCopiarFichero ( const char * p_cRutaOrig, const char * p_cRutaDest )
 			p_fDest = fopen ( p_cRutaDestNorm, "wb" );
 			if ( ES_VALIDO ( p_fOrig ) && ES_VALIDO ( p_fDest ) )
 			{
-				int iFin = 1;
+				/* iFin arrancaba a 1, que es justo la condicion de salida: el
+				   bucle no daba ni una vuelta. El destino quedaba creado y vacio
+				   y la funcion devolvia exito igual. Solo se notaba aqui, porque
+				   la rama WIN copia con CopyFile. */
+				int iFin = 0;
+
+				iRes = 1;
 				while ( iFin == 0 )
 				{
-					fread ( (void *) &c, 1, sizeof ( char ), p_fOrig );
-					if ( feof ( p_fOrig ) == 0 )
+					/* Con el valor que devuelve fread, y no con feof despues: asi
+					   un error de lectura no se confunde con el fin del fichero,
+					   que era otra forma de copiar de menos sin decirlo. */
+					if ( fread ( (void *) &c, 1, sizeof ( char ), p_fOrig ) == 1 )
 					{
-						fwrite ( (void *) &c, 1, sizeof ( char ), p_fDest );
+						if ( fwrite ( (void *) &c, 1, sizeof ( char ), p_fDest ) != 1 )
+						{
+							/* Disco lleno, permisos, ... : la copia esta a medias. */
+							iRes = 0;
+							iFin = 1;
+						}
 					}
 					else
 					{
 						iFin = 1;
+						if ( ferror ( p_fOrig ) != 0 )
+						{
+							iRes = 0;
+						}
 					}
 				}
-				iRes = 1;
 			}
 			else
 			{
@@ -1692,24 +1720,22 @@ int SisRutaComprimida ( const char * p_cRuta )
 	int		iRes;
 	char *	p_cRutaNorm;
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-# else
-	//struct stat statInfo;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 # endif
 
 	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
 	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{	
-#	 if ( defined ( WIN ) )
-		dwAtributos = GetFileAttributes ( p_cRutaNorm );
-		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+#	 if ( defined ( WIN ) || defined ( CYGWIN ) )
+		uiAtributos = SFW32Atributos ( p_cRutaNorm );
+		if ( uiAtributos == SFW32_ATRIB_INVALIDO )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			if ( ( dwAtributos  & FILE_ATTRIBUTE_COMPRESSED ) == FILE_ATTRIBUTE_COMPRESSED )
+			if ( ( uiAtributos  & SFW32_ATRIB_COMPRIMIDO ) == SFW32_ATRIB_COMPRIMIDO )
 			{
 				iRes = 1;
 			}
@@ -1720,24 +1746,17 @@ int SisRutaComprimida ( const char * p_cRuta )
 		}
 
 #	 else
-	/*
-		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
-		{
-			  iRes = 0;
-		}
-		else 
-		{
-			if ( ( statInfo.st_mode & S_IFDIR ) == S_IFDIR )
-			{
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
-		}
-	*/
+	/* LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	   que no. Decidido asi el 2026-09-19.
+	   Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	   que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	   que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	   como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	   montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	   existe en el build; cuando exista se revisa entero, y con el la cuestion
+	   de fondo: que este 0 no distingue "no lo tiene" de "aqui no se puede
+	   saber". */
+		iRes = 0;
 # endif
 		MemLiberarCadena ( &p_cRutaNorm );
 	}
@@ -1754,25 +1773,23 @@ int SisRutaEncriptada ( const char * p_cRuta )
 	int		iRes;
 	char *	p_cRutaNorm;
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-# else
-	//struct stat statInfo;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 # endif
 
 	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
 	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{	
-#	 if ( defined ( WIN ) )
+#	 if ( defined ( WIN ) || defined ( CYGWIN ) )
 
-		dwAtributos = GetFileAttributes ( p_cRutaNorm );
-		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+		uiAtributos = SFW32Atributos ( p_cRutaNorm );
+		if ( uiAtributos == SFW32_ATRIB_INVALIDO )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			if ( ( dwAtributos  & FILE_ATTRIBUTE_ENCRYPTED ) == FILE_ATTRIBUTE_ENCRYPTED )
+			if ( ( uiAtributos  & SFW32_ATRIB_ENCRIPTADO ) == SFW32_ATRIB_ENCRIPTADO )
 			{
 				iRes = 1;
 			}
@@ -1783,29 +1800,16 @@ int SisRutaEncriptada ( const char * p_cRuta )
 		}
 
 #	 else
-	/*
-		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
-		{
-			  iRes = 0;
-		}
-		else 
-		{
-			if ( ( statInfo.st_mode & S_IFDIR ) == S_IFDIR )
-			{
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
-		}
-	}
-	else
-	{
-		iRes = 1;
-	}
-	*/
+	/* LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	   que no. Decidido asi el 2026-09-19.
+	   Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	   que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	   que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	   como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	   montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	   existe en el build; cuando exista se revisa entero, y con el la cuestion
+	   de fondo: que este 0 no distingue "no lo tiene" de "aqui no se puede
+	   saber". */
 		iRes = 0;
 #	 endif
 		MemLiberarCadena ( &p_cRutaNorm );
@@ -1817,16 +1821,15 @@ int SisRutaEncriptada ( const char * p_cRuta )
 	return ( iRes );
 }
 
-// PENDIENTE: UNIX/Linux
 int SisRutaOculta ( const char * p_cRuta )
 {
 	int		iRes;
 	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
-	DWORD		dwAtributos;
+	unsigned int	uiAtributos;
 # else
-	//struct stat statInfo;
+	char *		p_cFichero;
 # endif
 
 	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
@@ -1834,14 +1837,14 @@ int SisRutaOculta ( const char * p_cRuta )
 	{	
 #	 if ( defined ( WIN ) )
 
-		dwAtributos = GetFileAttributes ( p_cRutaNorm );
-		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+		uiAtributos = SFW32Atributos ( p_cRutaNorm );
+		if ( uiAtributos == SFW32_ATRIB_INVALIDO )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			if ( ( dwAtributos  & FILE_ATTRIBUTE_HIDDEN ) == FILE_ATTRIBUTE_HIDDEN )
+			if ( ( uiAtributos  & SFW32_ATRIB_OCULTO ) == SFW32_ATRIB_OCULTO )
 			{
 				iRes = 1;
 			}
@@ -1852,25 +1855,52 @@ int SisRutaOculta ( const char * p_cRuta )
 		}
 
 #	 else
-	/*
-		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
+		/* En POSIX "oculto" no es un atributo del fichero sino una convencion del
+		   nombre: lo esta el que empieza por punto. El directorio actual ( "." ) y
+		   el padre ( ".." ) no cuentan, igual que hace ls.
+		   Esta rama la usa tambien Cygwin-POSIX, donde conviven dos nociones de
+		   "oculto" que NO se solapan: el punto y el atributo de NTFS ( medido: un
+		   fichero con punto delante no queda marcado en NTFS ). Se elige el punto
+		   a proposito, que es la semantica del modo en que se compilo. En
+		   Windows puro manda el atributo, que es la rama de arriba. */
+		if ( access ( p_cRutaNorm, F_OK ) == 0 )
 		{
-			  iRes = 0;
-		}
-		else 
-		{
-			if ( ( statInfo.st_mode & S_IFDIR ) == S_IFDIR )
+			p_cFichero = SisRutaFichero ( p_cRutaNorm );
+			if ( ES_VALIDO ( p_cFichero ) )
 			{
-				iRes = 1;
+				if ( p_cFichero [ 0 ] == SF_FIC_SEPARADOR )
+				{
+					if ( CadComparar ( p_cFichero, SF_DIR_ACTUAL ) != COMP_IGUAL )
+					{
+						if ( CadComparar ( p_cFichero, SF_DIR_PADRE ) != COMP_IGUAL )
+						{
+							iRes = 1;
+						}
+						else
+						{
+							iRes = 0;
+						}
+					}
+					else
+					{
+						iRes = 0;
+					}
+				}
+				else
+				{
+					iRes = 0;
+				}
+				MemLiberarCadena ( &p_cFichero );
 			}
 			else
 			{
 				iRes = 0;
 			}
 		}
-	*/
-		iRes = 0;
+		else
+		{
+			iRes = 0;
+		}
 #	 endif
 		MemLiberarCadena ( &p_cRutaNorm );
 	}
@@ -1881,30 +1911,27 @@ int SisRutaOculta ( const char * p_cRuta )
 	return ( iRes );
 }
 
-// PENDIENTE: UNIX/Linux
 int SisFicheroEsAccesible ( const char * p_cRuta )
 {
 	int		iRes;
 	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-# else
-	//struct stat statInfo;
+	unsigned int	uiAtributos;
 # endif
 
 	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
 	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{	
 #	 if ( defined ( WIN ) )
-		dwAtributos = GetFileAttributes ( p_cRutaNorm );
-		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+		uiAtributos = SFW32Atributos ( p_cRutaNorm );
+		if ( uiAtributos == SFW32_ATRIB_INVALIDO )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			if ( ( dwAtributos  & FILE_ATTRIBUTE_OFFLINE ) == FILE_ATTRIBUTE_OFFLINE )
+			if ( ( uiAtributos  & SFW32_ATRIB_FUERA_DE_LINEA ) == SFW32_ATRIB_FUERA_DE_LINEA )
 			{
 				iRes = 0;
 			}
@@ -1915,30 +1942,19 @@ int SisFicheroEsAccesible ( const char * p_cRuta )
 		}
 
 # else
-	/*
-		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
+		/* En POSIX no existe el "fuera de linea" de Windows. Lo que si se puede
+		   preguntar es lo que la funcion promete: si el proceso puede leer la ruta.
+		   access responde que no tambien cuando no existe, que es justo lo que
+		   devuelve la rama de arriba en ese caso.
+		   La usa tambien Cygwin-POSIX, por lo mismo que SisRutaDeSoloLectura. */
+		if ( access ( p_cRutaNorm, R_OK ) == 0 )
 		{
-			  iRes = 0;
+			iRes = 1;
 		}
-		else 
+		else
 		{
-			if ( ( statInfo.st_mode & S_IFDIR ) == S_IFDIR )
-			{
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
+			iRes = 0;
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
-	*/
-		iRes = 0;
 #	 endif
 		MemLiberarCadena ( &p_cRutaNorm );
 	}
@@ -1949,30 +1965,27 @@ int SisFicheroEsAccesible ( const char * p_cRuta )
 	return ( iRes );
 }
 
-// PENDIENTE: UNIX/Linux
 int SisRutaDeSoloLectura ( const char * p_cRuta )
 {
 	int		iRes;
 	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-# else
-	//struct stat statInfo;
+	unsigned int	uiAtributos;
 # endif
 
 	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
 	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{	
 #	 if ( defined ( WIN ) )
-		dwAtributos = GetFileAttributes ( p_cRutaNorm );
-		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+		uiAtributos = SFW32Atributos ( p_cRutaNorm );
+		if ( uiAtributos == SFW32_ATRIB_INVALIDO )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			if ( ( dwAtributos  & FILE_ATTRIBUTE_READONLY ) == FILE_ATTRIBUTE_READONLY )
+			if ( ( uiAtributos  & SFW32_ATRIB_SOLO_LECTURA ) == SFW32_ATRIB_SOLO_LECTURA )
 			{
 				iRes = 1;
 			}
@@ -1983,30 +1996,30 @@ int SisRutaDeSoloLectura ( const char * p_cRuta )
 		}
 
 #	 else
-	/*
-		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
+		/* "Solo lectura" en POSIX es no tener permiso de escritura. Se comprueba
+		   antes que la ruta exista: si no esta, access tampoco daria permiso, y una
+		   ruta que no existe no es de solo lectura, es que no esta.
+		   Ojo: access mira el usuario REAL del proceso, asi que ejecutando como
+		   root sale que se puede escribir aunque el modo sea 0444.
+		   Esta rama la usa tambien Cygwin-POSIX, y ahi es MEJOR que la de Win32:
+		   medido, access ve tanto el atributo de solo lectura de NTFS ( que Cygwin
+		   refleja en el modo ) como un chmod 0444 que no llega a tocar NTFS. El
+		   bit de NTFS por si solo se pierde el segundo caso. */
+		if ( access ( p_cRutaNorm, F_OK ) == 0 )
 		{
-			  iRes = 0;
-		}
-		else 
-		{
-			if ( ( statInfo.st_mode & S_IFDIR ) == S_IFDIR )
-			{
-				iRes = 1;
-			}
-			else
+			if ( access ( p_cRutaNorm, W_OK ) == 0 )
 			{
 				iRes = 0;
 			}
+			else
+			{
+				iRes = 1;
+			}
 		}
-	}
-	else
-	{
-		iRes = 1;
-	}
-	*/
-		iRes = 0;
+		else
+		{
+			iRes = 0;
+		}
 #	 endif
 		MemLiberarCadena ( &p_cRutaNorm );
 	}
@@ -2023,24 +2036,22 @@ int SisRutaDelSistema ( const char * p_cRuta )
 	int		iRes;
 	char *	p_cRutaNorm;
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-# else
-	//struct stat statInfo;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 # endif
 
 	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
 	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{	
-#	 if ( defined ( WIN ) )
-		dwAtributos = GetFileAttributes ( p_cRutaNorm );
-		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+#	 if ( defined ( WIN ) || defined ( CYGWIN ) )
+		uiAtributos = SFW32Atributos ( p_cRutaNorm );
+		if ( uiAtributos == SFW32_ATRIB_INVALIDO )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			if ( ( dwAtributos  & FILE_ATTRIBUTE_SYSTEM ) == FILE_ATTRIBUTE_SYSTEM )
+			if ( ( uiAtributos  & SFW32_ATRIB_SISTEMA ) == SFW32_ATRIB_SISTEMA )
 			{
 				iRes = 1;
 			}
@@ -2051,25 +2062,16 @@ int SisRutaDelSistema ( const char * p_cRuta )
 		}
 
 #	 else
-	/*
-		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
-		{
-			  iRes = 0;
-		}
-		else 
-		{
-			if ( ( statInfo.st_mode & S_IFDIR ) == S_IFDIR )
-			{
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
-		}
-	}
-	*/
+	/* LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	   que no. Decidido asi el 2026-09-19.
+	   Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	   que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	   que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	   como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	   montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	   existe en el build; cuando exista se revisa entero, y con el la cuestion
+	   de fondo: que este 0 no distingue "no lo tiene" de "aqui no se puede
+	   saber". */
 		iRes = 0;
 #	 endif
 		MemLiberarCadena ( &p_cRutaNorm );
@@ -2087,24 +2089,22 @@ int SisFicheroEsTemporal ( const char * p_cRuta )
 	int		iRes;
 	char *	p_cRutaNorm;
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-# else
-	//struct stat statInfo;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 # endif
 
 	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
 	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{	
-#	 if ( defined ( WIN ) )
-		dwAtributos = GetFileAttributes ( p_cRutaNorm );
-		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+#	 if ( defined ( WIN ) || defined ( CYGWIN ) )
+		uiAtributos = SFW32Atributos ( p_cRutaNorm );
+		if ( uiAtributos == SFW32_ATRIB_INVALIDO )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			if ( ( dwAtributos  & FILE_ATTRIBUTE_TEMPORARY ) == FILE_ATTRIBUTE_TEMPORARY )
+			if ( ( uiAtributos  & SFW32_ATRIB_TEMPORAL ) == SFW32_ATRIB_TEMPORAL )
 			{
 				iRes = 1;
 			}
@@ -2115,24 +2115,16 @@ int SisFicheroEsTemporal ( const char * p_cRuta )
 		}
 
 #	 else
-	/*
-		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
-		{
-			  iRes = 0;
-		}
-		else 
-		{
-			if ( ( statInfo.st_mode & S_IFDIR ) == S_IFDIR )
-			{
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
-		}
-	*/
+	/* LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	   que no. Decidido asi el 2026-09-19.
+	   Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	   que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	   que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	   como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	   montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	   existe en el build; cuando exista se revisa entero, y con el la cuestion
+	   de fondo: que este 0 no distingue "no lo tiene" de "aqui no se puede
+	   saber". */
 		iRes = 0;
 #	 endif
 		MemLiberarCadena ( &p_cRutaNorm );
@@ -2150,24 +2142,22 @@ int SisFicheroAsociadoAAplicacion ( const char * p_cRuta )
 	int		iRes;
 	char *	p_cRutaNorm;
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-# else
-	//struct stat statInfo;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 # endif
 
 	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
 	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{	
-#	 if ( defined ( WIN ) )
-		dwAtributos = GetFileAttributes ( p_cRutaNorm );
-		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+#	 if ( defined ( WIN ) || defined ( CYGWIN ) )
+		uiAtributos = SFW32Atributos ( p_cRutaNorm );
+		if ( uiAtributos == SFW32_ATRIB_INVALIDO )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			if ( ( dwAtributos  & FILE_ATTRIBUTE_REPARSE_POINT ) == FILE_ATTRIBUTE_REPARSE_POINT )
+			if ( ( uiAtributos  & SFW32_ATRIB_PUNTO_ANALISIS ) == SFW32_ATRIB_PUNTO_ANALISIS )
 			{
 				iRes = 1;
 			}
@@ -2178,7 +2168,16 @@ int SisFicheroAsociadoAAplicacion ( const char * p_cRuta )
 		}
 
 #	 else
-	// �Utilizar el comando du -h?
+	/* LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	   que no. Decidido asi el 2026-09-19.
+	   Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	   que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	   que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	   como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	   montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	   existe en el build; cuando exista se revisa entero, y con el la cuestion
+	   de fondo: que este 0 no distingue "no lo tiene" de "aqui no se puede
+	   saber". */
 		iRes = 0;
 #	 endif
 		MemLiberarCadena ( &p_cRutaNorm );
@@ -2195,24 +2194,22 @@ int SisFicheroConOptimizacionEspacial ( const char * p_cRuta )
 	int		iRes;
 	char *	p_cRutaNorm;
 
-# if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-# else
-	//struct stat statInfo;
+# if ( defined ( WIN ) || defined ( CYGWIN ) )
+	unsigned int	uiAtributos;
 # endif
 
 	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
 	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{	
-#	 if ( defined ( WIN ) )
-		dwAtributos = GetFileAttributes ( p_cRutaNorm );
-		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+#	 if ( defined ( WIN ) || defined ( CYGWIN ) )
+		uiAtributos = SFW32Atributos ( p_cRutaNorm );
+		if ( uiAtributos == SFW32_ATRIB_INVALIDO )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			if ( ( dwAtributos  & FILE_ATTRIBUTE_SPARSE_FILE ) == FILE_ATTRIBUTE_SPARSE_FILE )
+			if ( ( uiAtributos  & SFW32_ATRIB_DISPERSO ) == SFW32_ATRIB_DISPERSO )
 			{
 				iRes = 1;
 			}
@@ -2222,7 +2219,16 @@ int SisFicheroConOptimizacionEspacial ( const char * p_cRuta )
 			}
 		}
 #	 else
-	// Figura de Windows:
+	/* LIMITACION CONOCIDA, no un descuido: en POSIX puro ( Linux ) se contesta
+	   que no. Decidido asi el 2026-09-19.
+	   Los atributos son del sistema de ficheros, no del sistema operativo, asi
+	   que en CYGWIN SI se resuelven, por la rama de arriba. Sobre Linux habria
+	   que preguntarselo al montaje en tiempo de ejecucion ( ntfs-3g los expone
+	   como el atributo extendido system.ntfs_attrib ) y solo valdria sobre
+	   montajes NTFS. Se deja asi a proposito porque el modo Linux todavia no
+	   existe en el build; cuando exista se revisa entero, y con el la cuestion
+	   de fondo: que este 0 no distingue "no lo tiene" de "aqui no se puede
+	   saber". */
 		iRes = 0;
 #	 endif
 		MemLiberarCadena ( &p_cRutaNorm );
@@ -2240,27 +2246,27 @@ int SisRutaDesactivarModoSoloLectura ( const char * p_cRuta )
 	char *	p_cRutaNorm;
 
 # if ( defined ( WIN ) )
-	DWORD		dwAtributos;
-	DWORD		dwMascara;
+	unsigned int	uiAtributos;
+	unsigned int	uiMascara;
 # else
-	//struct stat statInfo;
+	struct stat	statInfo;
 # endif
 
 	p_cRutaNorm = SisRutaEstiloSistema ( p_cRuta );
 	if ( ES_VALIDO ( p_cRutaNorm ) )
 	{	
 #	 if ( defined ( WIN ) )
-		dwAtributos = GetFileAttributes ( p_cRutaNorm );
-		if ( dwAtributos == INVALID_FILE_ATTRIBUTES )
+		uiAtributos = SFW32Atributos ( p_cRutaNorm );
+		if ( uiAtributos == SFW32_ATRIB_INVALIDO )
 		{
 			iRes = 0;
 		}
 		else 
 		{
-			dwMascara = FILE_ATTRIBUTE_READONLY;
-			dwMascara = 0xFFFFFFFF ^ dwMascara;
-			dwAtributos = dwAtributos & dwMascara;
-			if ( SetFileAttributes ( p_cRuta, dwAtributos ) != 0 )
+			uiMascara = SFW32_ATRIB_SOLO_LECTURA;
+			uiMascara = 0xFFFFFFFF ^ uiMascara;
+			uiAtributos = uiAtributos & uiMascara;
+			if ( SFW32PonerAtributos ( p_cRutaNorm, uiAtributos ) != 0 )
 			{
 				iRes = 1;
 			}
@@ -2271,15 +2277,14 @@ int SisRutaDesactivarModoSoloLectura ( const char * p_cRuta )
 		}
 
 #	 else
-	/*
-		memset ( &statInfo, 0, sizeof(struct stat) );
-		if ( stat ( p_cRutaNorm, &statInfo ) != 0 )
+		/* Quitar el solo lectura en POSIX es dar permiso de escritura. Solo al
+		   propietario: tocar tambien el de grupo o el de otros seria abrir mas de
+		   lo que se pide.
+		   La usa tambien Cygwin-POSIX: medido, ahi chmod +w limpia ademas el
+		   atributo de solo lectura de NTFS, asi que cubre los dos casos. */
+		if ( stat ( p_cRutaNorm, &statInfo ) == 0 )
 		{
-			  iRes = 0;
-		}
-		else 
-		{
-			if ( ( statInfo.st_mode & S_IFDIR ) == S_IFDIR )
+			if ( chmod ( p_cRutaNorm, statInfo.st_mode | S_IWUSR ) == 0 )
 			{
 				iRes = 1;
 			}
@@ -2288,8 +2293,10 @@ int SisRutaDesactivarModoSoloLectura ( const char * p_cRuta )
 				iRes = 0;
 			}
 		}
-	*/
-		iRes = 0;
+		else
+		{
+			iRes = 0;
+		}
 #	 endif
 		MemLiberarCadena ( &p_cRutaNorm );
 	}
@@ -2685,7 +2692,7 @@ char * SisDirectorioRaiz ()
 #endif
 }
 
-#if ( defined ( WIN ) )
+#if ( defined ( WIN ) || defined ( CYGWIN ) )
 char * SisDirectorioRaizExt ( char cUnidad )
 {
 #if ( defined ( CYGWIN ) )

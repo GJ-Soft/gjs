@@ -3,6 +3,8 @@
 #include "SistemaSignals.h"
 
 
+#if ( defined ( SIGNALS_PERMITIDOS ) )
+
 
 static int TestSisSigNombre01 ()
 {
@@ -56,58 +58,41 @@ static int TestSisSigCodigo01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SisSigCodigo 01:\n" );
-	/* El resultado de estas rutinas depende de la plataforma: en WIN los signals
-	   no estan permitidos y devuelven -1 / 0; en POSIX si. Se comprueba la
-	   coherencia con SisSigEstanPermitidos en tiempo de ejecucion. */
-	if ( SisSigEstanPermitidos () == 1 )
+	int iCod = SisSigCodigo ( SIS_SIG_ABORTAR );
+	if ( iCod < 0 )
 	{
-		int iCod = SisSigCodigo ( SIS_SIG_ABORTAR );
-		if ( iCod < 0 )
-		{
-			printf( "Error caso 1: se esperaba codigo valido para ABORTAR\n" );
-			iRes = BOOL_VAL_FALSO;
-		}
-		/* La ida y vuelta solo tiene sentido si la senal existe en esta
-		   plataforma: si no existe su codigo es -1, que no identifica a ninguna
-		   ( en Windows lo comparten ocho de las quince ). */
-		if ( ( iCod >= 0 ) && ( SisSigId ( iCod ) != SIS_SIG_ABORTAR ) )
-		{
-			printf( "Error caso 2: SisSigId no invierte SisSigCodigo\n" );
-			iRes = BOOL_VAL_FALSO;
-		}
-		if ( SisSigEsValida ( SIS_SIG_ABORTAR ) != 1 )
-		{
-			printf( "Error caso 3: se esperaba signal valida\n" );
-			iRes = BOOL_VAL_FALSO;
-		}
-		if ( SisSigEsProgramable ( SIS_SIG_FINALIZACION_OBLIGADA ) != 0 )
-		{
-			printf( "Error caso 4: FINALIZACION_OBLIGADA no debe ser programable\n" );
-			iRes = BOOL_VAL_FALSO;
-		}
+		printf( "Error caso 1: se esperaba codigo valido para ABORTAR\n" );
+		iRes = BOOL_VAL_FALSO;
 	}
-	else
+	/* La ida y vuelta solo tiene sentido si la senal existe en esta
+	   plataforma: si no existe su codigo es -1, que no identifica a ninguna
+	   ( en Windows lo comparten ocho de las quince ). */
+	if ( ( iCod >= 0 ) && ( SisSigId ( iCod ) != SIS_SIG_ABORTAR ) )
 	{
-		if ( SisSigCodigo ( SIS_SIG_ABORTAR ) != -1 )
-		{
-			printf( "Error caso 1: sin signals permitidos se esperaba -1\n" );
-			iRes = BOOL_VAL_FALSO;
-		}
-		if ( SisSigEsValida ( SIS_SIG_ABORTAR ) != 0 )
-		{
-			printf( "Error caso 2: sin signals permitidos se esperaba no valida\n" );
-			iRes = BOOL_VAL_FALSO;
-		}
+		printf( "Error caso 2: SisSigId no invierte SisSigCodigo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SisSigEsValida ( SIS_SIG_ABORTAR ) != 1 )
+	{
+		printf( "Error caso 3: se esperaba signal valida\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SisSigEsProgramable ( SIS_SIG_FINALIZACION_OBLIGADA ) != 0 )
+	{
+		printf( "Error caso 4: FINALIZACION_OBLIGADA no debe ser programable\n" );
+		iRes = BOOL_VAL_FALSO;
 	}
 	return ( iRes );
 }
 
+#endif
 
 
 int TestSistemaSignals ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SistemaSignals]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
+#if ( defined ( SIGNALS_PERMITIDOS ) )
 	if ( ( TestSisSigNombre01 () == BOOL_VAL_CIERTO ) &&
 			( TestSisSigMensaje01 () == BOOL_VAL_CIERTO ) &&
 			( TestSisSigCodigo01 () == BOOL_VAL_CIERTO ) )
@@ -119,6 +104,9 @@ int TestSistemaSignals ()
 		printf ( "%sResultado: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
 		iRes = BOOL_VAL_FALSO;
 	}
+#else
+		printf ( "%sEn este entorno los Signal no estan permitidos%s\n", ANSI_MAGENTA, ANSI_RESETEAR );
+#endif
 	printf ( "%s[Fin]%s\n", ANSI_AMARILLO, ANSI_RESETEAR );
 	return ( iRes );
 }

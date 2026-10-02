@@ -81,7 +81,7 @@ bool Entidad::EsValida () const
 	return( bRes );
 }
 
-int Entidad::NumAtributos ()
+int Entidad::NumAtributos () const
 {
 	return ( mapDefinicion.size() );
 }
@@ -92,10 +92,10 @@ bool Entidad::TieneAtributo ( const string & sAtributo )
 	return ( it != mapDefinicion.end() );
 }
 
-Atributo * Entidad::getAtributo ( const string & sAtributo )
+Atributo * Entidad::getAtributo ( const string & sAtributo ) const
 {
 	Atributo * atributo = NULL;
-	map<string, Atributo *>::iterator it = mapDefinicion.find( sAtributo );
+	map<string, Atributo *>::const_iterator it = mapDefinicion.find( sAtributo );
 	if ( it != mapDefinicion.end() )
 	{
 		atributo = it->second;
@@ -103,12 +103,12 @@ Atributo * Entidad::getAtributo ( const string & sAtributo )
 	return ( atributo );
 }
 
-Atributo * Entidad::getAtributo ( int iIndice )
+Atributo * Entidad::getAtributo ( int iIndice ) const
 {
 	Atributo * atributo = NULL;
 	if ( ( iIndice >= 0 ) && ( iIndice < mapDefinicion.size() ) )
 	{
-		map<string, Atributo *>::iterator it = mapDefinicion.begin();
+		map<string, Atributo *>::const_iterator it = mapDefinicion.begin();
 		int iPos = 0;
 		while ( ( iPos < iIndice ) && ( it != mapDefinicion.end() ) )
 		{

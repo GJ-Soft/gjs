@@ -29,14 +29,8 @@ void SLisEtrDestruir ( SListaEntradas ** p_p_lisObj )
 		if ( ES_VALIDO ( p_lisObj ) )
 		{
 			SLisEtrVaciar ( p_lisObj );
-			printf ( "VACIADA LA LISTA\n" );
-			fflush(stdout);
 			SLispDestruir ( &(p_lisObj->p_lisDatos) );
-			printf ( "DESTRUIDA LA LISTA\n" );
-			fflush(stdout);
 			MemLiberar ( (void **) p_p_lisObj );
-			printf ( "LIBERADA LA LISTA\n" );
-			fflush(stdout);
 		}
 	}
 }

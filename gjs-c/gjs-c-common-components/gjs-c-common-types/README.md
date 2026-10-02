@@ -3,10 +3,11 @@
 Librería de **tipos de aplicación** en C del stack GJS. Donde
 [`gjs-c-common-base-types`](../gjs-c-common-base-types/README.md) aporta
 estructuras de datos genéricas, este módulo aporta los conceptos con los que se
-escribe una aplicación: valores tipados, entidades identificadas, errores,
-parámetros, acciones y localizadores.
+escribe una aplicación: valores tipados, mensajes, errores, parámetros,
+acciones y localizadores. Las entidades identificadas están en
+[`gjs-c-common-database`](../gjs-c-common-database/README.md).
 
-31 módulos en 12.850 líneas.
+30 módulos en 13.752 líneas.
 
 ---
 
@@ -96,7 +97,7 @@ los cinco módulos anteriores del stack instalados.
 
 ## Tests
 
-**31 suites**, una por módulo. Sin test sólo las dos cabeceras sin fuente
+**30 suites**, una por módulo. Sin test sólo las dos cabeceras sin fuente
 (`TiposDatos.h`, `TiposDatosErrores.h`).
 
 ---

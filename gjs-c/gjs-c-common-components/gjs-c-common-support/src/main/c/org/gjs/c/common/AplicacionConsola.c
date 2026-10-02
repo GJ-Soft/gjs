@@ -28,8 +28,6 @@ static int	g_iAplicConsolaDisponible = 1;
 
 
 
-// PENDIENTE: �Como determinar si es WIN en modo consola o no?
-//  PENDIENTE: Refinar para el caso GNU/UNIX y completar para el caso VC
 int AplicConAbrir ()
 {
 	int				iRes;
@@ -43,7 +41,6 @@ int AplicConAbrir ()
 #	  if ( defined ( WIN ) )
 		AllocConsole ();
 #	 else
-		// PENDIENTE: Verificar que sobra de todo esto:
 		iFilDesc = open ( "/dev/tty", O_RDWR );
 		tcgetattr ( iFilDesc, &trmioConsola ); 
 
@@ -52,15 +49,15 @@ int AplicConAbrir ()
 		dup2 ( iFilDesc, 2 );
 		close( iFilDesc );
 		
-		//stdin = fdopen ( 0, "r" );
-		//p_fstdout = fdopen ( 1, "w" );
-		//p_fstderr = fdopen ( 2, "w" );
-
 		setlinebuf ( stdin );
 		setlinebuf ( stdout );
 		setbuf ( stderr, NULL );
   
-		tcsetattr ( iFilDesc, TCSANOW, &trmioConsola );
+		/* Sobre el descriptor 0, NO sobre iFilDesc: ese ya se cerro unas
+		   lineas mas arriba, en cuanto se duplico en 0, 1 y 2. Tal y como
+		   estaba, tcsetattr fallaba con EBADF —nadie mira el retorno— y los
+		   atributos del terminal no se restauraban nunca. */
+		tcsetattr ( 0, TCSANOW, &trmioConsola );
 #	 endif
 		/* Tras abrir (o reabrir tras un AplicConCerrar) la consola queda
 		   disponible; sin esto EstaAbierta/Ancho seguirian viendo 0 y un

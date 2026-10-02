@@ -12,6 +12,6 @@ ${symbol_pound} Program Rest Client ${capitalizedName}
 ${symbol_pound}
 from .Models import *
 
-__version__ = "${pythonVersion}"
+
 
 

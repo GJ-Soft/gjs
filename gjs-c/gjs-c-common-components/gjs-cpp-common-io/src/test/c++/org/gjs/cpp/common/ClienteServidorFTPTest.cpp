@@ -127,7 +127,12 @@ static void Cliente1()
 			cout << "{CLIENTE1} Sesion abierta" << endl;
 			string sDir = cliente->DirectorioRemoto();
 			cout << "{CLIENTE1} Directorio remoto: [" << sDir << "]" << endl;
-			if ( !TerminaPor( sDir, "/servidorFTP" ) )
+			/* El servidor contesta al PWD con la ruta en la sintaxis de su propio
+			   sistema, que el RFC 959 permite: en POSIX llega con / y en Windows
+			   con \. Comparar el texto contra "/servidorFTP" daba KO en Windows
+			   por una ruta que era la correcta, asi que se mira el nombre de la
+			   ultima carpeta, que es lo que el caso quiere comprobar. */
+			if ( filesystem::path ( sDir ).filename () != "servidorFTP" )
 			{
 				cout << "Directorio erroneo:[" <<  sDir << "]" << endl;
 				bRes = false;
@@ -157,9 +162,11 @@ static void Cliente1()
 			{
 				Esperar( 100 );
 				sDir1 = cliente->DirectorioRemoto();
-				string sDirEsperado = Concatenar( sDir, "/carpeta1" );
+				/* Por lo mismo: se compone con path, que pone el separador de la
+				   plataforma, en vez de pegar un "/" a mano. */
+				filesystem::path pathEsperado = filesystem::path ( sDir ) / "carpeta1";
 				cout << "{CLIENTE1} Directorio remoto: [" << sDir1 << "]" << endl;
-				if ( sDir1.compare( sDirEsperado ) != 0 )
+				if ( filesystem::path ( sDir1 ) != pathEsperado )
 				{
 					cout << "Directorio erroneo:[" <<  sDir1 << "]" << endl;
 					bRes = false;
@@ -255,9 +262,9 @@ static void Cliente1()
 				{
 					Esperar( 100 );
 					sDir1 = cliente->DirectorioRemoto();
-					string sDirEsperado = Concatenar( sDir, "/carpeta2" );
+					filesystem::path pathEsperado = filesystem::path ( sDir ) / "carpeta2";
 					cout << "{CLIENTE1} Directorio remoto: [" << sDir1 << "]" << endl;
-					if ( sDir1.compare( sDirEsperado ) != 0 )
+					if ( filesystem::path ( sDir1 ) != pathEsperado )
 					{
 						cout << "Directorio erroneo:[" <<  sDir1 << "]" << endl;
 						bRes = false;

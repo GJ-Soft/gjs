@@ -12,7 +12,6 @@ ${symbol_pound} Program Rest Client ${capitalizedName}
 ${symbol_pound}
 from .${capitalizedName}Client import ${capitalizedName}Client
 
-__version__ = "${pythonVersion}"
 __all__ = ["${capitalizedName}Client"]
 
 

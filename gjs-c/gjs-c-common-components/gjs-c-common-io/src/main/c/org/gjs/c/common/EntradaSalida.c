@@ -66,7 +66,7 @@ int SisAsincEscribir ( int iDescriptor, const char * p_cText )
 		iLong = CadLongitud ( p_cText );
 #if ( defined ( WIN ) )
 		DWORD dwBytes = 0;
-		if ( WriteFile( (HANDLE) _get_osfhandle( iDescriptor ), p_cText, (DWORD) iLong, (LPDWORD) &dwBytes, NULL ) != 0 )
+		if ( WriteFile( (HANDLE) _get_osfhandle( iDescriptor ), p_cText, (DWORD) iLong, &dwBytes, NULL ) != 0 )
 		{
 			iBytes = (int) dwBytes;
 		}

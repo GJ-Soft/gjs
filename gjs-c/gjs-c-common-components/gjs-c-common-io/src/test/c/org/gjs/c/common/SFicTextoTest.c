@@ -70,6 +70,300 @@ static int TestSFicTxtEscribirLeer01 ()
 	return ( iRes );
 }
 
+static int TestSFicTxtLeer01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SFicTxtLeer 01:\n" );
+	SisCrearDirectorio ( FIC_TEST_DIR_RESULTS );
+	SFicTexto * p_ficObj = SFicTxtCrearExt ( FIC_TEST_DIR_DATA, "ejemploDOS.txt", EST_FTXT_DOS );
+	if ( ES_VALIDO ( p_ficObj ) )
+	{
+		if ( SFicTxtEsEstiloDOS ( p_ficObj ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba estilo DOS\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Escritura de dos lineas (vaciando el fichero). */
+		if ( SFicTxtAbrir ( p_ficObj, MOD_APR_LECTURA ) != 1 )
+		{
+			printf( "Error caso 2: no se pudo abrir para lectura\n" );
+			iRes = BOOL_VAL_FALSO;
+		} 
+		else
+		{
+			char * p_cLinea1 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea1 ) || ( CadComparar ( p_cLinea1, "Este es" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 3: se esperaba \"Este es\": [%s]\n", ES_VALIDO ( p_cLinea1 ) ? p_cLinea1 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea1 );
+			if ( SFicTxtEstaEnFinal ( p_ficObj ) == 1 )
+			{
+				printf( "Error caso 4: No deberia haber llegado al final\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			char * p_cLinea2 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea2 ) || ( CadComparar ( p_cLinea2, "un fichero" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 5: se esperaba \"un fichero\": [%s]\n", ES_VALIDO ( p_cLinea2 ) ? p_cLinea2 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea2 );
+			char * p_cLinea3 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea3 ) || ( CadComparar ( p_cLinea3, "de ejemplo" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 6: se esperaba \"de ejemplo\": [%s]\n", ES_VALIDO ( p_cLinea3 ) ? p_cLinea3 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea3 );
+			char * p_cLinea4 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea4 ) || ( CadComparar ( p_cLinea4, "en formato DOS" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 7: se esperaba \"en formato DOS\": [%s]\n", ES_VALIDO ( p_cLinea4 ) ? p_cLinea4 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea4 );
+			char * p_cLinea5 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_VALIDO ( p_cLinea5 ) )
+			{
+				printf( "Error caso 8: se esperaba (nulo): [%s]\n", p_cLinea5 );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea5 );
+			if ( SFicTxtEstaEnFinal ( p_ficObj ) == 0 )
+			{
+				printf( "Error caso 9: deberia haber llegado al final\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		SFicTxtCerrar ( p_ficObj );
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el objeto\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
+static int TestSFicTxtLeer02 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SFicTxtLeer 02:\n" );
+	SisCrearDirectorio ( FIC_TEST_DIR_RESULTS );
+	SFicTexto * p_ficObj = SFicTxtCrearExt ( FIC_TEST_DIR_DATA, "ejemploUNIX.txt", EST_FTXT_UNIX );
+	if ( ES_VALIDO ( p_ficObj ) )
+	{
+		if ( SFicTxtEsEstiloUNIX ( p_ficObj ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba estilo UNIX\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Escritura de dos lineas (vaciando el fichero). */
+		if ( SFicTxtAbrir ( p_ficObj, MOD_APR_LECTURA ) != 1 )
+		{
+			printf( "Error caso 2: no se pudo abrir para lectura\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			char * p_cLinea1 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea1 ) || ( CadComparar ( p_cLinea1, "Este es" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 3: se esperaba \"Este es\": [%s]\n", ES_VALIDO ( p_cLinea1 ) ? p_cLinea1 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea1 );
+			if ( SFicTxtEstaEnFinal ( p_ficObj ) == 1 )
+			{
+				printf( "Error caso 4: No deberia haber llegado al final\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			char * p_cLinea2 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea2 ) || ( CadComparar ( p_cLinea2, "un fichero" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 5: se esperaba \"un fichero\": [%s]\n", ES_VALIDO ( p_cLinea2 ) ? p_cLinea2 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea2 );
+			char * p_cLinea3 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea3 ) || ( CadComparar ( p_cLinea3, "de ejemplo" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 6: se esperaba \"de ejemplo\": [%s]\n", ES_VALIDO ( p_cLinea3 ) ? p_cLinea3 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea3 );
+			char * p_cLinea4 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea4 ) || ( CadComparar ( p_cLinea4, "en formato UNIX" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 7: se esperaba \"en formato UNIX\": [%s]\n", ES_VALIDO ( p_cLinea4 ) ? p_cLinea4 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea4 );
+			char * p_cLinea5 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_VALIDO ( p_cLinea5 ) )
+			{
+				printf( "Error caso 8: se esperaba (nulo): [%s]\n", p_cLinea5 );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea5 );
+			if ( SFicTxtEstaEnFinal ( p_ficObj ) == 0 )
+			{
+				printf( "Error caso 9: deberia haber llegado al final\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			SFicTxtCerrar ( p_ficObj );
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el objeto\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
+static int TestSFicTxtLeer03 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SFicTxtLeer 03:\n" );
+	SisCrearDirectorio ( FIC_TEST_DIR_RESULTS );
+	SFicTexto * p_ficObj = SFicTxtCrearExt ( FIC_TEST_DIR_DATA, "ejemploUNIX.txt", EST_FTXT_DOS );
+	if ( ES_VALIDO ( p_ficObj ) )
+	{
+		if ( SFicTxtEsEstiloDOS ( p_ficObj ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba estilo DOS\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Escritura de dos lineas (vaciando el fichero). */
+		if ( SFicTxtAbrir ( p_ficObj, MOD_APR_LECTURA ) != 1 )
+		{
+			printf( "Error caso 2: no se pudo abrir para lectura\n" );
+			iRes = BOOL_VAL_FALSO;
+		} 
+		else 
+		{
+			if ( SFicTxtLecturaEstricta ( p_ficObj ) == 1 )
+			{
+				printf( "Error caso 3: Deberia ser de lectura no estricta por defecto\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			SFicTxtActivarLecturaEstricta ( p_ficObj );
+			if ( SFicTxtLecturaEstricta ( p_ficObj ) == 0 )
+			{
+				printf( "Error caso 4: Deberia ser de lectura estricta\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			char * p_cLinea1 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea1 ) || ( CadComparar ( p_cLinea1, "Este es\nun fichero\nde ejemplo\nen formato UNIX\n" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 5: valor incorrecto: [%s]\n", ES_VALIDO ( p_cLinea1 ) ? p_cLinea1 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea1 );
+			char * p_cLinea2 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_VALIDO ( p_cLinea2 ) )
+			{
+				printf( "Error caso 6: se esperaba (nulo): [%s]\n", p_cLinea2 );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea2 );
+			if ( SFicTxtEstaEnFinal ( p_ficObj ) == 0 )
+			{
+				printf( "Error caso 7: deberia haber llegado al final\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			SFicTxtCerrar ( p_ficObj );
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el objeto\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
+static int TestSFicTxtLeer04 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SFicTxtLeer 04:\n" );
+	SisCrearDirectorio ( FIC_TEST_DIR_RESULTS );
+	SFicTexto * p_ficObj = SFicTxtCrearExt ( FIC_TEST_DIR_DATA, "ejemploUNIX.txt", EST_FTXT_DOS );
+	if ( ES_VALIDO ( p_ficObj ) )
+	{
+		if ( SFicTxtEsEstiloDOS ( p_ficObj ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba estilo DOS\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Escritura de dos lineas (vaciando el fichero). */
+		if ( SFicTxtAbrir ( p_ficObj, MOD_APR_LECTURA ) != 1 )
+		{
+			printf( "Error caso 2: no se pudo abrir para lectura\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			SFicTxtDesactivarLecturaEstricta ( p_ficObj );
+			if ( SFicTxtLecturaEstricta ( p_ficObj ) == 1 )
+			{
+				printf( "Error caso 3: Deberia ser de lectura no estricta\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			char * p_cLinea1 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea1 ) || ( CadComparar ( p_cLinea1, "Este es" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 4: se esperaba \"Este es\": [%s]\n", ES_VALIDO ( p_cLinea1 ) ? p_cLinea1 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea1 );
+			char * p_cLinea2 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea2 ) || ( CadComparar ( p_cLinea2, "un fichero" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 5: se esperaba \"un fichero\": [%s]\n", ES_VALIDO ( p_cLinea2 ) ? p_cLinea2 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea2 );
+			char * p_cLinea3 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea3 ) || ( CadComparar ( p_cLinea3, "de ejemplo" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 6: se esperaba \"de ejemplo\": [%s]\n", ES_VALIDO ( p_cLinea3 ) ? p_cLinea3 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea3 );
+			char * p_cLinea4 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_NULO ( p_cLinea4 ) || ( CadComparar ( p_cLinea4, "en formato UNIX" ) != COMP_IGUAL ) )
+			{
+				printf( "Error caso 7: se esperaba \"en formato UNIX\": [%s]\n", ES_VALIDO ( p_cLinea4 ) ? p_cLinea4 : "(nulo)" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea4 );
+			char * p_cLinea5 = SFicTxtLeerLinea ( p_ficObj );
+			if ( ES_VALIDO ( p_cLinea5 ) )
+			{
+				printf( "Error caso 8: se esperaba (nulo): [%s]\n", p_cLinea5 );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_cLinea5 );
+			if ( SFicTxtEstaEnFinal ( p_ficObj ) == 0 )
+			{
+				printf( "Error caso 9: deberia haber llegado al final\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			SFicTxtCerrar ( p_ficObj );
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el objeto\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
 static int TestSFicTxtNulo01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -129,6 +423,10 @@ int TestSFicTexto ()
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SFicTexto]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSFicTxtEscribirLeer01 () == BOOL_VAL_CIERTO ) &&
+			( TestSFicTxtLeer01 () == BOOL_VAL_CIERTO ) &&
+			( TestSFicTxtLeer02 () == BOOL_VAL_CIERTO ) &&
+			( TestSFicTxtLeer03 () == BOOL_VAL_CIERTO ) &&
+			( TestSFicTxtLeer04 () == BOOL_VAL_CIERTO ) &&
 			( TestSFicTxtFicheroVacio01 () == BOOL_VAL_CIERTO ) &&
 			( TestSFicTxtNulo01 () == BOOL_VAL_CIERTO ) )
 	{

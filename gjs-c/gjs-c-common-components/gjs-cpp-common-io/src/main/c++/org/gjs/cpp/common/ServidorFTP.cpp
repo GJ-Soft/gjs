@@ -20,6 +20,27 @@ namespace org
             namespace common
             {
 
+/* Primera linea con algo escrito, ya sin blancos de los extremos. Ver el
+   comentario del comando SYST: una respuesta IETF tiene que caber en una linea. */
+static string _PrimeraLineaConTexto ( const string & sTexto )
+{
+	string sRes ( "" );
+
+	for ( const string & sLinea : Separar ( sTexto, { "\n" } ) )
+	{
+		if ( sRes.empty () )
+		{
+			/* Trim () solo quita espacios, y al partir por \n cada linea se queda
+			   con su \r: la primera vuelta devolvia una linea con un \r solo, que
+			   no esta vacia, y el SYST contestaba con ese \r suelto. */
+			sRes = sLinea;
+			sRes.erase ( 0, sRes.find_first_not_of ( " \t\r\n" ) );
+			sRes.erase ( sRes.find_last_not_of ( " \t\r\n" ) + 1 );
+		}
+	}
+	return ( sRes );
+}
+
 ServidorFTP::ServidorFTP( const string & sDirectorio, const string & sRutaUsuarios, const string & sRutaContexto ) :
 					ServidorFTP( IETF_PUERTO_FTP, IETF_PUERTO_DATOS_FTP, sDirectorio, sRutaUsuarios, sRutaContexto )
 {
@@ -171,12 +192,24 @@ void ServidorFTP::ProcesarComandoSesion( Comando & comando, bool & bResponder, s
 		else if ( comando.isComando ( IETF_CMD_SISTEMA ) )
 		{
 			bResultado = true;
+			/* La respuesta tiene que caber en UNA linea: ConstruirRespuestaIETF le
+			   pega el 
+ del final y el cliente lee una sola linea. Con uname -a
+			   no se notaba, pero systeminfo devuelve un informe de miles de bytes y
+			   decenas de lineas: el cliente tomaba la primera como respuesta y el
+			   resto se quedaba en el socket, descolocando TODOS los comandos que
+			   vinieran detras ( MKD y QUIT fallaban sin motivo ninguno ). No se
+			   puede sanear en ConstruirRespuestaIETF, que es de los dos protocolos
+			   y en HTTP si le llega un cuerpo de varias lineas.
+
+			   ver, ademas, contesta lo que el RFC 959 pide para SYST: una linea
+			   corta que nombra el sistema, en vez de un inventario de la maquina. */
 			string sInstruccion = "uname -a";
 			if ( EsWindows() )
 			{
-				sInstruccion = "systeminfo";
+				sInstruccion = "ver";
 			}
-			string sResultado = EjecutarComando ( sInstruccion );
+			string sResultado = _PrimeraLineaConTexto ( EjecutarComando ( sInstruccion ) );
 			sRespuesta = ConstruirRespuestaIETF( IETF_INFO_SISTEMA, sResultado );
 		}
 		else if ( comando.isComando ( IETF_CMD_OBTENER_DIR ) )
@@ -239,7 +272,7 @@ void ServidorFTP::ProcesarComandoSesion( Comando & comando, bool & bResponder, s
 					string sContenido( "" );
 					for ( auto const& dir_entry : std::filesystem::directory_iterator ( filesystem::current_path() ) )
 					{
-						sContenido.append( dir_entry.path().filename() );
+						sContenido.append( dir_entry.path().filename().string() );
 						sContenido.push_back( '\n' );
 					}
 					bResultado = true;
@@ -435,19 +468,28 @@ void ServidorFTP::ProcesarComandoSesion( Comando & comando, bool & bResponder, s
 						socket->Responder( sRespuestaParcial );
 
 						SocketAtencion * sockEnvio = sockDatos->Aceptar();
-						char cBuffer [ 2048 + 1 ];
+						char cBuffer [ 2048 ];
 						string sDatos;
-						while ( lTam > 0 )
+
+						/* Se envia lo que read () haya dejado de verdad, que es lo que
+						   dice gcount (), y no lo que se le pidio.
+
+						   Antes el bucle se guiaba por el tamano en disco ( lTam ) y
+						   hacia assign ( cBuffer, lEnviar ) a ciegas. En Windows, con
+						   el fichero abierto en modo texto ( TYPE A, sin ios::binary ),
+						   cada \r\n del disco llega como un solo \n: read () devuelve
+						   MENOS caracteres de los pedidos, y assign () se llevaba por
+						   delante bytes del buffer sin inicializar. De ahi el \0 de mas
+						   al final del fichero recibido. En POSIX no se notaba porque
+						   no hay traduccion que valga y los dos numeros coinciden.
+
+						   El || del while es el modismo de siempre: la ultima lectura
+						   parcial pone failbit pero deja gcount () > 0, y hay que
+						   enviarla igual. */
+						while ( fichero.read ( cBuffer, sizeof ( cBuffer ) ) || ( fichero.gcount () > 0 ) )
 						{
-							long lEnviar = 2048;
-							if ( lTam < lEnviar )
-							{
-								lEnviar = lTam;
-							}
-							fichero.read( cBuffer, lEnviar );
-							sDatos.assign( cBuffer, lEnviar );
+							sDatos.assign ( cBuffer, fichero.gcount () );
 							*sockEnvio << sDatos;
-							lTam = lTam - lEnviar;
 						}
 						fichero.close();
 

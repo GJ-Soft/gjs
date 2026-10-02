@@ -52,6 +52,31 @@ Lo distintivo es la familia de posicionamiento y las variantes `En`:
 Las variantes `En` evitan el par posicionar-operar, que es donde se cuelan los
 errores de concurrencia lógica.
 
+### Posiciones de más de 2 GiB
+
+Las posiciones y el tamaño son `unsigned long`, pero **por dentro no se usan
+`fseek` ni `ftell`**, que trabajan con `long`: en Windows ese `long` mide
+32 bits y todo se quedaba en 2 GiB, y en los tres modos dejaba fuera la mitad
+alta del rango. Desde el 2026-09-29 `FicherosConfig.h` define `FIC_SITUAR` y
+`FIC_POSICION`, que son `_fseeki64` / `_ftelli64` en Windows y `fseeko` /
+`ftello` fuera de él.
+
+- **Una posición que el sistema no puede representar se rechaza**: en Cygwin y
+  Linux `off_t` es con signo, así que no se llega a `ULONG_MAX`. En Windows
+  cualquier `unsigned long` (32 bits) cabe, y el techo es 4 GiB.
+- `SFicAlPosicionar` devuelve `0` si no puede situarse; antes devolvía `1`
+  siempre.
+- Las variantes `En` **no leen ni escriben si no pueden situarse**. Antes lo
+  hacían donde estuviera el cursor.
+- `SFicAlTam` guardaba la posición actual en un `int` y con más de 2 GiB la
+  restauraba mal (o devolvía `0`). Ya no.
+- En Windows, **un fichero de más de 4 GiB no cabe en el `unsigned long`** que
+  devuelven `SFicAlTam` y `SFicAlPos`: ahí se satura a `ULONG_MAX`. Así
+  `SFicAlEstaVacio` no lo da por vacío, pero el valor no es el real.
+
+`TestSFicAlPosicion64` lo comprueba situándose en 3 000 000 000, más allá del
+final: no escribe nada, así que no ocupa disco.
+
 ## `SFicSecuencial` — con modo de apertura
 
 ```c

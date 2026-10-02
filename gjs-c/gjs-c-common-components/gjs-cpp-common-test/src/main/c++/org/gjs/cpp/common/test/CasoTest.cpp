@@ -59,7 +59,7 @@ ResultadoCasoTest CasoTest::Ejecutar ()
 	{
 		if ( ! bEsperaExcepcion ) 
 		{
-			LogFatalEx ( "Error inesperado", ex );
+			LogErrorEx ( "Error inesperado", ex );
 			rctRes = ResultadoCasoTest::FAIL;
 		}
 		else
@@ -69,7 +69,7 @@ ResultadoCasoTest CasoTest::Ejecutar ()
 	}
 	catch ( ... )
 	{
-		LogFatal ( "Capturado throwable inesperado" );
+		LogError ( "Capturado throwable inesperado" );
 		rctRes = ResultadoCasoTest::FAIL;
 	}
 	if ( rctRes == ResultadoCasoTest::OK ) 

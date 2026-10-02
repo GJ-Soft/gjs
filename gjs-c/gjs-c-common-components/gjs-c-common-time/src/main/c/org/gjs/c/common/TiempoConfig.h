@@ -59,6 +59,26 @@
 #define CAL_CORRECCION_REFORMA_GREGORIANA		10
 #define CAL_DIA_INICIO_REFORMA_GREGORIANA		DIA_VIERNES
 
+/* Epoca desde la que se cuenta el dia de la semana, y el dia que fue.
+   NO puede ser octubre de 1582: CalendDiasTranscurridos descuenta ahi los 10
+   dias de la reforma, asi que un intervalo que EMPIECE dentro de ese mes sale
+   10 dias corto aunque este entero despues de la reforma. Eso es lo que hacia
+   que CalendDiaSemana fallase en TODAS las fechas, con tres dias de desfase.
+   El 1 de enero de 1583 fue sabado. */
+#define CAL_EPOCA_DIA_SEMANA_A					1583
+#define CAL_EPOCA_DIA_SEMANA_M					1
+#define CAL_EPOCA_DIA_SEMANA_D					1
+#define CAL_EPOCA_DIA_SEMANA_DIA				DIA_SABADO
+
+/* Ultimo dia del calendario juliano en Espana, y el dia que fue. Es el ancla de
+   la rama de fechas anteriores a la reforma. Tiene que ser el 4, que existio:
+   anclar en el 5 —que no existio, se paso del 4 al 15— dejaba esa rama con un
+   dia de desfase para todo lo anterior al propio 4 de octubre. */
+#define CAL_FIN_CALENDARIO_JULIANO_A			1582
+#define CAL_FIN_CALENDARIO_JULIANO_M			10
+#define CAL_FIN_CALENDARIO_JULIANO_D			4
+#define CAL_FIN_CALENDARIO_JULIANO_DIA			DIA_JUEVES
+
 #define CAL_INICIO_CAMBIO_HORARIO				1918
 
 #define CAL_INTERRUP_CAMBIO_HORARIO				1950

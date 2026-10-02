@@ -1,6 +1,6 @@
 # Módulos de gjs-c-common-types
 
-Índice y orquestación: **31 fuentes** y **33 cabeceras**.
+Índice y orquestación: **30 fuentes** y **32 cabeceras**.
 
 Volver al [README](../README.md).
 
@@ -15,7 +15,7 @@ Volver al [README](../README.md).
   │    SListaEntradas · SListaErrores · SHiloAriadna                      │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 2. Conceptos de aplicación                                            │
-  │    SValor · STipo · SError · Entidades · Entradas · Localización      │
+  │    SValor · STipo · SError · SMensaje · Entradas · Localización       │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 1. Contenedores de cadenas y utilidades                               │
   │    SVectorCadenas · SSecuenciaCadenas · STablaCadenas · SPilaCadenas  │
@@ -44,16 +44,15 @@ Volver al [README](../README.md).
 | `SListaParametros` | `SLisPar` | `SListaParametros` | 30        | ✔    | [Parametros](Parametros.md) |
 | `SListaValores`    | `SLisVal` | `SListaValores`    | 30        | ✔    | [Parametros](Parametros.md) |
 
-### Entidades
+### Mensajes
 
-| Módulo          | Prefijo     | Struct          | Funciones | Test | Documento                 |
-| --------------- | ----------- | --------------- | --------- | ---- | ------------------------- |
-| `SEntidad`       | `SEnt`       | `SEntidad`       | 36        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadNom`    | `SEntNom`    | `SEntidadNom`    | 51        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadCod`    | `SEntCod`    | `SEntidadCod`    | 42        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadCodNom` | `SEntCodNom` | `SEntidadCodNom` | 55        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadIdCod`  | `SEntIdCod`  | `SEntidadIdCod`  | 51        | ✔    | [Entidades](Entidades.md) |
-| `SMensaje`       | `SMsj`       | `SMensaje`       | 29        | ✔    | [Entidades](Entidades.md) |
+| Módulo     | Prefijo | Struct     | Funciones | Test | Documento               |
+| ---------- | ------- | ---------- | --------- | ---- | ----------------------- |
+| `SMensaje` | `SMsj`  | `SMensaje` | 29        | ✔    | [SMensaje](SMensaje.md) |
+
+Las entidades (`SEntidad`, `SEntidadNom`, `SEntidadCod`, `SEntidadCodNom` y
+`SEntidadIdCod`) están en
+[gjs-c-common-database](../../gjs-c-common-database/doc/MODULOS.md).
 
 ### Errores
 
@@ -72,12 +71,13 @@ Volver al [README](../README.md).
 
 ### Localización
 
-| Módulo            | Prefijo   | Struct            | Funciones | Test | Documento                       |
-| ----------------- | --------- | ----------------- | --------- | ---- | ------------------------------- |
-| `SLocalizador`    | `SLcz`    | `SLocalizador`    | 13        | ✔    | [Localizacion](Localizacion.md) |
-| `SLocalizadorExt` | `SLczExt` | `SLocalizadorExt` | 17        | ✔    | [Localizacion](Localizacion.md) |
-| `SUbicacion`      | `SUbc`    | `SUbicacion`      | 10        | ✔    | [Localizacion](Localizacion.md) |
-| `SHoja`           | `SHoj`    | `SHoja`           | 14        | ✔    | [Localizacion](Localizacion.md) |
+| Módulo             | Prefijo   | Struct             | Funciones | Test | Documento                       |
+| ------------------ | --------- | ------------------ | --------- | ---- | ------------------------------- |
+| `SLocalizador`     | `SLcz`    | `SLocalizador`     | 26        | ✔    | [Localizacion](Localizacion.md) |
+| `SLocalizadorExt`  | `SLczExt` | `SLocalizadorExt`  | 29        | ✔    | [Localizacion](Localizacion.md) |
+| `SUbicacion`       | `SUbc`    | `SUbicacion`       | 10        | ✔    | [Localizacion](Localizacion.md) |
+| `SHoja`            | `SHoj`    | `SHoja`            | 14        | ✔    | [Localizacion](Localizacion.md) |
+| `SIndiceLiterales` | `SIndLit` | `SIndiceLiterales` | 16        | ✔    | [Localizacion](Localizacion.md) |
 
 ### Entradas
 
@@ -114,7 +114,7 @@ Volver al [README](../README.md).
 
 ### `TiposDatos.h`
 
-Cabecera fachada. Incluye 29 de los 31 módulos.
+Cabecera fachada. Incluye 28 de los 30 módulos.
 
 > **Deja fuera `SEntrada.h` y `SEntradaExt.h`**, pese a incluir
 > `SListaEntradas.h` y `SListaEntradasExt.h`. El resultado es que la fachada

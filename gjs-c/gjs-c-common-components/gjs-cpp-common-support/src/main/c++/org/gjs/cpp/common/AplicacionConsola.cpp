@@ -38,8 +38,6 @@ static bool	g_bAplicConsolaDisponible = false;
 
 
 
-// PENDIENTE: Como determinar si es WIN en modo consola o no?
-//  PENDIENTE: Refinar para el caso GNU/UNIX y completar para el caso VC
 bool AplicConAbrir ()
 {
 #  if ( !defined ( WIN ) )

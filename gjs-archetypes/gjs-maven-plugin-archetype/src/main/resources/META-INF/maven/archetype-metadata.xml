@@ -71,7 +71,7 @@
 		<fileSet filtered="true" encoding="UTF-8">
 		  <directory>src/main/resources</directory>
 			  <includes>
-				<include>**</include>
+				<include>**/**</include>
 			  </includes>
 		</fileSet>
 		<fileSet filtered="true" packaged="true" encoding="UTF-8">
@@ -83,7 +83,7 @@
 		<fileSet filtered="true" encoding="UTF-8">
 		  <directory>src/test/resources</directory>
 			  <includes>
-				<include>**</include>
+				<include>**/**</include>
 			  </includes>
 		</fileSet>
 	</fileSets>	

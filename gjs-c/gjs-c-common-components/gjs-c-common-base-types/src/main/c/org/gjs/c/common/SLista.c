@@ -115,16 +115,50 @@ int SLisEstaVacia ( SLista * p_lisObj )
 	return ( iRes );
 }
 
+/* Acceso por indice SIN tocar el cursor. Antes se resolvia con SLisMoverA, que
+   mueve el cursor de la lista, y eso convertia cualquier consulta —Elemento,
+   Min, Max, EstaOrdenada…— en una operacion que le cambiaba la posicion al que
+   estuviera iterando.
+
+   Se entra por el extremo mas cercano al indice pedido, asi que una llamada
+   suelta cuesta como mucho media lista. OJO: eso hace que recorrer la lista
+   ENTERA por indice sea cuadratico, porque ya no se aprovecha la posicion de la
+   llamada anterior. Para recorrer de principio a fin hay que usar el cursor
+   ( SLisInicio / SLisSiguiente / SLisActual ), no esta. */
 SElemento * SLisElemento ( SLista * p_lisObj, int iElem )
 {
 	SElemento * p_elmRes;
+	int			iPos;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		if ( ( iElem >= 0 ) && ( iElem < p_lisObj->iNumElementos ) )
 		{
-			SLisMoverA ( p_lisObj, iElem );
-			p_elmRes = p_lisObj->p_elmActual;
+			if ( iElem < p_lisObj->iNumElementos / 2 )
+			{
+				p_elmRes = p_lisObj->p_elmPrimero;
+				iPos = 0;
+				while ( ( iPos < iElem ) && 
+						ES_VALIDO ( p_elmRes ) )
+				{
+					p_elmRes = SElmSucesor ( p_elmRes );
+					iPos = iPos + 1;
+				}
+			}
+			else
+			{
+				p_elmRes = p_lisObj->p_elmUltimo;
+				iPos = p_lisObj->iNumElementos - 1;
+				/* > y no >=: con >= se da un paso de mas y se acaba en
+				   iElem - 1. La rama de arriba, la que entra por el principio,
+				   ya usaba la comparacion estricta. */
+				while ( ( iPos > iElem ) &&
+						ES_VALIDO ( p_elmRes ) )
+				{
+					p_elmRes = SElmAntecesor ( p_elmRes );
+					iPos = iPos - 1;
+				}
+			}
 		}
 		else
 		{
@@ -412,7 +446,10 @@ void SLisMoverA ( SLista * p_lisObj, int iElem )
 				{
 					p_lisObj->p_elmActual = p_lisObj->p_elmUltimo;
 					p_lisObj->iPos = p_lisObj->iNumElementos - 1;
-					while ( ( p_lisObj->iPos >= iElem ) && 
+					/* > y no >=: con >= se da un paso de mas y se acaba en
+					   iElem - 1. La rama de arriba, la que entra por el principio,
+					   ya usaba la comparacion estricta. */
+					while ( ( p_lisObj->iPos > iElem ) &&
 							ES_VALIDO ( p_lisObj->p_elmActual ) )
 					{
 						p_lisObj->p_elmActual = SElmAntecesor ( p_lisObj->p_elmActual );

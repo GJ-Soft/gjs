@@ -22,37 +22,14 @@
     <dependencies>
 		<dependency>
 			<groupId>org.gjsoft.c.common</groupId>
-			<artifactId>gjs-cpp-common-base</artifactId>
+			<artifactId>gjs-cpp-common-support</artifactId>
+			<type>nar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.gjsoft.c.common</groupId>
+			<artifactId>gjs-cpp-common-time</artifactId>
 			<type>nar</type>
 		</dependency>
     </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.gjsoft.maven.plugins</groupId>
-				<artifactId>nar-maven-plugin</artifactId>
-				<configuration>
-					<cpp>
-						<includePaths combine.children="append">
-							<includePath>
-								<path>${log4cxxDirInclude}</path>
-							</includePath>
-						</includePaths>						
-					</cpp>
-					<linker>
-						<libs combine.children="append">
-							<lib>
-								<name>log4cxx</name>
-								<type>shared</type>
-								<directory>${log4cxxDirLib}</directory>
-								<binDirectory>${log4cxxDirBin}</binDirectory>
-							</lib>
-						</libs>					
-					</linker>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	
 </project>

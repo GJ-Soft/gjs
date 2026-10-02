@@ -70,6 +70,32 @@
                 <filtering>false</filtering>
             </resource>
         </resources>
+		<plugins>
+			<!-- Esto es necesario porque si no cuando se ejecuta mvn install (sin clean) 
+			     se intentan ejecutar como test de arquetipo los test de los arquetipos
+				 de prueba generados si el target no esta limpio -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>clean-test-classes</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+						<configuration>
+							<excludeDefaultDirectories>true</excludeDefaultDirectories>
+							<filesets>
+								<fileset>
+									<directory>${project.build.testOutputDirectory}</directory>
+								</fileset>
+							</filesets>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
     </build>    
     
 </project>    

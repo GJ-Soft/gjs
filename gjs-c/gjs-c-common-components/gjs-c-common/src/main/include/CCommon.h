@@ -22,13 +22,14 @@
 
 
 #include <Tipos.h>
-#include <TiposDatos.h>
-
 #include <Texto.h>
 #include <Tiempo.h>
+#include <Calculo.h>
+#include <TiposDatos.h>
+#include <TiposBaseDatos.h>
+
 #include <Ficheros.h>
 #include <Sistema.h>
-#include <Calculo.h>
 #include <Aplicacion.h>
 #include <CommonLog.h>
 

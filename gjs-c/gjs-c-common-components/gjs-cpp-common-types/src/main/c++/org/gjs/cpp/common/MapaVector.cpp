@@ -138,10 +138,17 @@ template <class T> void MapaVector<T>::erase( const string & sClave )
 		{
 			if ( itOrden->compare( sClave ) == 0 )
 			{
-				vecOrden.erase( itOrden );
+				/* erase invalida el iterador que recibe, y el ++ de despues se hacia
+				   igual sobre el ya muerto: comportamiento indefinido. El bucle salia
+				   por bEnc, pero el incremento ya se habia ejecutado. Se recoge lo que
+				   devuelve erase, que es un iterador valido al elemento siguiente. */
+				itOrden = vecOrden.erase( itOrden );
 				bEnc = true;
 			}
-			++itOrden;
+			else
+			{
+				++itOrden;
+			}
 		}
 	}
 }

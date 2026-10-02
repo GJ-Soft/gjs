@@ -52,7 +52,6 @@ namespace org
 			void InicializarBase();
 			bool PuedeLiberarse ( const void * ptr );
 
-			int ResolverIP( const std::string & sIP );
 
 			std::string EjecutarComando ( const std::string & sComando );
 

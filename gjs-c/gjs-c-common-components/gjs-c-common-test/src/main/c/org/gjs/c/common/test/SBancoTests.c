@@ -33,14 +33,8 @@ void SBanTstDestruir ( SBancoTests ** p_p_bantstObj )
 		p_bantstObj = *p_p_bantstObj;
 		if ( ES_VALIDO ( p_bantstObj ) )
 		{
-			printf ( "DESTRUYENDO LISREF\n");
-			fflush(stdout);
 			SLisRefDestruir ( &( p_bantstObj->p_lisTests ) );
-			printf ( "DESTRUYENDO BANCO\n");
-			fflush(stdout);
 			MemLiberar ( (void **) p_p_bantstObj );
-			printf ( "DESTRUIDO\n");
-			fflush(stdout);
 		}
 	}
 }

@@ -411,6 +411,7 @@ None.
 |--------------------------------|----------------------------------------------|
 | gjs-c-common-base              |  C       |                                    |
 | gjs-c-common-types             |  C       |                                    |
+| gjs-c-common-database          |  C       |                                    |
 | gjs-c-common-text              |  C       |                                    |
 | gjs-c-common-calculation       |  C       |                                    |
 | gjs-c-common-codes             |  C       |                                    |

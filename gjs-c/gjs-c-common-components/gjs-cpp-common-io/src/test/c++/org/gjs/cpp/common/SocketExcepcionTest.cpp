@@ -41,9 +41,16 @@ static bool TestSocketExcepcion02 ()
 	bool bRes = true;
 
 	SocketExcepcion ex( "TestExcepcion", "TestSocketExcepcion01", EWOULDBLOCK );
+	/* El texto lo pone strerror, y no dice lo mismo en todas partes: EWOULDBLOCK
+	   vale 11 en Cygwin y en Linux, el mismo numero que EAGAIN, y de ahi salia
+	   "Resource temporarily unavailable". En la libreria de Windows vale 140, un
+	   valor propio del que strerror no sabe nada y para el que contesta "Unknown
+	   error". Se comprueba que el mensaje sea el que el sistema da para ese
+	   codigo, que es el contrato de SistemaExcepcion, en lugar de un literal que
+	   solo vale en una plataforma. */
 	if ( ( ex.getModulo () != "TestExcepcion" ) ||
 	     ( ex.getRutina () != "TestSocketExcepcion01" ) ||
-	     ( ex.getMensaje () != "Resource temporarily unavailable" ) ) 
+	     ( ex.getMensaje () != strerror ( EWOULDBLOCK ) ) ) 
 	{
 		cout << "Error caso 1: [" << ex.whatExt () << "]" << endl;
 		bRes = false;

@@ -129,17 +129,23 @@ int SLisPrjInsertarExt ( SListaParejas * p_lisObj, void * p_vPrimero, void * p_v
 
 int SLisPrjVaciar ( SListaParejas * p_lisObj )
 {
-	int 		iRes;
-	int			iNumElems;
-	SPareja * 	p_prjObj;
+	int 			iRes;
+	SPareja * 		p_prjObj;
+	SElementoPtr *	p_elpObj;
+	SElementoPtr *	p_elpSig;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		iNumElems = SLisPrjNumElementos ( p_lisObj );
-		for ( int iElem = 0; iElem < iNumElems; iElem = iElem + 1 )
+		/* Por la CADENA, no por indice: el indice entra por el extremo mas
+		   cercano, asi que un recorrido completo sale cuadratico. */
+		p_elpObj = SLispElementoPtr ( p_lisObj->p_lisDatos, 0 );
+		while ( ES_VALIDO ( p_elpObj ) )
 		{
-			p_prjObj = SLisPrjElemento ( p_lisObj, iElem );
+			/* El sucesor, ANTES de destruir. */
+			p_elpSig = SElpSucesor ( p_elpObj );
+			p_prjObj = (SPareja *) SElpDatos ( p_elpObj );
 			SPrjDestruir ( &p_prjObj );
+			p_elpObj = p_elpSig;
 		}
 		iRes = SLispVaciar ( p_lisObj->p_lisDatos );
 	}

@@ -49,7 +49,7 @@ int SisRegExisteClaveExt ( const char * p_cClave, int iClavePrinc )
 	if ( ES_VALIDO ( p_cClave ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegOpenKeyEx ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegOpenKeyEx ( hkeyPrinc, p_cClave, 0, KEY_READ, &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
 			iRes = 1;
@@ -77,7 +77,7 @@ int SisRegCrearClaveExt ( const char * p_cClave, int iClavePrinc )
 	if ( ES_VALIDO ( p_cClave ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegCreateKeyEx ( hkeyPrinc, p_cClave, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyOpen, NULL )
+		iResWin = RegCreateKeyEx ( hkeyPrinc, p_cClave, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyOpen, NULL );
 		if ( iResWin == ERROR_SUCCESS )
 		{
 			iRes = 1;
@@ -225,22 +225,22 @@ unsigned long SisRegObtValorNumericoExt ( const char * p_cClave, const char * p_
 
 int SisRegEstValorCadena ( const char * p_cClave, const char * p_cValor, const char * p_cDato )
 {
-	return ( SisRegEstValorCadenaExt ( p_cClave, p_cValor, REG_CLV_LOCAL_MACHINE ) ); 
+	return ( SisRegEstValorCadenaExt ( p_cClave, p_cValor, p_cDato, REG_CLV_LOCAL_MACHINE ) ); 
 }
 
 int SisRegEstValorNumerico ( const char * p_cClave, const char * p_cValor, unsigned long ulDato )
 {
-	return ( SisRegEstValorNumericoExt ( p_cClave, p_cValor, REG_CLV_LOCAL_MACHINE ) ); 
+	return ( SisRegEstValorNumericoExt ( p_cClave, p_cValor, ulDato, REG_CLV_LOCAL_MACHINE ) ); 
 }
 
 int SisRegCrearValorCadena ( const char * p_cClave, const char * p_cValor, const char * p_cDato )
 {
-	return ( SisRegCrearValorCadenaExt ( p_cClave, p_cValor, REG_CLV_LOCAL_MACHINE ) ); 
+	return ( SisRegCrearValorCadenaExt ( p_cClave, p_cValor, p_cDato, REG_CLV_LOCAL_MACHINE ) ); 
 }
 
 int SisRegCrearValorNumerico ( const char * p_cClave, const char * p_cValor, unsigned long ulDato )
 {
-	return ( SisRegCrearValorNumericoExt ( p_cClave, p_cValor, REG_CLV_LOCAL_MACHINE ) ); 
+	return ( SisRegCrearValorNumericoExt ( p_cClave, p_cValor, ulDato, REG_CLV_LOCAL_MACHINE ) ); 
 }
 
 int SisRegEstValorCadenaExt ( const char * p_cClave, const char * p_cValor, const char * p_cDato, int iClavePrinc )
@@ -270,7 +270,7 @@ int SisRegEstValorCadenaExt ( const char * p_cClave, const char * p_cValor, cons
 					{
 						MemCopiar ( p_byBuffer, (void *) p_cDato, ulTamBuffer - 1 );
 					}
-					iResWin = RegSetValueEx ( hkeyOpen, (LPCSTR) p_cValor, NULL, dwTipo, p_byBuffer, ulTamBuffer );
+					iResWin = RegSetValueEx ( hkeyOpen, (LPCSTR) p_cValor, 0, dwTipo, p_byBuffer, ulTamBuffer );
 					if ( iResWin == ERROR_SUCCESS )
 					{
 						iRes = 1;
@@ -331,7 +331,7 @@ int SisRegEstValorNumericoExt ( const char * p_cClave, const char * p_cValor, un
 			dwTipo = REG_DWORD;
 			ulTamBuffer = sizeof ( DWORD );
 			dwBuffer = (DWORD) ulDato;
-			iResWin = RegSetValueEx ( hkeyOpen, (LPCSTR) p_cValor, NULL, dwTipo, (CONST BYTE *) &dwBuffer, ulTamBuffer );
+			iResWin = RegSetValueEx ( hkeyOpen, (LPCSTR) p_cValor, 0, dwTipo, (CONST BYTE *) &dwBuffer, ulTamBuffer );
 			if ( iResWin == ERROR_SUCCESS )
 			{
 				iRes = 1;
@@ -358,9 +358,9 @@ int SisRegCrearValorCadenaExt ( const char * p_cClave, const char * p_cValor, co
 {
 	int	iRes;
 
-	if ( SisRegCrearClave ( p_cClave, iClavePrinc ) == 1 )
+	if ( SisRegCrearClaveExt ( p_cClave, iClavePrinc ) == 1 )
 	{
-		iRes = SisRegEstValorCadena ( p_cClave, p_cValor, p_cDato, iClavePrinc );
+		iRes = SisRegEstValorCadenaExt ( p_cClave, p_cValor, p_cDato, iClavePrinc );
 	}
 	else
 	{
@@ -373,9 +373,9 @@ int SisRegCrearValorNumericoExt ( const char * p_cClave, const char * p_cValor, 
 {
 	int	iRes;
 
-	if ( SisRegCrearClave ( p_cClave, iClavePrinc ) == 1 )
+	if ( SisRegCrearClaveExt ( p_cClave, iClavePrinc ) == 1 )
 	{
-		iRes = SisRegEstValorNumerico ( p_cClave, p_cValor, ulDato, iClavePrinc );
+		iRes = SisRegEstValorNumericoExt ( p_cClave, p_cValor, ulDato, iClavePrinc );
 	}
 	else
 	{
@@ -536,13 +536,21 @@ HKEY SisRegCrear ( HKEY hkeyPadre, const char * p_cClave )
 
 HKEY SisRegAbrir ( HKEY hkeyPadre, const char * p_cClave )
 {
+	return ( SisRegAbrirExt ( hkeyPadre, p_cClave, KEY_READ ) );
+}
+
+HKEY SisRegAbrirExt ( HKEY hkeyPadre, const char * p_cClave, REGSAM samAcceso )
+{
 	HKEY hkeyClave;
 	LONG lRet;
 
 	if ( hkeyPadre != NULL )
 	{
 		hkeyClave = NULL;
-		lRet = RegOpenKeyEx ( hkeyPadre, p_cClave, 0, KEY_ALL_ACCESS, &hkeyClave );
+		/* samAcceso en vez del KEY_ALL_ACCESS que estaba clavado: sobre
+		   HKEY_LOCAL_MACHINE aquello devolvia ERROR_ACCESS_DENIED salvo que el
+		   proceso fuera administrador, asi que la funcion no servia ni para leer. */
+		lRet = RegOpenKeyEx ( hkeyPadre, p_cClave, 0, samAcceso, &hkeyClave );
 		if ( lRet != ERROR_SUCCESS )
 		{
 			hkeyClave = NULL;
@@ -1259,7 +1267,7 @@ int SisRegRegistrarModulo ( const GUID guidModulo, const char * p_cFicModulo, co
 	ZeroMemory ( p_cGuid, REG_MAX_TAM_CLAVE + 1 );
 
 	// Guid
-	StringFromCLSID ( guidModulo, &pswzGuid );
+	StringFromCLSID ( &guidModulo, &pswzGuid );
 		
 	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
 						  REG_MAX_TAM_CLAVE, NULL, NULL);
@@ -1270,7 +1278,7 @@ int SisRegRegistrarModulo ( const GUID guidModulo, const char * p_cFicModulo, co
 
 	if ( lRet == ERROR_SUCCESS )
 	{
-		lRet = RegCreateKeyEx ( hkeyLibs, p_cGuid, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyModulo, NULL )
+		lRet = RegCreateKeyEx ( hkeyLibs, p_cGuid, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkeyModulo, NULL );
 
 		if ( lRet == ERROR_SUCCESS )
 		{	
@@ -1404,12 +1412,12 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 	ZeroMemory ( p_cProgId, REG_MAX_TAM_VALOR + 1 );
 	ZeroMemory ( p_cProgIdAct, REG_MAX_TAM_VALOR + 1 );
 
-	StringFromCLSID ( guidCodigo, &pswzGuid );
+	StringFromCLSID ( &guidCodigo, &pswzGuid );
 	
 	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
 						  REG_MAX_TAM_CLAVE, NULL, NULL);
 
-	StringFromCLSID ( guidModulo, &pswzGuid );
+	StringFromCLSID ( &guidModulo, &pswzGuid );
 	
 	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuidMod, 
 						  REG_MAX_TAM_CLAVE, NULL, NULL);
@@ -1632,7 +1640,7 @@ void SisRegDesregistrarModulo ( const GUID guidModulo, const char * p_cVersion )
 
 	ZeroMemory ( p_cGuid, REG_MAX_TAM_CLAVE + 1 );
 
-	StringFromCLSID ( guidModulo, &pswzGuid );
+	StringFromCLSID ( &guidModulo, &pswzGuid );
 	
 	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
 						  REG_MAX_TAM_CLAVE, NULL, NULL);
@@ -1678,7 +1686,11 @@ void SisRegDesregistrarModulo ( const GUID guidModulo, const char * p_cVersion )
 }
 
 
-void SisRegDesregistrarGUID ( const GUID guidCodigo, const char *p_cNombre )
+/* El ProgId se arma igual que en SisRegistrarGUID: ficheroModulo.nombre. Antes
+   salia de p_cNombre dos veces, porque el fichero no entraba en la firma, y esta
+   rutina no encontraba lo que habia registrado la otra. */
+void SisRegDesregistrarGUID ( const GUID guidCodigo, const char *p_cNombre,
+							  const char * p_cFicModulo )
 {
 	WCHAR *	pswzGuid;
 	LONG	lRet;
@@ -1697,17 +1709,17 @@ void SisRegDesregistrarGUID ( const GUID guidCodigo, const char *p_cNombre )
 	ZeroMemory ( p_cProgId, REG_MAX_TAM_VALOR + 1 );
 	ZeroMemory ( p_cProgIdAct, REG_MAX_TAM_VALOR + 1 );
 
-	StringFromCLSID ( guidCodigo, &pswzGuid );
+	StringFromCLSID ( &guidCodigo, &pswzGuid );
 	
 	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
 						  REG_MAX_TAM_CLAVE, NULL, NULL);
 
 	sprintf ( p_cProgId, REG_PROG_ID_FORMATO, 
-			  p_cNombre, 
+			  p_cFicModulo, 
 			  p_cNombre );
 
 	sprintf ( p_cProgIdAct, REG_PROG_ID_ACT_FORMATO, 
-			  p_cNombre, 
+			  p_cFicModulo, 
 			  p_cNombre,
 			  REG_CLS_VERSION_DEF );
 
@@ -1771,7 +1783,7 @@ int SisRegEstaRegistradoModulo ( const GUID guidModulo )
 
 	ZeroMemory ( p_cGuid, REG_MAX_TAM_CLAVE + 1 );
 
-	StringFromCLSID ( guidModulo, &pswzGuid );
+	StringFromCLSID ( &guidModulo, &pswzGuid );
 	
 	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
 						  REG_MAX_TAM_CLAVE, NULL, NULL);
@@ -1797,7 +1809,10 @@ int SisRegEstaRegistradoModulo ( const GUID guidModulo )
 }
 
 
-int EstaRegistradoGUID ( const GUID guidCodigo, const char *p_cNombre )
+/* Se llamaba EstaRegistradoGUID, sin el prefijo SisReg del resto del modulo, y
+   por eso no casaba con lo que declaraba la cabecera. */
+int SisRegEstaRegistradoGUID ( const GUID guidCodigo, const char *p_cNombre,
+							   const char * p_cFicModulo )
 {
 	int	iRes;
 	WCHAR *	pswzGuid;
@@ -1818,17 +1833,17 @@ int EstaRegistradoGUID ( const GUID guidCodigo, const char *p_cNombre )
 	ZeroMemory ( p_cProgId, REG_MAX_TAM_VALOR + 1 );
 	ZeroMemory ( p_cProgIdAct, REG_MAX_TAM_VALOR + 1 );
 
-	StringFromCLSID ( guidCodigo, &pswzGuid );
+	StringFromCLSID ( &guidCodigo, &pswzGuid );
 	
 	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
 						  REG_MAX_TAM_CLAVE, NULL, NULL);
 
 	sprintf ( p_cProgId, REG_PROG_ID_FORMATO, 
-			  p_cNombre, 
+			  p_cFicModulo, 
 			  p_cNombre );
 
 	sprintf ( p_cProgIdAct, REG_PROG_ID_ACT_FORMATO, 
-			  p_cNombre, 
+			  p_cFicModulo, 
 			  p_cNombre,
 			  REG_CLS_VERSION_DEF );
 

@@ -20,7 +20,7 @@ tiempo de compilación a partir del `__DATE__` del preprocesador.
 izquierda. Estas constantes lo convierten a cifras:
 
 ```cpp
-const char FECHA_AÑO [ 4+1 ] = { __DATE__[7], __DATE__[8], __DATE__[9], __DATE__[10], '\0' };
+const char FECHA_ANO [ 4+1 ] = { __DATE__[7], __DATE__[8], __DATE__[9], __DATE__[10], '\0' };
 
 const char FECHA_MES [ 2+1 ] =
 {
@@ -51,17 +51,20 @@ sistema de compilación.
 
 ## Observaciones
 
-> **`FECHA_AÑO` lleva una eñe en el identificador.**
+> ~~**`FECHA_AÑO` lleva una eñe en el identificador.**~~ **Resuelto el
+> 2026-09-16: ahora es `FECHA_ANO`.**
 >
 > Los identificadores con caracteres fuera de ASCII sólo son válidos desde
 > C++11, y con soporte real del compilador: GCC los admite en UTF‑8 desde la
-> versión 10, y otros compiladores —Visual C entre ellos, según la versión y las
-> opciones— tratan el fichero fuente con otra codificación y no lo aceptan.
+> versión 10, y otros compiladores tratan el fichero fuente con otra
+> codificación y no lo aceptan.
 >
-> El repositorio es UTF‑8, así que hoy compila con el GCC de Cygwin. Pero es el
-> único identificador acentuado del stack entero, en un componente que se
-> pretende portable, y basta con llamarlo `FECHA_ANYO` —que es la convención que
-> el propio stack usa en sus literales— para quitarse el problema.
+> Compilar, compilaba. Lo que lo destapó fue el analizador estático: cppcheck
+> no sabe leer esos caracteres ( `unhandledChar`, código 195 ) y marcaba **toda**
+> la ejecución como «con errores críticos», no sólo este fichero. Era el único
+> identificador acentuado del stack entero.
+>
+> Se renombró también el local `sAño` de `ConstantesTest.cpp`, por lo mismo.
 
 - **Son `const char[]` en una cabecera**, de modo que cada unidad de compilación
   que incluya la fachada obtiene su propia copia de las tres. Con `constexpr` y

@@ -33,7 +33,7 @@ using namespace org::gjs::cpp::common::log;
 
 
 #if( $parameters > 0 )
-extern int execute${capitalizedName} ( int iNumArgs, char * p_p_cArgs [] );
+extern int execute${capitalizedName} ( const vector <string> & vArgs );
 #else
 extern int execute${capitalizedName} ();
 #end
@@ -47,7 +47,7 @@ int main ()
 #end
 {
 #if( $parameters > 0 )
-	return ( execute${capitalizedName} ( iNumArgs, p_p_cArgs ) );
+	return ( execute${capitalizedName} ( vector <string> ( p_p_cArgs, p_p_cArgs + iNumArgs ) ) );
 #else
 	return ( execute${capitalizedName} () );
 #end

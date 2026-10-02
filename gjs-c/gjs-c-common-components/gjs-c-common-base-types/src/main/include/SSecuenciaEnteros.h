@@ -39,6 +39,15 @@ int SSecEntVaciar ( SSecuenciaEnteros * p_secObj );
 
 int SSecEntExiste ( SSecuenciaEnteros * p_secObj, int iDato );
 
+SSecuenciaEnteros * SSecEntExtraerUnicos ( SSecuenciaEnteros * p_secObj );
+int SSecEntTieneRepetidos ( SSecuenciaEnteros * p_secObj );
+
+int SSecEntMin ( SSecuenciaEnteros * p_secObj );
+int SSecEntMax ( SSecuenciaEnteros * p_secObj );
+void SSecEntObtenerParametros ( SSecuenciaEnteros * p_secObj, int * p_iMin, int * p_iMax, double * p_dMed ); 
+
+int SSecEntDefinidaPositiva ( SSecuenciaEnteros * p_secObj );
+int SSecEntSemidefinidaPositiva ( SSecuenciaEnteros * p_secObj );
 
 
 #endif

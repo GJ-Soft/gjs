@@ -76,8 +76,11 @@ Ninguna hacia otros módulos. Es [Memoria](Memoria.md) quien depende de éste.
 
 ## Test
 
-No hay. Al estar todo condicionado a `MODO_DEPURACION`, un test tendría que
-compilarse con ese macro activo.
+No tiene uno propio: al estar todo condicionado a `MODO_DEPURACION`, tendría
+que compilarse con ese macro activo. Sí lo usa
+[`SIndiceLiteralesTest.c`](../../gjs-c-common-types/doc/Localizacion.md), que
+con `MODO_DEPURACION` compara `MemNumBloquesActuales` antes y después para
+cazar fugas; sin el macro, ese caso no se compila.
 
 ## Observaciones
 

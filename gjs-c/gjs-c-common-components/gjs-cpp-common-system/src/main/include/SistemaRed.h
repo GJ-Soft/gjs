@@ -36,7 +36,14 @@ namespace org
 std::wstring SisRedNombreOrdenador ();
 std::wstring SisRedNombreDNSOrdenador ();
 
+/* Solo en Windows. Se apoya en NetMessageBufferSend, el servicio de
+   mensajeria de Windows, que no tiene equivalente en POSIX: no existe un
+   mecanismo estandar para hacerle llegar un aviso emergente a otra maquina.
+   Fuera de Windows la funcion no se declara, para que quien la llame se
+   encuentre un error de compilacion en vez de un 0 que no significa nada. */
+#if ( defined ( WIN ) )
 bool SisRedEnviarMensaje ( const std::wstring & sDestino, const std::wstring & sOrigen, const std::string & sMensaje );
+#endif
 
 
 std::list<std::wstring> * SisRedOrdenadoresAccesibles ();

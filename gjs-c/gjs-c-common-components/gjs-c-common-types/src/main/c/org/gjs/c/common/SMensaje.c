@@ -50,15 +50,8 @@ SMensaje * SMsjEncapsular ( SId * p_idMensaje, SDescripcion * p_descTexto )
         p_msjObj = (SMensaje *) MemReservar ( sizeof ( SMensaje ) );
         if ( ES_VALIDO ( p_msjObj ) )
         {
-            p_msjObj->p_entInfo = SEntEncapsular ( p_idMensaje );
-            if ( ES_VALIDO ( p_msjObj->p_entInfo ) )
-            {
-                p_msjObj->p_descTexto = p_descTexto;
-            }
-            else
-            {
-                MemLiberar ( (void **) &p_msjObj );
-            }
+            p_msjObj->p_idMensaje = p_idMensaje;
+            p_msjObj->p_descTexto = p_descTexto;
         }
     }
     else
@@ -78,7 +71,7 @@ void SMsjDestruir ( SMensaje ** p_p_msjObj )
 
 		if ( ES_VALIDO ( p_msjObj ) )
 		{
-			SEntDestruir ( &(p_msjObj->p_entInfo) );
+			SIdDestruir ( &(p_msjObj->p_idMensaje) );
             SDescDestruir ( &(p_msjObj->p_descTexto) );
 			MemLiberar ( (void **) p_p_msjObj );
 		}
@@ -91,7 +84,7 @@ int SMsjEsValido ( SMensaje * p_msjObj )
 
 	if ( ES_VALIDO ( p_msjObj ) )
 	{
-		if ( SEntEsValida ( p_msjObj->p_entInfo ) == 1 )
+		if ( SIdEsValido ( p_msjObj->p_idMensaje ) == 1 )
 		{
 			iRes = 1;
 		}
@@ -113,7 +106,7 @@ SId * SMsjId ( SMensaje * p_msjObj )
 
 	if ( ES_VALIDO ( p_msjObj ) )
 	{
-		p_idRes = SEntId ( p_msjObj->p_entInfo );
+		p_idRes = p_msjObj->p_idMensaje;
 	}
 	else
 	{
@@ -128,7 +121,7 @@ unsigned long SMsjValorId ( SMensaje * p_msjObj )
 
 	if ( ES_VALIDO ( p_msjObj ) )
 	{
-		ulRes = SEntValorId ( p_msjObj->p_entInfo );
+		ulRes = SIdValor ( p_msjObj->p_idMensaje );
 	}
 	else
 	{
@@ -413,7 +406,7 @@ int SMsjComparar ( SMensaje * p_msjObj, SMensaje * p_msjVal )
 
 	if ( ES_VALIDO ( p_msjObj ) && ES_VALIDO ( p_msjVal ) )
 	{
-        iRes = SEntCompararId ( p_msjObj->p_entInfo, SMsjId ( p_msjVal ) );
+        iRes = SIdComparar ( p_msjObj->p_idMensaje, SMsjId ( p_msjVal ) );
 	}
 	else if  ( ES_VALIDO ( p_msjObj ) )
 	{
@@ -470,7 +463,7 @@ unsigned int SMsjHash ( SMensaje * p_msjObj )
 
 	if ( ES_VALIDO ( p_msjObj ) )
 	{
-		uiRes = SEntHash ( p_msjObj->p_entInfo );
+		uiRes = SIdHash ( p_msjObj->p_idMensaje );
 	}
 	return ( uiRes );
 }

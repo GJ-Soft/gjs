@@ -1,6 +1,6 @@
 # Módulos de gjs-c-common-base-types
 
-Índice y orquestación de los módulos de la librería: **73 fuentes** y **76
+Índice y orquestación de los módulos de la librería: **74 fuentes** y **76
 cabeceras**. Como la mayoría son variantes del mismo contenedor sobre distinto
 tipo de elemento, la documentación se agrupa **por familias**: cada documento
 describe el contenedor base y tabula en qué se diferencian sus especializaciones.
@@ -48,35 +48,36 @@ Volver al [README](../README.md).
 | Módulo         | Prefijo | Struct         | Funciones | Test | Documento                     |
 | -------------- | ------- | -------------- | --------- | ---- | ----------------------------- |
 | `SContenido`   | `SCon`  | `SContenido`   | 26        | ✔    | [SContenido](SContenido.md)   |
-| `SElemento`    | `SElm`  | `SElemento`    | 46        | ✔    | [SElemento](SElemento.md)     |
-| `SElementoPtr` | `SElp`  | `SElementoPtr` | 17        | ✔    | [SElemento](SElemento.md)     |
+| `SElemento`    | `SElm`  | `SElemento`    | 47        | ✔    | [SElemento](SElemento.md)     |
+| `SElementoPtr` | `SElp`  | `SElementoPtr` | 19        | ✔    | [SElemento](SElemento.md)     |
 | `SComparador`  | `SCmp`  | `SComparador`  | 21        | ✔    | [SComparador](SComparador.md) |
 
 ### Listas
 
-| Módulo                | Prefijo    | Struct                | Funciones | Test | Documento                              |
-| --------------------- | ---------- | --------------------- | --------- | ---- | -------------------------------------- |
-| `SLista`              | `SLis`     | `SLista`              | 32        | ✔    | [Listas](Listas.md)                    |
-| `SListaPtr`           | `SLisp`    | `SListaPtr`           | 31        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnteros`       | `SLisEnt`  | `SListaEnteros`       | 29        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnterosLargos` | `SLisEntl` | `SListaEnterosLargos` | 29        | ✔    | [Listas](Listas.md)                    |
-| `SListaLiterales`     | `SLisLit`  | `SListaLiterales`     | 41        | ✔    | [Listas](Listas.md)                    |
-| `SListaOrdenada`      | `SLisOrd`  | `SListaOrdenada`      | 23        | ✔    | [Listas](Listas.md)                    |
-| `SListaOrdenadaPtr`   | `SLispOrd` | `SListaOrdenadaPtr`   | 24        | ✔    | [Listas](Listas.md)                    |
-| `SListaParejas`       | `SLisPrj`  | `SListaParejas`       | 10        | ✔    | [Listas](Listas.md)                    |
-| `SListaReferencias`   | `SLisRef`  | `SListaReferencias`   | 15        | ✔    | [Listas](Listas.md)                    |
-| `SListaVec`           | `SVLis`    | `SVLista`             | 21        | ✔    | [Listas](Listas.md)                    |
-| `SListaHash`          | —          | —                     | —         | —    | **No existe**, ver [Listas](Listas.md) |
+| Módulo                        | Prefijo      | Struct                        | Funciones | Test | Documento                              |
+| ----------------------------- | ------------ | ----------------------------- | --------- | ---- | -------------------------------------- |
+| `SLista`                      | `SLis`       | `SLista`                      | 32        | ✔    | [Listas](Listas.md)                    |
+| `SListaPtr`                   | `SLisp`      | `SListaPtr`                   | 32        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnteros`               | `SLisEnt`    | `SListaEnteros`               | 40        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnterosLargos`         | `SLisEntl`   | `SListaEnterosLargos`         | 40        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnterosLargosSinSigno` | `SLisEntLss` | `SListaEnterosLargosSinSigno` | 39        | ✔    | [Listas](Listas.md)                    |
+| `SListaLiterales`             | `SLisLit`    | `SListaLiterales`             | 41        | ✔    | [Listas](Listas.md)                    |
+| `SListaOrdenada`              | `SLisOrd`    | `SListaOrdenada`              | 23        | ✔    | [Listas](Listas.md)                    |
+| `SListaOrdenadaPtr`           | `SLispOrd`   | `SListaOrdenadaPtr`           | 24        | ✔    | [Listas](Listas.md)                    |
+| `SListaParejas`               | `SLisPrj`    | `SListaParejas`               | 10        | ✔    | [Listas](Listas.md)                    |
+| `SListaReferencias`           | `SLisRef`    | `SListaReferencias`           | 15        | ✔    | [Listas](Listas.md)                    |
+| `SListaVec`                   | `SVLis`      | `SVLista`                     | 21        | ✔    | [Listas](Listas.md)                    |
+| `SListaHash`                  | —            | —                             | —         | —    | **No existe**, ver [Listas](Listas.md) |
 
 ### Secuencias
 
 | Módulo                            | Prefijo      | Struct                            | Funciones | Test | Documento                   |
 | --------------------------------- | ------------ | --------------------------------- | --------- | ---- | --------------------------- |
 | `SSecuencia`                      | `SSec`       | `SSecuencia`                      | 10        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaPtr`                   | `SSecp`      | `SSecuenciaPtr`                   | 12        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnteros`               | `SSecEnt`    | `SSecuenciaEnteros`               | 10        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnterosLargos`         | `SSecEntL`   | `SSecuenciaEnterosLargos`         | 9         | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnterosLargosSinSigno` | `SSecEntLSS` | `SSecuenciaEnterosLargosSinSigno` | 9         | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaPtr`                   | `SSecp`      | `SSecuenciaPtr`                   | 13        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnteros`               | `SSecEnt`    | `SSecuenciaEnteros`               | 17        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnterosLargos`         | `SSecEntl`   | `SSecuenciaEnterosLargos`         | 16        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnterosLargosSinSigno` | `SSecEntLss` | `SSecuenciaEnterosLargosSinSigno` | 15        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaLiterales`             | `SSecLit`    | `SSecuenciaLiterales`             | 11        | ✔    | [Secuencias](Secuencias.md) |
 
 ### Vectores y flags

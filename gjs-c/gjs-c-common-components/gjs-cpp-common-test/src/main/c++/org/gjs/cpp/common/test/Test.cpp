@@ -49,7 +49,7 @@ Test::Test ( const string & sNombre, PROCEDIMIENTO procInicializar, PROCEDIMIENT
 {
 	LogFin();
 	// TODO: Establecer metodología estándar de definición de Log en test: 1) buscar un xml de definicion en un /config...
-	LogIniConsola( true );
+	LogIni();
 	sNombreTest = sNombre;
 	procInicializarTest = procInicializar;
 	procFinalizarTest = procFinalizar;
@@ -131,6 +131,7 @@ bool Test::Ejecutar()
 	iCorrectos = 0;
 	iErroneos = 0;
 	iFallidos = 0;
+	iNoSoportados = 0;
 	try
 	{
 		Inicializar();
@@ -150,6 +151,10 @@ bool Test::Ejecutar()
 				iErroneos = iErroneos + 1;
 				bRes = false;
 			}
+			else if ( rctRes == ResultadoCasoTest::NO_SOPORTADO )
+			{
+				iNoSoportados = iNoSoportados + 1;
+			}
 			else
 			{
 				iFallidos = iFallidos + 1;
@@ -160,17 +165,18 @@ bool Test::Ejecutar()
 	}
 	catch ( const exception& ex )
 	{
-		LogFatalEx ( "Error inesperado", ex );
+		LogErrorEx ( "Error inesperado", ex );
 		bRes = false;
 	}
 	catch ( ... )
 	{
-		LogFatal ( "Lanzado objeto inesperado" );
+		LogError ( "Lanzado objeto inesperado" );
 		bRes = false;
 	}	
 	LogInfo ( "" );
 	LogInfo ( Concatenar ( "Ejecutados = ", ToString ( iEjecutados ), "/",  ToString ( listCasos.size() ), "; Correctos = ",  ToString ( iCorrectos ), 
-							"; Erroneos = ",  ToString ( iErroneos ), "; Fallidos = ",  ToString ( iFallidos ) ) );
+							"; Erroneos = ",  ToString ( iErroneos ), "; Fallidos = ",  ToString ( iFallidos ),
+							"; No soportados = ",  ToString ( iNoSoportados ) ) );
 	LogInfo ( "" );
 	if ( bRes ) 
 	{
@@ -209,6 +215,11 @@ int Test::CasosErroneos ()
 int Test::CasosFallidos ()
 {
 	return ( iFallidos );
+}
+
+int Test::CasosNoSoportados ()
+{
+	return ( iNoSoportados );
 }
 		
 		

@@ -43,9 +43,8 @@ int main ( int argc, char * argv[] )
 			cerr << "Test [ " << sTest << " ] no encontrado." << endl;
 			iRes = -1;
 		}
-		// Cierre ordenado de log4cxx mientras el runtime sigue vivo, para evitar
-		// que la destruccion estatica lo haga tras el teardown interno de APR.
-		log::LogLiberar ();
+		/* Ya no hay log4cxx: LogFin suelta los appenders. */
+		log::LogFin ();
 		return( iRes );
 	}
 
@@ -57,7 +56,7 @@ int main ( int argc, char * argv[] )
 			iRes = -1;
 		}
 	}
-	log::LogLiberar ();
+	log::LogFin ();
 	fflush ( stdout );
 	return ( iRes );
 }

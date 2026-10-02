@@ -30,6 +30,11 @@
 #define ERR_TXT_MEMORIA_INSUFICIENTE		"Memoria insuficiente para realizar la operacion."
 #define ERR_TXT_MEMORIA_PROCESO				"La memoria (heap) del proceso esta corrompida o es invalida."
 #define ERR_TXT_PARAMETROS					"Uno o mas parametros son nulos, o no son validos."
+#define ERR_TXT_POSICION_INVALIDA			"La posicion indicada es invalida"
+#define ERR_TXT_ESTRUCTURA_INVALIDA			"La estructura es invalida."
+#define ERR_TXT_CONVERSION_IMPOSIBLE		"No se puede realizar la conversion del valor indicado."
+
+#define ERR_TXT_GENERAL_OPERATIVO			"Se ha producido un error al realizar la operacion."
 
 
 
@@ -505,6 +510,22 @@ static const char * _ErrDescripcion ( int iCod )
 	{
 		p_cRes = CadDuplicar ( ERR_TXT_PARAMETROS );
 	}
+	else if ( iCod == ERR_POSICION_INVALIDA )
+	{
+		p_cRes = CadDuplicar ( ERR_TXT_POSICION_INVALIDA );
+	}
+	else if ( iCod == ERR_ESTRUCTURA_INVALIDA )
+	{
+		p_cRes = CadDuplicar ( ERR_TXT_ESTRUCTURA_INVALIDA );
+	}
+	else if ( iCod == ERR_CONVERSION_IMPOSIBLE )
+	{
+		p_cRes = CadDuplicar ( ERR_TXT_CONVERSION_IMPOSIBLE );
+	}
+	else if ( iCod == ERR_GENERAL_OPERATIVO )
+	{
+		p_cRes = CadDuplicar ( ERR_TXT_GENERAL_OPERATIVO );
+	}
 	else
 	{
 		p_cRes = NULL;
@@ -520,7 +541,11 @@ static int _ErrPredefinido ( int iCod )
 		 ( iCod == ERR_MEMORIA_INVALIDA ) ||
 		 ( iCod == ERR_MEMORIA_INSUFICIENTE ) ||
 		 ( iCod == ERR_MEMORIA_PROCESO ) ||
-		 ( iCod == ERR_PARAMETROS ) )
+		 ( iCod == ERR_PARAMETROS ) ||
+		 ( iCod == ERR_POSICION_INVALIDA ) ||
+		 ( iCod == ERR_ESTRUCTURA_INVALIDA ) ||
+		 ( iCod == ERR_CONVERSION_IMPOSIBLE ) ||
+		 ( iCod == ERR_GENERAL_OPERATIVO ) )
 	{
 		iRes = 1;
 	}

@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include <initializer_list>
 
 #include <ArgumentoInvalidoExcepcion.h>
 
@@ -49,6 +50,7 @@ public:
 	Argumentos ();
 #endif
 	Argumentos ( int iNumArgs, char ** p_p_cArg );
+	Argumentos ( const std::vector <std::string> & vecArgs );
 
 	~Argumentos ();
 

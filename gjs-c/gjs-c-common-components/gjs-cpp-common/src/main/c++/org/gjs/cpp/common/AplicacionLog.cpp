@@ -88,7 +88,7 @@ int AplicLogNivel ()
 
 	if ( g_bAplicLogInicializado )
 	{
-		iRes = ToInt ( LogGetNivel () );
+		iRes = ToInt ( LogNivel () );
 	}
 	return ( iRes );
 }
@@ -99,8 +99,8 @@ bool AplicLogEstablecerNivel ( int iNivel )
 
 	if ( g_bAplicLogInicializado )
 	{
-		LogSetNivel ( iNivel );
-		bRes = ( iNivel == ToInt ( LogGetNivel () ) );
+		LogEstablecerNivel ( iNivel );
+		bRes = ( iNivel == ToInt ( LogNivel () ) );
 	}
 	return ( bRes );
 }

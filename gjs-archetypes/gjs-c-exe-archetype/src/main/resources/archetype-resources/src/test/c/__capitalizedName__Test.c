@@ -58,7 +58,7 @@ static int Test${capitalizedName}02 ()
 	printf ( "Test ${capitalizedName} 02:\n" );
 	int iRes = 1;
 
-	int iNumArgs = $parameters;
+	int iNumArgs = ${parameters};
 	char ** p_p_cArgs = (char **) MemReservar ( ( iNumArgs + 1 ) * sizeof ( char * ) );
 	p_p_cArgs [ 0 ] = CadDuplicar ( "${capitalizedName}.exe" ); 
 	for ( int i = 0; i < iNumArgs; i = i + 1 )

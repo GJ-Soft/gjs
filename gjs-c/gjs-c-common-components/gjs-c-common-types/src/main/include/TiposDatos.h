@@ -33,11 +33,6 @@
 #include <SValor.h>
 #include <SParametro.h>
 #include <SUbicacion.h>
-#include <SEntidad.h>
-#include <SEntidadNom.h>
-#include <SEntidadCod.h>
-#include <SEntidadCodNom.h>
-#include <SEntidadIdCod.h>
 
 #include <SMensaje.h>
 #include <SError.h>
@@ -65,6 +60,7 @@
 #include <SConector.h>
 
 #include <SHoja.h>
+#include <SIndiceLiterales.h>
 
 
 

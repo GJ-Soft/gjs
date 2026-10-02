@@ -4,6 +4,60 @@
 #include "FicherosConfig.h"
 
 
+/* Situa el fichero en ulPos, contado desde el inicio. Devuelve 1 si lo
+   consigue. Una posicion que no cabe en el desplazamiento del sistema sale
+   negativa al convertirla, y se rechaza sin llegar a llamar a FIC_SITUAR. */
+static int _SFicAlSituarEn ( FILE * p_fObj, unsigned long ulPos )
+{
+	int			iRes;
+	FIC_DESP	despPos;
+
+	despPos = (FIC_DESP) ulPos;
+	if ( despPos >= 0 )
+	{
+		if ( FIC_SITUAR ( p_fObj, despPos, SEEK_SET ) == 0 )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Pasa un desplazamiento del sistema a unsigned long. En Windows unsigned
+   long mide 32 bits y mas alla de 4 GiB no cabe: se satura a ULONG_MAX, que
+   es lo mas cercano a "al menos esto". Los negativos ( error ) dan 0. */
+static unsigned long _SFicAlDespAUL ( FIC_DESP despValor )
+{
+	unsigned long ulRes;
+
+	if ( despValor >= 0 )
+	{
+		if ( (unsigned long long) despValor <= (unsigned long long) ULONG_MAX )
+		{
+			ulRes = (unsigned long) despValor;
+		}
+		else
+		{
+			ulRes = ULONG_MAX;
+		}
+	}
+	else
+	{
+		ulRes = 0;
+	}
+	return ( ulRes );
+}
+
+
+
 
 SFicAleatorio * SFicAlCrear ( const char * p_cRuta )
 {
@@ -362,18 +416,26 @@ int SFicAlEstaAbierto ( SFicAleatorio * p_ficObj )
 unsigned long SFicAlTam  ( SFicAleatorio * p_ficObj )
 {
 	unsigned long  	ulRes;
-	int				lPos;	
+	FIC_DESP		despPos;
 
 	if ( ES_VALIDO ( p_ficObj ) )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			lPos = ftell ( p_ficObj->p_fObj );
-			if ( lPos >= 0 )
+			/* Se guarda la posicion con el tipo del sistema, no en un int:
+			   con un fichero de mas de 2 GiB se restauraba mal. */
+			despPos = FIC_POSICION ( p_ficObj->p_fObj );
+			if ( despPos >= 0 )
 			{
-				fseek ( p_ficObj->p_fObj, 0, SEEK_END );
-				ulRes = ftell ( p_ficObj->p_fObj );
-				fseek ( p_ficObj->p_fObj, lPos, SEEK_SET );
+				if ( FIC_SITUAR ( p_ficObj->p_fObj, 0, SEEK_END ) == 0 )
+				{
+					ulRes = _SFicAlDespAUL ( FIC_POSICION ( p_ficObj->p_fObj ) );
+				}
+				else
+				{
+					ulRes = 0;
+				}
+				FIC_SITUAR ( p_ficObj->p_fObj, despPos, SEEK_SET );
 			}
 			else
 			{
@@ -415,7 +477,7 @@ unsigned long SFicAlPos ( SFicAleatorio * p_ficObj )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			ulRes = ftell ( p_ficObj->p_fObj );
+			ulRes = _SFicAlDespAUL ( FIC_POSICION ( p_ficObj->p_fObj ) );
 		}
 		else
 		{
@@ -437,8 +499,7 @@ int SFicAlPosicionar ( SFicAleatorio * p_ficObj, unsigned long ulPos )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, ulPos, SEEK_SET );
-			iRes = 1;
+			iRes = _SFicAlSituarEn ( p_ficObj->p_fObj, ulPos );
 		}
 		else
 		{
@@ -475,8 +536,7 @@ int SFicAlMoverAInicioExt ( SFicAleatorio * p_ficObj, int iSaltarNumMagico )
 				ulPos = 0;
 			}
 
-			fseek ( p_ficObj->p_fObj, ulPos, SEEK_SET );
-			iRes = 1;
+			iRes = _SFicAlSituarEn ( p_ficObj->p_fObj, ulPos );
 		}
 		else
 		{
@@ -498,8 +558,14 @@ int SFicAlMoverAFinal ( SFicAleatorio * p_ficObj )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, 0, SEEK_END );
-			iRes = 1;
+			if ( FIC_SITUAR ( p_ficObj->p_fObj, 0, SEEK_END ) == 0 )
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
 		}
 		else
 		{
@@ -551,7 +617,7 @@ byte SFicAlLeer ( SFicAleatorio * p_ficObj )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, 0, SEEK_CUR );
+			FIC_SITUAR ( p_ficObj->p_fObj, 0, SEEK_CUR );
 			fread ( &byRes, sizeof ( byte ), 1, p_ficObj->p_fObj );
 		}
 	}
@@ -566,7 +632,7 @@ int SFicAlLeerBuffer ( SFicAleatorio * p_ficObj, byte * p_byContenido, unsigned 
 	{
 		if ( ( *p_ulTam > 0 ) && ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, 0, SEEK_CUR );
+			FIC_SITUAR ( p_ficObj->p_fObj, 0, SEEK_CUR );
 			*p_ulTam = fread ( p_byContenido, sizeof ( byte ), *p_ulTam, p_ficObj->p_fObj );
 			if ( *p_ulTam > 0 )
 			{
@@ -597,7 +663,7 @@ int SFicAlEscribir ( SFicAleatorio * p_ficObj, byte byValor )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, 0, SEEK_CUR );
+			FIC_SITUAR ( p_ficObj->p_fObj, 0, SEEK_CUR );
 			if ( fwrite ( &byValor, sizeof ( byte ), 1, p_ficObj->p_fObj ) == 1 )
 			{
 				iRes = 1;
@@ -627,7 +693,7 @@ int SFicAlEscribirBuffer ( SFicAleatorio * p_ficObj, byte * p_byContenido, unsig
 	{
 		if ( ( *p_ulTam > 0 ) && ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, 0, SEEK_CUR );
+			FIC_SITUAR ( p_ficObj->p_fObj, 0, SEEK_CUR );
 			*p_ulTam = fwrite ( p_byContenido, sizeof ( byte ), *p_ulTam, p_ficObj->p_fObj );
 			if ( *p_ulTam > 0 )
 			{
@@ -659,8 +725,10 @@ byte SFicAlLeerEn ( SFicAleatorio * p_ficObj, unsigned long ulPos )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, ulPos, SEEK_SET );
-			fread ( &byRes, sizeof ( byte ), 1, p_ficObj->p_fObj );
+			if ( _SFicAlSituarEn ( p_ficObj->p_fObj, ulPos ) == 1 )
+			{
+				fread ( &byRes, sizeof ( byte ), 1, p_ficObj->p_fObj );
+			}
 		}
 	}
 	return ( byRes );
@@ -674,14 +742,21 @@ int SFicAlLeerBufferEn ( SFicAleatorio * p_ficObj, unsigned long ulPos, byte * p
 	{
 		if ( ( *p_ulTam > 0 ) && ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, ulPos, SEEK_SET );
-			*p_ulTam = fread ( p_byContenido, sizeof ( byte ), *p_ulTam, p_ficObj->p_fObj );
-			if ( *p_ulTam > 0 )
+			if ( _SFicAlSituarEn ( p_ficObj->p_fObj, ulPos ) == 1 )
 			{
-				iRes = 1;
+				*p_ulTam = fread ( p_byContenido, sizeof ( byte ), *p_ulTam, p_ficObj->p_fObj );
+				if ( *p_ulTam > 0 )
+				{
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
 			}
 			else
 			{
+				*p_ulTam = 0;
 				iRes = 0;
 			}
 		}
@@ -705,10 +780,16 @@ int SFicAlEscribirEn ( SFicAleatorio * p_ficObj, unsigned long ulPos, byte byVal
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, ulPos, SEEK_SET );
-			if ( fwrite ( &byValor, sizeof ( byte ), 1, p_ficObj->p_fObj ) == 1 )
+			if ( _SFicAlSituarEn ( p_ficObj->p_fObj, ulPos ) == 1 )
 			{
-				iRes = 1;
+				if ( fwrite ( &byValor, sizeof ( byte ), 1, p_ficObj->p_fObj ) == 1 )
+				{
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
 			}
 			else
 			{
@@ -735,14 +816,21 @@ int SFicAlEscribirBufferEn ( SFicAleatorio * p_ficObj, unsigned long ulPos, byte
 	{
 		if ( ( *p_ulTam > 0 ) && ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, ulPos, SEEK_SET );
-			*p_ulTam = fwrite ( p_byContenido, sizeof ( byte ), *p_ulTam, p_ficObj->p_fObj );
-			if ( *p_ulTam > 0 )
+			if ( _SFicAlSituarEn ( p_ficObj->p_fObj, ulPos ) == 1 )
 			{
-				iRes = 1;
+				*p_ulTam = fwrite ( p_byContenido, sizeof ( byte ), *p_ulTam, p_ficObj->p_fObj );
+				if ( *p_ulTam > 0 )
+				{
+					iRes = 1;
+				}
+				else
+				{
+					iRes = 0;
+				}
 			}
 			else
 			{
+				*p_ulTam = 0;
 				iRes = 0;
 			}
 		}
@@ -767,7 +855,7 @@ unsigned long SFicAlNumeroMagico ( SFicAleatorio * p_ficObj )
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, 0, SEEK_SET );
+			FIC_SITUAR ( p_ficObj->p_fObj, 0, SEEK_SET );
 			fread ( &ulRes, sizeof ( unsigned long ), 1, p_ficObj->p_fObj );
 		}
 	}
@@ -782,7 +870,7 @@ int SFicAlEstablecerNumeroMagico ( SFicAleatorio * p_ficObj, unsigned long ulNum
 	{
 		if ( ( p_ficObj->iAbierto == 1 ) && ES_VALIDO ( p_ficObj->p_fObj ) )
 		{
-			fseek ( p_ficObj->p_fObj, 0, SEEK_SET );
+			FIC_SITUAR ( p_ficObj->p_fObj, 0, SEEK_SET );
 			if ( fwrite ( &ulNumero, sizeof ( unsigned long ), 1, p_ficObj->p_fObj ) == 1 )
 			{
 				iRes = 1;

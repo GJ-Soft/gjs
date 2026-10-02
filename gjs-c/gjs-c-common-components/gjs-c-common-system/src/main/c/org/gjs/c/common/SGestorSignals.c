@@ -4,7 +4,7 @@
 #include "SistemaConfig.h"
 
 
-#if ( defined ( POSIX ) )
+#if ( defined ( SIGNALS_PERMITIDOS ) )
 
 
 static void SGesSigInicializar ( SGestorSignals * p_gesigObj );

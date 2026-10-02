@@ -100,7 +100,7 @@ int SHojCompleta ( SHoja * p_hojObj )
  	return ( iRes );
 }
 
-int SHojInsertar ( SHoja * p_hojObj, const char * p_cClave, int iPosicion )
+int SHojInsertar ( SHoja * p_hojObj, const char * p_cClave, unsigned long ulPosicion )
 {
  	int iRes;
 	int iFin;
@@ -112,7 +112,7 @@ int SHojInsertar ( SHoja * p_hojObj, const char * p_cClave, int iPosicion )
  	 	{
  	 	 	iRes = p_hojObj->iPrimLibre;
 			p_hojObj->p_p_lczContenido[ iRes ] = SLczCrear ( p_cClave );
-			SLczEstablecerPosicion ( p_hojObj->p_p_lczContenido[ iRes ], iPosicion );
+			SLczEstablecerPosicion ( p_hojObj->p_p_lczContenido[ iRes ], ulPosicion );
  	 	 	p_hojObj->iNumElems = p_hojObj->iNumElems + 1;
 			if ( p_hojObj->iNumElems == 1 )
 			{
@@ -160,28 +160,28 @@ int SHojInsertar ( SHoja * p_hojObj, const char * p_cClave, int iPosicion )
  	return ( iRes );
 }
 
-int SHojBuscar ( SHoja * p_hojObj, const char * p_cClave )
+unsigned long SHojBuscar ( SHoja * p_hojObj, const char * p_cClave )
 {
- 	int iRes;
- 	int iElem;
+ 	unsigned long	ulRes;
+ 	int				iElem;
 
  	if ( ES_VALIDO ( p_hojObj ) )
 	{
 		iElem = _SHojBuscarElem ( p_hojObj, p_cClave );
 		if ( ( iElem >= 0 ) && ( iElem < p_hojObj->iMaxElems ) )
 		{
-			iRes = SLczPosicion ( p_hojObj->p_p_lczContenido [ iElem ] );
+			ulRes = SLczPosicion ( p_hojObj->p_p_lczContenido [ iElem ] );
 		}
  	 	else
  	 	{
- 	 	 	iRes = -1;
+ 	 	 	ulRes = SLCZ_SIN_POSICION;
  	 	}
  	}
  	else
  	{
- 	 	iRes = -1;
+ 	 	ulRes = SLCZ_SIN_POSICION;
  	}
- 	return ( iRes );
+ 	return ( ulRes );
 }
 		
 int SHojEliminar ( SHoja * p_hojObj, const char * p_cClave )
@@ -253,7 +253,7 @@ int SHojEliminar ( SHoja * p_hojObj, const char * p_cClave )
  	return ( iRes );
 }
 
-int SHojModificar ( SHoja * p_hojObj, const char * p_cClave, int iPosicion )
+int SHojModificar ( SHoja * p_hojObj, const char * p_cClave, unsigned long ulPosicion )
 {
  	int iRes;
  	int iElem;
@@ -265,7 +265,7 @@ int SHojModificar ( SHoja * p_hojObj, const char * p_cClave, int iPosicion )
 			iElem = _SHojBuscarElem ( p_hojObj, p_cClave );
 			if ( ( iElem >= 0 ) && ( iElem < p_hojObj->iMaxElems ) )
 			{
-				iRes = SLczEstablecerPosicion ( p_hojObj->p_p_lczContenido [ iElem ], iPosicion );
+				iRes = SLczEstablecerPosicion ( p_hojObj->p_p_lczContenido [ iElem ], ulPosicion );
 			}
  			else
 			{
@@ -380,7 +380,7 @@ int _SHojBuscarElem ( SHoja * p_hojObj, const char * p_cClave )
  	 	 	iElem = 0;
  	 	 	while ( ( iElem < p_hojObj->iMaxElems ) && ( iEnc == 0 ) )
  	 	 	{
-				if ( SLczEsIgual ( p_hojObj->p_p_lczContenido [ iElem ], p_cClave ) == 1 )
+				if ( SLczEsIgualLit ( p_hojObj->p_p_lczContenido [ iElem ], p_cClave ) == 1 )
 				{
 					iEnc = 1;
 				}

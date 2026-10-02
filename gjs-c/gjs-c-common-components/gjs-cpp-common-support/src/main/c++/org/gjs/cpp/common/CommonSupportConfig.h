@@ -6,6 +6,10 @@
 #include <CppBase.h>
 #include <CppCommonTime.h>
 #include <CppCommonSystem.h>
+/* Las rutas y la existencia de ficheros salen de io ( SisComponerRuta,
+   SisNormalizarRuta, SisExisteFichero, SisRutaEsEstiloWindows... ), que hasta
+   ahora llegaba solo de rebote por ser dependencia de system. */
+#include <CppCommonIo.h>
 
 #include <cstdio>
 

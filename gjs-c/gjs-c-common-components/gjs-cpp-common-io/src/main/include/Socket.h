@@ -6,6 +6,9 @@
 #include <Precompilacion.h>
 
 
+/* Winsock solo en Windows nativo. Bajo Cygwin los sockets son los POSIX, que es
+   lo que Cygwin implementa; mezclar los dos juegos choca. Mismo criterio que
+   BaseConfig.h. */
 #if ( defined ( WIN ) )
 #	include <winsock2.h>
 #else 
@@ -27,6 +30,14 @@ namespace org
 		{
             namespace common
             {
+#if ( defined ( WIN ) )
+			bool SockInicializar();
+			void SockFinalizar();
+#endif	
+
+			/* Vino de Sistema.h ( gjs-cpp-common-base ): era lo unico que ataba
+			   aquel modulo a winsock, y su unico consumidor esta aqui. */
+			int ResolverIP( const std::string & sIP );
 
 			class Socket
 			{

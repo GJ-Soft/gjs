@@ -26,7 +26,14 @@
 char * SisRedNombreOrdenador ();
 char * SisRedNombreDNSOrdenador ();
 
+/* Solo en Windows. Se apoya en NetMessageBufferSend, el servicio de
+   mensajeria de Windows, que no tiene equivalente en POSIX: no existe un
+   mecanismo estandar para hacerle llegar un aviso emergente a otra maquina.
+   Fuera de Windows la funcion no se declara, para que quien la llame se
+   encuentre un error de compilacion en vez de un 0 que no significa nada. */
+#if ( defined ( WIN ) )
 int SisRedEnviarMensaje ( const char * p_cDestino, const char * p_cOrigen, const char * p_cMensaje );
+#endif
 
 
 

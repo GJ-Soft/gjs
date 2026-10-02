@@ -28,7 +28,7 @@ typedef struct
 ```
 
 Cada elemento de la lista es un
-[SMensaje](../../gjs-c-common-types/doc/Entidades.md#smensaje) de
+[SMensaje](../../gjs-c-common-types/doc/SMensaje.md) de
 `gjs-c-common-types`: la pareja código-texto ya empaquetada, con su
 identificador y su descripción. El prefijo de este catálogo es `SMsjs`, con
 ese plural, precisamente para no chocar con el `SMsj` del elemento.

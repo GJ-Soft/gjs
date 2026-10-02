@@ -347,6 +347,105 @@ static int TestSElmInvalidos01 ()
 
 
 
+
+
+/* Los saltos de mas de un eslabon. El caso de iInc = 2 en adelante es el que
+   importa: la primera version de estas funciones avanzaba siempre desde el
+   elemento original en vez de desde el que ya habia alcanzado, con lo que
+   acababa en el vecino inmediato para cualquier iInc. Con iInc = 1 eso da el
+   resultado bueno, asi que un test que solo probase el vecino no habria
+   detectado nada. */
+static int TestSElmAntecesorSucesorExt01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SElmAntecesorSucesorExt 01:\n" );
+
+	/* Cadena de cuatro: A - B - C - D */
+	SElemento * p_A = SElmCrearEntero ();
+	SElemento * p_B = SElmCrearEntero ();
+	SElemento * p_C = SElmCrearEntero ();
+	SElemento * p_D = SElmCrearEntero ();
+	if ( ES_VALIDO ( p_A ) && ES_VALIDO ( p_B ) && ES_VALIDO ( p_C ) && ES_VALIDO ( p_D ) )
+	{
+		SElmEncadenarSucesor ( p_A, p_B );
+		SElmEncadenarSucesor ( p_B, p_C );
+		SElmEncadenarSucesor ( p_C, p_D );
+
+		/* Un solo eslabon: lo mismo que las versiones simples. */
+		if ( SElmSucesorExt ( p_A, 1 ) != p_B )
+		{
+			printf( "Error caso 1: a un eslabon de A deberia estar B\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SElmAntecesorExt ( p_D, 1 ) != p_C )
+		{
+			printf( "Error caso 2: a un eslabon hacia atras de D deberia estar C\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Dos y tres: aqui es donde se ve si avanza de verdad. */
+		if ( SElmSucesorExt ( p_A, 2 ) != p_C )
+		{
+			printf( "Error caso 3: a dos eslabones de A deberia estar C\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SElmSucesorExt ( p_A, 3 ) != p_D )
+		{
+			printf( "Error caso 4: a tres eslabones de A deberia estar D\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SElmAntecesorExt ( p_D, 3 ) != p_A )
+		{
+			printf( "Error caso 5: a tres eslabones hacia atras de D deberia estar A\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Salirse de la cadena da nulo, no el ultimo ni basura. */
+		if ( ES_VALIDO ( SElmSucesorExt ( p_A, 4 ) ) )
+		{
+			printf( "Error caso 6: pasado el final deberia dar nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SElmAntecesorExt ( p_A, 1 ) ) )
+		{
+			printf( "Error caso 7: A no tiene antecesor\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Cero eslabones es el propio elemento; negativo, nulo. */
+		if ( SElmSucesorExt ( p_B, 0 ) != p_B )
+		{
+			printf( "Error caso 8: con iInc = 0 se espera el propio elemento\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SElmAntecesorExt ( p_B, 0 ) != p_B )
+		{
+			printf( "Error caso 8b: con iInc = 0 se espera el propio elemento\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SElmAntecesorExt ( p_B, -1 ) ) )
+		{
+			printf( "Error caso 9: con iInc negativo se espera nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Objeto invalido. */
+		if ( ES_VALIDO ( SElmSucesorExt ( NULL, 1 ) ) )
+		{
+			printf( "Error caso 10: con objeto nulo se espera nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear los cuatro elementos\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+		SElmDestruir ( &p_A );
+	SElmDestruir ( &p_B );
+	SElmDestruir ( &p_C );
+	SElmDestruir ( &p_D );
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+
 int TestSElemento ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -358,7 +457,8 @@ int TestSElemento ()
 			( TestSElmDesencadenar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSElmIgualdad01 () == BOOL_VAL_CIERTO ) &&
 			( TestSElmDuplicar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSElmInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSElmInvalidos01 () == BOOL_VAL_CIERTO )  &&
+			( TestSElmAntecesorSucesorExt01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

@@ -3,14 +3,14 @@
 
 
 
-#include <SEntidad.h>
+#include <SId.h>
 #include <SDescripcion.h>
 
 
 
 typedef struct
 {
-	SEntidad *  	p_entInfo;  
+	SId *			p_idMensaje;
 	SDescripcion *	p_descTexto;
 
 } SMensaje;

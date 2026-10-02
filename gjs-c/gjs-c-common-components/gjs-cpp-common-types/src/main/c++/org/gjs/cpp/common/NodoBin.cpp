@@ -255,7 +255,10 @@ string NodoBin::DatosToString( void * _datos )
 	string sRes( "NULO" );
 	if ( _datos != NULL )
 	{
-		sRes = ToString( (unsigned long) _datos );
+		/* uintptr_t, no unsigned long: en Windows (LLP64) long mide 32 bits y el
+		   cast truncaria el puntero; en Cygwin y Linux (LP64) mide 64. ToString
+		   tiene sobrecarga para los dos tipos a los que uintptr_t se resuelve. */
+		sRes = ToString( (uintptr_t) _datos );
 	}
 	return ( sRes );
 }

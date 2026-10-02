@@ -18,9 +18,7 @@
 #define _ORG_GJS_C_CC_SISTEMASIGNALS_H
 
 
-#include <BaseConfig.h> 
-#include <Funciones.h>
-
+#include <Precompilacion.h> 
 
 
 #if ( !defined ( WIN ) )
@@ -30,6 +28,13 @@
 #	undef	SIGNALS_PERMITIDOS
 #endif
 
+
+
+#if ( defined ( SIGNALS_PERMITIDOS ) )
+
+
+#include <BaseConfig.h> 
+#include <Funciones.h>
 
 
 
@@ -50,6 +55,7 @@
 #define SIS_SIG_USUARIO_2								12
 #define SIS_SIG_DEPURACION								13
 #define SIS_SIG_TEMPORIZADOR							14
+
 
 #if ( defined ( POSIX ) )
 
@@ -112,14 +118,14 @@
 #	define SIS_COD_SIG_ERROR_REINICIO_SISTEMA			SIGPWR
 #	define SIS_COD_SIG_ERROR_LLAMADA_SISTEMA			SIGSYS
 
-#else // Caso por defecto ( defined ( WIN ) )
+#else // De momento no hay otros casos
 
 /* En Windows hay dos <signal.h> distintos segun quien compile: el de Cygwin trae
    el juego POSIX casi entero, y el de MinGW solo seis senales mas SIGBREAK ( que
    a su vez no existe en Cygwin ). Comprobado con gcc y con
    x86_64-w64-mingw32-gcc el 2026-08-05. Lo que no existe se queda en -1, que es
    lo que SisSignal trata como senal no reconocida. */
-
+/*
 #	if ( defined ( CYGWIN ) )
 
 #		define SIS_COD_SIG_ABORTAR							SIGABRT
@@ -157,6 +163,23 @@
 #		define SIS_COD_SIG_DEPURACION						-1
 
 #	endif
+*/
+
+#	define SIS_COD_SIG_ABORTAR								-1
+#	define SIS_COD_SIG_ALARMA								-1
+#	define SIS_COD_SIG_ERROR_COMA_FLOTANTE					-1
+#	define SIS_COD_SIG_TERMINAL_DESCONECTADO				-1
+#	define SIS_COD_SIG_INSTRUCCION_ILEGAL					-1
+#	define SIS_COD_SIG_INTERRUPCION							-1
+#	define SIS_COD_SIG_FINALIZACION_OBLIGADA				-1
+#	define SIS_COD_SIG_ERROR_TUBERIA						-1
+#	define SIS_COD_SIG_SALIR								-1
+#	define SIS_COD_SIG_REFERENCIA_MEMORIA_INVALIDA			-1
+#	define SIS_COD_SIG_FINALIZACION							-1
+#	define SIS_COD_SIG_USUARIO_1							-1
+#	define SIS_COD_SIG_USUARIO_2							-1
+#	define SIS_COD_SIG_TEMPORIZADOR							-1
+#	define SIS_COD_SIG_DEPURACION							-1
 
 #endif
 
@@ -198,39 +221,39 @@
 #endif
 
 
-#define SIS_SIG_TXT_ABORTAR                     "Terminacion anormal del proceso"
-#define SIS_SIG_TXT_ALARMA                      "Temporizador de tiempo real expirado"
-#define SIS_SIG_TXT_ERROR_COMA_FLOTANTE         "Error aritmetico de coma flotante"
-#define SIS_SIG_TXT_TERMINAL_DESCONECTADO       "Terminal desconectado o proceso lider finalizado"
-#define SIS_SIG_TXT_INSTRUCCION_ILEGAL          "Instruccion de CPU no valida o no soportada"
-#define SIS_SIG_TXT_INTERRUPCION                "Interrupcion desde teclado (Ctrl+C)"
-#define SIS_SIG_TXT_FINALIZACION_OBLIGADA       "Terminacion forzosa no capturable ni ignorable"
-#define SIS_SIG_TXT_ERROR_TUBERIA               "Escritura en tuberia sin lectores activos"
-#define SIS_SIG_TXT_SALIR                       "Salida con volcado de memoria (Ctrl+\\)"
-#define SIS_SIG_TXT_REFERENCIA_MEMORIA_INVALIDA "Acceso a direccion de memoria no valida"
-#define SIS_SIG_TXT_FINALIZACION                "Solicitud de terminacion ordenada del proceso"
-#define SIS_SIG_TXT_USUARIO_1                   "Senal de usuario definida por la aplicacion (1)"
-#define SIS_SIG_TXT_USUARIO_2                   "Senal de usuario definida por la aplicacion (2)"
-#define SIS_SIG_TXT_DEPURACION                  "Punto de ruptura o seguimiento paso a paso"
-#define SIS_SIG_TXT_TEMPORIZADOR               "Temporizador de perfil del proceso expirado"
+#define SIS_SIG_TXT_ABORTAR                  	   	"Terminacion anormal del proceso"
+#define SIS_SIG_TXT_ALARMA                   	   	"Temporizador de tiempo real expirado"
+#define SIS_SIG_TXT_ERROR_COMA_FLOTANTE      	   	"Error aritmetico de coma flotante"
+#define SIS_SIG_TXT_TERMINAL_DESCONECTADO    	   	"Terminal desconectado o proceso lider finalizado"
+#define SIS_SIG_TXT_INSTRUCCION_ILEGAL       	   	"Instruccion de CPU no valida o no soportada"
+#define SIS_SIG_TXT_INTERRUPCION             	   	"Interrupcion desde teclado (Ctrl+C)"
+#define SIS_SIG_TXT_FINALIZACION_OBLIGADA    	   	"Terminacion forzosa no capturable ni ignorable"
+#define SIS_SIG_TXT_ERROR_TUBERIA             		"Escritura en tuberia sin lectores activos"
+#define SIS_SIG_TXT_SALIR                       	"Salida con volcado de memoria (Ctrl+\\)"
+#define SIS_SIG_TXT_REFERENCIA_MEMORIA_INVALIDA 	"Acceso a direccion de memoria no valida"
+#define SIS_SIG_TXT_FINALIZACION               	 	"Solicitud de terminacion ordenada del proceso"
+#define SIS_SIG_TXT_USUARIO_1                   	"Senal de usuario definida por la aplicacion (1)"
+#define SIS_SIG_TXT_USUARIO_2                   	"Senal de usuario definida por la aplicacion (2)"
+#define SIS_SIG_TXT_DEPURACION                  	"Punto de ruptura o seguimiento paso a paso"
+#define SIS_SIG_TXT_TEMPORIZADOR               		"Temporizador de perfil del proceso expirado"
 
 #if ( defined ( POSIX ) )
 
-#define SIS_SIG_TXT_ERROR_BUS                   "Error de acceso al bus o alineacion de memoria"
-#define SIS_SIG_TXT_CAMBIO_ESTADO_HIJO          "Proceso hijo detenido, reanudado o finalizado"
-#define SIS_SIG_TXT_CONTINUAR                   "Reanudar proceso previamente detenido"
-#define SIS_SIG_TXT_PARAR                       "Detencion forzosa no capturable ni ignorable"
-#define SIS_SIG_TXT_PARAR_TECLADO               "Detencion solicitada desde teclado (Ctrl+Z)"
-#define SIS_SIG_TXT_LECTURA_SEGUNDO_PLANO       "Intento de lectura de terminal en segundo plano"
-#define SIS_SIG_TXT_ESCRITURA_SEGUNDO_PLANO     "Intento de escritura a terminal en segundo plano"
-#define SIS_SIG_TXT_AVISO_SOCKET                "Datos urgentes o fuera de banda en socket"
-#define SIS_SIG_TXT_ERROR_LIMITE_CPU            "Limite de tiempo de CPU superado"
-#define SIS_SIG_TXT_ERROR_TAM_FICHERO           "Tamano maximo de fichero superado"
-#define SIS_SIG_TXT_TEMPORIZADOR_VIRTUAL        "Temporizador virtual del proceso expirado"
-#define SIS_SIG_TXT_CAMBIO_TAM_VENTANA          "Cambio de tamano de la ventana de terminal"
-#define SIS_SIG_TXT_EVENTO_ENTRADA_SALIDA       "Evento asincrono de entrada/salida disponible"
-#define SIS_SIG_TXT_ERROR_REINICIO_SISTEMA      "Fallo de alimentacion o reinicio inminente"
-#define SIS_SIG_TXT_ERROR_LLAMADA_SISTEMA       "Llamada al sistema con argumento no valido"
+#define SIS_SIG_TXT_ERROR_BUS                   	"Error de acceso al bus o alineacion de memoria"
+#define SIS_SIG_TXT_CAMBIO_ESTADO_HIJO          	"Proceso hijo detenido, reanudado o finalizado"
+#define SIS_SIG_TXT_CONTINUAR                   	"Reanudar proceso previamente detenido"
+#define SIS_SIG_TXT_PARAR                       	"Detencion forzosa no capturable ni ignorable"
+#define SIS_SIG_TXT_PARAR_TECLADO               	"Detencion solicitada desde teclado (Ctrl+Z)"
+#define SIS_SIG_TXT_LECTURA_SEGUNDO_PLANO       	"Intento de lectura de terminal en segundo plano"
+#define SIS_SIG_TXT_ESCRITURA_SEGUNDO_PLANO     	"Intento de escritura a terminal en segundo plano"
+#define SIS_SIG_TXT_AVISO_SOCKET                	"Datos urgentes o fuera de banda en socket"
+#define SIS_SIG_TXT_ERROR_LIMITE_CPU            	"Limite de tiempo de CPU superado"
+#define SIS_SIG_TXT_ERROR_TAM_FICHERO           	"Tamano maximo de fichero superado"
+#define SIS_SIG_TXT_TEMPORIZADOR_VIRTUAL        	"Temporizador virtual del proceso expirado"
+#define SIS_SIG_TXT_CAMBIO_TAM_VENTANA          	"Cambio de tamano de la ventana de terminal"
+#define SIS_SIG_TXT_EVENTO_ENTRADA_SALIDA       	"Evento asincrono de entrada/salida disponible"
+#define SIS_SIG_TXT_ERROR_REINICIO_SISTEMA      	"Fallo de alimentacion o reinicio inminente"
+#define SIS_SIG_TXT_ERROR_LLAMADA_SISTEMA       	"Llamada al sistema con argumento no valido"
 
 #endif
 
@@ -246,8 +269,6 @@ int SisSigEsValida ( int iSignal );
 const char * SisSigNombre ( int iSignal );
 const char * SisSigDescripcion ( int iSignal );
 char * SisSigMensaje ( int iSignal );
-
-#if ( defined ( SIGNALS_PERMITIDOS ) )
 
 int SisSigEstaIgnorada ( int iSignal );
 int SisSigEstaBloqueada ( int iSignal );

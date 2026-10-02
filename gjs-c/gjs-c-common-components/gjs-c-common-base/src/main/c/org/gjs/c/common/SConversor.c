@@ -107,8 +107,7 @@ SConversor * SConvCrearCadenaConstante ( const char * p_cValor )
 	return ( p_convObj );
 }
 
-#if ( defined ( LLONG ) )
-SConversor * SConvCrearEnteroDobleLargo ( llong llValor )
+SConversor * SConvCrearEnteroDobleLargo ( long long llValor )
 {
 	SConversor * p_convObj;
 
@@ -117,7 +116,7 @@ SConversor * SConvCrearEnteroDobleLargo ( llong llValor )
 	return ( p_convObj );
 }
 
-SConversor * SConvCrearEnteroDobleLargoSinSigno ( ullong ullValor )
+SConversor * SConvCrearEnteroDobleLargoSinSigno ( unsigned long long ullValor )
 {
 	SConversor * p_convObj;
 
@@ -126,7 +125,6 @@ SConversor * SConvCrearEnteroDobleLargoSinSigno ( ullong ullValor )
 	return ( p_convObj );
 }
 
-#endif
 
 void SConvDestruir ( SConversor ** p_p_convObj )
 {
@@ -240,8 +238,7 @@ const char * SConvCadenaHex ( SConversor * p_convObj )
 	}
 }
 
-#if ( defined ( LLONG ) )
-llong SConvEnteroDobleLargo ( SConversor * p_convObj )
+long long SConvEnteroDobleLargo ( SConversor * p_convObj )
 {
 	if ( ES_VALIDO ( p_convObj ) )
 	{
@@ -253,7 +250,7 @@ llong SConvEnteroDobleLargo ( SConversor * p_convObj )
 	}
 }
 
-ullong SConvEnteroDobleLargoSinSigno ( SConversor * p_convObj )
+unsigned long long SConvEnteroDobleLargoSinSigno ( SConversor * p_convObj )
 {
 	if ( ES_VALIDO ( p_convObj ) )
 	{
@@ -264,7 +261,6 @@ ullong SConvEnteroDobleLargoSinSigno ( SConversor * p_convObj )
 		return ( 0 );
 	}
 }
-#endif
 
 void SConvEstablecerValorEntero ( SConversor * p_convObj, int iValor )
 {
@@ -276,26 +272,20 @@ void SConvEstablecerValorEntero ( SConversor * p_convObj, int iValor )
 		p_convObj->iConvValida = 1;
 		p_convObj->iValor = iValor;
 		p_convObj->lValor = (long) iValor;
-	#  if ( defined ( LLONG ) )
-		p_convObj->llValor = (llong) iValor;
-	#  endif
+		p_convObj->llValor = (long long) iValor;
 
 		if ( iValor >= 0 )
 		{
 			p_convObj->uiValor = (unsigned int) p_convObj->iValor;
 			p_convObj->ulValor = (unsigned long) p_convObj->iValor;
-	#  if ( defined ( LLONG ) )
-			p_convObj->ullValor = (ullong) iValor;
-	#  endif
+			p_convObj->ullValor = (unsigned long long) iValor;
 		}
 		else
 		{
 			p_convObj->iConvValida = 0;
 			p_convObj->uiValor = 0;
 			p_convObj->ulValor = 0;
-	#  if ( defined ( LLONG ) )
 			p_convObj->ullValor = 0;
-	#  endif
 		}
 		p_convObj->dValor = (double) ( p_convObj->iValor );
 		p_convObj->fValor = (float) ( p_convObj->iValor );
@@ -328,9 +318,7 @@ void SConvEstablecerValorEnteroLargo ( SConversor * p_convObj, long lValor )
 	{
 		p_convObj->iConvValida = 1;
 		p_convObj->lValor = lValor;
-	#  if ( defined ( LLONG ) )
-		p_convObj->llValor = (llong) p_convObj->lValor;
-	#  endif
+		p_convObj->llValor = (long long) p_convObj->lValor;
 		if ( ( p_convObj->lValor >= INT_MIN ) && ( p_convObj->lValor <= INT_MAX ) )
 		{
 			p_convObj->iValor = (int) p_convObj->lValor;
@@ -352,17 +340,13 @@ void SConvEstablecerValorEnteroLargo ( SConversor * p_convObj, long lValor )
 		if ( p_convObj->lValor >= 0 )
 		{
 			p_convObj->ulValor = (unsigned long) p_convObj->lValor;
-	#  if ( defined ( LLONG ) )
-			p_convObj->ullValor = (ullong) lValor;
-	#  endif
+			p_convObj->ullValor = (unsigned long long) lValor;
 		}
 		else
 		{
 			p_convObj->iConvValida = 0;
 			p_convObj->ulValor = 0;
-	#  if ( defined ( LLONG ) )
 			p_convObj->ullValor = 0;
-	#  endif
 		}
 		p_convObj->dValor = (double) ( p_convObj->lValor );
 		p_convObj->fValor = (float) ( p_convObj->lValor );
@@ -395,10 +379,8 @@ void SConvEstablecerValorEnteroSinSigno ( SConversor * p_convObj, unsigned int u
 		p_convObj->iConvValida = 1;
 		p_convObj->uiValor = uiValor;
 		p_convObj->ulValor = (unsigned long) uiValor;
-	#  if ( defined ( LLONG ) )
-		p_convObj->ullValor = (ullong) uiValor;
-		p_convObj->llValor = (llong) uiValor;
-	#  endif
+		p_convObj->ullValor = (unsigned long long) uiValor;
+		p_convObj->llValor = (long long) uiValor;
 		if ( p_convObj->uiValor <= INT_MAX )
 		{
 			p_convObj->iValor = (int) uiValor;
@@ -447,10 +429,8 @@ void SConvEstablecerValorEnteroLargoSinSigno ( SConversor * p_convObj, unsigned 
 	{
 		p_convObj->iConvValida = 1;
 		p_convObj->ulValor = ulValor;
-	#  if ( defined ( LLONG ) )
-		p_convObj->ullValor = (ullong) ulValor;
-		p_convObj->llValor = (llong) ulValor;
-	#  endif
+		p_convObj->ullValor = (unsigned long long) ulValor;
+		p_convObj->llValor = (long long) ulValor;
 		if ( ( p_convObj->ulValor <= UINT_MAX ) )
 		{
 			p_convObj->uiValor = (unsigned int) ulValor;
@@ -508,7 +488,6 @@ void SConvEstablecerValorReal ( SConversor * p_convObj, float fValor )
 		p_convObj->iConvValida = 1;
 		p_convObj->fValor = fValor;
 		p_convObj->dValor = (double) p_convObj->fValor;
-	#  if ( defined ( LLONG ) )
 		if ( ( p_convObj->fValor >= LLONG_MIN ) && ( p_convObj->fValor <= LLONG_MAX ) )
 		{
 			p_convObj->llValor = ConvRealAEnteroDobleLargo ( p_convObj->fValor, 0 );
@@ -518,7 +497,6 @@ void SConvEstablecerValorReal ( SConversor * p_convObj, float fValor )
 			p_convObj->iConvValida = 0;
 			p_convObj->llValor = 0;
 		}
-	#  endif
 		if ( ( p_convObj->fValor >= LONG_MIN ) && ( p_convObj->fValor <= LONG_MAX ) )
 		{
 			p_convObj->lValor = ConvRealAEnteroLargo ( p_convObj->fValor, 0 );
@@ -540,7 +518,6 @@ void SConvEstablecerValorReal ( SConversor * p_convObj, float fValor )
 		}
 		if ( p_convObj->fValor >= 0 )
 		{
-	#  if ( defined ( LLONG ) )
 			if ( ( p_convObj->fValor <= ULONG_MAX ) )
 			{
 				p_convObj->ulValor = ConvRealAEnteroDobleLargoSinSigno ( p_convObj->fValor, 0 );
@@ -550,7 +527,6 @@ void SConvEstablecerValorReal ( SConversor * p_convObj, float fValor )
 				p_convObj->iConvValida = 0;
 				p_convObj->ullValor = 0;
 			}				
-	#  endif
 			if ( ( p_convObj->fValor <= ULONG_MAX ) )
 			{
 				p_convObj->ulValor = ConvRealAEnteroLargoSinSigno ( p_convObj->fValor, 0 );
@@ -576,9 +552,7 @@ void SConvEstablecerValorReal ( SConversor * p_convObj, float fValor )
 			p_convObj->iConvValida = 0;
 			p_convObj->uiValor = 0;
 			p_convObj->ulValor = 0;
-	#  if ( defined ( LLONG ) )
 			p_convObj->ullValor = 0;
-	#  endif
 		}
 		InicializarCadena ( p_convObj );
 		p_cAux = ConvRealACadena ( p_convObj->fValor );
@@ -607,7 +581,6 @@ void SConvEstablecerValorRealDoble ( SConversor * p_convObj, double dValor )
 	{
 		p_convObj->iConvValida = 1;
 		p_convObj->dValor = dValor;
-	#  if ( defined ( LLONG ) )
 		if ( ( p_convObj->dValor >= LLONG_MIN ) && ( p_convObj->dValor <= LLONG_MAX ) )
 		{
 			p_convObj->llValor = ConvRealDobleAEnteroDobleLargo ( p_convObj->dValor, 0 );
@@ -617,7 +590,6 @@ void SConvEstablecerValorRealDoble ( SConversor * p_convObj, double dValor )
 			p_convObj->iConvValida = 0;
 			p_convObj->llValor = 0;
 		}
-	#  endif
 		if ( ( fabs ( p_convObj->dValor ) >= FLT_MIN ) && ( fabs ( p_convObj->dValor ) <= FLT_MAX ) )
 		{
 			p_convObj->fValor = (float) p_convObj->dValor;
@@ -648,7 +620,6 @@ void SConvEstablecerValorRealDoble ( SConversor * p_convObj, double dValor )
 		}
 		if ( p_convObj->dValor >= 0 )
 		{
-	#  if ( defined ( LLONG ) )
 			if ( ( p_convObj->fValor <= ULONG_MAX ) )
 			{
 				p_convObj->ulValor = ConvRealDobleAEnteroDobleLargoSinSigno ( p_convObj->fValor, 0 );
@@ -658,7 +629,6 @@ void SConvEstablecerValorRealDoble ( SConversor * p_convObj, double dValor )
 				p_convObj->iConvValida = 0;
 				p_convObj->ullValor = 0;
 			}				
-	#  endif
 			if ( ( p_convObj->fValor <= ULONG_MAX ) )
 			{
 				p_convObj->ulValor = ConvRealDobleAEnteroLargoSinSigno ( p_convObj->dValor, 0 );
@@ -751,17 +721,15 @@ void SConvEstablecerValorCadenaConstante ( SConversor * p_convObj, const char * 
 				p_convObj->iConvValida = 0;
 				p_convObj->fValor = 0.0;
 			}
-	#     if ( defined ( LLONG ) )
 			if ( ( p_convObj->dValor >= LLONG_MIN ) && ( p_convObj->dValor <= LLONG_MAX ) )
 			{
-				p_convObj->llValor = (llong) p_convObj->dValor;
+				p_convObj->llValor = (long long) p_convObj->dValor;
 			}
 			else
 			{
 				p_convObj->iConvValida = 0;
 				p_convObj->llValor = 0;
 			}
-	#	  endif
 			if ( ( p_convObj->dValor >= LONG_MIN ) && ( p_convObj->dValor <= LONG_MAX ) )
 			{
 				p_convObj->lValor = (long) p_convObj->dValor;
@@ -783,7 +751,6 @@ void SConvEstablecerValorCadenaConstante ( SConversor * p_convObj, const char * 
 			}
 			if ( p_convObj->dValor >= 0 )
 			{
-		#  if ( defined ( LLONG ) )
 				if ( p_convObj->fValor <= ULONG_MAX )
 				{
 					p_convObj->ulValor = ConvRealDobleAEnteroDobleLargoSinSigno ( p_convObj->fValor, 0 );
@@ -793,7 +760,6 @@ void SConvEstablecerValorCadenaConstante ( SConversor * p_convObj, const char * 
 					p_convObj->iConvValida = 0;
 					p_convObj->ullValor = 0;
 				}				
-		#  endif
 				if ( p_convObj->fValor <= ULONG_MAX )
 				{
 					p_convObj->ulValor = ConvRealDobleAEnteroLargoSinSigno ( p_convObj->dValor, 0 );
@@ -822,11 +788,10 @@ void SConvEstablecerValorCadenaConstante ( SConversor * p_convObj, const char * 
 		}
 		else if ( SConvEsCadenaNumericaHexadecimal ( p_convObj ) == 1 )
 		{
-	#     if ( defined ( LLONG ) )
 			p_convObj->ullValor = ConvCadenaHexAEnteroDobleLargoSinSigno ( p_cValor );
 			if ( ( p_convObj->ullValor <= LLONG_MAX ) )
 			{
-				p_convObj->llValor = (llong) p_convObj->ullValor;
+				p_convObj->llValor = (long long) p_convObj->ullValor;
 			}
 			else
 			{
@@ -834,7 +799,6 @@ void SConvEstablecerValorCadenaConstante ( SConversor * p_convObj, const char * 
 				p_convObj->llValor = 0;
 				p_convObj->ullValor = 0;
 			}
-	#	  endif
 			p_convObj->ulValor = ConvCadenaHexAEnteroLargoSinSigno ( p_cValor );
 			if ( ( p_convObj->ulValor <= UINT_MAX ) )
 			{
@@ -868,10 +832,8 @@ void SConvEstablecerValorCadenaConstante ( SConversor * p_convObj, const char * 
 		}
 		else
 		{
-	#     if ( defined ( LLONG ) )
 			p_convObj->llValor = 0;
 			p_convObj->ullValor = 0;
-	#	  endif
 			p_convObj->dValor = 0.0;
 			p_convObj->fValor = 0.0;
 			p_convObj->lValor = 0;
@@ -958,10 +920,8 @@ void SConvEstablecerValorCadenaHexConstante ( SConversor * p_convObj, const char
 		}
 		else
 		{
-	#     if ( defined ( LLONG ) )
 			p_convObj->llValor = 0;
 			p_convObj->ullValor = 0;
-	#	  endif
 			p_convObj->dValor = 0.0;
 			p_convObj->fValor = 0.0;
 			p_convObj->lValor = 0;
@@ -973,8 +933,7 @@ void SConvEstablecerValorCadenaHexConstante ( SConversor * p_convObj, const char
 	}
 }
 
-#  if ( defined ( LLONG ) )
-void SConvEstablecerValorEnteroDobleLargo ( SConversor * p_convObj, llong llValor )
+void SConvEstablecerValorEnteroDobleLargo ( SConversor * p_convObj, long long llValor )
 {
 	const char *	p_cAux;
 	int				iCar;
@@ -1001,7 +960,7 @@ void SConvEstablecerValorEnteroDobleLargo ( SConversor * p_convObj, llong llValo
 			p_convObj->iConvValida = 0;
 			p_convObj->iValor = 0;
 		}
-		if ( ( p_convObj->llValor >= 0 ) && ( (ullong) p_convObj->llValor <= (ullong) UINT_MAX ) )
+		if ( ( p_convObj->llValor >= 0 ) && ( (unsigned long long) p_convObj->llValor <= (unsigned long long) UINT_MAX ) )
 		{
 			p_convObj->uiValor = (unsigned int) p_convObj->llValor;
 		}
@@ -1040,7 +999,7 @@ void SConvEstablecerValorEnteroDobleLargo ( SConversor * p_convObj, llong llValo
 	}
 }
 
-void SConvEstablecerValorEnteroDobleLargoSinSigno ( SConversor * p_convObj, ullong ullValor )
+void SConvEstablecerValorEnteroDobleLargoSinSigno ( SConversor * p_convObj, unsigned long long ullValor )
 {
 	const char *	p_cAux;
 	int				iCar;
@@ -1051,7 +1010,7 @@ void SConvEstablecerValorEnteroDobleLargoSinSigno ( SConversor * p_convObj, ullo
 		p_convObj->ullValor = ullValor;
 		if ( p_convObj->ullValor <= LLONG_MAX )
 		{
-			p_convObj->llValor = (llong) p_convObj->ullValor;
+			p_convObj->llValor = (long long) p_convObj->ullValor;
 		}
 		else
 		{
@@ -1076,7 +1035,7 @@ void SConvEstablecerValorEnteroDobleLargoSinSigno ( SConversor * p_convObj, ullo
 			p_convObj->iConvValida = 0;
 			p_convObj->iValor = 0;
 		}
-		if ( ( p_convObj->llValor >= 0 ) && ( (ullong) p_convObj->llValor <= (ullong) UINT_MAX ) )
+		if ( ( p_convObj->llValor >= 0 ) && ( (unsigned long long) p_convObj->llValor <= (unsigned long long) UINT_MAX ) )
 		{
 			p_convObj->uiValor = (unsigned int) p_convObj->llValor;
 		}
@@ -1115,7 +1074,6 @@ void SConvEstablecerValorEnteroDobleLargoSinSigno ( SConversor * p_convObj, ullo
 	}
 }
 
-#endif
 
 int SConvEsCadenaNumerica ( SConversor * p_convObj )
 {

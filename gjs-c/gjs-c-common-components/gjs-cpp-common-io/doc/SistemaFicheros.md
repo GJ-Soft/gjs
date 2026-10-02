@@ -2,8 +2,8 @@
 
 | Dato      | Valor                                             |
 | --------- | ------------------------------------------------- |
-| Cabecera  | `src/main/include/SistemaFicheros.h` (137 líneas) |
-| Fuente    | `SistemaFicheros.cpp` (1.444 líneas)              |
+| Cabecera  | `src/main/include/SistemaFicheros.h` (142 líneas) |
+| Fuente    | `SistemaFicheros.cpp` (1.538 líneas)              |
 | Espacio   | `org::gjs::cpp::common`                           |
 | Prefijo   | `Sis`                                             |
 | Funciones | 71, libres — ninguna clase                        |
@@ -93,25 +93,67 @@ temporales.
 
 ## Observaciones
 
-- **Los atributos de fichero sólo existen en Windows.** Hay ocho marcas
-  `// PENDIENTE` en el fuente, repartidas en **siete funciones** cuya rama POSIX
-  está vacía y **devuelve `false` sin avisar**:
+### `SisExisteFichero` pregunta «existe y no es un directorio»
 
-  | Función                             | En Windows                  | En POSIX |
+No «existe y es un fichero regular», que es más estricto y es lo que se contestó
+por error hasta el 2026-09-20. La diferencia se nota en FIFOs, sockets y
+dispositivos: `S_ISREG` / `is_regular_file` dice que no a todos ellos, cuando en
+Windows —donde `GetFileAttributes` sólo mira `FILE_ATTRIBUTE_DIRECTORY`— cuentan
+como fichero. Ahora las dos ramas y los dos stacks preguntan lo mismo.
+
+
+- **Los atributos de fichero ya no son cosa sólo de Windows.** Lo eran hasta el
+  2026-09-18, cuando se comprobó que la premisa era falsa: **desde un binario
+  POSIX de Cygwin la API de Windows contesta perfectamente**, basta traducir la
+  ruta con `cygwin_create_path`. Estado actual:
+
+  | Función                             | Cygwin                      | Linux    |
   | ----------------------------------- | --------------------------- | -------- |
-  | `SisRutaComprimida`                 | `FILE_ATTRIBUTE_COMPRESSED` | `false`  |
-  | `SisRutaEncriptada`                 | `FILE_ATTRIBUTE_ENCRYPTED`  | `false`  |
-  | `SisRutaOculta`                     | `FILE_ATTRIBUTE_HIDDEN`     | `false`  |
-  | `SisRutaDelSistema`                 | `FILE_ATTRIBUTE_SYSTEM`     | `false`  |
-  | `SisFicheroAsociadoAAplicacion`     | atributo de Windows         | `false`  |
-  | `SisFicheroConOptimizacionEspacial` | atributo de Windows         | `false`  |
-  | `SisCadenaDirectorioSistema`        | implementada                | vacía    |
+  | `SisRutaOculta`                      | el punto inicial del nombre | igual    |
+  | `SisRutaDeSoloLectura`               | `access ( W_OK )`           | igual    |
+  | `SisRutaDesactivarModoSoloLectura`   | permiso de escritura        | igual    |
+  | `SisFicheroEsAccesible`              | `access ( R_OK )`           | igual    |
+  | `SisRutaComprimida`                  | `FILE_ATTRIBUTE_COMPRESSED` | contesta *no* |
+  | `SisRutaEncriptada`                  | `FILE_ATTRIBUTE_ENCRYPTED`  | contesta *no* |
+  | `SisRutaDelSistema`                  | `FILE_ATTRIBUTE_SYSTEM`     | contesta *no* |
+  | `SisFicheroEsTemporal`               | `FILE_ATTRIBUTE_TEMPORARY`  | ¿cuelga del directorio temporal? |
+  | `SisFicheroAsociadoAAplicacion`      | atributo de Windows         | contesta *no* |
+  | `SisFicheroConOptimizacionEspacial`  | atributo de Windows         | contesta *no* |
+  | `SisCadenaDirectorioSistema`         | **no se declara** ( sólo WIN ) | **no se declara** |
 
-  De ellas, `SisRutaOculta` es la que más duele: en POSIX un fichero oculto es
-  simplemente uno cuyo nombre empieza por punto, así que la rama que falta es una
-  línea. **Compilando en modo Cygwin POSIX —el modo por defecto— estas siete
-  funciones mienten.** `SisRutaDeSoloLectura`, en cambio, sí está resuelta en los
-  dos sistemas.
+  Las cuatro primeras **no son atributos de NTFS**: tienen respuesta POSIX de
+  toda la vida y por eso valen igual en Linux. Y en Cygwin van por la rama POSIX
+  **a propósito**, porque ahí es mejor: medido, `access ( W_OK )` ve tanto el
+  atributo de solo lectura de NTFS —que Cygwin refleja en el modo— como un
+  `chmod 0444` que no llega a tocar NTFS; el bit de NTFS por sí solo se pierde
+  el segundo caso.
+
+  Las otras seis sí son de NTFS. En Cygwin se leen con la API de Windows desde
+  `SistemaFicherosWin32`, la única unidad del módulo que incluye `windows.h`.
+  Sobre Linux **contestan que no, y eso es una limitación conocida, no un
+  descuido** (decidido así el 2026-09-19). No es falta de código: haría falta
+  preguntarle al montaje en tiempo de ejecución (`ntfs-3g` los expone como el
+  atributo extendido `system.ntfs_attrib`) y sólo valdría sobre montajes NTFS.
+  Se deja así a propósito porque **el modo Linux todavía no existe en el build**;
+  cuando exista se revisa entero, y con él la cuestión de fondo: que ese `false`
+  no distingue "no lo tiene" de "aquí no se puede saber".
+
+  `SisFicheroEsTemporal` es el caso aparte de los seis: en Linux no se queda
+  callada, contesta **otra pregunta parecida** —si el fichero cuelga del
+  directorio temporal—, que no es lo mismo que el atributo `TEMPORARY` de NTFS.
+  Está marcado en el código.
+
+  `SisCadenaDirectorioSistema` ha pasado a ser **sólo WIN** (2026-09-19), como
+  `SisRedEnviarMensaje` y `SisTituloProceso`: el "directorio del sistema" es
+  `C:\Windows\System32`, un concepto sin equivalente en POSIX, y su gemela del
+  stack C, `SisDirectorioSistema`, ya estaba declarada sólo bajo `WIN`. Fuera de
+  Windows no se declara, para que quien la llame se encuentre un error de
+  compilación en vez de una cadena vacía.
+
+  Un aviso sobre `SisRutaOculta`: en Cygwin conviven **dos** nociones de oculto
+  que **no se solapan** —el punto y el atributo de NTFS—, y se elige el punto,
+  que es la semántica del modo en que se compila. Medido: un fichero con punto
+  delante no queda marcado como oculto en NTFS.
 - **`INVALID_FILE_ATTRIBUTES` está redefinido a mano** en `CommonIoConfig.h`, y
   hace falta: en Cygwin de 64 bits `DWORD` es `unsigned long` de 64 bits, así que
   el `(DWORD)-1` de las cabeceras vale `0xFFFFFFFFFFFFFFFF` y no coincide con el

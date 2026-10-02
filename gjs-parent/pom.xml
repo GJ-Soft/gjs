@@ -46,7 +46,7 @@
 		* CYGWIN: To activate cygwin profile instead the windows profile 
 					export CYGWIN=1
 				  To deactivate cygwin profile 		
-					export CYGWIN
+					unset CYGWIN
 		.
 		To compile on pure Windows (without Cygwin) the gcc and g++ compiler executables need to be accessible
 		in the PATH. 
@@ -79,7 +79,8 @@
 			<id>gjs</id>
 			<name>Ginés Jiménez Sánchez</name>
 			<email>gjsoft@gmx.es</email>
-			<organization>GJ Soft</organization>
+			<organization>GJ Software</organization>
+			<organizationUrl>http://www.gjsoft.org/</organizationUrl>
 			<roles>
 				<role>Master</role>
 			</roles>
@@ -95,6 +96,7 @@
 		<repository.domain>GJ-Soft</repository.domain>
 		<repository.ciPath>actions</repository.ciPath>
 		<repository.name>gjs</repository.name>
+		<mvncentral.deployment>false</mvncentral.deployment>		
 
 		<!-- Encoding -->
  		<encoding>UTF-8</encoding>
@@ -147,9 +149,9 @@
 		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
 		<maven-invoker-plugin.version>3.10.1</maven-invoker-plugin.version>
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
-		<properties-maven-plugin.version>1.3.0</properties-maven-plugin.version>
 
 		<!-- Additional Maven plugins -->
+		<properties-maven-plugin.version>1.3.0</properties-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
 		<copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
@@ -158,6 +160,7 @@
         <maven-replacer-plugin.version>1.4.1</maven-replacer-plugin.version>
 		<maven-buildnumber-plugin.version>3.3.0</maven-buildnumber-plugin.version>
 		<license-maven-plugin.version>2.7.1</license-maven-plugin.version>
+		<central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
 		
 		<!-- Groovy -->
 		<groovy.version>5.1.1</groovy.version>
@@ -561,9 +564,6 @@
 				</os>
 			</activation>
             <properties>
-				<windows.sdk.runtime>ucrt</windows.sdk.runtime>
-				<windows.sdk.version>10</windows.sdk.version>		
-				<windows.sdk.architecture>x64</windows.sdk.architecture>		
                 <osFamily>windows</osFamily>
                 <osName>Windows</osName>
             </properties>
@@ -579,16 +579,12 @@
 				</os>
 			</activation>
             <properties>
-				<environment>windows-${windows.sdk.runtime}</environment>
+ 				<environment>windows</environment>
 				<environment.style>windows</environment.style>
                 <console>cmd</console>
                 <consoleArgs>/c</consoleArgs>
-				<platformOptions>-DWIN</platformOptions>
-				<platformLinkOption>-Wl,-mwindows</platformLinkOption>
 				<exeFinalExtension>.exe</exeFinalExtension>
 				<rootDir></rootDir>
-				<cygwin>false</cygwin>
-				<noLdLibraryPath>true</noLdLibraryPath>
             </properties>
 		</profile>
 		<profile>
@@ -608,15 +604,8 @@
 				-->
 				<console>bash</console>
                 <consoleArgs>-c</consoleArgs>
-				<platformOptions>-DPOSIX</platformOptions>
 				<exeFinalExtension></exeFinalExtension>
 				<rootDir></rootDir>
-				<cygwin>false</cygwin>
-				<!-- Esta propiedad se genera para windows -->
-				<!--
-				<projectDir>${project.basedir}</projectDir>
-				-->
-				<noLdLibraryPath>false</noLdLibraryPath>
             </properties>
 		</profile>
 		<!-- Perfil adicional: siempre estara activado unix -->
@@ -643,7 +632,6 @@
 				</os>
 			</activation>
             <properties>
-				<!-- Posix / Windows -->
 				<!-- cygwinDir NO se define aqui. Viene del perfil activo del
 				     settings.xml, y tiene que estar en estilo Windows (C:\...):
 				     Maven y Ant lanzan los procesos con CreateProcess, que no
@@ -651,20 +639,15 @@
 				     de las herramientas auxiliares (cppcheck, gcovr, cygpath).
 				     Ademas los perfiles de settings.xml se inyectan despues que
 				     los del POM, con lo que un valor puesto aqui nunca ganaria. -->
-				<cygwin.style>posix</cygwin.style>
-				<environment>cygwin-${cygwin.style}</environment>
-				<environment.style>${cygwin.style}</environment.style>
+				<environment>cygwin</environment>
+				<environment.style>posix</environment.style>
 				<!--
                 <console>${env.SHELL}</console>
 				-->
 				<console>bash</console>
                 <consoleArgs>-c</consoleArgs>
-				<platformOptions>-DCYGWIN</platformOptions>
-				<platformLinkOption>-Wl,-mcygwin</platformLinkOption>
 				<exeFinalExtension>.exe</exeFinalExtension>
 				<rootDir>${cygwinDir}</rootDir>
- 				<cygwin>true</cygwin>
-				<noLdLibraryPath>false</noLdLibraryPath>
            </properties>
 		</profile>
 		<profile>
@@ -805,11 +788,98 @@
 			</build>
 		</profile>
 		<profile>
-			<id>solo-el-padre</id>
-			<activation>
-				<file>
-					<exists>${basedir}/.este-es-el-padre</exists></file></activation>
-			<properties><repository.name>gjs-parent</repository.name></properties>
+			<id>deploy-central</id>
+			<properties>
+				<mvncentral.deployment>true</mvncentral.deployment>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<version>${central-publishing-maven-plugin.version}</version>
+						<extensions>true</extensions>
+						<configuration>
+							<!-- Lo que no es Java se queda fuera del bundle: Central pide un
+							     -sources.jar y un -javadoc.jar por artefacto que no sea pom, y
+							     los nar arrastran ademas la matriz de AOL. El destino natural del
+							     whl es PyPI y el del tgz un registro npm, no Central.
+							     OJO, tres cosas de este parametro:
+							     - Compara con un List.contains sobre el artifactId pelado: ni
+							       groupId ni comodines, el nombre exacto.
+							     - Basta una linea por modulo: los .nar con clasificador y el .pom
+							       comparten artifactId con el artefacto principal y caen con el.
+							     - Los pom padres de estos arboles (gjs-c-parent, gjs-python-parent)
+							       NO van aqui: son la cadena de herencia de lo que si se publica, y
+							       Central exige poder resolverla.
+							     Va en gjs-parent, no en cada subarbol, porque el mojo publish es
+							     once-per-session: corre una sola vez y lee la configuracion del
+							     modulo que le toque, asi que tiene que heredarla cualquiera.
+							     Al anadir un modulo C/C++ o Python nuevo hay que anadirlo aqui. -->
+							<excludeArtifacts>
+								<!-- C (nar): 13 -->
+								<excludeArtifact>gjs-c-common</excludeArtifact>
+								<excludeArtifact>gjs-c-common-base</excludeArtifact>
+								<excludeArtifact>gjs-c-common-base-types</excludeArtifact>
+								<excludeArtifact>gjs-c-common-calculation</excludeArtifact>
+								<excludeArtifact>gjs-c-common-database</excludeArtifact>
+								<excludeArtifact>gjs-c-common-io</excludeArtifact>
+								<excludeArtifact>gjs-c-common-log</excludeArtifact>
+								<excludeArtifact>gjs-c-common-support</excludeArtifact>
+								<excludeArtifact>gjs-c-common-system</excludeArtifact>
+								<excludeArtifact>gjs-c-common-test</excludeArtifact>
+								<excludeArtifact>gjs-c-common-text</excludeArtifact>
+								<excludeArtifact>gjs-c-common-time</excludeArtifact>
+								<excludeArtifact>gjs-c-common-types</excludeArtifact>
+								<!-- C++ (nar): 12 -->
+								<excludeArtifact>gjs-cpp-common</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-base</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-calculation</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-database</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-io</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-log</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-support</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-system</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-test</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-test-mocks</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-time</excludeArtifact>
+								<excludeArtifact>gjs-cpp-common-types</excludeArtifact>
+								<!-- Python (whl): 1 -->
+								<excludeArtifact>gjs-python-common</excludeArtifact>
+							</excludeArtifacts>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<!-- verify ya es la fase por defecto del goal; se deja explicita
+								     porque lo que importa es que firme ANTES de deploy, que es
+								     donde el plugin del Portal arma el bundle. Firma todo lo
+								     adjunto: el .pom, el principal, sources y javadoc. -->
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+						<!-- Sin configuracion a proposito. Tres avisos para cuando haya clave:
+						     1) NO anadir gpgArguments con la opcion pinentry-mode loopback: el
+						        propio GpgSigner ya pasa batch, no-tty, pinentry-mode loopback y
+						        passphrase-fd cuando tiene la contrasena. (Sin guiones aqui: el
+						        doble guion no es legal dentro de un comentario XML.)
+						     2) La contrasena nunca aqui. useAgent viene en true, asi que lo
+						        natural es dejarsela al gpg-agent; si no, gpg.passphraseEnvName
+						        (variable de entorno) o gpg.passphraseServerId (un server del
+						        settings.xml, con la contrasena cifrada).
+						     3) gpg.bestPractices=true rechaza las formas inseguras de dar la
+						        contrasena, pero tambien descarta passphraseServerId. Decidir
+						        primero como se pasa y luego si se activa. -->
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>

@@ -30,42 +30,48 @@
 #define _PRECOMPILACION_H
 
 
-#if ( defined ( __CYGWIN__ ) )
-#	if ( defined ( CYGWIN_WIN ) || defined ( CYGWIN_POSIX ) )
-#		define CYGWIN
-#	endif
+/* CYGWIN solo puede acompanar a POSIX: la compilacion para Cygwin es
+   siempre POSIX. Si llegan las dos a la vez, el -D de plataforma que
+   manda el pom esta mal montado. */
+#if ( defined ( CYGWIN ) && defined ( WIN ) )
+#	error CYGWIN y WIN son excluyentes: Cygwin se compila siempre como POSIX
 #endif
+#if ( defined ( CYGWIN ) && !defined ( POSIX ) )
+#	define POSIX
+#endif
+
 
 
 /* Por defecto se compila como WIN: */ 
-#if ( !defined ( CYGWIN ) && !defined ( WIN ) && !defined ( POSIX ) )
+#if ( !defined ( WIN ) && !defined ( POSIX ) )
 #	define WIN
 #endif
 
-/* Aquí se decide si para CYGWIN se usa estilo POSIX o Windos: */
-#if ( defined ( CYGWIN ) )
-#	if ( defined ( CYGWIN_WIN ) )
-#		define WIN
+
+/* El tamano de puntero sale de __SIZEOF_POINTER__, que define el propio
+   compilador y no necesita cabecera ninguna. Antes se deducia de INTPTR_MAX,
+   que viene de <stdint.h>, y eso ataba esta cabecera a que <stdint.h> se pudiera
+   resolver. Al analizador estatico no se le dan las cabeceras del sistema ( las
+   del compilador le rompen el preprocesado ), asi que alli INTPTR_MAX quedaba
+   sin definir, saltaba el #error de abajo y el analisis del fichero se ABORTABA:
+   informes con cero avisos que parecian limpios y no lo estaban.
+
+   Comprobado que los cuatro compiladores del build la definen: gcc y g++ de
+   Cygwin y de MinGW-w64. */
+#if ( defined ( __SIZEOF_POINTER__ ) )
+#	if ( __SIZEOF_POINTER__ == 8 )
+#		define A64
+#	elif ( __SIZEOF_POINTER__ == 4 )
+#		define A32
+#	elif ( __SIZEOF_POINTER__ == 2 )
+#		define A16
+#	elif ( __SIZEOF_POINTER__ == 1 )
+#		define A8
 #	else
-#		define POSIX
+#		error Tamaño de puntero no soportado
 #	endif
-#endif
-
-
-
-#include <stdint.h>
-
-
-#if ( INTPTR_MAX == INT64_MAX )
-#	define A64
-#elif ( INTPTR_MAX == INT32_MAX )
-#	define A32
-#elif ( INTPTR_MAX == INT16_MAX )
-#	define A16
-#elif ( INTPTR_MAX == INT8_MAX )
-#	define A8
 #else
-#	error Tamaño de puntero no soportado
+#	error El compilador no define __SIZEOF_POINTER__
 #endif
 
 

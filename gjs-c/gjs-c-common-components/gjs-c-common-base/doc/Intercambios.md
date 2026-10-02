@@ -58,7 +58,7 @@ La cabecera no incluye nada; el `.c` incluye `Intercambios.h` y `Memoria.h`.
 - La cabecera `Intercambios.h` no incluye `BaseConfig.h` ni ninguna otra. No hace
   falta porque sólo declara tipos nativos de C, pero rompe el patrón del resto de
   módulos, en los que la cabecera es autosuficiente.
-- No hay variantes para `llong`/`ullong`, `byte`, `word` ni `dword`, aunque los
-  tipos existen en la librería.
+- No hay variantes para `long long`/`unsigned long long`, `byte`, `word` ni
+  `dword`, aunque la librería trabaja con esos tipos.
 - Silenciar el caso de puntero nulo es coherente con la ausencia de valor de
   retorno, pero significa que un error de programación pasa inadvertido.

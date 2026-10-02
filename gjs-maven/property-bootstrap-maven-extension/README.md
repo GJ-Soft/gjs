@@ -20,9 +20,9 @@ Limite: la propiedad debe derivarse de condiciones disponibles al arranque
 perfiles.
 
 Asi, los perfiles aguas abajo que dependian de propiedades puestas por otros
-perfiles (por ejemplo `cygwin-posix` / `cygwin-win` por `cygwin.style`, y
-`runtime-win` / `runtime-posix` por `environment.style`) se activan solos, sin
-necesidad de duplicar sus condiciones.
+perfiles (por ejemplo `runtime-win` / `runtime-posix`, que van por
+`environment.style`) se activan solos, sin necesidad de duplicar sus
+condiciones.
 
 
 ## Configuracion

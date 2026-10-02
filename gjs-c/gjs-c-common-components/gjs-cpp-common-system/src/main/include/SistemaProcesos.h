@@ -27,6 +27,7 @@
 
 #include <string>
 #include <list>
+#include <thread>
 
 
 
@@ -40,18 +41,11 @@ namespace org
             namespace common
             {
 
-#if ( defined ( WIN ) )
-typedef int (*PTR_FUNCION_HILO)( void * );
-#else
+/* Unico en las dos plataformas. El valor devuelto no lo usa nadie: la
+   envoltura de SisCrearHilo lo descarta. Se conserva la forma de POSIX
+   ( void * ) para no obligar a tocar el cuerpo de las funciones que ya
+   existen, que es la que se compila hoy. */
 typedef void * (*PTR_FUNCION_HILO)( void * );
-#endif
-
-#if ( defined ( WIN ) )
-typedef DWORD			thread_id;
-#else
-typedef unsigned long	thread_id;
-#endif
-
 
 
 // PENDIENTE: PASAR Long a unsigned long para PID y TID (en UNIX es necesario)
@@ -70,9 +64,11 @@ std::string SisNombreProceso ();
 std::string SisRutaEjecutable ();
 std::string SisDirectorioEjecutable ();
 std::string SisFicheroEjecutable ();
-std::string SisTituloProceso ();
 
+/* Solo en Windows: el titulo es un dato DEL PROCESO, que pasa quien lo
+   arranca y se lee con GetStartupInfo. En POSIX no existe tal cosa. */
 #if ( defined ( WIN ) )
+std::string SisTituloProceso ();
 HINSTANCE SisWinIdProceso ();
 #endif
 
@@ -81,7 +77,7 @@ HINSTANCE SisWinIdProceso ();
 
 
 /* Hilo actual: */
-thread_id SisTID ();
+std::thread::id SisTID ();
 std::string SisTIDCadena ();
 
 /* Subprocesos: */
@@ -93,15 +89,15 @@ bool SisFinalizarSubproceso ( long lPID );
 
 /* Hilos: */
 int SisNumHilos ();
-thread_id SisCrearHilo ( PTR_FUNCION_HILO p_funCodigo, void * p_vParam = NULL, int iSuspender = 0 );
-bool SisExisteHilo ( thread_id thTID );
-bool SisSuspenderHilo ( thread_id thTID );
-bool SisReanudarHilo ( thread_id thTID );
-bool SisFinalizarHilo ( thread_id thTID );
+std::thread::id SisCrearHilo ( PTR_FUNCION_HILO p_funCodigo, void * p_vParam = NULL );
+bool SisExisteHilo ( std::thread::id thTID );
+bool SisSuspenderHilo ( std::thread::id thTID );
+bool SisReanudarHilo ( std::thread::id thTID );
+bool SisFinalizarHilo ( std::thread::id thTID );
 bool SisCambiarASiguienteHilo ();
 
-int SisHiloPrioridad ( thread_id thTID );
-//unsigned long SisHiloTiempoCPU ( thread_id thTID ); 
+int SisHiloPrioridad ( std::thread::id thTID );
+//unsigned long SisHiloTiempoCPU ( std::thread::id thTID ); 
 
 
 /* Sistema global de procesos: */
@@ -111,19 +107,15 @@ std::list<long> * SisListaProcesos ();
 
 bool SisExisteProceso ( long lPID );
 bool SisProcesoEnEjecucion ( long lPID );
-bool SisProgramaEnEjecucion ( const std::string p_cEjecutable );
-long SisProcesoPID ( const std::string p_cEjecutable );
+bool SisProgramaEnEjecucion ( const std::string & p_cEjecutable );
+long SisProcesoPID ( const std::string & p_cEjecutable );
 unsigned long SisProcesoTiempoCPU ( long lPID ); 
 unsigned long SisProcesoTiempoCPUModoNucleo ( long lPID ); 
 unsigned long SisProcesoTiempoCPUModoUsuario ( long lPID ); 
-//#if ( defined ( LLONG ) )
-//llong SisProcesoHoraCreacion ( long lPID ); 
-//#else
-//unsigned long SisProcesoHoraCreacion ( long lPID ); 
-//#endif
+//long long SisProcesoHoraCreacion ( long lPID ); 
 bool SisFinalizarProceso ( long lPID );
 
-thread_id SisLanzarHiloVigilanciaPadre ();
+std::thread::id SisLanzarHiloVigilanciaPadre ();
 
 
 

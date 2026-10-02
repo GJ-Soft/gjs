@@ -862,8 +862,7 @@ SCadena * STxtExtraer ( STexto * p_txtObj, int iLinIni, int iColIni, int iLinFin
 		for ( int iLinea = iLinIni; iLinea <= iLinFin;  iLinea = iLinea + 1 )
 		{
 			p_cadLinea = STxtLinea ( p_txtObj, iLinea );
-			SCadImprimirExt(p_cadLinea, "** LIN", '=', 1);
-			if ( iLinea > iLinIni ) 
+			if ( iLinea > iLinIni )
 			{
 				iPosIni = 0;
 			}
@@ -879,10 +878,8 @@ SCadena * STxtExtraer ( STexto * p_txtObj, int iLinIni, int iColIni, int iLinFin
 			{
 				iPosFin = iColFin;
 			}
-			p_cadSubcad = SCadExtraer ( p_cadLinea, iPosIni, iPosFin - iPosIni );	
-			SCadImprimirExt( p_cadSubcad, "** SUB", '=', 1);
+			p_cadSubcad = SCadExtraer ( p_cadLinea, iPosIni, iPosFin - iPosIni );
 			SCadConcatenar ( p_cadRes, p_cadSubcad );
-			SCadImprimirExt ( p_cadRes, "** RES", '=', 1);
 			SCadDestruir ( &p_cadSubcad );
 		}
 	}

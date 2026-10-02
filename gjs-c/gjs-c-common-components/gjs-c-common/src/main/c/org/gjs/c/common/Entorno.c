@@ -78,7 +78,7 @@ int EntInicializarExt ( int iConsola, const char * p_cNombre, int iVersion, int 
 #		  if ( defined ( WIN )  )
 			//if ( _WinSckInicializar () == 0 )
 			//{
-			//	// PENDIENTE: Tratar el error:
+			//	Tratar el error:
 			//}
 #		  else
 			//signal ( SIGPIPE, sigpipe_handle );

@@ -43,6 +43,13 @@
 
 #if ( defined ( MODO_DEPURACION ) )
 
+/* Fuera de Windows el tamano de un bloque se pregunta con
+   malloc_usable_size, que no es estandar: Cygwin y glibc la declaran en
+   <malloc.h>. Sin ella la declaracion era implicita, que en C23 es error. */
+#	if ( !defined ( WIN ) )
+#		include <malloc.h>
+#	endif
+
 extern void _MemBloqueReservado ( void * p_vDir, unsigned long ulTam );
 extern void _MemBloqueLiberado ( void * p_vDir, unsigned long ulTam );
 
@@ -51,7 +58,7 @@ extern void _MemBloqueLiberado ( void * p_vDir, unsigned long ulTam );
 
 
 
-// Pendientew: Para el caso de WINDOWS una rutina que utilice HeapWalk para liberar todos los bloques de memoria pendientes
+// PENDIENTE: Para el caso de WINDOWS una rutina que utilice HeapWalk para liberar todos los bloques de memoria pendientes
 // de ser liberados:
 
 //PENDIENTE: Info memoria: The HeapWalk function enumerates the memory blocks in a specified heap.
@@ -466,6 +473,22 @@ int MemEsValida ( void * p_vDireccion )
 	return ( iRes );
 }
 
+int MemEsInvalida ( void * p_vDireccion )
+{
+	int	iRes;
+
+	/* El control de rango que antes se hacia aqui esta ahora dentro de
+	   ES_VALIDO, en Memoria.h, para que lo aprovechen todos los llamantes. */
+	if ( ES_VALIDO ( p_vDireccion ) )
+	{
+		iRes = 0;
+	}
+	else
+	{
+		iRes = 1;
+	}
+	return ( iRes );
+}
 
 int MemEsIgual ( void * p_vBloque1, void * p_vBloque2, int iNumBytes )
 {

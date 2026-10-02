@@ -56,20 +56,18 @@ bool SisEjecutarComando ( const string & sComando, const string & sParametros, i
 #	  else
 		hwndProceso = GetForegroundWindow ();
 #	  endif
-		// PENDIENTE: Mejorar separando el directorio del programa y de los parámetros:
-		//hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, NULL, NULL, SW_SHOW );
-		//hinsExec = ShellExecute ( hwndProceso, "open", p_cComando, p_cParametros, NULL, SW_SHOW );
 		hinsExec = ShellExecute ( hwndProceso, "open", sComando.c_str(), sParametros.c_str(), NULL, SW_HIDE);
 		if ( (INT_PTR)hinsExec > 32 )
 		{
 			SisEsperar ( 10 );
 			bRes = true;
 		}
-#	  else //( defined ( DOS ) || defined ( UNIX ) || defined ( LINUX )
+#	  else 
 		string sOrden = sComando;
 		if ( ! sParametros.empty () )
 		{
-			string sOrden = format ( "{} {}", sOrden, sParametros );
+			/* Sin el string de mas: declaraba otra variable y los parametros se perdian. */
+			sOrden = format ( "{} {}", sOrden, sParametros );
 		}
 		if ( iSegundoPlano == 1 )
 		{

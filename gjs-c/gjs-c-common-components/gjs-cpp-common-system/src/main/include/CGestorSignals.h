@@ -18,13 +18,12 @@
 #define _ORG_GJS_C_CC_CPP_CGESTORSIGNALS_H
 
 
-#include <BaseConfig.h>
-#include <Funciones.h>
-
 
 #include <SistemaSignals.h>
 
 
+
+#if ( defined ( SIGNALS_PERMITIDOS ) )
 
 
 namespace org
@@ -38,7 +37,6 @@ namespace org
 
 
 
-#if (defined ( POSIX ) )
 
 
 
@@ -106,8 +104,6 @@ private:
 };
 
 
-#endif
-
 
  			}
 		}
@@ -115,8 +111,7 @@ private:
 }
 
 
-
-
+#endif
 
 #endif
 

@@ -17,6 +17,9 @@
 #define _FUNCIONES_H
 
 
+/* HANDLE, HWND y DWORD de los punteros a funcion de la rama WIN salen de
+   windows.h, que entra por BaseConfig.h. El espejo de C++ ya lo incluia. */
+#include <BaseConfig.h>
 #include <UniChar.h>
 
 
@@ -57,10 +60,8 @@ typedef void (* PPRCT)(const char *);
 typedef void (* PPRCPV)(void *);
 typedef void (* PPRCPPV)(void **);
 
-#if ( defined ( LLONG ) )	
 typedef void (* PPRCLL)(long long);
 typedef void (* PPRCULL)(unsigned long long);
-#endif
 
 typedef int (* PFUNINTV)(void);
 typedef int (* PFUNINTI)(int);
@@ -78,10 +79,8 @@ typedef int (* PFUNINTT)(const char *);
 typedef int (* PFUNINTPV)(void *);
 typedef int (* PFUNINTPPV)(void **);
 
-#if ( defined ( LLONG ) )	
 typedef int (* PFUNINTLL)(long long);
 typedef int (* PFUNINTULL)(unsigned long long);
-#endif
 
 typedef int (* PFUNINTII)(int,int);
 typedef int (* PFUNINTIII)(int,int,int);
@@ -109,10 +108,8 @@ typedef long (* PFUNLONGT)(const char *);
 typedef long (* PFUNLONGPV)(void *);
 typedef long (* PFUNLONGPPV)(void **);
 
-#if ( defined ( LLONG ) )	
 typedef long (* PFUNLONGLL)(long long);
 typedef long (* PFUNLONGULL)(unsigned long long);
-#endif
 
 
 typedef unsigned int (* PFUNUINTV)(void);
@@ -131,10 +128,8 @@ typedef unsigned int (* PFUNUINTT)(const char *);
 typedef unsigned int (* PFUNUINTPV)(void *);
 typedef unsigned int (* PFUNUINTPPV)(void **);
 
-#if ( defined ( LLONG ) )	
 typedef unsigned int (* PFUNUINTLL)(long long);
 typedef unsigned int (* PFUNUINTULL)(unsigned long long);
-#endif
 
 
 typedef unsigned long (* PFUNULONGV)(void);
@@ -153,10 +148,8 @@ typedef unsigned long (* PFUNULONGT)(const char *);
 typedef unsigned long (* PFUNULONGPV)(void *);
 typedef unsigned long (* PFUNULONGPPV)(void **);
 
-#if ( defined ( LLONG ) )	
 typedef unsigned long (* PFUNULONGLL)(long long);
 typedef unsigned long (* PFUNULONGULL)(unsigned long long);
-#endif
 
 
 typedef char (* PFUNCHARV)(void);

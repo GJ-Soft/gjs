@@ -8,6 +8,8 @@ ${symbol_pound}define ${tagLib}
 // Dependencias comunes
 ${symbol_pound}include <CppEntorno.h>
 
+${symbol_pound}include <string>
+${symbol_pound}include <vector>
 
 
 #endif

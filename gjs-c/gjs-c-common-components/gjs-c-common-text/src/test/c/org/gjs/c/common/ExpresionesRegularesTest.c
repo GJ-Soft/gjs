@@ -504,6 +504,200 @@ static int TestExpRegSeCumple09 ()
 	return ( iRes );
 }
 
+/* La cadena vacia encaja con lo que admite vacio: *, ( x ) y ''. Hasta
+   el 2026-10-01 no encajaba con nada, ni siquiera con "*". */
+static int TestExpRegSeCumple10 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test ExpRegSeCumple 10 (cadena vacia):\n" );
+	if ( ExpRegSeCumple ( "*", "" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 1: Se esperaba CIERTO para patron [*] en []\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "**", "" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 2: Se esperaba CIERTO para patron [**] en []\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(a)", "" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 3: Se esperaba CIERTO para patron [(a)] en []\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "''", "" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 4: Se esperaba CIERTO para patron [''] en []\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "*(a)", "" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 5: Se esperaba CIERTO para patron [*(a)] en []\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "?", "" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 6: Se esperaba FALSO para patron [?] en []\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "a*", "" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 7: Se esperaba FALSO para patron [a*] en []\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "?*", "" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 8: Se esperaba FALSO para patron [?*] en []\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "a", "" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 9: Se esperaba FALSO para patron [a] en []\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
+/* ( x ) es cero o mas repeticiones de x. Antes el bucle no avanzaba por la
+   cadena y tomaba el 0/1 de ExpRegSeCumpleAlInicio por caracteres
+   consumidos: (a) aceptaba "ab", (ab) aceptaba "abba" y (a)b rechazaba
+   "aab". (a)a con "aa" necesita la vuelta atras: dejar una a al resto. */
+static int TestExpRegSeCumple11 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test ExpRegSeCumple 11 (subpatrones: cero o mas repeticiones):\n" );
+	if ( ExpRegSeCumple ( "(a)", "a" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 1: Se esperaba CIERTO para patron [(a)] en [a]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(a)", "aaa" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 2: Se esperaba CIERTO para patron [(a)] en [aaa]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(a)", "ab" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 3: Se esperaba FALSO para patron [(a)] en [ab]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(a)", "b" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 4: Se esperaba FALSO para patron [(a)] en [b]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(ab)", "abab" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 5: Se esperaba CIERTO para patron [(ab)] en [abab]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(ab)", "abba" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 6: Se esperaba FALSO para patron [(ab)] en [abba]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(ab)", "aba" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 7: Se esperaba FALSO para patron [(ab)] en [aba]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(a)b", "b" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 8: Se esperaba CIERTO para patron [(a)b] en [b]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(a)b", "aab" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 9: Se esperaba CIERTO para patron [(a)b] en [aab]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(a)a", "aa" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 10: Se esperaba CIERTO para patron [(a)a] en [aa]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "x(a)", "xaa" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 11: Se esperaba CIERTO para patron [x(a)] en [xaa]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "x(a)", "xab" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 12: Se esperaba FALSO para patron [x(a)] en [xab]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "x(ab)y", "xababy" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 13: Se esperaba CIERTO para patron [x(ab)y] en [xababy]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "x(ab)y", "xaby" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 14: Se esperaba CIERTO para patron [x(ab)y] en [xaby]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(a)(b)", "aabb" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 15: Se esperaba CIERTO para patron [(a)(b)] en [aabb]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(a)(b)", "aba" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 16: Se esperaba FALSO para patron [(a)(b)] en [aba]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
+/* Tras un *, el resto se probaba solo contra sufijos no vacios: si el resto
+   era ( x ), que admite vacio, ?*(/?*) no encajaba con "tmp". */
+static int TestExpRegSeCumple12 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test ExpRegSeCumple 12 (* seguido de algo que admite vacio):\n" );
+	if ( ExpRegSeCumple ( "?*(/?*)", "tmp" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 1: Se esperaba CIERTO para patron [?*(/?*)] en [tmp]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "?*(/?*)", "tmp/a" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 2: Se esperaba CIERTO para patron [?*(/?*)] en [tmp/a]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "a*(b)", "ax" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 3: Se esperaba CIERTO para patron [a*(b)] en [ax]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "a*(b)", "axbb" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 4: Se esperaba CIERTO para patron [a*(b)] en [axbb]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "*(a)", "xyz" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 5: Se esperaba CIERTO para patron [*(a)] en [xyz]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(/)?*(/?*)", "/" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 6: Se esperaba CIERTO para patron [(/)?*(/?*)] en [/]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(/)?*(/?*)", "/tmp/datos" ) != BOOL_VAL_CIERTO )
+	{
+		printf( "Error caso 7: Se esperaba CIERTO para patron [(/)?*(/?*)] en [/tmp/datos]\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ExpRegSeCumple ( "(/)?*(/?*)", "" ) != BOOL_VAL_FALSO )
+	{
+		printf( "Error caso 8: Se esperaba FALSO para patron [(/)?*(/?*)] en []\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
 int TestExpresionesRegulares ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -617,6 +811,33 @@ int TestExpresionesRegulares ()
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}
 	if ( TestExpRegSeCumple09 () != BOOL_VAL_CIERTO )
+	{
+		printf ( "%sResultado: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
+	}
+	if ( TestExpRegSeCumple10 () != BOOL_VAL_CIERTO )
+	{
+		printf ( "%sResultado: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
+	}
+	if ( TestExpRegSeCumple11 () != BOOL_VAL_CIERTO )
+	{
+		printf ( "%sResultado: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
+	}
+	if ( TestExpRegSeCumple12 () != BOOL_VAL_CIERTO )
 	{
 		printf ( "%sResultado: KO%s\n", ANSI_ROJO, ANSI_RESETEAR );
 		iRes = BOOL_VAL_FALSO;

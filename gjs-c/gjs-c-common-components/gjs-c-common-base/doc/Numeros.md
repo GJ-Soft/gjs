@@ -36,16 +36,16 @@ las cadenas antes de convertir.
 
 ### Conteo de dígitos
 
-| Función                                                     | Tipo                        |
-| ----------------------------------------------------------- | --------------------------- |
-| `int NumDigitosEntero ( int iVal )`                         | `int`                       |
-| `int NumDigitosEnteroLargo ( long lVal )`                   | `long`                      |
-| `int NumDigitosEnteroSinSigno ( unsigned int uiVal )`       | `unsigned int`              |
-| `int NumDigitosEnteroLargoSinSigno ( unsigned long ulVal )` | `unsigned long`             |
-| `int NumDigitosEnteroDobleLargo ( llong llVal )`            | `llong` (sólo con `LLONG`)  |
-| `int NumDigitosEnteroDobleLargoSinSigno ( ullong ullVal )`  | `ullong` (sólo con `LLONG`) |
-| `int NumDigitosReal ( float fVal )`                         | `float`                     |
-| `int NumDigitosRealDoble ( double dVal )`                   | `double`                    |
+| Función                                                                | Tipo                 |
+| ---------------------------------------------------------------------- | -------------------- |
+| `int NumDigitosEntero ( int iVal )`                                    | `int`                |
+| `int NumDigitosEnteroLargo ( long lVal )`                              | `long`               |
+| `int NumDigitosEnteroSinSigno ( unsigned int uiVal )`                  | `unsigned int`       |
+| `int NumDigitosEnteroLargoSinSigno ( unsigned long ulVal )`            | `unsigned long`      |
+| `int NumDigitosEnteroDobleLargo ( long long llVal )`                   | `long long`          |
+| `int NumDigitosEnteroDobleLargoSinSigno ( unsigned long long ullVal )` | `unsigned long long` |
+| `int NumDigitosReal ( float fVal )`                                    | `float`              |
+| `int NumDigitosRealDoble ( double dVal )`                              | `double`             |
 
 ### Partes entera y decimal
 
@@ -55,6 +55,44 @@ las cadenas antes de convertir.
 | `float NumParteDecimalReal ( float fVal )`        | Parte fraccionaria, conservando el signo. |
 | `double NumParteEnteraRealDoble ( double dVal )`  | Ídem en doble precisión.                  |
 | `double NumParteDecimalRealDoble ( double dVal )` | Ídem en doble precisión.                  |
+
+### Máximos por tipo
+
+| Función                                      | Devuelve | En 64 bits |
+| -------------------------------------------- | -------- | ---------- |
+| `int MaxDigitosEntero ()`                    | dígitos de `INT_MAX`   | 10 |
+| `int MaxDigitosEnteroSinSigno ()`            | dígitos de `UINT_MAX`  | 10 |
+| `int MaxDigitosEnteroLargo ()`               | dígitos de `LONG_MAX`  | 19 |
+| `int MaxDigitosEnteroLargoSinSigno ()`       | dígitos de `ULONG_MAX` | 20 |
+| `int MaxDigitosEnteroDobleLargo ()`          | dígitos de `LLONG_MAX` | 19 |
+| `int MaxDigitosEnteroDobleLargoSinSigno ()`  | dígitos de `ULLONG_MAX` | 20 |
+| `int MaxDigitosSignificativosReal ()`        | `FLT_DIG`          | 6   |
+| `int MaxDigitosSignificativosRealDoble ()`   | `DBL_DIG`          | 15  |
+| `int MaxDigitosReproducirReal ()`            | `FLT_DECIMAL_DIG`  | 9   |
+| `int MaxDigitosReproducirRealDoble ()`       | `DBL_DECIMAL_DIG`  | 17  |
+| `int MaxExponenteReal ()`                    | `FLT_MAX_10_EXP`   | 38  |
+| `int MaxExponenteRealDoble ()`               | `DBL_MAX_10_EXP`   | 308 |
+
+**En coma flotante «el máximo de dígitos» son dos números distintos**, según
+hacia dónde vaya la ida y vuelta, y confundirlos pierde datos:
+
+- **Significativos**: cuántos dígitos puede escribir el usuario y recuperarlos
+  intactos. Decimal → binario → decimal.
+- **Reproducir**: cuántos dígitos hay que **imprimir** para no perder nada del
+  valor que ya está en memoria. Binario → decimal → binario.
+
+Medido con 200.000 `float` al azar: imprimiendo con los **6** dígitos de
+Significativos, **192.782 no vuelven a ser el mismo float**; con los **9** de
+Reproducir, ninguno falla. Se ve en un caso: `0.1f` con 6 dígitos se escribe
+`0.1`, y al releerlo sale otro float; con 9 sale `0.100000001`, que sí vuelve
+igual. **Para serializar, Reproducir. Para validar o mostrar, Significativos.**
+
+`MaxExponente*` es el exponente **decimal** máximo, no el binario
+( `FLT_MAX_EXP` es 128, otra cosa ). Y ojo con lo que **no** acota: no limita la
+longitud de una cadena válida. Un `1.000…000` con miles de ceros, o un
+`0.000…000123`, son números perfectamente válidos y tan largos como se quiera.
+Sirve para saber si un valor **cabe**, no para dimensionar la cadena que lo
+escribe.
 
 ## Comportamiento
 

@@ -23,323 +23,240 @@
 using namespace std;
 
 
+namespace org
+{
+	namespace gjs
+	{
+		namespace cpp
+		{
+            namespace common
+            {
+
+
 static HKEY SisRegClavePrincipal ( int iClavePrinc );
 
 
 
-int SisRegExisteClave ( const char * p_cClave, int iClavePrinc )
+bool SisRegExisteClave ( const string & sClave, int iClavePrinc )
 {
-	int				iResWin;
-	int				iRes;
-	HKEY			hkeyPrinc;
-    HKEY			hkeyOpen;
+	bool	bRes;
+	int		iResWin;
+	HKEY	hkeyPrinc;
+	HKEY	hkeyOpen;
 
-	if ( ES_VALIDO ( p_cClave ) )
+	if ( ! sClave.empty () )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegOpenKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegOpenKey ( hkeyPrinc, sClave.c_str (), &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
-			iRes = 1;
+			bRes = true;
 			RegCloseKey ( hkeyOpen );
 		}
 		else
 		{
-			iRes = 0;
+			bRes = false;
 		}
 	}
 	else
 	{
-		iRes = 0;
+		bRes = false;
 	}
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegCrearClave ( const char * p_cClave, int iClavePrinc )
+bool SisRegCrearClave ( const string & sClave, int iClavePrinc )
 {
-	int				iResWin;
-	int				iRes;
-	HKEY			hkeyPrinc;
-    HKEY			hkeyOpen;
+	bool	bRes;
+	int		iResWin;
+	HKEY	hkeyPrinc;
+	HKEY	hkeyOpen;
 
-	if ( ES_VALIDO ( p_cClave ) )
+	if ( ! sClave.empty () )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegCreateKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegCreateKey ( hkeyPrinc, sClave.c_str (), &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
-			iRes = 1;
+			bRes = true;
 			RegCloseKey ( hkeyOpen );
 		}
 		else
 		{
-			iRes = 0;
+			bRes = false;
 		}
 	}
 	else
 	{
-		iRes = 0;
+		bRes = false;
 	}
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegEliminarClave ( const char * p_cClave, int iClavePrinc )
+bool SisRegEliminarClave ( const string & sClave, int iClavePrinc )
 {
-	int				iResWin;
-	int				iRes;
-	HKEY			hkeyPrinc;
+	bool	bRes;
+	int		iResWin;
+	HKEY	hkeyPrinc;
 
-	if ( ES_VALIDO ( p_cClave ) )
+	if ( ! sClave.empty () )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegDeleteKey ( hkeyPrinc, p_cClave );
-		if ( iResWin == ERROR_SUCCESS )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		iResWin = RegDeleteKey ( hkeyPrinc, sClave.c_str () );
+		bRes = ( iResWin == ERROR_SUCCESS );
 	}
 	else
 	{
-		iRes = 0;
+		bRes = false;
 	}
-	return ( iRes );
+	return ( bRes );
 }
 
-const char * SisRegObtValorCadena ( const char * p_cClave, const char * p_cValor, int iClavePrinc )
+/* Cadena vacia si no se encontro el valor. La version C reservaba un buffer con
+   MemReservar y lo duplicaba con CadDuplicar, dejando al llamante la carga de
+   liberarlo; aqui el buffer es el propio string, que se dimensiona antes de la
+   llamada y se recorta despues con lo que diga Windows. */
+string SisRegObtValorCadena ( const string & sClave, const string & sValor, int iClavePrinc )
 {
+	string			sRes ( "" );
 	int				iResWin;
- 	HKEY			hkeyPrinc;
+	HKEY			hkeyPrinc;
 	HKEY			hkeyOpen;
-	byte *			p_byBuffer;
 	unsigned long	ulTamBuffer;
-	const char *	p_cRes;
 	DWORD			dwTipo;
 
-	if ( ES_VALIDO ( p_cClave ) && ES_VALIDO ( p_cValor ) )
+	if ( ( ! sClave.empty () ) && ( ! sValor.empty () ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegOpenKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegOpenKey ( hkeyPrinc, sClave.c_str (), &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
+			string sBuffer ( SIS_MAX_TAM_VALOR_REG + 1, 0 );
+
 			dwTipo = REG_SZ;
-			ulTamBuffer = SIS_MAX_TAM_VALOR_REG + 1;
-			p_byBuffer = (byte *) MemReservar ( SIS_MAX_TAM_VALOR_REG + 1 );
-			if ( ES_VALIDO ( p_byBuffer ) )
+			ulTamBuffer = (unsigned long) sBuffer.size ();
+			iResWin = RegQueryValueEx ( hkeyOpen, sValor.c_str (), NULL, &dwTipo,
+										(LPBYTE) sBuffer.data (), &ulTamBuffer );
+			if ( iResWin == ERROR_SUCCESS )
 			{
-				iResWin = RegQueryValueEx ( hkeyOpen, (LPCTSTR) p_cValor, NULL, &dwTipo, p_byBuffer, &ulTamBuffer );
-				if ( iResWin == ERROR_SUCCESS )
-				{
-					p_cRes = CadDuplicar ( (char *) p_byBuffer );
-				}
-				else
-				{
-					p_cRes = NULL;
-				}
-				MemLiberar ( (void **) &p_byBuffer );
-			}
-			else
-			{
-				p_cRes = NULL;
+				/* ulTamBuffer vuelve con los bytes escritos, terminador incluido
+				   si el valor lo llevaba. Se recorta por el primer cero, que es lo
+				   que hacia el CadDuplicar de antes. */
+				sBuffer.resize ( ulTamBuffer );
+				sRes = sBuffer.c_str ();
 			}
 			RegCloseKey ( hkeyOpen );
 		}
-		else
-		{
-			p_cRes = NULL;
-		}
 	}
-	else
-	{
-		p_cRes = NULL;
-	}
-	return ( p_cRes );
+	return ( sRes );
 }
 
-unsigned long SisRegObtValorNumerico ( const char * p_cClave, const char * p_cValor, int iClavePrinc )
+unsigned long SisRegObtValorNumerico ( const string & sClave, const string & sValor, int iClavePrinc )
 {
+	unsigned long	ulRes = 0;
 	int				iResWin;
-    HKEY			hkeyOpen;
 	HKEY			hkeyPrinc;
+	HKEY			hkeyOpen;
 	DWORD			dwBuffer;
 	unsigned long	ulTamBuffer;
-	unsigned long	ulRes;
 	DWORD			dwTipo;
 
-	if ( ES_VALIDO ( p_cClave ) && ES_VALIDO ( p_cValor ) )
+	if ( ( ! sClave.empty () ) && ( ! sValor.empty () ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegOpenKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegOpenKey ( hkeyPrinc, sClave.c_str (), &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
 			dwTipo = REG_DWORD;
 			dwBuffer = 0;
 			ulTamBuffer = sizeof ( DWORD );
-			iResWin = RegQueryValueEx ( hkeyOpen, (LPCTSTR) p_cValor, NULL, &dwTipo, (byte *) &dwBuffer, &ulTamBuffer );
+			iResWin = RegQueryValueEx ( hkeyOpen, sValor.c_str (), NULL, &dwTipo,
+										(LPBYTE) &dwBuffer, &ulTamBuffer );
 			if ( iResWin == ERROR_SUCCESS )
 			{
 				ulRes = (unsigned long) dwBuffer;
 			}
-			else
-			{
-				ulRes = 0;
-			}
+			/* El RegCloseKey estaba FUERA de este if, asi que cuando RegOpenKey
+			   fallaba se cerraba un HKEY sin inicializar. */
+			RegCloseKey ( hkeyOpen );
 		}
-		else
-		{
-			ulRes = 0;
-		}
-		RegCloseKey ( hkeyOpen );
-	}
-	else
-	{
-		ulRes = 0;
 	}
 	return ( ulRes );
 }
 
-int SisRegEstValorCadena ( const char * p_cClave, const char * p_cValor, const char * p_cDato, int iClavePrinc )
+/* La version C admitia un puntero nulo en el dato para borrar el valor. Con
+   std::string eso ya no se puede expresar, y tampoco hace falta: para borrar
+   esta SisRegEliminarValor. Una cadena vacia es ahora un valor vacio, que es un
+   REG_SZ perfectamente legitimo. */
+bool SisRegEstValorCadena ( const string & sClave, const string & sValor, const string & sDato, int iClavePrinc )
 {
-	int				iResWin;
-    HKEY			hkeyOpen;
-	HKEY			hkeyPrinc;
-	byte *			p_byBuffer;
-	unsigned long	ulTamBuffer;
-	int				iRes;
-	DWORD			dwTipo;
+	bool	bRes = false;
+	int		iResWin;
+	HKEY	hkeyPrinc;
+	HKEY	hkeyOpen;
 
-	if ( ES_VALIDO ( p_cClave ) && ES_VALIDO ( p_cValor ) )
+	if ( ( ! sClave.empty () ) && ( ! sValor.empty () ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegOpenKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegOpenKey ( hkeyPrinc, sClave.c_str (), &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
-			if ( ES_VALIDO ( p_cDato ) )
-			{
-				dwTipo = REG_SZ;
-				ulTamBuffer = CadLongitud ( p_cDato ) + 1;
-				p_byBuffer = (byte *) MemReservar ( ulTamBuffer );
-				if ( ES_VALIDO ( p_byBuffer ) )
-				{
-					if ( ulTamBuffer > 1 )
-					{
-						MemCopiar ( p_byBuffer, (void *) p_cDato, ulTamBuffer - 1 );
-					}
-					iResWin = RegSetValueEx ( hkeyOpen, (LPCTSTR) p_cValor, NULL, dwTipo, p_byBuffer, ulTamBuffer );
-					if ( iResWin == ERROR_SUCCESS )
-					{
-						iRes = 1;
-					}
-					else
-					{
-						iRes = 0;
-					}
-					MemLiberar ( (void **) &p_byBuffer );
-				}
-				else
-				{
-					iRes = 0;
-				}
-			}
-			else
-			{
-				iResWin = RegDeleteValue ( hkeyOpen, (LPCTSTR) p_cValor );
-				if ( iResWin == ERROR_SUCCESS )
-				{
-					iRes = 1;
-				}
-				else
-				{
-					iRes = 0;
-				}
-			}
+			/* El buffer intermedio de MemReservar / MemCopiar sobra: c_str () ya
+			   da una zona contigua y terminada en cero. */
+			iResWin = RegSetValueEx ( hkeyOpen, sValor.c_str (), 0, REG_SZ,
+									  (const BYTE *) sDato.c_str (),
+									  (DWORD) ( sDato.size () + 1 ) );
+			bRes = ( iResWin == ERROR_SUCCESS );
 			RegCloseKey ( hkeyOpen );
 		}
-		else
-		{
-			iRes = 0;
-		}
 	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegEstValorNumerico ( const char * p_cClave, const char * p_cValor, unsigned long ulDato, int iClavePrinc )
+bool SisRegEstValorNumerico ( const string & sClave, const string & sValor, unsigned long ulDato, int iClavePrinc )
 {
-	int				iResWin;
-    HKEY			hkeyOpen;
-	HKEY			hkeyPrinc;
-	DWORD			dwBuffer;
-	unsigned long	ulTamBuffer;
-	int				iRes;
-	DWORD			dwTipo;
+	bool	bRes = false;
+	int		iResWin;
+	HKEY	hkeyPrinc;
+	HKEY	hkeyOpen;
+	DWORD	dwBuffer;
 
-	if ( ES_VALIDO ( p_cClave ) && ES_VALIDO ( p_cValor ) )
+	if ( ( ! sClave.empty () ) && ( ! sValor.empty () ) )
 	{
 		hkeyPrinc = SisRegClavePrincipal ( iClavePrinc );
-		iResWin = RegOpenKey ( hkeyPrinc, p_cClave, &hkeyOpen );
+		iResWin = RegOpenKey ( hkeyPrinc, sClave.c_str (), &hkeyOpen );
 		if ( iResWin == ERROR_SUCCESS )
 		{
-			dwTipo = REG_DWORD;
-			ulTamBuffer = sizeof ( DWORD );
 			dwBuffer = (DWORD) ulDato;
-			iResWin = RegSetValueEx ( hkeyOpen, (LPCTSTR) p_cValor, NULL, dwTipo, (CONST BYTE *) &dwBuffer, ulTamBuffer );
-			if ( iResWin == ERROR_SUCCESS )
-			{
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
+			iResWin = RegSetValueEx ( hkeyOpen, sValor.c_str (), 0, REG_DWORD,
+									  (const BYTE *) &dwBuffer, sizeof ( DWORD ) );
+			bRes = ( iResWin == ERROR_SUCCESS );
 			RegCloseKey ( hkeyOpen );
 		}
-		else
-		{
-			iRes = 0;
-		}
 	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegCrearValorCadena ( const char * p_cClave, const char * p_cValor, const char * p_cDato, int iClavePrinc )
+bool SisRegCrearValorCadena ( const string & sClave, const string & sValor, const string & sDato, int iClavePrinc )
 {
-	int	iRes;
+	bool bRes = false;
 
-	if ( SisRegCrearClave ( p_cClave, iClavePrinc ) == 1 )
+	if ( SisRegCrearClave ( sClave, iClavePrinc ) )
 	{
-		iRes = SisRegEstValorCadena ( p_cClave, p_cValor, p_cDato, iClavePrinc );
+		bRes = SisRegEstValorCadena ( sClave, sValor, sDato, iClavePrinc );
 	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegCrearValorNumerico ( const char * p_cClave, const char * p_cValor, unsigned long ulDato, int iClavePrinc )
+bool SisRegCrearValorNumerico ( const string & sClave, const string & sValor, unsigned long ulDato, int iClavePrinc )
 {
-	int	iRes;
+	bool bRes = false;
 
-	if ( SisRegCrearClave ( p_cClave, iClavePrinc ) == 1 )
+	if ( SisRegCrearClave ( sClave, iClavePrinc ) )
 	{
-		iRes = SisRegEstValorNumerico ( p_cClave, p_cValor, ulDato, iClavePrinc );
+		bRes = SisRegEstValorNumerico ( sClave, sValor, ulDato, iClavePrinc );
 	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
+	return ( bRes );
 }
 
 static HKEY SisRegClavePrincipal ( int iClavePrinc )
@@ -354,7 +271,7 @@ static HKEY SisRegClavePrincipal ( int iClavePrinc )
 	{
 		hkeyRes = HKEY_CURRENT_CONFIG;
 	}
-	else if ( iClavePrinc == REG_CLV_CURRENT_USER ) 
+	else if ( iClavePrinc == REG_CLV_CURRENT_USER )
 	{
 		hkeyRes = HKEY_CURRENT_USER;
 	}
@@ -376,31 +293,26 @@ static HKEY SisRegClavePrincipal ( int iClavePrinc )
 
 
 
-
 /* Rutinas generales: */
 HKEY SisRegClaveInfoClases ()
 {
 	return ( HKEY_CLASSES_ROOT );
 }
 
-
 HKEY SisRegClaveInfoConfigActual ()
 {
 	return ( HKEY_CURRENT_CONFIG );
 }
-
 
 HKEY SisRegClaveInfoUsuarioActual ()
 {
 	return ( HKEY_CURRENT_USER );
 }
 
-
 HKEY SisRegClaveInfoLocal ()
 {
 	return ( HKEY_LOCAL_MACHINE );
 }
-
 
 HKEY SisRegClaveInfoUsuarios ()
 {
@@ -408,74 +320,35 @@ HKEY SisRegClaveInfoUsuarios ()
 }
 
 
-/*
-HKEY SisRegAbrirUsuarioActual ( int iSoloLectura )
+/* SisRegAbrirUsuarioActual y SisRegAbrirClasesUsuarioActual estaban aqui
+   comentadas desde el origen, porque llaman a SisRegOpenCurrentUser y
+   SisRegOpenUserClassesRoot, que no existen en ninguna parte. Se quedan fuera,
+   y por eso tampoco se declaran en la cabecera. */
+
+
+HKEY SisRegCrear ( HKEY hkeyPadre, const string & sClave )
 {
-	HKEY hkeyClave;
-	LONG lRet;
-
-	if ( iSoloLectura == 1 )
-	{
-		lRet = SisRegOpenCurrentUser ( KEY_READ, &hkeyClave );
-	}
-	else
-	{
-		lRet = SisRegOpenCurrentUser ( KEY_ALL_ACCESS, &hkeyClave );
-	}
-
-	if ( lRet != ERROR_SUCCESS )
-	{
-		hkeyClave = NULL;
-	}
-
-	return ( hkeyClave );
-}
-
-
-HKEY SisRegAbrirClasesUsuarioActual ( int iSoloLectura )
-{
-	HKEY hkeyClave;
-	LONG lRet;
-
-	if ( iSoloLectura == 1 )
-	{
-		lRet = SisRegOpenUserClassesRoot ( KEY_READ, &hkeyClave );
-	}
-	else
-	{
-		lRet = SisRegOpenUserClassesRoot ( KEY_ALL_ACCESS, &hkeyClave );
-	}
-
-	if ( lRet != ERROR_SUCCESS )
-	{
-		hkeyClave = NULL;
-	}
-
-	return ( hkeyClave );
-}
-*/
-
-HKEY SisRegCrear ( HKEY hkeyPadre, const char * p_cClave )
-{
-	HKEY hkeyClave;
-	LONG lRet;
-	DWORD dwRet;
-	SECURITY_ATTRIBUTES secatrInfo;
+	HKEY				hkeyClave = NULL;
+	LONG				lRet;
+	DWORD				dwRet;
+	SECURITY_ATTRIBUTES	secatrInfo;
 
 	if ( hkeyPadre != NULL )
 	{
-		hkeyClave = NULL;
-
 		secatrInfo.bInheritHandle = 0;
 		secatrInfo.nLength = sizeof ( SECURITY_ATTRIBUTES );
 		secatrInfo.lpSecurityDescriptor = NULL;
 
-		lRet = RegCreateKeyEx ( hkeyPadre, p_cClave, 0, NULL,
-								REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, 
+		lRet = RegCreateKeyEx ( hkeyPadre, sClave.c_str (), 0, NULL,
+								REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS,
 								&secatrInfo, &hkeyClave, &dwRet );
 
-		if ( dwRet == REG_CREATED_NEW_KEY )
+		/* Se conserva el criterio del origen: si la clave no existia se
+		   devuelve NULL. Lo que si se arregla es que antes se perdia el HKEY
+		   recien creado, que quedaba abierto para siempre. */
+		if ( ( lRet == ERROR_SUCCESS ) && ( dwRet == REG_CREATED_NEW_KEY ) )
 		{
+			RegCloseKey ( hkeyClave );
 			hkeyClave = NULL;
 		}
 		else if ( lRet != ERROR_SUCCESS )
@@ -483,37 +356,28 @@ HKEY SisRegCrear ( HKEY hkeyPadre, const char * p_cClave )
 			hkeyClave = NULL;
 		}
 	}
-	else
-	{
-		hkeyClave = NULL;
-	}
-
 	return ( hkeyClave );
 }
 
-
-HKEY SisRegAbrir ( HKEY hkeyPadre, const char * p_cClave )
+HKEY SisRegAbrir ( HKEY hkeyPadre, const string & sClave, REGSAM samAcceso )
 {
-	HKEY hkeyClave;
-	LONG lRet;
+	HKEY	hkeyClave = NULL;
+	LONG	lRet;
 
 	if ( hkeyPadre != NULL )
 	{
-		hkeyClave = NULL;
-		lRet = RegOpenKeyEx ( hkeyPadre, p_cClave, 0, KEY_ALL_ACCESS, &hkeyClave );
+		/* samAcceso, que por defecto es KEY_READ. Estaba clavado a KEY_ALL_ACCESS,
+		   y eso sobre HKEY_LOCAL_MACHINE devuelve ERROR_ACCESS_DENIED salvo que el
+		   proceso sea administrador: comprobado, con KEY_READ la misma clave abre
+		   sin problema. La funcion era inutil para leer. */
+		lRet = RegOpenKeyEx ( hkeyPadre, sClave.c_str (), 0, samAcceso, &hkeyClave );
 		if ( lRet != ERROR_SUCCESS )
 		{
 			hkeyClave = NULL;
 		}
 	}
-	else
-	{
-		hkeyClave = NULL;
-	}
-
 	return ( hkeyClave );
 }
-
 
 void SisRegCerrar ( HKEY hkeyClave )
 {
@@ -523,1339 +387,678 @@ void SisRegCerrar ( HKEY hkeyClave )
 	}
 }
 
-
-int SisRegEsClaveValida ( HKEY hkeyClave )
+bool SisRegEsClaveValida ( HKEY hkeyClave )
 {
-	int iRes;
-
-	if ( hkeyClave != NULL )
-	{
-		iRes = 1;
-	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( hkeyClave != NULL );
 }
 
 
-LONG SisRegNumSubclaves ( HKEY hkeyClave )
+/* Las cuatro consultas de abajo repetian la misma llamada a RegQueryInfoKey con
+   sus diez parametros y sus diez variables locales. Aqui se pide una vez y se
+   devuelve lo unico que miraban: cuantas subclaves y cuantos valores hay. */
+static bool _SisRegInfoClave ( HKEY hkeyClave, DWORD & dwNumSubclaves, DWORD & dwNumValores )
 {
-	DWORD	 dwReservado;           
-	DWORD	 dwNumSubclaves;         
-	DWORD	 dwMaxTamSubclave;       
-	DWORD	 dwMaxTamClases;         
-	DWORD	 dwNumValores;           
-	DWORD	 dwMaxTamNombreValor;    
-	DWORD	 dwMaxTamValor;        
-	DWORD	 dwTamDescSeguridad; 
-	FILETIME ftimUltEscritura; 
-	LONG	 lRet;
-	LONG     lRes;
+	bool		bRes = false;
+	DWORD		dwReservado;
+	DWORD		dwMaxTamSubclave;
+	DWORD		dwMaxTamClases;
+	DWORD		dwMaxTamNombreValor;
+	DWORD		dwMaxTamValor;
+	DWORD		dwTamDescSeguridad;
+	FILETIME	ftimUltEscritura;
 
+	dwNumSubclaves = 0;
+	dwNumValores = 0;
 	if ( hkeyClave != NULL )
 	{
-		lRet = RegQueryInfoKey( hkeyClave, NULL, NULL, &dwReservado,             
-								&dwNumSubclaves, &dwMaxTamSubclave, &dwMaxTamClases,         
-								&dwNumValores, &dwMaxTamNombreValor, &dwMaxTamValor,         
-								&dwTamDescSeguridad, &ftimUltEscritura );
-
-		if ( lRet != ERROR_SUCCESS )
-		{
-			lRes = -1;
-		}
-		else
-		{
-			lRes = dwNumSubclaves;
-		}
+		bRes = ( RegQueryInfoKey ( hkeyClave, NULL, NULL, &dwReservado,
+								   &dwNumSubclaves, &dwMaxTamSubclave, &dwMaxTamClases,
+								   &dwNumValores, &dwMaxTamNombreValor, &dwMaxTamValor,
+								   &dwTamDescSeguridad, &ftimUltEscritura ) == ERROR_SUCCESS );
 	}
-	else
+	return ( bRes );
+}
+
+long SisRegNumSubclaves ( HKEY hkeyClave )
+{
+	long	lRes = -1;
+	DWORD	dwNumSubclaves;
+	DWORD	dwNumValores;
+
+	if ( _SisRegInfoClave ( hkeyClave, dwNumSubclaves, dwNumValores ) )
 	{
-		lRes = -1;
+		lRes = (long) dwNumSubclaves;
 	}
-
 	return ( lRes );
 }
 
-
-int SisRegTieneSubclaves ( HKEY hkeyClave )
+bool SisRegTieneSubclaves ( HKEY hkeyClave )
 {
-	DWORD	 dwReservado;            
-	DWORD	 dwNumSubclaves;         
-	DWORD	 dwMaxTamSubclave;       
-	DWORD	 dwMaxTamClases;         
-	DWORD	 dwNumValores;           
-	DWORD	 dwMaxTamNombreValor;    
-	DWORD	 dwMaxTamValor;        
-	DWORD	 dwTamDescSeguridad; 
-	FILETIME ftimUltEscritura;  
-	LONG	 lRet;
-	int	 iRes;
+	DWORD	dwNumSubclaves;
+	DWORD	dwNumValores;
 
-	if ( hkeyClave != NULL )
-	{
-		lRet = RegQueryInfoKey( hkeyClave, NULL, NULL, &dwReservado,             
-								&dwNumSubclaves, &dwMaxTamSubclave, &dwMaxTamClases,         
-								&dwNumValores, &dwMaxTamNombreValor, &dwMaxTamValor,         
-								&dwTamDescSeguridad, &ftimUltEscritura );
-		if ( lRet != ERROR_SUCCESS )
-		{
-			iRes = 0;
-		}
-		else
-		{
-			if ( dwNumSubclaves > 0 )
-			{
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
-		}
-	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( _SisRegInfoClave ( hkeyClave, dwNumSubclaves, dwNumValores ) &&
+			 ( dwNumSubclaves > 0 ) );
 }
 
-
-LONG SisRegNumValores ( HKEY hkeyClave )
+long SisRegNumValores ( HKEY hkeyClave )
 {
-	DWORD	 dwReservado;            
-	DWORD	 dwNumSubclaves;         
-	DWORD	 dwMaxTamSubclave;       
-	DWORD	 dwMaxTamClases;         
-	DWORD	 dwNumValores;           
-	DWORD	 dwMaxTamNombreValor;    
-	DWORD	 dwMaxTamValor;        
-	DWORD	 dwTamDescSeguridad; 
-	FILETIME ftimUltEscritura;  
-	LONG	 lRet;
-	LONG     lRes;
+	long	lRes = -1;
+	DWORD	dwNumSubclaves;
+	DWORD	dwNumValores;
 
-	if ( hkeyClave != NULL )
+	if ( _SisRegInfoClave ( hkeyClave, dwNumSubclaves, dwNumValores ) )
 	{
-		lRet = RegQueryInfoKey( hkeyClave, NULL, NULL, &dwReservado,             
-								&dwNumSubclaves, &dwMaxTamSubclave, &dwMaxTamClases,         
-								&dwNumValores, &dwMaxTamNombreValor, &dwMaxTamValor,         
-								&dwTamDescSeguridad, &ftimUltEscritura );
-
-		if ( lRet != ERROR_SUCCESS )
-		{
-			lRes = -1;
-		}
-		else
-		{
-			lRes = dwNumValores;
-		}
+		lRes = (long) dwNumValores;
 	}
-	else
-	{
-		lRes = -1;
-	}
-
 	return ( lRes );
 }
 
-
-int SisRegTieneValores ( HKEY hkeyClave )
+bool SisRegTieneValores ( HKEY hkeyClave )
 {
-	DWORD	 dwReservado;            
-	DWORD	 dwNumSubclaves;         
-	DWORD	 dwMaxTamSubclave;       
-	DWORD	 dwMaxTamClases;         
-	DWORD	 dwNumValores;           
-	DWORD	 dwMaxTamNombreValor;    
-	DWORD	 dwMaxTamValor;        
-	DWORD	 dwTamDescSeguridad; 
-	FILETIME ftimUltEscritura;  
-	LONG	 lRet;
-	int	 iRes;
+	DWORD	dwNumSubclaves;
+	DWORD	dwNumValores;
 
-	if ( hkeyClave != NULL )
-	{
-		lRet = RegQueryInfoKey( hkeyClave, NULL, NULL, &dwReservado,             
-								&dwNumSubclaves, &dwMaxTamSubclave, &dwMaxTamClases,         
-								&dwNumValores, &dwMaxTamNombreValor, &dwMaxTamValor,         
-								&dwTamDescSeguridad, &ftimUltEscritura );
-
-		if ( lRet != ERROR_SUCCESS )
-		{
-			iRes = 0;
-		}
-		else
-		{
-			if ( dwNumValores > 0 )
-			{
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-			}
-		}
-	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( _SisRegInfoClave ( hkeyClave, dwNumSubclaves, dwNumValores ) &&
+			 ( dwNumValores > 0 ) );
 }
 
-
-int SisRegExisteSubclave ( HKEY hkeyClave, const char *p_cSubclave )
+bool SisRegExisteSubclave ( HKEY hkeyClave, const string & sSubclave )
 {
-	HKEY hkeySubclave;
-	LONG lRet;
-	int iRes;
+	bool	bRes = false;
+	HKEY	hkeySubclave;
+	LONG	lRet;
 
 	if ( hkeyClave != NULL )
 	{
-		hkeyClave = NULL;
-		lRet = RegOpenKeyEx ( hkeyClave, p_cSubclave, 0, KEY_ALL_ACCESS, &hkeySubclave );
+		/* Habia aqui un 'hkeyClave = NULL;' justo despues de comprobar que NO
+		   era nula, que dejaba el RegOpenKeyEx abriendo desde una clave nula:
+		   la funcion contestaba que no existe ninguna subclave. */
+		lRet = RegOpenKeyEx ( hkeyClave, sSubclave.c_str (), 0, KEY_ALL_ACCESS, &hkeySubclave );
 		if ( lRet == ERROR_SUCCESS )
 		{
 			RegCloseKey ( hkeySubclave );
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
+			bRes = true;
 		}
 	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-
-int SisRegExisteValor (  HKEY hkeyClave, const char *p_cNomValor )
+bool SisRegExisteValor ( HKEY hkeyClave, const string & sNomValor )
 {
-	int  iRes;
-	DWORD dwTam;
-	DWORD dwValor;
-	LONG  lRet;
-	DWORD dwTipo;
+	bool	bRes = false;
+	DWORD	dwTam;
+	DWORD	dwTipo;
+	LONG	lRet;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) )
+	if ( ( hkeyClave != NULL ) && ( ! sNomValor.empty () ) )
 	{
-		dwTam = sizeof ( DWORD );
-		lRet = RegQueryValueEx ( hkeyClave, p_cNomValor, 0, &dwTipo, 
-								 (BYTE*) &dwValor, &dwTam );
-
-		if ( ( lRet == ERROR_SUCCESS ) && ( dwTipo == REG_DWORD ) )
-		{
-			iRes = 1;
-		}
-		iRes = 1;
+		/* Dos arreglos. Habia un 'iRes = 1;' suelto detras del if que lo pisaba
+		   todo: la funcion decia que si a cualquier nombre. Y solo daba por
+		   existente el valor si era REG_DWORD, con lo que un REG_SZ contaba como
+		   inexistente. Aqui basta con que la consulta salga bien, sea del tipo
+		   que sea; el tamano se pide a NULL, que es como se pregunta sin leer. */
+		dwTam = 0;
+		lRet = RegQueryValueEx ( hkeyClave, sNomValor.c_str (), 0, &dwTipo, NULL, &dwTam );
+		bRes = ( lRet == ERROR_SUCCESS );
 	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-
-int SisRegEliminarSubclave (  HKEY hkeyClave, const char * p_cSubclave )
+bool SisRegEliminarSubclave ( HKEY hkeyClave, const string & sSubclave )
 {
-	int iRes;
+	bool bRes = false;
 
-	if ( ( hkeyClave != NULL ) && ( p_cSubclave != NULL ) )
+	if ( ( hkeyClave != NULL ) && ( ! sSubclave.empty () ) )
 	{
-		if ( RegDeleteKey ( hkeyClave, p_cSubclave ) == ERROR_SUCCESS )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		bRes = ( RegDeleteKey ( hkeyClave, sSubclave.c_str () ) == ERROR_SUCCESS );
 	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-
-int SisRegEliminarTodasSubclaves ( HKEY hkeyClave )
+bool SisRegEliminarTodasSubclaves ( HKEY hkeyClave )
 {
-	TCHAR p_cDeposito [ REG_MAX_TAM_CLAVE + 1 ];
-	int iRes;
-	LONG lRet;
-	DWORD dwTamDep;
+	bool	bRes = false;
+	TCHAR	cDeposito [ REG_MAX_TAM_CLAVE + 1 ];
+	DWORD	dwTamDep;
 
 	if ( hkeyClave != NULL )
 	{
-		iRes = 1;
+		bRes = true;
 		dwTamDep = REG_MAX_TAM_CLAVE + 1;
-		while ( ( RegEnumKeyEx ( hkeyClave, 0, p_cDeposito, &dwTamDep, NULL, NULL, NULL, NULL ) == ERROR_SUCCESS ) && ( iRes == 1 ) )
+		while ( bRes &&
+				( RegEnumKeyEx ( hkeyClave, 0, cDeposito, &dwTamDep,
+								 NULL, NULL, NULL, NULL ) == ERROR_SUCCESS ) )
 		{
-
-			lRet = RegDeleteKey ( hkeyClave, p_cDeposito );
-			if ( lRet != ERROR_SUCCESS )
-			{
-				iRes = 0;
-			}
-			dwTamDep = 256;
+			bRes = ( RegDeleteKey ( hkeyClave, cDeposito ) == ERROR_SUCCESS );
+			/* Al final del bucle se reponia el tamano a 256, un numero suelto que
+			   no tiene que ver con el buffer: REG_MAX_TAM_CLAVE + 1 son 64, asi
+			   que a partir de la segunda vuelta se le decia a RegEnumKeyEx que
+			   tenia cuatro veces mas sitio del que hay. */
+			dwTamDep = REG_MAX_TAM_CLAVE + 1;
 		}
 	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
+/* Aviso comun a las ocho de aqui abajo: cuando los argumentos no valian, todas
+   devolvian EXITO ( iRes = 1 en la rama else ). Era el mismo copia y pega ocho
+   veces. Ahora contestan que no, que es lo que significa no haber hecho nada. */
 
-int SisRegConsultarClave (  HKEY hkeyClave, const char * p_cValor, unsigned int uiMaxTamValor )
+bool SisRegConsultarClave ( HKEY hkeyClave, string & sValor )
 {
-	int iRes;
-	LONG lRet;
-	DWORD dwTam;
-	DWORD dwTipo;
+	bool	bRes = false;
+	LONG	lRet;
+	DWORD	dwTam;
+	DWORD	dwTipo;
 
-	if ( ( hkeyClave != NULL ) && ( p_cValor != NULL ) && ( uiMaxTamValor > 0 ) )
+	sValor.clear ();
+	if ( hkeyClave != NULL )
 	{
-		dwTam = uiMaxTamValor;
-		lRet = RegQueryValueEx ( hkeyClave, NULL, 0,  &dwTipo, 
-								 (BYTE*) p_cValor, &dwTam );
+		string sBuffer ( REG_MAX_TAM_VALOR + 1, 0 );
 
+		dwTam = (DWORD) sBuffer.size ();
+		lRet = RegQueryValueEx ( hkeyClave, NULL, 0, &dwTipo,
+								 (LPBYTE) sBuffer.data (), &dwTam );
 		if ( ( lRet == ERROR_SUCCESS ) && ( dwTipo == REG_SZ ) )
 		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
+			sBuffer.resize ( dwTam );
+			sValor = sBuffer.c_str ();
+			bRes = true;
 		}
 	}
-	else
-	{
-		iRes = 1;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-	
-int SisRegConsultarClaveEnt (  HKEY hkeyClave, DWORD * pdwValor )
+bool SisRegConsultarClaveEnt ( HKEY hkeyClave, DWORD & dwValor )
 {
-	int iRes;
-	LONG lRet;
-	DWORD dwTam;
-	DWORD dwTipo;
+	bool	bRes = false;
+	LONG	lRet;
+	DWORD	dwTam;
+	DWORD	dwTipo;
 
-	if ( ( hkeyClave != NULL ) && ( pdwValor != NULL ) )
+	dwValor = 0;
+	if ( hkeyClave != NULL )
 	{
 		dwTam = sizeof ( DWORD );
-		lRet = RegQueryValueEx ( hkeyClave, NULL, 0, &dwTipo, 
-								 (BYTE*) pdwValor, &dwTam );
-
-		if ( ( lRet == ERROR_SUCCESS ) && ( dwTipo == REG_DWORD ) )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		lRet = RegQueryValueEx ( hkeyClave, NULL, 0, &dwTipo, (LPBYTE) &dwValor, &dwTam );
+		bRes = ( ( lRet == ERROR_SUCCESS ) && ( dwTipo == REG_DWORD ) );
 	}
-	else
-	{
-		iRes = 1;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-	
-int SisRegEstablecerClave (  HKEY hkeyClave, const char * p_cValor )
+bool SisRegEstablecerClave ( HKEY hkeyClave, const string & sValor )
 {
-	int iRes;
-	LONG lRet;
-	DWORD dwTam;
+	bool	bRes = false;
+	LONG	lRet;
 
 	if ( hkeyClave != NULL )
 	{
-		dwTam = CadLongitud ( p_cValor ) + 1;
-		lRet = RegSetValueEx ( hkeyClave, NULL, 0, (ULONG) REG_SZ, (BYTE*) p_cValor, dwTam );
-
-		if ( lRet == ERROR_SUCCESS )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		lRet = RegSetValueEx ( hkeyClave, NULL, 0, REG_SZ,
+							   (const BYTE *) sValor.c_str (),
+							   (DWORD) ( sValor.size () + 1 ) );
+		bRes = ( lRet == ERROR_SUCCESS );
 	}
-	else
-	{
-		iRes = 1;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-
-int SisRegEstablecerClaveEnt (  HKEY hkeyClave, DWORD dwValor )
+bool SisRegEstablecerClaveEnt ( HKEY hkeyClave, DWORD dwValor )
 {
-	int iRes;
-	LONG lRet;
+	bool	bRes = false;
+	LONG	lRet;
 
 	if ( hkeyClave != NULL )
 	{
-		lRet = RegSetValueEx ( hkeyClave, NULL, 0, REG_SZ, (BYTE*) &dwValor, sizeof ( DWORD ) );
-
-		if ( lRet == ERROR_SUCCESS )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		/* El tipo era REG_SZ, escribiendo los cuatro bytes de un DWORD como si
+		   fueran texto. Quien lo leyera despues con SisRegConsultarClaveEnt, que
+		   si exige REG_DWORD, no lo encontraba nunca. */
+		lRet = RegSetValueEx ( hkeyClave, NULL, 0, REG_DWORD,
+							   (const BYTE *) &dwValor, sizeof ( DWORD ) );
+		bRes = ( lRet == ERROR_SUCCESS );
 	}
-	else
-	{
-		iRes = 1;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-
-int SisRegConsultarValor (  HKEY hkeyClave, const char * p_cNomValor, const char * p_cValor, unsigned int uiMaxTamValor )
+bool SisRegConsultarValor ( HKEY hkeyClave, const string & sNomValor, string & sValor )
 {
-	int iRes;
-	LONG lRet;
-	DWORD dwTam;
-	DWORD dwTipo;
+	bool	bRes = false;
+	LONG	lRet;
+	DWORD	dwTam;
+	DWORD	dwTipo;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) &&
-		 ( p_cValor != NULL ) && ( uiMaxTamValor > 0 ) )
+	sValor.clear ();
+	if ( ( hkeyClave != NULL ) && ( ! sNomValor.empty () ) )
 	{
-		dwTam = uiMaxTamValor;
-		lRet = RegQueryValueEx ( hkeyClave, p_cNomValor, 0, &dwTipo, 
-								 (BYTE*) p_cValor, &dwTam );
+		string sBuffer ( REG_MAX_TAM_VALOR + 1, 0 );
 
+		dwTam = (DWORD) sBuffer.size ();
+		lRet = RegQueryValueEx ( hkeyClave, sNomValor.c_str (), 0, &dwTipo,
+								 (LPBYTE) sBuffer.data (), &dwTam );
 		if ( ( lRet == ERROR_SUCCESS ) && ( dwTipo == REG_SZ ) )
 		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
+			sBuffer.resize ( dwTam );
+			sValor = sBuffer.c_str ();
+			bRes = true;
 		}
 	}
-	else
-	{
-		iRes = 1;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-	
-int SisRegConsultarValorEnt (  HKEY hkeyClave, const char * p_cNomValor, DWORD * pdwValor )
+bool SisRegConsultarValorEnt ( HKEY hkeyClave, const string & sNomValor, DWORD & dwValor )
 {
-	int iRes;
-	LONG lRet;
-	DWORD dwTam;
-	DWORD dwTipo;
+	bool	bRes = false;
+	LONG	lRet;
+	DWORD	dwTam;
+	DWORD	dwTipo;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) && ( pdwValor != NULL ) )
+	dwValor = 0;
+	if ( ( hkeyClave != NULL ) && ( ! sNomValor.empty () ) )
 	{
 		dwTam = sizeof ( DWORD );
-		lRet = RegQueryValueEx ( hkeyClave, p_cNomValor, 0, &dwTipo, 
-								 (BYTE*) pdwValor, &dwTam );
-
-		if ( ( lRet == ERROR_SUCCESS ) && ( dwTipo == REG_DWORD ) )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		lRet = RegQueryValueEx ( hkeyClave, sNomValor.c_str (), 0, &dwTipo,
+								 (LPBYTE) &dwValor, &dwTam );
+		bRes = ( ( lRet == ERROR_SUCCESS ) && ( dwTipo == REG_DWORD ) );
 	}
-	else
-	{
-		iRes = 1;
-	}
-
-	return ( iRes );
-}
-	
-int SisRegEstablecerValor (  HKEY hkeyClave, const char * p_cNomValor, const char * p_cValor )
-{
-	int iRes;
-	LONG lRet;
-	DWORD dwTam;
-
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) )
-	{
-		dwTam = CadLongitud ( p_cValor ) + 1;
-		lRet = RegSetValueEx ( hkeyClave, p_cNomValor, 0, REG_SZ, (BYTE*) p_cValor, dwTam );
-
-		if ( lRet == ERROR_SUCCESS )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
-	}
-	else
-	{
-		iRes = 1;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegEstablecerValorEnt (  HKEY hkeyClave, const char * p_cNomValor, DWORD dwValor )
+bool SisRegEstablecerValor ( HKEY hkeyClave, const string & sNomValor, const string & sValor )
 {
-	int iRes;
-	LONG lRet;
+	bool	bRes = false;
+	LONG	lRet;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) )
+	if ( ( hkeyClave != NULL ) && ( ! sNomValor.empty () ) )
 	{
-		lRet = RegSetValueEx ( hkeyClave, p_cNomValor, 0, REG_SZ, (BYTE*) &dwValor, sizeof ( DWORD ) );
-
-		if ( lRet == ERROR_SUCCESS )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		lRet = RegSetValueEx ( hkeyClave, sNomValor.c_str (), 0, REG_SZ,
+							   (const BYTE *) sValor.c_str (),
+							   (DWORD) ( sValor.size () + 1 ) );
+		bRes = ( lRet == ERROR_SUCCESS );
 	}
-	else
-	{
-		iRes = 1;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegEliminarValor (  HKEY hkeyClave, const char * p_cNomValor )
+bool SisRegEstablecerValorEnt ( HKEY hkeyClave, const string & sNomValor, DWORD dwValor )
 {
-	int iRes;
+	bool	bRes = false;
+	LONG	lRet;
 
-	if ( ( hkeyClave != NULL ) && ( p_cNomValor != NULL ) )
+	if ( ( hkeyClave != NULL ) && ( ! sNomValor.empty () ) )
 	{
-		if ( RegDeleteValue ( hkeyClave, p_cNomValor ) == ERROR_SUCCESS )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		/* Mismo REG_SZ sobre un DWORD que en SisRegEstablecerClaveEnt. */
+		lRet = RegSetValueEx ( hkeyClave, sNomValor.c_str (), 0, REG_DWORD,
+							   (const BYTE *) &dwValor, sizeof ( DWORD ) );
+		bRes = ( lRet == ERROR_SUCCESS );
 	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegEliminarTodosValores ( HKEY hkeyClave )
+bool SisRegEliminarValor ( HKEY hkeyClave, const string & sNomValor )
 {
-	TCHAR p_cDeposito [ REG_MAX_TAM_CLAVE + 1 ];
-	DWORD dwTamDep;
-	int iRes;
-	LONG lRet;
+	bool bRes = false;
+
+	if ( ( hkeyClave != NULL ) && ( ! sNomValor.empty () ) )
+	{
+		bRes = ( RegDeleteValue ( hkeyClave, sNomValor.c_str () ) == ERROR_SUCCESS );
+	}
+	return ( bRes );
+}
+
+bool SisRegEliminarTodosValores ( HKEY hkeyClave )
+{
+	bool	bRes = false;
+	TCHAR	cDeposito [ REG_MAX_TAM_CLAVE + 1 ];
+	DWORD	dwTamDep;
 
 	if ( hkeyClave != NULL )
 	{
-		iRes = 1;
+		bRes = true;
 		dwTamDep = REG_MAX_TAM_CLAVE + 1;
-		while ( ( RegEnumValue ( hkeyClave, 0, p_cDeposito, &dwTamDep, NULL, NULL, NULL, NULL ) == ERROR_SUCCESS ) && ( iRes == 1 ) )
+		while ( bRes &&
+				( RegEnumValue ( hkeyClave, 0, cDeposito, &dwTamDep,
+								 NULL, NULL, NULL, NULL ) == ERROR_SUCCESS ) )
 		{
-
-			lRet = RegDeleteValue ( hkeyClave, p_cDeposito );
-			if ( lRet != ERROR_SUCCESS )
-			{
-				iRes = 0;
-			}
-			dwTamDep = 256;
+			bRes = ( RegDeleteValue ( hkeyClave, cDeposito ) == ERROR_SUCCESS );
+			/* El mismo 256 de SisRegEliminarTodasSubclaves. */
+			dwTamDep = REG_MAX_TAM_CLAVE + 1;
 		}
 	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegEliminarContenido (  HKEY hkeyClave )
+bool SisRegEliminarContenido ( HKEY hkeyClave )
 {
-	int iRes;
-	LONG lRet;
+	bool bRes = false;
 
 	if ( hkeyClave != NULL )
 	{
-		lRet = RegSetValueEx ( hkeyClave, NULL, 0, REG_SZ, 
-							  NULL, 0 );
-
-		if ( lRet == ERROR_SUCCESS )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		bRes = ( RegSetValueEx ( hkeyClave, NULL, 0, REG_SZ, NULL, 0 ) == ERROR_SUCCESS );
 	}
-	else
-	{
-		iRes = 1;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegImportarFichero ( HKEY hkeyPadre, const char * p_cClave, const char * p_cFichero )
+bool SisRegImportarFichero ( HKEY hkeyPadre, const string & sClave, const string & sFichero )
 {
-	int iRes;
+	bool bRes = false;
 
-	if ( ( hkeyPadre != NULL ) && ( p_cClave != NULL ) && ( p_cFichero != NULL ) )
+	if ( ( hkeyPadre != NULL ) && ( ! sClave.empty () ) && ( ! sFichero.empty () ) )
 	{
-
-		if ( RegLoadKey ( hkeyPadre, p_cClave, p_cFichero ) != ERROR_SUCCESS )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		/* La condicion estaba al reves: devolvia cierto cuando RegLoadKey
+		   FALLABA, y falso cuando cargaba bien. */
+		bRes = ( RegLoadKey ( hkeyPadre, sClave.c_str (), sFichero.c_str () ) == ERROR_SUCCESS );
 	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
-int SisRegExportarFichero ( HKEY hkeyClave, const char * p_cFichero )
+bool SisRegExportarFichero ( HKEY hkeyClave, const string & sFichero )
 {
-	int iRes;
+	bool bRes = false;
 
-	if ( ( hkeyClave != NULL ) && ( p_cFichero != NULL ) )
+	if ( ( hkeyClave != NULL ) && ( ! sFichero.empty () ) )
 	{
-
-		if ( RegSaveKey ( hkeyClave, p_cFichero, NULL ) == ERROR_SUCCESS )
-		{
-			iRes = 1;
-		}
-		else
-		{
-			iRes = 0;
-		}
+		bRes = ( RegSaveKey ( hkeyClave, sFichero.c_str (), NULL ) == ERROR_SUCCESS );
 	}
-	else
-	{
-		iRes = 0;
-	}
-
-	return ( iRes );
+	return ( bRes );
 }
 
 
 /* Rutinas de alto nivel para módulos DLL: */
-int SisRegRegistrarModulo ( const GUID guidModulo, const char * p_cFicModulo, const char * p_cVersion )
+
+/* GUID en texto. Las seis rutinas de aqui abajo repetian este par de llamadas
+   sobre un buffer CHAR fijo, y dos de ellas pedian DOS guids reutilizando el
+   mismo puntero: el primer StringFromCLSID se perdia sin CoTaskMemFree. Aqui la
+   memoria se suelta siempre antes de salir. */
+static string _SisRegGuidCadena ( const GUID & guid )
 {
-	int	iRes;
-	WCHAR *	pswzGuid;
-	LONG	lRet;
-	HKEY	hkeyRaiz;
+	string		sRes ( "" );
+	WCHAR *		p_wcGuid = NULL;
+
+	if ( StringFromCLSID ( guid, &p_wcGuid ) == S_OK )
+	{
+		int iTam = WideCharToMultiByte ( CP_ACP, 0, p_wcGuid, -1, NULL, 0, NULL, NULL );
+
+		if ( iTam > 1 )
+		{
+			/* iTam cuenta el terminador; el string lo pone por su cuenta. */
+			sRes.resize ( iTam - 1 );
+			WideCharToMultiByte ( CP_ACP, 0, p_wcGuid, -1, sRes.data (), iTam, NULL, NULL );
+		}
+		CoTaskMemFree ( p_wcGuid );
+	}
+	return ( sRes );
+}
+
+/* Crea la subclave y le escribe su valor por defecto, que es lo que hacian una y
+   otra vez los bloques de RegistrarModulo y RegistrarGUID: RegCreateKey,
+   RegSetValueEx sobre el valor sin nombre, y RegCloseKey. */
+static bool _SisRegCrearConTexto ( HKEY hkeyPadre, const string & sSubclave, const string & sTexto )
+{
+	bool	bRes = false;
+	HKEY	hkeyNueva;
+
+	if ( RegCreateKey ( hkeyPadre, sSubclave.c_str (), &hkeyNueva ) == ERROR_SUCCESS )
+	{
+		bRes = SisRegEstablecerClave ( hkeyNueva, sTexto );
+		RegCloseKey ( hkeyNueva );
+	}
+	return ( bRes );
+}
+
+
+bool SisRegRegistrarModulo ( const GUID & guidModulo, const string & sFicModulo, const string & sVersion )
+{
+	bool	bRes = false;
+	string	sGuid = _SisRegGuidCadena ( guidModulo );
 	HKEY	hkeyLibs;
 	HKEY	hkeyModulo;
-	HKEY    hkeyVersion;
+	HKEY	hkeyVersion;
 	HKEY	hkeyRevision;
-	HKEY	hkeyFichero;
-	HKEY	hkeyFicAyuda;
-	HKEY	hkeyAtributos;
-	CHAR	p_cGuid [ REG_MAX_TAM_CLAVE + 1 ];
 
-	
-	iRes = 1;
-		
-	hkeyRaiz = NULL;
-	hkeyLibs = NULL;
-	hkeyModulo = NULL;
-	hkeyVersion = NULL;
-	hkeyRevision = NULL;
-	hkeyFichero = NULL;
-	hkeyFicAyuda = NULL;
-	hkeyAtributos = NULL;
-
-	ZeroMemory ( p_cGuid, REG_MAX_TAM_CLAVE + 1 );
-
-	// Guid
-	StringFromCLSID ( guidModulo, &pswzGuid );
-		
-	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
-						  REG_MAX_TAM_CLAVE, NULL, NULL);
-
-	hkeyRaiz = HKEY_CLASSES_ROOT;
-
-	lRet = RegCreateKey ( hkeyRaiz, REG_SEC_LIBRERIAS, &hkeyLibs );
-
-	if ( lRet == ERROR_SUCCESS )
+	if ( ! sGuid.empty () )
 	{
-		lRet = RegCreateKey ( hkeyLibs, p_cGuid, &hkeyModulo );
-
-		if ( lRet == ERROR_SUCCESS )
-		{	
-			lRet = RegCreateKey ( hkeyModulo, p_cVersion, &hkeyVersion );
-
-			if ( lRet == ERROR_SUCCESS )
-			{
-				RegSetValueEx ( hkeyVersion, NULL, 0, REG_SZ, 
-								(BYTE*) p_cFicModulo, CadLongitud ( p_cFicModulo ) + 1 );
-
-				lRet = RegCreateKey ( hkeyVersion, REG_LIB_REVISION_DEF, 
-									  &hkeyRevision );
-
-				if ( lRet == ERROR_SUCCESS )
-				{
-
-					lRet = RegCreateKey ( hkeyRevision, REG_CLV_LIB_FICHERO, 
-										  &hkeyFichero );
-
-					if ( lRet == ERROR_SUCCESS )
-					{
-						RegSetValueEx ( hkeyFichero, NULL, 0, REG_SZ, 
-										(BYTE*) p_cFicModulo, 
-										CadLongitud ( p_cFicModulo ) + 1 );
-
-						RegCloseKey ( hkeyFichero );
-					}
-					else
-					{
-						iRes = 0;
-					}
-
-					lRet = RegCreateKey ( hkeyRevision, REG_CLV_LIB_ATRIBUTOS, 
-										  &hkeyAtributos );
-
-					if ( lRet == ERROR_SUCCESS )
-					{
-						RegSetValueEx ( hkeyAtributos, NULL, 0, REG_SZ, 
-										(BYTE*) REG_VAL_NUM_DEF, 
-										CadLongitud ( REG_VAL_NUM_DEF ) + 1 );
-
-						RegCloseKey ( hkeyAtributos );
-					}				
-					else
-					{
-						iRes = 0;
-					}
-
-					lRet = RegCreateKey ( hkeyRevision, REG_CLV_LIB_FIC_AYUDA, 
-										  &hkeyFicAyuda );
-
-					if ( lRet == ERROR_SUCCESS )
-					{
-						RegSetValueEx ( hkeyFicAyuda, NULL, 0, REG_SZ, 
-										(BYTE*) REG_VAL_DEF, 
-										CadLongitud ( REG_VAL_DEF ) + 1 );
-
-						RegCloseKey ( hkeyFicAyuda );
-					}				
-					else
-					{
-						iRes = 0;
-					}
-
-					RegCloseKey ( hkeyRevision );
-				}
-				else
-				{
-					iRes = 0;
-				}
-
-				RegCloseKey ( hkeyVersion );
-			}
-			else
-			{
-				iRes = 0;
-			}
-
-			RegCloseKey ( hkeyModulo );
-
-		}
-		else
+		if ( RegCreateKey ( HKEY_CLASSES_ROOT, REG_SEC_LIBRERIAS, &hkeyLibs ) == ERROR_SUCCESS )
 		{
-			iRes = 0;
+			if ( RegCreateKey ( hkeyLibs, sGuid.c_str (), &hkeyModulo ) == ERROR_SUCCESS )
+			{
+				if ( RegCreateKey ( hkeyModulo, sVersion.c_str (), &hkeyVersion ) == ERROR_SUCCESS )
+				{
+					SisRegEstablecerClave ( hkeyVersion, sFicModulo );
+
+					if ( RegCreateKey ( hkeyVersion, REG_LIB_REVISION_DEF, &hkeyRevision ) == ERROR_SUCCESS )
+					{
+						bRes = _SisRegCrearConTexto ( hkeyRevision, REG_CLV_LIB_FICHERO, sFicModulo );
+						bRes = _SisRegCrearConTexto ( hkeyRevision, REG_CLV_LIB_ATRIBUTOS, REG_VAL_NUM_DEF ) && bRes;
+						bRes = _SisRegCrearConTexto ( hkeyRevision, REG_CLV_LIB_FIC_AYUDA, REG_VAL_DEF ) && bRes;
+						RegCloseKey ( hkeyRevision );
+					}
+					RegCloseKey ( hkeyVersion );
+				}
+				RegCloseKey ( hkeyModulo );
+			}
+			RegCloseKey ( hkeyLibs );
 		}
-
-		RegCloseKey ( hkeyLibs );
 	}
-
-	CoTaskMemFree ( pswzGuid );
-
-	return ( iRes );
+	return ( bRes );
 }
 
-
-int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const char *p_cDescripcion,
-							   const GUID guidModulo, const char *p_cFicModulo, const char * p_cVersion )
+bool SisRegRegistrarGUID ( const GUID & guidCodigo, const string & sNombre, const string & sDescripcion,
+						   const GUID & guidModulo, const string & sFicModulo, const string & sVersion )
 {
-	int	iRes;
-	WCHAR *	pswzGuid;
-	LONG	lRet;
-	HKEY	hkeyRaiz;
+	bool	bRes = false;
+	string	sGuid = _SisRegGuidCadena ( guidCodigo );
+	string	sGuidMod = _SisRegGuidCadena ( guidModulo );
 	HKEY	hkeyClases;
 	HKEY	hkeyClase;
-	HKEY	hkeyCatImp;
-	HKEY	hkeyServidor;
-	HKEY	hkeyProgId;
-	HKEY	hkeyIndProgId;
-	HKEY	hkeyVerCls;
-	HKEY	hkeyLibreria;
-	HKEY	hkeyClsId;
-	HKEY	hkeyProgIdAct;
- 
-	CHAR	p_cGuid		 [ REG_MAX_TAM_CLAVE + 1 ];
-	CHAR	p_cGuidMod	 [ REG_MAX_TAM_CLAVE + 1 ];
-	CHAR	p_cProgId	 [ REG_MAX_TAM_VALOR + 1 ];
-	CHAR	p_cProgIdAct	 [ REG_MAX_TAM_VALOR + 1 ];
-	
-	iRes = 1;
-	
-	hkeyRaiz = NULL;
-	hkeyClases = NULL;
-	hkeyClase = NULL;
-	hkeyCatImp = NULL;
-	hkeyServidor = NULL;
-	hkeyProgId = NULL;
-	hkeyIndProgId = NULL;
-	hkeyVerCls = NULL;
-	hkeyLibreria = NULL;
-	hkeyClsId = NULL;
-	hkeyProgIdAct = NULL;		
 
-	ZeroMemory ( p_cGuid, REG_MAX_TAM_CLAVE + 1 );
-	ZeroMemory ( p_cGuidMod, REG_MAX_TAM_CLAVE + 1 );
-	ZeroMemory ( p_cProgId, REG_MAX_TAM_VALOR + 1 );
-	ZeroMemory ( p_cProgIdAct, REG_MAX_TAM_VALOR + 1 );
+	/* Los dos ProgId se armaban con sprintf sobre buffers de 1024 sin comprobar
+	   que cupieran. Son dos concatenaciones, y asi no hay buffer que desbordar.
+	   Los formatos REG_PROG_ID_FORMATO y REG_PROG_ID_ACT_FORMATO de
+	   RegistroConstantes.h quedan sin usar por lo mismo. */
+	string	sProgId = sFicModulo + "." + sNombre;
+	string	sProgIdAct = sProgId + "." + to_string ( REG_CLS_VERSION_DEF );
 
-	StringFromCLSID ( guidCodigo, &pswzGuid );
-	
-	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
-						  REG_MAX_TAM_CLAVE, NULL, NULL);
-
-	StringFromCLSID ( guidModulo, &pswzGuid );
-	
-	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuidMod, 
-						  REG_MAX_TAM_CLAVE, NULL, NULL);
-
-	sprintf ( p_cProgId, REG_PROG_ID_FORMATO, 
-			  p_cFicModulo, 
-			  p_cNombre );
-
-	sprintf ( p_cProgIdAct, REG_PROG_ID_ACT_FORMATO, 
-			  p_cFicModulo, 
-			  p_cNombre,
-			  REG_CLS_VERSION_DEF );
-
-	hkeyRaiz = HKEY_CLASSES_ROOT;
-	lRet = RegCreateKey ( hkeyRaiz, REG_SEC_CLASES, &hkeyClases );
-
-	if ( lRet == ERROR_SUCCESS )
+	if ( ( ! sGuid.empty () ) && ( ! sGuidMod.empty () ) )
 	{
-
-		lRet = RegCreateKey ( hkeyClases, p_cGuid, &hkeyClase );
-
-		if ( lRet == ERROR_SUCCESS )
-		{	
-			RegSetValueEx ( hkeyClase, NULL, 0, REG_SZ, 
-							(BYTE*) p_cDescripcion, 
-							CadLongitud ( p_cDescripcion ) + 1 );
-
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_CAT_IMP, 
-								  &hkeyCatImp );
-
-			if ( lRet == ERROR_SUCCESS )
-			{								
-				RegSetValueEx ( hkeyCatImp, NULL, 0, REG_SZ, 
-								(BYTE*) REG_VAL_DEF, 
-								CadLongitud ( REG_VAL_DEF ) + 1 );
-				
-				RegCloseKey ( hkeyCatImp );
-			}				
-			else
-			{
-				iRes = 0;
-			}
-
-
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_SERVIDOR, 
-								  &hkeyServidor );
-
-			if ( lRet == ERROR_SUCCESS )
-			{
-				RegSetValueEx ( hkeyServidor, NULL, 0, REG_SZ, 
-								(BYTE*) p_cFicModulo, 
-								CadLongitud ( p_cFicModulo ) + 1 );
-				
-				RegCloseKey ( hkeyServidor );
-			}				
-			else
-			{
-				iRes = 0;
-			}
-
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_PROG_ID, 
-								  &hkeyProgId );
-
-			if ( lRet == ERROR_SUCCESS )
-			{
-				RegSetValueEx ( hkeyProgId, NULL, 0, REG_SZ, 
-								(BYTE*) p_cProgIdAct, 
-								CadLongitud ( p_cProgIdAct ) + 1 );
-				
-				RegCloseKey ( hkeyProgId );
-			}				
-			else
-			{
-				iRes = 0;
-			}
-
-
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_IND_PROG_ID, 
-								  &hkeyProgId );
-
-			if ( lRet == ERROR_SUCCESS )
-			{
-				RegSetValueEx ( hkeyIndProgId, NULL, 0, REG_SZ, 
-								(BYTE*) p_cProgId, 
-								CadLongitud ( p_cProgId ) + 1 );
-				
-				RegCloseKey ( hkeyIndProgId );
-			}				
-			else
-			{
-				iRes = 0;
-			}
-
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_LIBRERIA, 
-								  &hkeyLibreria );
-
-			if ( lRet == ERROR_SUCCESS )
-			{
-				RegSetValueEx ( hkeyLibreria, NULL, 0, REG_SZ, 
-								(BYTE*) p_cGuidMod, 
-								CadLongitud ( p_cGuidMod ) + 1 );
-
-				RegCloseKey ( hkeyLibreria );
-			}				
-			else
-			{
-				iRes = 0;
-			}
-
-			lRet = RegCreateKey ( hkeyClase, 
-								  REG_CLV_CLS_VERSION, 
-								  &hkeyVerCls );
-
-			if ( lRet == ERROR_SUCCESS )
-			{
-				RegSetValueEx ( hkeyVerCls, NULL, 0, REG_SZ, 
-								(BYTE*) p_cVersion, 
-								CadLongitud ( p_cVersion ) + 1 );
-
-				RegCloseKey ( hkeyVerCls );
-			}				
-			else
-			{
-				iRes = 0;
-			}
-
-			RegCloseKey ( hkeyClase );
-
-
-			lRet = RegCreateKey ( hkeyRaiz, p_cProgId, &hkeyClase );
-			if ( lRet == ERROR_SUCCESS )
-			{	
-				RegSetValueEx ( hkeyClase, NULL, 0, REG_SZ, 
-								(BYTE*) p_cDescripcion, 
-								CadLongitud ( p_cDescripcion ) + 1 );
-
-				lRet = RegCreateKey ( hkeyClase, 
-									  REG_CLV_CLS_ID, 
-									  &hkeyClsId );
-
-				if ( lRet == ERROR_SUCCESS )
-				{								
-					RegSetValueEx ( hkeyClsId, NULL, 0, REG_SZ, 
-									(BYTE*) p_cGuid, 
-									CadLongitud ( p_cGuid ) + 1 );
-				}				
-				else
-				{
-					iRes = 0;
-				}
-
-				lRet = RegCreateKey ( hkeyClase, 
-									  REG_CLV_VERSION_ACT, 
-									  &hkeyProgIdAct );
-
-				if ( lRet == ERROR_SUCCESS )
-				{
-					RegSetValueEx ( hkeyProgIdAct, NULL, 0, REG_SZ, 
-									(BYTE*) p_cProgIdAct, 
-									CadLongitud ( p_cProgIdAct ) + 1 );
-								
-					RegCloseKey ( hkeyProgIdAct );
-				}				
-				else
-				{
-					iRes = 0;
-				}
-
-			}				
-			else
-			{
-				iRes = 0;
-			}
-
-			lRet = RegCreateKey ( hkeyRaiz, p_cProgIdAct, &hkeyClase );
-
-			if ( lRet == ERROR_SUCCESS )
-			{	
-				RegSetValueEx ( hkeyClase, NULL, 0, REG_SZ, 
-								(BYTE*) p_cDescripcion, 
-								CadLongitud ( p_cDescripcion ) + 1 );
-
-				lRet = RegCreateKey ( hkeyClase, 
-									  REG_CLV_CLS_ID, 
-									  &hkeyClsId );
-
-				if ( lRet == ERROR_SUCCESS )
-				{								
-					RegSetValueEx ( hkeyClsId, NULL, 0, REG_SZ, 
-									(BYTE*) p_cGuid, 
-									CadLongitud ( p_cGuid ) + 1 );
-				}				
-				else
-				{
-					iRes = 0;
-				}
-			}				
-			else
-			{
-				iRes = 0;
-			}
-
-		}
-		else
+		if ( RegCreateKey ( HKEY_CLASSES_ROOT, REG_SEC_CLASES, &hkeyClases ) == ERROR_SUCCESS )
 		{
-			iRes = 0;
-		}
-
-	}
-	else
-	{
-		iRes = 0;
-	}
-
-		
-	CoTaskMemFree ( pswzGuid );
-
-	return ( iRes );
-}
-
-
-
-void SisRegDesregistrarModulo ( const GUID guidModulo, const char * p_cVersion )
-{
-	WCHAR *	pswzGuid;
-	LONG	lRet;
-	HKEY	hkeyRaiz;
-	HKEY	hkeyLibs;
-	HKEY	hkeyModulo;
-	HKEY    hkeyVersion;
-	HKEY	hkeyRevision;
-	CHAR	p_cGuid [ REG_MAX_TAM_CLAVE + 1 ];
-
-	hkeyRaiz = NULL;
-	hkeyLibs = NULL;
-	hkeyModulo = NULL;
-	hkeyVersion = NULL;
-	hkeyRevision = NULL;
-
-	ZeroMemory ( p_cGuid, REG_MAX_TAM_CLAVE + 1 );
-
-	StringFromCLSID ( guidModulo, &pswzGuid );
-	
-	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
-						  REG_MAX_TAM_CLAVE, NULL, NULL);
-
-	hkeyRaiz = HKEY_CLASSES_ROOT;
-	lRet = RegOpenKeyEx ( hkeyRaiz, REG_SEC_LIBRERIAS, 0, KEY_WRITE, &hkeyLibs );
-
-	if ( lRet == ERROR_SUCCESS )
-	{
-		lRet = RegOpenKeyEx ( hkeyLibs, p_cGuid, 0, KEY_WRITE, &hkeyModulo );
-
-		if ( lRet == ERROR_SUCCESS )
-		{	
-			lRet = RegOpenKeyEx ( hkeyModulo, p_cVersion, 0, KEY_WRITE, &hkeyVersion );
-
-			if ( lRet == ERROR_SUCCESS )
+			if ( RegCreateKey ( hkeyClases, sGuid.c_str (), &hkeyClase ) == ERROR_SUCCESS )
 			{
-				lRet = RegOpenKeyEx ( hkeyVersion, REG_LIB_REVISION_DEF, 
-									  0, KEY_WRITE, &hkeyRevision );
+				SisRegEstablecerClave ( hkeyClase, sDescripcion );
 
-				if ( lRet == ERROR_SUCCESS )
-				{
+				bRes = _SisRegCrearConTexto ( hkeyClase, REG_CLV_CLS_CAT_IMP, REG_VAL_DEF );
+				bRes = _SisRegCrearConTexto ( hkeyClase, REG_CLV_CLS_SERVIDOR, sFicModulo ) && bRes;
+				bRes = _SisRegCrearConTexto ( hkeyClase, REG_CLV_CLS_PROG_ID, sProgIdAct ) && bRes;
+				/* Esta creaba la clave en hkeyProgId, que ya estaba usada y cerrada,
+				   y luego escribia y cerraba hkeyIndProgId, que seguia a NULL: el
+				   VersionIndependentProgId no se escribia nunca y el HKEY se perdia. */
+				bRes = _SisRegCrearConTexto ( hkeyClase, REG_CLV_CLS_IND_PROG_ID, sProgId ) && bRes;
+				bRes = _SisRegCrearConTexto ( hkeyClase, REG_CLV_CLS_LIBRERIA, sGuidMod ) && bRes;
+				bRes = _SisRegCrearConTexto ( hkeyClase, REG_CLV_CLS_VERSION, sVersion ) && bRes;
 
-					RegDeleteKey ( hkeyRevision, REG_CLV_LIB_FICHERO );
-					RegDeleteKey ( hkeyRevision, REG_CLV_LIB_ATRIBUTOS );
-					RegDeleteKey ( hkeyRevision, REG_CLV_LIB_FIC_AYUDA ); 
-					RegCloseKey ( hkeyRevision );
-				}
-
-				RegDeleteKey ( hkeyVersion, REG_LIB_REVISION_DEF ); 
-				RegCloseKey ( hkeyVersion );
-			}
-
-			RegDeleteKey ( hkeyModulo, p_cVersion );
-			RegCloseKey ( hkeyModulo );
-		}
-
-		RegDeleteKey ( hkeyLibs, p_cGuid );
-		RegCloseKey ( hkeyLibs );
-	}
-
-	CoTaskMemFree ( pswzGuid );
-}
-
-
-void SisRegDesregistrarGUID ( const GUID guidCodigo, const char *p_cNombre )
-{
-	WCHAR *	pswzGuid;
-	LONG	lRet;
-	HKEY	hkeyRaiz;
-	HKEY	hkeyClases;
-	HKEY	hkeyClase;
-	CHAR	p_cGuid		 [ REG_MAX_TAM_CLAVE + 1 ];
-	CHAR	p_cProgId	 [ REG_MAX_TAM_VALOR + 1 ];
-	CHAR	p_cProgIdAct	 [ REG_MAX_TAM_VALOR + 1 ];
-
-	hkeyRaiz = NULL;
-	hkeyClases = NULL;
-	hkeyClase = NULL;
-
-	ZeroMemory ( p_cGuid, REG_MAX_TAM_CLAVE + 1 );
-	ZeroMemory ( p_cProgId, REG_MAX_TAM_VALOR + 1 );
-	ZeroMemory ( p_cProgIdAct, REG_MAX_TAM_VALOR + 1 );
-
-	StringFromCLSID ( guidCodigo, &pswzGuid );
-	
-	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
-						  REG_MAX_TAM_CLAVE, NULL, NULL);
-
-	sprintf ( p_cProgId, REG_PROG_ID_FORMATO, 
-			  p_cNombre, 
-			  p_cNombre );
-
-	sprintf ( p_cProgIdAct, REG_PROG_ID_ACT_FORMATO, 
-			  p_cNombre, 
-			  p_cNombre,
-			  REG_CLS_VERSION_DEF );
-
-	hkeyRaiz = HKEY_CLASSES_ROOT;
-	lRet = RegOpenKeyEx ( hkeyRaiz, REG_SEC_CLASES, 0, KEY_WRITE,
-						  &hkeyClases );
-
-	if ( lRet == ERROR_SUCCESS )
-	{
-		lRet = RegOpenKeyEx ( hkeyClase, p_cGuid, 0, KEY_WRITE, &hkeyClase );
-
-		if ( lRet == ERROR_SUCCESS )
-		{
-
-			RegDeleteKey ( hkeyClase, REG_CLV_CLS_CAT_IMP );
-			RegDeleteKey ( hkeyClase, REG_CLV_CLS_SERVIDOR );
-			RegDeleteKey ( hkeyClase, REG_CLV_CLS_PROG_ID );
-			RegDeleteKey ( hkeyClase, REG_CLV_CLS_LIBRERIA );
-			RegDeleteKey ( hkeyClase, REG_CLV_CLS_VERSION ); 
-			RegCloseKey ( hkeyClase );
-		}
-
-		RegDeleteKey ( hkeyClases, p_cGuid ); 
-		RegCloseKey ( hkeyClases );
-
-		lRet = RegOpenKeyEx ( hkeyRaiz, p_cProgId, 0, KEY_WRITE, &hkeyClase );
-
-		if ( lRet == ERROR_SUCCESS )
-		{	
-			RegDeleteKey ( hkeyClase, REG_CLV_CLS_ID );
-			RegDeleteKey ( hkeyClase, REG_CLV_VERSION_ACT );
-			RegCloseKey ( hkeyClase );
-		}
-		RegDeleteKey ( hkeyRaiz, p_cProgId );
-
-		lRet = RegOpenKeyEx ( hkeyRaiz, p_cProgIdAct, 0, KEY_WRITE, &hkeyClase );
-
-		if ( lRet == ERROR_SUCCESS )
-		{	
-			RegDeleteKey ( hkeyClase, REG_CLV_CLS_ID );
-			RegCloseKey ( hkeyClase );
-		}
-
-		RegDeleteKey ( hkeyRaiz, p_cProgId );
-	}
-
-	CoTaskMemFree ( pswzGuid );
-}
-
-int SisRegEstaRegistradoModulo ( const GUID guidModulo )
-{
-	int iRes;
-	WCHAR *	pswzGuid;
-	LONG	lRet;
-	HKEY	hkeyRaiz;
-	HKEY	hkeyLibs;
-	HKEY	hkeyModulo;
-	CHAR	p_cGuid [ REG_MAX_TAM_CLAVE + 1 ];
-
-	iRes = 0;
-
-	hkeyRaiz = NULL;
-	hkeyLibs = NULL;
-	hkeyModulo = NULL;
-
-	ZeroMemory ( p_cGuid, REG_MAX_TAM_CLAVE + 1 );
-
-	StringFromCLSID ( guidModulo, &pswzGuid );
-	
-	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
-						  REG_MAX_TAM_CLAVE, NULL, NULL);
-
-	hkeyRaiz = HKEY_CLASSES_ROOT;
-	lRet = RegOpenKeyEx ( hkeyRaiz, REG_SEC_LIBRERIAS, 0, KEY_WRITE, &hkeyLibs );
-
-	if ( lRet == ERROR_SUCCESS )
-	{
-		lRet = RegOpenKeyEx ( hkeyLibs, p_cGuid, 0, KEY_WRITE, &hkeyModulo );
-
-		if ( lRet == ERROR_SUCCESS )
-		{	
-			iRes = 1;
-			RegCloseKey ( hkeyModulo );
-		}
-		RegCloseKey ( hkeyLibs );
-	}
-
-	CoTaskMemFree ( pswzGuid );
-
-	return ( iRes );
-}
-
-
-int EstaRegistradoGUID ( const GUID guidCodigo, const char *p_cNombre )
-{
-	int	iRes;
-	WCHAR *	pswzGuid;
-	LONG	lRet;
-	HKEY	hkeyRaiz;
-	HKEY	hkeyClases;
-	HKEY	hkeyClase;
-	CHAR	p_cGuid		 [ REG_MAX_TAM_CLAVE + 1 ];
-	CHAR	p_cProgId	 [ REG_MAX_TAM_VALOR + 1 ];
-	CHAR	p_cProgIdAct	 [ REG_MAX_TAM_VALOR + 1 ];
-
-	iRes = 0;
-	hkeyRaiz = NULL;
-	hkeyClases = NULL;
-	hkeyClase = NULL;
-	
-	ZeroMemory ( p_cGuid, REG_MAX_TAM_CLAVE + 1 );
-	ZeroMemory ( p_cProgId, REG_MAX_TAM_VALOR + 1 );
-	ZeroMemory ( p_cProgIdAct, REG_MAX_TAM_VALOR + 1 );
-
-	StringFromCLSID ( guidCodigo, &pswzGuid );
-	
-	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
-						  REG_MAX_TAM_CLAVE, NULL, NULL);
-
-	sprintf ( p_cProgId, REG_PROG_ID_FORMATO, 
-			  p_cNombre, 
-			  p_cNombre );
-
-	sprintf ( p_cProgIdAct, REG_PROG_ID_ACT_FORMATO, 
-			  p_cNombre, 
-			  p_cNombre,
-			  REG_CLS_VERSION_DEF );
-
-	hkeyRaiz = HKEY_CLASSES_ROOT;
-	lRet = RegOpenKeyEx ( hkeyRaiz, REG_SEC_CLASES, 0, KEY_WRITE,
-						  &hkeyClases );
-
-	if ( lRet == ERROR_SUCCESS )
-	{
-		lRet = RegOpenKeyEx ( hkeyClase, p_cGuid, 0, KEY_WRITE, &hkeyClase );
-
-		if ( lRet == ERROR_SUCCESS )
-		{
-			RegCloseKey ( hkeyClase );
-			lRet = RegOpenKeyEx ( hkeyRaiz, p_cProgId, 0, KEY_WRITE, &hkeyClase );
-
-			if ( lRet == ERROR_SUCCESS )
-			{	
 				RegCloseKey ( hkeyClase );
-				lRet = RegOpenKeyEx ( hkeyRaiz, p_cProgIdAct, 0, KEY_WRITE, &hkeyClase );
 
-				if ( lRet == ERROR_SUCCESS )
-				{	
-					iRes = 1;
+				/* ProgId con version. */
+				if ( RegCreateKey ( HKEY_CLASSES_ROOT, sProgId.c_str (), &hkeyClase ) == ERROR_SUCCESS )
+				{
+					SisRegEstablecerClave ( hkeyClase, sDescripcion );
+					bRes = _SisRegCrearConTexto ( hkeyClase, REG_CLV_CLS_ID, sGuid ) && bRes;
+					bRes = _SisRegCrearConTexto ( hkeyClase, REG_CLV_VERSION_ACT, sProgIdAct ) && bRes;
+					/* Este RegCloseKey faltaba: el HKEY quedaba abierto. */
 					RegCloseKey ( hkeyClase );
 				}
+				else
+				{
+					bRes = false;
+				}
+
+				/* ProgId independiente de version. */
+				if ( RegCreateKey ( HKEY_CLASSES_ROOT, sProgIdAct.c_str (), &hkeyClase ) == ERROR_SUCCESS )
+				{
+					SisRegEstablecerClave ( hkeyClase, sDescripcion );
+					bRes = _SisRegCrearConTexto ( hkeyClase, REG_CLV_CLS_ID, sGuid ) && bRes;
+					RegCloseKey ( hkeyClase );
+				}
+				else
+				{
+					bRes = false;
+				}
 			}
+			RegCloseKey ( hkeyClases );
 		}
-
-		RegCloseKey ( hkeyClases );
 	}
+	return ( bRes );
+}
 
-	CoTaskMemFree ( pswzGuid );
 
-	return ( iRes );
+void SisRegDesregistrarModulo ( const GUID & guidModulo, const string & sVersion )
+{
+	string	sGuid = _SisRegGuidCadena ( guidModulo );
+	HKEY	hkeyLibs;
+	HKEY	hkeyModulo;
+	HKEY	hkeyVersion;
+	HKEY	hkeyRevision;
+
+	if ( ! sGuid.empty () )
+	{
+		if ( RegOpenKeyEx ( HKEY_CLASSES_ROOT, REG_SEC_LIBRERIAS, 0, KEY_WRITE, &hkeyLibs ) == ERROR_SUCCESS )
+		{
+			if ( RegOpenKeyEx ( hkeyLibs, sGuid.c_str (), 0, KEY_WRITE, &hkeyModulo ) == ERROR_SUCCESS )
+			{
+				if ( RegOpenKeyEx ( hkeyModulo, sVersion.c_str (), 0, KEY_WRITE, &hkeyVersion ) == ERROR_SUCCESS )
+				{
+					if ( RegOpenKeyEx ( hkeyVersion, REG_LIB_REVISION_DEF, 0, KEY_WRITE, &hkeyRevision ) == ERROR_SUCCESS )
+					{
+						RegDeleteKey ( hkeyRevision, REG_CLV_LIB_FICHERO );
+						RegDeleteKey ( hkeyRevision, REG_CLV_LIB_ATRIBUTOS );
+						RegDeleteKey ( hkeyRevision, REG_CLV_LIB_FIC_AYUDA );
+						RegCloseKey ( hkeyRevision );
+					}
+					RegDeleteKey ( hkeyVersion, REG_LIB_REVISION_DEF );
+					RegCloseKey ( hkeyVersion );
+				}
+				RegDeleteKey ( hkeyModulo, sVersion.c_str () );
+				RegCloseKey ( hkeyModulo );
+			}
+			RegDeleteKey ( hkeyLibs, sGuid.c_str () );
+			RegCloseKey ( hkeyLibs );
+		}
+	}
+}
+
+/* El ProgId se arma igual que en SisRegRegistrarGUID: ficheroModulo.nombre. De
+   ahi que la firma reciba sFicModulo. Antes salia de sNombre + "." + sNombre,
+   porque el fichero no entraba, y esta rutina no encontraba lo que habia
+   registrado la otra salvo que nombre y fichero coincidieran. */
+void SisRegDesregistrarGUID ( const GUID & guidCodigo, const string & sNombre,
+							  const string & sFicModulo )
+{
+	string	sGuid = _SisRegGuidCadena ( guidCodigo );
+	string	sProgId = sFicModulo + "." + sNombre;
+	string	sProgIdAct = sProgId + "." + to_string ( REG_CLS_VERSION_DEF );
+	HKEY	hkeyClases;
+	HKEY	hkeyClase;
+
+	if ( ! sGuid.empty () )
+	{
+		if ( RegOpenKeyEx ( HKEY_CLASSES_ROOT, REG_SEC_CLASES, 0, KEY_WRITE, &hkeyClases ) == ERROR_SUCCESS )
+		{
+			/* Abria desde hkeyClase, que en ese punto valia NULL, en vez de desde
+			   hkeyClases: no llegaba a borrar nada de la clase. */
+			if ( RegOpenKeyEx ( hkeyClases, sGuid.c_str (), 0, KEY_WRITE, &hkeyClase ) == ERROR_SUCCESS )
+			{
+				RegDeleteKey ( hkeyClase, REG_CLV_CLS_CAT_IMP );
+				RegDeleteKey ( hkeyClase, REG_CLV_CLS_SERVIDOR );
+				RegDeleteKey ( hkeyClase, REG_CLV_CLS_PROG_ID );
+				RegDeleteKey ( hkeyClase, REG_CLV_CLS_LIBRERIA );
+				RegDeleteKey ( hkeyClase, REG_CLV_CLS_VERSION );
+				RegCloseKey ( hkeyClase );
+			}
+			RegDeleteKey ( hkeyClases, sGuid.c_str () );
+			RegCloseKey ( hkeyClases );
+
+			if ( RegOpenKeyEx ( HKEY_CLASSES_ROOT, sProgId.c_str (), 0, KEY_WRITE, &hkeyClase ) == ERROR_SUCCESS )
+			{
+				RegDeleteKey ( hkeyClase, REG_CLV_CLS_ID );
+				RegDeleteKey ( hkeyClase, REG_CLV_VERSION_ACT );
+				RegCloseKey ( hkeyClase );
+			}
+			RegDeleteKey ( HKEY_CLASSES_ROOT, sProgId.c_str () );
+
+			if ( RegOpenKeyEx ( HKEY_CLASSES_ROOT, sProgIdAct.c_str (), 0, KEY_WRITE, &hkeyClase ) == ERROR_SUCCESS )
+			{
+				RegDeleteKey ( hkeyClase, REG_CLV_CLS_ID );
+				RegCloseKey ( hkeyClase );
+			}
+			/* El borrado final repetia sProgId, asi que el ProgId con version se
+			   quedaba sin borrar. */
+			RegDeleteKey ( HKEY_CLASSES_ROOT, sProgIdAct.c_str () );
+		}
+	}
+}
+
+bool SisRegEstaRegistradoModulo ( const GUID & guidModulo )
+{
+	bool	bRes = false;
+	string	sGuid = _SisRegGuidCadena ( guidModulo );
+	HKEY	hkeyLibs;
+	HKEY	hkeyModulo;
+
+	if ( ! sGuid.empty () )
+	{
+		if ( RegOpenKeyEx ( HKEY_CLASSES_ROOT, REG_SEC_LIBRERIAS, 0, KEY_READ, &hkeyLibs ) == ERROR_SUCCESS )
+		{
+			if ( RegOpenKeyEx ( hkeyLibs, sGuid.c_str (), 0, KEY_READ, &hkeyModulo ) == ERROR_SUCCESS )
+			{
+				bRes = true;
+				RegCloseKey ( hkeyModulo );
+			}
+			RegCloseKey ( hkeyLibs );
+		}
+	}
+	return ( bRes );
+}
+
+/* Se llamaba EstaRegistradoGUID, sin el prefijo SisReg del resto del modulo y
+   sin declarar en ninguna cabecera: no habia forma de llegar a ella desde fuera.
+   El ProgId, como en SisRegDesregistrarGUID: ficheroModulo.nombre. */
+bool SisRegEstaRegistradoGUID ( const GUID & guidCodigo, const string & sNombre,
+								const string & sFicModulo )
+{
+	bool	bRes = false;
+	string	sGuid = _SisRegGuidCadena ( guidCodigo );
+	string	sProgId = sFicModulo + "." + sNombre;
+	string	sProgIdAct = sProgId + "." + to_string ( REG_CLS_VERSION_DEF );
+	HKEY	hkeyClases;
+	HKEY	hkeyClase;
+
+	if ( ! sGuid.empty () )
+	{
+		if ( RegOpenKeyEx ( HKEY_CLASSES_ROOT, REG_SEC_CLASES, 0, KEY_READ, &hkeyClases ) == ERROR_SUCCESS )
+		{
+			/* Mismo NULL que en SisRegDesregistrarGUID: abria desde hkeyClase. */
+			if ( RegOpenKeyEx ( hkeyClases, sGuid.c_str (), 0, KEY_READ, &hkeyClase ) == ERROR_SUCCESS )
+			{
+				RegCloseKey ( hkeyClase );
+				if ( RegOpenKeyEx ( HKEY_CLASSES_ROOT, sProgId.c_str (), 0, KEY_READ, &hkeyClase ) == ERROR_SUCCESS )
+				{
+					RegCloseKey ( hkeyClase );
+					if ( RegOpenKeyEx ( HKEY_CLASSES_ROOT, sProgIdAct.c_str (), 0, KEY_READ, &hkeyClase ) == ERROR_SUCCESS )
+					{
+						bRes = true;
+						RegCloseKey ( hkeyClase );
+					}
+				}
+			}
+			RegCloseKey ( hkeyClases );
+		}
+	}
+	return ( bRes );
+}
+
+
+            }
+		}
+	}
 }
 
 
 #endif
-

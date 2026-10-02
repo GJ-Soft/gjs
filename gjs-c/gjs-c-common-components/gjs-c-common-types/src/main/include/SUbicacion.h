@@ -13,26 +13,32 @@
 
 
 
+/* Marca de posicion sin establecer. Es el mayor unsigned long, asi que
+   esa posicion concreta no se puede guardar. */
+#define SUBC_SIN_POSICION		ULONG_MAX
+
+
+
 typedef struct 
 {
-    long	lPos;
-	long	lTam;
+	unsigned long	ulPos;
+	unsigned long	ulTam;
 	
 } SUbicacion;
 
 
 
 SUbicacion * SUbcCrearDef ();
-SUbicacion * SUbcCrear ( long lPos, long lTam );
+SUbicacion * SUbcCrear ( unsigned long ulPos, unsigned long ulTam );
 
 void SUbcDestruir ( SUbicacion ** p_p_ubcObj );
 
-long SUbcPos ( SUbicacion * p_ubcObj );
-long SUbcTam ( SUbicacion * p_ubcObj );
+unsigned long SUbcPos ( SUbicacion * p_ubcObj );
+unsigned long SUbcTam ( SUbicacion * p_ubcObj );
 
-void SUbcEstablecer ( SUbicacion * p_ubcObj, long lPos, long lTam );
-void SUbcEstablecerPos ( SUbicacion * p_ubcObj, long lPos );
-void SUbcEstablecerTam ( SUbicacion * p_ubcObj, long lTam );
+void SUbcEstablecer ( SUbicacion * p_ubcObj, unsigned long ulPos, unsigned long ulTam );
+void SUbcEstablecerPos ( SUbicacion * p_ubcObj, unsigned long ulPos );
+void SUbcEstablecerTam ( SUbicacion * p_ubcObj, unsigned long ulTam );
 
 int SUbcDesplazar ( SUbicacion * p_ubcObj, long lDesp );
 

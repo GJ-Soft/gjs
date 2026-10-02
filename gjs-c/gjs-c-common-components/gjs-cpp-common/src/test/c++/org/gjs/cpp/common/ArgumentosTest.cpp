@@ -184,6 +184,79 @@ static bool TestArgumentos03 ()
 }
 
 
+static bool TestArgumentos04 ()
+{
+	cout << "Test Argumentos 04:" << endl;
+	bool bRes = true;
+
+	try
+	{
+		/* El constructor desde vector<string> sigue el mismo convenio que el de argv:
+		   el elemento 0 es el nombre del programa y se descarta. */
+		vector<string> vecArgs = { "programa", "hola", "42", "-3.5" };
+		Argumentos argumentos ( vecArgs );
+
+		if ( argumentos.NumArgumentos () != 3 )
+		{
+			cout << "Error caso 1: se esperaban 3 argumentos: " << argumentos.NumArgumentos () << endl;
+			bRes = false;
+		}
+		if ( ( argumentos.Argumento ( 0 ).compare ( "hola" ) != 0 ) ||
+			 ( argumentos.Argumento ( 1 ).compare ( "42" ) != 0 ) ||
+			 ( argumentos.Argumento ( 2 ).compare ( "-3.5" ) != 0 ) )
+		{
+			cout << "Error caso 2: los argumentos no son los esperados" << endl;
+			bRes = false;
+		}
+		if ( argumentos.ArgumentoEntero ( 1 ) != 42 )
+		{
+			cout << "Error caso 3: ArgumentoEntero no devuelve 42" << endl;
+			bRes = false;
+		}
+
+		/* Solo el nombre del programa: cero argumentos utiles, y sin desbordar. */
+		vector<string> vecSolo = { "programa" };
+		Argumentos argSolo ( vecSolo );
+		if ( argSolo.NumArgumentos () != 0 )
+		{
+			cout << "Error caso 4: se esperaban 0 argumentos: " << argSolo.NumArgumentos () << endl;
+			bRes = false;
+		}
+
+		/* Vector vacio: size () - 1 no debe desbordar a SIZE_MAX. */
+		vector<string> vecVacio;
+		Argumentos argVacio ( vecVacio );
+		if ( argVacio.NumArgumentos () != 0 )
+		{
+			cout << "Error caso 5: se esperaban 0 argumentos: " << argVacio.NumArgumentos () << endl;
+			bRes = false;
+		}
+
+		/* Y sobre un Argumentos vacio, cualquier indice sigue lanzando. */
+		try
+		{
+			argVacio.Argumento ( 0 );
+			cout << "Error caso 6: no se lanzo excepcion sobre un Argumentos vacio" << endl;
+			bRes = false;
+		}
+		catch ( const ArgumentoInvalidoExcepcion & ex )
+		{
+		}
+	}
+	catch ( exception & ex )
+	{
+		cout << "Se ha producido una excepcion :" << ex.what () << endl;
+		bRes = false;
+	}
+	catch ( ... )
+	{
+		cout << "Excepcion indefinida" << endl;
+		bRes = false;
+	}
+	return ( bRes );
+}
+
+
 bool TestArgumentos ()
 {
 	bool bRes = true;
@@ -207,6 +280,15 @@ bool TestArgumentos ()
 		bRes = false;
 	}
 	if ( TestArgumentos03() )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestArgumentos04() )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
 	}

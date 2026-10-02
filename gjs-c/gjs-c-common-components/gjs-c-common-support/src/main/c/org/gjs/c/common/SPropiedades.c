@@ -138,6 +138,21 @@ SListaLiterales * SPropPropiedades ( SPropiedades * p_propObj )
     return ( p_lislitRes );
 }
 
+SListaEntradas * SPropEntradas ( SPropiedades * p_propObj )
+{
+ 	SListaEntradas * p_lisentRes;
+	
+	if ( ES_VALIDO ( p_propObj ) )
+	{	
+		p_lisentRes = p_propObj->p_lisentPropiedades;
+	}
+	else
+	{
+		p_lisentRes = NULL;
+	}
+    return ( p_lisentRes );
+}
+
 int SPropExistePropiedad ( SPropiedades * p_propObj, const char * p_cClave )
 {
  	int iRes;

@@ -579,22 +579,22 @@ int SLisLitEliminar ( SListaLiterales * p_lisObj )
 
 int SLisLitExiste ( SListaLiterales * p_lisObj, const char * p_cDatos )
 {
-	int iRes;
-	int iElem;
-	int iNumElems;
+	int				iRes;
+	SElementoPtr *	p_elpObj;
 
-	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cDatos )  ) 
+	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cDatos )  )
 	{
 		iRes = 0;
-		iElem = 0;
-		iNumElems = SLisLitNumElementos ( p_lisObj );
-		while ( ( iElem < iNumElems ) && ( iRes == 0 ) )
+		/* Por la CADENA, no por indice: el indice entra por el extremo mas
+		   cercano, asi que un recorrido completo sale cuadratico. */
+		p_elpObj = SLispElementoPtr ( p_lisObj->p_lisDatos, 0 );
+		while ( ES_VALIDO ( p_elpObj ) && ( iRes == 0 ) )
 		{
-			if ( CadComparar ( SLisLitElemento ( p_lisObj, iElem ), p_cDatos ) == COMP_IGUAL )
+			if ( CadComparar ( (char *) SElpDatos ( p_elpObj ), p_cDatos ) == COMP_IGUAL )
 			{
 				iRes = 1;
 			}
-			iElem = iElem + 1;
+			p_elpObj = SElpSucesor ( p_elpObj );
 		}
 	}
 	else
@@ -606,22 +606,25 @@ int SLisLitExiste ( SListaLiterales * p_lisObj, const char * p_cDatos )
 
 int SLisLitBuscar ( SListaLiterales * p_lisObj, const char * p_cDatos )
 {
-	int iRes;
-	int iElem;
-	int iNumElems;
+	int				iRes;
+	int				iElem;
+	SElementoPtr *	p_elpObj;
 
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_cDatos ) )
 	{
 		iRes = -1;
 		iElem = 0;
-		iNumElems = SLisLitNumElementos ( p_lisObj );
-		while ( ( iElem < iNumElems ) && ( iRes == -1 ) )
+		/* Por la CADENA, no por indice: el indice entra por el extremo mas
+		   cercano, asi que un recorrido completo sale cuadratico. */
+		p_elpObj = SLispElementoPtr ( p_lisObj->p_lisDatos, 0 );
+		while ( ES_VALIDO ( p_elpObj ) && ( iRes == -1 ) )
 		{
-			if ( CadComparar ( SLisLitElemento ( p_lisObj, iElem ), p_cDatos ) == COMP_IGUAL )
+			if ( CadComparar ( (char *) SElpDatos ( p_elpObj ), p_cDatos ) == COMP_IGUAL )
 			{
 				iRes = iElem;
 			}
 			iElem = iElem + 1;
+			p_elpObj = SElpSucesor ( p_elpObj );
 		}
 	}
 	else
@@ -664,18 +667,18 @@ void SLisLitDesactivarLiberacionMemoria ( SListaLiterales * p_lisObj )
 
 void SLisLitImprimir  ( SListaLiterales * p_lisObj )
 {
-	int iElem;
-	int iNumElems;
-	
-	if ( ES_VALIDO ( p_lisObj ) ) 
+	SElementoPtr *	p_elpObj;
+
+	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		printf ( "Contenido de la lista: [\n" );
-		iElem = 0;
-		iNumElems = SLisLitNumElementos ( p_lisObj );
-		while ( iElem < iNumElems )
+		/* Por la CADENA, no por indice: el indice entra por el extremo mas
+		   cercano, asi que un recorrido completo sale cuadratico. */
+		p_elpObj = SLispElementoPtr ( p_lisObj->p_lisDatos, 0 );
+		while ( ES_VALIDO ( p_elpObj ) )
 		{
-			printf ( "\t[%s], \n", SLisLitElemento ( p_lisObj, iElem ) );
-			iElem = iElem + 1;
+			printf ( "\t[%s], \n", (char *) SElpDatos ( p_elpObj ) );
+			p_elpObj = SElpSucesor ( p_elpObj );
 		}
 		printf ( "]\n" );
 	}

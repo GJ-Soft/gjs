@@ -33,6 +33,7 @@ int SLispEsValida ( SListaPtr * p_lisObj );
 int SLispNumElementos ( SListaPtr * p_lisObj );
 int SLispEstaVacia ( SListaPtr * p_lisObj );
 byte * SLispElemento ( SListaPtr * p_lisObj, int iElem );
+SElementoPtr * SLispElementoPtr ( SListaPtr * p_lisObj, int iElem );
 
 int SLispEstablecerElem ( SListaPtr * p_lisObj, int iElem, byte * p_byDatos );
 int SLispInsertarElem ( SListaPtr * p_lisObj, int iPosAnt, byte * p_byDatos );

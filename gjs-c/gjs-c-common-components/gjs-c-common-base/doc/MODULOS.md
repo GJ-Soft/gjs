@@ -124,23 +124,26 @@ establece cuatro ejes:
 
 Reglas de conmutación:
 
-- `CYGWIN` se define si hay `__CYGWIN__` **y** alguno de los `-D` del pom
-  (`CYGWIN_WIN` o `CYGWIN_POSIX`).
-- Con `CYGWIN`: `CYGWIN_WIN` → `WIN`; en cualquier otro caso → `POSIX`.
-- Sin `CYGWIN`, `WIN` y `POSIX`: se asume `WIN`.
+- `CYGWIN` y `WIN` a la vez son un `#error`: Cygwin se compila siempre como
+  POSIX.
+- `CYGWIN` implica `POSIX`.
+- Sin `WIN` y sin `POSIX`: se asume `WIN`.
 - `CC` fuerza `POSIX`.
 - `MODO_DEPURACION_2` implica `MODO_DEPURACION`.
 - En `WIN` se eleva `WINVER` y `_WIN32_WINNT` a `0x0500` como mínimo.
 
-Los `-D` vienen del pom padre `gjs-c-common-parent` según la propiedad
-`cygwin.style`, y el compilador lo resuelve el `PATH` de la consola:
+Los `-D` vienen del pom padre `gjs-c-common-parent`, de un perfil que **activa
+el entorno** (la variable `CYGWIN`), no una propiedad. El mismo perfil fija el
+prefijo del toolchain, así que el compilador tampoco depende del `PATH`:
 
-| Modo                       | Compilador       | `__CYGWIN__` | Macros resultantes |
-| -------------------------- | ---------------- | ------------ | ------------------ |
-| Cygwin POSIX (por defecto) | gcc de Cygwin    | sí           | `POSIX` + `CYGWIN` |
-| Cygwin estilo Windows      | gcc de Cygwin    | sí           | `WIN` + `CYGWIN`   |
-| Windows puro               | gcc de MinGW-w64 | no           | `WIN`              |
-| Linux POSIX (futuro)       | gcc de Linux     | no           | `POSIX`            |
+| Modo         | `platformOptions`  | Compilador               | Macros resultantes |
+| ------------ | ------------------ | ------------------------ | ------------------ |
+| Cygwin       | `-DCYGWIN -DPOSIX` | gcc de Cygwin            | `CYGWIN` + `POSIX` |
+| Windows puro | `-DWIN`            | `x86_64-w64-mingw32-gcc` | `WIN`              |
+| Linux        | `-DPOSIX`          | gcc de Linux             | `POSIX`            |
+
+> El modo "Cygwin estilo Windows" (`-Dcygwin.style=windows`, macros
+> `CYGWIN_WIN` / `CYGWIN_POSIX`) **ya no existe**.
 
 ### `BaseConfig.h`
 
@@ -149,8 +152,9 @@ cabeceras del sistema que correspondan al entorno (`windows.h` o
 `stdio/stdlib/unistd/…`) y define:
 
 - Tipos elementales: `bit`, `nibble`, `byte`, `byte2`, `byte4`, `byte8`,
-  `word`, `dword`, `llong`, `ullong` (con los macros testigo `BYTE2`, `BYTE4`,
-  `BYTE8`, `LLONG` según el entorno soporte cada uno).
+  `word`, `dword` (con los macros testigo `BYTE2`, `BYTE4` y `BYTE8` según el
+  entorno soporte cada uno). Para 64 bits enteros se usa directamente
+  `long long` / `unsigned long long`, estándar desde C99.
 - Compatibilidad Windows fuera de Windows: `BYTE`, `WORD`, `DWORD`, `MAKEWORD`,
   `LOBYTE`, `HIBYTE`. `DWORD` se protege además con `!defined ( WIN )` porque en
   Cygwin LP64 `unsigned long` son 64 bits y rompería la ABI de Windows.

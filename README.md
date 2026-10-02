@@ -130,6 +130,7 @@ GNU GENERAL PUBLIC LICENSE.
 * [Arquitectura del Sistema y Módulos](docs/architecture.md)
 * [Ciclo de Vida del Software y Despliegue](docs/ciclo-vida.md)
 * [Actualización de versión](docs/actualizacion-version.md)
+* [Caso aislado en Windows](docs/caso-aislado-windows.md)
 
 ---
 Para reportar fallos o proponer cambios en la documentación, por favor abre un Issue en este repositorio.

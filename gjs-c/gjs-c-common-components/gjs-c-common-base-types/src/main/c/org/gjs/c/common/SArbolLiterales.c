@@ -29,7 +29,10 @@ void SArbLitDestruir ( SArbolLiterales ** p_p_arbObj )
 		p_arbObj = *p_p_arbObj;
 		if ( ES_VALIDO ( p_arbObj ) )
 		{
-			SArbLitVaciar ( p_arbObj );
+			/* El arbol de contenido lo reserva SArbLitCrear, asi que hay que
+			   destruirlo, no solo vaciarlo: vaciandolo se fugaba el SArbolPtr en
+			   cada crear/destruir. Es lo que hace SLisLitDestruir con su lista */
+			SArbPtrDestruir ( &(p_arbObj->p_arbContenido) );
 			MemLiberar ( (void **) p_p_arbObj );
 		}
 	}

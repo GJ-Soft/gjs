@@ -19,6 +19,9 @@
 
 
 #include <Precompilacion.h>
+/* HKEY y los demas tipos del registro salen de windows.h, que entra por
+   BaseConfig.h. Precompilacion.h por si solo no lo trae. */
+#include <BaseConfig.h>
 
 
 #if ( defined ( WIN ) )
@@ -57,7 +60,13 @@ HKEY SisRegClaveInfoUsuarios ();
 //HKEY SisRegAbrirUsuarioActual ( int iSoloLectura );
 //HKEY SisRegAbrirClasesUsuarioActual ( int iSoloLectura );
 HKEY SisRegCrear ( HKEY hkeyPadre, const char * p_cClave );
+/* SisRegAbrir abre con KEY_READ. Antes pedia KEY_ALL_ACCESS sin opcion, y eso
+   sobre HKEY_LOCAL_MACHINE exige administrador: un proceso normal no podia ni
+   leer. Quien necesite escribir usa la Ext y pasa el acceso que quiera
+   ( KEY_WRITE, KEY_ALL_ACCESS... ). En C no hay argumentos por defecto, de ahi
+   el par, que es el mismo idioma que el resto del modulo. */
 HKEY SisRegAbrir ( HKEY hkeyPadre, const char * p_cClave );
+HKEY SisRegAbrirExt ( HKEY hkeyPadre, const char * p_cClave, REGSAM samAcceso );
 void SisRegCerrar ( HKEY hkeyClave );
 int SisRegEsClaveValida ( HKEY hkeyClave );
 long SisRegNumSubclaves ( HKEY hkeyClave );
@@ -90,11 +99,20 @@ int SisRegistrarGUID ( const GUID guidCodigo, const char * p_cNombre, const char
 					 		 const GUID guidModulo, const char * p_cFicModulo, const char * p_cVersion );
 
 void SisRegDesregistrarModulo ( const GUID guidModulo, const char * p_cVersion );
-void SisRegDesregistrarGUID ( const GUID guidCodigo, const char * p_cNombre );
+/* p_cFicModulo entra aqui, y en SisRegEstaRegistradoGUID, porque el ProgId se
+   arma con el: SisRegistrarGUID lo escribe como ficheroModulo.nombre. Sin ese
+   dato estas dos lo reconstruian como nombre.nombre y no encontraban nada de lo
+   que habia registrado la otra. */
+void SisRegDesregistrarGUID ( const GUID guidCodigo, const char * p_cNombre,
+							  const char * p_cFicModulo );
 
 
 int SisRegEstaRegistradoModulo ( const GUID guidModulo );
-int SisRegEstaRegistradoGUID ( const GUID guidCodigo );
+/* La cabecera declaraba esta con un solo parametro y la implementacion se
+   llamaba EstaRegistradoGUID, sin el prefijo SisReg: ni casaban ni habia forma
+   de llegar a ella desde fuera. */
+int SisRegEstaRegistradoGUID ( const GUID guidCodigo, const char * p_cNombre,
+							   const char * p_cFicModulo );
 
 
 

@@ -18,6 +18,7 @@
 #include <CppBase.h>
 #include <CppCommonTypes.h>
 
+/* Tambien bajo Cygwin, que usa los sockets POSIX aunque WIN este definido. */
 #if ( ! defined ( WIN ) )
 #	include <sys/types.h>
 #	include <netdb.h>

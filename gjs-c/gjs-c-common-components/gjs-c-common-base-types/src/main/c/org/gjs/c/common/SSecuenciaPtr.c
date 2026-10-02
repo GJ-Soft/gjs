@@ -78,6 +78,7 @@ int SSecpEstaVacia ( SSecuenciaPtr * p_secObj )
 	}
 	return ( iRes );
 }
+
 byte * SSecpElemento ( SSecuenciaPtr * p_secObj, int iElem )
 {
 	byte * p_byRes;
@@ -91,6 +92,23 @@ byte * SSecpElemento ( SSecuenciaPtr * p_secObj, int iElem )
 		p_byRes = NULL;
 	}
 	return ( p_byRes );
+}
+
+/* El ELEMENTO en esa posicion, no el dato. Gemela de SSecElemento en
+   SSecuencia; ver SLispElementoPtr. */
+SElementoPtr * SSecpElementoPtr ( SSecuenciaPtr * p_secObj, int iElem )
+{
+	SElementoPtr * p_elpRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		p_elpRes = SLispElementoPtr ( p_secObj->p_lisObjetos, iElem );
+	}
+	else
+	{
+		p_elpRes = NULL;
+	}
+	return ( p_elpRes );
 }
 
 int SSecpInsertar ( SSecuenciaPtr * p_secObj, byte * p_byDatos )

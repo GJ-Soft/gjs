@@ -51,6 +51,12 @@
 		
 		<!-- Aggregational platform specific compilation options -->
 		<gjs.nar.platform.options>${platformOptions}</gjs.nar.platform.options>
+		<!-- Hueco para ${platformLinkOptions}: hoy no esta conectado, por eso queda
+		     vacio. Si algun dia se usa, ojo con el contenido: tienen que ser opciones
+		     del DRIVER de gcc, no del enlazador. Envueltas en -Wl, llegan a ld, que
+		     lee -m como emulacion y aborta ( "unrecognised emulation mode: cygwin",
+		     comprobado con binutils 2.46.1, que solo admite i386pep e i386pe ). La
+		     emulacion ya la pone gjs.nar.emulation.option, en la linea de arriba. -->
 		<gjs.nar.platform.link.options></gjs.nar.platform.link.options>
 
 		<!-- Default Compiler options (must be defined in the pom.xml son) -->
@@ -59,12 +65,8 @@
 		<gjs.nar.compiler.language/>
 		<gjs.nar.language.version/>
 		<gjs.nar.language.standard/>
-		<gjs.nar.language.aol/>
 
 		<!-- Platform options -->	
-		<gjs.nar.architecture>x86_64-pc-cygwin</gjs.nar.architecture>
-		<gjs.nar.emulation>i386pep</gjs.nar.emulation>
-		<gjs.nar.architecture.option>-A ${gjs.nar.architecture}</gjs.nar.architecture.option> 
 		
 		<!-- Threads -->
 		<gjs.nar.threads.option>-pthread</gjs.nar.threads.option>
@@ -108,8 +110,8 @@
 		<cpp.gcovr.python>${cygwinDir}/bin/python3.9.exe</cpp.gcovr.python>
 		<!-- Ese Python es POSIX: no reconoce C:\... ni C:/... como rutas absolutas y
 		     las concatena al directorio de trabajo. Todas las rutas que reciba se
-		     convierten antes con cygpath -u. -->
-		<cpp.gcovr.cygpath>${cygwinDir}/bin/cygpath.exe</cpp.gcovr.cygpath>
+		     convierten antes con cygpath -u, con el ${cpp.cygpath} que hereda de
+		     gjs-c-common-parent (alli lo necesita doxygen por lo mismo). -->
 	</properties>
 
 	<build>	
@@ -128,6 +130,7 @@
 						<!--output>${finalName}</output-->
 						<c>
 							<name>${gjs.nar.compiler}</name>							
+							<prefix>${gjs.nar.toolchain.prefix}</prefix>
 							<debug>false</debug>
 							<sourceDirectory>${project.basedir}/src/main/${gjs.nar.compiler.language}</sourceDirectory>
 							<includes>
@@ -172,6 +175,7 @@
 						</c>
 						<cpp>
 							<name>${gjs.nar.compiler}</name>							
+							<prefix>${gjs.nar.toolchain.prefix}</prefix>
 							<debug>false</debug>
 							<sourceDirectory>${project.basedir}/src/main/${gjs.nar.compiler.language}</sourceDirectory>
 							<includes>
@@ -217,6 +221,15 @@
 						
 						<linker>
 							<name>${gjs.nar.linker}</name>
+							<prefix>${gjs.nar.toolchain.prefix}</prefix>
+							<!-- Donde viven las DLL/.so del propio toolchain (libstdc++, libgcc,
+							     libwinpthread). No interviene en el enlazado: el plugin lo anade al
+							     PATH con el que lanza los tests y los ejecutables, que si no arrancan
+							     ni llegan a dar un error legible (en Windows, 0xC0000135 a secas).
+							     Hasta ahora solo llegaba de rebote, por el <binDirectory> de alguna
+							     <lib> externa, asi que los modulos sin librerias externas fallaban.
+							     Si el directorio no existe ( Cygwin, Linux ) se ignora. -->
+							<runtimeDirectory>${cpp.dir.lib.runtime}</runtimeDirectory>
 							<incremental>false</incremental>
 							
 							<options>
@@ -225,10 +238,12 @@
 								<option>${gjs.nar.platform.link.options}</option>
 								<option>${gjs.nar.threads.option}</option>
 							</options>
+							<!-- Vacio a proposito. Linker.getTestLinker parte de la configuracion
+							     de arriba y le SUMA lo que haya aqui, no la sustituye, asi que
+							     repetir una opcion de <options> solo consigue que el enlazado de
+							     los tests la reciba dos veces. Aqui va unicamente lo que sea
+							     exclusivo de los tests. -->
 							<testOptions>
-								<option>-v</option> 
-								<option>${gjs.nar.emulation.option}</option> 
-								<option>${gjs.nar.platform.link.options}</option>
 							</testOptions>
 							<libs>
 							</libs>					
@@ -279,7 +294,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${gjs.nar.build.directory}</outputDirectory>
-							<overwrite>true</overwrite>
+							<changeDetection>always</changeDetection>
 							<resources>
 								<resource>
 									<directory>${resources.dir}</directory>
@@ -313,7 +328,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${gjs.nar.build.testDirectory}</outputDirectory>
-							<overwrite>true</overwrite>
+							<changeDetection>always</changeDetection>
 							<resources>
 								<resource>
 									<directory>${testResources.dir}</directory>
@@ -341,6 +356,26 @@
 					</execution>						
 				</executions>
 			</plugin>	
+			<!-- gjs-no-java-parent desactiva default-jar ( phase none ) para Python y
+			     npm, pero el ciclo de vida nar lo necesita: enlaza maven-jar-plugin:jar
+			     en package, y ese jar es el artefacto principal del modulo, el que
+			     lleva META-INF/nar/.../nar.properties con el que los consumidores
+			     resuelven los NAR adjuntos. Se reactiva aqui. skipIfEmpty porque una
+			     ejecucion con phase tambien corre en los parents ( packaging pom ),
+			     que no tienen target/classes: sin el, adjuntarian un jar vacio. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>package</phase>
+						<configuration>
+							<skipIfEmpty>true</skipIfEmpty>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		
 		<directory>${basedir}/target</directory>
@@ -351,16 +386,6 @@
 			<id>debug</id>
             <properties>
                 <gjs.nar.optimization>none</gjs.nar.optimization>
-				<!-- -g: la propiedad anterior era 'compilerExtraOptions', que no la
-				     leia nadie, asi que el -g no llegaba al compilador de C.
-				     -ftrivial-auto-var-init=pattern: rellena toda variable automatica
-				     sin inicializar; los punteros quedan en 0xFEFEFEFEFEFEFEFE, fuera
-				     del rango que acepta ES_VALIDO ( ver Memoria.h ). Es el sustituto
-				     GNU de los rellenos 0xCC / 0xCD del CRT de depuracion de MSVC.
-				     Comprobado con gcc 14.4 de Cygwin y de MinGW.
-				     La alternativa '=zero' deja los punteros a nulo: mas barata, y la
-				     detecta igual cualquier ES_VALIDO. -->
-				<gjs.compiler.additionalOptions>-g -ftrivial-auto-var-init=pattern</gjs.compiler.additionalOptions>
             </properties>
 			<build>
 				<plugins>
@@ -368,11 +393,40 @@
 						<groupId>org.gjsoft.maven.plugins</groupId>
 						<artifactId>nar-maven-plugin</artifactId>
 						<configuration>
-							<c combine.children="append">
+							<!-- Un <option> es UN argumento: el plugin hace arg.setValue(cadena)
+							     sin partir por espacios, y ademas CommandLineCompiler entrecomilla
+							     en Windows todo argumento que contenga uno. Los dos flags iban
+							     juntos en una sola cadena (via gjs.compiler.additionalOptions) y
+							     le habrian llegado a gcc como un unico argumento entrecomillado.
+							     Por eso van uno por <option>, y por append, que es el mismo idioma
+							     que usa el perfil cobertura.
+
+							     El -g no se pone a mano: lo emite el compilador a partir del
+							     <debug>true</debug> de aqui abajo. Hubo que ponerlo suelto durante
+							     un tiempo porque ese <debug> no llegaba a aplicarse, justamente por
+							     el append mal puesto que se explica al final de este comentario.
+							     -ftrivial-auto-var-init=pattern: rellena toda variable automatica
+							     sin inicializar; los punteros quedan en 0xFEFEFEFEFEFEFEFE, fuera
+							     del rango que acepta ES_VALIDO ( ver Memoria.h ). Es el sustituto
+							     GNU de los rellenos 0xCC / 0xCD del CRT de depuracion de MSVC.
+							     Comprobado con gcc 14.4 de Cygwin y de MinGW.
+							     La alternativa '=zero' deja los punteros a nulo: mas barata, y la
+							     detecta igual cualquier ES_VALIDO.
+
+							     El append va en <options> y NO en <c>/<cpp>: appendear el elemento
+							     entero anadia un segundo <debug> junto al <debug>false</debug> del
+							     pluginManagement en vez de sustituirlo. -->
+							<c>
 								<debug>true</debug>
+								<options combine.children="append">
+									<option>-ftrivial-auto-var-init=pattern</option>
+								</options>
 							</c>
-							<cpp combine.children="append">
+							<cpp>
 								<debug>true</debug>
+								<options combine.children="append">
+									<option>-ftrivial-auto-var-init=pattern</option>
+								</options>
 							</cpp>
 						</configuration>
 					</plugin>
@@ -393,22 +447,52 @@
 		</profile>
 		<profile>
 			<id>cobertura</id>
-			<!-- TODO compilar en un subdirectorio diferente y lanzar ejecucion de gcovr x -m despues de los test-->
+			<!-- TODO compilar en un subdirectorio diferente -->
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.gjsoft.maven.plugins</groupId>
 						<artifactId>nar-maven-plugin</artifactId>
 						<configuration>
+							<!-- El flag de cobertura de gcc tiene que llegar a TRES sitios, y
+							     faltaban dos:
+							     1) <c>: el stack C de gjs compila por ahi
+							        (gjs.source.language=c), asi que estando solo en <cpp> no se
+							        instrumentaba absolutamente nada.
+							     2) <linker>: al compilar genera los .gcno e instrumenta el codigo,
+							        pero es al enlazar cuando arrastra libgcov, y sin ella el
+							        Test.exe no resuelve los simbolos gcov.
+							     Va en <options> y no en <testOptions> porque estos se SUMAN a
+							     aquellos (Compiler.getTestCompiler y Linker.getTestLinker parten
+							     de la configuracion normal y le anaden los suyos), asi que una
+							     sola vez cubre tambien la compilacion y el enlazado de los tests.
+							     El flag equivale a fprofile-arcs y ftest-coverage al compilar mas
+							     lgcov al enlazar; por eso no hacen falta sueltos. -->
+							<c>
+								<options combine.children="append">
+									<option>--coverage</option>
+								</options>
+							</c>
 							<cpp>
 								<options combine.children="append">
 									<option>--coverage</option>
-									<!--	
-									<option>-fprofile-arcs</option>
-									<option>-ftest-coverage</option>
-									-->
 								</options>
 							</cpp>
+							<linker>
+								<!-- Aqui NO vale el mismo flag que en la compilacion, aunque hagan
+								     lo mismo: GccLinker.decorateLinkerOption deja pasar al driver
+								     las opciones cuyo segundo caracter es g f F m O W l L u v, y
+								     envuelve el resto en -Wl, para ld. El flag de cobertura empieza
+								     por dos guiones, cae en el 'resto', y ld lo rechaza con
+								     "unrecognized option". fprofile-arcs empieza por -f, pasa
+								     entero, y al enlazar hace que el driver anada -lgcov el solo, y
+								     en el sitio correcto: escribir -lgcov aqui a mano lo colocaria
+								     ANTES de los objetos, que con una libreria estatica no resuelve
+								     nada. -->
+								<options combine.children="append">
+									<option>-fprofile-arcs</option>
+								</options>
+							</linker>
 						</configuration>
 					</plugin>
 					<plugin>
@@ -417,21 +501,28 @@
 						<executions>
 							<execution>
 								<id>cobertura</id>
+								<!-- Corre despues de nar-test, aunque compartan fase: dentro de una
+								     misma fase Maven ejecuta primero las ejecuciones que vienen del
+								     ciclo de vida del packaging (las default-*, y nar-test es una de
+								     ellas) y despues las declaradas en el pom, sea cual sea el orden
+								     en que se declaren los plugins. Comprobado. Sin los .gcda que
+								     dejan los tests al correr, gcovr solo veria los .gcno y daria
+								     cobertura cero. -->
 								<phase>test</phase>
 								<configuration>
 									<target name="execute-gcovr">
 										<!-- Al estilo POSIX todas las rutas que va a ver el Python de Cygwin,
 										     la del propio script incluida. cygpath -u es idempotente: si la
 										     ruta ya viene en estilo POSIX, la deja igual. -->
-										<exec executable="${cpp.gcovr.cygpath}" outputproperty="cpp.gcovr.script.posix" failonerror="true">
+										<exec executable="${cpp.cygpath}" outputproperty="cpp.gcovr.script.posix" failonerror="true">
 											<arg value="-u"/>
 											<arg value="${cpp.gcovr}"/>
 										</exec>
-										<exec executable="${cpp.gcovr.cygpath}" outputproperty="cpp.gcovr.root.posix" failonerror="true">
+										<exec executable="${cpp.cygpath}" outputproperty="cpp.gcovr.root.posix" failonerror="true">
 											<arg value="-u"/>
 											<arg value="${cpp.gcovr.root}"/>
 										</exec>
-										<exec executable="${cpp.gcovr.cygpath}" outputproperty="cpp.gcovr.target.posix" failonerror="true">
+										<exec executable="${cpp.cygpath}" outputproperty="cpp.gcovr.target.posix" failonerror="true">
 											<arg value="-u"/>
 											<arg value="${cpp.gcovr.target}"/>
 										</exec>

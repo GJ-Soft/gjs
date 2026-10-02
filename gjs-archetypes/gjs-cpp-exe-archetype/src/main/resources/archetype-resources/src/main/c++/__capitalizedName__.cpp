@@ -25,7 +25,6 @@
 ${symbol_pound}include "${includeConfig}"
 
 
-
 using namespace std;
 using namespace org::gjs::cpp::common;
 using namespace org::gjs::cpp::common::log;
@@ -36,7 +35,7 @@ static bool validateArgument ( int iArg, string sArg );
 #end
 
 #if( $parameters > 0 )
-int execute${capitalizedName} ( int iNumArgs, char * p_p_cArgs [] )
+int execute${capitalizedName} ( const vector <string> & vArgs )
 #else
 int execute${capitalizedName} ()
 #end
@@ -53,7 +52,7 @@ int execute${capitalizedName} ()
 
 	iRes = EXIT_SUCCESS;
 #if( $parameters > 0 )
-	p_argParametros = new Argumentos ( iNumArgs, p_p_cArgs );
+	p_argParametros = new Argumentos ( vArgs );
 	if ( ES_VALIDO ( p_argParametros ) )
 	{
 		if ( p_argParametros->NumArgumentos () == ${parameters} )
@@ -103,8 +102,9 @@ static bool validateArgument ( int iArg, string sArg )
 	bool bRes = false;
 	switch ( iArg ) 
 	{
-#foreach($i in [0..$parameters])
-			case $i:
+#foreach($i in [1..$parameters])
+#set( $iCase = $i - 1 )
+			case ${iCase}:
 				// TODO
 				bRes = !sArg.empty();
 				break;

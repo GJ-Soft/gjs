@@ -81,18 +81,41 @@ En Windows, `LoadLibrary`, `GetProcAddress` y la API de recursos de versión.
 
 ## Observaciones
 
-> **El módulo entero está sin implementar fuera de Windows.** No hay una sola
-> llamada a `dlopen` ni a `dlsym` en las 652 líneas: la rama Windows usa
-> `LoadLibrary` y `GetProcAddress`, y la rama `#else` es un `PENDIENTE` que
-> devuelve 0 o `NULL` en las doce funciones.
+> **Implementado para POSIX el 2026-09-18.** No queda ninguna rama POSIX
+> pendiente: de las doce funciones, once valen en los dos mundos y la duodécima
+> —`SisLibRutinaPuntoDeEntrada`— pasó a declararse **sólo bajo `WIN`**.
 >
-> En el modo de compilación normal `SisLibCargar` devuelve 0 siempre y
-> `SisLibPrimitiva` devuelve `NULL` siempre. Es el módulo con más código muerto
-> del componente: 652 líneas que no hacen nada en el modo por defecto.
+> El reparto no es el evidente, y conviene saber por qué:
 >
-> La traducción no es difícil —`dlopen`/`dlsym`/`dladdr` cubren carga, símbolos y
-> dirección de mapeo—, pero versión y tamaño en memoria no tienen equivalente
-> directo en ELF.
+> - **Cargar y resolver** van con `dlopen` / `dlsym` / `dlclose`.
+> - **Enumerar, la ruta, la dirección base y el tamaño** van con
+>   `/proc/self/maps`. No se usa `dl_iterate_phdr` ni `dlinfo`, que sería lo
+>   natural en glibc, porque **Cygwin no los trae** —ni siquiera existe
+>   `link.h`—, y hacía falta algo que valiera en los dos.
+> - **`SisLibEstaCargada` mira el mapa, no le pregunta al enlazador.** Lo suyo
+>   sería `dlopen` con `RTLD_NOLOAD`, pero **Cygwin ignora esa bandera**
+>   (comprobado: carga la librería igualmente), así que usarla convertiría la
+>   consulta en una carga y contestaría que sí a cualquier librería que exista
+>   en el disco. Por lo mismo, `SisLibPrimitiva` comprueba el mapa **antes** de
+>   hacer `dlopen`.
+> - **`SisLibVersion` saca la versión del nombre del fichero**
+>   (`libfoo.so.1.2.3`), que es la convención POSIX equivalente al
+>   `DllGetVersion` de las DLL del shell de Windows. Los `.dll` de Cygwin no la
+>   llevan y devuelve 0.
+>
+> **`SisLibRutinaPuntoDeEntrada` es sólo de Windows**, y por eso ya no figura
+> como pendiente: está dentro de un `#if ( defined ( WIN ) )` en la cabecera y
+> en el fuente, así que fuera de Windows **no existe** y un código que la llame
+> no compila, en vez de recibir un `NULL` que no significa nada.
+>
+> El motivo es de fondo, no de esfuerzo: el "punto de entrada" es del formato
+> PE —la rutina que el cargador llama al enganchar la librería, `DllMain`—. Un
+> objeto compartido de ELF no tiene eso: tiene constructores y destructores, que
+> son varios y no una dirección, y su `e_entry` no se usa.
+>
+> El nombre se busca por el fichero de la ruta: valen `"cygwin1.dll"`,
+> `"/usr/bin/cygwin1.dll"` y `"cygwin1"`. A diferencia de Windows, **distingue
+> mayúsculas**.
 
 - **Identificar la librería por su nombre en cada llamada es frágil.** No hay
   descriptor: `SisLibPrimitiva ( "milib.dll", … )` tiene que volver a resolver la

@@ -13,8 +13,8 @@ import platform
 
 from ${package}.client.${capitalizedName}Client import ${capitalizedName}Client
 
-def inicializar(applicationProperties):
-    print(f"Se inicia el ejecutable {applicationProperties.app_name}-{applicationProperties.app_version} ")
+def inicializar( applicationProperties ):
+    print(f"Se inicia el ejecutable {applicationProperties.appName}-{applicationProperties.appVersion} ")
     print(f"Sistema operativo: {platform.system()}")
     print(f"Versión de Python: {platform.python_version()}")
         
@@ -25,9 +25,9 @@ def inicializar(applicationProperties):
 
 def main():
     try:
-        from org.gjs.python.common.properties import applicationProperties
+        from org.gjs.python.common.configuration import getApplicationProperties
 
-        inicializar(applicationProperties)
+        inicializar( getApplicationProperties() )
         
         client = ${capitalizedName}Client()
 

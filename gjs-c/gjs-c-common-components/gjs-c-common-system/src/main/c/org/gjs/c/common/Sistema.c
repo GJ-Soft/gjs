@@ -53,23 +53,6 @@ void SisFinalizar ()
 #  endif
 }
 
-
-void SignalHandlerPorDefecto ( int iSignal )
-{
-	// sigaction entrega el codigo de interrupcion del sistema operativo, mientras que
-	// las rutinas SisSig* trabajan con los identificadores internos SIS_SIG_*: hay
-	// que convertir con SisSigId, o el nombre que sale no es el de la interrupcion
-	// recibida. Se evita ademas SisSigMensaje, que reserva memoria, cosa que no es
-	// segura dentro de un manejador de interrupciones.
-	int iId = SisSigId ( iSignal );
-	SisConAsincEscribirConFormato ( "%sRecibida interrupcion: %s(%d): %s%s\n", ANSI_ROJO, SisSigNombre ( iId ), iSignal, SisSigDescripcion ( iId ), ANSI_RESETEAR );
-	//SisConAsincEscribirConFormato ( "%sRecibida interrupcion: %s(%d)%s\n", ANSI_ROJO, SisSigNombre ( iSignal ), iSignal, ANSI_RESETEAR );
-	//if ( iSignal == SIGABRT )
-	//{
-	//	RetornarAPrograma ();
-	//}
-}
-
 //void GrabarRetornoAPrograma()
 //{
 //	_bRetornar = true;
@@ -87,6 +70,23 @@ void SignalHandlerPorDefecto ( int iSignal )
 //}
 
 #if ( defined ( SIGNALS_PERMITIDOS ) )
+void SignalHandlerPorDefecto ( int iSignal )
+{
+	// sigaction entrega el codigo de interrupcion del sistema operativo, mientras que
+	// las rutinas SisSig* trabajan con los identificadores internos SIS_SIG_*: hay
+	// que convertir con SisSigId, o el nombre que sale no es el de la interrupcion
+	// recibida. Se evita ademas SisSigMensaje, que reserva memoria, cosa que no es
+	// segura dentro de un manejador de interrupciones.
+	int iId = SisSigId ( iSignal );
+	SisConAsincEscribirConFormato ( "%sRecibida interrupcion: %s(%d): %s%s\n", ANSI_ROJO, SisSigNombre ( iId ), iSignal, SisSigDescripcion ( iId ), ANSI_RESETEAR );
+	//SisConAsincEscribirConFormato ( "%sRecibida interrupcion: %s(%d)%s\n", ANSI_ROJO, SisSigNombre ( iSignal ), iSignal, ANSI_RESETEAR );
+	//if ( iSignal == SIGABRT )
+	//{
+	//	RetornarAPrograma ();
+	//}
+}
+
+
 void SisEstablecerManejadorInterrupciones ( SIGNAL_HANDLER fManejador )
 {
     struct sigaction stAccion;

@@ -22,21 +22,31 @@ typedef struct
 
 
 
-SSecuenciaEnterosLargos * SSecEntLCrear ();
+SSecuenciaEnterosLargos * SSecEntlCrear ();
 
 
-void SSecEntLDestruir ( SSecuenciaEnterosLargos ** p_p_secObj );
+void SSecEntlDestruir ( SSecuenciaEnterosLargos ** p_p_secObj );
 
-int SSecEntLEsValida ( SSecuenciaEnterosLargos * p_secObj );
+int SSecEntlEsValida ( SSecuenciaEnterosLargos * p_secObj );
 
-int SSecEntLNumElementos ( SSecuenciaEnterosLargos * p_secObj );
-long SSecEntLElemento ( SSecuenciaEnterosLargos * p_secObj, int iElem );
+int SSecEntlNumElementos ( SSecuenciaEnterosLargos * p_secObj );
+long SSecEntlElemento ( SSecuenciaEnterosLargos * p_secObj, int iElem );
 
-int SSecEntLInsertar ( SSecuenciaEnterosLargos * p_secObj, long lDato );
-int SSecEntLEliminar ( SSecuenciaEnterosLargos * p_secObj, int iElem );
-int SSecEntLVaciar ( SSecuenciaEnterosLargos * p_secObj );
+int SSecEntlInsertar ( SSecuenciaEnterosLargos * p_secObj, long lDato );
+int SSecEntlEliminar ( SSecuenciaEnterosLargos * p_secObj, int iElem );
+int SSecEntlVaciar ( SSecuenciaEnterosLargos * p_secObj );
 
-int SSecEntLExiste ( SSecuenciaEnterosLargos * p_secObj, long lDato );
+int SSecEntlExiste ( SSecuenciaEnterosLargos * p_secObj, long lDato );
+
+SSecuenciaEnterosLargos * SSecEntlExtraerUnicos ( SSecuenciaEnterosLargos * p_secObj );
+int SSecEntlTieneRepetidos ( SSecuenciaEnterosLargos * p_secObj );
+
+long SSecEntlMin ( SSecuenciaEnterosLargos * p_secObj );
+long SSecEntlMax ( SSecuenciaEnterosLargos * p_secObj );
+void SSecEntlObtenerParametros ( SSecuenciaEnterosLargos * p_secObj, long * p_lMin, long * p_lMax, double * p_dMed ); 
+
+int SSecEntlDefinidaPositiva ( SSecuenciaEnterosLargos * p_secObj );
+int SSecEntlSemidefinidaPositiva ( SSecuenciaEnterosLargos * p_secObj );
 
 
 

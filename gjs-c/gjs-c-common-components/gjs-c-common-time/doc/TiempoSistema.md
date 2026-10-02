@@ -25,12 +25,12 @@ sobre valores que se le dan.
 
 ### Lectura del reloj
 
-| Función                     | Devuelve                                                              |
-| --------------------------- | --------------------------------------------------------------------- |
-| `long TiempoHoy ()`         | La fecha de hoy en formato `AAAAMMDD`.                                |
-| `long TiempoAhora ()`       | La hora actual en formato `HHMMSS`.                                   |
-| `double TiempoHoyAhora ()`  | Fecha y hora combinadas, como en [TiempoNumerico](TiempoNumerico.md). |
-| `llong TiempoHoyAhoraLL ()` | Ídem sobre `llong`. Sólo con `LLONG`.                                 |
+| Función                         | Devuelve                                                              |
+| ------------------------------- | --------------------------------------------------------------------- |
+| `long TiempoHoy ()`             | La fecha de hoy en formato `AAAAMMDD`.                                |
+| `long TiempoAhora ()`           | La hora actual en formato `HHMMSS`.                                   |
+| `double TiempoHoyAhora ()`      | Fecha y hora combinadas, como en [TiempoNumerico](TiempoNumerico.md). |
+| `long long TiempoHoyAhoraLL ()` | Ídem sobre `long long`.                                               |
 
 ### Espera
 
@@ -66,8 +66,8 @@ TiempoEsperar ( 5 );            /* cinco segundos */
 ## Observaciones
 
 - **La cabecera incluye `<Precompilacion.h>` directamente**, en lugar de
-  `Base.h`, que es lo que hace el resto del stack. Es suficiente para el guard
-  `#if defined ( LLONG )`, pero rompe el patrón.
+  `Base.h`, que es lo que hace el resto del stack. Le basta porque sólo
+  declara tipos nativos, pero rompe el patrón.
 - **`TiempoEsperar` no dice qué hace bajo Windows.** Fuera de Windows
   `TiempoConfig.h` incluye `<unistd.h>`, lo que apunta a `sleep`; en Windows
   tendrá que ser `Sleep` en milisegundos. La resolución es de **segundos

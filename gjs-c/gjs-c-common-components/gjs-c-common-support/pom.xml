@@ -73,6 +73,7 @@
 										<name>ncurses</name>
 										<type>shared</type>
 										<directory>${cpp.dir.lib.system}</directory>
+										<binDirectory>${cpp.dir.lib.runtime}</binDirectory>
 									</lib>
 								</libs>					
 							</linker>

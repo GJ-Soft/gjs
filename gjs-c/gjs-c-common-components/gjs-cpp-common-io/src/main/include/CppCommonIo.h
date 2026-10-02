@@ -13,6 +13,7 @@
 #	include <winsock2.h>
 #endif
 
+#include <ESExcepcion.h>
 #include <SocketExcepcion.h>
 #include <Socket.h>
 

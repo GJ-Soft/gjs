@@ -685,6 +685,31 @@ static int TestCadToken01 ()
 
 
 
+/* CadCumpleExpReg evalua tambien la cadena vacia ( antes devolvia 0 sin
+   mirar el patron ). Sin patron, o con cadena nula, sigue dando 0. */
+static int TestCadCumpleExpReg01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test CadCumpleExpReg 01:\n" );
+	if ( ( CadCumpleExpReg ( "", "*" ) != 1 ) || ( CadCumpleExpReg ( "", "?" ) != 0 ) )
+	{
+		printf( "Error caso 1: la cadena vacia deberia encajar con * y no con ?\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( CadCumpleExpReg ( "fichero.txt", "?*.?*" ) != 1 ) || ( CadCumpleExpReg ( "fichero", "?*.?*" ) != 0 ) )
+	{
+		printf( "Error caso 2: ?*.?* deberia encajar con fichero.txt y no con fichero\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( CadCumpleExpReg ( NULL, "*" ) != 0 ) || ( CadCumpleExpReg ( "abc", "" ) != 0 ) ||
+		 ( CadCumpleExpReg ( "abc", NULL ) != 0 ) )
+	{
+		printf( "Error caso 3: con cadena nula o sin patron deberia dar 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
 int TestCadenas ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -703,7 +728,8 @@ int TestCadenas ()
 			( TestCadPalabras01 () == BOOL_VAL_CIERTO ) &&
 			( TestCadCoherencia01 () == BOOL_VAL_CIERTO ) &&
 			( TestCadComponer01 () == BOOL_VAL_CIERTO ) &&
-			( TestCadToken01 () == BOOL_VAL_CIERTO ) )
+			( TestCadToken01 () == BOOL_VAL_CIERTO ) &&
+			( TestCadCumpleExpReg01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

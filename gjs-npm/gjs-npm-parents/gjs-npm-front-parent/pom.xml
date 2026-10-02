@@ -50,6 +50,7 @@
 							</goals>
 							<configuration>
 								<outputDirectory>${project.build.directory}</outputDirectory>
+								<changeDetection>always</changeDetection>
 								<resources>
 									<resource>
 										<directory>${frontend.output.dir}</directory>

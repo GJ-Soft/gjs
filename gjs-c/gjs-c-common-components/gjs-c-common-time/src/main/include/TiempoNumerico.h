@@ -48,14 +48,12 @@ double TmpFormConstruirExt ( int iA, int iM, int iD, int iH, int iMi, int iS );
 void TmpFormDescomponer ( double dTiempo, long * p_lFecha, long * p_lHora );
 void TmpFormDescomponerExt ( double dTiempo, int * p_iA, int * p_iM, int * p_iD, int * p_iH, int * p_iMi, int * p_iS );
 
-#if ( defined ( LLONG ) )
-llong TmpFormConstruirLL ( long lFecha, long lHora );
-llong TmpFormConstruirExtLL ( int iA, int iM, int iD, int iH, int iMi, int iS );
+long long TmpFormConstruirLL ( long lFecha, long lHora );
+long long TmpFormConstruirExtLL ( int iA, int iM, int iD, int iH, int iMi, int iS );
       
-void TmpFormDescomponerLL ( llong llTiempo, long * p_lFecha, long * p_lHora );
-void TmpFormDescomponerExtLL ( llong llTiempo, int * p_iA, int * p_iM, int * p_iD, int * p_iH, int * p_iMi, int * p_iS );
+void TmpFormDescomponerLL ( long long llTiempo, long * p_lFecha, long * p_lHora );
+void TmpFormDescomponerExtLL ( long long llTiempo, int * p_iA, int * p_iM, int * p_iD, int * p_iH, int * p_iMi, int * p_iS );
 
-#endif
 
 double TmpFormObtenerValor ( double dTiempo );
 double TmpFormEstablecerValor ( double dValor );
@@ -71,23 +69,21 @@ int TmpFormHoras ( double dTiempo);
 int TmpFormMinutos ( double dTiempo );
 int TmpFormSegundos ( double dTiempo );
 
-#if ( defined ( LLONG ) )
 
-double TmpFormObtenerValorLL ( llong llTiempo );
-llong TmpFormEstablecerValorLL ( double dValor );
-int TmpFormEsValidoLL ( llong llTiempo );
+double TmpFormObtenerValorLL ( long long llTiempo );
+long long TmpFormEstablecerValorLL ( double dValor );
+int TmpFormEsValidoLL ( long long llTiempo );
 
-long TmpFormFechaLL ( llong llTiempo );
-long TmpFormHoraLL ( llong llTiempo );
+long TmpFormFechaLL ( long long llTiempo );
+long TmpFormHoraLL ( long long llTiempo );
 
-int TmpFormAnosLL ( llong llTiempo );
-int TmpFormMesesLL ( llong llTiempo );
-int TmpFormDiasLL ( llong llTiempo );
-int TmpFormHorasLL ( llong llTiempo);
-int TmpFormMinutosLL ( llong llTiempo );
-int TmpFormSegundosLL ( llong llTiempo );
+int TmpFormAnosLL ( long long llTiempo );
+int TmpFormMesesLL ( long long llTiempo );
+int TmpFormDiasLL ( long long llTiempo );
+int TmpFormHorasLL ( long long llTiempo);
+int TmpFormMinutosLL ( long long llTiempo );
+int TmpFormSegundosLL ( long long llTiempo );
 
-#endif
 
 
 

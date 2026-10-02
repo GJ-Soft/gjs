@@ -34,11 +34,7 @@ long SisFechaInicio ();
 long SisHoraInicio  ();
 
 /*
-#if ( defined ( LLONG ) )
-llong SisFechaHoraInicio ();
-#else
-unsigned long SisFechaHoraInicio ();
-#endif
+long long SisFechaHoraInicio ();
 
 */
 

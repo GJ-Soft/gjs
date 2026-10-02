@@ -4,9 +4,9 @@
 
 /* MinGW no trae pipe (): su equivalente es _pipe (), que ademas pide tamano y
    modo, y esta en <io.h>; _O_BINARY viene de <fcntl.h>. dup, dup2, close y write
-   si existen con su nombre POSIX. Cygwin ( en estilo POSIX y en estilo Windows )
-   tiene pipe () de verdad, asi que solo se distingue el caso de MinGW puro. */
-#if ( defined ( WIN ) && !defined ( CYGWIN ) )
+   si existen con su nombre POSIX. Cygwin tiene pipe () de verdad, asi que solo
+   se distingue el caso de MinGW puro. */
+#if ( defined ( WIN ) )
 #	include <io.h>
 #	include <fcntl.h>
 #	define SIM_CREAR_TUBERIA( p_i )		_pipe ( ( p_i ), 4096, _O_BINARY )

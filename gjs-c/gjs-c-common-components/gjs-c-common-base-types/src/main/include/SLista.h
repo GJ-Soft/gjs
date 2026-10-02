@@ -34,6 +34,8 @@ int SLisNumElementos ( SLista * p_lisObj );
 int SLisEstaVacia ( SLista * p_lisObj );
 SElemento * SLisElemento ( SLista * p_lisObj, int iElem );
 
+
+// La operativa alta, modificacion, baja altera el cursor
 int SLisEstablecerElem ( SLista * p_lisObj, int iElem, SElemento * p_elmObj );
 int SLisInsertarElem ( SLista * p_lisObj, int iPosAnt, SElemento * p_elmObj );
 int SLisInsertarAlInicio ( SLista * p_lisObj, SElemento * p_elmObj );

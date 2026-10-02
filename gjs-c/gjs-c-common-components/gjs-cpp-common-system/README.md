@@ -124,12 +124,16 @@ Funciona porque cada fichero de prueba incluye lo suyo, y significa que
 
 ## Estado y limitaciones conocidas
 
-- **`SistemaRegistro.cpp` no puede compilar.** Son 1.861 líneas —el fichero más
-  grande del componente— que incluyen `"SistemaRegistro.h"`, y **esa cabecera no
-  existe** aquí: los únicos ejemplares del repositorio pertenecen al stack **C**.
-  Además el fichero no abre ningún espacio de nombres, no usa `std::string` ni
-  una vez y sí 37 `char *`: es el fuente de la versión C copiado sin convertir.
-  Detalle en [SistemaRegistro](doc/SistemaRegistro.md).
+- ~~**`SistemaRegistro.cpp` no puede compilar.**~~ **Resuelto el 2026-09-14**:
+  se recuperó `SistemaRegistro.h` de la librería original, se adaptó al idioma
+  del módulo y se convirtió el fuente entero —espacios de nombres,
+  `std::string`, `bool`—, de 1.861 líneas a 1.060. Compila sin errores ni avisos
+  con MinGW y con el gcc de Cygwin. Se trajo también `RegistroConstantes.h`.
+  La conversión destapó una veintena de defectos, todos comentados en el propio
+  fuente. El ProgId incoherente **quedó resuelto el 2026-09-16**:
+  `SisRegDesregistrarGUID` y `SisRegEstaRegistradoGUID` reciben ahora
+  `sFicModulo` y arman el ProgId como `ficheroModulo.nombre`, igual que
+  `SisRegRegistrarGUID`. Detalle en [SistemaRegistro](doc/SistemaRegistro.md).
 - **`SistemaSincronizacion.h` incluye `<pthread.h>` dentro del espacio de
   nombres.** El `#include` está entre las llaves de
   `org::gjs::cpp::common`, de modo que en modo POSIX —el modo por defecto— toda

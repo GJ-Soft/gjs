@@ -89,6 +89,7 @@
 #		include <Psapi.h>
 #		include <Shlwapi.h>
 #		include <lm.h>
+#		include <io.h>		// _getmaxstdio, _get_osfhandle
 
 #	endif
 

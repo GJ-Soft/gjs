@@ -85,8 +85,9 @@ propiedades en un perfil **activo** (hoy lo hace el perfil `maven`):
 ### Extension property-bootstrap
 
 `property-bootstrap-maven-extension` calcula al arrancar la sesion las
-propiedades que gobiernan la activacion de perfiles (`cygwin.style`,
-`environment.style`). Su fichero de configuracion es opcional; sin el se aplica
+propiedades `cygwin.style` y `environment.style`. Ojo: de esas dos, la que
+gobierna perfiles hoy es `environment.style`; `cygwin.style` ya no elige los
+macros de plataforma de C/C++, que los decide el entorno (ver mas abajo). Su fichero de configuracion es opcional; sin el se aplica
 la regla por defecto que documenta el README de la propia extension. Si se
 quiere personalizar, va en:
 
@@ -98,12 +99,18 @@ quiere personalizar, va en:
 El modo solo afecta internamente a los modulos C/C++, pero formalmente puede
 afectar a los de Python, muy sensibles al formato de las rutas.
 
-| Modo | Consola | Comando | Macros |
-|---|---|---|---|
-| Cygwin POSIX | mintty | `mvn clean install` | `POSIX` + `CYGWIN` |
-| Cygwin estilo Windows | mintty | `mvn clean install -Dcygwin.style=windows` | `WIN` + `CYGWIN` |
-| Windows puro | PowerShell / cmd | `mvn clean install` | `WIN` |
-| Linux POSIX | consola Linux | pendiente | `POSIX` |
+El modo **no se elige con una propiedad**: lo decide el entorno desde el que se
+lanza Maven, a traves de la variable de entorno `CYGWIN`.
+
+| Modo | Consola | Comando | Se activa porque | Macros |
+|---|---|---|---|---|
+| Cygwin | mintty | `mvn clean install` | Windows y `CYGWIN` definida | `CYGWIN` + `POSIX` |
+| Windows puro | PowerShell / cmd | `mvn clean install` | Windows y `CYGWIN` no definida | `WIN` |
+| Linux | consola Linux | `mvn clean install` | familia de SO Unix | `POSIX` |
+
+> Hubo un cuarto modo, "Cygwin estilo Windows", con `-Dcygwin.style=windows` y
+> los macros `CYGWIN_WIN` / `CYGWIN_POSIX`. **Se quito**: no hay perfil en el
+> pom ni rastro en `Precompilacion.h`.
 
 El compilador **no se elige por propiedad**: es el `gcc`/`g++` que resuelva el
 `PATH` de la consola. Desde Cygwin sale el gcc de Cygwin, que define

@@ -33,6 +33,7 @@
 	<properties>	
 		<!-- Language features -->
 		<gjs.source.language>c</gjs.source.language>
+		<cpp.doxygen.optimize.c>YES</cpp.doxygen.optimize.c>
 		<gjs.source.extension>c</gjs.source.extension>
 
 		<!-- Compiler oprions -->
@@ -42,7 +43,6 @@
 		<gjs.nar.compiler.language>c</gjs.nar.compiler.language>
 		<gjs.nar.language.version>2x</gjs.nar.language.version>
 		<gjs.nar.language.standard>gnu${gjs.nar.language.version}</gjs.nar.language.standard>
-		<gjs.nar.language.aol>gcc</gjs.nar.language.aol>
 		
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->
@@ -52,6 +52,7 @@
 		<gjs-c-common-calculation.version>1.0.0-RC.2</gjs-c-common-calculation.version>
 		<gjs-c-common-time.version>1.0.0-RC.2</gjs-c-common-time.version>
 		<gjs-c-common-types.version>1.0.0-RC.2</gjs-c-common-types.version>
+		<gjs-c-common-database.version>1.0.0-RC.2</gjs-c-common-database.version>
 		<gjs-c-common-io.version>1.0.0-RC.2</gjs-c-common-io.version>
 		<gjs-c-common-system.version>1.0.0-RC.2</gjs-c-common-system.version>
 		<gjs-c-common-support.version>1.0.0-RC.2</gjs-c-common-support.version>
@@ -96,6 +97,12 @@
 				<groupId>org.gjsoft.c.common</groupId>
 				<artifactId>gjs-c-common-types</artifactId>
 				<version>${gjs-c-common-types.version}</version>
+				<type>nar</type>
+			</dependency>
+			<dependency>
+				<groupId>org.gjsoft.c.common</groupId>
+				<artifactId>gjs-c-common-database</artifactId>
+				<version>${gjs-c-common-database.version}</version>
 				<type>nar</type>
 			</dependency>
 			<dependency>

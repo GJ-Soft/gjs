@@ -324,6 +324,181 @@ static int TestCalendCambioHorario01 ()
 
 
 
+
+/* Dias de la semana REALES. El test 01 comprueba cosas consistentes consigo
+   mismas —que el valor este en [0,6], que solo uno de los siete predicados sea
+   cierto, que dos dias seguidos den valores seguidos— y las cuatro las pasa
+   igual de bien una funcion desplazada un numero fijo de dias, que es justo lo
+   que pasaba hasta el 2026-09-20: CalendDiaSemana fallaba en TODAS las fechas,
+   tres posiciones, y ningun test se enteraba.
+
+   Los valores de abajo son historicos, del calendario gregoriano proleptico.
+   Los indices son los de TiempoConfig.h, que el test no puede incluir por ser
+   privada: lunes 0, martes 1, miercoles 2, jueves 3, viernes 4, sabado 5 y
+   domingo 6.
+
+   Se cubren los dos calendarios. Las anteriores al 15 de octubre de 1582 son
+   JULIANAS y no coinciden con lo que diria una libreria moderna sobre esa misma
+   fecha, porque casi todas usan el gregoriano proleptico. Las dos de referencia
+   son hechos historicos comprobables: la batalla de Hastings fue en sabado y
+   Colon llego en viernes. */
+static int TestCalendSemana02 ()
+{
+	int			iRes = BOOL_VAL_CIERTO;
+	int			iDia;
+	int			i;
+	static const int p_iCasos [] [ 4 ] = {
+		/* ano,  mes, dia, dia de la semana */
+		/* Anteriores a la reforma, o sea calendario JULIANO: */
+		{ 1000,  1,  1, 0 },		/* lunes     */
+		{ 1066, 10, 14, 5 },		/* sabado, la batalla de Hastings */
+		{ 1200,  6, 15, 3 },		/* jueves    */
+		{ 1492, 10, 12, 4 },		/* viernes, la llegada de Colon */
+		{ 1500,  1,  1, 2 },		/* miercoles */
+		{ 1581,  1,  1, 6 },		/* domingo   */
+		{ 1582, 10,  4, 3 },		/* jueves, el ultimo dia juliano en Espana */
+		/* Posteriores, o sea GREGORIANO: */
+		{ 1583,  1,  1, 5 },		/* sabado    */
+		{ 1600,  2, 29, 1 },		/* martes    */
+		{ 1700,  3,  1, 0 },		/* lunes     */
+		{ 1800,  1,  1, 2 },		/* miercoles */
+		{ 1900,  1,  1, 0 },		/* lunes     */
+		{ 1944,  6,  6, 1 },		/* martes, el desembarco de Normandia */
+		{ 2000,  1,  1, 5 },		/* sabado    */
+		{ 2000,  2, 29, 1 },		/* martes    */
+		{ 2024,  2, 29, 3 },		/* jueves    */
+		{ 2025,  3, 30, 6 },		/* domingo   */
+		{ 2025, 10, 26, 6 },		/* domingo   */
+		{ 2100,  1,  1, 4 }			/* viernes   */
+	};
+	printf( "Test CalendSemana 02:\n" );
+
+	for ( i = 0; i < (int) ( sizeof ( p_iCasos ) / sizeof ( p_iCasos [ 0 ] ) ); i = i + 1 )
+	{
+		iDia = CalendDiaSemana ( p_iCasos [ i ] [ 0 ], p_iCasos [ i ] [ 1 ], p_iCasos [ i ] [ 2 ] );
+		if ( iDia != p_iCasos [ i ] [ 3 ] )
+		{
+			printf( "Error caso %d: %02d/%02d/%04d deberia dar %d y da %d\n",
+					i + 1, p_iCasos [ i ] [ 2 ], p_iCasos [ i ] [ 1 ],
+					p_iCasos [ i ] [ 0 ], p_iCasos [ i ] [ 3 ], iDia );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	return ( iRes );
+}
+
+
+/* Dias y meses de cambio horario REALES, uno por cada una de las cinco epocas
+   que distingue el codigo: las tablas de 1918-1949, la interrupcion de
+   1950-1973, las tablas de 1974-1980, la regla de septiembre de 1981-1995 y la
+   de octubre de 1996 en adelante.
+
+   Contrastados el 2026-09-20 contra los datos de IANA ( zdump -v Europe/Madrid ).
+   Las tablas guardan EL DIA EN QUE EL RELOJ CAMBIA, no la vispera. */
+static int TestCalendCambioHorario02 ()
+{
+	int			iRes = BOOL_VAL_CIERTO;
+	int			i;
+	static const int p_iCasos [] [ 5 ] = {
+		/* ano, mes ver, dia ver, mes inv, dia inv */
+		{ 1918,  4, 16, 10,  7 },
+		{ 1944,  4, 16, 10,  1 },
+		{ 1960, -1, -1, -1, -1 },	/* de 1950 a 1973 no hubo cambio horario */
+		{ 1975,  4, 13, 10,  5 },
+		{ 1985,  3, 31,  9, 29 },	/* de 1981 a 1995 la vuelta era en septiembre */
+		{ 2025,  3, 30, 10, 26 }
+	};
+	printf( "Test CalendCambioHorario 02:\n" );
+
+	for ( i = 0; i < (int) ( sizeof ( p_iCasos ) / sizeof ( p_iCasos [ 0 ] ) ); i = i + 1 )
+	{
+		int iA = p_iCasos [ i ] [ 0 ];
+		if ( CalendMesCambioAHorarioVerano ( iA ) != p_iCasos [ i ] [ 1 ] )
+		{
+			printf( "Error caso %d: mes de cambio a verano de %04d deberia ser %d y es %d\n",
+					i + 1, iA, p_iCasos [ i ] [ 1 ], CalendMesCambioAHorarioVerano ( iA ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( CalendDiaCambioAHorarioVerano ( iA ) != p_iCasos [ i ] [ 2 ] )
+		{
+			printf( "Error caso %d: dia de cambio a verano de %04d deberia ser %d y es %d\n",
+					i + 1, iA, p_iCasos [ i ] [ 2 ], CalendDiaCambioAHorarioVerano ( iA ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( CalendMesCambioAHorarioInvierno ( iA ) != p_iCasos [ i ] [ 3 ] )
+		{
+			printf( "Error caso %d: mes de cambio a invierno de %04d deberia ser %d y es %d\n",
+					i + 1, iA, p_iCasos [ i ] [ 3 ], CalendMesCambioAHorarioInvierno ( iA ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( CalendDiaCambioAHorarioInvierno ( iA ) != p_iCasos [ i ] [ 4 ] )
+		{
+			printf( "Error caso %d: dia de cambio a invierno de %04d deberia ser %d y es %d\n",
+					i + 1, iA, p_iCasos [ i ] [ 4 ], CalendDiaCambioAHorarioInvierno ( iA ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	return ( iRes );
+}
+
+
+/* CalendAplicarUnaHoraMas: 1 si en esa fecha rige el HORARIO DE VERANO. Ojo con
+   el sentido, que estuvo invertido de 1996 en adelante hasta el 2026-09-20 y
+   nadie lo vio porque no habia ni un test que llamase a esta funcion.
+
+   Se prueban los dos dias de cada frontera —el ultimo de invierno y el primero
+   de verano— en las cinco epocas, mas tres fechas de control en anos sin cambio
+   horario. El dia del cambio cuenta como lo que EMPIEZA. */
+static int TestCalendAplicarUnaHoraMas01 ()
+{
+	int			iRes = BOOL_VAL_CIERTO;
+	int			iVal;
+	int			i;
+	static const int p_iCasos [] [ 4 ] = {
+		/* ano, mes, dia, esperado */
+		{ 1917,  7,  1, 0 },		/* antes de 1918 no existia el cambio horario */
+		{ 1918,  4, 15, 0 },
+		{ 1918,  4, 16, 1 },
+		{ 1918, 10,  6, 1 },
+		{ 1918, 10,  7, 0 },
+		{ 1940,  7,  1, 0 },		/* el adelanto de 1940 NO fue estacional: fue el
+									   paso definitivo a UTC+1, y lo lleva
+									   CalendSistemaHorarioUTC */
+		{ 1944,  4, 15, 0 },
+		{ 1944,  4, 16, 1 },
+		{ 1944,  9, 30, 1 },
+		{ 1944, 10,  1, 0 },
+		{ 1960,  7,  1, 0 },		/* de 1950 a 1973, sin cambio horario */
+		{ 1974,  4, 13, 0 },
+		{ 1974,  4, 14, 1 },
+		{ 1974, 10,  5, 1 },
+		{ 1974, 10,  6, 0 },
+		{ 1985,  3, 30, 0 },
+		{ 1985,  3, 31, 1 },
+		{ 1985,  9, 28, 1 },
+		{ 1985,  9, 29, 0 },
+		{ 2025,  3, 29, 0 },
+		{ 2025,  3, 30, 1 },
+		{ 2025, 10, 25, 1 },
+		{ 2025, 10, 26, 0 }
+	};
+	printf( "Test CalendAplicarUnaHoraMas 01:\n" );
+
+	for ( i = 0; i < (int) ( sizeof ( p_iCasos ) / sizeof ( p_iCasos [ 0 ] ) ); i = i + 1 )
+	{
+		iVal = CalendAplicarUnaHoraMas ( p_iCasos [ i ] [ 0 ], p_iCasos [ i ] [ 1 ], p_iCasos [ i ] [ 2 ] );
+		if ( iVal != p_iCasos [ i ] [ 3 ] )
+		{
+			printf( "Error caso %d: %02d/%02d/%04d deberia dar %d y da %d\n",
+					i + 1, p_iCasos [ i ] [ 2 ], p_iCasos [ i ] [ 1 ],
+					p_iCasos [ i ] [ 0 ], p_iCasos [ i ] [ 3 ], iVal );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	return ( iRes );
+}
+
+
 int TestCalendario ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -333,7 +508,10 @@ int TestCalendario ()
 			( TestCalendDias01 () == BOOL_VAL_CIERTO ) &&
 			( TestCalendSemana01 () == BOOL_VAL_CIERTO ) &&
 			( TestCalendSistema01 () == BOOL_VAL_CIERTO ) &&
-			( TestCalendCambioHorario01 () == BOOL_VAL_CIERTO ) )
+			( TestCalendCambioHorario01 () == BOOL_VAL_CIERTO ) &&
+			( TestCalendSemana02 () == BOOL_VAL_CIERTO ) &&
+			( TestCalendCambioHorario02 () == BOOL_VAL_CIERTO ) &&
+			( TestCalendAplicarUnaHoraMas01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

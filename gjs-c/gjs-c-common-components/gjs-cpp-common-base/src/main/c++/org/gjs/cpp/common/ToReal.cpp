@@ -20,7 +20,7 @@ namespace org
 
 double ToDouble ( char * t )
 {
-	return ( ToDouble( (const char *)t ) );
+	return ( ToDouble( static_cast < const char * > ( t ) ) );
 }
 
 double ToDouble ( const char * t )
@@ -74,7 +74,7 @@ double ToDouble ( const wstring & t )
 
 double ToDouble ( wchar_t * t )
 {
-	return ( ToDouble ( (const wchar_t *) t ) );
+	return ( ToDouble ( static_cast < const wchar_t * > ( t ) ) );
 }
 
 double ToDouble ( const wchar_t * t )

@@ -55,6 +55,12 @@
 		<gjs.python.dir.libs>${project.build.directory}/python-libs</gjs.python.dir.libs>
 		<gjs.python.dir.eggs>${project.build.directory}/python-eggs</gjs.python.dir.eggs>
 		<gjs.python.artifact.src.package.path>org/gjs/python</gjs.python.artifact.src.package.path>
+		<!-- No se firma lo que no se publica. Estos artefactos quedan fuera del bundle
+		     de Central por el excludeArtifacts del perfil deploy-central en gjs-parent,
+		     asi que firmarlos seria trabajo tirado: son 25 modulos y gpg tarda. Es el
+		     hermano del <skip> del maven-deploy-plugin que hay mas abajo, y como aquel,
+		     provisional: si algun dia estos artefactos se publican, quitar los dos. -->
+		<gpg.skip>true</gpg.skip>
 	</properties>
 	
 	<build>
@@ -91,13 +97,23 @@
 							</goals>
 							<configuration>
 								<outputDirectory>${gjs.python.dir.src}</outputDirectory>
+								<changeDetection>always</changeDetection>
 								<resources>
+									<!-- setup.py se filtra aparte para que la versión le llegue resuelta
+									     desde el pom, que es su única fuente. El resto no se filtra: el
+									     código Python puede llevar llaves y no debe tocarse. -->
+									<resource>
+										<directory>${project.basedir}</directory>
+										<includes>
+											<include>setup.py</include>
+										</includes>
+										<filtering>true</filtering>
+									</resource>
 									<resource>
 										<directory>${project.basedir}</directory>
 										<includes>
 											<include>src/**</include>
 											<include>pyproject.toml</include>
-											<include>setup.py</include>
 										</includes>
 										<excludes>
 											<exclude>src/test/**</exclude>
@@ -115,6 +131,7 @@
 							</goals>
 							<configuration>
 								<outputDirectory>${gjs.python.dir.test}</outputDirectory>
+								<changeDetection>always</changeDetection>
 								<resources>
 									<resource>
 										<directory>${gjs.python.dir.src}</directory>
@@ -135,6 +152,7 @@
 								<goal>copy-resources</goal>
 							</goals>
 							<configuration>
+								<changeDetection>always</changeDetection>
 								<outputDirectory>${gjs.python.dir.test}</outputDirectory>
 								<resources>
 									<resource>
@@ -305,6 +323,13 @@
 
 		<plugins>
 			<plugin>
+			   <groupId>org.apache.maven.plugins</groupId>
+			   <artifactId>maven-deploy-plugin</artifactId>
+			   <configuration>
+				  <skip>true</skip>
+			   </configuration>
+			</plugin>		
+			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<configuration>
 					<skip>${skip.if.not.source}</skip>
@@ -318,17 +343,32 @@
 				</configuration>
             </plugin>
 			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default-jar</id>
-						<phase>none</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.gmavenplus</groupId>
 				<artifactId>gmavenplus-plugin</artifactId>
+			</plugin>
+			<!-- La versión que entiende Python no es la de Maven: SNAPSHOT no es
+			     PEP 440 y setuptools lo convierte en '.dev0+sanitized.snapshot', que
+			     no es lo que espera el renombrado del wheel. Con -DEV sí sale '.dev0'.
+			     Las demás formas (-RC.n, final) las normaliza setuptools sola. -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>python-version</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>regex-property</goal>
+						</goals>
+						<configuration>
+							<name>gjs.python.version</name>
+							<value>${project.version}</value>
+							<regex>-SNAPSHOT$</regex>
+							<replacement>-DEV</replacement>
+							<failIfNoMatch>false</failIfNoMatch>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

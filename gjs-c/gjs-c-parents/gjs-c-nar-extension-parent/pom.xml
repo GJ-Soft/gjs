@@ -35,7 +35,7 @@
 	
 	<properties>
 		<!-- NAR -->
-		<nar-maven-plugin.version>4.0.0-SNAPSHOT</nar-maven-plugin.version>
+		<nar-maven-plugin.version>4.0.0-RC.1</nar-maven-plugin.version>
 	</properties>
 
 	<!-- Para que reconozca el packaging nar debe estar fuera de los perfiles --> 

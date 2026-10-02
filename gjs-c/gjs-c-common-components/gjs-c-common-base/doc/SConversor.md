@@ -39,10 +39,8 @@ typedef struct
     float           fValor;
     double          dValor;
     char *          p_cValor;
-#if ( defined ( LLONG ) )
-    llong           llValor;
-    ullong          ullValor;
-#endif
+    long long       llValor;
+    unsigned long long ullValor;
     int             iConvValida;
 } SConversor;
 ```
@@ -54,20 +52,20 @@ ellas validan el puntero.
 
 ### Creación y destrucción
 
-| Función                                                        | Descripción                          |
-| -------------------------------------------------------------- | ------------------------------------ |
-| `SConversor * SConvCrearDef ()`                                | Conversor vacío, todo a cero.        |
-| `SConversor * SConvCrearEntero ( int )`                        | A partir de un `int`.                |
-| `SConversor * SConvCrearEnteroLargo ( long )`                  | A partir de un `long`.               |
-| `SConversor * SConvCrearEnteroSinSigno ( unsigned int )`       | …                                    |
-| `SConversor * SConvCrearEnteroLargoSinSigno ( unsigned long )` | …                                    |
-| `SConversor * SConvCrearReal ( float )`                        | …                                    |
-| `SConversor * SConvCrearRealDoble ( double )`                  | …                                    |
-| `SConversor * SConvCrearCadena ( char * )`                     | …                                    |
-| `SConversor * SConvCrearCadenaConstante ( const char * )`      | …                                    |
-| `SConversor * SConvCrearEnteroDobleLargo ( llong )`            | Sólo con `LLONG`.                    |
-| `SConversor * SConvCrearEnteroDobleLargoSinSigno ( ullong )`   | Sólo con `LLONG`.                    |
-| `void SConvDestruir ( SConversor ** p_p_convObj )`             | Libera el objeto y anula el puntero. |
+| Función                                                                  | Descripción                          |
+| ------------------------------------------------------------------------ | ------------------------------------ |
+| `SConversor * SConvCrearDef ()`                                          | Conversor vacío, todo a cero.        |
+| `SConversor * SConvCrearEntero ( int )`                                  | A partir de un `int`.                |
+| `SConversor * SConvCrearEnteroLargo ( long )`                            | A partir de un `long`.               |
+| `SConversor * SConvCrearEnteroSinSigno ( unsigned int )`                 | …                                    |
+| `SConversor * SConvCrearEnteroLargoSinSigno ( unsigned long )`           | …                                    |
+| `SConversor * SConvCrearReal ( float )`                                  | …                                    |
+| `SConversor * SConvCrearRealDoble ( double )`                            | …                                    |
+| `SConversor * SConvCrearCadena ( char * )`                               | …                                    |
+| `SConversor * SConvCrearCadenaConstante ( const char * )`                | …                                    |
+| `SConversor * SConvCrearEnteroDobleLargo ( long long )`                  | …                                    |
+| `SConversor * SConvCrearEnteroDobleLargoSinSigno ( unsigned long long )` | …                                    |
+| `void SConvDestruir ( SConversor ** p_p_convObj )`                       | Libera el objeto y anula el puntero. |
 
 ### Selección automática con `_Generic`
 
@@ -95,18 +93,18 @@ SConvDestruir ( &p_conv );
 
 ### Lectura
 
-| Función                                                   | Devuelve                 |
-| --------------------------------------------------------- | ------------------------ |
-| `int SConvEntero ( SConversor * )`                        | El valor como `int`.     |
-| `long SConvEnteroLargo ( SConversor * )`                  | Como `long`.             |
-| `unsigned int SConvEnteroSinSigno ( SConversor * )`       | Como `unsigned int`.     |
-| `unsigned long SConvEnteroLargoSinSigno ( SConversor * )` | Como `unsigned long`.    |
-| `float SConvReal ( SConversor * )`                        | Como `float`.            |
-| `double SConvRealDoble ( SConversor * )`                  | Como `double`.           |
-| `const char * SConvCadena ( SConversor * )`               | Como cadena.             |
-| `const char * SConvCadenaHex ( SConversor * )`            | Como cadena hexadecimal. |
-| `llong SConvEnteroDobleLargo ( SConversor * )`            | Sólo con `LLONG`.        |
-| `ullong SConvEnteroDobleLargoSinSigno ( SConversor * )`   | Sólo con `LLONG`.        |
+| Función                                                             | Devuelve                   |
+| ------------------------------------------------------------------- | -------------------------- |
+| `int SConvEntero ( SConversor * )`                                  | El valor como `int`.       |
+| `long SConvEnteroLargo ( SConversor * )`                            | Como `long`.               |
+| `unsigned int SConvEnteroSinSigno ( SConversor * )`                 | Como `unsigned int`.       |
+| `unsigned long SConvEnteroLargoSinSigno ( SConversor * )`           | Como `unsigned long`.      |
+| `float SConvReal ( SConversor * )`                                  | Como `float`.              |
+| `double SConvRealDoble ( SConversor * )`                            | Como `double`.             |
+| `const char * SConvCadena ( SConversor * )`                         | Como cadena.               |
+| `const char * SConvCadenaHex ( SConversor * )`                      | Como cadena hexadecimal.   |
+| `long long SConvEnteroDobleLargo ( SConversor * )`                  | Como `long long`.          |
+| `unsigned long long SConvEnteroDobleLargoSinSigno ( SConversor * )` | Como `unsigned long long`. |
 
 ### Asignación
 
@@ -200,8 +198,9 @@ valor o se destruya el conversor. Si debe sobrevivir, duplicarla con
 - La rama `default` de `SConvCrear` es `SConvCrearDef`, que **ignora el
   argumento**: pasar un tipo no contemplado (por ejemplo `short` o `byte`)
   compila sin aviso y produce un conversor vacío en silencio.
-- En los asignadores de `long` y `llong`, el guarda de rango contra `UINT_MAX`
-  compara en el tipo sin signo más ancho (`unsigned long` / `ullong`) para que la
+- En los asignadores de `long` y `long long`, el guarda de rango contra
+  `UINT_MAX` compara en el tipo sin signo más ancho (`unsigned long` /
+  `unsigned long long`) para que la
   comparación sea real. Escrito como `( (unsigned int) valor <= UINT_MAX )` sería
   siempre cierto, porque la conversión previa ya acota el operando.
 - La cadena está limitada a `CONV_MAX_TAM_CADENA` (64) caracteres, suficiente

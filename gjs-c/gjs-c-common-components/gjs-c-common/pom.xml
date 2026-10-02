@@ -52,6 +52,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.gjsoft.c.common</groupId>
+			<artifactId>gjs-c-common-database</artifactId>
+			<type>nar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.gjsoft.c.common</groupId>
 			<artifactId>gjs-c-common-io</artifactId>
 			<type>nar</type>
 		</dependency>

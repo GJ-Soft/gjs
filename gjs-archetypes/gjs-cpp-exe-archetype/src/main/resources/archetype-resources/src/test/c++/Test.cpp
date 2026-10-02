@@ -5,6 +5,7 @@
 
 ${symbol_pound}include <CppTest.h>
 
+
 ${symbol_pound}include <iostream>
 
 
@@ -16,8 +17,6 @@ using namespace org::gjs::cpp::common::test;
 
 
 extern bool Test${capitalizedName} ();
-
-
 
 
 int main( int argc, char * argv[] )

@@ -27,7 +27,12 @@ void SArbCadDestruir ( SArbolCadenas ** p_p_arbObj )
 		p_arbObj = *p_p_arbObj;
 		if ( ES_VALIDO ( p_arbObj ) )
 		{
+			/* Las dos cosas, y en este orden: SArbCadVaciar es quien destruye las
+			   SCadena que cuelgan de los nodos, y SArbPtrDestruir el arbol de
+			   contenido que reserva SArbCadCrear. Vaciando solo se fugaba ese
+			   arbol; destruyendo solo se fugarian las cadenas */
 			SArbCadVaciar ( p_arbObj );
+			SArbPtrDestruir ( &(p_arbObj->p_arbContenido) );
 			MemLiberar ( (void **) p_p_arbObj );
 		}
 	}

@@ -17,7 +17,7 @@ void VerificarValorLit ( const char * p_cInfoCaso, const char * p_cResultado, co
 	}	
 	if ( CadComparar ( p_cResultado, p_cEsperado ) != COMP_IGUAL )
 	{
-		AplicLogAnotarError ( "    -> valor inesperado (esperado [%s]", p_cEsperado );
+		AplicLogAnotarError ( "    -> valor inesperado (esperado [%s])", p_cEsperado );
 		*iRes = 0;
 	}	
 }
@@ -57,7 +57,7 @@ void VerificarEsCierto ( const char * p_cInfoCaso, int iResultado, int * iRes )
 	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%d]", p_cInfoCaso, iResultado );
 	if ( iResultado == 0 ) 
 	{
-		AplicLogAnotarError ( "    -> valor inesperado (esperado [1]" );
+		AplicLogAnotarError ( "    -> valor inesperado (esperado [1])" );
 		*iRes = 0;
 	}	
 }
@@ -74,7 +74,7 @@ void VerificarEsFalso ( const char * p_cInfoCaso, int iResultado, int * iRes )
 
 void VerificarEsNulo ( const char * p_cInfoCaso, void * p_vResultado, int * iRes )
 {
-	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%ld]", p_cInfoCaso, p_vResultado );
+	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%p]", p_cInfoCaso, p_vResultado );
 	if ( p_vResultado != NULL ) 
 	{
 		AplicLogAnotarError ( "    -> valor inesperado (esperado [NULO])"  );
@@ -84,7 +84,7 @@ void VerificarEsNulo ( const char * p_cInfoCaso, void * p_vResultado, int * iRes
 
 void VerificarNoEsNulo ( const char * p_cInfoCaso, void * p_vResultado, int * iRes )
 {
-	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%ld]", p_cInfoCaso, p_vResultado );
+	AplicLogAnotar ( "    Caso: [%s]: Resultado: [%p]", p_cInfoCaso, p_vResultado );
 	if ( p_vResultado == NULL ) 
 	{
 		AplicLogAnotarError ( "    -> valor inesperado (esperado [NO NULO])" );

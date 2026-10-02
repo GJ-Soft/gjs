@@ -142,7 +142,7 @@ void TmpFormDescomponer ( double dTiempo, long * p_lFecha, long * p_lHora )
 	if ( ES_VALIDO ( p_lFecha ) && ES_VALIDO ( p_lHora ) )
 	{
 		*p_lFecha = ToInt ( dTiempo / 1000000 );
-		*p_lHora = ToInt ( dTiempo - *p_lFecha * 1000000 );
+		*p_lHora = ToInt ( dTiempo - (double) ( *p_lFecha ) * 1000000 );
 	} 
 }
 

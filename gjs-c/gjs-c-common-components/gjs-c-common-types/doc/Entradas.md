@@ -96,7 +96,8 @@ lista con búsqueda por clave:
 > están dentro.
 
 - **La entrada guarda `char *`, no [SCadena](../../gjs-c-common-text/doc/SCadena.md)**,
-  a diferencia de [Entidades](Entidades.md), que sí usa el objeto cadena. Las dos
+  a diferencia de las [entidades](../../gjs-c-common-database/doc/Entidades.md),
+  que sí usan el objeto cadena. Las dos
   representaciones de texto conviven en el mismo componente.
 - No hay variantes `Lit` en los asignadores (`SEtrEstablecerNombre` recibe un
   único tipo), pero sí en las comparaciones (`SEtrEsIgualLit`). La asimetría

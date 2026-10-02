@@ -59,6 +59,9 @@ int SLisEntEstaEnFinal ( SListaEnteros * p_lisObj );
 int SLisEntEstaEnInicio ( SListaEnteros * p_lisObj );
 
 int SLisEntInsertar ( SListaEnteros * p_lisObj, int iDato );
+// Nota: SLisEntInsertarOrdenado inserta en el primer hueco. Si la lista no esta previamente ordenada
+// el resultado no es una lista ordenada
+int SLisEntInsertarOrdenado ( SListaEnteros * p_lisObj, int iDato );
 int SLisEntInsertarDelante ( SListaEnteros * p_lisObj, int iDato );
 int SLisEntInsertarDetras ( SListaEnteros * p_lisObj, int iDato );
 int SLisEntEliminar ( SListaEnteros * p_lisObj );
@@ -66,6 +69,19 @@ int SLisEntEliminar ( SListaEnteros * p_lisObj );
 int SLisEntExiste ( SListaEnteros * p_lisObj, int iDato );
 int SLisEntBuscar ( SListaEnteros * p_lisObj, int iDato );
 
+int SLisEntEstaOrdenada ( SListaEnteros * p_lisObj );
+SListaEnteros * SLisEntOrdenar ( SListaEnteros * p_lisObj );
+
+SListaEnteros * SLisEntExtraerUnicos ( SListaEnteros * p_lisObj );
+SListaEnteros * SLisEntExtraerUnicosExt ( SListaEnteros * p_lisObj, int iOrdenar );
+int SLisEntTieneRepetidos ( SListaEnteros * p_lisObj );
+
+int SLisEntMin ( SListaEnteros * p_lisObj );
+int SLisEntMax ( SListaEnteros * p_lisObj );
+void SLisEntObtenerParametros ( SListaEnteros * p_lisObj, int * p_iMin, int * p_iMax, double * p_dMed ); 
+
+int SLisEntDefinidaPositiva ( SListaEnteros * p_lisObj );
+int SLisEntSemidefinidaPositiva ( SListaEnteros * p_lisObj );
 
 #endif
 

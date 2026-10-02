@@ -2,12 +2,25 @@
 
 #include "FormatoCadena.h"
 
-va_list _ObtenerArgumentos ( const char * p_cFormato, ... )
+/*
+ * FrmCadena recibe el va_list ya construido, al estilo de vsnprintf, asi que para
+ * probarla hace falta una funcion variadica que lo arme. Tiene que ser ella misma
+ * la que llame a FrmCadena: un va_list solo vale dentro de la funcion que hizo el
+ * va_start, porque apunta a la zona donde esa llamada dejo los argumentos, y esa
+ * zona se reutiliza en cuanto el marco hace la siguiente llamada. El ayudante
+ * anterior lo devolvia, que es comportamiento indefinido: funcionaba de casualidad
+ * hasta que -ftrivial-auto-var-init=pattern del perfil debug cambio el codigo
+ * generado y el %s paso a leer la propia cadena de formato.
+ */
+static int _FrmCadena ( char * p_cDestino, const char * p_cFormato, int iMaxTam, ... )
 {
 	va_list		valArgumentos;
+	int			iRes;
 
-	va_start ( valArgumentos,  p_cFormato );
-	return ( valArgumentos );
+	va_start ( valArgumentos, iMaxTam );
+	iRes = FrmCadena ( p_cDestino, p_cFormato, valArgumentos, iMaxTam );
+	va_end ( valArgumentos );
+	return ( iRes );
 }
 
 
@@ -19,9 +32,7 @@ static int TestFrmCadena01 ()
 	char * p_cDestino = CadCrear ( 30 );
 	if ( p_cDestino != NULL )
 	{
-		va_list	valArgumentos = _ObtenerArgumentos ( "Entero=%d", 1 );
-		int iResult = FrmCadena ( p_cDestino, "Entero=%d", valArgumentos, 30 );
-		va_end ( valArgumentos );
+		int iResult = _FrmCadena ( p_cDestino, "Entero=%d", 30, 1 );
 		if ( iResult == 1 ) 
 		{
 			if ( strcmp ( p_cDestino, "Entero=1" ) != 0 ) 
@@ -36,9 +47,7 @@ static int TestFrmCadena01 ()
 			iRes = BOOL_VAL_FALSO;
 		} 
 		CadInicializar ( p_cDestino, 30 );
-		valArgumentos = _ObtenerArgumentos ( "Cadena=%s", "Valor" );
-		iResult = FrmCadena ( p_cDestino, "Cadena=%s", valArgumentos, 30 );
-		va_end ( valArgumentos );
+		iResult = _FrmCadena ( p_cDestino, "Cadena=%s", 30, "Valor" );
 		if ( iResult == 1 ) 
 		{
 			if ( strcmp ( p_cDestino, "Cadena=Valor" ) != 0 ) 
@@ -53,9 +62,7 @@ static int TestFrmCadena01 ()
 			iRes = BOOL_VAL_FALSO;
 		} 
 		CadInicializar ( p_cDestino, 30 );
-		valArgumentos = _ObtenerArgumentos ( "Real=%f", 1.01 );
-		iResult = FrmCadena ( p_cDestino, "Real=%f", valArgumentos, 30 );
-		va_end ( valArgumentos );
+		iResult = _FrmCadena ( p_cDestino, "Real=%f", 30, 1.01 );
 		if ( iResult == 1 ) 
 		{
 			if ( strcmp ( p_cDestino, "Real=1.010000" ) != 0 ) 
@@ -86,9 +93,7 @@ static int TestFrmCadena02 ()
 	char * p_cDestino = CadCrear ( 30 );
 	if ( p_cDestino != NULL )
 	{
-		va_list	valArgumentos = _ObtenerArgumentos ( "Cadena" );
-		int iResult = FrmCadena ( p_cDestino, "Cadena", valArgumentos, 30 );
-		va_end ( valArgumentos );
+		int iResult = _FrmCadena ( p_cDestino, "Cadena", 30 );
 		if ( iResult == 1 ) 
 		{
 			if ( strcmp ( p_cDestino, "Cadena" ) != 0 ) 

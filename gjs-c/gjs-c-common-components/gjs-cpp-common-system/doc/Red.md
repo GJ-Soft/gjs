@@ -2,8 +2,8 @@
 
 | Dato      | Valor                            |
 | --------- | -------------------------------- |
-| Cabecera  | `SistemaRed.h` (58 líneas)       |
-| Fuente    | `SistemaRed.cpp` (353 líneas)    |
+| Cabecera  | `SistemaRed.h` (65 líneas)       |
+| Fuente    | `SistemaRed.cpp` (464 líneas)    |
 | Espacio   | `org::gjs::cpp::common`          |
 | Prefijo   | `SisRed`                         |
 | Funciones | 6                                |
@@ -32,11 +32,11 @@ std::list<std::wstring> * pOrdenadores = SisRedOrdenadoresAccesibles ();
 | Función                       | Qué hace                          | En Windows             | En POSIX            |
 | ----------------------------- | --------------------------------- | ---------------------- | ------------------- |
 | `SisRedNombreOrdenador`       | El nombre NetBIOS / el `hostname` | `GetComputerName`      | `gethostname`       |
-| `SisRedNombreDNSOrdenador`    | El nombre completo de DNS         | `GetComputerNameEx`    | **sin implementar** |
-| `SisRedOrdenadoresAccesibles` | Lista de máquinas visibles        | `NetServerEnum`        | `getaddrinfo`       |
-| `SisRedServidorEsAccesible`   | ¿Está ese servidor?               | `NetServerEnum`        | **sin implementar** |
-| `SisRedEstacionEsAccesible`   | ¿Está esa estación?               | `NetServerEnum`        | **sin implementar** |
-| `SisRedEnviarMensaje`         | Aviso emergente a otra máquina    | `NetMessageBufferSend` | **sin implementar** |
+| `SisRedNombreDNSOrdenador`    | El nombre completo de DNS         | `GetComputerNameEx`    | `getaddrinfo` (`AI_CANONNAME`) |
+| `SisRedOrdenadoresAccesibles` | Lista de máquinas visibles        | `NetServerEnum`        | **lista vacía** ( limitación conocida ) |
+| `SisRedServidorEsAccesible`   | ¿Está ese servidor?               | `NetServerGetInfo`     | `getaddrinfo` + `connect` TCP al 445 |
+| `SisRedEstacionEsAccesible`   | ¿Está esa estación?               | `NetWkstaGetInfo`      | `getaddrinfo` + `connect` TCP al 445 |
+| `SisRedEnviarMensaje`         | Aviso emergente a otra máquina    | `NetMessageBufferSend` | **no se declara** ( sólo WIN )       |
 
 ---
 
@@ -50,20 +50,35 @@ depender de la red en la que corra.
 
 ## Observaciones
 
-### Lo que no funciona fuera de Windows
+### Fuera de Windows
 
-- **Cuatro de las seis funciones tienen la rama POSIX vacía**, marcada
-  `PENDIENTE`: el nombre DNS, las dos de accesibilidad y el envío de mensajes.
-  En el modo de compilación por defecto —Cygwin POSIX— **este módulo sabe decir
-  cómo se llama la máquina y poco más**.
-- **`SisRedEnviarMensaje` no tiene equivalente moderno.** Envuelve
-  `NetMessageBufferSend`, el servicio de mensajería de Windows NT que Microsoft
-  retiró hace años; ni siquiera en Windows actual funciona. La rama POSIX
-  clásica sería `wall` o `write`, que tampoco es lo mismo.
-- **`NetServerEnum` enumera el dominio de red de Windows**, y `getaddrinfo`
-  —lo que hace la rama POSIX de `SisRedOrdenadoresAccesibles`— resuelve un
-  nombre. No son la misma operación: la función devuelve cosas distintas según
-  dónde se compile, y eso no está escrito en ningún sitio.
+- **Las dos de accesibilidad ya funcionan** ( 2026-09-19 ). En Windows se le
+  pregunta al servicio de la máquina remota; en POSIX se hace lo mismo por
+  debajo: resolver el nombre con `getaddrinfo` e intentar una conexión TCP al
+  puerto de SMB ( 445 ), que es justo el servicio al que pregunta Windows. El
+  `connect` va **sin bloquear** y con una espera de 2 s, porque si la máquina
+  está apagada un `connect` normal se queda colgado minutos. Se prueban todas
+  las direcciones que devuelva la resolución ( IPv4 e IPv6 ) y basta con que una
+  conteste.
+- **No se usa ICMP** ( el `ping` ): abrir un socket de ese tipo pide privilegios
+  de *root*, y una librería no puede contar con eso.
+- **`SisRedEnviarMensaje` es sólo WIN.** Se apoya en `NetMessageBufferSend`, el
+  servicio de mensajería de Windows, que no tiene equivalente: no hay mecanismo
+  estándar en POSIX para hacerle llegar un aviso emergente a otra máquina. Fuera
+  de Windows **no se declara**, para que quien la llame se encuentre un error de
+  compilación en vez de un `false` que no significa nada. La rama POSIX clásica
+  sería `wall` o `write`, que tampoco es lo mismo.
+- **Ni en Windows funciona**, y sigue en pie la nota de siempre: el servicio
+  Messenger está desactivado por defecto desde Vista, así que
+  `NetMessageBufferSend` contesta error salvo que alguien lo levante a mano. Eso
+  es del sistema, no del código.
+- **`SisRedOrdenadoresAccesibles` devuelve la lista vacía en POSIX**, y es una
+  limitación conocida, no un descuido. `NetServerEnum` interroga al servicio de
+  navegación de SMB de la red local, y fuera de Windows no hay nada equivalente
+  en la biblioteca estándar: enumerar las máquinas de la red pide o hablar SMB
+  ( `libsmbclient` ) o mDNS ( Avahi ), dependencias externas que este stack no
+  tiene. Quien necesite la lista, que pregunte máquina a máquina con las dos de
+  accesibilidad.
 
 ### `std::wstring`
 
@@ -92,8 +107,12 @@ depender de la red en la que corra.
 
 - **Ninguna función distingue «no accesible» de «no se pudo comprobar».**
   `SisRedServidorEsAccesible` devuelve `false` tanto si el servidor no está como
-  si la consulta falló — o si se compiló en POSIX, donde siempre devuelve
-  `false`.
+  si la consulta falló, y en POSIX también si el 445 está cerrado en una máquina
+  que sí está encendida.
+- **En POSIX las dos de accesibilidad hacen exactamente lo mismo.** La distinción
+  servidor / estación es del dominio de Windows NT, un rol declarado en el
+  dominio; fuera de ahí no significa nada, y las dos contestan a la misma
+  pregunta: «¿responde esta máquina?».
 - **No hay nada de direcciones IP**: ni la propia, ni resolución de nombres, ni
   interfaces. Lo poco que hay de eso está en `ResolverIP` de
   [gjs-cpp-common-base](../../gjs-cpp-common-base/README.md), en otro componente.

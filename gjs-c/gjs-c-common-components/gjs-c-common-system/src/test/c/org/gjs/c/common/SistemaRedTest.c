@@ -32,11 +32,17 @@ static int TestSisRedNulo01 ()
 		printf( "Error caso 2: se esperaba 0 con estacion nula\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
+	/* SisRedEnviarMensaje solo se declara bajo WIN: envuelve NetMessageBufferSend,
+	   el servicio de mensajeria de Windows, que no tiene equivalente en POSIX.
+	   Fuera de Windows la funcion no existe, asi que este caso tiene que ir
+	   guardado igual que su declaracion o el test no compila. */
+# if ( defined ( WIN ) )
 	if ( SisRedEnviarMensaje ( NULL, NULL, NULL ) != 0 )
 	{
 		printf( "Error caso 3: se esperaba 0 al enviar mensaje con datos nulos\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
+# endif
 	return ( iRes );
 }
 

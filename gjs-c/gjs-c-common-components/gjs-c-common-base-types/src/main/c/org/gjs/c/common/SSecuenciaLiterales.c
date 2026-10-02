@@ -153,22 +153,22 @@ int SSecLitVaciar ( SSecuenciaLiterales * p_secObj )
 
 int SSecLitExiste ( SSecuenciaLiterales * p_secObj, const char * p_cDato )
 {
-	int iRes;
-	int iElem;
-	int iNumElems;
+	int				iRes;
+	SElementoPtr *	p_elpObj;
 
-	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_cDato )  ) 
+	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_cDato )  )
 	{
 		iRes = 0;
-		iElem = 0;
-		iNumElems = SSecLitNumElementos ( p_secObj );
-		while ( ( iElem < iNumElems ) && ( iRes == 0 ) )
+		/* Por la CADENA, no por indice: el indice entra por el extremo mas
+		   cercano, asi que un recorrido completo sale cuadratico. */
+		p_elpObj = SSecpElementoPtr ( p_secObj->p_secDatos, 0 );
+		while ( ES_VALIDO ( p_elpObj ) && ( iRes == 0 ) )
 		{
-			if ( CadComparar ( SSecLitElemento ( p_secObj, iElem ), p_cDato ) == COMP_IGUAL )
+			if ( CadComparar ( (char *) SElpDatos ( p_elpObj ), p_cDato ) == COMP_IGUAL )
 			{
 				iRes = 1;
 			}
-			iElem = iElem + 1;
+			p_elpObj = SElpSucesor ( p_elpObj );
 		}
 	}
 	else
@@ -180,22 +180,25 @@ int SSecLitExiste ( SSecuenciaLiterales * p_secObj, const char * p_cDato )
 
 int SSecLitBuscar ( SSecuenciaLiterales * p_secObj, const char * p_cDato )
 {
-	int iRes;
-	int iElem;
-	int iNumElems;
+	int				iRes;
+	int				iElem;
+	SElementoPtr *	p_elpObj;
 
-	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_cDato )  ) 
+	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_cDato )  )
 	{
 		iRes = -1;
 		iElem = 0;
-		iNumElems = SSecLitNumElementos ( p_secObj );
-		while ( ( iElem < iNumElems ) && ( iRes < 0 ) )
+		/* Por la CADENA, no por indice: el indice entra por el extremo mas
+		   cercano, asi que un recorrido completo sale cuadratico. */
+		p_elpObj = SSecpElementoPtr ( p_secObj->p_secDatos, 0 );
+		while ( ES_VALIDO ( p_elpObj ) && ( iRes < 0 ) )
 		{
-			if ( CadComparar ( SSecLitElemento ( p_secObj, iElem ), p_cDato ) == COMP_IGUAL )
+			if ( CadComparar ( (char *) SElpDatos ( p_elpObj ), p_cDato ) == COMP_IGUAL )
 			{
 				iRes = iElem;
 			}
 			iElem = iElem + 1;
+			p_elpObj = SElpSucesor ( p_elpObj );
 		}
 	}
 	else

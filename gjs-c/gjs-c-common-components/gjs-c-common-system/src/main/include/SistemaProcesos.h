@@ -60,14 +60,12 @@ char * SisNombreProceso ();
 char * SisRutaEjecutable ();
 char * SisDirectorioEjecutable ();
 char * SisFicheroEjecutable ();
-char * SisTituloProceso ();
 
 #if ( defined ( WIN ) )
+char * SisTituloProceso ();
+
 HINSTANCE SisWinIdProceso ();
 #endif
-
-//int SisProcesoEsDeGUI ();
-//int SisProcesoEsDeConsola ();
 
 
 /* Hilo actual: */
@@ -90,7 +88,9 @@ int SisFinalizarHilo ( thread thTID );
 int SisCambiarASiguienteHilo ();
 
 int SisHiloPrioridad ( thread thTID );
-//unsigned long SisHiloTiempoCPU ( thread thTID ); 
+/* Tiempo de CPU consumido por el hilo, en milisegundos. Implementada en las
+   dos plataformas desde que hay registro de hilos. */
+unsigned long SisHiloTiempoCPU ( thread thTID );
 
 
 /* Sistema global de procesos: */
@@ -106,11 +106,7 @@ long SisProcesoPID ( const char * p_cEjecutable );
 unsigned long SisProcesoTiempoCPU ( long lPID ); 
 unsigned long SisProcesoTiempoCPUModoNucleo ( long lPID ); 
 unsigned long SisProcesoTiempoCPUModoUsuario ( long lPID ); 
-//#if ( defined ( LLONG ) )
-//llong SisProcesoHoraCreacion ( long lPID ); 
-//#else
-//unsigned long SisProcesoHoraCreacion ( long lPID ); 
-//#endif
+//long long SisProcesoHoraCreacion ( long lPID ); 
 int SisFinalizarProceso ( long lPID );
 
 thread SisLanzarHiloVigilanciaPadre ();

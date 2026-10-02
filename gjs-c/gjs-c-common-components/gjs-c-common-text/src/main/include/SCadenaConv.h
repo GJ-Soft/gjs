@@ -65,9 +65,7 @@ SCadena * SCadcCadena ( SCadenaConv * p_cadObj );
 
 int SCadcValorEntero (  SCadenaConv * p_cadObj );
 long SCadcValorEnteroLargo (  SCadenaConv * p_cadObj );
-#  if ( defined ( LLONG ) )
-llong SCadcValorEnteroDobleLargo (  SCadenaConv * p_cadObj );
-#  endif
+long long SCadcValorEnteroDobleLargo (  SCadenaConv * p_cadObj );
 unsigned int SCadcValorEnteroSinSigno (  SCadenaConv * p_cadObj );
 unsigned long SCadcValorEnteroLargoSinSigno (  SCadenaConv * p_cadObj );
 float SCadcValorReal (  SCadenaConv * p_cadObj );
@@ -96,10 +94,8 @@ void SCadcCopiarReal ( SCadenaConv * p_cadObj, float fValor );
 void SCadcConcatenarReal ( SCadenaConv * p_cadObj, float fValor );
 void SCadcCopiarRealDoble ( SCadenaConv * p_cadObj, double dValor );
 void SCadcConcatenarRealDoble ( SCadenaConv * p_cadObj, double dValor );
-#  if ( defined ( LLONG ) )
-void SCadcCopiarEnteroDobleLargo ( SCadenaConv * p_cadObj, llong llValor );
-void SCadcConcatenarEnteroDobleLargo ( SCadenaConv * p_cadObj, llong llValor );
-#  endif
+void SCadcCopiarEnteroDobleLargo ( SCadenaConv * p_cadObj, long long llValor );
+void SCadcConcatenarEnteroDobleLargo ( SCadenaConv * p_cadObj, long long llValor );
 
 int SCadcCopiarConFormato ( SCadenaConv * p_cadObj, const char * p_cFormato, ... );
 int SCadcConcatenarConFormato ( SCadenaConv * p_cadObj, const char * p_cFormato, ... );

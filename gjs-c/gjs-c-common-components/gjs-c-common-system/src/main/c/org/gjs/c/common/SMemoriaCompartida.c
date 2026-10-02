@@ -71,18 +71,6 @@ const char * SMemCmpNombre ( SMemoriaCompartida * p_memcObj )
 	return ( p_cRes );
 }
 
-void SMemCmpEstablecerNombre ( SMemoriaCompartida * p_memcObj, const char * p_cNombre )
-{
-	if ( ES_VALIDO ( p_memcObj ) )
-	{
-		if ( SMemCmpEstaAbierta ( p_memcObj ) == 0 ) 
-		{
-			// PENDIENTE:
-			//SMtxEstablecerNombre ( p_memcObj->p_mutexObj, p_cNombre );
-		}
-	}
-}
-
 int SMemCmpTam ( SMemoriaCompartida * p_memcObj )
 {
 	int iRes;
@@ -97,18 +85,6 @@ int SMemCmpTam ( SMemoriaCompartida * p_memcObj )
 	}
 	return ( iRes );
 }
-
-void SMemCmpEstablecerTam ( SMemoriaCompartida * p_memcObj, int iTam )
-{
-	if ( ES_VALIDO ( p_memcObj ) && ( iTam >= 0 ) )
-	{
-		if ( SMemCmpEstaAbierta ( p_memcObj ) == 0 ) 
-		{
-			p_memcObj->iNumBytes = iTam;
-		}
-	}
-}
-
 
 void * SMemCmpDatos ( SMemoriaCompartida * p_memcObj )
 {
@@ -145,7 +121,7 @@ int SMemCmpAbrir ( SMemoriaCompartida * p_memcObj )
 					iCreado = 0;
 		#		  if ( defined ( WIN ) )
 					p_memcObj->hFichero = CreateFileMapping ( INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, (DWORD) p_memcObj->iNumBytes, (LPSTR) SMtxNombre ( p_memcObj->p_mutexObj ) );
-					if ( ES_VALIDO ( p_memcObj->hFichero ) )
+					if ( ES_MANEJADOR_VALIDO ( p_memcObj->hFichero ) )
 					{
 						iCreado = 1;
 					}
@@ -153,7 +129,7 @@ int SMemCmpAbrir ( SMemoriaCompartida * p_memcObj )
 					{
 						p_memcObj->hFichero = OpenFileMapping ( FILE_MAP_ALL_ACCESS, FALSE, (LPSTR) SMtxNombre ( p_memcObj->p_mutexObj ) );
 					}
-					if ( ES_NULO ( p_memcObj->hFichero ) )
+					if ( ES_MANEJADOR_NULO ( p_memcObj->hFichero ) )
 		#		  elif ( defined ( POSIX ) )
 					p_memcObj->iFichero = shm_open( SMtxNombre ( p_memcObj->p_mutexObj ), O_CREAT | O_EXCL | O_RDWR, 0660 );
 					if ( p_memcObj->iFichero >= 0 )
@@ -244,23 +220,6 @@ int SMemCmpAbrir ( SMemoriaCompartida * p_memcObj )
 		{
 			iRes = 0;
 		}
-	}
-	else
-	{
-		iRes = 0;
-	}
-	return ( iRes );
-}
-
-int SMemCmpAbrirExt ( SMemoriaCompartida * p_memcObj, const char * p_cNombre, int iTam )
-{
-	int iRes;
-
-	if ( ES_VALIDO ( p_memcObj ) )
-	{
-		SMemCmpEstablecerNombre ( p_memcObj, p_cNombre );
-		SMemCmpEstablecerTam ( p_memcObj, iTam );
-		iRes = SMemCmpAbrir ( p_memcObj );
 	}
 	else
 	{

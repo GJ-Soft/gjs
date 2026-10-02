@@ -2426,14 +2426,8 @@ int CadReemplazarExt ( char * p_cAsciiz1, const char * p_cAsciiz2, const char * 
 			}
 			if ( ( iRes == 1 ) && ( iTot > 0 ) )
 			{
-				//printf ( "                  ASCII: %s\n", p_cAsciiz1);
-				fflush(stdout);
 				CadLimpiarExt ( p_cAsciiz1, ' ', iMax1);
-				//printf ( "                  ASCII: %s\n", p_cAsciiz1);
-				fflush(stdout);
 				CadCopiarExt ( p_cAsciiz1, p_cNueva, iMax1, CadLongitud ( p_cNueva ) );
-				//printf ( "                  RESULT: %s\n", p_cAsciiz1);
-				fflush(stdout);
 			}
 			MemLiberar ( (void **) &p_cNueva );
 		}
@@ -2929,14 +2923,21 @@ int CadCumpleExpReg ( const char * p_cAsciiz, const char * p_cExpReg )
 int CadCumpleExpRegExt ( const char * p_cAsciiz, const char * p_cExpReg, int iMax )
 {
 	int iRes;
-	int iLongCad;
 	int iLongExpReg;
 
- 	iLongCad = CadLongitudSeg ( p_cAsciiz, iMax ); 
+	/* La cadena vacia tambien se evalua: "*" encaja con ella. iMax ya no
+	   interviene; solo servia para descartar la cadena vacia. */
 	iLongExpReg = CadLongitud ( p_cExpReg ); 
-	if ( ( iLongCad > 0 ) && ( iLongExpReg > 0 ) )
+	if ( ES_VALIDO ( p_cAsciiz ) )
 	{
-		iRes = ExpRegSeCumple ( p_cExpReg, p_cAsciiz );
+		if ( iLongExpReg > 0 )
+		{
+			iRes = ExpRegSeCumple ( p_cExpReg, p_cAsciiz );
+		}
+		else
+		{
+			iRes = 0;
+		}
 	}
 	else
 	{

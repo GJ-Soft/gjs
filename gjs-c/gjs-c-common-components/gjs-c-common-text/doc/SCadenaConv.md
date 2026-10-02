@@ -3,7 +3,7 @@
 | Dato         | Valor                                                      |
 | ------------ | ---------------------------------------------------------- |
 | Cabecera     | `src/main/include/SCadenaConv.h`                           |
-| Fuente       | `src/main/c/org/gjs/c/common/SCadenaConv.c` (2.483 líneas) |
+| Fuente       | `src/main/c/org/gjs/c/common/SCadenaConv.c` (2.479 líneas) |
 | Prefijo      | `SCadc`                                                    |
 | Struct       | `SCadenaConv`                                              |
 | Funciones    | 169                                                        |
@@ -44,7 +44,7 @@ es quien mantiene el valor en todas sus representaciones a la vez.
 | `SCadcValorEnteroLargo`                          | `long`                                       |
 | `SCadcValorEnteroSinSigno`                       | `unsigned int`                               |
 | `SCadcValorEnteroLargoSinSigno`                  | `unsigned long`                              |
-| `SCadcValorEnteroDobleLargo`                     | `llong`                                      |
+| `SCadcValorEnteroDobleLargo`                     | `long long`                                  |
 | `SCadcValorReal`                                 | `float`                                      |
 | `SCadcValorRealDoble`                            | `double`                                     |
 | `SCadcValorEnteroConvirtiendoDeHexadecimal`      | `int`, interpretando el texto en hexadecimal |

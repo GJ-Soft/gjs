@@ -57,11 +57,11 @@ Todo el componente se organiza alrededor de la misma pregunta: **qué API del
 sistema hay debajo**. Las tres columnas se corresponden con los tres modos de
 compilación del stack:
 
-| Modo                     | Macro   | API que se usa                                      |
-| ------------------------ | ------- | --------------------------------------------------- |
-| Cygwin POSIX (el normal) | `POSIX` | `pthread`, `sem_open`, `signal`, `/proc`, `sysconf` |
-| Cygwin estilo Windows    | `WIN`   | Win32 (`CreateThread`, `CreateSemaphore`, …)        |
-| Windows puro             | `WIN`   | Win32                                               |
+| Modo         | Macro   | API que se usa                                      |
+| ------------ | ------- | --------------------------------------------------- |
+| Cygwin       | `POSIX` | `pthread`, `sem_open`, `signal`, `/proc`, `sysconf` |
+| Windows puro | `WIN`   | Win32 (`CreateThread`, `CreateSemaphore`, …)        |
+| Linux        | `POSIX` | lo mismo que Cygwin                                 |
 
 Hay tres consecuencias que conviene tener presentes:
 
@@ -142,9 +142,14 @@ normal): **BUILD SUCCESS**, 23/23 suites en OK.
 - **El prefijo `Sis` se solapa con `gjs-c-common-io`**, que también lo usa
   (`SisExisteFichero`, `SisEsRutaValida`). Al leer una llamada `Sis…` hay que
   saber de qué componente viene.
-- Hay **62 marcas `PENDIENTE` / `TODO`** repartidas por el componente,
-  concentradas en `SistemaProcesos` (27), `SistemaLibrerias` (15) y
-  `SistemaInformacion` (9).
+- Quedan **23 marcas `PENDIENTE` / `TODO`** repartidas por el componente
+  (eran 62). Las que están dentro de una rama que sólo se compila en POSIX son
+  ya sólo **tres**, todas de `SistemaRed`: el envío de mensajes y las dos de
+  accesibilidad. El resto son apaños de la rama Windows o notas de diseño.
+- Dos funciones que eran un pendiente de POSIX **dejaron de serlo declarándose
+  sólo bajo `WIN`**: `SisTituloProceso` y `SisLibRutinaPuntoDeEntrada`. No
+  tienen equivalente fuera de Windows, y así quien las llame en otro modo se
+  encuentra un error de compilación en vez de un valor que no significa nada.
 - Cada documento de módulo tiene una sección *Observaciones* con el detalle.
 
 ---

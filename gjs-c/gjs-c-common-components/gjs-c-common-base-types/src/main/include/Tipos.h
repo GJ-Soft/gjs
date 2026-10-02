@@ -22,7 +22,6 @@
 #include <TiposPrimitiva.h>
 #include <TiposResultado.h>
 
-
 #include <SBloque.h>
 #include <SBuffer.h>
 #include <SDatos.h>
@@ -87,6 +86,7 @@
 #include <SListaLiterales.h>
 #include <SListaEnteros.h>
 #include <SListaEnterosLargos.h>
+#include <SListaEnterosLargosSinSigno.h>
 #include <SVectorLiterales.h>
 #include <SVectorEnteros.h>
 #include <SSecuenciaLiterales.h>

@@ -3,7 +3,7 @@
 | Dato         | Valor                                                |
 | ------------ | ---------------------------------------------------- |
 | Cabecera     | `src/main/include/SRuta.h`                           |
-| Fuente       | `src/main/c/org/gjs/c/common/SRuta.c` (1.232 líneas) |
+| Fuente       | `src/main/c/org/gjs/c/common/SRuta.c` (1.261 líneas) |
 | Prefijo      | `SRut`                                               |
 | Struct       | `SRuta`                                              |
 | Funciones    | 59                                                   |
@@ -79,6 +79,24 @@ Catorce predicados `SRutEs…`, entre ellos `SRutEsAbsoluta`,
 Y tres de existencia: `SRutExiste`, `SRutExisteDirectorio`,
 `SRutExisteFichero`.
 
+`SRutEsEstiloUNIX` y `SRutEsEstiloDOS` miran **sólo el directorio**:
+
+| Directorio                  | UNIX | DOS |
+| --------------------------- | ---- | --- |
+| `/tmp`, `/`, `./a`, `../a`  | 1    | 0   |
+| `C:\Temp`, `C:`, `\\srv\sh` | 0    | 1   |
+| `tmp` (sin separadores)     | 1    | 1   |
+| `C:/dir`, `a/b\c` (mezcla)  | 0    | 0   |
+| vacío                       | 0    | 0   |
+
+Usan los patrones `SF_PATRON_DIR_UNIX` (`"(/)?*(/?*)"`) y
+`SF_PATRON_DIR_DOS` (`"(\\)?*(\\?*)"`) de `FicherosConfig.h`. Como el motor de
+[expresiones](../../gjs-c-common-text/doc/ExpresionesRegulares.md) no puede
+excluir caracteres, el separador del otro estilo y la unidad (`C:`) se
+descartan aparte. Hasta el 2026-10-01 usaban expresiones de estilo PCRE
+(`^…$`, `[^/]`, `+`) que ese motor no entiende, y devolvían siempre `0`.
+Lo cubre `TestSRutEstilo01`.
+
 ```c
 SRuta * p_rutObj = SRutCrearFicheroLit ( "datos/informe.txt" );
 
@@ -115,5 +133,5 @@ SRutDestruir ( &p_rutObj );
 - No hay operaciones de composición entre rutas: no existe `SRutUnir` para
   concatenar un subdirectorio, aunque
   [SistemaFicheros](SistemaFicheros.md) sí tiene `SisComponerRuta`.
-- Con 59 funciones y 1.232 líneas es el segundo módulo más grande del componente,
+- Con 59 funciones y 1.261 líneas es el segundo módulo más grande del componente,
   pero la mitad de su API son variantes `Lit` de la otra mitad.

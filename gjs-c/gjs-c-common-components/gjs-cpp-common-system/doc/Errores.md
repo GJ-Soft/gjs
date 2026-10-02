@@ -2,8 +2,8 @@
 
 | Dato      | Valor                                                                         |
 | --------- | ----------------------------------------------------------------------------- |
-| Cabeceras | `SistemaErrores.h` (49), `SistemaTiposErrores.h` (41), `SistemaEstado.h` (56) |
-| Fuentes   | `SistemaErrores.cpp` (277), `SistemaEstado.cpp` (176)                         |
+| Cabeceras | `SistemaErrores.h` (49), `SistemaTiposErrores.h` (41), `SistemaEstado.h` (52) |
+| Fuentes   | `SistemaErrores.cpp` (277), `SistemaEstado.cpp` (165)                         |
 | Espacio   | `org::gjs::cpp::common`                                                       |
 | Prefijos  | `SisErr`, `Sis`                                                               |
 | Declara   | 13 + 3                                                                        |
@@ -114,12 +114,12 @@ comprueba que la fecha y la hora de arranque sean plausibles.
 
 ### `SistemaEstado`
 
-- **Es el módulo más pequeño del componente**: dos funciones en 176 líneas de
+- **Es el módulo más pequeño del componente**: dos funciones en 165 líneas de
   implementación, casi todas de conversión entre los formatos de fecha de cada
   plataforma.
-- **Tiene comentado un tercer método**, `SisFechaHoraInicio`, con una guarda
-  `#if defined ( LLONG )` que ya no se usa en el stack. Devolvería el instante
-  completo en un solo número, que es justo lo que hoy hay que componer a mano.
+- **Tiene comentado un tercer método**, `SisFechaHoraInicio`, que devolvería
+  el instante completo en un solo `long long`, que es justo lo que hoy hay que
+  componer a mano.
 - **Devuelve `long` en formato `AAAAMMDD`**, el convenio numérico del stack. La
   cabecera no lo dice: hay que ir a
   [gjs-cpp-common-time](../../gjs-cpp-common-time/doc/Fechas.md) para saber cómo
