@@ -94,7 +94,7 @@
 			
 			<!-- AspectJ -->
             <dependency>
-                <groupId>aspectj</groupId>
+                <groupId>org.aspectj</groupId>
                 <artifactId>aspectjrt</artifactId>
                 <version>${aspectj.version}</version>
             </dependency>

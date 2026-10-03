@@ -137,7 +137,8 @@ estructurales:
    extension se resuelve durante el *model building*, antes de que exista el
    reactor, asi que nunca puede venir del propio reactor.
 
-El procedimiento por fases, con el orden verificado, esta en
+El procedimiento por fases lo automatiza [`arranque.sh`](../arranque.sh), en la
+raiz del repositorio. El orden y el porque de cada fase estan en
 [Actualizacion de version](actualizacion-version.md), apartado 4. Para las fases
 que instalan la cadena de padres sirve el agregador `pomParents.xml`, que reune
 solo los poms padre y deja que el reactor los ordene, padre antes que hijo:

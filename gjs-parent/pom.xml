@@ -161,6 +161,7 @@
 		<maven-buildnumber-plugin.version>3.3.0</maven-buildnumber-plugin.version>
 		<license-maven-plugin.version>2.7.1</license-maven-plugin.version>
 		<central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
+		<sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
 		
 		<!-- Groovy -->
 		<groovy.version>5.1.1</groovy.version>
@@ -462,6 +463,12 @@
 						<failOnMissingFile>false</failOnMissingFile>
 						-->
 					</configuration>
+				</plugin>
+				<!-- Sonar -->
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${sonar-maven-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>		

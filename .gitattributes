@@ -1,1 +1,5 @@
 * text=auto
+
+# Los guiones de shell van siempre con LF: con CRLF, el bash de Cygwin falla
+# ($'\r': command not found) aunque el de Git for Windows los acepte.
+*.sh text eol=lf

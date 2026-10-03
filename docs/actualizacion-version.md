@@ -116,7 +116,16 @@ dependencias circulares de arranque, y ambas son estructurales:
    reactor, asi que nunca puede venir del propio reactor: tiene que estar ya en
    el repositorio local.
 
-El orden que funciona, verificado:
+Lo automatiza [`arranque.sh`](../arranque.sh), en la raiz del repositorio:
+
+	./arranque.sh                       # fases 1 a 6
+	./arranque.sh --externos --completo # y despues nar-maven-plugin, openpojo y la fase 7
+	./arranque.sh -- -Dmaven.repo.local=C:/Maven/.m2-test   # contra un repositorio de pruebas
+
+`./arranque.sh --ayuda` explica las opciones. Las salidas de Maven quedan en
+`target/arranque/`, una por invocacion.
+
+El orden que sigue, verificado a mano antes de escribir el script:
 
 	# Fase 1 - cadena de poms padre, en orden topologico (padre antes que hijo).
 	#          Varios quedaran pendientes: es normal, se recuperan en la fase 4.
@@ -185,7 +194,11 @@ repositorio, no solo en el modulo renombrado.
 
 ## Apendice: instalador topologico de padres
 
-Script auxiliar para las fases 1, 4 y 6. Recorre los poms de empaquetado `pom`,
+Lo que hace `arranque.sh` en las fases 1, 4 y 6, con la funcion
+`instalar_padres`. El orden lo calcula con `tsort`, y no intenta instalar un
+padre cuyo propio padre siga pendiente.
+
+Descripcion original: Recorre los poms de empaquetado `pom`,
 los ordena de forma que un padre siempre preceda a sus hijos, y hace
 `mvn install -N` de cada uno. Los que fallan (por depender de una build extension
 aun no construida) se marcan como pendientes sin abortar, para reintentarlos en
