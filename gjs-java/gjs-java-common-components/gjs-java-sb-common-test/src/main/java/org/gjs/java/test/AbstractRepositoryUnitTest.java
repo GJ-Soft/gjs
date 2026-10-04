@@ -46,7 +46,7 @@ public abstract class AbstractRepositoryUnitTest<T, E, PK> extends AbstractPersi
 	 * @param entityClazz the entity clazz
 	 * @param pkClazz     the pk clazz
 	 */
-	public AbstractRepositoryUnitTest(Class<T> testClazz, Class<E> entityClazz, Class<PK> pkClazz) {
+	protected AbstractRepositoryUnitTest(Class<T> testClazz, Class<E> entityClazz, Class<PK> pkClazz) {
 		super(testClazz);
 		this.entityClazz = entityClazz;
 		this.pkClazz = pkClazz;

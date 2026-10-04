@@ -27,7 +27,7 @@ public abstract class RandomNullableObjectSupplier<T> extends AbstractRandomSupp
     /**
      * Instantiates a new random alphanumeric string supplier.
      */
-    public RandomNullableObjectSupplier() {
+    protected RandomNullableObjectSupplier() {
     }
 
     /**
@@ -36,7 +36,7 @@ public abstract class RandomNullableObjectSupplier<T> extends AbstractRandomSupp
      * @param nullable
      *            the nullable
      */
-    public RandomNullableObjectSupplier(boolean nullable) {
+    protected RandomNullableObjectSupplier(boolean nullable) {
         this.nullable = nullable;
     }
 

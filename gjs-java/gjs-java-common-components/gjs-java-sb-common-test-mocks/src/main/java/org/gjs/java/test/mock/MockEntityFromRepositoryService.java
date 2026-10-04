@@ -35,7 +35,7 @@ public abstract class MockEntityFromRepositoryService<DTO, PKDTO, E, PK, FDTO>
     /**
      * Instantiates a new mock entity from repository service.
      */
-    public MockEntityFromRepositoryService() {
+    protected MockEntityFromRepositoryService() {
     }
 
     /**
@@ -44,7 +44,7 @@ public abstract class MockEntityFromRepositoryService<DTO, PKDTO, E, PK, FDTO>
      * @param mockRepository
      *            the mock repository
      */
-    public MockEntityFromRepositoryService(MockEntityDataManager<E, PK> mockRepository) {
+    protected MockEntityFromRepositoryService(MockEntityDataManager<E, PK> mockRepository) {
         for (final E entity : mockRepository.getAll()) {
             super.put(entityToDto(entity));
         }

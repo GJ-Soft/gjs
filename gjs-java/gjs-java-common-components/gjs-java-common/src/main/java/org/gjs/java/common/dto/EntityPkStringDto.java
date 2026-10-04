@@ -21,7 +21,7 @@ public abstract class EntityPkStringDto extends EntityDto<String> {
     /**
      * Instantiates a new entidad pk string dto.
      */
-    public EntityPkStringDto() {
+    protected EntityPkStringDto() {
         // No hace nada
     }
 
@@ -31,7 +31,7 @@ public abstract class EntityPkStringDto extends EntityDto<String> {
      * @param other
      *            the other
      */
-    public EntityPkStringDto(EntityPkStringDto other) {
+    protected EntityPkStringDto(EntityPkStringDto other) {
         super(other);
     }
 
@@ -41,7 +41,7 @@ public abstract class EntityPkStringDto extends EntityDto<String> {
      * @param id
      *            the id
      */
-    public EntityPkStringDto(String id) {
+    protected EntityPkStringDto(String id) {
         super(id);
     }
 

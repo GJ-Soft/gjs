@@ -19,7 +19,7 @@ public abstract class AbstractExceptionTest extends AbstractPackageTest {
     /**
      * Instantiates a new abstract exception test.
      */
-    public AbstractExceptionTest() {
+    protected AbstractExceptionTest() {
         super(new ExceptionTester());
     }
 

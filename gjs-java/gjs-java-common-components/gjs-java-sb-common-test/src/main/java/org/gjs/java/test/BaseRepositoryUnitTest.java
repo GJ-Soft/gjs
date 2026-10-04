@@ -40,7 +40,7 @@ public abstract class BaseRepositoryUnitTest<E, PK, JPA extends JpaRepository<E,
 	 * @param entityClazz the entity clazz
 	 * @param pkClazz     the pk clazz
 	 */
-	public BaseRepositoryUnitTest(Class<JPA> testClazz, Class<E> entityClazz, Class<PK> pkClazz) {
+	protected BaseRepositoryUnitTest(Class<JPA> testClazz, Class<E> entityClazz, Class<PK> pkClazz) {
 		super(testClazz, entityClazz, pkClazz);
 	}
 

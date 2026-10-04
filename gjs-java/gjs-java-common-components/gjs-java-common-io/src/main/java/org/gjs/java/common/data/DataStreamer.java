@@ -29,7 +29,7 @@ public abstract class DataStreamer {
 	/**
 	 * Instantiates a new reader plain.
 	 */
-	public DataStreamer() {
+	protected DataStreamer() {
 		logger = LoggerFactory.getLogger(getClass());
 	}
 

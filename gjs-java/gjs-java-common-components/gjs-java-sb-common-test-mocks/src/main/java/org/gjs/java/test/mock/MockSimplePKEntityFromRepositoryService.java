@@ -29,7 +29,7 @@ public abstract class MockSimplePKEntityFromRepositoryService<DTO, E, FDTO>
     /**
      * Instantiates a new mock simple PK entity from repository service.
      */
-    public MockSimplePKEntityFromRepositoryService() {
+    protected MockSimplePKEntityFromRepositoryService() {
     }
 
     /**
@@ -38,7 +38,7 @@ public abstract class MockSimplePKEntityFromRepositoryService<DTO, E, FDTO>
      * @param mockRepository
      *            the mock repository
      */
-    public MockSimplePKEntityFromRepositoryService(MockEntityDataManager<E, Long> mockRepository) {
+    protected MockSimplePKEntityFromRepositoryService(MockEntityDataManager<E, Long> mockRepository) {
         this.mockRepository = mockRepository;
         if (Objects.nonNull(mockRepository)) {
             for (final E entity : mockRepository.getAll()) {

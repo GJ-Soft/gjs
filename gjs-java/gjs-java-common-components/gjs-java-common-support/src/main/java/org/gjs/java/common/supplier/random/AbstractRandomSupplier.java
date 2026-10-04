@@ -35,7 +35,7 @@ public abstract class AbstractRandomSupplier<T> extends LogManager implements Gj
 	/**
 	 * Instantiates a new abstract random supplier.
 	 */
-	public AbstractRandomSupplier() {
+	protected AbstractRandomSupplier() {
 		// Default Logger
 		setLogger(LoggerFactory.getLogger(getClass()));
 	}

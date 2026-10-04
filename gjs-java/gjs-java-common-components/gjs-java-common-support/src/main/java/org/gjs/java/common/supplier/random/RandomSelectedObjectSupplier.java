@@ -34,7 +34,7 @@ public abstract class RandomSelectedObjectSupplier<T> extends RandomNullableObje
     /**
      * Instantiates a new random selected object supplier.
      */
-    public RandomSelectedObjectSupplier() {
+    protected RandomSelectedObjectSupplier() {
         this.options = new ArrayList<>();
         indexSupplier = new RandomIntegerSupplier(Integer.valueOf(0), Integer.valueOf(-1));
     }
@@ -46,7 +46,7 @@ public abstract class RandomSelectedObjectSupplier<T> extends RandomNullableObje
      *            the options
      */
     @SafeVarargs
-    public RandomSelectedObjectSupplier(T... options) {
+    protected RandomSelectedObjectSupplier(T... options) {
         this(options, true);
     }
 
@@ -56,7 +56,7 @@ public abstract class RandomSelectedObjectSupplier<T> extends RandomNullableObje
      * @param options
      *            the options
      */
-    public RandomSelectedObjectSupplier(Collection<T> options) {
+    protected RandomSelectedObjectSupplier(Collection<T> options) {
         this(options, true);
     }
 
@@ -68,7 +68,7 @@ public abstract class RandomSelectedObjectSupplier<T> extends RandomNullableObje
      * @param nullable
      *            the nullable
      */
-    public RandomSelectedObjectSupplier(T[] options, boolean nullable) {
+    protected RandomSelectedObjectSupplier(T[] options, boolean nullable) {
         this(Arrays.asList(options), nullable);
     }
 
@@ -80,7 +80,7 @@ public abstract class RandomSelectedObjectSupplier<T> extends RandomNullableObje
      * @param nullable
      *            the nullable
      */
-    public RandomSelectedObjectSupplier(Collection<T> options, boolean nullable) {
+    protected RandomSelectedObjectSupplier(Collection<T> options, boolean nullable) {
         super(nullable);
         this.options = new ArrayList<>();
         indexSupplier = new RandomIntegerSupplier(Integer.valueOf(0), Integer.valueOf(0));

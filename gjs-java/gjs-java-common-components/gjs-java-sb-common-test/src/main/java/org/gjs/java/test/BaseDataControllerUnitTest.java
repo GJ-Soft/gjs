@@ -28,7 +28,7 @@ public abstract class BaseDataControllerUnitTest<T, D extends MockModelDataManag
     /**
      * Instantiates a new base data controller unit test.
      */
-    public BaseDataControllerUnitTest() {
+    protected BaseDataControllerUnitTest() {
     }
 
     /**
@@ -37,7 +37,7 @@ public abstract class BaseDataControllerUnitTest<T, D extends MockModelDataManag
      * @param testClazz
      *            the test clazz
      */
-    public BaseDataControllerUnitTest(Class<T> testClazz) {
+    protected BaseDataControllerUnitTest(Class<T> testClazz) {
         super(testClazz);
     }
 

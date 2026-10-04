@@ -22,7 +22,7 @@ public abstract class EntityPkLongDto extends EntityDto<Long> {
 	/**
 	 * Instantiates a new entidad pk long dto.
 	 */
-	public EntityPkLongDto() {
+	protected EntityPkLongDto() {
 		// No hace nada
 	}
 
@@ -31,7 +31,7 @@ public abstract class EntityPkLongDto extends EntityDto<Long> {
 	 *
 	 * @param other the other
 	 */
-	public EntityPkLongDto(EntityPkLongDto other) {
+	protected EntityPkLongDto(EntityPkLongDto other) {
 		super(other);
 	}
 
@@ -40,7 +40,7 @@ public abstract class EntityPkLongDto extends EntityDto<Long> {
 	 *
 	 * @param id the id
 	 */
-	public EntityPkLongDto(Long id) {
+	protected EntityPkLongDto(Long id) {
 		super(id);
 	}
 

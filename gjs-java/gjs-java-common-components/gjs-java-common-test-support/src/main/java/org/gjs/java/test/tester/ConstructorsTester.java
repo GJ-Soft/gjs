@@ -3,6 +3,7 @@ package org.gjs.java.test.tester;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -117,21 +118,21 @@ public class ConstructorsTester extends BaseMethodTester {
 				Object[] parameters = generateEmptyParameters(constructor);
 				Object obj = createInstance(constructor, parameters, pojoClass.getClazz().getName());
 				affirmNotNull(String.format("Error calling constructor with empty parameters=[%s] for Class=[%s]",
-						constructor.getName(), pojoClass.getClazz().getName()), obj);
+						Arrays.toString(parameters), pojoClass.getClazz().getName()), obj);
 				validateFields(obj);
 
 				if (ConditionUtils.oneIsTrue(hasObjects, hasArrays)) {
 					logger.info("Callig constructor with sample parameters...");
 					parameters = generateSampleParameters(constructor);
 					obj = createInstance(constructor, parameters, pojoClass.getClazz().getName());
-					affirmNotNull(String.format("Error calling constructor with default parameters=[%s] for Class=[%s]",
-							constructor.getName(), pojoClass.getClazz().getName()), obj);
+					affirmNotNull(String.format("Error calling constructor with sample parameters=[%s] for Class=[%s]",
+							Arrays.toString(parameters), pojoClass.getClazz().getName()), obj);
 					validateFields(obj);
 
 				}
 			} else {
 				final Object obj = createInstance(constructor, null, pojoClass.getClazz().getName());
-				affirmNotNull(String.format("Error calling default constructor for Class=[%s]", constructor.getName(),
+				affirmNotNull(String.format("Error calling default constructor for Class=[%s]",
 						pojoClass.getClazz().getName()), obj);
 				validateDefaultFields(obj);
 			}

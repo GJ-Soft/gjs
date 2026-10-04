@@ -565,7 +565,7 @@ public final class ReflectionUtils {
 			} else {
 				final Method getter = ReflectionUtils.findGetter(obj.getClass(), field.getType(), field.getName());
 				if (Objects.nonNull(getter)) {
-					logger.debug("Se va a obtener con el getter el campo {}", field.getName(), value);
+					logger.debug("Se va a obtener con el getter el campo {}", field.getName());
 					value = getter.invoke(obj);
 				} else {
 					logger.warn("El valor del atributo=[{}] no puede obtenerse.", field.getName());

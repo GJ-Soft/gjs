@@ -33,7 +33,7 @@ public abstract class AbstractPersistenceUnitTest<T> extends AbstractDataObjectU
     /**
      * Instantiates a new abstract persistence unit test.
      */
-    public AbstractPersistenceUnitTest() {
+    protected AbstractPersistenceUnitTest() {
     }
 
     /**
@@ -42,7 +42,7 @@ public abstract class AbstractPersistenceUnitTest<T> extends AbstractDataObjectU
      * @param testClazz
      *            the test clazz
      */
-    public AbstractPersistenceUnitTest(Class<T> testClazz) {
+    protected AbstractPersistenceUnitTest(Class<T> testClazz) {
         super(testClazz);
     }
 

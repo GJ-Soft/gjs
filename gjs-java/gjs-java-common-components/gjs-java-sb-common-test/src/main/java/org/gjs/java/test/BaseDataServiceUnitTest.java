@@ -27,7 +27,7 @@ public abstract class BaseDataServiceUnitTest<T, D extends MockModelDataManager>
     /**
      * Instantiates a new abstract data object unit test.
      */
-    public BaseDataServiceUnitTest() {
+    protected BaseDataServiceUnitTest() {
     }
 
     /**
@@ -36,7 +36,7 @@ public abstract class BaseDataServiceUnitTest<T, D extends MockModelDataManager>
      * @param testClazz
      *            the test clazz
      */
-    public BaseDataServiceUnitTest(Class<T> testClazz) {
+    protected BaseDataServiceUnitTest(Class<T> testClazz) {
         super(testClazz);
     }
 

@@ -40,7 +40,7 @@ public abstract class EntityDto<T extends Serializable> extends BaseDto implemen
 	/**
 	 * Instantiates a new entidad dto.
 	 */
-	public EntityDto() {
+	protected EntityDto() {
 		// No hace nada
 	}
 
@@ -49,7 +49,7 @@ public abstract class EntityDto<T extends Serializable> extends BaseDto implemen
 	 *
 	 * @param other the other
 	 */
-	public EntityDto(EntityDto<T> other) {
+	protected EntityDto(EntityDto<T> other) {
 		if (Objects.nonNull(other)) {
 			id = other.getId();
 		}
@@ -60,7 +60,7 @@ public abstract class EntityDto<T extends Serializable> extends BaseDto implemen
 	 *
 	 * @param id the id
 	 */
-	public EntityDto(T id) {
+	protected EntityDto(T id) {
 		this.id = id;
 	}
 

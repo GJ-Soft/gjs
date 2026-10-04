@@ -82,13 +82,12 @@ public final class DataUtils {
 			final E entity = listData.get(i);
 			if (Objects.isNull(extractor)) {
 				extractor = new DefaultDataExtractor(entity);
-				logger.debug("makeCsv", "Creado extractor de datos para la clase",
+				logger.debug("makeCsv: creado extractor de datos para la clase {}",
 						entity.getClass().getCanonicalName());
 			}
 			for (int j = 0; j < listColumns.size(); j = j + 1) {
 				final String value = extractor.getColumnValue(entity, listColumns.get(j));
-				logger.debug("makeCsv",
-						String.format("Registro %s; Columna %s(%s): Valor=%s", i, j, listColumns.get(j), value));
+				logger.debug("makeCsv: registro {}; columna {}({}): valor={}", i, j, listColumns.get(j), value);
 				streamer.setValue(i, j, value);
 			}
 		}
@@ -146,8 +145,7 @@ public final class DataUtils {
 				if (setStringColumns.contains(listColumns.get(j))) {
 					value = String.format("\"%s\"", value);
 				}
-				logger.debug("makeCsv",
-						String.format("Registro %s; Columna %s(%s): Valor=%s", i, j, listColumns.get(j), value));
+				logger.debug("makeCsv: registro {}; columna {}({}): valor={}", i, j, listColumns.get(j), value);
 				streamer.setValue(i, j, value);
 			}
 		}

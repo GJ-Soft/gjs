@@ -73,7 +73,7 @@ public abstract class AbstractObjectSupplier<T> extends AbstractRandomSupplier<T
 	 *
 	 * @param className the class name
 	 */
-	public AbstractObjectSupplier(String className) {
+	protected AbstractObjectSupplier(String className) {
 		this(className, new ObjectSupplierManager());
 	}
 
@@ -83,7 +83,7 @@ public abstract class AbstractObjectSupplier<T> extends AbstractRandomSupplier<T
 	 * @param className the class name
 	 * @param manager   the manager
 	 */
-	public AbstractObjectSupplier(String className, ObjectSupplierManager manager) {
+	protected AbstractObjectSupplier(String className, ObjectSupplierManager manager) {
 		this.className = className;
 		this.manager = manager;
 		if (Objects.nonNull(this.manager)) {

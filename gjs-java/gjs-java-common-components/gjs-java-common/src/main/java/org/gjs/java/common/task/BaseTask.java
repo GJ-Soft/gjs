@@ -37,7 +37,7 @@ public abstract class BaseTask extends BaseLogger {
 	 * @param taskName        the task name
 	 * @param taskDescription the task description
 	 */
-	public BaseTask(String jobName, int taskOrder, String taskName, String taskDescription) {
+	protected BaseTask(String jobName, int taskOrder, String taskName, String taskDescription) {
 		this.jobName = jobName;
 		this.taskOrder = taskOrder;
 		this.taskName = taskName;

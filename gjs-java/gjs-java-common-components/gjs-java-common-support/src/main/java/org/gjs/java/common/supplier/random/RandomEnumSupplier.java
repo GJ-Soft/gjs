@@ -24,7 +24,7 @@ public abstract class RandomEnumSupplier<E extends Enum<E>> extends RandomSelect
     /**
      * Instantiates a new random enum supplier.
      */
-    public RandomEnumSupplier() {
+    protected RandomEnumSupplier() {
         @SuppressWarnings("unchecked")
         final List<E> options = EnumUtils.getEnumList((Class<E>) getClazz());
         super.setOptions(options);

@@ -68,8 +68,12 @@ public class DefaultGetterTester extends BaseFieldTester {
 
 				SameInstanceIdentityHandlerStub.registerIdentityHandlerStubForValue(value);
 
-				LoggerFactory.getLogger(this.getClass()).debug("Testing Field [{0}] with value [{1}]", fieldEntry,
-						safeToString(value));
+				// Placeholders de SLF4J ({}), no de MessageFormat ({0}); y safeToString solo
+				// con la depuración activa.
+				final Logger fieldLogger = LoggerFactory.getLogger(this.getClass());
+				if (fieldLogger.isDebugEnabled()) {
+					fieldLogger.debug("Testing Field [{}] with value [{}]", fieldEntry, safeToString(value));
+				}
 
 				final boolean esContenedor = fieldEntry.isParameterized() || fieldEntry.isArray();
 
@@ -85,7 +89,7 @@ public class DefaultGetterTester extends BaseFieldTester {
 				SameInstanceIdentityHandlerStub.unregisterIdentityHandlerStubForValue(value);
 				fieldProcessed();
 			} else {
-				LoggerFactory.getLogger(this.getClass()).debug("Field [{0}] has no getter skipping", fieldEntry);
+				LoggerFactory.getLogger(this.getClass()).debug("Field [{}] has no getter skipping", fieldEntry);
 			}
 		}
 		endClass();

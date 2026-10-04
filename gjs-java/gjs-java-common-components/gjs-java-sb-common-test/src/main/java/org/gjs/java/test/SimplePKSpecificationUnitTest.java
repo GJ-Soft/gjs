@@ -32,7 +32,7 @@ public abstract class SimplePKSpecificationUnitTest<T, F, E> extends BaseSpecifi
 	 * @param filterClazz the filter clazz
 	 * @param entityClazz the entity clazz
 	 */
-	public SimplePKSpecificationUnitTest(Class<T> testClazz, Class<F> filterClazz, Class<E> entityClazz) {
+	protected SimplePKSpecificationUnitTest(Class<T> testClazz, Class<F> filterClazz, Class<E> entityClazz) {
 		super(testClazz, filterClazz, entityClazz, Long.class);
 	}
 

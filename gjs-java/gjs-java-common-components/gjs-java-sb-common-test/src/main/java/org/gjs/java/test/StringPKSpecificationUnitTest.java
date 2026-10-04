@@ -34,7 +34,7 @@ public abstract class StringPKSpecificationUnitTest<T, F, E> extends BaseSpecifi
      * @param entityClazz
      *            the entity clazz
      */
-    public StringPKSpecificationUnitTest(Class<T> testClazz, Class<F> filterClazz, Class<E> entityClazz) {
+    protected StringPKSpecificationUnitTest(Class<T> testClazz, Class<F> filterClazz, Class<E> entityClazz) {
         super(testClazz, filterClazz, entityClazz, String.class);
     }
 

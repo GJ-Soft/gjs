@@ -35,7 +35,7 @@ public abstract class BaseDataExtractor<T> implements DataExtractor<T> {
 	/**
 	 * Instantiates a new base data extractor.
 	 */
-	public BaseDataExtractor() {
+	protected BaseDataExtractor() {
 		logger = LoggerFactory.getLogger(getClass());
 		columnNames = new ArrayList<>();
 	}
@@ -45,7 +45,7 @@ public abstract class BaseDataExtractor<T> implements DataExtractor<T> {
 	 *
 	 * @param columnName the column name
 	 */
-	public BaseDataExtractor(String... columnName) {
+	protected BaseDataExtractor(String... columnName) {
 		logger = LoggerFactory.getLogger(getClass());
 		columnNames = Arrays.asList(columnName);
 	}

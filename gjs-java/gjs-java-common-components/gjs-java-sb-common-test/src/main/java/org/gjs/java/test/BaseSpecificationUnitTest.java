@@ -49,7 +49,7 @@ public abstract class BaseSpecificationUnitTest<T, F, E, PK> extends AbstractRep
 	 * @param entityClazz the entity clazz
 	 * @param pkClazz     the pk clazz
 	 */
-	public BaseSpecificationUnitTest(Class<T> testClazz, Class<F> filterClazz, Class<E> entityClazz,
+	protected BaseSpecificationUnitTest(Class<T> testClazz, Class<F> filterClazz, Class<E> entityClazz,
 			Class<PK> pkClazz) {
 		super(testClazz, entityClazz, pkClazz);
 		this.filterClazz = filterClazz;

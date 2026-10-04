@@ -79,7 +79,7 @@ public abstract class AbstractDataObjectUnitTest<T> extends BaseUnitTest<T> {
     /**
      * Instantiates a new abstract data object unit test.
      */
-    public AbstractDataObjectUnitTest() {
+    protected AbstractDataObjectUnitTest() {
     }
 
     /**
@@ -88,7 +88,7 @@ public abstract class AbstractDataObjectUnitTest<T> extends BaseUnitTest<T> {
      * @param testClazz
      *            the test clazz
      */
-    public AbstractDataObjectUnitTest(Class<T> testClazz) {
+    protected AbstractDataObjectUnitTest(Class<T> testClazz) {
         super(testClazz);
     }
 

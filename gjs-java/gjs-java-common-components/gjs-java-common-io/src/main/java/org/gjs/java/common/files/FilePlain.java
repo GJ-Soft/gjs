@@ -35,7 +35,7 @@ public abstract class FilePlain {
 	/**
 	 * Instantiates a new file plain.
 	 */
-	public FilePlain() {
+	protected FilePlain() {
 		newFile();
 	}
 
@@ -44,7 +44,7 @@ public abstract class FilePlain {
 	 *
 	 * @param path the path
 	 */
-	public FilePlain(String path) {
+	protected FilePlain(String path) {
 		load(path);
 	}
 
@@ -54,7 +54,7 @@ public abstract class FilePlain {
 	 * @param directory the directory
 	 * @param file      the file
 	 */
-	public FilePlain(String directory, String file) {
+	protected FilePlain(String directory, String file) {
 		load(directory, file);
 	}
 
@@ -63,7 +63,7 @@ public abstract class FilePlain {
 	 *
 	 * @param file the file
 	 */
-	public FilePlain(File file) {
+	protected FilePlain(File file) {
 		load(file);
 	}
 
@@ -72,7 +72,7 @@ public abstract class FilePlain {
 	 *
 	 * @param path the path
 	 */
-	public FilePlain(Path path) {
+	protected FilePlain(Path path) {
 		File file = null;
 		if (Objects.nonNull(path)) {
 			file = path.toFile();

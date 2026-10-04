@@ -45,7 +45,7 @@ public abstract class AbstractPackageTest {
 	 *
 	 * @param testers the testers
 	 */
-	public AbstractPackageTest(Tester... testers) {
+	protected AbstractPackageTest(Tester... testers) {
 		this.testers = new ArrayList<>();
 		Collections.addAll(this.testers, testers);
 	}

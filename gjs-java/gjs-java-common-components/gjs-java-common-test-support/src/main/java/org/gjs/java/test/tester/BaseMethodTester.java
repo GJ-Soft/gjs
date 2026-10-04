@@ -29,7 +29,7 @@ public abstract class BaseMethodTester extends BaseTester {
 	 *
 	 * @param logger the getLogger()
 	 */
-	public BaseMethodTester(Logger logger) {
+	protected BaseMethodTester(Logger logger) {
 		setLogger(logger);
 	}
 
@@ -39,7 +39,7 @@ public abstract class BaseMethodTester extends BaseTester {
 	 * @param logger      the getLogger()
 	 * @param stopOnError the stop on error
 	 */
-	public BaseMethodTester(Logger logger, boolean stopOnError) {
+	protected BaseMethodTester(Logger logger, boolean stopOnError) {
 		super(stopOnError);
 		setLogger(logger);
 	}

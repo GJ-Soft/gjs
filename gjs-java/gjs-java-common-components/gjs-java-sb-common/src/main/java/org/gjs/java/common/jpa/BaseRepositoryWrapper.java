@@ -79,7 +79,7 @@ public abstract class BaseRepositoryWrapper<T, ID> {
 	 * @param pk     the pk
 	 * @param logger the logger
 	 */
-	public BaseRepositoryWrapper(Class<T> entity, Class<ID> pk, Logger logger) {
+	protected BaseRepositoryWrapper(Class<T> entity, Class<ID> pk, Logger logger) {
 		this.entity = entity;
 		this.pk = pk;
 		this.logger = logger;
@@ -96,7 +96,7 @@ public abstract class BaseRepositoryWrapper<T, ID> {
 	 * @param dataFile the data file
 	 * @param logger   the logger
 	 */
-	public BaseRepositoryWrapper(Class<T> entity, Class<ID> pk, String dataFile, Logger logger) {
+	protected BaseRepositoryWrapper(Class<T> entity, Class<ID> pk, String dataFile, Logger logger) {
 		this(entity, pk, logger);
 		this.dataFile = dataFile;
 	}

@@ -97,7 +97,7 @@ public class ExceptionTester extends BaseMethodTester {
 			Exception obj;
 			if (constructor.getParameterCount() == 0) {
 				obj = createInstance(constructor, null, pojoClass.getClazz().getName());
-				affirmNotNull(String.format("Error calling default constructor for Class=[%s]", constructor.getName(),
+				affirmNotNull(String.format("Error calling default constructor for Class=[%s]",
 						pojoClass.getClazz().getName()), obj);
 			} else {
 				logger.info("Constructor with {}", constructor.getParameterCount());

@@ -31,7 +31,7 @@ public abstract class StringPKRepositoryUnitTest<E, JPA extends JpaRepository<E,
      * @param entityClazz
      *            the entity clazz
      */
-    public StringPKRepositoryUnitTest(Class<JPA> testClazz, Class<E> entityClazz) {
+    protected StringPKRepositoryUnitTest(Class<JPA> testClazz, Class<E> entityClazz) {
         super(testClazz, entityClazz, String.class);
     }
 
