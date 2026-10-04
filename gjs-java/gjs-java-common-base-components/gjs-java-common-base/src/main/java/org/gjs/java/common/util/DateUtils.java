@@ -309,7 +309,7 @@ public final class DateUtils {
 	 * @return true, if is valid date range
 	 */
 	public static boolean isValidDateRange(LocalDate startDate, LocalDate endDate) {
-		final LocalDate today = LocalDate.now();
+		final LocalDate today = LocalDate.now(ZoneId.systemDefault());
 		if (Objects.isNull(startDate)) {
 			return Objects.isNull(endDate) || beforeOrEqual(today, endDate);
 		}
@@ -335,7 +335,7 @@ public final class DateUtils {
 	 * @return true, if is valid end date
 	 */
 	public static boolean isValidEndDate(LocalDate endDate) {
-		final LocalDate today = LocalDate.now();
+		final LocalDate today = LocalDate.now(ZoneId.systemDefault());
 		return Objects.isNull(endDate) || today.isBefore(endDate) || today.isEqual(endDate);
 	}
 

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
 
@@ -30,11 +31,11 @@ public enum ManagedType {
     /** The date type. */
     DATE("java.util.Date", new Date()),
     /** The localdatetime. */
-    LOCALDATETIME("java.time.LocalDateTime", LocalDateTime.now()),
+    LOCALDATETIME("java.time.LocalDateTime", LocalDateTime.now(ZoneId.systemDefault())),
     /** The localdate. */
-    LOCALDATE("java.time.LocalDate", LocalDateTime.now().toLocalDate()),
+    LOCALDATE("java.time.LocalDate", LocalDateTime.now(ZoneId.systemDefault()).toLocalDate()),
     /** The timestamp. */
-    TIMESTAMP("java.sql.Timestamp", Timestamp.valueOf(LocalDateTime.now())),
+    TIMESTAMP("java.sql.Timestamp", Timestamp.valueOf(LocalDateTime.now(ZoneId.systemDefault()))),
     /** The throwable. */
     THROWABLE("java.lang.Throwable", new Exception()),
     /** The exception. */

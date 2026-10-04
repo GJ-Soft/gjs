@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
@@ -100,9 +101,9 @@ class DateUtilsTest extends BaseClassTest<DateUtils> {
 
     @Test
     void testBeforeOrEqual2() {
-        final LocalDate yesterday = LocalDate.now().minusDays(1);
-        final LocalDate tomorrow = LocalDate.now().plusDays(1);
-        final LocalDate now = LocalDate.now();
+        final LocalDate yesterday = LocalDate.now(ZoneId.systemDefault()).minusDays(1);
+        final LocalDate tomorrow = LocalDate.now(ZoneId.systemDefault()).plusDays(1);
+        final LocalDate now = LocalDate.now(ZoneId.systemDefault());
         final LocalDate nullius = null;
         assertTrue(DateUtils.beforeOrEqual(yesterday, now));
         assertTrue(DateUtils.beforeOrEqual(yesterday, tomorrow));
@@ -119,9 +120,9 @@ class DateUtilsTest extends BaseClassTest<DateUtils> {
 
     @Test
     void testAfterOrEqual2() {
-        final LocalDate yesterday = LocalDate.now().minusDays(1);
-        final LocalDate tomorrow = LocalDate.now().plusDays(1);
-        final LocalDate now = LocalDate.now();
+        final LocalDate yesterday = LocalDate.now(ZoneId.systemDefault()).minusDays(1);
+        final LocalDate tomorrow = LocalDate.now(ZoneId.systemDefault()).plusDays(1);
+        final LocalDate now = LocalDate.now(ZoneId.systemDefault());
         final LocalDate nullius = null;
         assertFalse(DateUtils.afterOrEqual(yesterday, now));
         assertFalse(DateUtils.afterOrEqual(yesterday, tomorrow));
@@ -200,7 +201,7 @@ class DateUtilsTest extends BaseClassTest<DateUtils> {
     @Test
     void testIsValidEndDate2() {
         final LocalDate nullDate = null;
-        final LocalDate now = LocalDate.now();
+        final LocalDate now = LocalDate.now(ZoneId.systemDefault());
         final LocalDate yesterday = now.minusDays(1);
         final LocalDate tomorrow = now.plusDays(1);
         assertTrue(DateUtils.isValidEndDate(nullDate));
@@ -230,7 +231,7 @@ class DateUtilsTest extends BaseClassTest<DateUtils> {
     @Test
     void testIsValidDateRange2() {
         final LocalDate nullDate = null;
-        final LocalDate now = LocalDate.now();
+        final LocalDate now = LocalDate.now(ZoneId.systemDefault());
         final LocalDate yesterday = now.minusDays(1);
         final LocalDate tomorrow = now.plusDays(1);
         assertTrue(DateUtils.isValidDateRange(nullDate, nullDate));

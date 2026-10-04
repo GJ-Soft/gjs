@@ -87,14 +87,47 @@ public class SampleArraysPojo {
         result = prime * result + Arrays.hashCode(intVal);
         result = prime * result + Arrays.hashCode(lonVal);
         result = prime * result + Arrays.hashCode(obVal);
+        result = prime * result + Arrays.hashCode(obyVal);
         result = prime * result + Arrays.hashCode(ocVal);
         result = prime * result + Arrays.hashCode(odVal);
         result = prime * result + Arrays.hashCode(ofVal);
         result = prime * result + Arrays.hashCode(oiVal);
         result = prime * result + Arrays.hashCode(olVal);
+        result = prime * result + Arrays.hashCode(osiVal);
         result = prime * result + Arrays.hashCode(strVal);
         result = prime * result + Arrays.hashCode(siVal);
         return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof SampleArraysPojo)) {
+            return false;
+        }
+        // Los mismos arrays que hashCode, en el mismo orden.
+        final SampleArraysPojo other = (SampleArraysPojo) obj;
+        return Arrays.equals(boolVal, other.boolVal)
+                && Arrays.equals(byVal, other.byVal)
+                && Arrays.equals(carVal, other.carVal)
+                && Arrays.equals(douVal, other.douVal)
+                && Arrays.equals(datVal, other.datVal)
+                && Arrays.equals(decVal, other.decVal)
+                && Arrays.equals(floVal, other.floVal)
+                && Arrays.equals(intVal, other.intVal)
+                && Arrays.equals(lonVal, other.lonVal)
+                && Arrays.equals(obVal, other.obVal)
+                && Arrays.equals(obyVal, other.obyVal)
+                && Arrays.equals(ocVal, other.ocVal)
+                && Arrays.equals(odVal, other.odVal)
+                && Arrays.equals(ofVal, other.ofVal)
+                && Arrays.equals(oiVal, other.oiVal)
+                && Arrays.equals(olVal, other.olVal)
+                && Arrays.equals(osiVal, other.osiVal)
+                && Arrays.equals(strVal, other.strVal)
+                && Arrays.equals(siVal, other.siVal);
     }
 
     @Override

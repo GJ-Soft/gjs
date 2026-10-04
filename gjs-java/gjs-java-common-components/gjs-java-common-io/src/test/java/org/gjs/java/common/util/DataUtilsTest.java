@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -127,7 +128,7 @@ class DataUtilsTest extends BaseUnitTest<DataUtils> {
 		final Map<String, String> obj1 = new HashMap<>();
 		obj1.put("id", ConversionUtils.toString(Long.valueOf(1)));
 		obj1.put("nombre", "ROL_1");
-		obj1.put("fechaAlta", ConversionUtils.toString(LocalDate.now()));
+		obj1.put("fechaAlta", ConversionUtils.toString(LocalDate.now(ZoneId.systemDefault())));
 		obj1.put("activo", ConversionUtils.toString(Boolean.TRUE));
 		data.add(obj1);
 		final byte[] csv = DataUtils.makeCsv(data, columns, stringColuns);
@@ -150,7 +151,7 @@ class DataUtilsTest extends BaseUnitTest<DataUtils> {
 		final Map<String, String> obj1 = new HashMap<>();
 		obj1.put("id", ConversionUtils.toString(Long.valueOf(1)));
 		obj1.put("nombre", "ROL_1");
-		obj1.put("fechaAlta", ConversionUtils.toString(LocalDate.now()));
+		obj1.put("fechaAlta", ConversionUtils.toString(LocalDate.now(ZoneId.systemDefault())));
 		obj1.put("activo", ConversionUtils.toString(Boolean.TRUE));
 		data.add(obj1);
 		final byte[] csv = DataUtils.makeCsv(data, columns, stringColuns);

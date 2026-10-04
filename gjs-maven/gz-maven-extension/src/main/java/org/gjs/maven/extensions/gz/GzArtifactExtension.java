@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.logging.Logger;
 
 /**
@@ -26,9 +25,6 @@ public class GzArtifactExtension extends AbstractMavenLifecycleParticipant {
 
 	@Inject
 	private Logger logger;
-
-	@Inject
-	private MavenProjectHelper projectHelper;
 
 	@Override
 	public void afterProjectsRead(MavenSession session) {

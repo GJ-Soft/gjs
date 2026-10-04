@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.ArrayList;
@@ -368,7 +369,7 @@ class ReflectionUtilsTest extends BaseClassTest<ReflectionUtils> {
 	void testSetFieldValue3() {
 		try {
 			final SampleLocalDatePojo obj = new SampleLocalDatePojo();
-			final LocalDate value = LocalDate.now();
+			final LocalDate value = LocalDate.now(ZoneId.systemDefault());
 			assertNull(obj.getLocalDate());
 			ReflectionUtils.setFieldValue(obj, "localDate", value);
 			assertNotNull(obj.getLocalDate());
@@ -514,7 +515,7 @@ class ReflectionUtilsTest extends BaseClassTest<ReflectionUtils> {
 			assertNotNull(copied1);
 			assertEquals(obj1, copied1);
 
-			final LocalDateTime obj2 = LocalDateTime.now();
+			final LocalDateTime obj2 = LocalDateTime.now(ZoneId.systemDefault());
 			final LocalDateTime copied2 = (LocalDateTime) ReflectionUtils.clone(obj2);
 			assertNotNull(copied2);
 			assertEquals(obj2, copied2);
