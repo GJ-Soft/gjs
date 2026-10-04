@@ -106,11 +106,9 @@ public abstract class AbstractRandomSupplier<T> extends LogManager implements Gj
 	public T[] getArray() {
 		int size = minSizeArrays;
 		if (maxSizeArrays > minSizeArrays) {
-			Integer randomValue = random.nextInt();
-			if (randomValue < 0) {
-				randomValue = -randomValue;
-			}
-			size = minSizeArrays + (randomValue % (maxSizeArrays - minSizeArrays));
+			// floorMod y no el opuesto del aleatorio, que sigue siendo negativo para
+			// Integer.MIN_VALUE y daría un tamaño por debajo del mínimo.
+			size = minSizeArrays + Math.floorMod(random.nextInt(), maxSizeArrays - minSizeArrays);
 		}
 		final T[] array = createArray(size);
 		for (int i = 0; i < size; i = i + 1) {

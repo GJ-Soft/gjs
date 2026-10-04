@@ -124,4 +124,27 @@ class BaseRepositoryWrapperTest extends BaseUnitTest<BaseRepositoryWrapper> {
 		assertEquals(correspondencias, wrapper.getFieldCorrespondencies());
 	}
 
+	/*
+	 * Regresion: sin correspondencias (el mapa empieza a null), getFinalFieldName
+	 * evaluaba fieldCorrespondencies.containsKey dentro de ConditionUtils.allAreTrue,
+	 * que recibe los argumentos ya evaluados, y daba NullPointerException.
+	 */
+	@Test
+	void testNombreFinalSinCorrespondencias() {
+		final WrapperDePrueba<Long> wrapper = new WrapperDePrueba<>(Long.class);
+
+		assertEquals("campo", wrapper.getFinalFieldName("campo"));
+	}
+
+	@Test
+	void testNombreFinalConCorrespondencias() {
+		final WrapperDePrueba<Long> wrapper = new WrapperDePrueba<>(Long.class);
+		final Map<String, String> correspondencias = new HashMap<>();
+		correspondencias.put("id_entidad", "id");
+		wrapper.setFieldCorrespondencies(correspondencias);
+
+		assertEquals("id", wrapper.getFinalFieldName("id_entidad"));
+		assertEquals("otro", wrapper.getFinalFieldName("otro"));
+	}
+
 }

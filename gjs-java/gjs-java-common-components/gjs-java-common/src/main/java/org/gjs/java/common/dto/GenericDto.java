@@ -3,7 +3,6 @@ package org.gjs.java.common.dto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -127,10 +126,9 @@ public class GenericDto extends BaseDto {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("fields",
-				Objects.nonNull(fields) ? fields.stream().map(Object::toString).collect(Collectors.joining(","))
-						: "null")
-				.toString();
+		// fields is final and never null.
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+				.append("fields", fields.stream().map(Object::toString).collect(Collectors.joining(","))).toString();
 	}
 
 }

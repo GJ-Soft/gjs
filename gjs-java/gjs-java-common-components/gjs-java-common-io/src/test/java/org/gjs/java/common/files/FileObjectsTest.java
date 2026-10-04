@@ -444,4 +444,16 @@ public class FileObjectsTest extends BaseUnitTest<FileObjects> {
 		}
 	}
 
+	/**
+	 * Regresion: addObject(null) evaluaba value.numFields() como argumento de
+	 * ConditionUtils.oneIsTrue y daba NullPointerException. Un nulo no se anade.
+	 */
+	@Test
+	void testAddObjectNulo() {
+		final FileObjects file = new FileObjects();
+		final int filas = file.rows();
+		file.addObject(null);
+		assertEquals(filas, file.rows());
+	}
+
 }

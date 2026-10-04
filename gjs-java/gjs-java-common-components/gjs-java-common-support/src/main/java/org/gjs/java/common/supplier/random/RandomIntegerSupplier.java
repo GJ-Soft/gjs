@@ -16,18 +16,26 @@ import java.util.Objects;
  */
 public class RandomIntegerSupplier extends AbstractRandomSupplier<Integer> {
 
-    /** The max value. */
-    private Integer maxValue;
+    /** The default max value. */
+    private static final Integer DEFAULT_MAX_VALUE = Integer.valueOf(100000000);
 
-    /** The min value. */
-    private Integer minValue;
+    /** The default min value. */
+    private static final Integer DEFAULT_MIN_VALUE = Integer.valueOf(1);
+
+    /**
+     * The max value. Starts with the default so that it is never null: the
+     * setters ignore a null.
+     */
+    private Integer maxValue = DEFAULT_MAX_VALUE;
+
+    /** The min value. Same as maxValue. */
+    private Integer minValue = DEFAULT_MIN_VALUE;
 
     /**
      * Instantiates a new random integer supplier.
      */
     public RandomIntegerSupplier() {
-        this.maxValue = Integer.valueOf(100000000);
-        this.minValue = Integer.valueOf(1);
+        // No hace nada
     }
 
     /**
@@ -93,11 +101,11 @@ public class RandomIntegerSupplier extends AbstractRandomSupplier<Integer> {
     public Integer get() {
         Integer value = minValue;
         if (maxValue > minValue) {
-            Integer randomValue = random.nextInt();
-            if (randomValue < 0) {
-                randomValue = -randomValue;
-            }
-            value = minValue + (randomValue % ((maxValue - minValue) + 1));
+            // In long: the width of the range does not fit in an int when it is
+            // over Integer.MAX_VALUE. And floorMod instead of negating the random
+            // number, which stays negative for Integer.MIN_VALUE.
+            final long width = (long) maxValue - minValue + 1;
+            value = (int) (minValue + Math.floorMod(random.nextLong(), width));
         }
         return value;
     }

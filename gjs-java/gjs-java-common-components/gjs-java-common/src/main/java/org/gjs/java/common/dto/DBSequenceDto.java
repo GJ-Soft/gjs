@@ -172,9 +172,14 @@ public class DBSequenceDto extends BaseDto implements Comparable<DBSequenceDto> 
 	 */
 	public int getPercentage() {
 		int res = 0;
-		if (ComparationUtils.compareTo(lastNumber, minValue) >= 0) {
-			final BigDecimal numerator = new BigDecimal(lastNumber.subtract(minValue).add(BigInteger.ONE));
-			final BigDecimal denominator = new BigDecimal(maxValue.subtract(minValue).add(BigInteger.ONE));
+		// Con los getters, que dan un valor por defecto: en un DTO recién creado los
+		// campos son nulos, compareTo(null, null) da 0 y se llegaba a restar de un
+		// nulo. También desde toString(), que llama a este método.
+		final BigInteger last = getLastNumber();
+		final BigInteger min = getMinValue();
+		if (ComparationUtils.compareTo(last, min) >= 0) {
+			final BigDecimal numerator = new BigDecimal(last.subtract(min).add(BigInteger.ONE));
+			final BigDecimal denominator = new BigDecimal(getMaxValue().subtract(min).add(BigInteger.ONE));
 			final BigDecimal porc = numerator.multiply(new BigDecimal(100)).divide(denominator, 23,
 					RoundingMode.HALF_UP);
 			final BigDecimal rounded = porc.round(new MathContext(2, RoundingMode.HALF_UP));

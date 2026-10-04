@@ -44,8 +44,9 @@ public class ForeignKey extends DataKey {
      */
     public ForeignKey(DataKey key, DataKey remoteKey) {
         this();
-        if (ConditionUtils.allAreTrue(Objects.nonNull(key), Objects.nonNull(remoteKey),
-                (key.countFields() == remoteKey.countFields()))) {
+        // No con ConditionUtils: con varargs, Java evalúa todos los argumentos antes
+        // de la llamada, y el que usa key y remoteKey se evaluaría aunque fuese nulo.
+        if (Objects.nonNull(key) && Objects.nonNull(remoteKey) && (key.countFields() == remoteKey.countFields())) {
             for (final String field : key.getFields()) {
                 super.addField(field);
             }

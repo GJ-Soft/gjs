@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -251,7 +252,10 @@ public class FileObjects extends FileSheet {
 	 * @param value the value
 	 */
 	public void addObject(DataObject value) {
-		if (ConditionUtils.oneIsTrue(CollectionUtils.isEmpty(objects), (value.numFields() == columns()))) {
+		// Un objeto nulo no se añade. Va aparte porque ConditionUtils recibe los
+		// argumentos ya evaluados: value.numFields() se ejecutaría con value nulo.
+		if (Objects.nonNull(value)
+				&& ConditionUtils.oneIsTrue(CollectionUtils.isEmpty(objects), (value.numFields() == columns()))) {
 			objects.add(value);
 			super.addRow(values(value));
 		}

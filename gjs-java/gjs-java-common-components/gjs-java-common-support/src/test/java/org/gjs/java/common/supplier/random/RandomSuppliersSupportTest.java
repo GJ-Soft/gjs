@@ -1068,4 +1068,46 @@ class RandomSuppliersSupportTest extends AbstractClassTest {
 		}
 	}
 
+	/**
+	 * Regresion: el constructor con limites nulos los dejaba a null y get() daba
+	 * NullPointerException. Ahora se quedan los valores por defecto.
+	 */
+	@Test
+	void testRandomIntegerSupplierLimitesNulos() {
+		final RandomIntegerSupplier supplier = new RandomIntegerSupplier(null, null);
+		assertEquals(Integer.valueOf(1), supplier.getMinValue());
+		assertEquals(Integer.valueOf(100000000), supplier.getMaxValue());
+		for (int i = 0; i < 1000; i = i + 1) {
+			final int value = supplier.get();
+			assertTrue((value >= 1) && (value <= 100000000), "fuera de rango: " + value);
+		}
+	}
+
+	/**
+	 * Regresion: con un rango mas ancho que Integer.MAX_VALUE la anchura se
+	 * desbordaba, y salian valores fuera de los limites.
+	 */
+	@Test
+	void testRandomIntegerSupplierRangoCompleto() {
+		final RandomIntegerSupplier supplier = new RandomIntegerSupplier(Integer.MIN_VALUE, Integer.MAX_VALUE);
+		boolean negativo = false;
+		boolean positivo = false;
+		for (int i = 0; i < 1000; i = i + 1) {
+			final int value = supplier.get();
+			negativo = negativo || (value < 0);
+			positivo = positivo || (value > 0);
+		}
+		assertTrue(negativo && positivo, "con todo el rango deberian salir negativos y positivos");
+	}
+
+	@Test
+	void testRandomIntegerSupplierLimitesIncluidos() {
+		final RandomIntegerSupplier supplier = new RandomIntegerSupplier(3, 4);
+		final Set<Integer> vistos = new TreeSet<>();
+		for (int i = 0; i < 1000; i = i + 1) {
+			vistos.add(supplier.get());
+		}
+		assertEquals(Set.of(3, 4), vistos);
+	}
+
 }

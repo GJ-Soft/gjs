@@ -26,5 +26,13 @@
 		<!-- Python/Pip configuration -->
 		<gjs.python.artifact.src.package.path>${packagePath}</gjs.python.artifact.src.package.path>
     </properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.gjsoft.python.common</groupId>
+			<artifactId>gjs-python-common</artifactId>
+			<type>whl</type>
+		</dependency>
+	</dependencies>
 	
 </project>

@@ -1,5 +1,6 @@
 package org.gjs.java.common.util;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 import org.gjs.java.common.constant.CommonBaseConstants;
@@ -19,6 +20,13 @@ import org.gjs.java.common.constant.CommonBaseConstants;
 public final class RandomUtils {
 
     /**
+     * Generador de las claves. Criptográfico, porque son contraseñas; y uno solo,
+     * reutilizado: SecureRandom es seguro entre hilos y crearlo en cada llamada
+     * cuesta.
+     */
+    private static final SecureRandom RANDOM = new SecureRandom();
+
+    /**
      * Clase no instanciable.
      */
     private RandomUtils() {
@@ -31,7 +39,7 @@ public final class RandomUtils {
      * @return the string
      */
     public static String generatePassword() {
-        final Random random = new Random();
+        final Random random = RANDOM;
         final int length = 8 + random.nextInt(10);
         final StringBuilder sb = new StringBuilder();
         final boolean[] types = { false, false, false };

@@ -349,8 +349,9 @@ public abstract class BaseRepositoryWrapper<T, ID> {
 	 */
 	protected String getFinalFieldName(String field) {
 		String finalField = field;
-		if (ConditionUtils.allAreTrue(!CollectionUtils.isEmpty(fieldCorrespondencies),
-				fieldCorrespondencies.containsKey(field))) {
+		// No con ConditionUtils: con varargs, Java evalúa todos los argumentos antes
+		// de la llamada, y el que usa fieldCorrespondencies se evaluaría aunque fuese nulo.
+		if (!CollectionUtils.isEmpty(fieldCorrespondencies) && fieldCorrespondencies.containsKey(field)) {
 			finalField = fieldCorrespondencies.get(field);
 		}
 		return finalField;

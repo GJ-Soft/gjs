@@ -20,12 +20,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class SetDto extends BaseDto {
+public class SetDto<T extends Comparable<? super T>> extends BaseDto {
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 4127095647545500940L;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 4127095647545500940L;
 
-    /** The contenido. */
-    private final Set<BaseDto> contenido = new TreeSet<>();
+	/** The contenido. */
+	private final Set<T> contenido = new TreeSet<>();
 
 }

@@ -96,6 +96,7 @@ class ForeignKeyTest extends BaseClassTest<ForeignKey> {
 		assertFalse(key1.equals(key5));
 	}
 
+	@Test
 	void testForeignKey3() {
 		final ForeignKey key = new ForeignKey(new DataKey("field1"), new DataKey("field2"));
 		assertNull(key.getObjectName());
@@ -108,6 +109,7 @@ class ForeignKeyTest extends BaseClassTest<ForeignKey> {
 		assertEquals(1, key.getRemoteFields().size());
 	}
 
+	@Test
 	void testForeignKey4() {
 		final ForeignKey key = new ForeignKey("object", new DataKey("field1"), new DataKey("field2"));
 		assertNotNull(key.getObjectName());
@@ -119,4 +121,17 @@ class ForeignKeyTest extends BaseClassTest<ForeignKey> {
 		assertNotNull(key.getRemoteFields());
 		assertEquals(1, key.getRemoteFields().size());
 	}
+
+	/**
+	 * Regresion: con una clave nula, key.countFields() se evaluaba igual, como
+	 * argumento de ConditionUtils.allAreTrue, y daba NullPointerException.
+	 */
+	@Test
+	void testForeignKeyClaveNula() {
+		final ForeignKey key = new ForeignKey(null, new DataKey("field2"));
+		assertEquals(0, key.countFields());
+		final ForeignKey remote = new ForeignKey(new DataKey("field1"), null);
+		assertEquals(0, remote.countFields());
+	}
+
 }

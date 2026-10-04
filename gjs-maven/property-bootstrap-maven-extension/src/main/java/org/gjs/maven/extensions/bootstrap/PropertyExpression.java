@@ -3,6 +3,7 @@ package org.gjs.maven.extensions.bootstrap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Mini-lenguaje de expresiones para el fichero de configuracion de la extension.
@@ -212,10 +213,10 @@ final class PropertyExpression {
 			boolean result;
 			switch (op) {
 				case EQ:
-					result = equal(a, b);
+					result = Objects.equals(a, b);
 					break;
 				case NE:
-					result = !equal(a, b);
+					result = !Objects.equals(a, b);
 					break;
 				case CONTAINS:
 					result = contains(a, b);
@@ -224,10 +225,6 @@ final class PropertyExpression {
 					result = false;
 			}
 			return result ? "true" : "false";
-		}
-
-		private static boolean equal(String a, String b) {
-			return (a == null) ? (b == null) : a.equals(b);
 		}
 
 		private static boolean contains(String a, String b) {

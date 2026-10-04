@@ -126,4 +126,16 @@ public class DBSequenceDtoTest extends BaseUnitTest<DBSequenceDto> {
 		assertTrue(dto1.hashCode() > 0);
 	}
 
+	/**
+	 * Regresion: con min, max y ultimo nulos, minValue se queda a null y
+	 * getPercentage restaba de el. Tambien reventaba toString(), que lo llama.
+	 */
+	@Test
+	void testDBSequenceDtoNulos() {
+		final DBSequenceDto dto = new DBSequenceDto("SEQ_TEST", null, null, null);
+		logger.info(dto.toString());
+		assertEquals(0, dto.getPercentage());
+		assertEquals(100, dto.getFreePercentage());
+	}
+
 }

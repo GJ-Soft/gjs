@@ -61,8 +61,23 @@
 		     hermano del <skip> del maven-deploy-plugin que hay mas abajo, y como aquel,
 		     provisional: si algun dia estos artefactos se publican, quitar los dos. -->
 		<gpg.skip>true</gpg.skip>
+		
+		<!-- Dependency versions -->
+		<!-- Gjs versions -->
+		<gjs-python-common.version>1.0.0-RC.2</gjs-python-common.version>
 	</properties>
 	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.gjsoft.python.common</groupId>
+				<artifactId>gjs-python-common</artifactId>
+				<version>${gjs-python-common.version}</version>
+				<type>whl</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<build>
 		<pluginManagement>
 			<plugins>

@@ -33,7 +33,7 @@ class PojosTest extends AbstractPojosTest {
 	 */
 	@Test
 	void testPojos() {
-		testPojoClasses("GenericDto", "AuditDto", "ExtendedResponseDto", "DBSequenceDto");
+		testPojoClasses("GenericDto", "AuditDto", "ExtendedResponseDto", "DBSequenceDto", "SetDto");
 	}
 
 }
