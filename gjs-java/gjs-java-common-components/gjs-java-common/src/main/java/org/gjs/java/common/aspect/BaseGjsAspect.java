@@ -59,7 +59,6 @@ public abstract class BaseGjsAspect {
 		final String method = joinPoint.getSignature().getName();
 		final String clazz = joinPoint.getTarget().getClass().getCanonicalName();
 		final String key = String.format("%s:%s", clazz, method);
-		// return (AuditDto) GlobalObjectsManager.getInstance().load(key);
 		return (AuditDto) MDCUtils.load(key, AuditDto.class);
 	}
 
@@ -120,17 +119,13 @@ public abstract class BaseGjsAspect {
 			if (AuditLogType.BEGIN.equals(type)) {
 				final AuditDto auditDto = new AuditDto(clazz, method);
 				MDCUtils.save(auditDto.getKey(), auditDto);
-				// GlobalObjectsManager.getInstance().save(auditDto.getKey(), auditDto);
 				info.append("[Args=").append(ArrayUtils.toString(args)).append(']');
 			} else if (AuditLogType.END.equals(type)) {
 				AuditDto auditDto = new AuditDto(clazz, method);
-				// final AuditDto auditDto = (AuditDto)
-				// GlobalObjectsManager.getInstance().load(key);
 				auditDto = (AuditDto) MDCUtils.load(auditDto.getKey(), AuditDto.class);
 				if (Objects.nonNull(auditDto)) {
 					auditDto.end();
 					info.append("[Time=").append(auditDto.getTime()).append(" ms]");
-					// GlobalObjectsManager.getInstance().remove(key);
 					MDCUtils.remove(auditDto.getKey());
 					additionalEndTasks(auditDto, skip);
 				}

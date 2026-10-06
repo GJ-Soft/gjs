@@ -59,6 +59,9 @@ public class RandomNumericStringSupplier extends RandomAlphanumericStringSupplie
 
     @Override
     public String getEmpty() {
-        return isNullable() ? null : (isConstantLength() ? StringUtils.repeat('0', getMaxLength()) : "");
+        if (isNullable()) {
+            return null;
+        }
+        return isConstantLength() ? StringUtils.repeat('0', getMaxLength()) : "";
     }
 }

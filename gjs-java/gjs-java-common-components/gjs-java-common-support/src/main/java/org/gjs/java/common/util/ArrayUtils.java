@@ -7,7 +7,6 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import org.gjs.java.common.constant.CommonBaseConstants;
-import org.gjs.java.common.util.ConditionUtils;
 
 /**
  * The Class ArrayUtils.

@@ -110,7 +110,10 @@ public class RandomAlphanumericStringSupplier extends RandomNullableObjectSuppli
 
     @Override
     public String getEmpty() {
-        return isNullable() ? null : (constantLength ? StringUtils.repeat(' ', maxLength) : "");
+        if (isNullable()) {
+            return null;
+        }
+        return constantLength ? StringUtils.repeat(' ', maxLength) : "";
     }
 
     /* (non-Javadoc)

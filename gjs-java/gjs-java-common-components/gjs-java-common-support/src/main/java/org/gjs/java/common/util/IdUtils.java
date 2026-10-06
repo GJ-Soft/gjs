@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.gjs.java.common.constant.CommonBaseConstants;
-import org.gjs.java.common.util.ConditionUtils;
 
 /**
  * The Class IdUtils.

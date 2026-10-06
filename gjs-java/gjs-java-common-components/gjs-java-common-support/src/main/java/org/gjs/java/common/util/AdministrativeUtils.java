@@ -2,7 +2,6 @@ package org.gjs.java.common.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.gjs.java.common.constant.CommonBaseConstants;
-import org.gjs.java.common.util.ConditionUtils;
 
 /**
  * The Class AdministrativeUtils.

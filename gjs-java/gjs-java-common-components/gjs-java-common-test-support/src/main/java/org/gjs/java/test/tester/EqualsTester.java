@@ -74,9 +74,6 @@ public class EqualsTester extends BaseMethodTester {
 		final Object instanceClon = ReflectionUtils.clone(instance1);
 		final Object other = supplier.getNullius();
 		final Object nullObj = null;
-		// logger.debug("** EQUALS INSTANCE1={}", instance1);
-		// logger.debug("** EQUALS INSTANCE2={}", instance2);
-		// logger.debug("** EQUALS INSTANCECLON={}", instanceClon);
 		affirmFalse(String.format(
 				"Class=[%s] not dispatching 'equals()' different random generated objects. Object1=[%s]. Object2=[%s]",
 				className, instance1, instance2), instance1.equals(instance2));
@@ -94,8 +91,6 @@ public class EqualsTester extends BaseMethodTester {
 		final Object instanceEmpty = supplier.getEmpty();
 		final Object instanceEmptyEq = instanceEmpty;
 		final Object instanceEmptyClon = ReflectionUtils.clone(instanceEmpty);
-		// logger.debug("** EQUALS INSTANCEEMPTY={}", instanceEmpty);
-		// logger.debug("** EQUALS INSTANCEEMPTYCLON={}", instanceEmptyClon);
 		affirmTrue(String.format("Class=[%s] not dispatching 'equals()' same empty object", className),
 				instanceEmpty.equals(instanceEmptyEq));
 		affirmTrue(String.format("Class=[%s] not dispatching 'equals()' empty cloned object", className),

@@ -38,6 +38,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  */
 public abstract class BaseSpecificationUnitTest<T, F, E, PK> extends AbstractRepositoryUnitTest<T, E, PK> {
 
+	/** Mensaje de fallo de una prueba que lanza una excepcion. */
+	private static final String MSG_EXCEPTION = "Recibida excepcion";
+
 	/** The filter clazz. */
 	private final Class<F> filterClazz;
 
@@ -150,7 +153,7 @@ public abstract class BaseSpecificationUnitTest<T, F, E, PK> extends AbstractRep
 			throw e;
 		} catch (final Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
-			fail("Recibida excepcion");
+			fail(MSG_EXCEPTION);
 		}
 	}
 
@@ -178,7 +181,7 @@ public abstract class BaseSpecificationUnitTest<T, F, E, PK> extends AbstractRep
 			throw e;
 		} catch (final Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
-			fail("Recibida excepcion");
+			fail(MSG_EXCEPTION);
 		}
 	}
 
@@ -212,7 +215,7 @@ public abstract class BaseSpecificationUnitTest<T, F, E, PK> extends AbstractRep
 			throw e;
 		} catch (final Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
-			fail("Recibida excepcion");
+			fail(MSG_EXCEPTION);
 		}
 	}
 

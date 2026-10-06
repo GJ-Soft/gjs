@@ -1,7 +1,5 @@
 package org.gjs.java.common.constant;
 
-import org.gjs.java.common.constant.CommonBaseConstants;
-
 import ch.qos.logback.classic.Level;
 
 /**

@@ -96,10 +96,6 @@ public abstract class GjsAbstractMojo extends AbstractMojo {
 			return;
 		}
 
-		// create my helper
-		// PluginParameterExpressionEvaluator evaluator = new
-		// PluginParameterExpressionEvaluator(session, mojoExecution);
-
 		List<String> errorMessages = new ArrayList<>();
 		Exception cause = null;
 		log.info(String.format("Executing %s.", getGoalName()));

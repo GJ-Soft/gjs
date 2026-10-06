@@ -115,72 +115,57 @@ public class MockJwtParser implements JwtParser {
 		return mapJwt.get(jwt);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @deprecated (when, why, etc...)
+	/**
+	 * @deprecated Obsoleto en jjwt; se implementa porque lo exige la interfaz.
 	 *
 	 * @see io.jsonwebtoken.JwtParser#parse(java.lang.CharSequence,
 	 * io.jsonwebtoken.JwtHandler)
 	 */
-
-	@Deprecated
+	@Deprecated(since = "0.12.0")
 	@Override
 	public <T> T parse(CharSequence jwt, JwtHandler<T> handler) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @deprecated (when, why, etc...)
+	/**
+	 * @deprecated Obsoleto en jjwt; se implementa porque lo exige la interfaz.
 	 *
 	 * @see io.jsonwebtoken.JwtParser#parseContentJwt(java.lang.CharSequence)
 	 */
-
-	@Deprecated
+	@Deprecated(since = "0.12.0")
 	@Override
 	public Jwt<Header, byte[]> parseContentJwt(CharSequence jwt) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @deprecated (when, why, etc...)
+	/**
+	 * @deprecated Obsoleto en jjwt; se implementa porque lo exige la interfaz.
 	 *
 	 * @see io.jsonwebtoken.JwtParser#parseClaimsJwt(java.lang.CharSequence)
 	 */
-
-	@Deprecated
+	@Deprecated(since = "0.12.0")
 	@Override
 	public Jwt<Header, Claims> parseClaimsJwt(CharSequence jwt) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @deprecated (when, why, etc...)
+	/**
+	 * @deprecated Obsoleto en jjwt; se implementa porque lo exige la interfaz.
 	 *
 	 * @see io.jsonwebtoken.JwtParser#parseContentJws(java.lang.CharSequence)
 	 */
-
-	@Deprecated
+	@Deprecated(since = "0.12.0")
 	@Override
 	public Jws<byte[]> parseContentJws(CharSequence jws) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @deprecated (when, why, etc...)
+	/**
+	 * @deprecated Obsoleto en jjwt; se implementa porque lo exige la interfaz.
 	 *
 	 * @see io.jsonwebtoken.JwtParser#parseClaimsJws(java.lang.CharSequence)
 	 */
-
-	@Deprecated
+	@Deprecated(since = "0.12.0")
 	@Override
 	public Jws<Claims> parseClaimsJws(CharSequence jws) {
 		return mapJwt.get(jws);

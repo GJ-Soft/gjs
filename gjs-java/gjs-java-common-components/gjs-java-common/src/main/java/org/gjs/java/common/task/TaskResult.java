@@ -192,9 +192,6 @@ public class TaskResult {
 		document.setField("processed", ConversionUtils.toString(processed));
 		document.setField("completed", ConversionUtils.toString(completed));
 		document.setField("errors", ConversionUtils.toString(errors));
-		document.setField("processed", ConversionUtils.toString(processed));
-		document.setField("completed", ConversionUtils.toString(completed));
-		document.setField("errors", ConversionUtils.toString(errors));
 		return document;
 	}
 

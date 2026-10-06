@@ -458,32 +458,28 @@ public class MockRepository<T, PK> extends MockEntityDataManager<T, PK>
 		return res;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @deprecated (when, why, etc...)
+	/**
+	 * @deprecated Obsoleto en Spring Data JPA; se implementa porque lo exige la interfaz.
+	 *             Usar {@link #getReferenceById(Object)}.
 	 *
 	 * @see org.springframework.data.jpa.repository.JpaRepository#getOne(java.lang.
 	 * Object)
 	 */
-
-	@Deprecated
+	@Deprecated(since = "2.5")
 	@Override
 	public T getOne(PK id) {
 		// Deprecated
 		return getReferenceById(id);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @deprecated (when, why, etc...)
+	/**
+	 * @deprecated Obsoleto en Spring Data JPA; se implementa porque lo exige la interfaz.
+	 *             Usar {@link #getReferenceById(Object)}.
 	 *
 	 * @see org.springframework.data.jpa.repository.JpaRepository#getById(java.lang.
 	 * Object)
 	 */
-
-	@Deprecated
+	@Deprecated(since = "2.7")
 	@Override
 	public T getById(PK id) {
 		// Deprecated
@@ -607,17 +603,15 @@ public class MockRepository<T, PK> extends MockEntityDataManager<T, PK>
 		return res.size();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @deprecated (when, why, etc...)
+	/**
+	 * @deprecated Obsoleto en Spring Data JPA; se implementa porque lo exige la interfaz.
+	 *             Usar {@link #deleteAllInBatch(Iterable)}.
 	 *
 	 * @see
 	 * org.springframework.data.jpa.repository.JpaRepository#deleteInBatch(java.lang
 	 * .Iterable)
 	 */
-
-	@Deprecated
+	@Deprecated(since = "2.5")
 	@Override
 	public void deleteInBatch(Iterable<T> entities) {
 		// No implementada

@@ -422,8 +422,8 @@ public class MockEntityDataManager<T, PK> {
 				logger.warn("Cannot retrieve field {} in class {}", keyField, getClazz().getCanonicalName());
 			}
 
-		} else {
-			logger.warn("Identifier {} not exists in repository for class {}", keyData.toString(),
+		} else if (logger.isWarnEnabled()) {
+			logger.warn("Identifier {} not exists in repository for class {}", keyData,
 					dataManager.getClazz().getCanonicalName());
 		}
 	}
@@ -516,7 +516,6 @@ public class MockEntityDataManager<T, PK> {
 	 * @param id     the id
 	 */
 	protected void setId(T entity, PK id) {
-		// ReflectionUtils.setId(entity, id, getClazz());
 		ReflectionUtils.setId(entity, id, getClazz(), idName);
 	}
 

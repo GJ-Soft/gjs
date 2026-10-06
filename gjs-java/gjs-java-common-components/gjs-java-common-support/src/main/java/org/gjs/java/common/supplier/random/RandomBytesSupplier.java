@@ -113,7 +113,12 @@ public class RandomBytesSupplier extends AbstractRandomSupplier<Byte[]> {
 
     @Override
     public Byte[] get() {
-        final int minLength = constantLength ? maxLength : (nullable ? 0 : 1);
+        final int minLength;
+        if (constantLength) {
+            minLength = maxLength;
+        } else {
+            minLength = nullable ? 0 : 1;
+        }
 
         final RandomIntegerSupplier lengthSupplier =
                 new RandomIntegerSupplier(Integer.valueOf(minLength), Integer.valueOf(maxLength));

@@ -83,7 +83,9 @@ public class DefaultSetterTester extends BaseFieldTester {
 				final boolean esContenedor = fieldEntry.isParameterized() || fieldEntry.isArray();
 
 				SameInstanceIdentityHandlerStub.registerIdentityHandlerStubForValue(value);
-				logger.debug("Testing Field [{}] with value [{}]", fieldEntry, safeToString(value));
+				if (logger.isDebugEnabled()) {
+					logger.debug("Testing Field [{}] with value [{}]", fieldEntry, safeToString(value));
+				}
 
 				try {
 					fieldEntry.invokeSetter(classInstance, value);

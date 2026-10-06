@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.gjs.java.common.constant.CommonBaseConstants;
-import org.gjs.java.common.util.ConditionUtils;
 import org.slf4j.MDC;
 
 /**

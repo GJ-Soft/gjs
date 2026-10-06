@@ -13,7 +13,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.lang3.ObjectUtils;
 import org.gjs.java.common.constant.CommonBaseConstants;
 import org.gjs.java.common.exception.GjsException;
-import org.gjs.java.common.util.ConversionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -55,6 +55,9 @@ public class PropertyBootstrapExtension extends AbstractMavenLifecycleParticipan
 	/** Nombre del fichero de configuracion por defecto (en $MAVEN_HOME/conf). */
 	private static final String DEFAULT_CONFIG_NAME = "property-bootstrap.properties";
 
+	/** Estilo de rutas en Cygwin (posix o windows). */
+	private static final String CYGWIN_STYLE = "cygwin.style";
+
 	@Inject
 	private Logger logger;
 
@@ -158,12 +161,12 @@ public class PropertyBootstrapExtension extends AbstractMavenLifecycleParticipan
 		String environmentStyle;
 		if (cygwin) {
 			String cygwinStyle = firstNonBlank(
-					userProperties.getProperty("cygwin.style"),
-					systemProperties.getProperty("cygwin.style"),
+					userProperties.getProperty(CYGWIN_STYLE),
+					systemProperties.getProperty(CYGWIN_STYLE),
 					"posix");
-			inject("cygwin.style", cygwinStyle, userProperties, pbrUserProperties, preset);
+			inject(CYGWIN_STYLE, cygwinStyle, userProperties, pbrUserProperties, preset);
 			// environment.style = ${cygwin.style} (respetando el valor efectivo).
-			environmentStyle = userProperties.getProperty("cygwin.style");
+			environmentStyle = userProperties.getProperty(CYGWIN_STYLE);
 		} else if (windows) {
 			environmentStyle = "windows";
 		} else {

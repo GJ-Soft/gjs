@@ -127,8 +127,7 @@ public class DataKey {
         boolean res = false;
         if (this == obj) {
             res = true;
-        } else if (obj instanceof DataKey) {
-            final DataKey other = (DataKey) obj;
+        } else if (obj instanceof final DataKey other) {
             if (other.countFields() == countFields()) {
                 res = true;
                 for (final String field : fields) {

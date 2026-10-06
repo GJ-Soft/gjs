@@ -606,9 +606,6 @@
 				<environment.style>posix</environment.style>
                 <osFamily>unix</osFamily>
                 <osName>Unix</osName>
-				<!--
-                <console>${env.BASH}</console>
-				-->
 				<console>bash</console>
                 <consoleArgs>-c</consoleArgs>
 				<exeFinalExtension></exeFinalExtension>
@@ -648,9 +645,6 @@
 				     los del POM, con lo que un valor puesto aqui nunca ganaria. -->
 				<environment>cygwin</environment>
 				<environment.style>posix</environment.style>
-				<!--
-                <console>${env.SHELL}</console>
-				-->
 				<console>bash</console>
                 <consoleArgs>-c</consoleArgs>
 				<exeFinalExtension>.exe</exeFinalExtension>

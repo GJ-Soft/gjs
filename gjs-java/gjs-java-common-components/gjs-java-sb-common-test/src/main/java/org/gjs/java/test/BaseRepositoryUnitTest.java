@@ -105,7 +105,7 @@ public abstract class BaseRepositoryUnitTest<E, PK, JPA extends JpaRepository<E,
 		assertNotNull(list);
 		logger.info("FindAll return {} Results", list.size());
 		for (final E entity : list) {
-			logger.info(entity.toString());
+			logger.info("{}", entity);
 		}
 		assertEquals(validElementDataCount(), list.size());
 		for (int i = 0; i < list.size(); i = i + 1) {

@@ -161,11 +161,15 @@ public class ExceptionTester extends BaseMethodTester {
 				} else if (param.getType().isPrimitive()) {
 					parameters[i] = getDefaultPrimitiveValue(param);
 				} else {
-					logger.warn("Detectado parametro de tipo inesperado: {}", getTypeName(param));
+					if (logger.isWarnEnabled()) {
+						logger.warn("Detectado parametro de tipo inesperado: {}", getTypeName(param));
+					}
 					parameters[i] = null;
 				}
 			} else {
-				logger.warn("Detectado parametro de tipo array inesperado: {}", getTypeName(param));
+				if (logger.isWarnEnabled()) {
+					logger.warn("Detectado parametro de tipo array inesperado: {}", getTypeName(param));
+				}
 				parameters[i] = null;
 			}
 		}

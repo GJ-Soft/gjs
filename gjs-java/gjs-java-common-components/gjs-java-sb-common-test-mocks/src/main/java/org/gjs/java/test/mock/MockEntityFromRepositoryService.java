@@ -75,7 +75,7 @@ public abstract class MockEntityFromRepositoryService<DTO, PKDTO, E, PK, FDTO>
     public byte[] export(String columns, String order, Integer asc, FDTO filterDto) {
 
         final List<DTO> list = this.filter(order, asc, filterDto);
-        logger.debug(String.format("Seleccionados %s registros", list.size()));
+        logger.debug("Seleccionados {} registros", list.size());
         final StringBuilder textCsv = new StringBuilder();
         final String[] listColumns = columns.split(",");
         boolean begin = true;
@@ -92,7 +92,7 @@ public abstract class MockEntityFromRepositoryService<DTO, PKDTO, E, PK, FDTO>
             for (int j = 0; j < listColumns.length; j = j + 1) {
                 final String column = listColumns[j];
                 final String value = ConversionUtils.toString(ReflectionUtils.getFieldValue(dto, column));
-                logger.debug(String.format("Registro %s; Columna %s(%s): Valor=%s", i, j, column, value));
+                logger.debug("Registro {}; Columna {}({}): Valor={}", i, j, column, value);
                 if (j > 0) {
                     textCsv.append(',');
                 }

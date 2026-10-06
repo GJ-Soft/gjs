@@ -2,8 +2,6 @@ package org.gjs.java.common.constant;
 
 import java.math.BigInteger;
 
-import org.gjs.java.common.constant.CommonBaseConstants;
-
 /**
  * The Class CommonConstants.
  *

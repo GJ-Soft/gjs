@@ -191,12 +191,12 @@ public abstract class AbstractRepositoryUnitTest<T, E, PK> extends AbstractPersi
 
 	@Override
 	protected void postLoadTestData() {
-		if (showData) {
+		if (showData && logger.isDebugEnabled()) {
 			logger.debug("=".repeat(50));
 			logger.debug("Data loaded in repository:");
 			for (final E entity : repositoryWrapper.getRepository().findAll()) {
 				logger.debug("-".repeat(50));
-				logger.debug(entity.toString());
+				logger.debug("{}", entity);
 			}
 			logger.debug("=".repeat(50));
 		}

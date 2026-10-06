@@ -103,7 +103,7 @@ public final class ComparationUtils {
 	 * @return compareTo
 	 */
 	public static int compareTo(long value1, long value2) {
-		return (value1 == value2) ? 0 : (value1 < value2) ? -1 : 1;
+		return Long.compare(value1, value2);
 	}
 
 	/**
@@ -154,7 +154,10 @@ public final class ComparationUtils {
 		if (Objects.isNull(value2)) {
 			return 1;
 		}
-		return value1.after(value2) ? 1 : value1.before(value2) ? -1 : 0;
+		if (value1.after(value2)) {
+			return 1;
+		}
+		return value1.before(value2) ? -1 : 0;
 	}
 
 	/**

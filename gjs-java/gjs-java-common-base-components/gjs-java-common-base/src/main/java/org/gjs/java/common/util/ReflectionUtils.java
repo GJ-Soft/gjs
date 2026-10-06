@@ -60,6 +60,9 @@ public final class ReflectionUtils {
 	/** The Constant logger. */
 	private static final Logger logger = LoggerFactory.getLogger(ReflectionUtils.class);
 
+	/** Mensaje de error de un nombre de clase que no se puede cargar. */
+	private static final String MSG_INVALID_CLASSNAME = "%s is not a valid classname";
+
 	/**
 	 * Clase no instanciable.
 	 */
@@ -137,7 +140,7 @@ public final class ReflectionUtils {
 			try {
 				res = getAllClasses(Class.forName(className));
 			} catch (final ClassNotFoundException e) {
-				logger.error(String.format("%s is not a valid classname", className), e);
+				logger.error(String.format(MSG_INVALID_CLASSNAME, className), e);
 			}
 		}
 		return res;
@@ -172,7 +175,7 @@ public final class ReflectionUtils {
 			try {
 				res = getAllInterfaces(Class.forName(className));
 			} catch (final ClassNotFoundException e) {
-				logger.error(String.format("%s is not a valid classname", className), e);
+				logger.error(String.format(MSG_INVALID_CLASSNAME, className), e);
 			}
 		}
 		return res;
@@ -233,7 +236,7 @@ public final class ReflectionUtils {
 			try {
 				res = isInstanceOf(Class.forName(clazzName), className);
 			} catch (final ClassNotFoundException e) {
-				logger.error(String.format("%s is not a valid classname", clazzName), e);
+				logger.error(String.format(MSG_INVALID_CLASSNAME, clazzName), e);
 			}
 		}
 		return res;
@@ -264,7 +267,7 @@ public final class ReflectionUtils {
 			try {
 				res = implementsInterface(Class.forName(clazzName), interfaceName);
 			} catch (final ClassNotFoundException e) {
-				logger.error(String.format("%s is not a valid classname", clazzName), e);
+				logger.error(String.format(MSG_INVALID_CLASSNAME, clazzName), e);
 			}
 		}
 		return res;
@@ -318,11 +321,7 @@ public final class ReflectionUtils {
 		if (PrimitiveType.BOOLEAN.isSameNativeType(fieldType.getName())) {
 			getterName = String.format("is%s", StringUtils.capitalize(fieldName));
 		}
-		// logger.debug("Finding getter {} in Class {}", getterName,
-		// clazz.getCanonicalName());
 		for (final Method method : getAllMethods(clazz)) {
-			// logger.debug("\tMethod={} ->{}", method.getName(),
-			// method.getName().equals(getterName));
 			if (method.getName().equals(getterName)) {
 				getter = method;
 				break;
@@ -363,8 +362,6 @@ public final class ReflectionUtils {
 	public static FieldInfo findField(Class<?> clazz, String fieldName) {
 		FieldInfo res = null;
 		for (final FieldInfo field : getAllFields(clazz)) {
-			// logger.debug("Search field {}: field {}", fieldName,
-			// field.getField().getName());
 			if (field.getField().getName().equals(fieldName)) {
 				res = field;
 				break;
@@ -501,16 +498,17 @@ public final class ReflectionUtils {
 	 * @return the type name
 	 */
 	public static String getTypeName(Field field, Type genericSuperClass) {
-		if ((genericSuperClass instanceof ParameterizedType)
+		if ((genericSuperClass instanceof final ParameterizedType parametrizedType)
 				&& !field.getType().getTypeName().equals(field.getGenericType().getTypeName())) {
 			// Puede ser un tipo genérico o una colección
-			// logger.debug("Comprobando si es una colection: " +
-			// field.getType().getName());
 			if (CollectionUtils.isCollection(field.getType().getName())) {
-				logger.debug("COLLECTION:" + field.getGenericType().getTypeName());
+				if (logger.isDebugEnabled()) {
+					logger.debug("COLLECTION:{}", field.getGenericType().getTypeName());
+				}
 			} else {
-				logger.debug("TIPO GENERICO:" + field.getGenericType().getTypeName());
-				final ParameterizedType parametrizedType = (ParameterizedType) genericSuperClass;
+				if (logger.isDebugEnabled()) {
+					logger.debug("TIPO GENERICO:{}", field.getGenericType().getTypeName());
+				}
 				if (parametrizedType.getActualTypeArguments().length >= 1) {
 					return parametrizedType.getActualTypeArguments()[0].getTypeName().replace("[]", "");
 				}
@@ -903,9 +901,6 @@ public final class ReflectionUtils {
 					final String filterString = (String) filterValue;
 					final String matchString = filterString.replace("%", "");
 					final String string = (String) value;
-					// logger.debug("filtering by string: value={}; filter={}, match={}", string,
-					// filterString,
-					// matchString);
 					// if (BooleanUtils.allAreTrue(filterString.startsWith("%"),
 					// filterString.endsWith("%"))) {
 					res = string.contains(matchString);

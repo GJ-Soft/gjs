@@ -304,8 +304,10 @@ public final class AssertionUtils {
      * @return the class name
      */
     private static String getClassName(Object obj) {
-        return (Objects.isNull(obj) ? "null"
-                : obj instanceof Class ? ((Class<?>) obj).getCanonicalName() : obj.getClass().getName());
+        if (Objects.isNull(obj)) {
+            return "null";
+        }
+        return obj instanceof final Class<?> clazz ? clazz.getCanonicalName() : obj.getClass().getName();
     }
 
     /**

@@ -90,20 +90,20 @@ public final class ConversionUtils {
 	 */
 	private static String nullSafePrimitiveArrayToString(Object obj) {
 		String res;
-		if (obj instanceof boolean[]) {
-			res = Arrays.toString((boolean[]) obj);
-		} else if (obj instanceof char[]) {
-			res = Arrays.toString((char[]) obj);
-		} else if (obj instanceof short[]) {
-			res = Arrays.toString((short[]) obj);
-		} else if (obj instanceof byte[]) {
-			res = Arrays.toString((byte[]) obj);
-		} else if (obj instanceof int[]) {
-			res = Arrays.toString((int[]) obj);
-		} else if (obj instanceof long[]) {
-			res = Arrays.toString((long[]) obj);
-		} else if (obj instanceof float[]) {
-			res = Arrays.toString((float[]) obj);
+		if (obj instanceof final boolean[] booleanArray) {
+			res = Arrays.toString(booleanArray);
+		} else if (obj instanceof final char[] charArray) {
+			res = Arrays.toString(charArray);
+		} else if (obj instanceof final short[] shortArray) {
+			res = Arrays.toString(shortArray);
+		} else if (obj instanceof final byte[] byteArray) {
+			res = Arrays.toString(byteArray);
+		} else if (obj instanceof final int[] intArray) {
+			res = Arrays.toString(intArray);
+		} else if (obj instanceof final long[] longArray) {
+			res = Arrays.toString(longArray);
+		} else if (obj instanceof final float[] floatArray) {
+			res = Arrays.toString(floatArray);
 		} else {
 			res = Arrays.toString((double[]) obj);
 		}

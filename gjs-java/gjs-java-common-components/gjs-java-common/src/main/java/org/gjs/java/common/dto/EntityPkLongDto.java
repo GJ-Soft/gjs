@@ -52,8 +52,8 @@ public abstract class EntityPkLongDto extends EntityDto<Long> {
 	@Override
 	public int compareId(Object otherId) {
 		int res = 1; // Si el objeto no es Long se considera nulo
-		if (otherId instanceof Long) {
-			res = ComparationUtils.compareTo(id, (Long) otherId);
+		if (otherId instanceof final Long otherLong) {
+			res = ComparationUtils.compareTo(id, otherLong);
 		}
 		return res;
 	}

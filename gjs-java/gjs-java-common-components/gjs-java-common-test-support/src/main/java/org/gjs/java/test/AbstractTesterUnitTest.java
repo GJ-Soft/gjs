@@ -24,6 +24,9 @@ import org.junit.jupiter.api.Test;
  */
 public abstract class AbstractTesterUnitTest<T extends BaseTester> extends BaseUnitTest<T> {
 
+    /** Mensaje de fallo de una prueba que lanza una excepcion. */
+    private static final String MSG_ERROR = "Se ha producido un error";
+
     /**
      * Gets the package to test ok.
      *
@@ -58,7 +61,7 @@ public abstract class AbstractTesterUnitTest<T extends BaseTester> extends BaseU
 
         } catch (final Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
-            fail("Se ha producido un error");
+            fail(MSG_ERROR);
         }
     }
 
@@ -76,7 +79,7 @@ public abstract class AbstractTesterUnitTest<T extends BaseTester> extends BaseU
             assertNotNull(e.getMessage());
         } catch (final Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
-            fail("Se ha producido un error");
+            fail(MSG_ERROR);
         }
     }
 
@@ -94,7 +97,7 @@ public abstract class AbstractTesterUnitTest<T extends BaseTester> extends BaseU
             fail("En este modo los errores deberian ser un warning en el log");
         } catch (final Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
-            fail("Se ha producido un error");
+            fail(MSG_ERROR);
         }
     }
 

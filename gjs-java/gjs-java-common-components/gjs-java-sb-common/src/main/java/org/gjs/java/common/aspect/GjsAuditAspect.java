@@ -173,7 +173,7 @@ public class GjsAuditAspect extends BaseGjsAspect {
 		final StringBuilder info = new StringBuilder(1024);
 		info.append('[').append(auditDto.getModule()).append("][").append(auditDto.getPrimitive()).append("][")
 				.append(AuditLogType.TIME_WARN.toString()).append("][Time=").append(auditDto.getTime()).append(" ms]");
-		getLogger(auditDto).warn(info.toString());
+		getLogger(auditDto).warn("{}", info);
 
 		final Date hora = new Date();
 		final String mensaje = GlobalBundleManager.getSafetyMessage(CommonLiterals.LIT_CRITICAL_TIME_WARNING);
@@ -220,7 +220,9 @@ public class GjsAuditAspect extends BaseGjsAspect {
 	private void doLogAfterReturning(JoinPoint joinPoint, Object result) {
 		final boolean skip = !BooleanUtils
 				.isTrue((Boolean) GlobalObjectsManager.getInstance().load(CommonConstants.PARAM_SKIP_AUDIT));
-		getLogger(joinPoint).debug(super.formatLog(joinPoint, AuditLogType.RETURNS, skip), result);
+		if (getLogger(joinPoint).isDebugEnabled()) {
+			getLogger(joinPoint).debug(super.formatLog(joinPoint, AuditLogType.RETURNS, skip), result);
+		}
 	}
 
 	/**
@@ -236,8 +238,13 @@ public class GjsAuditAspect extends BaseGjsAspect {
 		if (Objects.nonNull(auditDto)) {
 			auditDto.setThrowed(error);
 		}
-		getLogger(joinPoint).error(error.toString());
-		getLogger(joinPoint).debug(super.formatLog(joinPoint, AuditLogType.THROWS, skip), error.getMessage());
+		if (getLogger(joinPoint).isErrorEnabled()) {
+			getLogger(joinPoint).error(error.toString());
+		}
+		if (getLogger(joinPoint).isDebugEnabled()) {
+			getLogger(joinPoint).debug(super.formatLog(joinPoint, AuditLogType.THROWS, skip),
+					error.getClass().getName(), error.getMessage());
+		}
 	}
 
 }

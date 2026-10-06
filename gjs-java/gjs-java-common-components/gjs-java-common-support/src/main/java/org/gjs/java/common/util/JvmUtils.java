@@ -25,6 +25,15 @@ import com.sun.management.HotSpotDiagnosticMXBean;
  */
 public final class JvmUtils {
 
+	/** Separacion entre bloques del informe. */
+	private static final String SEPARATOR = "\n\n\n";
+
+	/** Etiqueta de la memoria usada. */
+	private static final String USED = "Used:      ";
+
+	/** Etiqueta de la memoria comprometida. */
+	private static final String COMMITTED = "Committed: ";
+
 	/**
 	 * Clase no instanciable.
 	 */
@@ -42,11 +51,11 @@ public final class JvmUtils {
 		long freeMemory = runtime.freeMemory(); // libre dentro del heap actual
 		long usedMemory = totalMemory - freeMemory;
 
-		sb.append("Max heap (-Xmx):   " + maxMemory / 1024 / 1024 + " MB\n");
-		sb.append("Total heap actual: " + totalMemory / 1024 / 1024 + " MB\n");
-		sb.append("Libre:             " + freeMemory / 1024 / 1024 + " MB\n");
-		sb.append("Usada:             " + usedMemory / 1024 / 1024 + " MB\n");
-		sb.append("\n\n\n");
+		appendMb(sb, "Max heap (-Xmx):   ", maxMemory);
+		appendMb(sb, "Total heap actual: ", totalMemory);
+		appendMb(sb, "Libre:             ", freeMemory);
+		appendMb(sb, "Usada:             ", usedMemory);
+		sb.append(SEPARATOR);
 
 		MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
 
@@ -54,39 +63,31 @@ public final class JvmUtils {
 		MemoryUsage nonHeapUsage = memBean.getNonHeapMemoryUsage();
 
 		sb.append("=== HEAP ===\n");
-		sb.append("Init:      " + heapUsage.getInit() / 1024 / 1024 + " MB\n");
-		sb.append("Used:      " + heapUsage.getUsed() / 1024 / 1024 + " MB\n");
-		sb.append("Committed: " + heapUsage.getCommitted() / 1024 / 1024 + " MB\n");
-		sb.append("Max:       " + heapUsage.getMax() / 1024 / 1024 + " MB\n");
-		sb.append("\n\n\n");
+		appendUsage(sb, heapUsage);
+		sb.append(SEPARATOR);
 
 		sb.append("=== NON-HEAP (Metaspace, etc.) ===\n");
-		sb.append("Used:      " + nonHeapUsage.getUsed() / 1024 / 1024 + " MB\n");
-		sb.append("Committed: " + nonHeapUsage.getCommitted() / 1024 / 1024 + " MB\n");
-		sb.append("\n\n\n");
+		appendMb(sb, USED, nonHeapUsage.getUsed());
+		appendMb(sb, COMMITTED, nonHeapUsage.getCommitted());
+		sb.append(SEPARATOR);
 
 		List<MemoryPoolMXBean> pools = ManagementFactory.getMemoryPoolMXBeans();
 
 		for (MemoryPoolMXBean pool : pools) {
-			sb.append("Pool: " + pool.getName() + " [" + pool.getType() + "]\n");
+			sb.append("Pool: ").append(pool.getName()).append(" [").append(pool.getType()).append("]\n");
 			MemoryUsage usage = pool.getUsage();
-			sb.append("  Used:  " + usage.getUsed() / 1024 / 1024 + " MB\n");
-			sb.append("  Max:   " + usage.getMax() / 1024 / 1024 + " MB\n");
+			appendMb(sb, "  Used:  ", usage.getUsed());
+			appendMb(sb, "  Max:   ", usage.getMax());
 		}
-		sb.append("\n\n\n");
+		sb.append(SEPARATOR);
 
 		for (MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
 			if (pool.getName().toLowerCase().contains("metaspace")) {
-				MemoryUsage usage = pool.getUsage();
-
-				sb.append("=== " + pool.getName() + " ===\n");
-				sb.append("Init:      " + toMB(usage.getInit()) + " MB\n");
-				sb.append("Used:      " + toMB(usage.getUsed()) + " MB\n");
-				sb.append("Committed: " + toMB(usage.getCommitted()) + " MB\n");
-				sb.append("Max:       " + toMB(usage.getMax()) + " MB\n"); // -1 = sin límite
+				sb.append("=== ").append(pool.getName()).append(" ===\n");
+				appendUsage(sb, pool.getUsage());
 			}
 		}
-		sb.append("\n\n\n");
+		sb.append(SEPARATOR);
 
 		HotSpotDiagnosticMXBean diagBean;
 		try {
@@ -94,13 +95,38 @@ public final class JvmUtils {
 					"com.sun.management:type=HotSpotDiagnostic", HotSpotDiagnosticMXBean.class);
 
 			// Consultar flags específicos
-			sb.append("MaxHeapSize: " + diagBean.getVMOption("MaxHeapSize"));
-			sb.append("InitialHeapSize: " + diagBean.getVMOption("InitialHeapSize"));
-			sb.append("UseG1GC: " + diagBean.getVMOption("UseG1GC"));
-			sb.append("\n\n\n");
+			sb.append("MaxHeapSize: ").append(diagBean.getVMOption("MaxHeapSize")).append('\n');
+			sb.append("InitialHeapSize: ").append(diagBean.getVMOption("InitialHeapSize")).append('\n');
+			sb.append("UseG1GC: ").append(diagBean.getVMOption("UseG1GC")).append('\n');
+			sb.append(SEPARATOR);
 		} catch (IOException e) {
+			// Sin el bean de diagnostico de HotSpot (otra JVM): el informe va sin esos flags.
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Añade una linea con la etiqueta y el valor en MB.
+	 *
+	 * @param sb       el informe
+	 * @param etiqueta la etiqueta, ya alineada
+	 * @param bytes    el valor en bytes; -1 si no esta definido
+	 */
+	private static void appendMb(StringBuilder sb, String etiqueta, long bytes) {
+		sb.append(etiqueta).append(toMB(bytes)).append(" MB\n");
+	}
+
+	/**
+	 * Añade las lineas de un uso de memoria: init, used, committed y max.
+	 *
+	 * @param sb    el informe
+	 * @param usage el uso de memoria
+	 */
+	private static void appendUsage(StringBuilder sb, MemoryUsage usage) {
+		appendMb(sb, "Init:      ", usage.getInit());
+		appendMb(sb, USED, usage.getUsed());
+		appendMb(sb, COMMITTED, usage.getCommitted());
+		appendMb(sb, "Max:       ", usage.getMax()); // -1 = sin límite
 	}
 
 	static long toMB(long bytes) {

@@ -47,6 +47,12 @@ final class PropertyExpression {
 	/** Convierte a estilo Windows, sea cual sea el entorno. */
 	private static final String FN_WINPATH = "winpath";
 
+	/** Resultado verdadero de una expresion. */
+	private static final String TRUE = "true";
+
+	/** Resultado falso de una expresion. */
+	private static final String FALSE = "false";
+
 	/** Resuelve un identificador a su valor (String) o {@code null} si no existe. */
 	interface Resolver {
 		String resolve(String name);
@@ -71,7 +77,7 @@ final class PropertyExpression {
 	}
 
 	static boolean truthy(String value) {
-		return value != null && !value.equalsIgnoreCase("false");
+		return value != null && !value.equalsIgnoreCase(FALSE);
 	}
 
 	// ---------------------------------------------------------------- AST
@@ -153,7 +159,7 @@ final class PropertyExpression {
 		}
 
 		public String eval(Resolver resolver) {
-			return truthy(child.eval(resolver)) ? "false" : "true";
+			return truthy(child.eval(resolver)) ? FALSE : TRUE;
 		}
 	}
 
@@ -168,9 +174,9 @@ final class PropertyExpression {
 
 		public String eval(Resolver resolver) {
 			if (!truthy(left.eval(resolver))) {
-				return "false";
+				return FALSE;
 			}
-			return truthy(right.eval(resolver)) ? "true" : "false";
+			return truthy(right.eval(resolver)) ? TRUE : FALSE;
 		}
 	}
 
@@ -185,9 +191,9 @@ final class PropertyExpression {
 
 		public String eval(Resolver resolver) {
 			if (truthy(left.eval(resolver))) {
-				return "true";
+				return TRUE;
 			}
-			return truthy(right.eval(resolver)) ? "true" : "false";
+			return truthy(right.eval(resolver)) ? TRUE : FALSE;
 		}
 	}
 
@@ -224,7 +230,7 @@ final class PropertyExpression {
 				default:
 					result = false;
 			}
-			return result ? "true" : "false";
+			return result ? TRUE : FALSE;
 		}
 
 		private static boolean contains(String a, String b) {
@@ -450,9 +456,14 @@ final class PropertyExpression {
 			while (check(Type.EQ) || check(Type.NE) || check(Type.CONTAINS)) {
 				Type t = next().type;
 				Node right = parseUnary();
-				Compare.Op op = (t == Type.EQ) ? Compare.Op.EQ
-						: (t == Type.NE) ? Compare.Op.NE
-						: Compare.Op.CONTAINS;
+				Compare.Op op;
+				if (t == Type.EQ) {
+					op = Compare.Op.EQ;
+				} else if (t == Type.NE) {
+					op = Compare.Op.NE;
+				} else {
+					op = Compare.Op.CONTAINS;
+				}
 				left = new Compare(left, right, op);
 			}
 			return left;
