@@ -61,10 +61,17 @@ int SisEsperarYActivarVariableSinc ( varsinc * p_vsVariable )
 		while ( SisActivarVariableSinc ( p_vsVariable ) == 0 )
 		{
 		}
-#	  else
-		pthread_spin_lock ( p_vsVariable );
-#	  endif
 		iRes = 1;
+#	  else
+		if ( pthread_spin_lock ( p_vsVariable ) == 0 )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+#	  endif
 	}
 	else
 	{

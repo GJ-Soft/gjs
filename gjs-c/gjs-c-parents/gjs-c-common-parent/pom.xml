@@ -158,6 +158,19 @@
 		     hermano del <skip> del maven-deploy-plugin que hay mas abajo, y como aquel,
 		     provisional: si algun dia estos artefactos se publican, quitar los dos. -->
 		<gpg.skip>true</gpg.skip>
+			
+		<!-- Sonar -->
+		<sonar.cfamily.compile-commands>${project.build.directory}/compile_commands.json</sonar.cfamily.compile-commands>
+		<!-- Coding style: No permitimos que cuatro lumbreras decidan como codificar --> 
+		<sonar.issue.ignore.multicriteria>c1,c2,c3,c4</sonar.issue.ignore.multicriteria>
+		<sonar.issue.ignore.multicriteria.c1.ruleKey>c:S1103</sonar.issue.ignore.multicriteria.c1.ruleKey>
+		<sonar.issue.ignore.multicriteria.c1.resourceKey>**/*</sonar.issue.ignore.multicriteria.c1.resourceKey>
+		<sonar.issue.ignore.multicriteria.c2.ruleKey>cpp:S1103</sonar.issue.ignore.multicriteria.c2.ruleKey>
+		<sonar.issue.ignore.multicriteria.c2.resourceKey>**/*</sonar.issue.ignore.multicriteria.c2.resourceKey>
+		<sonar.issue.ignore.multicriteria.c3.ruleKey>c:S1110</sonar.issue.ignore.multicriteria.c3.ruleKey>
+		<sonar.issue.ignore.multicriteria.c3.resourceKey>**/*</sonar.issue.ignore.multicriteria.c3.resourceKey>
+		<sonar.issue.ignore.multicriteria.c4.ruleKey>cpp:S1110</sonar.issue.ignore.multicriteria.c4.ruleKey>
+		<sonar.issue.ignore.multicriteria.c4.resourceKey>**/*</sonar.issue.ignore.multicriteria.c4.resourceKey>
 	</properties>
 
 	<build>

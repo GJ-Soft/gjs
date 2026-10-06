@@ -29,7 +29,7 @@ def extract( path: str | Path, targetDir: str | Path ) -> bool:
             return _extractAll( archive, targetDir )
 
     except ( OSError, zipfile.BadZipFile ) as e:
-        logger.error( e )
+        logger.exception( e )
         return False
 
 
@@ -50,7 +50,7 @@ def extractFromUrl( url: str, targetDir: str | Path ) -> bool:
             return _extractAll( archive, targetDir )
 
     except ( OSError, zipfile.BadZipFile ) as e:
-        logger.error( e )
+        logger.exception( e )
         return False
 
 

@@ -43,7 +43,7 @@ def appInit() -> bool:
             Path( directory ).mkdir( parents=True, exist_ok=True )
 
         except OSError as e:
-            logger.error( e )
+            logger.exception( e )
             return False
 
     _applicationInit = True

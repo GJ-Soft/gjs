@@ -100,11 +100,11 @@ int SDatTxtEstablecerTam ( SDatosTexto * p_datObj, int iTam )
 			}
 			if ( iTam > SDatTam ( p_datObj->p_datTexto ) ) 
 			{
-				SDatRedimensionar ( p_datObj->p_datTexto, iTam, 1 );
+				iRes = SDatRedimensionar ( p_datObj->p_datTexto, iTam, 1 );
 			}
 			else if ( iTam > p_datObj->iPrimerLibre )
 			{
-				SDatRedimensionar ( p_datObj->p_datTexto, iTam, 1 );
+				iRes = SDatRedimensionar ( p_datObj->p_datTexto, iTam, 1 );
 			}
 			else
 			{

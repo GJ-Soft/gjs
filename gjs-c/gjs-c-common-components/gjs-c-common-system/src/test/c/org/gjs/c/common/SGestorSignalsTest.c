@@ -41,6 +41,10 @@ static int TestSGesSigCicloVida01 ()
 			iRes = BOOL_VAL_FALSO;
 		}
 	}
+	/* Regresion: con un indice fuera de rango se leia la tabla de rutinas por
+	   defecto fuera de sus limites. Ahora no hace nada. */
+	SGesSigProcesar ( p_gesigObj, -1 );
+	SGesSigProcesar ( p_gesigObj, SIS_NUM_SIGNALS );
 	SGesSigDestruir ( &p_gesigObj );
 	return ( iRes );
 }

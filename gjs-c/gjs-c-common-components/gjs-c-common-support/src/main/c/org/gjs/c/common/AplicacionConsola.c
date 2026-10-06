@@ -162,7 +162,7 @@ void AplicConLimpiar ()
 		FillConsoleOutputCharacter ( hConsola, ' ', csbiObj.dwSize.X * csbiObj.dwSize.Y, coordPos, &dwCont );
 		SetConsoleCursorPosition ( hConsola, coordPos );
 #	  else
-		printf ( "\e[2J" );
+		printf ( "\x1b[2J" );
 #	  endif
 	}
 }

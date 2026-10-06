@@ -23,6 +23,7 @@
 
 #include <fstream>
 #include <cstdio>
+#include <cstring>
 
 /* utsname y resource ya entran por la rama POSIX de CommonSystemConfig.h, que
    es la que toma Cygwin. Se repiten aqui, que es donde se usan; el guardian de
@@ -797,18 +798,17 @@ bool SisEsArquitectura32Bits ()
 static int _SisObtenerOrdenBytes ()
 {
 	int				iOrdenBytes;
-	union
-	{
-		unsigned int	uiValor;
-		unsigned char	ucBytes [ sizeof ( unsigned int ) ];
-	} uPrueba;
+	unsigned int	uiValor = (unsigned int) _SISTEMA_UINT_PRUEBA;
+	unsigned char	ucBytes [ sizeof ( unsigned int ) ];
 
-	uPrueba.uiValor = (unsigned int) _SISTEMA_UINT_PRUEBA;
-	if ( uPrueba.ucBytes [ 0 ] == _SISTEMA_UINT_PRUEBA_BYTE_4 )
+	// memcpy y no un union: en C++ leer un miembro del union que no es el
+	// ultimo escrito es comportamiento indefinido.
+	std::memcpy ( ucBytes, &uiValor, sizeof ( uiValor ) );
+	if ( ucBytes [ 0 ] == _SISTEMA_UINT_PRUEBA_BYTE_4 )
 	{
 		iOrdenBytes = 0;
 	}
-	else if ( uPrueba.ucBytes [ 0 ] == _SISTEMA_UINT_PRUEBA_BYTE_1 )
+	else if ( ucBytes [ 0 ] == _SISTEMA_UINT_PRUEBA_BYTE_1 )
 	{
 		iOrdenBytes = 1;
 	}

@@ -90,7 +90,14 @@ int SisEsperarYActivarVariableSinc ( varsinc * p_vsVariable )
 		}
 		iRes = 1;
 #	  else
-		pthread_spin_lock ( p_vsVariable );
+		if ( pthread_spin_lock ( p_vsVariable ) == 0 )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
 #	  endif
 	}
 	else

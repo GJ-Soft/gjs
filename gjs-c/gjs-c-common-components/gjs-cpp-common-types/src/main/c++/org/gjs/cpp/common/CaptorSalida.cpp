@@ -20,7 +20,22 @@ CaptorSalida::CaptorSalida ()
 
 CaptorSalida::~CaptorSalida ()
 {
-	Fin ();
+	// Fin () puede lanzar ( getline, push_back ), y una excepcion que sale de un
+	// destructor termina el programa. Pase lo que pase, cout recupera su buffer:
+	// si no, se quedaria apuntando al de un objeto ya destruido.
+	try
+	{
+		Fin ();
+	}
+	catch ( ... )
+	{
+		if ( bActivado )
+		{
+			cout.rdbuf ( p_bufViejo );
+			p_bufViejo = NULL;
+			bActivado = false;
+		}
+	}
 	vecLineas.clear ();
 }
 

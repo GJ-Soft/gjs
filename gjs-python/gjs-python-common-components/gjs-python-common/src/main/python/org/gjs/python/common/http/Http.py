@@ -25,7 +25,7 @@ def exists( url: str, timeout: int = HTTP_TRY_TIMEOUT ) -> bool:
         return response.status_code < 400
 
     except requests.exceptions.RequestException as e:
-        logger.error( e )
+        logger.exception( e )
         return False
 
 
@@ -49,7 +49,7 @@ def get( url: str, maxAttempts: int = 1,
             time.sleep( HTTP_RETRY_TIME_SLEEP )
 
         except requests.exceptions.RequestException as e:
-            logger.error( e )
+            logger.exception( e )
             return None
 
     return None
@@ -84,7 +84,7 @@ def download( url: str, filePath: str | Path, maxAttempts: int = 1,
             time.sleep( HTTP_RETRY_TIME_SLEEP )
 
         except requests.exceptions.RequestException as e:
-            logger.error( e )
+            logger.exception( e )
             return None
 
     return None

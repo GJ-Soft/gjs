@@ -150,7 +150,7 @@ void EntFinalizar ()
 
 #		 if ( defined ( MODO_DEPURACION_2 ) || defined ( MODO_DEPURACION ) )
 			char 	cVal;
-			int		iParar;
+			int		iParar = 0;
 
 #		  if ( defined ( MODO_DEPURACION_2 ) )
 			// TODO: Esto todavia no se ha pasado a lo nuevo

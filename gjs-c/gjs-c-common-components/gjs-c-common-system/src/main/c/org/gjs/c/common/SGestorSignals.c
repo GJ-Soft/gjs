@@ -216,24 +216,27 @@ void SGesSigProcesar ( SGestorSignals * p_gesigObj, int iSignal )
 
 	if ( ES_VALIDO ( p_gesigObj ) )
 	{
-		if ( SGesSigEstaSignalActivado ( p_gesigObj, iSignal ) == 1 )
+		if ( ( iSignal >= 0 ) && ( iSignal < SIS_NUM_SIGNALS ) )
 		{
-			fRutSignal = p_gesigObj->p_fRutSignals [ iSignal ];
-			if ( ES_VALIDO ( fRutSignal ) )
+			if ( SGesSigEstaSignalActivado ( p_gesigObj, iSignal ) == 1 )
 			{
-				(*fRutSignal) ();
+				fRutSignal = p_gesigObj->p_fRutSignals [ iSignal ];
+				if ( ES_VALIDO ( fRutSignal ) )
+				{
+					(*fRutSignal) ();
+				}
 			}
-		}
-		if ( ES_VALIDO ( p_gesigObj->p_gesigSiguiente ) )
-		{
-			SGesSigProcesar ( ( SGestorSignals * ) (p_gesigObj->p_gesigSiguiente), iSignal );
-		}
-		else if ( ES_VALIDO ( p_gesigObj->p_fRutDefSignals [ iSignal ] ) )
-		{
-			fRutDefSignal = p_gesigObj->p_fRutDefSignals [ iSignal ];
-			if ( ES_VALIDO ( fRutDefSignal ) )
+			if ( ES_VALIDO ( p_gesigObj->p_gesigSiguiente ) )
 			{
-				(*fRutDefSignal) ( SisSigCodigo ( iSignal ) );
+				SGesSigProcesar ( ( SGestorSignals * ) (p_gesigObj->p_gesigSiguiente), iSignal );
+			}
+			else if ( ES_VALIDO ( p_gesigObj->p_fRutDefSignals [ iSignal ] ) )
+			{
+				fRutDefSignal = p_gesigObj->p_fRutDefSignals [ iSignal ];
+				if ( ES_VALIDO ( fRutDefSignal ) )
+				{
+					(*fRutDefSignal) ( SisSigCodigo ( iSignal ) );
+				}
 			}
 		}
 	}

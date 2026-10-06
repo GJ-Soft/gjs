@@ -129,6 +129,60 @@ static int TestSDatTxtContenido01 ()
 	return ( iRes );
 }
 
+/* Regresion: al redimensionar no se asignaba el resultado, y justo cuando la
+   operacion se hacia la funcion devolvia basura. */
+static int TestSDatTxtEstablecerTam01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SDatTxtEstablecerTam 01:\n" );
+	SDatosTexto * p_datObj = SDatTxtCrear ( 32, 0 );
+	if ( ES_NULO ( p_datObj ) )
+	{
+		printf( "Error caso 0: no se pudo crear el texto\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		/* Agrandar. */
+		if ( SDatTxtEstablecerTam ( p_datObj, 64 ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba poder agrandar a 64\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SDatTam ( SDatTxtDatos ( p_datObj ) ) != 64 )
+		{
+			printf( "Error caso 2: el tamano deberia ser 64\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Reducir, sin contenido que lo impida. */
+		if ( SDatTxtEstablecerTam ( p_datObj, 16 ) != 1 )
+		{
+			printf( "Error caso 3: se esperaba poder reducir a 16\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SDatTam ( SDatTxtDatos ( p_datObj ) ) != 16 )
+		{
+			printf( "Error caso 4: el tamano deberia ser 16\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Reducir por debajo del contenido no se hace. */
+		SDatTxtAsignarContenidoLit ( p_datObj, "abcdefgh" );
+		if ( SDatTxtEstablecerTam ( p_datObj, 4 ) != 0 )
+		{
+			printf( "Error caso 5: no se deberia poder reducir por debajo del contenido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SDatTam ( SDatTxtDatos ( p_datObj ) ) != 16 )
+		{
+			printf( "Error caso 6: el tamano deberia seguir en 16\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SDatTxtDestruir ( &p_datObj );
+	}
+	return ( iRes );
+}
+
+
 static int TestSDatTxtNulo01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -154,6 +208,7 @@ int TestSDatosTexto ()
 			( TestSDatTxtCrear02 () == BOOL_VAL_CIERTO ) &&
 			( TestSDatTxtTamFijo01 () == BOOL_VAL_CIERTO ) &&
 			( TestSDatTxtContenido01 () == BOOL_VAL_CIERTO ) &&
+					( TestSDatTxtEstablecerTam01 () == BOOL_VAL_CIERTO ) &&
 			( TestSDatTxtNulo01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );

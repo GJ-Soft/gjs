@@ -54,9 +54,20 @@ static int TestSisVariableSinc01 ()
 		printf( "Error caso 3: se esperaba desactivar la variable\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
+	/* Regresion: en POSIX no se asignaba el resultado y se devolvia basura. */
+	if ( SisEsperarYActivarVariableSinc ( &vsVariable ) != 1 )
+	{
+		printf( "Error caso 4: se esperaba esperar y activar con exito\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SisDesactivarVariableSinc ( &vsVariable ) != 1 )
+	{
+		printf( "Error caso 5: se esperaba desactivar tras esperar y activar\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
 	if ( SisFinalizarVariableSinc ( &vsVariable ) != 1 )
 	{
-		printf( "Error caso 4: se esperaba finalizar la variable\n" );
+		printf( "Error caso 6: se esperaba finalizar la variable\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
 #endif

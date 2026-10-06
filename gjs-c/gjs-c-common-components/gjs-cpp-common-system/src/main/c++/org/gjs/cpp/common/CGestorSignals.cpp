@@ -219,24 +219,27 @@ void CGestorSignals::Procesar ( int iSignal )
 	PPRCV	p_procRutSignal;
 	PPRCI	p_procRutDefSignal;
 
-	if ( EstaSignalActivado ( iSignal ) == 1 )
+	if ( ( iSignal >= 0 ) && ( iSignal < SIS_NUM_SIGNALS ) )
 	{
-		p_procRutSignal = p_p_procRutSignals [ iSignal ];
-		if ( ES_VALIDO ( p_procRutSignal ) )
+		if ( EstaSignalActivado ( iSignal ) == 1 )
 		{
-			(*p_procRutSignal) ();
+			p_procRutSignal = p_p_procRutSignals [ iSignal ];
+			if ( ES_VALIDO ( p_procRutSignal ) )
+			{
+				(*p_procRutSignal) ();
+			}
 		}
-	}
-	if ( ES_VALIDO ( p_gsigSig ) )
-	{
-		p_gsigSig->Procesar ( iSignal );
-	}
-	else if ( ES_VALIDO ( p_p_procRutDefSignals [ iSignal ] ) )
-	{
-		p_procRutDefSignal = p_p_procRutDefSignals [ iSignal ];
-		if ( ES_VALIDO ( p_procRutDefSignal ) )
+		if ( ES_VALIDO ( p_gsigSig ) )
 		{
-			(*p_procRutDefSignal) ( SisSigCodigo ( iSignal ) );
+			p_gsigSig->Procesar ( iSignal );
+		}
+		else if ( ES_VALIDO ( p_p_procRutDefSignals [ iSignal ] ) )
+		{
+			p_procRutDefSignal = p_p_procRutDefSignals [ iSignal ];
+			if ( ES_VALIDO ( p_procRutDefSignal ) )
+			{
+				(*p_procRutDefSignal) ( SisSigCodigo ( iSignal ) );
+			}
 		}
 	}
 }

@@ -56,6 +56,10 @@ static bool TestCGestorSignals01 ()
 			cout << "Error caso 5: un indice invalido deberia dar 0" << endl;
 			bRes = false;
 		}
+		// Regresion: con un indice fuera de rango se leia la tabla de rutinas por
+		// defecto fuera de sus limites. Ahora no hace nada.
+		gestor.Procesar ( -1 );
+		gestor.Procesar ( SIS_NUM_SIGNALS );
 	}
 	catch ( exception & ex )
 	{
