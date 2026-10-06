@@ -858,7 +858,7 @@
 								<id>sign-artifacts</id>
 								<!-- verify ya es la fase por defecto del goal; se deja explicita
 								     porque lo que importa es que firme ANTES de deploy, que es
-								     donde el plugin del Portal arma el bundle. Firma todo lo
+								     donde el plugin del Portal arma el bundle. Firma cuanto va
 								     adjunto: el .pom, el principal, sources y javadoc. -->
 								<phase>verify</phase>
 								<goals>

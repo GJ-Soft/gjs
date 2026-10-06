@@ -25,18 +25,6 @@ import lombok.Getter;
  * @since 3.0.0
  *
  */
-
-/**
- * Gets the completed.
- *
- * @return the completed
- */
-
-/**
- * Gets the completed.
- *
- * @return the completed
- */
 @Getter
 public class TaskResult {
 

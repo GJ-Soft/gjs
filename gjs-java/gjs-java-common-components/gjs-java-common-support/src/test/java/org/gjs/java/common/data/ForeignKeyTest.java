@@ -54,6 +54,8 @@ class ForeignKeyTest extends BaseClassTest<ForeignKey> {
 		assertEquals(1, key.countFields());
 		key.addField("field1", "remote2");
 		assertEquals(1, key.countFields());
+		// El campo local ya estaba: no entra tampoco el remoto
+		assertEquals(1, key.getRemoteFields().size());
 		key.addField("field2", "remote2");
 		assertEquals(2, key.countFields());
 		assertNotNull(key.getField(0));
@@ -64,6 +66,11 @@ class ForeignKeyTest extends BaseClassTest<ForeignKey> {
 		assertEquals("remote1", key.getRemoteField(0));
 		assertNotNull(key.getRemoteField(1));
 		assertEquals("remote2", key.getRemoteField(1));
+		assertEquals("ForeignKey=[Key=[field1, field2]--Key=[remote1, remote2]]", key.toString());
+		// El remoto ya estaba: no entra tampoco el campo local
+		key.addField("field3", "remote1");
+		assertEquals(2, key.countFields());
+		assertEquals(2, key.getRemoteFields().size());
 		assertEquals("ForeignKey=[Key=[field1, field2]--Key=[remote1, remote2]]", key.toString());
 
 		key.clear();
@@ -79,21 +86,37 @@ class ForeignKeyTest extends BaseClassTest<ForeignKey> {
 		final ForeignKey key1 = new ForeignKey();
 		key1.addField("field1", "remote1");
 		key1.addField("field2", "remote2");
+		// Un campo menos
 		final ForeignKey key2 = new ForeignKey();
-		key1.addField("field1", "remote1");
+		key2.addField("field1", "remote1");
+		// Los mismos pares en el mismo orden
 		final ForeignKey key3 = new ForeignKey();
-		key3.addField("field2", "remote2");
 		key3.addField("field1", "remote1");
+		key3.addField("field2", "remote2");
 		final String key4 = "aye";
+		// Los mismos campos locales, pero con los remotos cruzados
 		final ForeignKey key5 = new ForeignKey();
-		key3.addField("field1", "remote2");
-		key3.addField("field2", "remote1");
+		key5.addField("field1", "remote2");
+		key5.addField("field2", "remote1");
+		// Los mismos pares en otro orden: la comparacion entre claves ajenas es posicional
+		final ForeignKey key6 = new ForeignKey();
+		key6.addField("field2", "remote2");
+		key6.addField("field1", "remote1");
+		// Contra una clave simple solo cuentan los campos locales, en cualquier orden
+		final DataKey key7 = new DataKey("field2", "field1");
+		final DataKey key8 = new DataKey("field1", "field3");
 		assertTrue(key1.equals(key1));
 		assertFalse(key1.equals(key0));
-		assertTrue(key1.equals(key3));
-		assertFalse(key1.equals(key4));
+		assertFalse(key1.equals(key2));
 		assertFalse(key2.equals(key1));
+		assertTrue(key1.equals(key3));
+		assertTrue(key3.equals(key1));
+		assertEquals(key1.hashCode(), key3.hashCode());
+		assertFalse(key1.equals(key4));
 		assertFalse(key1.equals(key5));
+		assertFalse(key1.equals(key6));
+		assertTrue(key1.equals(key7));
+		assertFalse(key1.equals(key8));
 	}
 
 	@Test

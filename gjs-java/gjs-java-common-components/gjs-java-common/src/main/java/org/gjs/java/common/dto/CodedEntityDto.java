@@ -21,19 +21,7 @@ import lombok.Setter;
  * @since 3.0.0
  *
  */
-
-/**
- * Gets the name.
- *
- * @return the name
- */
 @Getter
-
-/**
- * Sets the name.
- *
- * @param name the new name
- */
 @Setter
 public class CodedEntityDto extends BaseDto {
 

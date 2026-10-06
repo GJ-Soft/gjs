@@ -5,27 +5,14 @@ import java.util.function.Supplier;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * The Interface Supplier.
- *
- * Interfaz de la librería Gjs
- *
- * Interfaz que debe implementar los generadores de datos aleatorios de la librería.
- *
- * @param <T>
- *            la clase que se suministra
- *
- * @author Gjs
- * @version 1.0.0
- * @since 1.0.0
- *
- */
-// @FunctionalInterface
-/**
  * The Interface GjsSupplier.
  *
  * Interfaz de la librería Gjs
  *
  * Contrato de los generadores de datos de la librería. Sobre el get() de Supplier añade el valor vacío, el nulo y las variantes en array, con su tamaño configurable.
+ *
+ * @param <T>
+ *            la clase que se suministra
  *
  * @author Gjs
  * @version 1.0.0

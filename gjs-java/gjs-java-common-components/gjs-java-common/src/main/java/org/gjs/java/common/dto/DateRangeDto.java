@@ -27,19 +27,7 @@ import lombok.Setter;
  * @since 3.0.0
  *
  */
-
-/**
- * Gets the fecha fin.
- *
- * @return the fecha fin
- */
 @Getter
-
-/**
- * Sets the fecha fin.
- *
- * @param fechaFin the new fecha fin
- */
 @Setter
 public class DateRangeDto implements Serializable {
 

@@ -395,7 +395,7 @@
 						<configuration>
 							<!-- Un <option> es UN argumento: el plugin hace arg.setValue(cadena)
 							     sin partir por espacios, y ademas CommandLineCompiler entrecomilla
-							     en Windows todo argumento que contenga uno. Los dos flags iban
+							     en Windows cualquier argumento que contenga uno. Los dos flags iban
 							     juntos en una sola cadena (via gjs.compiler.additionalOptions) y
 							     le habrian llegado a gcc como un unico argumento entrecomillado.
 							     Por eso van uno por <option>, y por append, que es el mismo idioma

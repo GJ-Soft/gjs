@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,6 +39,9 @@ public class MockHttpClientRequest implements ClientHttpRequest {
 
     /** The body. */
     private OutputStream body;
+
+    /** Los atributos de la peticion (mapa mutable, como pide la interfaz). */
+    private final Map<String, Object> attributes = new LinkedHashMap<>();
 
     /**
      * Instantiates a new mock http client request.
@@ -107,8 +111,7 @@ public class MockHttpClientRequest implements ClientHttpRequest {
 
     @Override
     public Map<String, Object> getAttributes() {
-        // TODO Auto-generated method stub
-        return null;
+        return attributes;
     }
 
 }

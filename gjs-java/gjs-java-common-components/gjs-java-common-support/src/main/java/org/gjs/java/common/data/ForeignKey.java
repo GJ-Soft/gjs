@@ -106,11 +106,16 @@ public class ForeignKey extends DataKey {
 	/**
 	 * Adds the field.
 	 *
+	 * El par entra entero o no entra: si el campo local o el remoto estan en blanco o
+	 * ya estan en la clave, no se añade ninguno de los dos. Las dos listas van en
+	 * paralelo, y descartar solo uno de los dos las desalinearia.
+	 *
 	 * @param field       the field
 	 * @param remoteField the remote field
 	 */
 	public void addField(String field, String remoteField) {
-		if (!ConditionUtils.oneIsTrue(StringUtils.isAllBlank(field), StringUtils.isAllBlank(remoteField))) {
+		if (!ConditionUtils.oneIsTrue(StringUtils.isAllBlank(field), StringUtils.isAllBlank(remoteField),
+				existsField(field), remoteKey.existsField(remoteField))) {
 			super.addField(field);
 			remoteKey.addField(remoteField);
 		}

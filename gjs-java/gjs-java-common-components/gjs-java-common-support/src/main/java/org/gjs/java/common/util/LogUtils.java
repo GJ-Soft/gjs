@@ -198,6 +198,7 @@ public final class LogUtils {
 		try {
 			logger = LoggerFactory.getLogger(clazz);
 		} catch (IllegalArgumentException e) {
+			// Sin logger para esa clase: se usa el raiz, justo debajo.
 		}
 		if (Objects.isNull(logger)) {
 			logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -216,6 +217,7 @@ public final class LogUtils {
 		try {
 			logger = LoggerFactory.getLogger(clazz);
 		} catch (IllegalArgumentException e) {
+			// Sin logger para esa clase: se usa el raiz, justo debajo.
 		}
 		if (Objects.isNull(logger)) {
 			logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);

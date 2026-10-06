@@ -12,7 +12,7 @@ import ch.qos.logback.classic.Level;
  * Clase abstracta de datos de la librería Gjs
  *
  * Clase pensada para ser extendida por todas aquellas clases que necesiten
- * funcionalidad de logger. Todo y que el desarrollador puede usar el logger
+ * funcionalidad de logger. Aunque el desarrollador puede usar el logger
  * librermente, se ofrecen funciones que formatean el registro en el log
  * siguiendo el estándar definido por la arquitectura de Semilla.
  *
