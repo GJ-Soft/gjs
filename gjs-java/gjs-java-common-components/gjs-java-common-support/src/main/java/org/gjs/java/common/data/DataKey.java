@@ -127,14 +127,12 @@ public class DataKey {
         boolean res = false;
         if (this == obj) {
             res = true;
-        } else if (obj instanceof final DataKey other) {
-            if (other.countFields() == countFields()) {
-                res = true;
-                for (final String field : fields) {
-                    if (!other.existsField(field)) {
-                        res = false;
-                        break;
-                    }
+        } else if ((obj instanceof final DataKey other) && (other.countFields() == countFields())) {
+            res = true;
+            for (final String field : fields) {
+                if (!other.existsField(field)) {
+                    res = false;
+                    break;
                 }
             }
         }

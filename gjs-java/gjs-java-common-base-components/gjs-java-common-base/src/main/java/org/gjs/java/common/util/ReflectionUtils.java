@@ -29,7 +29,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -219,7 +218,7 @@ public final class ReflectionUtils {
 	 */
 	public static boolean hasMethod(Class<?> clazz, String method) {
 		final Set<String> setMethods = new TreeSet<>(
-				getAllMethods(clazz).stream().map(Method::getName).collect(Collectors.toList()));
+				getAllMethods(clazz).stream().map(Method::getName).toList());
 		return setMethods.contains(method);
 	}
 
@@ -1059,7 +1058,6 @@ public final class ReflectionUtils {
 				res = true;
 			} catch (final NoSuchMethodException e) {
 				// No hacer nada. Es correcto que pase por aquí si no existe
-				res = false;
 			} catch (final Exception e) {
 				logger.error(String.format("Error looking for default constructor of class %s", className), e);
 			}
@@ -1133,7 +1131,7 @@ public final class ReflectionUtils {
 		if (ManagedType.BIGDECIMAL.equals(type)) {
 			copy = new BigDecimal(((BigDecimal) obj).toString());
 		} else if (ManagedType.STRING.equals(type)) {
-			copy = new String((String) obj);
+			copy = obj; // String es inmutable: no hace falta copiarla
 		} else if (ManagedType.DATE.equals(type)) {
 			copy = new Date(((Date) obj).getTime());
 		} else if (ManagedType.LOCALDATETIME.equals(type)) {

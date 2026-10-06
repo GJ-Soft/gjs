@@ -9,66 +9,66 @@ ${symbol_pound}
 
 
 """
-test_sample.py - Tests para las funciones sumar y es_par usando pytest
+SampleTest.py - Tests para las funciones sumar y esPar usando pytest
 """
 
 import pytest
-from ${package}.Sample import sumar, es_par
+from ${package}.Sample import sumar, esPar
 
 
 class TestSumar:
     """Tests para la función sumar."""
 
-    def test_suma_dos_positivos(self):
+    def testSumaDosPositivos(self):
         assert sumar(3.0, 5.0) == 8.0
 
-    def test_suma_dos_negativos(self):
+    def testSumaDosNegativos(self):
         assert sumar(-2.0, -4.0) == -6.0
 
-    def test_suma_positivo_y_negativo(self):
+    def testSumaPositivoYNegativo(self):
         assert sumar(10.0, -3.0) == 7.0
 
-    def test_suma_con_cero(self):
+    def testSumaConCero(self):
         assert sumar(7.0, 0.0) == 7.0
 
-    def test_suma_dos_ceros(self):
+    def testSumaDosCeros(self):
         assert sumar(0.0, 0.0) == 0.0
 
-    def test_suma_numeros_decimales(self):
+    def testSumaNumerosDecimales(self):
         assert sumar(1.5, 2.5) == pytest.approx(4.0)
 
-    def test_suma_es_conmutativa(self):
+    def testSumaEsConmutativa(self):
         assert sumar(3.0, 7.0) == sumar(7.0, 3.0)
 
 
 class TestEsPar:
-    """Tests para la función es_par."""
+    """Tests para la función esPar."""
 
-    def test_numero_par_positivo(self):
-        assert es_par(4) is True
+    def testNumeroParPositivo(self):
+        assert esPar(4) is True
 
-    def test_numero_impar_positivo(self):
-        assert es_par(7) is False
+    def testNumeroImparPositivo(self):
+        assert esPar(7) is False
 
-    def test_cero_es_par(self):
-        assert es_par(0) is True
+    def testCeroEsPar(self):
+        assert esPar(0) is True
 
-    def test_numero_par_negativo(self):
-        assert es_par(-8) is True
+    def testNumeroParNegativo(self):
+        assert esPar(-8) is True
 
-    def test_numero_impar_negativo(self):
-        assert es_par(-3) is False
+    def testNumeroImparNegativo(self):
+        assert esPar(-3) is False
 
-    def test_uno_es_impar(self):
-        assert es_par(1) is False
+    def testUnoEsImpar(self):
+        assert esPar(1) is False
 
-    def test_dos_es_par(self):
-        assert es_par(2) is True
+    def testDosEsPar(self):
+        assert esPar(2) is True
 
     @pytest.mark.parametrize("numero", [0, 2, 4, 6, 8, 100])
-    def test_pares_parametrizado(self, numero):
-        assert es_par(numero) is True
+    def testParesParametrizado(self, numero):
+        assert esPar(numero) is True
 
     @pytest.mark.parametrize("numero", [1, 3, 5, 7, 9, 101])
-    def test_impares_parametrizado(self, numero):
-        assert es_par(numero) is False
+    def testImparesParametrizado(self, numero):
+        assert esPar(numero) is False

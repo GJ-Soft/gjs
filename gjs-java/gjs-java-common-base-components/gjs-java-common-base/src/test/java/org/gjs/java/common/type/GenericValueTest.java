@@ -533,4 +533,19 @@ class GenericValueTest extends BaseClassTest<GenericValue> {
                 Date.from(value.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
     }
 
+    /*
+     * Regresión: la comprobación de longitud era (len >= 27) && (len >= 29), así que
+     * sólo pasaba por Timestamp.valueOf la forma con los nueve decimales; el resto
+     * caía en toDate() y perdía la fracción de segundo.
+     */
+    @Test
+    void testToTimestampKeepsFraction() {
+        assertEquals(Timestamp.valueOf("2024-01-15 10:30:45.123"),
+                new GenericValue("2024-01-15 10:30:45.123").toTimestamp());
+        assertEquals(123000000, new GenericValue("2024-01-15 10:30:45.123").toTimestamp().getNanos());
+        assertEquals(Timestamp.valueOf("2024-01-15 10:30:45"), new GenericValue("2024-01-15 10:30:45").toTimestamp());
+        assertEquals(Timestamp.valueOf("2024-01-15 10:30:45.123456789"),
+                new GenericValue("2024-01-15 10:30:45.123456789").toTimestamp());
+    }
+
 }

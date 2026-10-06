@@ -6,12 +6,12 @@ from unittest.mock import patch, MagicMock
 
 from ${package}.Main import main
 
-def test_main_ok(capsys):
-    fake_result = {"status": "OK"}
+def testMainOk(capsys):
+    fakeResult = {"status": "OK"}
 
     with patch("${package}.Main.${capitalizedName}Client") as MockClient:
         instance = MockClient.return_value
-        instance.get_server_status.return_value = fake_result
+        instance.getServerStatus.return_value = fakeResult
 
         main()
 
@@ -20,10 +20,10 @@ def test_main_ok(capsys):
     assert "OK" in captured.out
 
 
-def test_main_error(capsys):
+def testMainError(capsys):
     with patch("${package}.Main.${capitalizedName}Client") as MockClient:
         instance = MockClient.return_value
-        instance.get_server_status.side_effect = Exception("boom")
+        instance.getServerStatus.side_effect = Exception("boom")
 
         main()
 

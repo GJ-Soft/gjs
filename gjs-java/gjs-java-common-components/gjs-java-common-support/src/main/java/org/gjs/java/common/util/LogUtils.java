@@ -397,7 +397,7 @@ public final class LogUtils {
 	 * @param infos  the infos
 	 */
 	public static void logWarn(Logger logger, String clazz, String method, Object... infos) {
-		log(Level.WARN, clazz, method, infos);
+		log(logger, Level.WARN, clazz, method, infos);
 	}
 
 	/**

@@ -11,28 +11,28 @@ from ${package}.models.Models import ServerStatus
 
 
 
-def test_get_server_status_ok():
+def testGetServerStatusOk():
     client = ${capitalizedName}Client(protocol="http", hostname="localhost", port="8000")
 
-    fake_json = {
+    fakeJson = {
         "status": "OK",
         "date-time": "2026-03-22T09:50:00Z"
     }
 
-    mock_response = MagicMock()
-    mock_response.json.return_value = fake_json
-    mock_response.raise_for_status.return_value = None
+    mockResponse = MagicMock()
+    mockResponse.json.return_value = fakeJson
+    mockResponse.raise_for_status.return_value = None
 
-    mock_httpx_client = MagicMock()
-    mock_httpx_client.get.return_value = mock_response
+    mockHttpxClient = MagicMock()
+    mockHttpxClient.get.return_value = mockResponse
 
-    mock_context_manager = MagicMock()
-    mock_context_manager.__enter__.return_value = mock_httpx_client
+    mockContextManager = MagicMock()
+    mockContextManager.__enter__.return_value = mockHttpxClient
 
-    with patch("${package}.client.${capitalizedName}Client.httpx.Client", return_value=mock_context_manager):
-        result = client.get_server_status()
+    with patch("${package}.client.${capitalizedName}Client.httpx.Client", return_value=mockContextManager):
+        result = client.getServerStatus()
 
     assert isinstance(result, ServerStatus)
     assert result.status == "OK"
     assert str(result.date_time) == "2026-03-22 09:50:00+00:00"
-    mock_httpx_client.get.assert_called_once_with("http://${host}:${port}/status")
+    mockHttpxClient.get.assert_called_once_with("http://${host}:${port}/status")

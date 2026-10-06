@@ -27,7 +27,7 @@ public final class CalculusUtils {
 	 * @return the float
 	 */
 	public static float epsilonFloat() {
-		return Math.ulp((float) 1.0);
+		return Math.ulp(1.0f);
 	}
 
 	/**

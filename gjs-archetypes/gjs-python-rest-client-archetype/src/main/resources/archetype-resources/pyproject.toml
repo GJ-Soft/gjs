@@ -17,6 +17,6 @@ pythonpath  = [
 
 python_files = ["*Test.py"]
 python_classes = ["Test*"]
-python_functions = ["test_*"]
+python_functions = ["test*"]
 
 cache_dir = ".pytest_cache"

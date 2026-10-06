@@ -1,5 +1,6 @@
 package org.gjs.java.test;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
@@ -134,7 +135,7 @@ public abstract class AbstractRepositoryUnitTest<T, E, PK> extends AbstractPersi
 	 * @return the dependencies
 	 */
 	protected Map<String, JpaRepositoryWrapper<?, ?>> getDependencies() {
-		return null;
+		return Collections.emptyMap();
 	}
 
 	/**
@@ -143,7 +144,7 @@ public abstract class AbstractRepositoryUnitTest<T, E, PK> extends AbstractPersi
 	 * @return the field correspondencies
 	 */
 	protected Map<String, String> getFieldCorrespondencies() {
-		return null;
+		return Collections.emptyMap();
 	}
 
 	/**

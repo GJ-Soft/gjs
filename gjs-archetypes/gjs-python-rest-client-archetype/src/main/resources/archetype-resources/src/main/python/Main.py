@@ -31,7 +31,7 @@ def main():
         
         client = ${capitalizedName}Client()
 
-        resultado = client.get_server_status()
+        resultado = client.getServerStatus()
         print(f"Respuesta recibida: {resultado}")
         
     except ImportError:

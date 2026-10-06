@@ -1,9 +1,9 @@
-# test_main.py
+# MainTest.py
 from ${package}.Main import main
 import pytest
 
 
-def test_main_ejecucion(capsys):
+def testMainEjecucion(capsys):
     # capsys es un "fixture" de pytest que captura lo que sale por pantalla
     main()
 # Capturamos la salida

@@ -279,4 +279,21 @@ public class FileSeparatedValuesTest extends BaseUnitTest<FileSeparatedValues> {
 		}
 	}
 
+	/*
+	 * Regresión: una columna nula lanzaba NullPointerException al guardar
+	 * (Objects.requireNonNull); se escribe "null", como en SeparatedValuesDataStreamer.
+	 */
+	@Test
+	void testFileSeparatedValuesNullColumn() throws Exception {
+		final Path filePath = currentDir.resolve("data/nuloX.csv");
+		Files.deleteIfExists(filePath);
+		final FileSeparatedValues file = new FileSeparatedValues(filePath.toFile());
+		final Matrix<String> datos = new Matrix<>();
+		datos.addRow("Line1", null);
+		file.setDatos(datos);
+		assertTrue(file.save());
+		assertEquals("Line1\tnull", Files.readAllLines(filePath).get(0));
+		Files.deleteIfExists(filePath);
+	}
+
 }

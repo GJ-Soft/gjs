@@ -21,6 +21,9 @@ import lombok.Setter;
 @Setter
 public class ENPersonNameDto extends PersonNameDto {
 
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 8569897804277599901L;
+
 	private String middleName;
 
 	public ENPersonNameDto(String name, String surname) {

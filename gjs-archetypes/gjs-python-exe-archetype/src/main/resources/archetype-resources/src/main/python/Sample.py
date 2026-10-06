@@ -15,7 +15,7 @@ def sumar(a: float, b: float) -> float:
     return a + b
  
  
-def es_par(numero: int) -> bool:
+def esPar(numero: int) -> bool:
     """Devuelve True si el número es par, False si es impar."""
     return numero % 2 == 0
  

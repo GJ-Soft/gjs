@@ -1,5 +1,6 @@
 package org.gjs.java.common.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +24,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class BasicRoleDto implements Comparable<BasicRoleDto> {
+public class BasicRoleDto implements Serializable, Comparable<BasicRoleDto> {
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -4735351294972433073L;
 
 	/** The nombre. */
 	protected String name;

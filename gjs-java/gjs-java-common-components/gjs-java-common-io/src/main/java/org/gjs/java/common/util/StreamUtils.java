@@ -10,8 +10,6 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.gjs.java.common.type.Matrix;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class StreamUtils.
@@ -29,9 +27,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public final class StreamUtils {
-
-	/** The Constant logger. */
-	private static final Logger logger = LoggerFactory.getLogger(StreamUtils.class);
 
 	/**
 	 * Clase no instanciable.
@@ -55,9 +50,6 @@ public final class StreamUtils {
 					data.add(line);
 					line = br.readLine();
 				}
-			} catch (final IOException e) {
-				logger.error(e.getMessage());
-				throw e;
 			}
 		}
 	}
@@ -76,15 +68,12 @@ public final class StreamUtils {
 				String line = br.readLine();
 				while (Objects.nonNull(line)) {
 					line = line.trim();
-					if (line.length() > 0) {
+					if (!line.isEmpty()) {
 						final List<String> values = split(line, separator);
 						data.addRow(values);
 					}
 					line = br.readLine();
 				}
-			} catch (final IOException e) {
-				logger.error(e.getMessage());
-				throw e;
 			}
 		}
 	}
@@ -129,7 +118,7 @@ public final class StreamUtils {
 		}
 		if (lastSeparator) {
 			fields.add("");
-		} else if (field.length() > 0) {
+		} else if (!field.isEmpty()) {
 			fields.add(formatValue(field.toString()));
 		}
 		return fields;

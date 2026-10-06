@@ -58,7 +58,7 @@ public final class NormalizationUtils {
                 lastUpper = Character.isUpperCase(c);
             }
         }
-        if (name.length() == 0) {
+        if (name.isEmpty()) {
             return null;
         }
         return name.toString();

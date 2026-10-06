@@ -2,3 +2,4 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 
+pytest

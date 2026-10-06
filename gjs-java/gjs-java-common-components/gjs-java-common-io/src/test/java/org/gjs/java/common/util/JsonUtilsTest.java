@@ -153,4 +153,13 @@ class JsonUtilsTest extends BaseClassTest<JsonUtils> {
 		}
 	}
 
+	/*
+	 * Regresión: con Jackson 3 el error de lectura es una JacksonException, que no es
+	 * IOException; safeJsonToObject sólo capturaba IOException y la dejaba escapar.
+	 */
+	@Test
+	void testSafeJsonToObjectMalformed() {
+		assertNull(JsonUtils.safeJsonToObject("{ no es json", SampleEntityDto.class));
+	}
+
 }

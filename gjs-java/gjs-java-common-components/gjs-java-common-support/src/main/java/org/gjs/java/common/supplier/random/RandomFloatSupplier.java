@@ -59,7 +59,7 @@ public class RandomFloatSupplier extends AbstractRandomSupplier<Float> {
 
     @Override
     public Float getEmpty() {
-        return Float.valueOf((float) 0.0);
+        return Float.valueOf(0.0f);
     }
 
     /* (non-Javadoc)

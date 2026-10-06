@@ -92,7 +92,14 @@ Notes:
 | Profile | Effect | Requires |
 |---------|--------|----------|
 | `cppcheck` | Runs cppcheck over `src/main/<language>` and writes a browsable HTML report. | `cppcheck` and `cppcheck-htmlreport` in `${cpp.checkDir}`, and a Windows Python in `cpp.check.python`. |
-| `cobertura` | Compiles with `--coverage` and runs gcovr after the tests. Work in progress. | gcovr under the Cygwin Python 3.9 (`tomli` included). |
+| `cobertura` | Compiles with `--coverage` and runs gcovr after the tests; the report goes to `target/site/coverage/index.html`. Work in progress. | gcovr under the Cygwin Python 3.9 (`tomli` included). |
+
+
+### Optional profiles (Python)
+
+| Profile | Effect | Requires |
+|---------|--------|----------|
+| `cobertura` | Measures the coverage of the tests with pytest-cov, only over the module's own files. Raw data in `target/coverage.data`; report in `target/site/coverage` (`index.html`, and `coverage.xml` for Sonar). | Nothing: pytest-cov is installed under `target` when the profile is active. |
 
 
 ## Roadmap

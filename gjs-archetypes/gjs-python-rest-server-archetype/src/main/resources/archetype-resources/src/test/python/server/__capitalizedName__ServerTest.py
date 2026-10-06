@@ -1,11 +1,11 @@
 from fastapi.testclient import TestClient
 from ${package}.server.${capitalizedName}Server import ${capitalizedName}Server
 
-def test_status_endpoint():
+def testStatusEndpoint():
     # Instanciamos la clase del servidor
-    server_instance = ${capitalizedName}Server()
+    serverInstance = ${capitalizedName}Server()
     # Usamos el TestClient sobre la propiedad .app de la clase
-    client = TestClient(server_instance.app)
+    client = TestClient(serverInstance.app)
     
     response = client.get("/status")
     

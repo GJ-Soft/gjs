@@ -9,6 +9,7 @@ Las reglas de validez son las del sistema operativo en el que se ejecuta: en
 Windows las de NTFS/Win32, y en el resto las de POSIX.
 """
 
+import hashlib
 import os
 import re
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
@@ -99,3 +100,19 @@ def validatePath( path: str | None ) -> bool:
     purePath: PurePath = PureWindowsPath( path ) if _isWindows() else PurePosixPath( path )
     parts = purePath.parts[ 1: ] if purePath.anchor else purePath.parts
     return all( part in ( ".", ".." ) or isValidFilename( part ) for part in parts )
+
+
+def calculateFileHash( filePath: str | Path ) -> str:
+    """
+    Huella SHA-256 del contenido de un fichero, en hexadecimal (64 caracteres en
+    minúsculas).
+
+    Lee el fichero por bloques, así que vale para ficheros de cualquier tamaño.
+
+    :param filePath: El fichero.
+    :return: La huella en hexadecimal.
+    :raises FileNotFoundError: Si el fichero no existe.
+    :raises IsADirectoryError: Si es un directorio (PermissionError en Windows).
+    """
+    with open( filePath, "rb" ) as file:
+        return hashlib.file_digest( file, "sha256" ).hexdigest()

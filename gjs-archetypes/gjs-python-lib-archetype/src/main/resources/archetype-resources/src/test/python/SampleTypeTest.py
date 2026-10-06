@@ -14,19 +14,19 @@ from ${package}.SampleType import SampleType
 class TestSampleTypeInit:
     """Tests del constructor."""
 
-    def test_nombre_se_asigna_correctamente(self):
+    def testNombreSeAsignaCorrectamente(self):
         muestra = SampleType("temperatura", 36.6)
         assert muestra.nombre == "temperatura"
 
-    def test_valor_se_asigna_correctamente(self):
+    def testValorSeAsignaCorrectamente(self):
         muestra = SampleType("temperatura", 36.6)
         assert muestra.valor == 36.6
 
-    def test_valor_cero(self):
+    def testValorCero(self):
         muestra = SampleType("vacio", 0.0)
         assert muestra.valor == 0.0
 
-    def test_valor_negativo(self):
+    def testValorNegativo(self):
         muestra = SampleType("deuda", -100.0)
         assert muestra.valor == -100.0
 
@@ -34,11 +34,11 @@ class TestSampleTypeInit:
 class TestSampleTypeDescribir:
     """Tests del método describir."""
 
-    def test_describir_formato_correcto(self):
+    def testDescribirFormatoCorrecto(self):
         muestra = SampleType("presion", 101.3)
         assert muestra.describir() == "SampleType(nombre='presion', valor=101.3)"
 
-    def test_repr_coincide_con_describir(self):
+    def testReprCoincideConDescribir(self):
         muestra = SampleType("presion", 101.3)
         assert repr(muestra) == muestra.describir()
 
@@ -46,22 +46,22 @@ class TestSampleTypeDescribir:
 class TestSampleTypeIncrementar:
     """Tests del método incrementar."""
 
-    def test_incrementar_valor_positivo(self):
+    def testIncrementarValorPositivo(self):
         muestra = SampleType("contador", 10.0)
         muestra.incrementar(5.0)
         assert muestra.valor == 15.0
 
-    def test_incrementar_valor_negativo(self):
+    def testIncrementarValorNegativo(self):
         muestra = SampleType("contador", 10.0)
         muestra.incrementar(-3.0)
         assert muestra.valor == 7.0
 
-    def test_incrementar_cero_no_cambia_valor(self):
+    def testIncrementarCeroNoCambiaValor(self):
         muestra = SampleType("contador", 10.0)
         muestra.incrementar(0)
         assert muestra.valor == 10.0
 
-    def test_incrementar_varias_veces(self):
+    def testIncrementarVariasVeces(self):
         muestra = SampleType("contador", 0.0)
         muestra.incrementar(1.0)
         muestra.incrementar(2.0)
@@ -72,17 +72,17 @@ class TestSampleTypeIncrementar:
 class TestSampleTypeResetear:
     """Tests del método resetear."""
 
-    def test_resetear_pone_valor_a_cero(self):
+    def testResetearPoneValorACero(self):
         muestra = SampleType("temperatura", 99.9)
         muestra.resetear()
         assert muestra.valor == 0.0
 
-    def test_resetear_desde_cero_sigue_en_cero(self):
+    def testResetearDesdeCeroSigueEnCero(self):
         muestra = SampleType("temperatura", 0.0)
         muestra.resetear()
         assert muestra.valor == 0.0
 
-    def test_resetear_no_cambia_el_nombre(self):
+    def testResetearNoCambiaElNombre(self):
         muestra = SampleType("temperatura", 50.0)
         muestra.resetear()
         assert muestra.nombre == "temperatura"
@@ -91,21 +91,21 @@ class TestSampleTypeResetear:
 class TestSampleTypeIgualdad:
     """Tests del método __eq__."""
 
-    def test_dos_instancias_iguales(self):
+    def testDosInstanciasIguales(self):
         a = SampleType("temperatura", 0.0)
         b = SampleType("temperatura", 0.0)
         assert a == b
 
-    def test_distinto_nombre_no_son_iguales(self):
+    def testDistintoNombreNoSonIguales(self):
         a = SampleType("temperatura", 0.0)
         b = SampleType("presion", 0.0)
         assert a != b
 
-    def test_distinto_valor_no_son_iguales(self):
+    def testDistintoValorNoSonIguales(self):
         a = SampleType("temperatura", 1.0)
         b = SampleType("temperatura", 2.0)
         assert a != b
 
-    def test_comparacion_con_otro_tipo_devuelve_not_implemented(self):
+    def testComparacionConOtroTipoDevuelveNotImplemented(self):
         muestra = SampleType("temperatura", 0.0)
         assert muestra.__eq__("otro tipo") is NotImplemented

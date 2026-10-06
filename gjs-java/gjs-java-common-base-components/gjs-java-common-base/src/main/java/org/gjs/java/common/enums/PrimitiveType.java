@@ -29,7 +29,7 @@ public enum PrimitiveType {
     /** The boolean. */
     BOOLEAN("boolean", "java.lang.Boolean", "Z", false, Boolean.FALSE, new boolean[0]),
     /** The float. */
-    FLOAT("float", "java.lang.Float", "F", (float) 0.0, Float.valueOf((float) 0.0), new float[0]),
+    FLOAT("float", "java.lang.Float", "F", 0.0f, Float.valueOf(0.0f), new float[0]),
     /** The double. */
     DOUBLE("double", "java.lang.Double", "D", 0.0, Double.valueOf(0.0), new double[0]),
     /** The char. */

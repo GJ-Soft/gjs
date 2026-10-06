@@ -7,9 +7,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.gjs.java.common.constant.CommonBaseConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 /**
  * The Class CollectionUtils.
@@ -154,9 +151,6 @@ public final class CollectionUtils {
 	public static boolean isMap(String className) {
 		return collectionsMap.contains(className);
 	}
-
-	/** The Constant logger. */
-	private static final Logger logger = LoggerFactory.getLogger(CollectionUtils.class);
 
 	/**
 	 * Contains.

@@ -14,11 +14,11 @@ class ${capitalizedName}Server:
         self.host = host
         self.port = port
         self.app = FastAPI()
-        self._setup_routes()
+        self._setupRoutes()
 
-    def _setup_routes(self):
+    def _setupRoutes(self):
         @self.app.get("/status", response_model=ServerStatus)
-        async def get_status():
+        async def getStatus():
             return {
                 "status": "OK",
                 "date-time": datetime.now(timezone.utc).isoformat()

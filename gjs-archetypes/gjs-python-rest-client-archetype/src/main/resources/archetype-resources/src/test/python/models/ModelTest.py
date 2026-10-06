@@ -6,30 +6,30 @@ import pytest
 from pydantic import ValidationError
 from ${package}.models.Models import ServerStatus
 
-def test_server_status_valid_data():
+def testServerStatusValidData():
     # Test con datos correctos: debe instanciar sin errores
     data = {
         "status": "Running",
         "date-time": "2026-03-27T19:00:00Z"
     }
     # Usar model_validate en lugar de **data para manejar claves con guión
-    status_obj = ServerStatus.model_validate(data)
+    statusObj = ServerStatus.model_validate(data)
 
-    assert status_obj.status == "Running"
+    assert statusObj.status == "Running"
 
     # Pydantic devuelve datetime, no str, así que comparamos correctamente
     from datetime import datetime, timezone
     expected = datetime(2026, 3, 27, 19, 0, 0, tzinfo=timezone.utc)
-    assert status_obj.date_time == expected
+    assert statusObj.date_time == expected
     
-def test_server_status_missing_required_fields():
+def testServerStatusMissingRequiredFields():
     # Test de campo obligatorio faltante: debe lanzar ValidationError
     data = {"status": "OK"}  # Falta 'date-time'
     
     with pytest.raises(ValidationError):
         ServerStatus(**data)
 
-def test_server_status_invalid_types():
+def testServerStatusInvalidTypes():
     # Test de tipos incorrectos (ej: status como entero en lugar de string)
     # Pydantic intentará convertirlo, si no puede, lanzará ValidationError
     data = {

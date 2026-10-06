@@ -24,12 +24,12 @@ class ${capitalizedName}Client:
                        hostname= getApplicationProperties().get("client.hostname","localhost"), 
                        port=getApplicationProperties().get("client.port","8000")):
         netloc = f"{hostname}:{port}"
-        self.base_url = urlunparse(
+        self.baseUrl = urlunparse(
             (protocol, netloc, "", "", "", ""))
 
-    def get_server_status(self) -> ServerStatus:
+    def getServerStatus(self) -> ServerStatus:
         with httpx.Client() as client:
-            response = client.get(f"{self.base_url}/status")
+            response = client.get(f"{self.baseUrl}/status")
             response.raise_for_status()
             return ServerStatus(**response.json())
             

@@ -1,6 +1,5 @@
 package org.gjs.java.common.util;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.ObjectReader;
@@ -45,9 +45,9 @@ public final class JsonUtils {
 	 * @param json  the json
 	 * @param clazz the clazz
 	 * @return the object
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws JacksonException si el texto no es un JSON valido para la clase
 	 */
-	public static Object jsonToObject(String json, Class<?> clazz) throws IOException {
+	public static Object jsonToObject(String json, Class<?> clazz) {
 		if (StringUtils.isAllBlank(json)) {
 			return null;
 		}
@@ -102,13 +102,12 @@ public final class JsonUtils {
 	 * @param json  the json
 	 * @param clazz the clazz
 	 * @return the object
-	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Object safeJsonToObject(String json, Class<?> clazz) {
 		Object res = null;
 		try {
 			res = jsonToObject(json, clazz);
-		} catch (final IOException e) {
+		} catch (final JacksonException e) {
 			logger.warn(e.getMessage());
 		}
 		return res;

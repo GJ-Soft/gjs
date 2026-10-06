@@ -412,7 +412,6 @@ public final class ValidationUtils {
 	public static boolean isValidCif(String value) {
 		boolean res = false;
 		if (StringUtils.length(value) == 9) {
-			final boolean error = false;
 			final char kind = value.charAt(0);
 			final String number = value.substring(1, 8);
 			final char control = value.charAt(8);

@@ -106,7 +106,7 @@ public abstract class AbstractPojosTest {
 		try {
 			testPojoStructureAndBehavior(setExclude);
 		} catch (final NullPointerException e) {
-			getLogger().error(ExceptionUtils.getStackTrace(e));
+			// Se relanza tal cual: el catch de Exception de abajo la convertiria en un aviso.
 			throw e;
 		} catch (final Exception e) {
 			getLogger().warn(ExceptionUtils.getStackTrace(e));

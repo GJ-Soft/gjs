@@ -35,6 +35,7 @@
 		
 		Profiles:
 		* upgrade	
+		* cobertura	
 		
 		Install libraries:
 			mvn clean initialize -Pupgrade
@@ -61,7 +62,7 @@
 		     hermano del <skip> del maven-deploy-plugin que hay mas abajo, y como aquel,
 		     provisional: si algun dia estos artefactos se publican, quitar los dos. -->
 		<gpg.skip>true</gpg.skip>
-		
+
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->
 		<gjs-python-common.version>1.0.0-RC.2</gjs-python-common.version>
@@ -265,6 +266,10 @@
 								</arguments>
 								<environmentVariables>
 									<MAVEN_TEST_PHASE>true</MAVEN_TEST_PHASE>
+									<!-- Lo que instala requirements-test.txt va a esta carpeta de la copia,
+									     que al arrancar no esta en el sys.path: sin esto, python -m pytest
+									     cogeria el pytest global de la maquina, y sin el no arrancaria. -->
+									<PYTHONPATH>${gjs.python.dir.test}/${gjs.python.subdir.source}</PYTHONPATH>
 								</environmentVariables>
 							</configuration>
 						</execution>
@@ -397,6 +402,78 @@
 					<exists>${basedir}/pom.xml</exists>
 				</file>
 			</activation>
+		</profile>
+		<!-- Cobertura de los tests ( mvn -Pcobertura test ), con el mismo convenio que
+		     JaCoCo en Java: los datos en bruto en target/coverage.data y el informe en
+		     target/site/coverage ( index.html para leerlo, coverage.xml para Sonar ).
+		     Se mide sobre la copia de target/test-classes, donde corren los tests, y
+		     solo los ficheros del propio modulo: en esa copia estan tambien las
+		     dependencias desempaquetadas y lo que instala requirements-test.txt. Las
+		     rutas del informe son relativas al directorio de trabajo de pytest, que
+		     replica el arbol del proyecto, asi que son las mismas que las del fuente
+		     sin reescribir nada. -->
+		<profile>
+			<id>cobertura</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>exec-maven-plugin</artifactId>
+							<executions>
+								<!-- pytest-cov se instala aqui y no en requirements-test.txt: solo
+								     hace falta al medir. Sin dependencias (no-deps): sin los dist-info pip no ve el
+								     pytest ya instalado y lo pisaria con otra version. -->
+								<execution>
+									<id>python-coverage-dependencies</id>
+									<phase>process-test-sources</phase>
+									<goals>
+										<goal>exec</goal>
+									</goals>
+									<configuration>
+										<skip>${skipTests}</skip>
+										<executable>python</executable>
+										<arguments>
+											<argument>-c</argument>
+											<argument>import pathlib,subprocess,sys,shutil;t=pathlib.Path(r'${gjs.python.dir.test}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),'--no-deps','pytest-cov','coverage']);[shutil.rmtree(d) for d in t.glob('*.dist-info')]</argument>
+										</arguments>
+									</configuration>
+								</execution>
+								<execution>
+									<id>python-coverage-config</id>
+									<phase>process-test-sources</phase>
+									<goals>
+										<goal>exec</goal>
+									</goals>
+									<configuration>
+										<skip>${skipTests}</skip>
+										<executable>python</executable>
+										<arguments>
+											<argument>-c</argument>
+											<argument>import pathlib;b=pathlib.Path(r'${project.basedir}');s=b/r'${gjs.python.subdir.source}';t=pathlib.Path(r'${gjs.python.dir.test}');fs=sorted(p.relative_to(b).as_posix() for p in s.rglob('*.py') if '__pycache__' not in p.parts);(t/'.coveragerc').write_text('[run]\nrelative_files = True\nbranch = True\ndata_file = '+pathlib.Path(r'${project.build.directory}','coverage.data').as_posix()+'\ninclude =\n'+''.join('    '+x+'\n' for x in fs),encoding='utf-8')</argument>
+										</arguments>
+									</configuration>
+								</execution>
+								<!-- -p porque los *.dist-info se borran al instalar: sin ellos pytest
+								     no encuentra el plugin por si solo. -->
+								<execution>
+									<id>python-test</id>
+									<configuration>
+										<arguments combine.children="append">
+											<argument>-p</argument>
+											<argument>pytest_cov.plugin</argument>
+											<argument>--cov</argument>
+											<argument>--cov-config=.coveragerc</argument>
+											<argument>--cov-report=xml:${project.build.directory}/site/coverage/coverage.xml</argument>
+											<argument>--cov-report=html:${project.build.directory}/site/coverage</argument>
+										</arguments>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
 		</profile>
 		<profile>
             <id>upgrade</id>

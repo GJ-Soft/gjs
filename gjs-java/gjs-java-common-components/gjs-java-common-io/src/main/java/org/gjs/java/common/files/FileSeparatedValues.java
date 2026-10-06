@@ -248,12 +248,11 @@ public class FileSeparatedValues extends FilePlain {
 	private String makeLine(List<String> row) {
 		final StringBuilder line = new StringBuilder();
 		boolean inicio = true;
-		for (String columna : row) {
+		for (final String columna : row) {
 			if (!inicio) {
 				line.append(getSeparator());
 			}
-			columna = Objects.requireNonNull(columna, "null");
-			line.append(columna);
+			line.append(Objects.requireNonNullElse(columna, "null"));
 			inicio = false;
 		}
 		return line.toString();

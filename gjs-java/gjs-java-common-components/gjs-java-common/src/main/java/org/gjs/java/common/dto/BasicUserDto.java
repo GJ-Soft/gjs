@@ -1,5 +1,6 @@
 package org.gjs.java.common.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +29,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class BasicUserDto implements Comparable<BasicUserDto> {
+public class BasicUserDto implements Serializable, Comparable<BasicUserDto> {
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 6405763531829539697L;
 
 	/** The id sgu. */
 	private String alias;

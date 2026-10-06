@@ -1,6 +1,5 @@
 package org.gjs.java.test.tester;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.gjs.java.common.supplier.GenericObjectSupplier;
 import org.gjs.java.common.util.ReflectionUtils;
 import org.slf4j.Logger;
@@ -104,9 +103,7 @@ public class CompareToTester extends BaseMethodTester {
 				affirmFalse(String.format("Class=[%s] 'compareTo()' empty and random object", className),
 						comparableEmpty.compareTo(instance1) == 0);
 			} catch (final Exception ex) {
-				logger.error("CompareToTester: Class=[{}] Exception;\n{}", className, ex.getMessage());
-				logger.error(ExceptionUtils.getStackTrace(ex));
-				throw ex;
+				throw new IllegalStateException(String.format("CompareToTester: Class=[%s] Exception", className), ex);
 			}
 		}
 	}

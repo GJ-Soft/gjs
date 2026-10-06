@@ -1,5 +1,7 @@
 package org.gjs.java.common.dto;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -20,7 +22,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class PersonNameDto {
+public abstract class PersonNameDto implements Serializable {
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 4183036187160857968L;
 
 	protected String name;
 

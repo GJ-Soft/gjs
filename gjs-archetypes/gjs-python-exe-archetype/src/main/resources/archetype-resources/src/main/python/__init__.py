@@ -10,9 +10,9 @@ ${symbol_pound} Program modules
 ${symbol_pound}
 ${symbol_pound} Program ${capitalizedName} 
 ${symbol_pound}
-from .Sample import es_par, sumar
+from .Sample import esPar, sumar
 from .SampleType import SampleType
 
-__all__ = ["sumar", "es_par", "SampleType"]
+__all__ = ["sumar", "esPar", "SampleType"]
 
 

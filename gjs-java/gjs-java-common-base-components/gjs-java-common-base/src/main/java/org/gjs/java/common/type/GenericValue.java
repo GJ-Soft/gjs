@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.gjs.java.common.util.ConditionUtils;
@@ -44,6 +45,10 @@ public class GenericValue implements Comparable<Object> {
 
     /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(GenericValue.class);
+
+    /** Forma que acepta Timestamp.valueOf: yyyy-[m]m-[d]d hh:mm:ss[.f...], hasta nueve decimales. */
+    private static final Pattern TIMESTAMP_PATTERN = Pattern
+            .compile("\\d{4}-\\d{1,2}-\\d{1,2} \\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?");
 
     /** The Constant LOCALES. */
     private static final Locale[] LOCALES = { Locale.getDefault(), Locale.US };
@@ -413,8 +418,7 @@ public class GenericValue implements Comparable<Object> {
      */
     public Timestamp toTimestamp() {
         Timestamp res = null;
-        final int len = StringUtils.length(value);
-        if ((len >= 27) && (len >= 29)) {
+        if (Objects.nonNull(value) && TIMESTAMP_PATTERN.matcher(value).matches()) {
             try {
                 res = Timestamp.valueOf(value);
             } catch (final IllegalArgumentException ex) {

@@ -6,6 +6,7 @@ Las reglas de Windows y de POSIX se prueban las dos en cualquier sistema,
 fijando FileUtils._isWindows.
 """
 
+import hashlib
 from pathlib import Path
 from unittest.mock import patch
 
@@ -172,3 +173,56 @@ class TestValidatePath:
     def testRealDirectory(self, tmp_path):
         """Una ruta real del sistema en que corre el test es válida."""
         assert FileUtils.validatePath(str(Path(tmp_path))) is True
+
+
+# ---------------------------------------------------------------------------
+# calculateFileHash
+# ---------------------------------------------------------------------------
+
+class TestCalculateFileHash:
+    """Tests para FileUtils.calculateFileHash()."""
+
+    def testKnownValue(self, tmp_path):
+        """SHA-256 de "abc": el vector de prueba de FIPS 180-2."""
+        file = tmp_path / "abc.txt"
+        file.write_bytes(b"abc")
+        assert FileUtils.calculateFileHash(str(file)) == (
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")
+
+    def testEmptyFile(self, tmp_path):
+        """El fichero vacío tiene la huella de la cadena vacía."""
+        file = tmp_path / "vacio.txt"
+        file.write_bytes(b"")
+        assert FileUtils.calculateFileHash(str(file)) == (
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
+
+    def testAcceptsPath(self, tmp_path):
+        """Admite Path además de str."""
+        file = tmp_path / "abc.txt"
+        file.write_bytes(b"abc")
+        assert FileUtils.calculateFileHash(file) == FileUtils.calculateFileHash(str(file))
+
+    def testReadsTheBytesNotTheText(self, tmp_path):
+        """Lee en binario: los finales de línea cuentan tal cual."""
+        lf = tmp_path / "lf.txt"
+        crlf = tmp_path / "crlf.txt"
+        lf.write_bytes(b"a\nb\n")
+        crlf.write_bytes(b"a\r\nb\r\n")
+        assert FileUtils.calculateFileHash(lf) != FileUtils.calculateFileHash(crlf)
+
+    def testLargeFile(self, tmp_path):
+        """Un fichero mayor que un bloque de lectura da la misma huella que hashlib de golpe."""
+        content = bytes(range(256)) * 4096
+        file = tmp_path / "grande.bin"
+        file.write_bytes(content)
+        assert FileUtils.calculateFileHash(file) == hashlib.sha256(content).hexdigest()
+
+    def testMissingFile(self, tmp_path):
+        """Un fichero que no existe lanza FileNotFoundError."""
+        with pytest.raises(FileNotFoundError):
+            FileUtils.calculateFileHash(tmp_path / "noexiste.txt")
+
+    def testDirectory(self, tmp_path):
+        """Un directorio no es un fichero: lanza OSError (IsADirectoryError o PermissionError)."""
+        with pytest.raises(OSError):
+            FileUtils.calculateFileHash(tmp_path)

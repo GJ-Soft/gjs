@@ -85,6 +85,10 @@ El guión bajo **sí** se mantiene donde lleva significado y no hay alternativa:
 * Los métodos especiales del lenguaje (`__init__`, `__repr__`).
 * Los nombres que imponen pytest o la biblioteca estándar (`tmp_path`,
   `status_code`, `read_text`).
+* El código generado, que sigue al generador: el `Models.py` que
+  datamodel-code-generator saca del `open-api.json` en los proyectos REST
+  (perfil `generate-sources`) llama `date_time` a la clave `date-time`, y
+  renombrarlo a mano no sobreviviría a la siguiente generación.
 
 
 ### La versión sale del pom

@@ -95,7 +95,8 @@
 		     directorio visto desde Windows. El fichero real esta en ${cygwinDir}/bin. -->
 		<cpp.gcovr>${cygwinDir}/bin/gcovr</cpp.gcovr>
 		<cpp.gcovr.dir>${gjs.nar.build.testDirectory}</cpp.gcovr.dir>
-		<cpp.gcovr.target>${gjs.nar.build.testReportsDirectory}</cpp.gcovr.target>
+		<!-- El informe, donde lo deja JaCoCo en Java y el perfil cobertura en Python. -->
+		<cpp.gcovr.target>${project.build.directory}/site/coverage</cpp.gcovr.target>
 		<cpp.gcovr.exe>Test${exeFinalExtension}</cpp.gcovr.exe>
 		<!-- Raiz de fuentes de gcovr (-r): los ficheros del informe se nombran
 		     relativos a ella, y ademas hace de filtro por defecto, con lo que deja
@@ -532,7 +533,7 @@
 											<arg value="-r"/>
 											<arg value="${cpp.gcovr.root.posix}"/>
 											<arg value="--html-details"/>
-											<arg value="-o${cpp.gcovr.target.posix}/coverage.html"/>
+											<arg value="-o${cpp.gcovr.target.posix}/index.html"/>
 										</exec>
 									</target>
 								</configuration>

@@ -27,7 +27,8 @@ All major changes are referenced in this change log
   válido para el sistema: en Windows sin `< > : " / \ | ? *`, sin punto o
   espacio al final y sin los nombres reservados `CON`, `NUL`, `COM1`...),
   `validatePath()` (cada componente de la ruta es un nombre válido, salvo la
-  raíz o la unidad y los `.` y `..`) y `existsFilename()` (sólo ficheros); y
+  raíz o la unidad y los `.` y `..`), `existsFilename()` (sólo ficheros) y
+    `calculateFileHash()` (SHA-256 del contenido, en hexadecimal); y
   `FileScanner.scan()`, que devuelve uno a uno los ficheros de unos directorios
   y de sus subdirectorios.
 

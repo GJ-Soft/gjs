@@ -57,7 +57,7 @@ punto falla.
 | `generate-resources` | `copy-resources` al directorio nar | `gjs-c-nar-parent` |
 | `generate-test-sources` | `prepare-tests`: `target/test-nar/internal/test.properties` | `gjs-c-common-parent` |
 | `generate-test-resources` | `copy-test-resources` al directorio de test nar | `gjs-c-nar-parent` |
-| `test` | `cobertura`: gcovr (perfil `cobertura`) | `gjs-c-nar-parent` |
+| `test` | `cobertura`: gcovr, informe en `target/site/coverage` (perfil `cobertura`) | `gjs-c-nar-parent` |
 
 El orden dentro de `initialize` importa: el `check` de cppcheck lee el fichero
 de contexto que genera el script Groovy, y por eso esta atado a
