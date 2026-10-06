@@ -118,10 +118,9 @@ public class MockRepository<T, PK> extends MockEntityDataManager<T, PK>
 	protected void put(T entity) {
 		super.put(entity);
 		final PK id = super.getId(entity);
-		if (Objects.nonNull(id) && (id instanceof Comparable)) {
-			if (Objects.isNull(maxId) || (((Comparable<PK>) maxId).compareTo(id) < 0)) {
-				maxId = id;
-			}
+		if (Objects.nonNull(id) && (id instanceof Comparable)
+				&& (Objects.isNull(maxId) || (((Comparable<PK>) maxId).compareTo(id) < 0))) {
+			maxId = id;
 		}
 	}
 

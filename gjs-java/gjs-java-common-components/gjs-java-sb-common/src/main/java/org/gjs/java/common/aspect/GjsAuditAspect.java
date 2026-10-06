@@ -197,7 +197,10 @@ public class GjsAuditAspect extends BaseGjsAspect {
 	private void doLogBefore(JoinPoint joinPoint) {
 		final boolean skip = !BooleanUtils
 				.isTrue((Boolean) GlobalObjectsManager.getInstance().load(CommonConstants.PARAM_SKIP_AUDIT));
-		getLogger(joinPoint).debug(super.formatLog(joinPoint, AuditLogType.BEGIN, skip));
+		// formatLog no es solo el texto: al empezar guarda la auditoria y al terminar
+		// la cierra, asi que se llama siempre, este o no activa la depuracion.
+		final String message = super.formatLog(joinPoint, AuditLogType.BEGIN, skip);
+		getLogger(joinPoint).debug(message);
 	}
 
 	/**
@@ -208,7 +211,10 @@ public class GjsAuditAspect extends BaseGjsAspect {
 	private void doLogAfter(JoinPoint joinPoint) {
 		final boolean skip = !BooleanUtils
 				.isTrue((Boolean) GlobalObjectsManager.getInstance().load(CommonConstants.PARAM_SKIP_AUDIT));
-		getLogger(joinPoint).debug(super.formatLog(joinPoint, AuditLogType.END, skip));
+		// formatLog no es solo el texto: al empezar guarda la auditoria y al terminar
+		// la cierra, asi que se llama siempre, este o no activa la depuracion.
+		final String message = super.formatLog(joinPoint, AuditLogType.END, skip);
+		getLogger(joinPoint).debug(message);
 	}
 
 	/**

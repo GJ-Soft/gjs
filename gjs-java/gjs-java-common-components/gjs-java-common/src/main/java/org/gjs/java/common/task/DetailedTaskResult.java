@@ -61,7 +61,7 @@ public class DetailedTaskResult extends TaskResult {
 	 */
 	public void incrementOk(Object data) {
 		incrementOk();
-		detail.append(String.format("%s: %s\n", CommonConstants.DEFAULT_OK_RESPONSE, ConversionUtils.toString(data)));
+		appendDetail(CommonConstants.DEFAULT_OK_RESPONSE, ConversionUtils.toString(data));
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class DetailedTaskResult extends TaskResult {
 	 */
 	public void incrementOk(String data) {
 		incrementOk();
-		detail.append(String.format("%s: %s\n", CommonConstants.DEFAULT_OK_RESPONSE, data));
+		appendDetail(CommonConstants.DEFAULT_OK_RESPONSE, data);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class DetailedTaskResult extends TaskResult {
 	 */
 	public void incrementKo(Object data) {
 		incrementKo();
-		detail.append(String.format("%s: %s\n", CommonConstants.DEFAULT_KO_RESPONSE, ConversionUtils.toString(data)));
+		appendDetail(CommonConstants.DEFAULT_KO_RESPONSE, ConversionUtils.toString(data));
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class DetailedTaskResult extends TaskResult {
 	 */
 	public void incrementKo(String data) {
 		incrementKo();
-		detail.append(String.format("%s: %s\n", CommonConstants.DEFAULT_KO_RESPONSE, data));
+		appendDetail(CommonConstants.DEFAULT_KO_RESPONSE, data);
 	}
 
 	/**
@@ -102,9 +102,8 @@ public class DetailedTaskResult extends TaskResult {
 	 */
 	public void increment(boolean ok, Object data) {
 		increment(ok);
-		detail.append(String.format("%s: %s\n",
-				(ok ? CommonConstants.DEFAULT_OK_RESPONSE : CommonConstants.DEFAULT_KO_RESPONSE),
-				ConversionUtils.toString(data)));
+		appendDetail(ok ? CommonConstants.DEFAULT_OK_RESPONSE : CommonConstants.DEFAULT_KO_RESPONSE,
+				ConversionUtils.toString(data));
 	}
 
 	/**
@@ -115,8 +114,18 @@ public class DetailedTaskResult extends TaskResult {
 	 */
 	public void increment(boolean ok, String data) {
 		increment(ok);
-		detail.append(String.format("%s: %s\n",
-				(ok ? CommonConstants.DEFAULT_OK_RESPONSE : CommonConstants.DEFAULT_KO_RESPONSE), data));
+		appendDetail(ok ? CommonConstants.DEFAULT_OK_RESPONSE : CommonConstants.DEFAULT_KO_RESPONSE, data);
+	}
+
+	/**
+	 * Añade una línea de detalle: la respuesta y el dato separados por dos puntos.
+	 * Termina en '\n' y no en el separador de la plataforma, como addDetailNewLine.
+	 *
+	 * @param response la respuesta (correcta o errónea)
+	 * @param data     el dato
+	 */
+	private void appendDetail(String response, String data) {
+		detail.append(response).append(": ").append(data).append('\n');
 	}
 
 	/**
@@ -132,7 +141,7 @@ public class DetailedTaskResult extends TaskResult {
 	 * @param text the text
 	 */
 	public void addDetail(String text) {
-		detail.append(String.format("%s\n", text));
+		detail.append(text).append('\n');
 	}
 
 	/**
@@ -156,9 +165,6 @@ public class DetailedTaskResult extends TaskResult {
 	@Override
 	protected DocumentTemplate prepareReport() throws IOException {
 		final DocumentTemplate document = super.prepareReport();
-		document.setField("processed", ConversionUtils.toString(processed));
-		document.setField("completed", ConversionUtils.toString(completed));
-		document.setField("errors", ConversionUtils.toString(errors));
 		document.setField("content", detail.toString());
 		return document;
 	}
