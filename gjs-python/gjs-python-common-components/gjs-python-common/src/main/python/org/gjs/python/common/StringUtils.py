@@ -39,3 +39,36 @@ def reverseTruncate( text: str | None, size: int ) -> str:
         return ""
 
     return value[ :-size ]
+
+
+def splitText( text: str | None, chunkSize: int = 1000, overlap: int = 200 ) -> list[ str ]:
+    """
+    Parte el texto en trozos de 'chunkSize' caracteres, cada uno solapado con el
+    anterior en 'overlap' caracteres.
+
+    El último trozo puede ser más corto, y nunca queda entero dentro del
+    anterior: el corte termina en cuanto un trozo llega al final del texto.
+    None y la cadena vacía dan la lista vacía.
+
+    :param text: El texto que se parte.
+    :param chunkSize: Tamaño de cada trozo; tiene que ser positivo.
+    :param overlap: Caracteres que comparte cada trozo con el anterior; entre 0 y chunkSize - 1.
+    :return: Los trozos, en orden.
+    :raises ValueError: Si chunkSize no es positivo o overlap no cabe en el trozo
+        (con overlap >= chunkSize el corte no avanzaría).
+    """
+    if chunkSize <= 0:
+        raise ValueError( f"chunkSize tiene que ser positivo: {chunkSize}" )
+    if overlap < 0 or overlap >= chunkSize:
+        raise ValueError( f"overlap tiene que estar entre 0 y {chunkSize - 1}: {overlap}" )
+
+    value = text or ""
+    chunks = []
+    start = 0
+    while start < len( value ):
+        end = start + chunkSize
+        chunks.append( value[ start:end ] )
+        if end >= len( value ):
+            break
+        start = end - overlap
+    return chunks

@@ -20,6 +20,16 @@ All major changes are referenced in this change log
   que compone `[código] mensaje: causa`.
 * `configuration.PropertiesUtils.read()`: lee un `.properties` a un `dict`, y
   lanza `ApplicationException` si no puede leerlo o el formato no es válido.
+* `StringUtils.splitText()`: parte un texto en trozos de tamaño fijo, cada uno
+  solapado con el anterior; el último no queda nunca dentro del anterior, y un
+  solape igual o mayor que el trozo es un `ValueError`.
+* `files`: `FileUtils`, con `isValidFilename()` (un nombre, sin directorios,
+  válido para el sistema: en Windows sin `< > : " / \ | ? *`, sin punto o
+  espacio al final y sin los nombres reservados `CON`, `NUL`, `COM1`...),
+  `validatePath()` (cada componente de la ruta es un nombre válido, salvo la
+  raíz o la unidad y los `.` y `..`) y `existsFilename()` (sólo ficheros); y
+  `FileScanner.scan()`, que devuelve uno a uno los ficheros de unos directorios
+  y de sus subdirectorios.
 
 ### Changed
 

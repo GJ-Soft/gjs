@@ -145,3 +145,63 @@ class TestReverseTruncate:
     def testNone(self):
         """None devuelve la cadena vacía."""
         assert StringUtils.reverseTruncate(None, 2) == ""
+
+
+# ---------------------------------------------------------------------------
+# splitText
+# ---------------------------------------------------------------------------
+
+class TestSplitText:
+    """Tests para StringUtils.splitText()."""
+
+    def testWithoutOverlap(self):
+        """Sin solape, trozos consecutivos; el último, más corto."""
+        assert StringUtils.splitText("abcdefghij", 4, 0) == ["abcd", "efgh", "ij"]
+
+    def testWithOverlap(self):
+        """Cada trozo empieza 'overlap' caracteres antes del final del anterior."""
+        assert StringUtils.splitText("abcdefghij", 4, 1) == ["abcd", "defg", "ghij"]
+
+    def testOverlapKeepsTheText(self):
+        """Quitando el solape a cada trozo menos el primero sale el texto original."""
+        text = "".join(chr(ord("a") + i % 26) for i in range(2500))
+        chunks = StringUtils.splitText(text, 1000, 200)
+        assert chunks[0] + "".join(chunk[200:] for chunk in chunks[1:]) == text
+
+    def testDefaults(self):
+        """Por defecto, trozos de 1000 con 200 de solape."""
+        text = "x" * 2500
+        chunks = StringUtils.splitText(text)
+        assert [len(chunk) for chunk in chunks] == [1000, 1000, 900]
+
+    def testLastChunkNotContainedInPrevious(self):
+        """
+        Regresión: con el texto justo de un trozo salía además un último trozo
+        con sus 'overlap' caracteres finales, ya contenidos en el primero.
+        """
+        assert StringUtils.splitText("abcd", 4, 2) == ["abcd"]
+        assert StringUtils.splitText("abcdef", 4, 2) == ["abcd", "cdef"]
+
+    def testTextShorterThanChunk(self):
+        """Un texto más corto que el trozo sale entero, en un solo trozo."""
+        assert StringUtils.splitText("abc", 10, 3) == ["abc"]
+
+    def testNoneAndEmpty(self):
+        """None y la cadena vacía dan la lista vacía."""
+        assert StringUtils.splitText(None) == []
+        assert StringUtils.splitText("") == []
+
+    @pytest.mark.parametrize("chunkSize", [0, -5])
+    def testChunkSizeNotPositive(self, chunkSize):
+        """Un tamaño no positivo es un error."""
+        with pytest.raises(ValueError):
+            StringUtils.splitText("abc", chunkSize, 0)
+
+    @pytest.mark.parametrize("overlap", [-1, 4, 10])
+    def testOverlapOutOfRange(self, overlap):
+        """
+        Regresión: con overlap >= chunkSize el corte no avanzaba y el bucle no
+        terminaba; ahora es un error.
+        """
+        with pytest.raises(ValueError):
+            StringUtils.splitText("abcdefgh", 4, overlap)
