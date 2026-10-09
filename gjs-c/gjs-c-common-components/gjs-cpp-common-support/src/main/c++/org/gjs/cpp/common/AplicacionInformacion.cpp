@@ -1,15 +1,15 @@
 /***************************************************************************/
 /*                        AplicacionInformacion.cpp                        */
 /*-------------------------------------------------------------------------*/
-/* Librer�a: Aplicacion                                                    */
-/* Versi�n:  2.0.0                                                         */
+/* Librería: Aplicacion                                                    */
+/* Versión:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Gin�s Jim�nez S�nchez                                         */
+/* Autor:    Ginés Jiménez Sánchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci�n:                                                            */
-/* Fichero de c�digo fuente que contiene la implementaci�n de algunas      */
+/* Descripción:                                                            */
+/* Fichero de código fuente que contiene la implementación de algunas      */
 /* rutinas para inicializar y consultar algunas variables globales que     */
-/* contendr�n informaci�n general acerca de una librer�a o aplicaci�n.     */
+/* contendrán información general acerca de una librería o aplicación.     */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
 /***************************************************************************/
@@ -38,13 +38,13 @@ namespace org
 // PID del proceso:
 static long							g_lAplicPID = -1;
 
-// Nombre de la aplicaci�n:
+// Nombre de la aplicación:
 static string 						g_sAplicNombre = string ( "" ); 
 
-// Informaci�n de la versi�n:
+// Información de la versión:
 static Version *					g_p_verAplicInfo = NULL; 
 
-// Control de inicializaci�n:
+// Control de inicialización:
 static bool							g_bAplicInicializada = false;
 
 
@@ -67,7 +67,7 @@ bool AplicInicializar ( const string & sNombre, int iVersion, int iSubversion, i
 		// PID:
 		g_lAplicPID = SisPID ();
 
-		// Versi�n:
+		// Versión:
 		if ( ES_NULO ( g_p_verAplicInfo ) )
 		{
 			g_p_verAplicInfo = new Version ( iVersion, iSubversion, iRevision, lFecha );

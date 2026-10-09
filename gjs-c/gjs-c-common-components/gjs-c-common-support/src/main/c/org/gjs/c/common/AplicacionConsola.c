@@ -72,7 +72,7 @@ int AplicConAbrir ()
 	return ( iRes );
 }
 
-// NOTA: En modo de depuraci�n 2 no se permite cerrar la consola (es importante).
+// NOTA: En modo de depuración 2 no se permite cerrar la consola (es importante).
 void AplicConCerrar ()
 {
 #  if ( !defined ( MODO_DEPURACION_2 ) )

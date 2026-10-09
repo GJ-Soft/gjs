@@ -12,7 +12,7 @@
 
 
 
-/* Mensajes de error auxiliares par finalizar la ejecuci�n: */
+/* Mensajes de error auxiliares par finalizar la ejecución: */
 #define ERR_GRAVE_TXT_MEMORIA				"Error grave de memoria: se ha corrompido el 'heap' del proceso."
 
 

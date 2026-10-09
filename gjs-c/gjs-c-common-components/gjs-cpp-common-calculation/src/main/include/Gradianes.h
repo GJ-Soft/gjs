@@ -1,12 +1,12 @@
 /******************************************************************************/
 /*                                Gradianes.h                                 */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  Calculo                                                         */
-/* Versi�n:   3.0.0                                                           */
+/* Librería:  Calculo                                                         */
+/* Versión:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
+/* Descripción:                                                               */
 /* Fichero de cabecera que contiene los prototipos de algunas rutinas         */
 /* que implementan algunas funciones sencillas de manejo de gradianes.        */
 /*----------------------------------------------------------------------------*/

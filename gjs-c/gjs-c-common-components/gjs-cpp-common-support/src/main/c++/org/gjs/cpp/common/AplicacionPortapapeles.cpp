@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                         AplicacionPortapapeles.cpp                         */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  Aplicacion                                                      */
-/* Versi�n:   3.0.0                                                           */
+/* Librería:  Aplicacion                                                      */
+/* Versión:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
-/* Fichero de c�digo fuente que contiene la implementaci�n de algunas         */
+/* Descripción:                                                               */
+/* Fichero de código fuente que contiene la implementación de algunas         */
 /* para manejo del portapapeles de Windows.                                   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

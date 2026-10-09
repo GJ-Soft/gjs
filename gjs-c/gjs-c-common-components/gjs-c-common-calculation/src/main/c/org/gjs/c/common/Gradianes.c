@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                               Gradianes.cpp                                */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  Calculo                                                         */
-/* Versi�n:   3.0.0                                                           */
+/* Librería:  Calculo                                                         */
+/* Versión:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
-/* Fichero de cabecera que contiene la implementaci�n de algunas rutinas      */
+/* Descripción:                                                               */
+/* Fichero de cabecera que contiene la implementación de algunas rutinas      */
 /* que implementan algunas funciones sencillas de manejo de gradianes.        */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -294,7 +294,7 @@ int GradNormalizar ( int * p_iGrad, int * p_iMin, int * p_iSeg )
                             + (long)(*p_iMin)  * 60
                             + (long)(*p_iSeg);
 
-            // Normalizar al rango [0, 360�) en segundos
+            // Normalizar al rango [0, 360º) en segundos
             long lCirculoSegs = 360L * 3600L;
             lTotalSegs = lTotalSegs % lCirculoSegs;
             if ( lTotalSegs < 0 )

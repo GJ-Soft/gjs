@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                                 CVersion.h                                 */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  Aplicacion                                                      */
-/* Versi�n:   3.0.0                                                           */
+/* Librería:  Aplicacion                                                      */
+/* Versión:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
-/* Fichero de cabecera que contiene la definici�n de la clase de datos        */
-/* CVersion, destinada a almacenar algunos datos relativos a al versi�n y     */
-/* autor�a, as� como informaciones generales, de una librer�a o aplicaci�n.   */
+/* Descripción:                                                               */
+/* Fichero de cabecera que contiene la definición de la clase de datos        */
+/* CVersion, destinada a almacenar algunos datos relativos a al versión y     */
+/* autoría, así como informaciones generales, de una librería o aplicación.   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

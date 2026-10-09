@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                          AplicacionInformacion.h                           */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  Aplicacion                                                      */
-/* Versi�n:   3.0.0                                                           */
+/* Librería:  Aplicacion                                                      */
+/* Versión:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
+/* Descripción:                                                               */
 /* Fichero de cabecera que contiene los prototipos de unas cuantas rutinas    */
-/* para inicializar y consultar algunas variables globales que contendr�n     */
-/* informaci�n general acerca de una librer�a o aplicaci�n.                   */
+/* para inicializar y consultar algunas variables globales que contendrán     */
+/* información general acerca de una librería o aplicación.                   */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/
@@ -37,7 +37,7 @@ namespace org
             namespace common
             {
 
-// Pendeitne a�adir cadena fecha y info del nombre
+// Pendeitne añadir cadena fecha y info del nombre
 
 
 bool AplicInicializar ( const std::string & sNombre, int iVersion, int iSubversion, int iRevision = 0, long lFecha = 0, bool bConsola = false );

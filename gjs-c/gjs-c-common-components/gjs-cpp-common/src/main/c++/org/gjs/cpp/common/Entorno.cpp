@@ -1,21 +1,21 @@
 /***************************************************************************/
 /*                         Entorno.cpp                                     */
 /*-------------------------------------------------------------------------*/
-/* Librer�a: Entorno                                                       */
-/* Versi�n:  1.1.0                                                         */
+/* Librería: Entorno                                                       */
+/* Versión:  1.1.0                                                         */
 /* Fecha:    25/10/2006                                                    */
-/* Autor:    Gin�s Jim�nez S�nchez                                         */
+/* Autor:    Ginés Jiménez Sánchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci�n:                                                            */
-/* Fichero de c�digo fuente que contiene la implementaci�n de las rutinas  */
-/* de car�cter general de inicializaci�n del entorno.                      */
+/* Descripción:                                                            */
+/* Fichero de código fuente que contiene la implementación de las rutinas  */
+/* de carácter general de inicialización del entorno.                      */
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este m�dulo est� extra�do de una librer�a m�s completa creada por el    */
+/* Este módulo está extraído de una librería más completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, as� como cualquier a�adido o modificaci�n realizado.   */
-/* Pueden reportar de los mismos enviando un correo electr�nico a la       */
-/* direcci�n: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, así como cualquier añadido o modificación realizado.   */
+/* Pueden reportar de los mismos enviando un correo electrónico a la       */
+/* dirección: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 
 

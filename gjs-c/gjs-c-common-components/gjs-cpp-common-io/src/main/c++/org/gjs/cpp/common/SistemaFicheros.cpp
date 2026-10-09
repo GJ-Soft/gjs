@@ -1,28 +1,28 @@
 /***************************************************************************/
 /*                        SistemaFicheros.cpp                              */
 /*-------------------------------------------------------------------------*/
-/* Librer�a: Sistema                                                       */
-/* Versi�n:  1.1.0                                                         */
+/* Librería: Sistema                                                       */
+/* Versión:  1.1.0                                                         */
 /* Fecha:    26/10/2006                                                    */
-/* Autor:    Gin�s Jim�nez S�nchez                                         */
+/* Autor:    Ginés Jiménez Sánchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci�n:                                                            */
-/* Fichero de c�digo fuente que contiene la implementaci�n de las rutinas  */
-/* de car�cter general de operaciones con el sistema de ficheros.          */
+/* Descripción:                                                            */
+/* Fichero de código fuente que contiene la implementación de las rutinas  */
+/* de carácter general de operaciones con el sistema de ficheros.          */
 /* Mantiene un objeto global privado de clase CSistemaFicheros que puede   */
-/* utilizarse para moverse por el �rbol de directorios.                    */
+/* utilizarse para moverse por el árbol de directorios.                    */
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este m�dulo est� extra�do de una librer�a m�s completa creada por el    */
+/* Este módulo está extraído de una librería más completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, as� como cualquier a�adido o modificaci�n realizado.   */
-/* Pueden reportar de los mismos enviando un correo electr�nico a la       */
-/* direcci�n: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, así como cualquier añadido o modificación realizado.   */
+/* Pueden reportar de los mismos enviando un correo electrónico a la       */
+/* dirección: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 
 /*-------------------------------------------------------------------------*/
-/* NOTA DE PORTABILIDAD (adaptaci�n C++):                                   */
-/* Este m�dulo se apoya en una librer�a de cadenas C++ (todav�a por crear)  */
+/* NOTA DE PORTABILIDAD (adaptación C++):                                   */
+/* Este módulo se apoya en una librería de cadenas C++ (todavía por crear)  */
 /* con estas funciones auxiliares sobre std::string:                       */
 /*   bool        CumpleExpresionRegular ( const string&, const string& );   */
 /*   bool        ContieneCaracter       ( const string&, char );            */
@@ -33,7 +33,7 @@
 /*   string      ReemplazarTodos        ( const string&, from, to );        */
 /*   string      ReemplazarTodos     ( const string&, char, char );         */
 /* CommonIoConfig.h debe proporcionar las constantes SF_* (equivalentes a   */
-/* FicherosConfig.h de la versi�n C).                                       */
+/* FicherosConfig.h de la versión C).                                       */
 /*-------------------------------------------------------------------------*/
 
 
@@ -62,8 +62,8 @@ namespace org
 			{
 
 
-// Auxiliar local: divide la cadena por el separador descartando los tokens vac�os
-// (equivalente a la sem�ntica de "palabras" de CadNumPalabrasSep / CadPalabraSep).
+// Auxiliar local: divide la cadena por el separador descartando los tokens vacíos
+// (equivalente a la semántica de "palabras" de CadNumPalabrasSep / CadPalabraSep).
 static vector<string> SisDividirEnPartes ( const string & sCadena, char cSep )
 {
 	vector<string>	vecPartes;
@@ -232,8 +232,8 @@ string SisComponerFichero ( const string & sNombre, const string & sExtension )
 {
 	string sFichero;
 
-	// Nombre + '.' + extensi�n; si no hay extensi�n, s�lo el nombre (equivalente
-	// a CadDuplicar ( p_cNombre ) de la versi�n C).
+	// Nombre + '.' + extensión; si no hay extensión, sólo el nombre (equivalente
+	// a CadDuplicar ( p_cNombre ) de la versión C).
 	if ( ! sExtension.empty () )
 	{
 		sFichero = sNombre + SF_FIC_SEPARADOR + sExtension;
@@ -284,7 +284,7 @@ string SisRutaFichero ( const string & sRuta )
 			cSep = SF_DIR_SEPARADOR_WIN;
 		}
 		iPos = BuscarDesdeAtrasCaracter ( sRuta, cSep );
-		// El nombre de fichero es todo lo que hay tras el �ltimo separador.
+		// El nombre de fichero es todo lo que hay tras el último separador.
 		sRes = sRuta.substr ( iPos + 1 );
 	}
 	return ( sRes );
@@ -512,8 +512,8 @@ string SisRutaEstiloUnix ( const string & sRuta )
 
 			bool bEsAbsoluto = CumpleExpresionRegular ( sRutaCopia, SF_PATRON_RUTA_WIN );
 			int  iParteIni   = bEsAbsoluto ? 1 : 0;
-			// Se divide por '\\' de forma coherente (la versi�n C original divid�a por
-			// '\\' pero extra�a las palabras con '/'; corregido en ambas versiones).
+			// Se divide por '\\' de forma coherente (la versión C original dividía por
+			// '\\' pero extraña las palabras con '/'; corregido en ambas versiones).
 			vector<string> vecPartes = SisDividirEnPartes ( sRutaCopia, '\\' );
 
 			if ( bEsAbsoluto )
@@ -559,7 +559,7 @@ string SisRutaEstiloCygwin ( const string & sRuta )
 			}
 			for ( size_t i = (size_t) iParteIni; i < vecPartes.size (); i = i + 1 )
 			{
-				// En ruta absoluta hay que separar tambi�n la primera parte del prefijo
+				// En ruta absoluta hay que separar también la primera parte del prefijo
 				// "/cygdrive/<unidad>"; en relativa, no lleva '/' inicial.
 				if ( ( (int) i > iParteIni ) || bEsAbsoluto )
 				{
@@ -878,7 +878,7 @@ bool SisCopiarFichero ( const string & sRutaOrig, const string & sRutaDest, bool
 		fs::path origen ( sRutaOrigNorm );
 		fs::path destino ( sRutaDestNorm );
 
-		// bEliminar act�a como "sobrescribir el destino si existe".
+		// bEliminar actúa como "sobrescribir el destino si existe".
 		if ( bEliminar )
 		{
 			fs::copy_file ( origen, destino, fs::copy_options::overwrite_existing );
@@ -901,7 +901,7 @@ bool SisCopiarFichero ( const string & sRutaOrig, const string & sRutaDest, bool
 
 bool SisCopiarFicheroExt ( const string & sDirOrig, const string & sFicOrig, const string & sDirDest, const string & sFicDest, bool bEliminar )
 {
-	// Si no se indica fichero destino se reutiliza el nombre de origen (como en la versi�n C).
+	// Si no se indica fichero destino se reutiliza el nombre de origen (como en la versión C).
 	const string & sFicD = sFicDest.empty () ? sFicOrig : sFicDest;
 	return ( SisCopiarFichero ( SisComponerRuta ( sDirOrig, sFicOrig, 0 ),
 		SisComponerRuta ( sDirDest, sFicD, 0 ), bEliminar ) );
@@ -1067,7 +1067,7 @@ bool SisFicheroEsAccesible ( const string & sRuta )
 	uiAtributos = SFW32Atributos ( sRutaNorm.c_str () );
 	if ( uiAtributos != SFW32_ATRIB_INVALIDO )
 	{
-		// Accesible == NO est� offline.
+		// Accesible == NO está offline.
 		if ( ( uiAtributos & SFW32_ATRIB_FUERA_DE_LINEA ) != SFW32_ATRIB_FUERA_DE_LINEA )
 		{
 			bRes = true;
@@ -1186,7 +1186,7 @@ bool SisFicheroEsTemporal ( const string & sRuta )
 		fs::path ruta ( sRutaNorm );
 		fs::path dirTemp = fs::temp_directory_path ();
 
-		// Verificar si est� en el directorio temporal
+		// Verificar si está en el directorio temporal
 		bRes = ( ruta.string ().find ( dirTemp.string () ) == 0 );
 	}
 	catch ( ... )
@@ -1485,7 +1485,7 @@ string SisResolverDirectorioRelativo ( const string & sRutaBase, const string & 
 				}
 			}
 
-		// A�adir el resto de la ruta relativa.
+		// Añadir el resto de la ruta relativa.
 			while ( iCountRel < iPartesRel )
 			{
 				sResultado.push_back ( cSep );

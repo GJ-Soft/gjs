@@ -1,22 +1,22 @@
 /***************************************************************************/
 /*                         SistemaProcesos.cpp                             */
 /*-------------------------------------------------------------------------*/
-/* Librer�a: Sistema                                                       */
-/* Versi�n:  1.1.0                                                         */
+/* Librería: Sistema                                                       */
+/* Versión:  1.1.0                                                         */
 /* Fecha:    26/10/2006                                                    */
-/* Autor:    Gin�s Jim�nez S�nchez                                         */
+/* Autor:    Ginés Jiménez Sánchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci�n:                                                            */
-/* Fichero de c�digo fuente que contiene la implementaci�n de las rutinas  */
-/* de car�cter general de informaci�n acerca de los procesos en ejecuci�n, */
-/* as� como algunas rutinas de gesti�n de los mismos.                      */  
+/* Descripción:                                                            */
+/* Fichero de código fuente que contiene la implementación de las rutinas  */
+/* de carácter general de información acerca de los procesos en ejecución, */
+/* así como algunas rutinas de gestión de los mismos.                      */  
 /*-------------------------------------------------------------------------*/
 /* NOTA DEL AUTOR:                                                         */
-/* Este m�dulo est� extra�do de una librer�a m�s completa creada por el    */
+/* Este módulo está extraído de una librería más completa creada por el    */
 /* mismo autor. Por favor, el autor ruega que se le informe de cualquier   */
-/* error detectado, as� como cualquier a�adido o modificaci�n realizado.   */
-/* Pueden reportar de los mismos enviando un correo electr�nico a la       */
-/* direcci�n: gines_jimenez@safe-mail.net. Gracias.                        */
+/* error detectado, así como cualquier añadido o modificación realizado.   */
+/* Pueden reportar de los mismos enviando un correo electrónico a la       */
+/* dirección: gines_jimenez@safe-mail.net. Gracias.                        */
 /***************************************************************************/
 #include "CommonSystemConfig.h"
 
@@ -949,7 +949,7 @@ int SisNumProcesos ()
 
  	vector<unsigned char> buffer ( SIS_SO_MAX_TAM_BUFFER );
 	p_dwProcesos = (DWORD *) buffer.data();
-	// PENDIENTE: Puede ser que sea necesario m�s tama�o (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
+	// PENDIENTE: Puede ser que sea necesario más tamaño (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
 	if ( EnumProcesses ( p_dwProcesos, (DWORD) buffer.size(), &dwTamOcupado) != 0 )
 	{
 		iNumProcesos = dwTamOcupado / sizeof ( DWORD );
@@ -1034,7 +1034,7 @@ list<long> * SisListaProcesos ()
 # if ( defined ( WIN ) )
 #  if ( defined ( _EnumProcesses ) )
 	p_dwProcesos = (DWORD *) buffer.data();
-	// PENDIENTE: Puede ser que sea necesario m�s tama�o (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
+	// PENDIENTE: Puede ser que sea necesario más tamaño (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
 	if ( EnumProcesses( p_dwProcesos, (DWORD) buffer.size(), &dwTamOcupado) != 0 )
 	{
 		iNumProcesos = dwTamOcupado / sizeof ( DWORD );

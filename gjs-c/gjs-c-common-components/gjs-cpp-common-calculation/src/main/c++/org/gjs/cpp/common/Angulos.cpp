@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                                Angulos.cpp                                 */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  Calculo                                                         */
-/* Versi�n:   3.0.0                                                           */
+/* Librería:  Calculo                                                         */
+/* Versión:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
-/* Fichero de cabecera que contiene la implementaci�n de algunas rutinas      */
-/* que implementan algunas funciones sencillas de manejo de �ngulos.          */
+/* Descripción:                                                               */
+/* Fichero de cabecera que contiene la implementación de algunas rutinas      */
+/* que implementan algunas funciones sencillas de manejo de ángulos.          */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

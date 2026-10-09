@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                               Calendario.cpp                               */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  Tiempo                                                          */
-/* Versi�n:   3.0.0                                                           */
+/* Librería:  Tiempo                                                          */
+/* Versión:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
-/* Fichero de c�digo fuente que contiene la implementaci�n de las rutinas     */
+/* Descripción:                                                               */
+/* Fichero de código fuente que contiene la implementación de las rutinas     */
 /* de consulta general del calendario.                                     *  */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -850,7 +850,7 @@ int CalendSistemaHorario ( int iA, int iM, int iD )
 	{
 		lFecha = iA * 10000 + iM * 100 + iD;
 		// El cambio a UTC+1 se realiza a las 23:00 pasando a ser el
-		// d�a siguiente:
+		// día siguiente:
 		if ( lFecha > SisHorFechaInicioUTC () )
 		{
 			iRes = SIS_HOR_UTC;
@@ -902,13 +902,13 @@ bool CalendEsDiaCambioASistemaHorarioGMT( int iA, int iM, int iD )
 
 
 /*
-Mal de muchos... No somos los �nicos, alrededor de 80 pa�ses en el planeta se someten al mismo criterio. 
-De partida, toda la Uni�n Europea suscribi� un acuerdo que obliga a los pa�ses miembros a incorporarla. 
-En el Estado espa�ol se realiz� el cambio de hora por primera vez en 1918, como medida para ahorrar carb�n, 
-y se mantuvo una frecuencia irregular hasta que se abandon� esta pr�ctica entre los a�os 1950 y 1973.
- Se recuper� la costumbre al a�o siguiente, 1974, junto al resto de pa�ses europeos, y desde 1981 la Uni�n Europea,
- en su af�n por uniformizar las costumbres de los pa�ses miembros, ha legislado sobre el cambio horario y regulado 
- mediante ocho directivas distintas que se dictaban para uno o varios a�os.( http://europa.eu.int/eur-lex/es/oj/ ) 
+Mal de muchos... No somos los únicos, alrededor de 80 países en el planeta se someten al mismo criterio. 
+De partida, toda la Unión Europea suscribió un acuerdo que obliga a los países miembros a incorporarla. 
+En el Estado español se realizó el cambio de hora por primera vez en 1918, como medida para ahorrar carbón, 
+y se mantuvo una frecuencia irregular hasta que se abandonó esta práctica entre los años 1950 y 1973.
+ Se recuperó la costumbre al año siguiente, 1974, junto al resto de países europeos, y desde 1981 la Unión Europea,
+ en su afán por uniformizar las costumbres de los países miembros, ha legislado sobre el cambio horario y regulado 
+ mediante ocho directivas distintas que se dictaban para uno o varios años.( http://europa.eu.int/eur-lex/es/oj/ ) 
 
 */
 

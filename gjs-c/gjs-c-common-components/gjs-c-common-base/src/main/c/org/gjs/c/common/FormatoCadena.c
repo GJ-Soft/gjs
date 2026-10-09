@@ -1,13 +1,13 @@
 /******************************************************************************/
 /*                             FormatoCadena.cpp                              */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  GBase                                                           */
-/* Versi�n:   1.0.0                                                           */
+/* Librería:  GBase                                                           */
+/* Versión:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
-/* Fichero de c�digo fuente que contiene la implementaci�n de una rutina      */
+/* Descripción:                                                               */
+/* Fichero de código fuente que contiene la implementación de una rutina      */
 /* general espacial para generar cadenas formateadas a partir de un           */
 /* formato y una serie indeterminada de argumentos.                           */
 /*----------------------------------------------------------------------------*/
@@ -226,7 +226,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 						}
 						break;
 					}
-					case 3: // Casos despu�s de flag *:
+					case 3: // Casos después de flag *:
 					{
 						if ( cCarFrm == '.' )
 						{
@@ -245,7 +245,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
       					}
 						break;
 					}
-					case 4: // Procesando la precisi�n:
+					case 4: // Procesando la precisión:
 					{
 						if ( ( cCarFrm >= '0' ) && ( cCarFrm <= '9' ) )
 						{
@@ -282,7 +282,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 						}
 						break;
 					}
-					case 5: // Procesando la precisi�n:
+					case 5: // Procesando la precisión:
 					{
 						if ( ( cCarFrm >= '0' ) && ( cCarFrm <= '9' ) )
 						{
@@ -574,8 +574,8 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 }
 
 
-/* NOTA: Esta rutina es una estimaci�n. Habr�a que hacerlo utilizando la codificaci�n interna
-   de representaci�n de tipos */
+/* NOTA: Esta rutina es una estimación. Habría que hacerlo utilizando la codificación interna
+   de representación de tipos */
 static int _EsCadenaValida ( char * p_cCad )
 {
 	int		iPos;

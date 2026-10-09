@@ -60,12 +60,12 @@ SSemaforo * SSemCrearExt ( const char * p_cNombre, long lValorMaximo )
 #	 if ( defined ( WIN ) )
 				p_semObj->hSemaforo = CreateSemaphore ( NULL, p_semObj->lValMax, p_semObj->lValMax, p_semObj->p_cNombre );
 #	 elif ( defined ( POSIX ) )
-				//  Al ser an�nimo, necesitamos reservar memoria para el propio sem_t interno
+				//  Al ser anónimo, necesitamos reservar memoria para el propio sem_t interno
 				p_semObj->p_semObj = (sem_t *) MemReservar ( sizeof ( sem_t ) );
 				if ( ES_VALIDO ( p_semObj->p_semObj ) )
 				{
-					// Inicializamos el sem�foro. Usamos '0' asumiendo que es para hilos mutuos.
-					// Si requieres que sea entre procesos distintos, este par�metro debe ser 1.
+					// Inicializamos el semáforo. Usamos '0' asumiendo que es para hilos mutuos.
+					// Si requieres que sea entre procesos distintos, este parámetro debe ser 1.
 					if ( sem_init ( p_semObj->p_semObj, 0, p_semObj->lValMax ) != 0 )
 					{
 						MemLiberar ( (void **) &(p_semObj->p_semObj) );
@@ -162,7 +162,7 @@ int SSemEsValido ( SSemaforo * p_semObj )
 #	 if ( defined ( WIN ) )
 		if ( ES_MANEJADOR_VALIDO ( p_semObj->hSemaforo ) )
 #	 elif ( defined ( POSIX ) )
-		// NOTA: Es una direcci�n de un espacio reservado del sistema:
+		// NOTA: Es una dirección de un espacio reservado del sistema:
 		if ( p_semObj->p_semObj != NULL )
 #	 else
 		if ( p_semObj->iSemaforo >= 0 )

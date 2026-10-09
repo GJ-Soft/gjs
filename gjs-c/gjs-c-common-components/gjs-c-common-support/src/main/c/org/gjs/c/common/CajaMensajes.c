@@ -1,16 +1,16 @@
 /***************************************************************************/
 /*                          CajaMensajes.cpp                               */
 /*-------------------------------------------------------------------------*/
-/* Librer�a: GAplicacion                                                  */
-/* Versi�n:  2.0.0                                                         */
+/* Librería: GAplicacion                                                  */
+/* Versión:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Gin�s Jim�nez S�nchez                                         */
+/* Autor:    Ginés Jiménez Sánchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Autor:    Gin�s Jim�nez S�nchez                                         */
+/* Autor:    Ginés Jiménez Sánchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci�n:                                                            */
-/* Fichero de c�digo fuente que contiene la implementaci�n de la rutina    */
-/* para controlar el di�logo de mensajes del sistema.                      */
+/* Descripción:                                                            */
+/* Fichero de código fuente que contiene la implementación de la rutina    */
+/* para controlar el diálogo de mensajes del sistema.                      */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
 /***************************************************************************/

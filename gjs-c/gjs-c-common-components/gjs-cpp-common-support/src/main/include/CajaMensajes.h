@@ -1,15 +1,15 @@
 /***************************************************************************/
 /*                          CajaMensajes.h                                 */
 /*-------------------------------------------------------------------------*/
-/* Librer�a: GAplicacion                                                   */
-/* Versi�n:  2.0.0                                                         */
+/* Librería: GAplicacion                                                   */
+/* Versión:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Gin�s Jim�nez S�nchez                                         */
+/* Autor:    Ginés Jiménez Sánchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci�n:                                                            */
-/* Interfaz de la librer�a para aplicaciones. Es el fichero de cabecera    */
-/* principal de la librer�a que hay que incluir en el c�digo de los        */
-/* programas y librer�as que la utilicen.                                  */
+/* Descripción:                                                            */
+/* Interfaz de la librería para aplicaciones. Es el fichero de cabecera    */
+/* principal de la librería que hay que incluir en el código de los        */
+/* programas y librerías que la utilicen.                                  */
 /*-------------------------------------------------------------------------*/
 /*                    gines_jimenez@safe-mail.net                          */
 /***************************************************************************/

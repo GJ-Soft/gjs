@@ -1,15 +1,15 @@
 /***************************************************************************/
 /*                          Conversor.cpp                                 */
 /*-------------------------------------------------------------------------*/
-/* Librer�a: ClasesBase                                                    */
-/* Versi�n:  2.0.0                                                         */
+/* Librería: ClasesBase                                                    */
+/* Versión:  2.0.0                                                         */
 /* Fecha:    01/09/2007                                                    */
-/* Autor:    Gin�s Jim�nez S�nchez                                         */
+/* Autor:    Ginés Jiménez Sánchez                                         */
 /*-------------------------------------------------------------------------*/
-/* Descripci�n:                                                            */
-/* Fichero de c�digo fuente que contiene la implementaci�n de la clase de  */
-/* datos Conversor, destinada a gestionar la conversi�n autom�tica entre  */
-/* los diferentes tipos de datos b�sicos.                                  */
+/* Descripción:                                                            */
+/* Fichero de código fuente que contiene la implementación de la clase de  */
+/* datos Conversor, destinada a gestionar la conversión automática entre  */
+/* los diferentes tipos de datos básicos.                                  */
 /*-------------------------------------------------------------------------*/
 /*                    ginesjimenez@safe-mail.net                          */
 /***************************************************************************/

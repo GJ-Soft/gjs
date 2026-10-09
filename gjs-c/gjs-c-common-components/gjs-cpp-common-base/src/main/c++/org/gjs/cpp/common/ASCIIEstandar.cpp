@@ -1,15 +1,15 @@
 /******************************************************************************/
 /*                             ASCIIEstandar.cpp                              */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  GBase                                                           */
-/* Versi�n:   1.0.0                                                           */
+/* Librería:  GBase                                                           */
+/* Versión:   1.0.0                                                           */
 /* Fecha:     28/06/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
-/* Fichero de c�digo fuente que contiene la implementaci�n de las rutinas     */
-/* de car�cter general de consulta y conversi�n de car�cteres en la           */
-/* codificaci�n ASCII est�nar (0-127).                                        */
+/* Descripción:                                                               */
+/* Fichero de código fuente que contiene la implementación de las rutinas     */
+/* de carácter general de consulta y conversión de caracteres en la           */
+/* codificación ASCII estándar (0-127).                                        */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

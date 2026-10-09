@@ -4,10 +4,10 @@
 /* Libreria:  GTexto                                                          */
 /* Version:   1.0.0                                                           */
 /* Fecha:     30/06/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
 /* Descripcion:                                                               */
-/* Fichero de codigo fuente que contiene la implementaci�n de la clase de     */
+/* Fichero de codigo fuente que contiene la implementación de la clase de     */
 /* datos SCadena.                                                             */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */

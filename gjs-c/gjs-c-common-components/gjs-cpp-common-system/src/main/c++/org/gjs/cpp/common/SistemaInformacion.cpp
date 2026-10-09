@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                           SistemaInformacion.cpp                           */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  Sistema                                                         */
-/* Versi�n:   3.0.0                                                           */
+/* Librería:  Sistema                                                         */
+/* Versión:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
-/* Fichero de c�digo fuente que contiene la implementaci�n de la algunas      */
-/* rutinas generales de informaci�n del sistema.                              */
+/* Descripción:                                                               */
+/* Fichero de código fuente que contiene la implementación de la algunas      */
+/* rutinas generales de información del sistema.                              */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
 /******************************************************************************/

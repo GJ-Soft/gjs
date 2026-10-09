@@ -1,14 +1,14 @@
 /******************************************************************************/
 /*                              SistemaSignals.h                              */
 /*----------------------------------------------------------------------------*/
-/* Librer�a:  Sistema                                                         */
-/* Versi�n:   3.0.0                                                           */
+/* Librería:  Sistema                                                         */
+/* Versión:   3.0.0                                                           */
 /* Fecha:     25/03/2008                                                      */
-/* Autor:     Gin�s Jim�nez S�nchez                                           */
+/* Autor:     Ginés Jiménez Sánchez                                           */
 /*----------------------------------------------------------------------------*/
-/* Descripci�n:                                                               */
-/* Fichero de cabecera que contiene la definici�n de los "signals" del        */
-/* sistema, as� como los prototipos de algunas rutinas para el manejo de      */
+/* Descripción:                                                               */
+/* Fichero de cabecera que contiene la definición de los "signals" del        */
+/* sistema, así como los prototipos de algunas rutinas para el manejo de      */
 /* mismos.                                                                    */
 /*----------------------------------------------------------------------------*/
 /*                        gines_jimenez@safe-mail.net                         */
@@ -48,7 +48,7 @@
 
 
 
-/* Lista de se�ales progrmables en CGestorSignals: */
+/* Lista de señales progrmables en CGestorSignals: */
 #define SIS_SIG_ABORTAR									0
 #define SIS_SIG_ALARMA									1
 #define SIS_SIG_ERROR_COMA_FLOTANTE						2
