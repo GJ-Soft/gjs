@@ -73,9 +73,11 @@ Cygwin/winsock un `recv` bloqueado en el otro extremo no siempre recibe el EOF.
 
 ## Dependencias
 
-`winsock2.h` en Windows; `sys/socket.h` y `netinet/in.h` en POSIX. `ResolverIP`
-de [gjs-cpp-common-base](../../gjs-cpp-common-base/README.md) para traducir el
-nombre de máquina.
+`winsock2.h` y `ws2tcpip.h` en Windows; `sys/socket.h`, `netdb.h` y
+`netinet/in.h` en POSIX. `ResolverIP` traduce el nombre de máquina con
+`getaddrinfo`, y `getHost` da la dirección con `inet_ntop`, las dos
+reentrantes (antes, `gethostbyname` e `inet_ntoa`, que devuelven datos
+estáticos comunes a todos los hilos).
 
 ## Tests
 

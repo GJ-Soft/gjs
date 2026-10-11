@@ -90,23 +90,27 @@
 
 
 
-/* Versión de Windows a utilizar: se fuerza a que la versión sea como mínimo la 5.0: */
+/* Versión de Windows a utilizar: se fuerza a que sea como mínimo Windows 10
+   ( 0x0A00 ), la más antigua con soporte de Microsoft. Antes era la 5.0
+   ( Windows 2000 ), y con ese valor las cabeceras de MinGW esconden todo lo de
+   Vista en adelante: inet_ntop, por ejemplo. Es también lo que MinGW-w64 toma
+   por defecto cuando nadie lo fija. */
 #if ( defined ( WIN ) )
 #	if ( defined ( WINVER ) )
-#		if ( WINVER < 0x0500 )
+#		if ( WINVER < 0x0A00 )
 #			undef WINVER
-#			define WINVER					0x0500
+#			define WINVER					0x0A00
 #		endif
 #	else
-#		define WINVER						0x0500
+#		define WINVER						0x0A00
 #	endif
 #	if ( defined ( _WIN32_WINNT ) )
-#		if ( _WIN32_WINNT < 0x0500 )
+#		if ( _WIN32_WINNT < 0x0A00 )
 #			undef _WIN32_WINNT
-#			define _WIN32_WINNT				0x0500
+#			define _WIN32_WINNT				0x0A00
 #		endif
 #	else
-#		define _WIN32_WINNT					0x0500
+#		define _WIN32_WINNT					0x0A00
 #	endif
 #endif
 

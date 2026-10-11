@@ -100,10 +100,12 @@ comprueba que la fecha y la hora de arranque sean plausibles.
 
   Se puede leer como que hubo una versión que aceptaba un código concreto y se
   quitó, o como que iba a añadirse. Tal como está, sólo describe el error actual.
-- **El error es estado global del proceso**, no del hilo. `errno` sí es por hilo
-  en las plataformas modernas, y `GetLastError` también; lo que no está claro es
-  si la pila de `SisErrApilar` lo es. Si no lo es, dos hilos que fallen a la vez
-  mezclan sus rastros.
+- **El último error es de cada hilo** (`thread_local`, desde 2026-10-11), como
+  `errno` y `GetLastError` de los que sale. La pila de `SisErrApilar`, en
+  cambio, es una sola para el proceso: dos hilos que apilen a la vez mezclan sus
+  rastros. El texto sale de `TextoErrno` de
+  [gjs-cpp-common-base](../../gjs-cpp-common-base/doc/Sistema.md), no de
+  `strerror`, que no es reentrante.
 - **`SisMaxError` está en el grupo de limpieza y no limpia nada**: devuelve el
   código de error más alto que el sistema puede dar. Colocada entre
   `SisErrLimpiar` y `SisErrApilar`, despista.

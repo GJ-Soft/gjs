@@ -1,5 +1,6 @@
 #include "BaseConfig.h"
 #include "ToString.h"
+#include "Sistema.h"
 
 //#include <locale>
 //#include <codecvt>
@@ -105,9 +106,18 @@ string ToString ( const tm * t )
 
 string ToTimeString ( time_t t )
 {
-	char buffer [ 9 ];
-	strftime ( buffer, 9, "%H:%M:%S", localtime( &t ) );
-	return ( ToString ( buffer ) );
+	/* Cadena vacia si la hora no se puede convertir: strftime con el NULL que
+	   devolvia localtime en ese caso era comportamiento indefinido. */
+	string	sRes;
+	tm		tmValor;
+
+	if ( HoraLocal ( t, tmValor ) )
+	{
+		char buffer [ 9 ];
+		strftime ( buffer, sizeof ( buffer ), "%H:%M:%S", &tmValor );
+		sRes = ToString ( buffer );
+	}
+	return ( sRes );
 }
 
 template <typename T>

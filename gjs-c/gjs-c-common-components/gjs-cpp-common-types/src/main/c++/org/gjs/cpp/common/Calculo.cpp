@@ -27,14 +27,14 @@ double Epsilon()
 
 double GenerarNumeroAleatorio()
 {
-	static bool bSembrado = false;
-	if ( ! bSembrado )
-	{
-		srand ( (unsigned) time( 0 ) );
-		bSembrado = true;
-	}
-	// Division en coma flotante para obtener un valor en [0.0, 1.0):
-	return ( (double) rand() / ( (double) RAND_MAX + 1.0 ) );
+	/* Un generador por hilo, sembrado una vez desde random_device. Con rand ()
+	   y srand ( time ( 0 ) ) el estado era uno para todo el proceso: dos hilos
+	   se pisaban, y la semilla tocaba la de cualquier otro codigo que usara rand.
+	   No es para criptografia: para eso hace falta un generador seguro. */
+	thread_local mt19937_64 generador ( random_device {} () );
+	uniform_real_distribution < double > distribucion ( 0.0, 1.0 );
+
+	return ( distribucion ( generador ) );
 }
 
 

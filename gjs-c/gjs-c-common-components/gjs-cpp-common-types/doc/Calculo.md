@@ -67,9 +67,12 @@ bit —lo que se quiere es «mayor, y además distinto más allá de la toleranc
 - **Sólo `double`.** No hay versiones para `float` ni `long double`, que sí
   tiene el módulo de `base`, de modo que comparar dos `float` obliga a
   promocionarlos y a comparar con la tolerancia del `double`.
-- **`GenerarNumeroAleatorio` no dice nada de su rango ni de su semilla.** Ni si
-  devuelve entre 0 y 1, ni si se puede fijar la semilla para reproducir una
-  prueba —que es lo primero que hace falta en un test—. Y en un módulo llamado
+- **`GenerarNumeroAleatorio` devuelve un valor en [0, 1)** de un `mt19937_64`
+  por hilo, sembrado desde `random_device` (desde 2026-10-11; antes, `rand`
+  con `srand ( time ( 0 ) )`, un estado para todo el proceso que se pisaba
+  entre hilos). No es para criptografía. La cabecera sigue sin decirlo, y no
+  se puede fijar la semilla para reproducir una prueba —que es lo primero que
+  hace falta en un test—. Y en un módulo llamado
   «cálculo», un generador de aleatorios y una comparación de reales son dos
   cosas sin relación.
 - **`EsIgual`, `EsMayor` y `EsMenor` sin `EsMayorIgual` ni `EsMenorIgual`**, que

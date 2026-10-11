@@ -60,9 +60,12 @@ long TiempoHoy ()
 # else
 	time_t 			timeValor;
 	struct tm *		p_tmFecha;
+	struct tm		  tmDatos;
 
 	time ( &timeValor );
-	p_tmFecha = localtime ( &timeValor );
+	/* localtime_r, sobre una struct tm propia: localtime devuelve una
+	   estatica que comparten todos los hilos. */
+	p_tmFecha = localtime_r ( &timeValor, &tmDatos );
 	if ( ES_VALIDO ( p_tmFecha ) )
 	{
 		lMulY = 10000;
@@ -109,9 +112,12 @@ long TiempoAhora ()
 # else
 	time_t 			timeValor;
 	struct tm *		p_tmFecha;
+	struct tm		  tmDatos;
 
 	time ( &timeValor );
-	p_tmFecha = localtime ( &timeValor );
+	/* localtime_r, sobre una struct tm propia: localtime devuelve una
+	   estatica que comparten todos los hilos. */
+	p_tmFecha = localtime_r ( &timeValor, &tmDatos );
 	if ( ES_VALIDO ( p_tmFecha ) )
 	{
 		lRes = ( p_tmFecha->tm_hour + lSumH ) * lMulH + 

@@ -31,9 +31,9 @@ void SockFinalizar()
 }
 #endif	
 
-/* Los simbolos que usa ( sockaddr_in, inet_addr, gethostbyname, hostent,
-   AF_INET, INADDR_ANY ) los da CommonIoConfig.h: winsock2.h en Windows
-   nativo, netdb.h y arpa/inet.h en POSIX. */
+/* Los simbolos que usa ( sockaddr_in, inet_addr, getaddrinfo, addrinfo,
+   AF_INET, INADDR_ANY ) los da CommonIoConfig.h: winsock2.h y ws2tcpip.h en
+   Windows nativo, netdb.h y arpa/inet.h en POSIX. */
 int ResolverIP( const string & sIP )
 {
 	int iIP = INADDR_ANY;
@@ -45,14 +45,22 @@ int ResolverIP( const string & sIP )
 		inaddr.sin_addr.s_addr = inet_addr( sIP.c_str() );
 		if ( (int)( inaddr.sin_addr.s_addr ) == -1 )
 		{
-			struct hostent *hostp = gethostbyname( sIP.c_str() );
-			if ( hostp != NULL )
+			/* getaddrinfo y no gethostbyname, que devuelve un hostent estatico
+			   comun a todos los hilos. Solo IPv4, como antes: ResolverIP
+			   devuelve la direccion en un int. */
+			struct addrinfo		addrPista;
+			struct addrinfo *	p_addrRes = NULL;
+
+			memset ( &addrPista, 0, sizeof ( addrPista ) );
+			addrPista.ai_family = AF_INET;
+			if ( getaddrinfo ( sIP.c_str (), NULL, &addrPista, &p_addrRes ) == 0 )
 			{
-				if ( hostp->h_addrtype == AF_INET)
+				if ( p_addrRes != NULL )
 				{
-					memcpy( (char * ) &inaddr.sin_addr, (char * ) hostp->h_addr, sizeof( inaddr.sin_addr ) );
+					memcpy ( &inaddr, p_addrRes->ai_addr, sizeof ( inaddr ) );
 					iIP = inaddr.sin_addr.s_addr;
 				}
+				freeaddrinfo ( p_addrRes );
 			}
 		}
 		else
@@ -159,7 +167,12 @@ string Socket::getHost()
 		struct sockaddr_in sockaddrLocal;
 		socklen_t address_length = sizeof(sockaddrLocal);
 		getsockname( iSocket, (struct sockaddr*)&sockaddrLocal, &address_length );
-		sHost = string( inet_ntoa( sockaddrLocal.sin_addr ) );
+		/* inet_ntop y no inet_ntoa, que escribe en un buffer estatico. */
+		char cDireccion [ INET_ADDRSTRLEN ];
+		if ( inet_ntop ( AF_INET, &sockaddrLocal.sin_addr, cDireccion, sizeof ( cDireccion ) ) != NULL )
+		{
+			sHost = string ( cDireccion );
+		}
 	}
 	return( sHost );
 }

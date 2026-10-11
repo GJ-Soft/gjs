@@ -33,7 +33,9 @@ namespace org
 
 
 
-static int				g_iSisUltError = 0;
+/* El ultimo error es de cada hilo, como errno y GetLastError () de los que
+   sale: compartido, un hilo leia el codigo que acababa de anotar otro. */
+static thread_local int	g_iSisUltError = 0;
 static stack<string> *	g_pilcadErrores = NULL;
 
 
@@ -147,7 +149,7 @@ string SisErrDescripcion ()
 		}
 
 #     elif ( defined ( GNU ) )
-		sRes = string ( (const char *) strerror ( g_iSisUltError ) );
+		sRes = TextoErrno ( g_iSisUltError );
 #     else
 		if ( ES_VALIDO ( sys_errlist ) )
 		{
@@ -239,17 +241,18 @@ int SisMaxError ()
 # if ( defined ( WIN ) )
 	iMaxError = 16000;
 # elif ( defined ( GNU ) )
-	int			g_iSisUltError;
+	/* Contador propio, con otro nombre: el de antes tapaba el del modulo. */
+	int			iCodigo;
 
-	g_iSisUltError = 1;
-	string sMsj = string ( strerror ( g_iSisUltError ) );
+	iCodigo = 1;
+	string sMsj = TextoErrno ( iCodigo );
 	while ( ! sMsj.empty() &&
 			! sMsj.starts_with ( "Unknown" ) )
 	{
-		g_iSisUltError = g_iSisUltError + 1;
-		sMsj = string ( strerror ( g_iSisUltError ) );
+		iCodigo = iCodigo + 1;
+		sMsj = TextoErrno ( iCodigo );
 	}
-	iMaxError = g_iSisUltError - 1;
+	iMaxError = iCodigo - 1;
 # else
 	int g_iSisUltError;
 

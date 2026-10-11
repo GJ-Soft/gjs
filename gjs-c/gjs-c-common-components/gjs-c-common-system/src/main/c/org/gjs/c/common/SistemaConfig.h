@@ -125,8 +125,6 @@
 #	define SIS_MAX_TAM_VALOR_REG		SIS_MAX_TAM_PATH
 #endif			
 
-#define UID_CACHE_MAX       10          
-#define GID_CACHE_MAX       10          
 
 
 #endif

@@ -84,6 +84,16 @@ descriptores, cerrar consola, obtener el PID— el módulo es
 | `SisUsrActivarGrupoRoot` / `SisUsrDesactivarGrupoRoot`                           | Igual para el grupo.     |
 | `int SisUsrEstablecerUsuario ( const char * p_cUsuario, const char * p_cGrupo )` | Cambia de identidad.     |
 
+**Los nombres que devuelven `SisUsrObtenerNombre`, `SisUsrObtenerNombreGrupo` y
+`SisUsrObtenerUsuarioLogin` son copias que libera el llamante** (`MemLiberar`),
+en todas las plataformas. Hasta el 2026-10-11 los dos primeros salían de una
+caché `static` de diez entradas que liberaba la más antigua al llenarse: el
+nombre que guardara el llamante quedaba liberado tras diez consultas más, y
+entre hilos la caché se corrompía. Las consultas van por `getpwuid_r`,
+`getgrgid_r`, `getpwnam_r`, `getgrnam_r` y `getlogin_r`, que no comparten
+buffers estáticos. `SisUsrObtenerUsuarioLogin` devuelve `NULL` si no hay
+usuario de sesión.
+
 El par activar/desactivar es el patrón habitual de un binario *setuid*: se
 arranca con privilegios, se bajan enseguida y se suben sólo para la operación
 que los necesita.

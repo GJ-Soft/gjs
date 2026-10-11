@@ -130,7 +130,7 @@ Reglas de conmutación:
 - Sin `WIN` y sin `POSIX`: se asume `WIN`.
 - `CC` fuerza `POSIX`.
 - `MODO_DEPURACION_2` implica `MODO_DEPURACION`.
-- En `WIN` se eleva `WINVER` y `_WIN32_WINNT` a `0x0500` como mínimo.
+- En `WIN` se eleva `WINVER` y `_WIN32_WINNT` a `0x0A00` (Windows 10) como mínimo; hasta el 2026-10-11 era `0x0500` (Windows 2000), que escondía las API de Vista en adelante.
 
 Los `-D` vienen del pom padre `gjs-c-common-parent`, de un perfil que **activa
 el entorno** (la variable `CYGWIN`), no una propiedad. El mismo perfil fija el

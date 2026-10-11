@@ -204,7 +204,15 @@ string * FechaHora::Cadena ( const string & formato )
 	     de desfases ni casos raros de horario de verano. */
 	auto	tpSegundos = chrono::floor < chrono::seconds > ( tpFechaHora );
 	time_t	ttValor = chrono::system_clock::to_time_t ( tpSegundos );
-	tm		tmLocal = *localtime ( &ttValor );
+	tm		tmLocal;
+
+	/* HoraLocal y no *localtime (): localtime devuelve una estatica comun a
+	   todos los hilos, y NULL si no puede convertir, que aqui se desreferenciaba.
+	   En ese caso se formatea el instante en UTC, que es lo que se puede. */
+	if ( ! HoraLocal ( ttValor, tmLocal ) )
+	{
+		return ( new string ( vformat ( formato, make_format_args ( tpSegundos ) ) ) );
+	}
 
 	auto tpLocal = chrono::local_days ( chrono::year ( tmLocal.tm_year + 1900 ) /
 										( tmLocal.tm_mon + 1 ) / tmLocal.tm_mday ) +

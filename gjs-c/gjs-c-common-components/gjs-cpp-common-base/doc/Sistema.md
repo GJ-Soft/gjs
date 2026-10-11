@@ -62,6 +62,8 @@ que obligó a cambiar `putenv` por `setenv` en
 | --------------------------------------------- | --------------------- |
 | `Esperar ( long lMiliseg )`                   | Duerme el hilo.       |
 | `Ahora ()`                                    | `time_t` actual.      |
+| `HoraLocal ( time_t, std::tm & )`             | Hora local, sin estado compartido. |
+| `TextoErrno ( int )`                          | Texto de un `errno`, sin estado compartido. |
 | `EstablecerManejadorInterrupciones ( f )`     | Instala un manejador. |
 | `EstablecerManejadorInterrupcionesDefecto ()` | El del componente.    |
 | `LimpiarManejadorInterrupciones ()`           | Lo quita.             |
@@ -85,6 +87,24 @@ que obligó a cambiar `putenv` por `setenv` en
 
 ## Observaciones
 
+- **En Windows, `EstablecerVariableEntorno` y `EliminarVariableEntorno` van por
+  `_putenv_s`** (desde 2026-10-11). Un proceso Windows tiene dos copias del
+  entorno, el bloque Win32 y la del runtime de C, y antes sólo se escribía en el
+  bloque Win32 (`SetEnvironmentVariableA`): `getenv` no veía lo establecido, y
+  con él ni `CVariablesEntorno`, ni el stack C, ni la zona horaria de `_tzset`.
+  `_putenv_s` escribe en las dos. Lo fija `TestVariableEntorno02`.
+- **`TextoErrno` es `strerror` sin su buffer estático** (desde 2026-10-11):
+  `strerror_r` en POSIX y `strerror_s` en Windows. `strerror_r` tiene dos
+  versiones con el mismo nombre, la XSI (devuelve `int`) y la GNU (devuelve
+  `char *`), según `_GNU_SOURCE`; una sobrecarga elige por el tipo del
+  resultado. Para un código que no existe la XSI no da texto, así que
+  `TextoErrno` devuelve la cadena vacía; la GNU y Windows dan "Unknown error".
+  La usan `SistemaExcepcion` y `SistemaErrores` de gjs-cpp-common-system.
+- **`HoraLocal` es la forma segura entre hilos de pasar a hora local**
+  (desde 2026-10-11): `localtime_r` en POSIX y `localtime_s` en Windows, que
+  escriben en la `tm` del llamante. `localtime` devuelve una estática común a
+  todos los hilos. La usan `ToTimeString`, `FechaHora::Cadena` y la cabecera
+  `Date:` de `ServidorHTTP`.
 - **`EjecutarComando` lee la salida por una tubería** (`popen`, `_popen` en
   Windows), sin fichero intermedio, desde 2026-10-11. Antes la redirigía con
   `>>` a un fichero con nombre de `tmpnam` en el directorio temporal: el

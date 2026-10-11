@@ -203,9 +203,16 @@ void EstablecerVariableEntorno ( const string & sNombre, const string & sValor )
 		const char * p_cValor = sValor.c_str();
 		
 #	if ( defined ( WIN) )
-		if ( SetEnvironmentVariableA ( p_cNombre, p_cValor ) == 0 )
+		/* _putenv_s y no SetEnvironmentVariableA. Un proceso Windows tiene dos
+		   copias del entorno: el bloque Win32 ( GetEnvironmentVariable, y lo que
+		   heredan los hijos ) y la del runtime de C ( getenv, _tzset, localtime ).
+		   SetEnvironmentVariableA solo tocaba la primera, y lo establecido no lo
+		   veia getenv: ni CVariablesEntorno, ni el stack C, ni la zona horaria.
+		   _putenv_s escribe en las dos. Devuelve el codigo de error, no errno. */
+		const errno_t iErr = _putenv_s ( p_cNombre, p_cValor );
+		if ( iErr != 0 )
 		{
-			throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( GetLastError() ) ) ) );
+			throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( (int) iErr ) ) ) );
 		}
 #	else
 	if ( setenv ( p_cNombre, p_cValor, 1 ) != 0 )
@@ -304,9 +311,12 @@ void EliminarVariableEntorno ( const string & sNombre )
 	}
 # endif
 #else
-	if ( SetEnvironmentVariableA ( p_cNombre, NULL ) == 0 )
+	/* _putenv_s con valor vacio elimina la variable de las dos copias del
+	   entorno, la del runtime de C y el bloque Win32; ver EstablecerVariableEntorno. */
+	const errno_t iErr = _putenv_s ( p_cNombre, "" );
+	if ( iErr != 0 )
 	{
-		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible eliminar la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
+		throw ( Excepcion ( "Sistema", "EliminarVariableEntorno", Concatenar ( "Imposible eliminar la variable de entorno ", p_cNombre, ". Error=", ToString ( (int) iErr ) ) ) );
 	}
 #endif
 }
@@ -369,6 +379,56 @@ time_t Ahora ()
 {
 	chrono::system_clock::time_point ahora = chrono::system_clock::now();
 	return ( chrono::system_clock::to_time_t( ahora ) );
+}
+
+bool HoraLocal ( time_t tValor, tm & tmRes )
+{
+	/* localtime devuelve una struct tm estatica que comparten todos los hilos.
+	   Las variantes que escriben en una del llamante son localtime_r en POSIX
+	   y localtime_s en Windows, que lleva los argumentos al reves y devuelve
+	   un codigo de error en vez del puntero. */
+#if ( defined ( WIN ) )
+	return ( localtime_s ( &tmRes, &tValor ) == 0 );
+#else
+	return ( localtime_r ( &tValor, &tmRes ) != NULL );
+#endif
+}
+
+#if ( ! defined ( WIN ) )
+/* strerror_r tiene dos versiones incompatibles con el mismo nombre: la XSI
+   devuelve int y escribe en el buffer; la GNU devuelve el char * del texto, que
+   puede no ser el buffer. Cual se declara depende de _GNU_SOURCE, asi que la
+   sobrecarga elige por el tipo del resultado. */
+static const char * _TextoStrerror ( int iRes, const char * p_cBuffer )
+{
+	return ( ( iRes == 0 ) ? p_cBuffer : NULL );
+}
+
+static const char * _TextoStrerror ( const char * p_cTexto, const char * )
+{
+	return ( p_cTexto );
+}
+#endif
+
+string TextoErrno ( int iCodigo )
+{
+	/* strerror escribe en un buffer estatico comun a todos los hilos. */
+	char	cBuffer [ 256 ] = "";
+	string	sRes;
+
+#if ( defined ( WIN ) )
+	if ( strerror_s ( cBuffer, sizeof ( cBuffer ), iCodigo ) == 0 )
+	{
+		sRes = string ( cBuffer );
+	}
+#else
+	const char * p_cTexto = _TextoStrerror ( strerror_r ( iCodigo, cBuffer, sizeof ( cBuffer ) ), cBuffer );
+	if ( p_cTexto != NULL )
+	{
+		sRes = string ( p_cTexto );
+	}
+#endif
+	return ( sRes );
 }
 
 

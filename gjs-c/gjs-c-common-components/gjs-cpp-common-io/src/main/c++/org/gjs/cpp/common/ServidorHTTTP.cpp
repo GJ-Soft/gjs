@@ -161,8 +161,11 @@ void ServidorHTTP::ProcesarComandoSesion( Comando & comando, bool & bResponder, 
 						ssRespuesta << "Content-Length: " << ulTam << "\r\n" << endl;
 						ssRespuesta << "Content-Type: text/html\r\n" << endl;
 						time_t ahora = Ahora();
-						tm * ptm = localtime( &ahora );
-						ssRespuesta << "Date: " << put_time( ptm, "%a, %d %b %Y %T %Z" ) << "\r\n" << endl;
+						tm tmAhora;
+						if ( HoraLocal ( ahora, tmAhora ) )
+						{
+							ssRespuesta << "Date: " << put_time( &tmAhora, "%a, %d %b %Y %T %Z" ) << "\r\n" << endl;
+						}
 						if ( !bSoloCabecera )
 						{
 							ssRespuesta << ssContenido.str();;

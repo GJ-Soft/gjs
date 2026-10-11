@@ -48,7 +48,7 @@ funciones libres.
 | Reales                | `Real.h`                            | 6          | ✔    | [Real](Real.md)                                 |
 | Expresiones regulares | `ExpresionesRegulares.h`            | 1          | ✔    | [ExpresionesRegulares](ExpresionesRegulares.md) |
 | Ficheros              | `Ficheros.h`                        | 6          | ✔    | [Ficheros](Ficheros.md)                         |
-| Sistema               | `Sistema.h`                         | 25         | ✔    | [Sistema](Sistema.md)                           |
+| Sistema               | `Sistema.h`                         | 27         | ✔    | [Sistema](Sistema.md)                           |
 | Memoria               | `Memoria.h`, `InfoMemoria.h`        | 5 + macros | ✔    | [Memoria](Memoria.md)                           |
 | ASCII                 | `ASCIICodigos.h`, `ASCIIEstandar.h` | 36         | ✔    | [ASCII](ASCII.md)                               |
 

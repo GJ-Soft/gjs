@@ -1,6 +1,7 @@
 #include "BaseConfig.h"
 
 #include "SistemaExcepcion.h"
+#include "Sistema.h"
 
 
 
@@ -75,7 +76,7 @@ static string _DescribirError ( int iCodigo )
 
 	if ( sRes.empty () )
 	{
-		sRes = string ( strerror ( iCodigo ) );
+		sRes = TextoErrno ( iCodigo );
 	}
 	return ( sRes );
 }

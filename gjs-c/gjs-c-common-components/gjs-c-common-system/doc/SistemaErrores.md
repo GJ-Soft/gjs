@@ -86,10 +86,18 @@ if ( SisLibCargar ( "milib.dll" ) == 0 )
 
 ## Estado global
 
-Dos variables estáticas: `g_iSisUltError` (el último código) y
-`g_pillitErrores`, una
+`g_iSisUltError` (el último código) es **de cada hilo** (`_Thread_local`), como
+`errno` y `GetLastError` de los que sale; también el texto que devuelve
+`SisErrDescripcion`. `g_pillitErrores`, una
 [SPilaLiterales](../../gjs-c-common-base-types/doc/Pilas.md) creada la primera
-vez que se apila.
+vez que se apila, sigue siendo una sola para todo el proceso.
+
+El texto de los errores POSIX sale de `strerror_r`, sobre un buffer por hilo:
+el puntero de `SisErrDescripcion` sigue siendo prestado, válido hasta la
+siguiente llamada, pero ya no lo pisa otro hilo. `strerror_r` tiene dos
+versiones con el mismo nombre (la XSI devuelve `int`, la GNU un `char *`) y la
+que se declara depende de `_GNU_SOURCE`; el módulo elige por el tipo del
+resultado con `_Generic`, así que vale con las dos.
 
 ## Dependencias
 
@@ -101,11 +109,10 @@ vez que se apila.
 
 ## Observaciones
 
-- **El estado es global y no está protegido.** `g_iSisUltError` y la pila se
-  comparten entre todos los hilos, mientras que `errno` es por hilo: dos hilos
-  que fallen a la vez se pisan el código y mezclan sus entradas en la misma
-  pila. El componente ofrece [mutex](Sincronizacion.md), pero este módulo no los
-  usa.
+- **La pila es global y no está protegida.** Desde el 2026-10-11 el código y su
+  texto son por hilo, pero dos hilos que apilen a la vez mezclan sus entradas en
+  la misma pila. El componente ofrece [mutex](Sincronizacion.md), pero este
+  módulo no los usa.
 - **La pila no se destruye nunca.** `g_pillitErrores` se crea al primer
   `SisErrApilar` y `SisErrLimpiarPila` la vacía, pero no hay finalizador que la
   libere; [`SisFinalizar`](Sistema.md) llama a `SisErrLimpiar`, no a
@@ -119,6 +126,9 @@ vez que se apila.
 - **`SisErrMensaje` y `SisErrMensajeExt` devuelven `char *` reservado**, que el
   llamante debe liberar, mientras que `SisErrDescripcion` devuelve
   `const char *` que no. La diferencia sólo se ve en el tipo de retorno.
-- `SisMaxError` no aparece en ningún otro punto del componente y su significado
-  —"el mayor código de error posible"— no encaja con `GetLastError`, que no está
-  acotado.
+- `SisMaxError` lo usa `SisErrTipo` para distinguir un error de sistema de uno
+  indefinido, y su significado —"el mayor código de error posible"— no encaja
+  con `GetLastError`, que no está acotado. Hasta el 2026-10-11 sondeaba usando
+  `g_iSisUltError` como contador y la dejaba en el máximo más uno: después de
+  `SisErrTipo`, `SisErrCodigo` ya no devolvía el error. Lo fija
+  `TestSisErrCodigo01`.

@@ -2,7 +2,7 @@
 
 | Dato      | Valor                                                                                                          |
 | --------- | -------------------------------------------------------------------------------------------------------------- |
-| Cabeceras | `Precompilacion.h` (129), `BaseConfig.h` (66), `Funciones.h` (247), `Prototipos.h` (31), `TerminalANSI.h` (53) |
+| Cabeceras | `Precompilacion.h` (148), `BaseConfig.h` (66), `Funciones.h` (247), `Prototipos.h` (31), `TerminalANSI.h` (53) |
 | Fuente    | **Ninguno**                                                                                                    |
 | Espacios  | `org::gjs::cpp::common` y `…::ansi`                                                                            |
 | Test      | **Ninguno**                                                                                                    |
@@ -31,6 +31,11 @@ quién compile.
 
 > Hubo un modo "Cygwin estilo Windows" que daba `WIN` + `CYGWIN`. **Se quito**:
 > `CYGWIN` y `WIN` a la vez son hoy un `#error`.
+
+En `WIN` fija además la versión mínima de Windows: `WINVER` y `_WIN32_WINNT`
+a `0x0A00` (Windows 10). Hasta el 2026-10-11 era `0x0500` (Windows 2000), y las
+cabeceras de MinGW escondían con eso las API de Vista en adelante, como
+`inet_ntop`.
 
 ## `BaseConfig.h`
 

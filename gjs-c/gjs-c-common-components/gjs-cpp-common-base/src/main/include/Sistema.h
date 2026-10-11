@@ -48,6 +48,12 @@ namespace org
 			//void RetornarAPrograma ();
 
 			time_t Ahora ();
+			/* La hora local de tValor en tmRes, sin el buffer estatico de localtime:
+			   segura entre hilos. Falso si no se puede convertir. */
+			bool HoraLocal ( time_t tValor, std::tm & tmRes );
+			/* El texto de un errno, como strerror pero sin su buffer estatico:
+			   seguro entre hilos. Cadena vacia si no se puede obtener. */
+			std::string TextoErrno ( int iCodigo );
 
 			void InicializarBase();
 			bool PuedeLiberarse ( const void * ptr );

@@ -4,6 +4,7 @@
 #include <chrono>
 #include <ctime>
 #include <csignal>
+#include <cerrno>
 
 
 using namespace std;
@@ -520,6 +521,130 @@ static bool TestEjecutarComando01 ()
 /* Una orden con salida conocida: la misma en cmd.exe que en sh. Se compara
    entera, no solo que haya algo, y sin el salto de linea final que quita la
    propia funcion ( "\r\n" en Windows, "\n" en POSIX ). */
+/* HoraLocal y ToTimeString contra valores absolutos: con TZ a UTC, el instante
+   1000000000 es el 2001-09-09 a las 01:46:40. El TZ de antes se restaura. Va
+   por EstablecerVariableEntorno, que en WIN tiene que llegar a la copia del
+   entorno que lee _tzset. */
+static void _FijarZonaHoraria ( const char * p_cValor )
+{
+	if ( p_cValor != NULL )
+	{
+		EstablecerVariableEntorno ( "TZ", p_cValor );
+	}
+	else
+	{
+		EliminarVariableEntorno ( "TZ" );
+	}
+#if ( defined ( WIN ) )
+	_tzset ();
+#else
+	tzset ();
+#endif
+}
+
+/* Lo que se establece con EstablecerVariableEntorno lo tiene que ver getenv, que
+   es por donde lo leen CVariablesEntorno, el stack C y el runtime ( la zona
+   horaria, por ejemplo ). En WIN no lo veia: se escribia solo en el bloque Win32.
+   Y al eliminarla tiene que desaparecer de las dos lecturas. */
+static bool TestVariableEntorno02 ()
+{
+	cout << "Test VariableEntorno02:" << endl;
+	bool bRes = true;
+	const string sVar ( "GJS_VARIABLE_TEST_GETENV" );
+
+	try
+	{
+		EstablecerVariableEntorno ( sVar, "valor con espacios" );
+		const char * p_cValor = getenv ( sVar.c_str () );
+		if ( ( p_cValor == NULL ) || ( string ( p_cValor ) != "valor con espacios" ) )
+		{
+			cout << "Error caso 1: getenv no ve la variable establecida: ["
+				 << ( p_cValor != NULL ? p_cValor : "(null)" ) << "]" << endl;
+			bRes = false;
+		}
+		if ( VariableEntorno ( sVar ) != "valor con espacios" )
+		{
+			cout << "Error caso 2: VariableEntorno dio [" << VariableEntorno ( sVar ) << "]" << endl;
+			bRes = false;
+		}
+		EliminarVariableEntorno ( sVar );
+		p_cValor = getenv ( sVar.c_str () );
+		if ( ( p_cValor != NULL ) && ( p_cValor [ 0 ] != '\0' ) )
+		{
+			cout << "Error caso 3: getenv sigue viendo la variable eliminada: [" << p_cValor << "]" << endl;
+			bRes = false;
+		}
+		if ( ! VariableEntorno ( sVar ).empty () )
+		{
+			cout << "Error caso 4: VariableEntorno sigue viendo la variable eliminada" << endl;
+			bRes = false;
+		}
+	}
+	catch ( const Excepcion & ex )
+	{
+		cout << "Error: excepcion " << ex.what () << endl;
+		bRes = false;
+	}
+	return( bRes );
+}
+
+static bool TestHoraLocal01 ()
+{
+	cout << "Test HoraLocal01:" << endl;
+	bool bRes = true;
+
+	const char *	p_cTzPrevio = getenv ( "TZ" );
+	const bool		bHabiaTz = ( p_cTzPrevio != NULL );
+	const string	sTzPrevio ( bHabiaTz ? p_cTzPrevio : "" );
+
+	_FijarZonaHoraria ( "UTC0" );
+
+	tm tmValor;
+	if ( ! HoraLocal ( (time_t) 1000000000, tmValor ) )
+	{
+		cout << "Error caso 1: HoraLocal no pudo convertir" << endl;
+		bRes = false;
+	}
+	else if ( ( tmValor.tm_year != 101 ) || ( tmValor.tm_mon != 8 ) || ( tmValor.tm_mday != 9 ) ||
+			  ( tmValor.tm_hour != 1 ) || ( tmValor.tm_min != 46 ) || ( tmValor.tm_sec != 40 ) )
+	{
+		cout << "Error caso 2: se esperaba 2001-09-09 01:46:40 y se ha obtenido "
+			 << ( tmValor.tm_year + 1900 ) << "-" << ( tmValor.tm_mon + 1 ) << "-" << tmValor.tm_mday << " "
+			 << tmValor.tm_hour << ":" << tmValor.tm_min << ":" << tmValor.tm_sec << endl;
+		bRes = false;
+	}
+	string sHora = ToTimeString ( (time_t) 1000000000 );
+	if ( sHora != "01:46:40" )
+	{
+		cout << "Error caso 3: ToTimeString dio [" << sHora << "], se esperaba [01:46:40]" << endl;
+		bRes = false;
+	}
+
+	_FijarZonaHoraria ( bHabiaTz ? sTzPrevio.c_str () : NULL );
+	return( bRes );
+}
+
+
+/* TextoErrno contra el texto exacto: el de ENOENT es el mismo en glibc, en la
+   biblioteca de Cygwin y en el runtime de Microsoft. Un codigo absurdo no puede
+   romper nada: o hay texto ( "Unknown error ..." ) o cadena vacia. */
+static bool TestTextoErrno01 ()
+{
+	cout << "Test TextoErrno01:" << endl;
+	bool bRes = true;
+
+	string sTexto = TextoErrno ( ENOENT );
+	if ( sTexto != "No such file or directory" )
+	{
+		cout << "Error caso 1: TextoErrno ( ENOENT ) dio [" << sTexto << "]" << endl;
+		bRes = false;
+	}
+	sTexto = TextoErrno ( 987654 );
+	cout << "Codigo inexistente: [" << sTexto << "]" << endl;
+	return( bRes );
+}
+
+
 static bool TestEjecutarComando02 ()
 {
 	cout << "Test EjecutarComando02:" << endl;
@@ -647,6 +772,33 @@ bool TestSistema ()
 		bRes = false;
 	}
 	if ( TestEjecutarComando02() )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestVariableEntorno02() )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestHoraLocal01() )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestTextoErrno01() )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
 	}

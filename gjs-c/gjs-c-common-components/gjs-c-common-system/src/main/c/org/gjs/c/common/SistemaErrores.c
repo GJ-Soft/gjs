@@ -20,13 +20,54 @@
 
 
 
-static int					g_iSisUltError = 0;
+/* El ultimo error es de cada hilo, como errno y GetLastError () de los que sale:
+   compartido, un hilo leia el codigo que acababa de anotar otro. */
+static _Thread_local int	g_iSisUltError = 0;
 #if ( defined ( WIN ) )
 /* La descripcion de Windows hay que copiarla del buffer de FormatMessage, y el
    puntero que devuelve SisErrDescripcion () es prestado, como el de strerror ().
    Se guarda aqui y se reemplaza en cada llamada, en vez de repartir copias que
-   nadie libera. Ver el comentario de SisErrDescripcion (). */
-static char *				g_p_cSisDescError = NULL;
+   nadie libera. Ver el comentario de SisErrDescripcion (). Uno por hilo, como
+   el codigo. */
+static _Thread_local char *	g_p_cSisDescError = NULL;
+#else
+
+#define SIS_ERR_TAM_TEXTO		256
+
+/* El texto de strerror_r, uno por hilo: el puntero que devuelve
+   SisErrDescripcion () sigue siendo prestado, pero ya no lo pisa otro hilo. */
+static _Thread_local char	g_cSisTextoError [ SIS_ERR_TAM_TEXTO ];
+
+/* strerror_r tiene dos versiones incompatibles con el mismo nombre: la XSI
+   devuelve int y escribe en el buffer; la GNU devuelve el char * del texto, que
+   puede no ser el buffer. Cual se declara depende de los macros de la
+   compilacion ( _GNU_SOURCE ), asi que se elige por el tipo del resultado. */
+static const char * _SisErrTextoXsi ( int iRes, const char * p_cBuffer )
+{
+	const char * p_cRes = NULL;
+
+	if ( iRes == 0 )
+	{
+		p_cRes = p_cBuffer;
+	}
+	return ( p_cRes );
+}
+
+static const char * _SisErrTextoGnu ( const char * p_cTexto, const char * p_cBuffer )
+{
+	(void) p_cBuffer;
+	return ( p_cTexto );
+}
+
+#define _SIS_ERR_TEXTO( r, b )	_Generic ( ( r ), int: _SisErrTextoXsi, default: _SisErrTextoGnu ) ( ( r ), ( b ) )
+
+/* strerror, sin su buffer estatico comun a todos los hilos. */
+static const char * _SisErrTexto ( int iCodigo )
+{
+	g_cSisTextoError [ 0 ] = 0;
+	return ( _SIS_ERR_TEXTO ( strerror_r ( iCodigo, g_cSisTextoError, sizeof ( g_cSisTextoError ) ),
+							  g_cSisTextoError ) );
+}
 #endif
 static SPilaLiterales	*	g_pillitErrores = NULL;
 
@@ -187,7 +228,7 @@ const char * SisErrDescripcion ()
 		}
 
 #     elif ( defined ( GNU ) )
-		p_cRes = (const char *) strerror ( g_iSisUltError );
+		p_cRes = _SisErrTexto ( g_iSisUltError );
 #     else
 		if ( ES_VALIDO ( sys_errlist ) )
 		{
@@ -313,26 +354,32 @@ int SisMaxError ()
 # if ( defined ( WIN ) )
 	iMaxError = 16000;
 # elif ( defined ( GNU ) )
-	char	*	p_cMsj;
+	/* Con un contador propio. Antes el sondeo usaba g_iSisUltError y lo dejaba
+	   valiendo el maximo mas uno: SisErrTipo () llama aqui, asi que despues de
+	   preguntar el tipo de un error SisErrCodigo () ya no devolvia ese error. */
+	const char	*	p_cMsj;
+	int				iCodigo;
 
-	g_iSisUltError = 1;
-	p_cMsj = strerror ( g_iSisUltError );
+	iCodigo = 1;
+	p_cMsj = _SisErrTexto ( iCodigo );
 	while ( ES_VALIDO ( p_cMsj ) &&
 		    ( CadLongitud ( p_cMsj ) > 0 ) &&
-			( CadEmpiezaPor ( p_cMsj, "Unknown" ) == 0 ) )  
+			( CadEmpiezaPor ( p_cMsj, "Unknown" ) == 0 ) )
 	{
-		g_iSisUltError = g_iSisUltError + 1;
-		p_cMsj = strerror ( g_iSisUltError );
+		iCodigo = iCodigo + 1;
+		p_cMsj = _SisErrTexto ( iCodigo );
 	}
-	iMaxError = g_iSisUltError - 1;
+	iMaxError = iCodigo - 1;
 # else
-	g_iSisUltError = 1;
-	while ( ES_VALIDO ( sys_errlist [ g_iSisUltError ] ) &&
-		    ( CadLongitud ( sys_errlist [ g_iSisUltError ] ) > 0 ) )  
+	int		iCodigo;
+
+	iCodigo = 1;
+	while ( ES_VALIDO ( sys_errlist [ iCodigo ] ) &&
+		    ( CadLongitud ( sys_errlist [ iCodigo ] ) > 0 ) )
 	{
-		g_iSisUltError = g_iSisUltError + 1;
+		iCodigo = iCodigo + 1;
 	}
-	iMaxError = g_iSisUltError - 1;
+	iMaxError = iCodigo - 1;
 # endif
 	return ( iMaxError );
 }
