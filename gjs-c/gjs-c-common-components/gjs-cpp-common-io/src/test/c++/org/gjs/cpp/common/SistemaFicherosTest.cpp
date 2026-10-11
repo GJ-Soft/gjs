@@ -825,6 +825,44 @@ static bool TestSisAtributos04 ()
 	return ( bRes );
 }
 
+/* SisFicheroEsTemporal en POSIX puro mira si la ruta cuelga del directorio
+   temporal. Lo hacia comparando texto, y "<temporal>x/..." pasaba por temporal.
+   En Windows y Cygwin la funcion lee el atributo de NTFS, y una ruta que no
+   existe no lo tiene: el caso 1 da falso en los tres modos. El 2 solo tiene
+   sentido donde se mira la ruta. */
+static bool TestSisAtributos05 ()
+{
+	cout << "Test SisAtributos 05 ( temporal por ruta ):" << endl;
+	bool bRes = true;
+
+	string sTemp = std::filesystem::temp_directory_path ().lexically_normal ().string ();
+	while ( ( ! sTemp.empty () ) && ( ( sTemp.back () == '/' ) || ( sTemp.back () == '\\' ) ) )
+	{
+		sTemp.pop_back ();
+	}
+
+	const string sVecino ( sTemp + "x/fichero.tmp" );
+	if ( SisFicheroEsTemporal ( sVecino ) )
+	{
+		cout << "Error caso 1: [" << sVecino << "] no cuelga del temporal y dijo que si" << endl;
+		bRes = false;
+	}
+# if ( ! defined ( WIN ) && ! defined ( CYGWIN ) )
+	const string sDentro ( sTemp + "/fichero.tmp" );
+	if ( ! SisFicheroEsTemporal ( sDentro ) )
+	{
+		cout << "Error caso 2: [" << sDentro << "] cuelga del temporal y dijo que no" << endl;
+		bRes = false;
+	}
+	if ( SisFicheroEsTemporal ( sTemp ) )
+	{
+		cout << "Error caso 3: el propio directorio temporal no es un fichero temporal" << endl;
+		bRes = false;
+	}
+# endif
+	return ( bRes );
+}
+
 
 bool TestSistemaFicheros ()
 {
@@ -948,6 +986,15 @@ bool TestSistemaFicheros ()
 		bRes = false;
 	}
 	if ( TestSisAtributos04 () )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestSisAtributos05 () )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
 	}

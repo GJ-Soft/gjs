@@ -63,7 +63,7 @@ char * VersCadena ( int iVersion, int iSubversion, int iRevision, int iCorreccio
 		p_cAux = CadCrear ( iTam );
 		if ( ES_VALIDO ( p_cAux ) )
 		{
-			sprintf ( p_cAux, p_cPatron, iVersion, iSubversion, iRevision, iCorreccion );
+			snprintf ( p_cAux, iTam + 1, p_cPatron, iVersion, iSubversion, iRevision, iCorreccion );
 			p_cRes = CadDuplicar ( p_cAux );
 			MemLiberar ( (void **) &p_cAux );
 		}

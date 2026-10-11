@@ -73,7 +73,7 @@ d i o x X u c s S f e E g G p n
 
 La implementación es un autómata de nueve estados que recorre el formato
 carácter a carácter, reconstruye cada especificador en un buffer intermedio
-(`p_cFrmProc`), llama a `sprintf` con ese especificador aislado y un solo
+(`p_cFrmProc`), llama a `snprintf` con ese especificador aislado y un solo
 argumento, y vuelca el resultado en el destino comprobando el límite.
 
 Puntos relevantes:
@@ -104,6 +104,10 @@ Puntos relevantes:
 - Modificador `l` repetido, o aplicado a un código distinto de `d`, `f` o `u`.
 - Código de tipo no soportado.
 - Especificador cuya anchura estimada supere `CAD_BASE_MAX_TAM`.
+- Número cuya salida real no quepa en `CAD_BASE_MAX_TAM`, aunque la estimación
+  pasara: un `%f` de un `double` grande lleva hasta 309 cifras enteras
+  (`"%.8000f"` con `1e308` son 8310 caracteres). Se detecta con lo que devuelve
+  `snprintf` y no se escribe nada de ese especificador.
 - Formato no consumido por completo.
 
 Cuando devuelve 0 el contenido de `p_cCadena` es indeterminado (puede tener
@@ -118,18 +122,18 @@ escrito el prefijo procesado hasta el punto del fallo).
 ## Test
 
 `FormatoCadenaTest.c` → `TestFormatoCadena()`. Es el segundo test del arnés.
+`TestFrmCadena03` fija el caso del `%f` que no cabe: antes de pasar a `snprintf`
+escribía fuera del buffer interno y el proceso abortaba por corrupción del heap.
 
 ## Observaciones
 
-- El fichero `FormatoCadena.c` está codificado en **cp1252**, no en UTF-8 como el
-  resto del repositorio (se aprecia en los comentarios de cabecera). Es
-  intencionado; conviene no "arreglarlo" sin comprobar el resto de la cadena de
-  compilación.
-- Internamente se usa `sprintf` sin límite sobre `p_cBuffer`
-  (`CAD_BASE_MAX_TAM + 1` bytes). La protección es la estimación previa de
-  anchura (`iMaxAncho`), no el propio `sprintf`; para `%s` la estimación real
-  está comentada en el código (bloque marcado `FALTA:`) y sustituida por un
-  margen fijo de 64 caracteres en el caso general.
+- Todas las escrituras en los buffers internos van por `snprintf` con el tamaño
+  del buffer (`CAD_BASE_MAX_TAM + 1` para `p_cBuffer`), así que ninguna puede
+  salirse. La estimación previa de anchura (`iMaxAncho`) sigue decidiendo qué
+  se rechaza de antemano, pero ya no es la única barrera: para `%s` la
+  estimación con la longitud real está comentada (bloque marcado `FALTA:`) y
+  lo acota `_EsCadenaValida`; para los números el margen es de 64 caracteres y
+  lo que no cabe lo caza el valor de retorno de `snprintf`.
 - El bloque `(...)` que captura el estado 7 recoge una "codificación" que después
   se descarta: el código que la aplicaría está comentado.
 - El código `n` figura en `_FRM_CODIGOS` pero no tiene caso en el `switch` de

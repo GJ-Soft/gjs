@@ -85,6 +85,12 @@ que obligó a cambiar `putenv` por `setenv` en
 
 ## Observaciones
 
+- **`EjecutarComando` lee la salida por una tubería** (`popen`, `_popen` en
+  Windows), sin fichero intermedio, desde 2026-10-11. Antes la redirigía con
+  `>>` a un fichero con nombre de `tmpnam` en el directorio temporal: el
+  nombre se podía adivinar y el fichero no existía hasta que corría la orden,
+  así que en un `/tmp` compartido otro usuario podía adelantarse con un
+  fichero o un enlace. Captura sólo la salida estándar, como antes.
 - **`EjecutarComando` devuelve la salida del programa**, cosa que
   `SisEjecutarComando` del stack C no hace —allí sólo se sabe si se lanzó—. Es
   la función más útil del módulo y la que más cuidado pide: si compone la orden

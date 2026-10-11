@@ -9,6 +9,7 @@
 #	include <sys/utsname.h>
 #endif
 #include <stdlib.h>
+#include <cstdio>
 
 #include <csignal>
 #include <csetjmp>
@@ -20,6 +21,7 @@
 
 #define SIS_MAX_TAM_VARIABLE			255
 #define SIS_MAX_TAM_VALOR				255
+#define SIS_TAM_BLOQUE_SALIDA			4096
 
 
 
@@ -475,39 +477,37 @@ bool PuedeLiberarse ( const void * ptr )
 
 string EjecutarComando ( const string & sComando )
 {
-	/* tmpnam () da un nombre unico, pero en Windows lo da en la RAIZ de la unidad
-	   actual ( "\s15ok." ), donde un usuario normal no puede crear ficheros: la
-	   redireccion fallaba con "El cliente no dispone de un privilegio requerido",
-	   el fichero no llegaba a existir y la funcion devolvia la cadena vacia. Se
-	   conserva el nombre, que es lo unico que se le pedia, y se lleva al directorio
-	   temporal de verdad; temp_directory_path () lo resuelve en las dos plataformas
-	   ( TMP / TMPDIR ). El punto final que anade tmpnam en Windows se cambia por
-	   una extension, que un nombre acabado en punto no es valido. */
-	char sFicTemporal [ L_tmpnam ];
-	tmpnam ( sFicTemporal );
-	filesystem::path pathTemporal = filesystem::temp_directory_path () /
-									( filesystem::path ( sFicTemporal ).stem ().string () + ".tmp" );
+	/* La salida se lee de una tuberia, sin fichero intermedio. Antes se redirigia
+	   con ">>" a un fichero del directorio temporal con nombre de tmpnam (): el
+	   nombre se podia adivinar y el fichero no existia hasta que corria la orden,
+	   asi que en un /tmp compartido otro usuario podia adelantarse y dejar alli un
+	   fichero ( la salida se anadia a lo suyo ) o un enlace ( la salida se
+	   escribia a traves de el, con los permisos de quien ejecuta ). En binario y
+	   sin filtrar nada, como antes: los saltos de linea llegan tal cual y los
+	   bytes >= 0x80 ( los acentos de una salida en castellano ) no se pierden. */
+	string	sResultado;
+# if ( defined ( WIN ) )
+	FILE *	p_fSalida = _popen ( sComando.c_str (), "rb" );
+# else
+	FILE *	p_fSalida = popen ( sComando.c_str (), "r" );
+# endif
 
-	/* Entrecomillada: la ruta temporal lleva espacios muy a menudo, y sin comillas
-	   el interprete de ordenes parte la redireccion por el primero. */
-	string sCmd = sComando + " >> \"" + pathTemporal.string () + "\"";
-	system ( sCmd.c_str () );
-	ifstream ifFichero ( pathTemporal, ios::in | ios::binary );
-	string sResultado;
-	if ( ifFichero )
+	if ( p_fSalida != NULL )
 	{
-		/* El bucle anterior leia byte a byte y se quedaba solo con los que daban
-		   ( int ) c mayor que cero, para descartar el centinela de EOF. Pero char
-		   es con signo en gcc, asi que ese filtro se llevaba por delante TODO byte
-		   >= 0x80: en una salida en castellano desaparecian los acentos, y quedaba
-		   "Versin del sistema operativo". rdbuf () vuelca el fichero entero, sin
-		   centinela que descartar y sin mirar el signo de nada. */
-		ostringstream ossContenido;
-		ossContenido << ifFichero.rdbuf ();
-		sResultado = ossContenido.str ();
-		ifFichero.close ();
+		char	cBloque [ SIS_TAM_BLOQUE_SALIDA ];
+		size_t	tLeidos = fread ( cBloque, 1, sizeof ( cBloque ), p_fSalida );
+
+		while ( tLeidos > 0 )
+		{
+			sResultado.append ( cBloque, tLeidos );
+			tLeidos = fread ( cBloque, 1, sizeof ( cBloque ), p_fSalida );
+		}
+# if ( defined ( WIN ) )
+		_pclose ( p_fSalida );
+# else
+		pclose ( p_fSalida );
+# endif
 	}
-	filesystem::remove ( pathTemporal );
     return( EliminarUltimoSaltoLinea( sResultado ) );
 }
 

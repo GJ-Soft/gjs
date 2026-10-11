@@ -517,6 +517,32 @@ static bool TestEjecutarComando01 ()
 }
 
 
+/* Una orden con salida conocida: la misma en cmd.exe que en sh. Se compara
+   entera, no solo que haya algo, y sin el salto de linea final que quita la
+   propia funcion ( "\r\n" en Windows, "\n" en POSIX ). */
+static bool TestEjecutarComando02 ()
+{
+	cout << "Test EjecutarComando02:" << endl;
+	bool bRes = true;
+
+	try
+	{
+		string sRes = EjecutarComando ( "echo hola" );
+		if ( sRes != "hola" )
+		{
+			cout << "Error caso 1: se esperaba [hola] y se ha recibido [" << sRes << "]" << endl;
+			bRes = false;
+		}
+	}
+	catch ( ... )
+	{
+		cout << "Error caso 1: excepcion al ejecutar la orden" << endl;
+		bRes = false;
+	}
+	return( bRes );
+}
+
+
 bool TestSistema ()
 {
 	bool bRes = true;
@@ -612,6 +638,15 @@ bool TestSistema ()
 		bRes = false;
 	}
 	if ( TestEjecutarComando01() )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestEjecutarComando02() )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
 	}

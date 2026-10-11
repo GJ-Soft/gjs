@@ -1422,11 +1422,11 @@ int SisRegRegistrarGUID ( const GUID guidCodigo, const char *p_cNombre, const ch
 	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuidMod, 
 						  REG_MAX_TAM_CLAVE, NULL, NULL);
 
-	sprintf ( p_cProgId, REG_PROG_ID_FORMATO, 
+	snprintf ( p_cProgId, sizeof ( p_cProgId ), REG_PROG_ID_FORMATO, 
 			  p_cFicModulo, 
 			  p_cNombre );
 
-	sprintf ( p_cProgIdAct, REG_PROG_ID_ACT_FORMATO, 
+	snprintf ( p_cProgIdAct, sizeof ( p_cProgIdAct ), REG_PROG_ID_ACT_FORMATO, 
 			  p_cFicModulo, 
 			  p_cNombre,
 			  REG_CLS_VERSION_DEF );
@@ -1714,11 +1714,11 @@ void SisRegDesregistrarGUID ( const GUID guidCodigo, const char *p_cNombre,
 	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
 						  REG_MAX_TAM_CLAVE, NULL, NULL);
 
-	sprintf ( p_cProgId, REG_PROG_ID_FORMATO, 
+	snprintf ( p_cProgId, sizeof ( p_cProgId ), REG_PROG_ID_FORMATO, 
 			  p_cFicModulo, 
 			  p_cNombre );
 
-	sprintf ( p_cProgIdAct, REG_PROG_ID_ACT_FORMATO, 
+	snprintf ( p_cProgIdAct, sizeof ( p_cProgIdAct ), REG_PROG_ID_ACT_FORMATO, 
 			  p_cFicModulo, 
 			  p_cNombre,
 			  REG_CLS_VERSION_DEF );
@@ -1838,11 +1838,11 @@ int SisRegEstaRegistradoGUID ( const GUID guidCodigo, const char *p_cNombre,
 	WideCharToMultiByte ( CP_ACP, 0, pswzGuid, -1, p_cGuid, 
 						  REG_MAX_TAM_CLAVE, NULL, NULL);
 
-	sprintf ( p_cProgId, REG_PROG_ID_FORMATO, 
+	snprintf ( p_cProgId, sizeof ( p_cProgId ), REG_PROG_ID_FORMATO, 
 			  p_cFicModulo, 
 			  p_cNombre );
 
-	sprintf ( p_cProgIdAct, REG_PROG_ID_ACT_FORMATO, 
+	snprintf ( p_cProgIdAct, sizeof ( p_cProgIdAct ), REG_PROG_ID_ACT_FORMATO, 
 			  p_cFicModulo, 
 			  p_cNombre,
 			  REG_CLS_VERSION_DEF );

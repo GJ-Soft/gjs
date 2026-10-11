@@ -1369,7 +1369,7 @@ char * ConvEnteroSinSignoACadenaHex ( unsigned int uiVal )
 	p_cRes = CadCrear ( iTam );
 	if ( ES_VALIDO ( p_cRes ) )
 	{
-		sprintf ( p_cRes, "&%0X", uiVal );
+		snprintf ( p_cRes, iTam + 1, "&%0X", uiVal );
 	}
 	return ( p_cRes );
 }
@@ -1383,7 +1383,7 @@ char * ConvEnteroLargoSinSignoACadenaHex ( unsigned long ulVal )
 	p_cRes = CadCrear ( iTam );
 	if ( ES_VALIDO ( p_cRes ) )
 	{
-		sprintf ( p_cRes, "&%0lX", ulVal );
+		snprintf ( p_cRes, iTam + 1, "&%0lX", ulVal );
 	}
 	return ( p_cRes );
 }

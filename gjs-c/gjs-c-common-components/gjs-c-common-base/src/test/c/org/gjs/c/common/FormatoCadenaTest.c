@@ -112,12 +112,61 @@ static int TestFrmCadena02 ()
 	return ( iRes );
 }
 
+/*
+ * Un %f de un double grande saca hasta 309 cifras enteras, y la comprobacion de
+ * anchura de FrmCadena solo reserva 64 caracteres para el numero. Con "%.8000f" y
+ * 1e308 la salida ( 8310 caracteres ) pasaba esa comprobacion y se escribia fuera
+ * del buffer interno de 8192: el proceso abortaba por corrupcion del heap. Ahora
+ * tiene que fallar como cuando no cabe la anchura, sin escribir nada.
+ */
+static int TestFrmCadena03 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test FrmCadena 03:\n" );
+	char * p_cDestino = CadCrear ( 64 );
+	if ( p_cDestino != NULL )
+	{
+		int iResult = _FrmCadena ( p_cDestino, "%.2f", 64, 1e20 );
+		if ( iResult == 1 )
+		{
+			if ( strcmp ( p_cDestino, "100000000000000000000.00" ) != 0 )
+			{
+				printf( "Error caso 1: La cadena formateada no es la esperada: [%s]\n", p_cDestino );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		else
+		{
+			printf( "Error caso 1: Se esperada resultado 1 pero se ha recibido %d\n", iResult );
+			iRes = BOOL_VAL_FALSO;
+		}
+		CadInicializar ( p_cDestino, 64 );
+		iResult = _FrmCadena ( p_cDestino, "%.8000f", 64, 1e308 );
+		if ( iResult == 0 )
+		{
+			if ( strcmp ( p_cDestino, "" ) != 0 )
+			{
+				printf( "Error caso 2: No se esperaba salida y se ha recibido: [%.60s]\n", p_cDestino );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		else
+		{
+			printf( "Error caso 2: Se esperada resultado 0 pero se ha recibido %d\n", iResult );
+			iRes = BOOL_VAL_FALSO;
+		}
+		MemLiberar ( (void **) &p_cDestino );
+	}
+	return ( iRes );
+}
+
 int TestFormatoCadena ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test FormatoCadena]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestFrmCadena01 () == BOOL_VAL_CIERTO ) &&
-			( TestFrmCadena02 () == BOOL_VAL_CIERTO ))
+			( TestFrmCadena02 () == BOOL_VAL_CIERTO ) &&
+			( TestFrmCadena03 () == BOOL_VAL_CIERTO ))
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

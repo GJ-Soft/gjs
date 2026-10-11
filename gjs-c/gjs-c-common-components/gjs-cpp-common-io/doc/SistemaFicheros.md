@@ -141,7 +141,10 @@ como fichero. Ahora las dos ramas y los dos stacks preguntan lo mismo.
   `SisFicheroEsTemporal` es el caso aparte de los seis: en Linux no se queda
   callada, contesta **otra pregunta parecida** —si el fichero cuelga del
   directorio temporal—, que no es lo mismo que el atributo `TEMPORARY` de NTFS.
-  Está marcado en el código.
+  Está marcado en el código. La comparación es por componentes de ruta (desde
+  2026-10-11): antes se comparaba el texto, y `/tmpx/a`, `/tmp2/a` o
+  `/tmp/../etc/passwd` pasaban por temporales. El propio directorio temporal
+  no cuenta. Lo fija `TestSisAtributos05`.
 
   `SisCadenaDirectorioSistema` ha pasado a ser **sólo WIN** (2026-09-19), como
   `SisRedEnviarMensaje` y `SisTituloProceso`: el "directorio del sistema" es

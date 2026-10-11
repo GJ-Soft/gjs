@@ -1183,11 +1183,30 @@ bool SisFicheroEsTemporal ( const string & sRuta )
 		   otra cosa parecida —si esta colgando del directorio temporal—, que
 		   NO es lo mismo. En Cygwin si se lee el atributo de verdad, por la
 		   rama de arriba. */
-		fs::path ruta ( sRutaNorm );
-		fs::path dirTemp = fs::temp_directory_path ();
+		fs::path ruta = fs::path ( sRutaNorm ).lexically_normal ();
+		fs::path dirTemp = fs::temp_directory_path ().lexically_normal ();
 
-		// Verificar si está en el directorio temporal
-		bRes = ( ruta.string ().find ( dirTemp.string () ) == 0 );
+		/* Por componentes, no como texto: comparar prefijos daba por temporal
+		   "/tmpx/a" o "/tmp2/a" cuando el temporal es "/tmp". Si el directorio
+		   acaba en separador se le quita, o su ultimo componente seria vacio y
+		   nada colgaria de el. Cuelga si la ruta relativa no sube ( ".." ) y no
+		   es el propio directorio ( "." ). */
+		if ( ! dirTemp.has_filename () )
+		{
+			dirTemp = dirTemp.parent_path ();
+		}
+		fs::path relativa = ruta.lexically_relative ( dirTemp );
+		if ( ! relativa.empty () )
+		{
+			const fs::path primero = *relativa.begin ();
+			if ( primero != ".." )
+			{
+				if ( primero != "." )
+				{
+					bRes = true;
+				}
+			}
+		}
 	}
 	catch ( ... )
 	{

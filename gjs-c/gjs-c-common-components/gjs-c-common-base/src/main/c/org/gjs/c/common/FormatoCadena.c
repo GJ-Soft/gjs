@@ -31,6 +31,7 @@
 
 
 #define _FRM_CODIGOS			"dioxXucsSfeEgGpn"
+#define _FRM_MAX_TAM_TMP		63
 
 
 
@@ -70,6 +71,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 	char *		p_cBuffer;
 	int			iPosPun;
 	int			iLongBuf;
+	int			iLongEsc;
 
 	/* Se inicializan a NULL porque solo se reservan dentro del if; si el guard
 	   falla (p.ej. iMaxTam <= 0 con la salida redirigida) los MemLiberar del
@@ -80,7 +82,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 	p_cBuffer = NULL;
 	if ( ES_VALIDO ( p_cCadena ) && ES_VALIDO ( p_cFormato ) && ( iMaxTam > 0 ) )
 	{
-		p_cTmp = CadCrear ( 63 );
+		p_cTmp = CadCrear ( _FRM_MAX_TAM_TMP );
 		p_cFrmProc = CadCrear ( CAD_BASE_MAX_TAM );
 		p_cCod = CadCrear ( 127 );
 		p_cBuffer = CadCrear ( CAD_BASE_MAX_TAM );
@@ -161,7 +163,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 						{
 							iAnchura  = va_arg ( valArgumentos, int );
 							CadInicializar ( p_cTmp, iPosTmp );
-							sprintf ( p_cTmp,"%d", iAnchura );
+							snprintf ( p_cTmp, _FRM_MAX_TAM_TMP + 1, "%d", iAnchura );
 							for ( iPosTmp = 0; iPosTmp < CadLongitud ( p_cTmp ); iPosTmp = iPosTmp + 1 )
 							{
 								p_cFrmProc [ iPosFrmP ] = p_cTmp [ iPosTmp ];
@@ -259,7 +261,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 						{
 							iPrecision  = va_arg ( valArgumentos, int );
 							CadInicializar ( p_cTmp, iPosTmp );
-							sprintf ( p_cTmp,"%d", iPrecision );
+							snprintf ( p_cTmp, _FRM_MAX_TAM_TMP + 1, "%d", iPrecision );
 							for ( iPosTmp = 0; iPosTmp < CadLongitud ( p_cTmp ); iPosTmp = iPosTmp + 1 )
 							{
 								p_cFrmProc [ iPosFrmP ] = p_cTmp [ iPosTmp ];
@@ -381,25 +383,25 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 									/*
 									if ( ES_VALIDO ( p_vCod ) )
 									{
-										sprintf ( p_cBuffer, p_cFrmProc, p_vCod );
+										snprintf ( p_cBuffer, CAD_BASE_MAX_TAM + 1, p_cFrmProc, p_vCod );
 										??MemLiberar ( &p_vCod );
 									}
 									else
 									{
 									*/
-									sprintf ( p_cBuffer, p_cFrmProc, p_cArg );
+									snprintf ( p_cBuffer, CAD_BASE_MAX_TAM + 1, p_cFrmProc, p_cArg );
 									CadInicializar ( p_cFrmProc, iPosFrmP );
 									//}
 								}
 								else
 								{
-									sprintf ( p_cBuffer, "%s", CAD_BASE_TXT_DEMASIADO_LARGO );
+									snprintf ( p_cBuffer, CAD_BASE_MAX_TAM + 1, "%s", CAD_BASE_TXT_DEMASIADO_LARGO );
 									CadInicializar ( p_cFrmProc, iPosFrmP );
 								}
 							}
 							else
 							{
-								sprintf ( p_cBuffer, "%s", CAD_BASE_TXT_VALOR_NULO );
+								snprintf ( p_cBuffer, CAD_BASE_MAX_TAM + 1, "%s", CAD_BASE_TXT_VALOR_NULO );
 								CadInicializar ( p_cFrmProc, iPosFrmP );
 							}
 							iPosBuf = 0;
@@ -419,6 +421,7 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 							iMaxAncho = iMaxAncho + CadLongitud ( p_cFrmProc ) + 64;
 							if ( iMaxAncho < CAD_BASE_MAX_TAM )
 							{
+								iLongEsc = 0;
 								switch( cCarFrm )
 								{
 									case 'd':
@@ -432,12 +435,12 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 										if ( iIndLargo == 0 )
 										{
 											iArg = va_arg ( valArgumentos, int );
-											sprintf ( p_cBuffer, p_cFrmProc, iArg );
+											iLongEsc = snprintf ( p_cBuffer, CAD_BASE_MAX_TAM + 1, p_cFrmProc, iArg );
 										}
 										else
 										{
 											lArg = va_arg ( valArgumentos, long );
-											sprintf ( p_cBuffer, p_cFrmProc, lArg );
+											iLongEsc = snprintf ( p_cBuffer, CAD_BASE_MAX_TAM + 1, p_cFrmProc, lArg );
 										}
 										break;
 									}
@@ -448,13 +451,13 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 									case 'G':
 									{
 										dArg = va_arg ( valArgumentos, double );
-										sprintf ( p_cBuffer, p_cFrmProc, dArg );
+										iLongEsc = snprintf ( p_cBuffer, CAD_BASE_MAX_TAM + 1, p_cFrmProc, dArg );
 										break;
 									}
 									case 'p':
 									{
 										p_vArg = va_arg ( valArgumentos, void * );
-										sprintf ( p_cBuffer, p_cFrmProc, p_vArg );
+										iLongEsc = snprintf ( p_cBuffer, CAD_BASE_MAX_TAM + 1, p_cFrmProc, p_vArg );
 										break;
 									}
 									default:
@@ -464,6 +467,23 @@ int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos
 								}
 
 								CadInicializar ( p_cFrmProc, iPosFrmP );
+
+								/* snprintf devuelve lo que ocupaba la salida entera, y si no cabia la ha
+								   truncado. La comprobacion de iMaxAncho de arriba no basta: un %f de un
+								   double grande lleva hasta 309 cifras enteras y el margen es de 64. Antes
+								   se escribia fuera de p_cBuffer; ahora falla como cuando no cabe la anchura. */
+								if ( iLongEsc < 0 )
+								{
+									iRes = 0;
+									iAnchura = 0;
+									CadInicializar ( p_cBuffer, CAD_BASE_MAX_TAM );
+								}
+								else if ( iLongEsc > CAD_BASE_MAX_TAM )
+								{
+									iRes = 0;
+									iAnchura = 0;
+									CadInicializar ( p_cBuffer, CAD_BASE_MAX_TAM );
+								}
 
 								iLongBuf = CadLongitud ( p_cBuffer );
 								iPosPun = 0;

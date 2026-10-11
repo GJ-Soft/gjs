@@ -1023,7 +1023,7 @@ char * SCadCadenaHexadecimal ( SCadena * p_cadObj )
 		{
 			for ( iCar = 0; iCar < iLong; iCar = iCar + 1 )
 			{
-				sprintf ( &(p_cRes [ iCar * 2 ]), "%02X",  (unsigned char) p_cadObj->p_cValor [ iCar ] );
+				snprintf ( &(p_cRes [ iCar * 2 ]), 3, "%02X",  (unsigned char) p_cadObj->p_cValor [ iCar ] );
 			}
 		}
 	}

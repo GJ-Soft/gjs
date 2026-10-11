@@ -66,13 +66,12 @@
 		<!-- Sonar -->
 		<sonar.python.version>3.14</sonar.python.version>
 		<!-- Coding style: No permitimos que cuatro lumbreras decidan como codificar --> 
-		<!--
         <sonar.issue.ignore.multicriteria>p1,p2</sonar.issue.ignore.multicriteria>
 		<sonar.issue.ignore.multicriteria.p1.ruleKey>python:S117</sonar.issue.ignore.multicriteria.p1.ruleKey>
 		<sonar.issue.ignore.multicriteria.p1.resourceKey>**/*.py</sonar.issue.ignore.multicriteria.p1.resourceKey>
 		<sonar.issue.ignore.multicriteria.p2.ruleKey>python:S1542</sonar.issue.ignore.multicriteria.p2.ruleKey>
 		<sonar.issue.ignore.multicriteria.p2.resourceKey>**/*.py</sonar.issue.ignore.multicriteria.p2.resourceKey>
-		-->
+
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->
 		<gjs-python-common.version>1.0.0-RC.2</gjs-python-common.version>

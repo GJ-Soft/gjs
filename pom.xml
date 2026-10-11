@@ -16,7 +16,7 @@
 
 	<properties>
 		<!-- Los pom.xml agregadores no se despliegan -->
-		<maven.deploy.skip>true</maven.deploy.skip>
+		<maven.deploy.skip>true</maven.deploy.skip>	
 	</properties>
 
     <modules>

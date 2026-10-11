@@ -101,9 +101,11 @@ y más seguro que el *cast* directo de C.
 
 ### Número → cadena
 
-No se usa `sprintf`: las cadenas se construyen dígito a dígito, dimensionando
-antes el buffer con [Numeros](Numeros.md) (`NumDigitosEnteroLargo`,
-`NumDigitosReal`…) y reservando con `CadCrear`.
+Las decimales no usan `sprintf`: las cadenas se construyen dígito a dígito,
+dimensionando antes el buffer con [Numeros](Numeros.md) (`NumDigitosEnteroLargo`,
+`NumDigitosReal`…) y reservando con `CadCrear`. Las dos hexadecimales sin signo
+(`ConvEnteroSinSignoACadenaHex` y `ConvEnteroLargoSinSignoACadenaHex`) sí
+formatean, con `snprintf` acotado al tamaño reservado.
 
 - Se reserva el espacio justo, más el signo `'-'` si el valor es negativo.
 - El valor mínimo del tipo (`LONG_MIN`) se trata como caso especial: se convierte
