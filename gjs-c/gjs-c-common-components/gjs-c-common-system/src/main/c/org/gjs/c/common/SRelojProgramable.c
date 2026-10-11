@@ -303,7 +303,11 @@ static void * SRelojProgramableCuerpoHilo ( void * p_vDatos )
 #  if ( defined ( WIN ) )
 	return ( iRes );
 #  else
-	pthread_exit ( p_vRes );
+	/* Volver de la funcion del hilo equivale a pthread_exit con ese valor, y es
+	   un return que cualquier analizador entiende: sin la cabecera de pthread a
+	   mano, pthread_exit no se sabe que no vuelve y la funcion parecia acabar
+	   sin devolver nada. */
+	return ( p_vRes );
 #  endif
 }
 
