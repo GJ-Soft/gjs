@@ -1,6 +1,8 @@
 #include "BaseConfig.h"
 
 #include <cxxabi.h>
+#include <cstdlib>
+#include <memory>
 
 #include "Objeto.h"
 #include "Cadenas.h"
@@ -40,10 +42,11 @@ string Objeto::getTipo () const
 {
 	const type_info & typeinfo( typeid(*this) );
 	int status;
-	char* demangled = abi::__cxa_demangle( typeinfo.name(), nullptr, nullptr, &status );
-	string tipo = string ( status == 0 ? demangled : typeinfo.name() );
-	free( demangled );
-	return( tipo );
+	// __cxa_demangle reserva el nombre con malloc y exige liberarlo con free, no
+	// con delete: el unique_ptr lo hace solo, aunque salte una excepcion.
+	unique_ptr < char, decltype ( &std::free ) > demangled (
+		abi::__cxa_demangle( typeinfo.name(), nullptr, nullptr, &status ), &std::free );
+	return( string ( ( status == 0 ) && demangled ? demangled.get () : typeinfo.name() ) );
 }
 
 size_t Objeto::getTam () const

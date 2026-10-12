@@ -131,22 +131,6 @@ completa del componente.
 - **`ClienteFTP.h` hace `using namespace org::gjs::cpp::common;` en el ámbito
   global**, igual que `ClienteIETF.h` y `ClienteHTTP.h`. Ver
   [IETF](IETF.md#observaciones).
-- **`ServidorFTP` es abstracta sin motivo aparente.** Re-declara como `= 0`
-  cuatro *callbacks* que [ServidorComandos](Comandos.md) y
-  [ServidorSesion](Sesiones.md) ya daban implementadas y vacías:
-
-  ```cpp
-  void ComandoRecibido( Comando & comando ) = 0;
-  void ComandoProcesado( Comando & comando, bool & bResultado ) = 0;
-  void SesionIniciada( const std::string & sUsuario ) = 0;
-  void SesionFinalizada( const std::string & sUsuario ) = 0;
-  ```
-
-  Es C++ válido —volver a declarar pura una virtual heredada—, pero convierte
-  cuatro puntos de traza opcionales en obligaciones: **no se puede usar un
-  `ServidorFTP` sin derivar de él y escribir los cuatro**, aunque sea con el
-  cuerpo vacío. El test tiene que hacerlo. Si la intención era declarar los
-  reemplazos, sobra el `= 0`.
 - **Queda un bloque muerto con un error de sintaxis dentro.** Entre las líneas
   127 y 147 de `ServidorFTP.cpp` hay un `/* … */` con cuatro métodos escritos
   como `ServidorIETF::` —la clase equivocada— que además se llaman a sí mismos:
@@ -163,6 +147,20 @@ completa del componente.
 
 ### Diseño
 
+- **`ServidorFTP` es abstracta a propósito.** Re-declara como `= 0` cuatro
+  *callbacks* que [ServidorComandos](Comandos.md) y
+  [ServidorSesion](Sesiones.md) ya daban implementadas y vacías:
+
+  ```cpp
+  void ComandoRecibido( Comando & comando ) = 0;
+  void ComandoProcesado( Comando & comando, bool & bResultado ) = 0;
+  void SesionIniciada( const std::string & sUsuario ) = 0;
+  void SesionFinalizada( const std::string & sUsuario ) = 0;
+  ```
+
+  Es C++ válido —volver a declarar pura una virtual heredada— y es lo que se
+  quiere: quien use un `ServidorFTP` tiene que derivar de él y escribir los
+  cuatro, aunque sea con el cuerpo vacío. Sonar lo marca ( cpp:S1017 ).
 - **Un solo directorio para todos.** La cabecera lo dice:
   `// TODO: Subdirectorios por usuario + concurrencia (multiples usuarios en
   diferentes directorios)`. `GestorUsuarios` ya guarda el subdirectorio de cada

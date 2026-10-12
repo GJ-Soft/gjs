@@ -8,6 +8,8 @@
 #include "Memoria.h"
 #include "Excepcion.h"
 
+#include <new>
+
 
 
 
@@ -44,49 +46,23 @@ extern void _MemBloqueLiberado ( void * p_vDir, unsigned long ulTam );
 
 
 
+/* Con new[] y delete[], igual en todos los modos. Antes era malloc / free en
+   POSIX y HeapAlloc / HeapFree en WIN. Los bloques son unsigned char [], asi que
+   solo los libera MemLiberar: ni delete sin [], ni free.
+
+   En MODO_DEPURACION se cuentan los bloques, pero ya no los bytes liberados:
+   de un bloque de new[] no se puede preguntar el tamano, que antes se sacaba
+   de malloc_usable_size o de HeapSize. */
 void * MemReservar ( int iNumBytes )
 {
-	void *	p_vBloque;
-#  if ( defined ( WIN ) )
-	HANDLE  hMem;
-#  endif
+	void *	p_vBloque = NULL;
 
 	if ( iNumBytes > 0 )
 	{
-#	  if ( defined ( WIN ) )
-		hMem = GetProcessHeap ();
-		if ( hMem != NULL )
-		{
-			p_vBloque = (void *) HeapAlloc ( hMem, HEAP_ZERO_MEMORY, iNumBytes );
-			if ( ES_VALIDO ( p_vBloque ) )
-			{
-#			  if ( defined ( MODO_DEPURACION ) )
-				_MemBloqueReservado ( p_vBloque, (unsigned long) iNumBytes );
-#			  endif
-			}
-			else
-			{
-				if ( HeapValidate ( hMem, 0, NULL ) == FALSE )
-				{
-					// Error grave por heap del proceso corrupto:
-					throw ( Excepcion ( "Memoria", "MemReservar", "Memoria invalida" ) );
-				}
-				else
-				{
-					throw ( Excepcion ( "Memoria", "MemReservar", "Memoria insuficiente" ) );
-				}
-			}
-		}
-		else
-		{
-			p_vBloque = NULL;
-			throw ( Excepcion ( "Memoria", "MemReservar", "Memoria invalida" ) );
-		}
-#	  else
-		p_vBloque = malloc ( iNumBytes );
+		// Los () finales lo dejan a cero, como antes el memset o HEAP_ZERO_MEMORY.
+		p_vBloque = new ( std::nothrow ) unsigned char [ iNumBytes ] ();
 		if ( ES_VALIDO ( p_vBloque ) )
 		{
-			memset ( p_vBloque, 0, iNumBytes );
 #		  if ( defined ( MODO_DEPURACION ) )
 			_MemBloqueReservado ( p_vBloque, (unsigned long) iNumBytes );
 #		  endif
@@ -95,11 +71,9 @@ void * MemReservar ( int iNumBytes )
 		{
 			throw ( Excepcion ( "Memoria", "MemReservar", "Memoria insuficiente" ) );
 		}
-#	  endif
 	}
 	else
 	{
-		p_vBloque = NULL;
 		//throw ( Excepcion ( "Memoria", "MemReservar", "Error de parametros" ) );
 	}
 	return ( p_vBloque );
@@ -109,69 +83,20 @@ void * MemReservar ( int iNumBytes )
 int MemLiberar ( void ** p_p_vBloque )
 {
 	int				iRes;
-	void *			p_vBloque;
-#  if ( defined ( WIN ) )
-	HANDLE			hMem;
-#  endif
-#  if ( defined ( MODO_DEPURACION ) )
-	int				iNumBytes;
-#  endif
 
 	if ( ES_VALIDO ( p_p_vBloque ) )
 	{
-		p_vBloque = *p_p_vBloque;
+		void * p_vBloque = *p_p_vBloque;
 		if ( ES_VALIDO ( p_vBloque ) )
 		{
-#		  if ( defined ( WIN ) )
-			hMem = GetProcessHeap ();
-			if ( hMem != NULL )
-			{
-#			  if ( defined ( MODO_DEPURACION ) )
-				iNumBytes = HeapSize ( hMem, 0, (LPVOID) p_vBloque );
-#			  endif
-				HeapFree ( hMem, 0, (LPVOID) p_vBloque );
-#			  if ( defined ( MODO_DEPURACION ) )
-				_MemBloqueLiberado ( p_vBloque, (unsigned long) iNumBytes );
-#			  endif
-				iRes = 1;
-			}
-			else
-			{
-				iRes = 0;
-				// throw ( Excepcion ( "Memoria", "MemLiberar", "Memoria invalida" ) );
-			}
-			*p_p_vBloque = NULL;
-
-#		  elif ( defined ( GNU ) )
-
-			iRes = 1;
+			delete [] static_cast < unsigned char * > ( p_vBloque );
 #		  if ( defined ( MODO_DEPURACION ) )
-				iNumBytes = malloc_usable_size ( p_vBloque );
+			_MemBloqueLiberado ( p_vBloque, 0 );
 #		  endif
-            free ( p_vBloque );
-			*p_p_vBloque = NULL;
-#		  if ( defined ( MODO_DEPURACION ) )
- 			_MemBloqueLiberado ( p_vBloque, (unsigned long) iNumBytes );
-#		  endif
-
-#		  else // No GNU:
-			iRes = 1;
-#		  if ( defined ( MODO_DEPURACION ) )
-				iNumBytes = malloc_usable_size ( p_vBloque );
-#		  endif
-			free ( p_vBloque );
-			*p_p_vBloque = NULL;
-#		   if ( defined ( MODO_DEPURACION ) )
-			_MemBloqueLiberado ( p_vBloque, (unsigned long) iNumBytes );
-#		   endif
-#		 endif
 		}
-		else
-		{
-			// Ya es un puntero nulo o no valido:
-			iRes = 1;
-			*p_p_vBloque = NULL;
-		}
+		// Si ya era nulo no hay nada que liberar, y tambien vale.
+		iRes = 1;
+		*p_p_vBloque = NULL;
 	}
 	else
 	{

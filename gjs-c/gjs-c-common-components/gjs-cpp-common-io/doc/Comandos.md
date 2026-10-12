@@ -64,7 +64,8 @@ abierta»—.
 Ponen el diálogo encima del esqueleto.
 
 `ClienteComandos` añade `EnviarComando`, con el comando ya montado o con nombre
-y lista de argumentos.
+y lista de argumentos. Las dos son virtuales, como `Cliente::EnviarMensaje`:
+[ClienteSesion](Sesiones.md) las redefine.
 
 `ServidorComandos` implementa el `ProcesarMensaje` de [Servidor](ClienteServidor.md)
 en términos de comandos, y deja **cinco puntos de extensión puros**:

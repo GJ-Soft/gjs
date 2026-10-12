@@ -20,6 +20,7 @@
 #define NOMINMAX
 #include <windows.h>
 #include <cstdlib>
+#include <memory>
 
 /* En Cygwin-POSIX las rutas llegan en estilo POSIX y hay que traducirlas. En
    Windows puro y en Cygwin estilo Windows ya vienen como las quiere la API. */
@@ -52,38 +53,37 @@ static_assert ( SFW32_ATRIB_ENCRIPTADO == FILE_ATTRIBUTE_ENCRYPTED,
                 "SFW32_ATRIB_ENCRIPTADO no coincide con FILE_ATTRIBUTE_ENCRYPTED" );
 
 
-/* Traduce la ruta al estilo que espera la API de Windows. Devuelve una copia
-   que hay que liberar con free, o NULL si no hay nada que traducir ( modos en
-   los que la ruta ya viene en estilo Windows ) o si la traduccion fallo. En
-   los dos ultimos casos se usa la ruta original tal cual, que es lo correcto:
-   si cygwin_create_path no supo con ella, la API de Windows tampoco sabra, y
-   devolvera el error por su cuenta. */
-static char * _SFW32RutaWindows ( const char * p_cRuta )
-{
-	char *	p_cRes;
+/* cygwin_create_path reserva la ruta con malloc y hay que soltarla con free:
+   la suelta el unique_ptr, sin un free a la vista. */
+typedef std::unique_ptr < char, decltype ( &std::free ) > _SFW32Ruta;
 
+/* Traduce la ruta al estilo que espera la API de Windows. Devuelve la copia,
+   o vacio si no hay nada que traducir ( modos en los que la ruta ya viene en
+   estilo Windows ) o si la traduccion fallo. En los dos ultimos casos se usa
+   la ruta original tal cual, que es lo correcto: si cygwin_create_path no supo
+   con ella, la API de Windows tampoco sabra, y devolvera el error por su
+   cuenta. */
+static _SFW32Ruta _SFW32RutaWindows ( const char * p_cRuta )
+{
 #if ( defined ( CYGWIN ) && defined ( POSIX ) )
-	p_cRes = ( char * ) cygwin_create_path ( CCP_POSIX_TO_WIN_A, p_cRuta );
+	return ( _SFW32Ruta ( ( char * ) cygwin_create_path ( CCP_POSIX_TO_WIN_A, p_cRuta ), &std::free ) );
 #else
 	( void ) p_cRuta;
-	p_cRes = NULL;
+	return ( _SFW32Ruta ( nullptr, &std::free ) );
 #endif
-	return ( p_cRes );
 }
 
 
 unsigned int SFW32Atributos ( const char * p_cRuta )
 {
 	unsigned int	uiRes;
-	char *			p_cRutaWin;
 
 	if ( p_cRuta != NULL )
 	{
-		p_cRutaWin = _SFW32RutaWindows ( p_cRuta );
-		if ( p_cRutaWin != NULL )
+		_SFW32Ruta rutaWin = _SFW32RutaWindows ( p_cRuta );
+		if ( rutaWin )
 		{
-			uiRes = ( unsigned int ) GetFileAttributesA ( p_cRutaWin );
-			free ( p_cRutaWin );
+			uiRes = ( unsigned int ) GetFileAttributesA ( rutaWin.get () );
 		}
 		else
 		{
@@ -101,15 +101,13 @@ unsigned int SFW32Atributos ( const char * p_cRuta )
 bool SFW32PonerAtributos ( const char * p_cRuta, unsigned int uiAtributos )
 {
 	bool	bRes;
-	char *	p_cRutaWin;
 
 	if ( p_cRuta != NULL )
 	{
-		p_cRutaWin = _SFW32RutaWindows ( p_cRuta );
-		if ( p_cRutaWin != NULL )
+		_SFW32Ruta rutaWin = _SFW32RutaWindows ( p_cRuta );
+		if ( rutaWin )
 		{
-			bRes = ( SetFileAttributesA ( p_cRutaWin, ( DWORD ) uiAtributos ) != 0 );
-			free ( p_cRutaWin );
+			bRes = ( SetFileAttributesA ( rutaWin.get (), ( DWORD ) uiAtributos ) != 0 );
 		}
 		else
 		{

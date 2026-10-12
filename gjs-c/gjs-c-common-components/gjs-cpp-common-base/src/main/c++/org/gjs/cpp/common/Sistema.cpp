@@ -184,16 +184,6 @@ string VariableEntorno ( const string & sNombre )
 	return ( sRes );
 }
 
-/*
- * La variable environ en CYGWIN admite realloc de espacio de memoria limitado. De momento
- * evitamos el realloc a menor espacio, por lo que usamos un mecanismo de invalidación de
- * posiciones típico.
- * SÓLO DEBE USARSE PARA TEST
- */
-const char * INVALID_POSITION = "XXX";
-
-#define _ENTORNO_FORM_EST_VARIABLE		"%s=%s"
-#define _ENTORNO_MAX_TAM_CAD_DEF		( SIS_MAX_TAM_VARIABLE + SIS_MAX_TAM_VALOR + 1 )
 
 void EstablecerVariableEntorno ( const string & sNombre, const string & sValor )
 {
@@ -219,30 +209,6 @@ void EstablecerVariableEntorno ( const string & sNombre, const string & sValor )
 	{
 		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
 	}
-	/*
-		char * p_cVarEnt = (char *) malloc ( _ENTORNO_MAX_TAM_CAD_DEF + 1 );
-		if ( ES_VALIDO ( p_cVarEnt ) )
-		{
-			if ( ES_NULO ( p_cValor ) )
-			{
-				snprintf ( p_cVarEnt, _ENTORNO_MAX_TAM_CAD_DEF, _ENTORNO_FORM_EST_VARIABLE, p_cNombre, "" );
-			}
-			else
-			{
-				snprintf ( p_cVarEnt, _ENTORNO_MAX_TAM_CAD_DEF, _ENTORNO_FORM_EST_VARIABLE, p_cNombre, p_cValor );
-			}
-			
-			if ( putenv ( p_cVarEnt ) != 0 )
-			{
-				throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
-			}
-			free ( p_cVarEnt );
-		}
-		else
-		{
-			throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
-		}
-		*/
 #	endif
 	}
 	else
@@ -255,61 +221,14 @@ void EliminarVariableEntorno ( const string & sNombre )
 {
 	const char * p_cNombre = sNombre.c_str();
 #if ( defined ( POSIX ) )
-#  if  ( defined ( CYGWIN ) )
-	if ( p_cNombre != NULL )
-	{
-		/* size_t, que es lo que devuelve strlen y lo que piden strncmp y el indice. */
-		size_t iTamNombre = strlen( p_cNombre );
-		if ( iTamNombre > 0 )
-		{
-			try
-			{
-				int iTam = 0;
-				int iPos = -1;
-				for ( char **env = environ; *env != NULL; env++ )
-				{
-					if ( ( iPos < 0 ) && ( strlen( *env ) > iTamNombre ) &&
-						 ( strncmp( p_cNombre, *env, iTamNombre ) == 0 ) &&
-						 ( (*env)[ iTamNombre ] == '=' )  )
-					{
-						iPos = iTam;
-						break;
-					}
-					iTam = iTam + 1;
-				}
-				if ( iPos >= 0 )
-				{
-					if ( environ[ iPos ] != INVALID_POSITION )
-					{
-						free( environ[ iPos ] );
-						/* const_cast, no un cast a secas, porque eso es justo lo que pasa
-						   aqui: INVALID_POSITION es un const char * que apunta al literal
-						   "XXX" ( linea 190 ), y se guarda en environ, que es char **.
-						   Explicitarlo deja a la vista lo que el cast tapaba.
-
-						   NOTA DE DISENO, no trabajo pendiente: el centinela en si es
-						   discutible, pero funciona. La entrada queda
-						   como "XXX", que no es una variable de entorno valida ( no lleva
-						   '=' ), y la comparacion de arriba es de PUNTEROS contra el mismo
-						   literal: solo funciona porque este codigo es el unico que lo
-						   escribe. Si algun dia alguien hace free () de esa entrada,
-						   estaria liberando un literal. */
-						environ[ iPos ] = const_cast < char * > ( INVALID_POSITION );
-					}
-				}
-			}
-			catch ( const exception & ex )
-			{
-				throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible establecer la variable de entorno ", p_cNombre ), ex ) );
-			}
-		}
-}
-#  else
+	/* unsetenv tambien en Cygwin. Antes se buscaba la entrada en environ, se hacia
+	   free de ella y se dejaba en su sitio el literal "XXX": free de una cadena
+	   que no es nuestra si llego por putenv ( de un buffer estatico, o de un
+	   new [] como el de CVariablesEntorno ), y una entrada basura en el entorno. */
 	if ( unsetenv ( p_cNombre ) != 0 )
 	{
-		throw ( Excepcion ( "Sistema", "EstablecerVariableEntorno", Concatenar ( "Imposible eliminar la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
+		throw ( Excepcion ( "Sistema", "EliminarVariableEntorno", Concatenar ( "Imposible eliminar la variable de entorno ", p_cNombre, ". Error=", ToString ( errno ) ) ) );
 	}
-# endif
 #else
 	/* _putenv_s con valor vacio elimina la variable de las dos copias del
 	   entorno, la del runtime de C y el bloque Win32; ver EstablecerVariableEntorno. */
@@ -438,7 +357,7 @@ void InicializarBase ()
 {
 	if ( _inicio_heap == NULL )
 	{
-		_inicio_heap = malloc( sizeof( int ) );
+		_inicio_heap = new int ( 0 );
 	}
 }
 

@@ -36,13 +36,14 @@ entorno.LimpiarValor ( "TMPDIR" );
 | ---------------- | ------------------------------------------------------------- |
 | `ObtValor`       | `getenv`                                                      |
 | `ExisteVariable` | `getenv`, y comprueba si vino algo                            |
-| `EstValor`       | `putenv`, con la cadena `NOMBRE=valor` reservada con `strdup` |
+| `EstValor`       | `putenv`, con la cadena `NOMBRE=valor` reservada con `new []` |
 | `LimpiarValor`   | `putenv` con el valor vacío                                   |
 
 `EstValor` hace lo correcto con `putenv`, que es la parte delicada: la función
 **se queda con el puntero**, que pasa a formar parte del entorno del proceso, así
-que la cadena se reserva con `strdup` y sólo se libera **si `putenv` falla**. Hay
-un comentario en el código que lo explica.
+que la cadena se reserva con `new []` y sólo se libera **si `putenv` falla**. Hay
+un comentario en el código que lo explica. Antes era `strdup` y `free`; a
+`putenv` le da igual, porque no la libera nunca.
 
 ---
 
@@ -76,7 +77,8 @@ que no exista, crearla, leerla, cambiarla, borrarla y comprobar que ya no está.
   deja presente y vacía. La clase no ofrece la primera.
 - **No usa `setenv`/`unsetenv`, que es la pareja moderna de POSIX**, sino
   `putenv` para todo. `putenv` es la portable —existe también en Windows como
-  `_putenv`— y la que obliga al `strdup`; las otras dos copian ellas mismas.
+  `_putenv`— y la que obliga a copiar la cadena; las otras dos copian ellas
+  mismas.
 - **Queda un `TODO` pendiente**: `// TODO: Limpiar blancos , etc como en C`. La
   versión C recortaba los espacios del nombre y del valor antes de asignarlos, y
   ésta no.

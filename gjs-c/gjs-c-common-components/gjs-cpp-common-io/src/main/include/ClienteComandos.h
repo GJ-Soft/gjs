@@ -28,8 +28,10 @@ namespace org
 				ClienteComandos( const std::string & sIP, int iPuerto );
 				virtual ~ClienteComandos();
 				
-				void EnviarComando( Comando & comando, std::string & sRespuesta );
-				void EnviarComando( std::string sComando, const std::initializer_list<std::string> & lisArgumentos, std::string & sRespuesta );
+				// Virtuales, como Cliente::EnviarMensaje: ClienteSesion las redefine para
+				// no enviar sin sesion, y por una referencia a esta clase se la saltaba.
+				virtual void EnviarComando( Comando & comando, std::string & sRespuesta );
+				virtual void EnviarComando( std::string sComando, const std::initializer_list<std::string> & lisArgumentos, std::string & sRespuesta );
 				
 			};
 

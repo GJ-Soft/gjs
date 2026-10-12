@@ -15,8 +15,8 @@
 ## Propósito
 
 Reserva de memoria y comprobación de punteros, heredadas del stack C. Es la
-parte del componente que menos se parece a C++: aquí no hay `new`, ni
-contenedores, ni punteros inteligentes, sino `MemReservar` y macros.
+parte del componente que menos se parece a C++: aquí no hay contenedores ni
+punteros inteligentes, sino `MemReservar` y macros.
 
 ## `Memoria`
 
@@ -29,6 +29,11 @@ void   MemLimpiar  ( void * p_vBloque, int iNumBytes );
 `MemLiberar` recibe **puntero a puntero** y anula el original, que es el
 convenio de todo el stack C: después de liberar, la variable del llamante queda
 a `NULL` y no puede quedarse colgando.
+
+Por debajo son `new unsigned char [ n ] ()` y `delete []`, iguales en los tres
+modos; el bloque sale a cero. Hasta el 2026-10-12 eran `malloc` / `free` en
+POSIX y `HeapAlloc` / `HeapFree` en WIN. Un bloque de `MemReservar` sólo lo
+libera `MemLiberar`: ni `free` ni `delete` sin `[]`.
 
 ### Los macros de comprobación
 
@@ -98,6 +103,10 @@ Va de la mano de [Depurador](Depurador.md), que lleva la cuenta por objeto.
   en [Objeto::clonar](Objeto.md), que devuelve un puntero desnudo sin dueño.
 - **`MemLimpiar` no dice con qué rellena.** Presumiblemente ceros, pero un
   módulo que ofrece constantes de patrón de memoria podría dejarlo escrito.
+- **En `MODO_DEPURACION` ya no se descuentan los bytes liberados**, sólo los
+  bloques: de un bloque de `new []` no se puede preguntar el tamaño, que antes
+  se sacaba de `malloc_usable_size` o de `HeapSize`. `MODO_DEPURACION` está
+  pendiente de revisar entero.
 - **`InfoMemoria` desaparece fuera de `MODO_DEPURACION`**, así que el código que
   la use necesita el mismo `#if` alrededor. Es la misma situación de
   [Depurador](Depurador.md).

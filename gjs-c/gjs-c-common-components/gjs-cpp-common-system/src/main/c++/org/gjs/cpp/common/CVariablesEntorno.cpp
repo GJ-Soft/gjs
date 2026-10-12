@@ -72,19 +72,21 @@ bool CVariablesEntorno::EstValor ( const string & sVariable, const string & sVal
 	if ( ! sVariable.empty () )
 	{
 		// putenv toma posesion de la cadena ( pasa a formar parte del entorno ):
-		// se duplica y, si tiene exito, NO se libera -- liberarla seria comportamiento
-		// indefinido en POSIX. En caso de fallo si se libera.
+		// se copia y, si tiene exito, NO se libera -- liberarla seria comportamiento
+		// indefinido en POSIX. En caso de fallo si se libera. Con new[] y no con
+		// strdup: putenv no la libera nunca, asi que le da igual como se reservo.
 		string sAsignacion = sVariable + "=" + sValor;
-		char * p_cBuffer = strdup ( sAsignacion.c_str () );
+		char * p_cBuffer = new ( std::nothrow ) char [ sAsignacion.size () + 1 ];
 		if ( ES_VALIDO ( p_cBuffer ) )
 		{
+			memcpy ( p_cBuffer, sAsignacion.c_str (), sAsignacion.size () + 1 );
 			if ( putenv ( p_cBuffer ) == 0 )
 			{
 				bRes = true;
 			}
 			else
 			{
-				free ( p_cBuffer );
+				delete [] p_cBuffer;
 			}
 		}
 	}

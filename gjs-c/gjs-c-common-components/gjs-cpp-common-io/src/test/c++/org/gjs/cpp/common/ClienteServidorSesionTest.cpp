@@ -606,6 +606,16 @@ static void Cliente1()
 			cout << "Respuesta inesperada:[" <<  sRespuesta << "]" << endl;
 			bRes = false;
 		}
+		/* Tampoco por la clase base: EnviarComando no era virtual, y por una
+		   referencia a ClienteComandos el comando salia sin sesion abierta. */
+		ClienteComandos & comandos = *cliente;
+		sRespuesta = "";
+		comandos.EnviarComando( "CMD2", {}, sRespuesta );
+		if ( sRespuesta.compare( "" ) != 0 )
+		{
+			cout << "{CLIENTE1} Por ClienteComandos se ha enviado sin sesion: [" <<  sRespuesta << "]" << endl;
+			bRes = false;
+		}
 		cout << "{CLIENTE1} Abriendo sesion..." << endl;
 		cliente->AbrirSesion();
 		if ( cliente->SesionAbierta() )

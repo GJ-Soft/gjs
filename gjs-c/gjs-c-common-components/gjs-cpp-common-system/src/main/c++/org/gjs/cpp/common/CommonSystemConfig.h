@@ -52,8 +52,8 @@
 
 #include <format>
 #include <iostream>
-#include <cstdlib>      // putenv, free
-#include <cstring>      // strdup
+#include <cstdlib>      // putenv
+#include <cstring>      // memcpy
 #include <csignal>      // SIGSTKSZ, kill
 #include <unistd.h>     // gethostname, get_current_dir_name
 #include <limits.h>     // PATH_MAX

@@ -123,10 +123,6 @@ el servidor no responda `200`.
   `ServidorHTTP.h` y la clase `ServidorHTTP`; sólo el nombre del fichero está
   mal. Compila igual —el `nar-maven-plugin` toma todos los `.cpp` del árbol—,
   pero rompe la correspondencia cabecera/fuente que sigue el resto del stack.
-- **`ServidorHTTP` es abstracta**, por el mismo `= 0` de más que
-  [ServidorFTP](FTP.md#observaciones): re-declara puras `ComandoRecibido` y
-  `ComandoProcesado`. Aquí la incoherencia se ve mejor, porque las otras dos
-  —`SesionIniciada` y `SesionFinalizada`— sí las implementa el `.cpp`.
 - **`HTTPConstantes.h` usa `std::string` sin incluir `<string>`.** Sólo compila
   porque llega detrás de otra cabecera que ya lo trajo.
 - **`ClienteHTTP.h` hace `using namespace org::gjs::cpp::common;` en el ámbito
@@ -153,6 +149,11 @@ el servidor no responda `200`.
 
 ### Diseño
 
+- **`ServidorHTTP` es abstracta a propósito**, como
+  [ServidorFTP](FTP.md#diseño): re-declara puras `ComandoRecibido` y
+  `ComandoProcesado` para obligar a quien la use a escribirlas, aunque sea
+  vacías. `SesionIniciada` y `SesionFinalizada` las implementa el `.cpp`, porque
+  HTTP no tiene sesión.
 - **Sólo tres métodos en el cliente**: `Head`, `Get` y `Post`, y los tres
   escriben la respuesta **en un fichero local**, no en memoria. Para consultar un
   recurso pequeño hay que pasar por disco.

@@ -105,14 +105,23 @@ concreto: `MensajeSesionAbierta`, `MensajeSesionCerrada`, `MensajeFaltaClave`,
 `MensajeImposibleAperturaSesion`, `MensajeUsuarioInvalido` y
 `MensajeSesionNoAbierta`.
 
+`ClienteSesion` redefine `EnviarComando` y `EnviarMensaje` para no enviar nada
+mientras haga falta sesión y no esté abierta. Las cuatro son virtuales en la
+base, así que la comprobación vale también por una referencia a
+`ClienteComandos` o a `Cliente`. Hasta el 2026-10-12 `EnviarComando` no lo era,
+y por `ClienteComandos &` el comando salía sin sesión. `AbrirSesion` y
+`CerrarSesion` llaman a `ClienteComandos::EnviarComando` cualificado, que es
+justo lo que necesitan para enviar el inicio y el fin de sesión.
+
 ---
 
 ## Tests
 
 `GestorUsuariosTest.cpp` y `GestorSesionesTest.cpp` prueban los dos gestores
 sueltos. `ClienteServidorSesionTest.cpp` es **la suite más larga del componente**
-—1.069 líneas—: levanta un servidor con sesión y prueba el diálogo completo con
-dos clientes.
+—1.079 líneas—: levanta un servidor con sesión y prueba el diálogo completo con
+dos clientes. Comprueba también que sin sesión no sale nada, ni siquiera por
+una referencia a `ClienteComandos`.
 
 ---
 

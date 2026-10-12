@@ -93,6 +93,12 @@ que obligó a cambiar `putenv` por `setenv` en
   bloque Win32 (`SetEnvironmentVariableA`): `getenv` no veía lo establecido, y
   con él ni `CVariablesEntorno`, ni el stack C, ni la zona horaria de `_tzset`.
   `_putenv_s` escribe en las dos. Lo fija `TestVariableEntorno02`.
+- **En POSIX, `EliminarVariableEntorno` es `unsetenv`, también en Cygwin**
+  (desde 2026-10-12). En Cygwin buscaba la entrada en `environ`, le hacía `free`
+  y dejaba en su sitio el literal `"XXX"`. Eso era `free` de una cadena ajena si
+  la variable llegó por `putenv` —de un buffer estático, o del `new []` de
+  [CVariablesEntorno](../../gjs-cpp-common-system/doc/VariablesEntorno.md)—, y
+  una entrada basura, sin `=`, que se quedaba en el entorno.
 - **`TextoErrno` es `strerror` sin su buffer estático** (desde 2026-10-11):
   `strerror_r` en POSIX y `strerror_s` en Windows. `strerror_r` tiene dos
   versiones con el mismo nombre, la XSI (devuelve `int`) y la GNU (devuelve
