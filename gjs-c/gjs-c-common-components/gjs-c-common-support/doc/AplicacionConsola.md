@@ -113,10 +113,14 @@ ancho y las siete funciones de dibujo, incluidos los casos de ancho o alto 0.
 > Es el mismo patrón que se corrigió en `gjs-bnf-lib`: un bucle de lectura sin
 > salida por fin de entrada.
 
-- **`AplicConAbrir` devuelve 1 aunque no haya conseguido abrir nada.** En POSIX
-  hace `open ( "/dev/tty", O_RDWR )` y encadena tres `dup2` sin comprobar el
-  descriptor: si no hay terminal, `open` devuelve -1, los `dup2` fallan en
-  silencio y la función marca la consola como disponible igualmente.
+- **`AplicConAbrir` devuelve 0 si no hay terminal** (desde 2026-10-11). Hasta
+  entonces hacía `open ( "/dev/tty", O_RDWR )` y encadenaba `tcgetattr`, tres
+  `dup2` y `tcsetattr` sin comprobar el descriptor: sin terminal (un servicio,
+  una tubería, la integración continua) `open` devolvía -1, todo fallaba en
+  silencio y la consola se daba por disponible. Ahora no toca nada y devuelve 0.
+  Y si `open` devuelve 0, 1 o 2 —porque ese descriptor estándar estaba
+  cerrado— ya no se cierra después, que lo dejaba cerrado otra vez. La versión
+  C++ es igual, y además cierra el descriptor, que antes no cerraba.
 - **Y redirige los tres descriptores estándar del proceso.** Es una operación
   agresiva para una función que se llama "abrir la consola": un programa que la
   invoque pierde la redirección que le hubiera puesto quien lo lanzó.

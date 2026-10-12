@@ -63,6 +63,13 @@ static bool TestHoraComparacion01 ()
 		cout << "Error caso 3: operadores <, != incorrectos" << endl;
 		bRes = false;
 	}
+	// Con un puntero nulo devuelve LONG_MAX. Antes era LLONG_MAX, que en Windows
+	// ( long de 32 bits ) se quedaba en -1: una diferencia valida y falsa.
+	if ( horA.Diferencia ( (Hora *) NULL ) != LONG_MAX )
+	{
+		cout << "Error caso 4: con NULL se esperaba LONG_MAX y es " << horA.Diferencia ( (Hora *) NULL ) << endl;
+		bRes = false;
+	}
 	return ( bRes );
 }
 

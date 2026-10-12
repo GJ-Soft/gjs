@@ -23,6 +23,9 @@ namespace org
 				// Dueno del bloqueo (o thread::id() si esta libre). Atomico para
 				// poder consultarlo sin cerrojo sin incurrir en carrera de datos.
 				std::atomic<std::thread::id> 	idBloqueante { std::thread::id() };
+				// Cuantos Bloquear sin su Desbloquear lleva el dueno. Solo lo toca
+				// el dueno y con el cerrojo tomado, asi que no necesita ser atomico.
+				int								iProfundidad = 0;
 
 			public:
 				ControlConcurrencia ();

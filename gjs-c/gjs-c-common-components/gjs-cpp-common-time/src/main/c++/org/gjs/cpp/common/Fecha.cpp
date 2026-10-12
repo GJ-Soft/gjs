@@ -290,7 +290,7 @@ long Fecha::Diferencia ( const Fecha & fecValor ) const
 
 long Fecha::Diferencia ( const Fecha * p_fecValor ) const
 {
-	long lRes = LLONG_MAX;
+	long lRes = LONG_MAX;	// LONG_MAX, no LLONG_MAX: en Windows long mide 32 bits y LLONG_MAX quedaba en -1
 	if ( ES_VALIDO ( p_fecValor ) )
 	{
 		lRes = Diferencia ( *p_fecValor );

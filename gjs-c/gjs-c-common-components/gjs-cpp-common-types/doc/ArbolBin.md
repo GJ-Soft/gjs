@@ -96,6 +96,7 @@ Es un iterador repartido entre las dos clases, sin objeto iterador de por medio.
 - **`setRaiz` no dice qué hace con la raíz anterior**, ni si la libera. Con
   `Vaciar()` al lado, lo esperable es que no, y entonces sustituir la raíz pierde
   el árbol viejo.
-- **Ni copia ni movimiento declarados**, en una clase con puntero propietario:
-  copiar un `ArbolBin` copia el puntero y deja dos objetos creyéndose dueños del
-  mismo árbol. [Ptr](Ptr.md) sí lo prohíbe explícitamente; aquí no.
+- **La copia y la asignación están borradas** (`= delete`, desde 2026-10-11),
+  como en [Ptr](Ptr.md): con la implícita, copiar un `ArbolBin` copiaba el
+  puntero y las dos copias borraban el mismo árbol. Lo mismo se hizo en
+  `ListaValores` y `ConjuntoValores`. No hay movimiento.

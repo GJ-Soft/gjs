@@ -27,6 +27,7 @@ SEntidadCodNom * SEntCodNomEncapsularExt ( SCodigo * p_codEntidad, SNombre * p_n
 void * SEntCodNomDestruir ( SEntidadCodNom ** p_p_entcnObj );
 
 int SEntCodNomEsValida ( SEntidadCodNom * p_entcnObj );
+int SEntCodNomTieneContenido ( SEntidadCodNom * p_entcnObj );
 
 SCodigo * SEntCodNomCodigo ( SEntidadCodNom * p_entcnObj );
 SCadena * SEntCodNomValorCodigo ( SEntidadCodNom * p_entcnObj );

@@ -27,6 +27,21 @@ public:
 	}
 };
 
+/* Expone el bloqueo para probar el anidado. */
+class PruebaBloqueoAnidado : public ControlConcurrencia
+{
+public:
+	void Entrar ()
+	{
+		Bloquear ();
+	}
+
+	void Salir ()
+	{
+		Desbloquear ();
+	}
+};
+
 static PruebaControlConcurrencia _PruebaControlConcurrencia_test;
 static bool _bFin_Hilo_Test_ControlConcurrencia1 = false;
 static bool _bFin_Hilo_Test_ControlConcurrencia2 = false;
@@ -106,11 +121,54 @@ static bool TestControlConcurrencia01 ()
 	return( bRes );
 }
 
+/* Un hilo bloquea dos veces y desbloquea una: sigue dentro, y otro hilo no
+   puede entrar hasta el segundo desbloqueo. Antes el primer Desbloquear soltaba
+   el cerrojo y el otro hilo entraba enseguida. */
+static bool TestControlConcurrencia02 ()
+{
+	cout << "Test ControlConcurrencia 02:" << endl;
+	bool bRes = true;
+	PruebaBloqueoAnidado	bloqueo;
+	atomic < bool >			bOtroDentro { false };
+
+	bloqueo.Entrar ();
+	bloqueo.Entrar ();
+	bloqueo.Salir ();
+	thread thOtro ( [ &bloqueo, &bOtroDentro ] () {
+		bloqueo.Entrar ();
+		bOtroDentro.store ( true );
+		bloqueo.Salir ();
+	} );
+	Esperar ( 200 );
+	if ( bOtroDentro.load () )
+	{
+		cout << "Error caso 1: otro hilo entro con el bloqueo exterior aun tomado" << endl;
+		bRes = false;
+	}
+	bloqueo.Salir ();
+	thOtro.join ();
+	if ( ! bOtroDentro.load () )
+	{
+		cout << "Error caso 2: tras soltar el bloqueo exterior el otro hilo no entro" << endl;
+		bRes = false;
+	}
+	return( bRes );
+}
+
 bool TestControlConcurrencia ()
 {
 	bool bRes = true;
 	cout << endl << ANSI::AMARILLO << "[Test ControlConcurrencia]" << ANSI::RESETEAR << endl;
 	if ( TestControlConcurrencia01() )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestControlConcurrencia02() )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
 	}

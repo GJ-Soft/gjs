@@ -26,6 +26,10 @@ namespace org
 				explicit Tabla ( Entidad * entidad );
 				explicit Tabla ( Entidad & entidad );
 				virtual ~Tabla ();
+				/* Es dueña de sus Ocurrencia * y lo libera en el destructor: una copia
+				   implícita compartiría los punteros y los liberaría dos veces. */
+				Tabla ( const Tabla & ) = delete;
+				Tabla & operator= ( const Tabla & ) = delete;
 
 			public:
 				int NumOcurrencias () const;

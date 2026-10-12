@@ -247,11 +247,45 @@ static int TestSEntCodHash01 ()
 
 
 
+/* SEntCodTieneContenido: 1 con contenido, 0 sin el y 0 con NULL. Destruir devuelve
+   el contenido sin liberarlo, asi que lo libera el test. */
+static int TestSEntCodTieneContenido01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SEntCodTieneContenido 01:\n" );
+	void * p_vDato = MemReservar ( 16 );
+
+	SEntidadCod * p_entcObj = SEntCodEncapsularExt ( SCodCrearValorLitExt ( "COD001", COD_MAX_TAM_DEF ), p_vDato );
+	if ( SEntCodTieneContenido ( p_entcObj ) != 1 )
+	{
+		printf( "Error caso 1: con contenido se esperaba 1\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	void * p_vDevuelto = SEntCodDestruir ( &p_entcObj );
+	MemLiberar ( &p_vDevuelto );
+
+	p_entcObj = SEntCodEncapsular ( SCodCrearValorLitExt ( "COD001", COD_MAX_TAM_DEF ) );
+	if ( SEntCodTieneContenido ( p_entcObj ) != 0 )
+	{
+		printf( "Error caso 2: sin contenido se esperaba 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SEntCodDestruir ( &p_entcObj );
+
+	if ( SEntCodTieneContenido ( NULL ) != 0 )
+	{
+		printf( "Error caso 3: con NULL se esperaba 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
 int TestSEntidadCod ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SEntidadCod]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSEntCodCrear01 () == BOOL_VAL_CIERTO ) &&
+			( TestSEntCodTieneContenido01 () == BOOL_VAL_CIERTO ) &&
 			( TestSEntCodEstablecer01 () == BOOL_VAL_CIERTO ) &&
 			( TestSEntCodComparaciones01 () == BOOL_VAL_CIERTO ) &&
 			( TestSEntCodHash01 () == BOOL_VAL_CIERTO ) )

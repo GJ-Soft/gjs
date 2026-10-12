@@ -26,6 +26,10 @@ namespace org
 				ListaValores ();
 				ListaValores ( int _iTam, bool _bPermiteInsercion = false );
 				virtual ~ListaValores ();
+				/* Es dueña de sus Valor * y lo libera en el destructor: una copia
+				   implícita compartiría los punteros y los liberaría dos veces. */
+				ListaValores ( const ListaValores & ) = delete;
+				ListaValores & operator= ( const ListaValores & ) = delete;
 
 			protected:
 				virtual long getHash() const;

@@ -38,6 +38,7 @@ void ControlConcurrencia::Bloquear()
 		mtxAcceso.lock();
 		idBloqueante.store( idActual );
 	}
+	iProfundidad = iProfundidad + 1;
 }
 
 void ControlConcurrencia::Desbloquear()
@@ -45,8 +46,16 @@ void ControlConcurrencia::Desbloquear()
 	thread::id idActual = this_thread::get_id();
 	if ( idBloqueante.load() == idActual )
 	{
-		idBloqueante.store( thread::id() );
-		mtxAcceso.unlock();
+		/* Se suelta al deshacer el ultimo Bloquear, no el primero. Antes no
+		   se contaba: en un Bloquear / Bloquear / Desbloquear el cerrojo
+		   quedaba libre mientras el exterior seguia creyendose dentro, y otro
+		   hilo podia entrar a la vez. */
+		iProfundidad = iProfundidad - 1;
+		if ( iProfundidad == 0 )
+		{
+			idBloqueante.store( thread::id() );
+			mtxAcceso.unlock();
+		}
 	}
 }
 

@@ -218,8 +218,27 @@ typedef double (* PFUNDBLULL)(unsigned char char);
 #endif
 
 
-typedef void * (* PFUNVOIDV)(void); 
-typedef void * (* PFUNVOIDULIUL)(unsigned long, int, unsigned long); 
+
+typedef void * (* PFUNPVOIDV)(void); 
+typedef void * (* PFUNPVOIDI)(int);
+typedef void * (* PFUNPVOIDL)(long);
+typedef void * (* PFUNPVOIDS)(short);
+typedef void * (* PFUNPVOIDUI)(unsigned int);
+typedef void * (* PFUNPVOIDUL)(unsigned long);
+typedef void * (* PFUNPVOIDUS)(unsigned short);
+typedef void * (* PFUNPVOIDF)(float);
+typedef void * (* PFUNPVOIDD)(double);
+typedef void * (* PFUNPVOIDC)(char);
+typedef void * (* PFUNPVOIDPC)(char *);
+typedef void * (* PFUNPVOIDT)(const char *);
+
+typedef void * (* PFUNPVOIDPV)(void *);
+typedef void * (* PFUNPVOIDPPV)(void **);
+
+typedef void * (* PFUNPVOIDLL)(long long);
+typedef void * (* PFUNPVOIDULL)(unsigned long long);
+
+typedef void * (* PFUNPVOIDULIUL)(unsigned long, int, unsigned long); 
 
 
 #if ( defined ( WIN ) )

@@ -229,7 +229,9 @@ Catálogo de `typedef` de punteros a función y procedimiento, nombrados por su
 firma: `PPRC<args>` para los que devuelven `void` y `PFUN<retorno><args>` para
 el resto (`PFUNINTV`, `PFUNLONGT`, `PFUNPCHARPV`…). Hay una familia por tipo de
 retorno: `INT`, `LONG`, `UINT`, `ULONG`, `CHAR`, `PCHAR`, `LIT`, `FLT`, `DBL` y
-`VOID`. También define los alias sencillos `PTR_FUNCION` y
+`PVOID`, la de los que devuelven `void *` (`PFUNPVOIDV`, `PFUNPVOIDPV`…; hasta el
+2026-10-12 eran `PFUNVOIDV` y `PFUNVOIDULIUL`, sin más). También define los
+alias sencillos `PTR_FUNCION` y
 `PTR_PROCEDIMIENTO`. Los tests usan `PFUNINTV` (`int (*)(void)`) como tipo de
 cada caso de prueba, y [Hash](Hash.md) apoya en `PFUNUINTPV` su alias
 `PFUNHASH`.

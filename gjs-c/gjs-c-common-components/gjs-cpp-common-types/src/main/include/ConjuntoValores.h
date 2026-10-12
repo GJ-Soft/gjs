@@ -31,6 +31,10 @@ namespace org
 				ConjuntoValores ( const std::list<std::string> & lisAtributos, bool _bPermiteInsercion = false );
 				ConjuntoValores ( const std::string & sRuta, bool _bPermiteInsercion = false );
 				virtual ~ConjuntoValores ();
+				/* Es dueña de sus Valor * y lo libera en el destructor: una copia
+				   implícita compartiría los punteros y los liberaría dos veces. */
+				ConjuntoValores ( const ConjuntoValores & ) = delete;
+				ConjuntoValores & operator= ( const ConjuntoValores & ) = delete;
 
 			protected:
 				virtual long getHash() const;

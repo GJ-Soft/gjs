@@ -99,9 +99,10 @@ Tabla t2 = t1;      // compila
                     // al morir las dos: doble liberacion
 ```
 
-Es la regla de tres clásica. Las salidas son dos: declarar la copia —profunda,
-clonando cada ocurrencia con `Clonar()`— o prohibirla con `= delete`. Lo segundo
-es una línea y quita el problema entero.
+Es la regla de tres clásica. Las salidas eran dos: declarar la copia —profunda,
+clonando cada ocurrencia con `Clonar()`— o prohibirla con `= delete`. Desde el
+2026-10-11 está prohibida: `Tabla t2 = t1;` ya no compila. Ningún código del
+repositorio copiaba una tabla.
 
 Con `std::vector<std::unique_ptr<Ocurrencia>>` no habría ni destructor que
 escribir, y la copia quedaría prohibida sola.

@@ -58,6 +58,10 @@ public:
 	CGestorSignals ( PPRCI _p_procRutExterna );
 
 	~CGestorSignals ();
+	/* Es dueña de los manejadores de señales que instala y lo libera en el destructor: una copia
+	   implícita compartiría los punteros y los liberaría dos veces. */
+	CGestorSignals ( const CGestorSignals & ) = delete;
+	CGestorSignals & operator= ( const CGestorSignals & ) = delete;
 
 	PPRCI RutinaExterna ();
 	void EstablecerRutinaExterna ( PPRCI _p_procRutExterna );

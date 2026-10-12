@@ -68,11 +68,13 @@ envoltura de `sem_open`.
 
   Y el riesgo es real aquí, porque quien hereda —un gestor de sesiones que habla
   por red— es código con muchos caminos de salida y con excepciones.
-- **`idBloqueante` se declara y no se sabe qué política implementa.** Puede ser
-  para detectar la reentrada, para diagnosticar, o para que `Desbloquear` sólo
-  funcione desde el hilo que bloqueó. La cabecera no lo dice, y es la diferencia
-  entre un mutex reentrante y uno que no lo es. Si lo que se quería es
-  reentrancia, `std::recursive_mutex` la da hecha.
+- **Es reentrante y cuenta la profundidad** (desde 2026-10-11).
+  `idBloqueante` es el hilo dueño: `Bloquear` desde ese hilo no vuelve a tomar
+  el mutex, y `Desbloquear` desde otro no hace nada. `iProfundidad` lleva los
+  `Bloquear` sin su `Desbloquear`, y el mutex sólo se suelta al volver a 0.
+  Antes no se contaba: en un `Bloquear` / `Bloquear` / `Desbloquear` el cerrojo
+  quedaba libre mientras el exterior seguía dentro, y otro hilo entraba a la
+  vez. Lo fija `TestControlConcurrencia02`.
 - **El destructor es virtual en una clase pensada para herencia privada**, donde
   no hace falta: nadie va a destruir un `GestorSesiones` por un puntero a
   `ControlConcurrencia`, porque la conversión no es accesible. Cuesta un puntero

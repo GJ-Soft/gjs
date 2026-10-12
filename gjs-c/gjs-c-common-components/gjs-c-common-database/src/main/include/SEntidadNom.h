@@ -27,6 +27,7 @@ SEntidadNom * SEntNomEncapsularExt ( SId * p_idEntidad, SNombre * p_nomEntidad, 
 void * SEntNomDestruir ( SEntidadNom ** p_p_entnObj );
 
 int SEntNomEsValida ( SEntidadNom * p_entnObj );
+int SEntNomTieneContenido ( SEntidadNom * p_entnObj );
 
 SId * SEntNomId ( SEntidadNom * p_entnObj );
 unsigned long SEntNomValorId ( SEntidadNom * p_entnObj );

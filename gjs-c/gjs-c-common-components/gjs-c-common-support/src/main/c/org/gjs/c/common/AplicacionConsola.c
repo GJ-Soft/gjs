@@ -40,30 +40,49 @@ int AplicConAbrir ()
 	{
 #	  if ( defined ( WIN ) )
 		AllocConsole ();
-#	 else
-		iFilDesc = open ( "/dev/tty", O_RDWR );
-		tcgetattr ( iFilDesc, &trmioConsola ); 
-
-		dup2 ( iFilDesc, 0 );
-		dup2 ( iFilDesc, 1 );
-		dup2 ( iFilDesc, 2 );
-		close( iFilDesc );
-		
-		setlinebuf ( stdin );
-		setlinebuf ( stdout );
-		setbuf ( stderr, NULL );
-  
-		/* Sobre el descriptor 0, NO sobre iFilDesc: ese ya se cerro unas
-		   lineas mas arriba, en cuanto se duplico en 0, 1 y 2. Tal y como
-		   estaba, tcsetattr fallaba con EBADF —nadie mira el retorno— y los
-		   atributos del terminal no se restauraban nunca. */
-		tcsetattr ( 0, TCSANOW, &trmioConsola );
-#	 endif
-		/* Tras abrir (o reabrir tras un AplicConCerrar) la consola queda
-		   disponible; sin esto EstaAbierta/Ancho seguirian viendo 0 y un
-		   Cerrar posterior no liberaria la consola. */
 		g_iAplicConsolaDisponible = 1;
 		iRes = 1;
+#	 else
+		/* Sin terminal ( un servicio, una tuberia, la integracion continua ) open
+		   devuelve -1, y se seguia adelante: tcgetattr dejaba la termios sin
+		   rellenar, los dup2 fallaban, tcsetattr escribia esa basura y la consola
+		   se daba por disponible. */
+		iFilDesc = open ( "/dev/tty", O_RDWR );
+		if ( iFilDesc < 0 )
+		{
+			iRes = 0;
+		}
+		else
+		{
+			tcgetattr ( iFilDesc, &trmioConsola );
+
+			dup2 ( iFilDesc, 0 );
+			dup2 ( iFilDesc, 1 );
+			dup2 ( iFilDesc, 2 );
+			/* Si estaba cerrado alguno de los estandar, open devuelve justo ese
+			   numero: entonces iFilDesc ya es uno de los de la consola, y
+			   cerrarlo lo dejaria cerrado otra vez. */
+			if ( iFilDesc > 2 )
+			{
+				close ( iFilDesc );
+			}
+
+			setlinebuf ( stdin );
+			setlinebuf ( stdout );
+			setbuf ( stderr, NULL );
+
+			/* Sobre el descriptor 0, NO sobre iFilDesc: ese ya se cerro unas
+			   lineas mas arriba, en cuanto se duplico en 0, 1 y 2. Tal y como
+			   estaba, tcsetattr fallaba con EBADF —nadie mira el retorno— y los
+			   atributos del terminal no se restauraban nunca. */
+			tcsetattr ( 0, TCSANOW, &trmioConsola );
+			/* Tras abrir (o reabrir tras un AplicConCerrar) la consola queda
+			   disponible; sin esto EstaAbierta/Ancho seguirian viendo 0 y un
+			   Cerrar posterior no liberaria la consola. */
+			g_iAplicConsolaDisponible = 1;
+			iRes = 1;
+		}
+#	 endif
 	}
 	else
 	{

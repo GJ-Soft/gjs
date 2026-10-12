@@ -156,6 +156,21 @@ int SEntCodNomEsValida ( SEntidadCodNom * p_entcnObj )
 	return ( iRes );
 }
 
+int SEntCodNomTieneContenido ( SEntidadCodNom * p_entcnObj )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_entcnObj ) )
+	{
+		iRes = SEntCodTieneContenido ( p_entcnObj->p_entcInfo );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 SCodigo * SEntCodNomCodigo ( SEntidadCodNom * p_entcnObj )
 {
 	SCodigo * p_codRes;

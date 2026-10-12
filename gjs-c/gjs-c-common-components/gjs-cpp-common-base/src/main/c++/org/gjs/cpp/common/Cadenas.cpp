@@ -554,11 +554,10 @@ vector<string> Separar ( string sCadena, const initializer_list<string> & delimi
 	{
 		while ( ( posFin = BuscarPrimero( sCadena, delimitadores, &tamDelim, posIni ) ) != string::npos )
 		{
-			if ( posFin - posIni >=  0 )
-			{
-				string sToken = sCadena.substr( posIni, posFin - posIni );
-				vecRes.push_back ( sToken );
-			}
+			/* Sin condicion: con size_t, posFin - posIni >= 0 era siempre cierto, y
+			   BuscarPrimero busca desde posIni, asi que posFin nunca es menor. Los
+			   tokens vacios entre dos delimitadores seguidos se conservan, como antes. */
+			vecRes.push_back ( sCadena.substr( posIni, posFin - posIni ) );
 			posIni = posFin + tamDelim;
 		}
 		if ( posIni <= sCadena.size() )
@@ -580,11 +579,10 @@ vector<string> Separar ( string sCadena, const list<string> & delimitadores )
 	{
 		while ( ( posFin = BuscarPrimero( sCadena, delimitadores, &tamDelim, posIni ) ) != string::npos )
 		{
-			if ( posFin - posIni >=  0 )
-			{
-				string sToken = sCadena.substr( posIni, posFin - posIni );
-				vecRes.push_back ( sToken );
-			}
+			/* Sin condicion: con size_t, posFin - posIni >= 0 era siempre cierto, y
+			   BuscarPrimero busca desde posIni, asi que posFin nunca es menor. Los
+			   tokens vacios entre dos delimitadores seguidos se conservan, como antes. */
+			vecRes.push_back ( sCadena.substr( posIni, posFin - posIni ) );
 			posIni = posFin + tamDelim;
 		}
 		if ( posIni <= sCadena.size() )

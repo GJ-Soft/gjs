@@ -158,6 +158,21 @@ int SEntNomEsValida ( SEntidadNom * p_entnObj )
 	return ( iRes );
 }
 
+int SEntNomTieneContenido ( SEntidadNom * p_entnObj )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_entnObj ) )
+	{
+		iRes = SEntTieneContenido ( p_entnObj->p_entInfo );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 SId * SEntNomId ( SEntidadNom * p_entnObj )
 {
 	SId * p_idRes;

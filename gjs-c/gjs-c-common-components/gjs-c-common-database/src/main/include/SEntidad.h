@@ -25,6 +25,7 @@ SEntidad * SEntEncapsularExt ( SId * p_idEntidad, void * p_vContenido );
 void * SEntDestruir ( SEntidad ** p_p_entObj );
 
 int SEntEsValida ( SEntidad * p_entObj );
+int SEntTieneContenido ( SEntidad * p_entObj );
 
 SId * SEntId ( SEntidad * p_entObj );
 unsigned long SEntValorId ( SEntidad * p_entObj );

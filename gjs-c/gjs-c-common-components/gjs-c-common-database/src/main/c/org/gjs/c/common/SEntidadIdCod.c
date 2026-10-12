@@ -151,6 +151,21 @@ int SEntIdCodEsValida ( SEntidadIdCod * p_enticObj )
 	return ( iRes );
 }
 
+int SEntIdCodTieneContenido ( SEntidadIdCod * p_enticObj )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_enticObj ) )
+	{
+		iRes = SEntTieneContenido ( p_enticObj->p_entInfo );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 SId * SEntIdCodId ( SEntidadIdCod * p_enticObj )
 {
 	SId * p_idRes;

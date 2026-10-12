@@ -336,11 +336,45 @@ static int TestSEntNomComparar01 ()
 
 
 
+/* SEntNomTieneContenido: 1 con contenido, 0 sin el y 0 con NULL. Destruir devuelve
+   el contenido sin liberarlo, asi que lo libera el test. */
+static int TestSEntNomTieneContenido01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SEntNomTieneContenido 01:\n" );
+	void * p_vDato = MemReservar ( 16 );
+
+	SEntidadNom * p_entnObj = SEntNomEncapsularExt ( SIdCrear ( 9 ), SNomCrearValorLit ( "cliente_a" ), p_vDato );
+	if ( SEntNomTieneContenido ( p_entnObj ) != 1 )
+	{
+		printf( "Error caso 1: con contenido se esperaba 1\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	void * p_vDevuelto = SEntNomDestruir ( &p_entnObj );
+	MemLiberar ( &p_vDevuelto );
+
+	p_entnObj = SEntNomEncapsular ( SIdCrear ( 9 ), SNomCrearValorLit ( "cliente_a" ) );
+	if ( SEntNomTieneContenido ( p_entnObj ) != 0 )
+	{
+		printf( "Error caso 2: sin contenido se esperaba 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SEntNomDestruir ( &p_entnObj );
+
+	if ( SEntNomTieneContenido ( NULL ) != 0 )
+	{
+		printf( "Error caso 3: con NULL se esperaba 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
 int TestSEntidadNom ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SEntidadNom]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSEntNomCrear01 () == BOOL_VAL_CIERTO ) &&
+			( TestSEntNomTieneContenido01 () == BOOL_VAL_CIERTO ) &&
 			( TestSEntNomNombreOpcional01 () == BOOL_VAL_CIERTO ) &&
 			( TestSEntNomEstablecer01 () == BOOL_VAL_CIERTO ) &&
 			( TestSEntNomIdentidad01 () == BOOL_VAL_CIERTO ) &&

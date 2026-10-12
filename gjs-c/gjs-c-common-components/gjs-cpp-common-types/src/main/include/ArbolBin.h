@@ -25,6 +25,10 @@ namespace org
 				explicit ArbolBin ( NodoBin * nodo );
 				explicit ArbolBin ( void * datos );
 				virtual ~ArbolBin ();
+				/* Es dueña de el arbol de nodos y lo libera en el destructor: una copia
+				   implícita compartiría los punteros y los liberaría dos veces. */
+				ArbolBin ( const ArbolBin & ) = delete;
+				ArbolBin & operator= ( const ArbolBin & ) = delete;
 
 				bool TieneRaiz ();
 				int Tam ();

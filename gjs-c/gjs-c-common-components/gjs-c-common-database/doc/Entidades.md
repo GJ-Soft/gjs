@@ -5,7 +5,7 @@
 | Módulos       | 5                                                                                                         |
 | Cabeceras     | `SEntidad.h`, `SEntidadNom.h`, `SEntidadCod.h`, `SEntidadCodNom.h`, `SEntidadIdCod.h`                     |
 | Prefijos      | `SEnt`, `SEntNom`, `SEntCod`, `SEntCodNom`, `SEntIdCod`                                                   |
-| Funciones     | 36 + 51 + 42 + 55 + 51                                                                                    |
+| Funciones     | 37 + 52 + 43 + 56 + 52                                                                                    |
 | Incluidos por | `TiposBaseDatos.h`                                                                                        |
 | Tests         | Uno por módulo                                                                                            |
 
@@ -108,7 +108,10 @@ nunca entra, y el nombre tampoco.
 
 - Una entidad recién creada con `SEntCrearDef ()` **no** es válida: su id vale 0,
   que aún no es un identificador asignado.
-- Una entidad con id y sin contenido **sí** es válida.
+- Una entidad con id y sin contenido **sí** es válida. Para saber si lleva
+  contenido está `TieneContenido` en las cinco clases (`SEntTieneContenido`,
+  `SEntNomTieneContenido`…): 1 si el puntero de contenido es válido, 0 si no o
+  si la entidad es nula. Las compuestas preguntan a su entidad interna.
 - Para saber si el nombre o el código secundario sirven hay que preguntarles
   aparte, con `SNomEsValido` o `SCodEsValido`.
 

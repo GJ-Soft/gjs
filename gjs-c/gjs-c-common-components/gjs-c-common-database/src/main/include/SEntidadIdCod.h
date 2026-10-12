@@ -26,6 +26,7 @@ SEntidadIdCod * SEntIdCodEncapsularExt ( SId * p_idEntidad, SCodigo * p_codEntid
 void * SEntIdCodDestruir ( SEntidadIdCod ** p_p_enticObj );
 
 int SEntIdCodEsValida ( SEntidadIdCod * p_enticObj );
+int SEntIdCodTieneContenido ( SEntidadIdCod * p_enticObj );
 
 SId * SEntIdCodId ( SEntidadIdCod * p_enticObj );
 unsigned long SEntIdCodValorId ( SEntidadIdCod * p_enticObj );

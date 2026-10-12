@@ -25,6 +25,10 @@ namespace org
 			public:
 				Cliente( const std::string & sIP, int iPuerto );
 				virtual ~Cliente();
+				/* Es dueña de el socket, que cierra y lo libera en el destructor: una copia
+				   implícita compartiría los punteros y los liberaría dos veces. */
+				Cliente ( const Cliente & ) = delete;
+				Cliente & operator= ( const Cliente & ) = delete;
 				
 				int getPuerto();
 				std::string getHost();

@@ -49,21 +49,38 @@ bool AplicConAbrir ()
 	{
 #	  if ( defined ( WIN ) )
 		AllocConsole ();
-#	 else
-		iFilDesc = open ( "/dev/tty", O_RDWR );
-		tcgetattr ( iFilDesc, &trmioConsola );
-
-		dup2 ( iFilDesc, 0 );
-		dup2 ( iFilDesc, 1 );
-		dup2 ( iFilDesc, 2 );
-
-		setvbuf ( stdin, NULL, _IOLBF, 0 );
-		setvbuf ( stdout, NULL, _IOLBF, 0 );
-		setbuf ( stderr, NULL );
-
-		tcsetattr ( iFilDesc, TCSANOW, &trmioConsola );
-#	 endif
 		g_bAplicConsolaDisponible = true;
+#	 else
+		/* Sin terminal ( un servicio, una tuberia, la integracion continua ) open
+		   devuelve -1, y se seguia adelante: tcgetattr dejaba la termios sin
+		   rellenar, los dup2 fallaban, tcsetattr escribia esa basura y la consola
+		   se daba por disponible. */
+		iFilDesc = open ( "/dev/tty", O_RDWR );
+		if ( iFilDesc >= 0 )
+		{
+			tcgetattr ( iFilDesc, &trmioConsola );
+
+			dup2 ( iFilDesc, 0 );
+			dup2 ( iFilDesc, 1 );
+			dup2 ( iFilDesc, 2 );
+			/* El descriptor de open no se cerraba nunca ( la version C si lo
+			   hacia ). Si estaba cerrado alguno de los estandar, open devuelve
+			   justo ese numero: entonces ya es uno de los de la consola y no se
+			   cierra. */
+			if ( iFilDesc > 2 )
+			{
+				close ( iFilDesc );
+			}
+
+			setvbuf ( stdin, NULL, _IOLBF, 0 );
+			setvbuf ( stdout, NULL, _IOLBF, 0 );
+			setbuf ( stderr, NULL );
+
+			/* Sobre el 0: iFilDesc ya puede estar cerrado. */
+			tcsetattr ( 0, TCSANOW, &trmioConsola );
+			g_bAplicConsolaDisponible = true;
+		}
+#	 endif
 	}
 	return ( g_bAplicConsolaDisponible );
 }
