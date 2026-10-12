@@ -67,6 +67,23 @@ private:
 
 
 
+/* ClienteHTTP valida la URN antes de enviarla. Este manda el comando tal
+   cual, para probar lo que hace el servidor con lo que el cliente no deja. */
+class ClienteCrudoHTTP : public ClienteIETF
+{
+public:
+	ClienteCrudoHTTP( int iPuerto ) : ClienteIETF( "localhost", iPuerto )
+	{
+	}
+
+private:
+	void ExcepcionProducida( const exception & ex )
+	{
+		cout << "{CLIENTE CRUDO} Excepcion recibida: " << ex.what() << endl;
+	}
+};
+
+
 static ServidorHTTPTest * servidorTestHTTP = NULL;
 
 
@@ -140,7 +157,7 @@ static void Cliente1()
 				if ( ExisteFichero( sFichero ) )
 				{
 					bRes = ValidarContenido( LeerFichero( sFichero ), { "<html>", "<head>", "<title>Prueba 1</title>", "</head>", "<body>", 
-																		"<p>", "Hola mundo!", "</p>", "</body>", "</html>" } );
+																		"<p>", "Hola mundo!", "</p>", "</body>", "</html>" } ) && bRes;
 				}
 				else
 				{
@@ -161,6 +178,27 @@ static void Cliente1()
 				bRes = false;
 			}
 			Esperar( 100 );
+			/* Salir de la raiz con "..": ClienteHTTP ya lo rechaza sin enviarlo,
+			   asi que va en crudo por ClienteCrudoHTTP para que lo vea el servidor. El
+			   destino existe ( la raiz es servidorHTTP, y su padre la contiene ),
+			   asi que solo da error si el servidor rechaza la ruta. */
+			ClienteCrudoHTTP clienteCrudo( 45301 );
+			string sRespuesta;
+			string sCodigo;
+			string sResultado;
+			sURN = "../servidorHTTP/site1/index.html";
+			clienteCrudo.EnviarComando( IETF_CMD_METODO_GET, { sURN, "HTTP/1.1" }, sRespuesta );
+			if ( !ProcesarRespuestaIETF( sRespuesta, sCodigo, sResultado ) )
+			{
+				cout << "{CLIENTE1} Sin respuesta valida a " << sURN << ": [" << sRespuesta << "]" << endl;
+				bRes = false;
+			}
+			else if ( sCodigo.compare( IETF_OK ) == 0 )
+			{
+				cout << "{CLIENTE1} No debería haber podido salir de la raíz con " << sURN <<  endl;
+				bRes = false;
+			}
+			Esperar( 100 );
 			sURN = "site3/index.html";
 			if ( cliente->Get( sURN, sFichero ) )
 			{
@@ -176,7 +214,7 @@ static void Cliente1()
 				if ( ExisteFichero( sFichero ) )
 				{
 					bRes = ValidarContenido( LeerFichero( sFichero ), { "<html>", "<head>", "<title>Prueba 1</title>", "</head>", "<body>", 
-																		"<p>", "Hola mundo!", "</p>", "</body>", "</html>" } );																		
+																		"<p>", "Hola mundo!", "</p>", "</body>", "</html>" } ) && bRes;																		
 				}
 				else
 				{
@@ -205,7 +243,7 @@ static void Cliente1()
 				if ( ExisteFichero( sFichero ) )
 				{
 					bRes = ValidarContenido( LeerFichero( sFichero ), { "<html>", "<head>", "<title>Pagina 1</title>", "</head>", "<body>", 
-																		"<p>", "Esto es la página 1", "</p>", "</body>", "</html>" } );
+																		"<p>", "Esto es la página 1", "</p>", "</body>", "</html>" } ) && bRes;
 				}
 				else
 				{
@@ -227,7 +265,7 @@ static void Cliente1()
 				if ( ExisteFichero( sFichero ) )
 				{
 					bRes = ValidarContenido( LeerFichero( sFichero ), { "<html>", "<head>", "<title>Pagina 3</title>", "</head>", "<body>", 
-																		"<p>", "Esto es la pagina 3", "</p>", "</body>", "</html>" } );
+																		"<p>", "Esto es la pagina 3", "</p>", "</body>", "</html>" } ) && bRes;
 				}
 				else
 				{

@@ -3,7 +3,7 @@
 | Dato      | Valor                                    |
 | --------- | ---------------------------------------- |
 | Clases    | `Cliente`, `Servidor`                    |
-| Cabeceras | `Cliente.h` (51), `Servidor.h` (66)      |
+| Cabeceras | `Cliente.h` (55), `Servidor.h` (66)      |
 | Fuentes   | `Cliente.cpp` (90), `Servidor.cpp` (197) |
 | Espacio   | `org::gjs::cpp::common`                  |
 | Test      | `ClienteServidorTest.cpp`                |

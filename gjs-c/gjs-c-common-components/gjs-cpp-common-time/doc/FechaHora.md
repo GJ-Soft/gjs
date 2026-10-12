@@ -50,9 +50,14 @@ suman las combinaciones de las dos.
 | Texto       | `ValorCadena ()`, `Cadena ( formato )`                       |
 | Ahora       | `EstablecerValorDeAhora ()`                                  |
 | Comparación | Las cuatro nombradas y los seis operadores, por cada formato |
+| Diferencia  | `Diferencia ( … )` y `operator -`, en `long long`            |
 
 `ValorFecha()` y `ValorHora()` devuelven los `long` de la capa numérica, con lo
 que el instante se puede descomponer sin construir objetos.
+
+`Diferencia` resta los dos `Valor ()` y devuelve `long long`: un año de
+diferencia ya son 10.000.000.000, que no cabe en el `long` de 32 bits de
+Windows. Con un puntero nulo devuelve `LLONG_MAX`.
 
 ## Dependencias
 

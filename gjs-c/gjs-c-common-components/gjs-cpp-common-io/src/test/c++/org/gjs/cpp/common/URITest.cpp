@@ -365,6 +365,59 @@ static bool TestURI03 ()
 }
 
 
+/* Los segmentos . y .. no son validos: es lo que impide que ServidorHTTP
+   sirva algo fuera de su directorio raiz. %2e%2e si lo es, pero URI no
+   decodifica porcentajes, asi que llega al disco como un nombre literal. */
+static bool TestURI04 ()
+{
+	cout << "Test URI 04:" << endl;
+	bool bRes = true;
+
+	try
+	{
+		int iCaso = 0;
+		for ( const string & sUrn : { "../secreto.html", "/../secreto.html", "site1/../../secreto.html",
+									  "site1/..", "..", "site1/./index.html", "..\\secreto.html" } )
+		{
+			iCaso = iCaso + 1;
+			URI uri( "http://localhost", sUrn );
+			if ( uri.EsValido() )
+			{
+				cout << "Error caso " << iCaso << ": [" << sUrn << "] se ha aceptado" << endl;
+				bRes = false;
+			}
+			if ( uri.getRuta().size() != 0 )
+			{
+				cout << "Error caso " << iCaso << ": [" << sUrn << "] deja la ruta [" << uri.getRuta() << "]" << endl;
+				bRes = false;
+			}
+		}
+		URI uriCodificada( "http://localhost", "%2e%2e/secreto.html" );
+		if ( !uriCodificada.EsValido() )
+		{
+			cout << "Error caso 8: %2e%2e deberia ser valida" << endl;
+			bRes = false;
+		}
+		if ( uriCodificada.getRuta().compare( "%2e%2e/secreto.html" ) != 0 )
+		{
+			cout << "Error caso 9: ruta [" << uriCodificada.getRuta() << "], se esperaba sin decodificar" << endl;
+			bRes = false;
+		}
+	}
+	catch ( exception & ex )
+	{
+		cout << "Se ha producido una excepcion :" << ex.what () << endl;
+		bRes = false;
+	}
+	catch ( ... )
+	{
+		cout << "Excepcion indefinida" << endl;
+		bRes = false;
+	}
+	return( bRes );
+}
+
+
 bool TestURI ()
 {
 	bool bRes = true;
@@ -388,6 +441,15 @@ bool TestURI ()
 		bRes = false;
 	}
 	if ( TestURI03() )
+	{
+		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
+	}
+	else
+	{
+		cout  << ANSI::ROJO << "Resultado: KO" << ANSI::RESETEAR << endl;
+		bRes = false;
+	}
+	if ( TestURI04() )
 	{
 		cout << ANSI::VERDE << "Resultado: OK" << ANSI::RESETEAR << endl;
 	}

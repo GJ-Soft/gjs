@@ -111,7 +111,23 @@ void ServidorHTTP::ProcesarComandoSesion( Comando & comando, bool & bResponder, 
 			}
 			else if ( !TerminaPor( sUrn, ".html" ) )
 			{
-				sUrn = Concatenar( sUrn, ".html" ); 
+				/* Sin extension puede ser un directorio del sitio, y entonces sirve
+				   su index.html, como si acabara en "/". Antes siempre se le
+				   anadia ".html" y "site1" buscaba "site1.html". */
+				bool bDirectorio = false;
+				URI uriDirectorio( "http://localhost", sUrn );
+				if ( uriDirectorio.EsValido() )
+				{
+					bDirectorio = ExisteDirectorio( ( pathDirectorioRaiz / uriDirectorio.getRuta() ).string() );
+				}
+				if ( bDirectorio )
+				{
+					sUrn = Concatenar( sUrn, "/index.html" );
+				}
+				else
+				{
+					sUrn = Concatenar( sUrn, ".html" );
+				}
 			}
 			URI uri( "http://localhost", sUrn );
 			if ( uri.EsValido() && ( sVersion.compare( sVersionReq ) == 0 ) )

@@ -92,11 +92,24 @@ static bool TestFechaHoraComparacion01 ()
 		cout << "Error caso 3: operadores <, != incorrectos" << endl;
 		bRes = false;
 	}
-	// Con un puntero nulo devuelve LONG_MAX. Antes era LLONG_MAX, que en Windows
-	// ( long de 32 bits ) se quedaba en -1: una diferencia valida y falsa.
-	if ( fechA.Diferencia ( (FechaHora *) NULL ) != LONG_MAX )
+	// Con un puntero nulo devuelve LLONG_MAX: Diferencia devuelve long long.
+	if ( fechA.Diferencia ( (FechaHora *) NULL ) != LLONG_MAX )
 	{
-		cout << "Error caso 4: con NULL se esperaba LONG_MAX y es " << fechA.Diferencia ( (FechaHora *) NULL ) << endl;
+		cout << "Error caso 4: con NULL se esperaba LLONG_MAX y es " << fechA.Diferencia ( (FechaHora *) NULL ) << endl;
+		bRes = false;
+	}
+	// Un año de diferencia son 10.000.000.000 en AAAAMMDDhhmmss, que no cabe en
+	// 32 bits. Con long, en Windows, salia truncado.
+	FechaHora fechAnterior ( 20250803143052LL );
+	FechaHora fechPosterior ( 20260803143052LL );
+	if ( fechPosterior.Diferencia ( fechAnterior ) != 10000000000LL )
+	{
+		cout << "Error caso 5: se esperaba 10000000000 y es " << fechPosterior.Diferencia ( fechAnterior ) << endl;
+		bRes = false;
+	}
+	if ( ( fechPosterior - fechAnterior ) != 10000000000LL )
+	{
+		cout << "Error caso 6: el operador - da " << ( fechPosterior - fechAnterior ) << endl;
 		bRes = false;
 	}
 	return ( bRes );

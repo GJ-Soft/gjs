@@ -4,9 +4,9 @@
 | --------- | ---------------------------------------------------------------------------------- |
 | Clases    | `ClienteHTTP`, `ServidorHTTP`, `URI`                                               |
 | Cabeceras | `ClienteHTTP.h` (48), `ServidorHTTP.h` (59), `URI.h` (71), `HTTPConstantes.h` (26) |
-| Fuentes   | `ClienteHTTP.cpp` (158), `ServidorHTTTP.cpp` (221), `URI.cpp` (291)                |
+| Fuentes   | `ClienteHTTP.cpp` (158), `ServidorHTTTP.cpp` (240), `URI.cpp` (291)                |
 | Espacio   | `org::gjs::cpp::common`                                                            |
-| Tests     | `ClienteServidorHTTPTest.cpp` (324), `URITest.cpp` (401)                           |
+| Tests     | `ClienteServidorHTTPTest.cpp` (362), `URITest.cpp` (463)                           |
 
 [Índice](MODULOS.md) · [README](../README.md)
 
@@ -52,6 +52,27 @@ Las dos diferencias están resueltas, cada una en su sitio:
 `ServidorHTTP::EsComandoValido` añade su propia condición: **exactamente dos
 argumentos**, la ruta y la versión.
 
+### De la ruta pedida al fichero servido
+
+`ProcesarComandoSesion` completa la ruta antes de buscarla bajo el directorio
+raíz:
+
+| Pide                         | Sirve                |
+| ---------------------------- | -------------------- |
+| `site1/`                     | `site1/index.html`   |
+| `site1`, si es un directorio | `site1/index.html`   |
+| `site1/pagina1`              | `site1/pagina1.html` |
+| `site1/a.htm`                | `site1/a.html`       |
+| `site1/a.html`               | `site1/a.html`       |
+
+Si el fichero resultante no existe, responde `404`. **No se puede salir del
+directorio raíz**: `EsURI` no admite segmentos `.` ni `..`, así que una ruta con
+ellos deja la `URI` inválida y no llega al disco. `%2e%2e` sí es válida, pero
+`URI` no decodifica porcentajes y se busca como un directorio de ese nombre. Hasta el 2026-10-12 la
+segunda fila no existía: a todo lo que no tuviera extensión se le añadía
+`.html`, y `site1` buscaba `site1.html`. El test lo esperaba bien, pero no lo
+detectaba (ver [Tests](#tests)).
+
 ## `URI`
 
 Descompone una dirección en protocolo, dominio, puerto, ruta y parámetros, y la
@@ -71,9 +92,19 @@ orden de inserción: al recomponer, la cadena de consulta sale como entró.
 
 ## Tests
 
-`URITest.cpp` —401 líneas— es la suite más detallada de las que no levantan
+`URITest.cpp` —463 líneas— es la suite más detallada de las que no levantan
 servidor. `ClienteServidorHTTPTest.cpp` sirve `src/test/resources/servidorHTTP`
 en el puerto 45301 y prueba `HEAD`, `GET` y `POST`.
+
+Hasta el 2026-10-12 cada comprobación de contenido hacía
+`bRes = ValidarContenido ( ... )` y pisaba el `false` de un caso anterior: un
+`GET` fallido seguido de uno bueno daba `Resultado: OK`. Así quedó oculto el
+`GET site1` que respondía `404`. Ahora es `... ) && bRes`.
+
+Los `..` se prueban en los dos niveles. `TestURI04` fija que `URI` los rechaza.
+`ClienteServidorHTTPTest` pide `../servidorHTTP/site1/index.html`, que existe,
+por un `ClienteIETF` sin validar —`ClienteHTTP` ya no lo enviaría—, y exige que
+el servidor no responda `200`.
 
 ---
 
@@ -85,7 +116,7 @@ en el puerto 45301 y prueba `HEAD`, `GET` y `POST`.
   construye, `lisComandosHttp`, **repite `POST` y no incluye `PUT` ni `PATCH`**
   (ver [IETF](IETF.md#observaciones)). Como `EsComandoValido` filtra contra esa
   lista, la petición muere antes de llegar al despacho — y en el despacho, en
-  `ServidorHTTTP.cpp:177`, hay una rama para `PUT` que no se ejecuta nunca.
+  `ServidorHTTTP.cpp:196`, hay una rama para `PUT` que no se ejecuta nunca.
   Añadir `IETF_CMD_METODO_PUT` a la lista y quitar el `POST` duplicado arregla
   las dos mitades.
 - **El fichero fuente se llama `ServidorHTTTP.cpp`, con tres T.** La cabecera es

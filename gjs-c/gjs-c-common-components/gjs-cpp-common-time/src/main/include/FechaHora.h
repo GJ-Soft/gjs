@@ -103,10 +103,10 @@ public:
 	bool EsMayor ( long long llValor );
 	bool EsDiferente ( long long llValor );
 
-	long Diferencia ( FechaHora & fechValor );
-	long Diferencia ( FechaHora * p_horValor );
-	long Diferencia ( const std::string & sValor );
-	long Diferencia ( long long llValor );
+	long long Diferencia ( FechaHora & fechValor );
+	long long Diferencia ( FechaHora * p_horValor );
+	long long Diferencia ( const std::string & sValor );
+	long long Diferencia ( long long llValor );
 
 public:
 	bool operator == ( FechaHora & fechValor );
@@ -134,10 +134,10 @@ public:
 	bool operator < ( long long llValor );
 	bool operator <= ( long long llValor );
 
-	long operator - ( FechaHora & fechValor );
-	long operator - ( FechaHora * fechValor );
-	long operator - ( const std::string & sValor );
-	long operator - ( long long llValor );
+	long long operator - ( FechaHora & fechValor );
+	long long operator - ( FechaHora * fechValor );
+	long long operator - ( const std::string & sValor );
+	long long operator - ( long long llValor );
 
 };
 

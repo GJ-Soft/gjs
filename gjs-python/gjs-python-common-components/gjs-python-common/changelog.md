@@ -20,6 +20,11 @@ All major changes are referenced in this change log
   que compone `[código] mensaje: causa`.
 * `configuration.PropertiesUtils.read()`: lee un `.properties` a un `dict`, y
   lanza `ApplicationException` si no puede leerlo o el formato no es válido.
+* `SystemUtils`: `platform()`, `isWindows()`, `isLinux()` e `isMacOS()` (Cygwin
+  no es ninguno de los tres: su sistema se llama `CYGWIN_NT-…`), `cls()`,
+  `runCommand()`, que espera y devuelve el código de salida, y `runApp()`, que
+  lanza sin esperar y devuelve el proceso. Las dos últimas envuelven en
+  `ApplicationException` lo que impida lanzar el proceso.
 * `StringUtils.splitText()`: parte un texto en trozos de tamaño fijo, cada uno
   solapado con el anterior; el último no queda nunca dentro del anterior, y un
   solape igual o mayor que el trozo es un `ValueError`.

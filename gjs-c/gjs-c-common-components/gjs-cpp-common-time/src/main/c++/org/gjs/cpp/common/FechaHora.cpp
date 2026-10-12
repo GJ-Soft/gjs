@@ -381,27 +381,27 @@ bool FechaHora::EsDiferente ( long long llValor )
 	return (  Valor() != llValor );
 }
 
-long FechaHora::Diferencia ( FechaHora & fecValor )
+long long FechaHora::Diferencia ( FechaHora & fecValor )
 {
 	return ( Diferencia ( fecValor.Valor () ) );
 }
 
-long FechaHora::Diferencia ( FechaHora * p_fecValor )
+long long FechaHora::Diferencia ( FechaHora * p_fecValor )
 {
-    long lRes = LONG_MAX;	// LONG_MAX, no LLONG_MAX: en Windows long mide 32 bits y LLONG_MAX quedaba en -1
+    long long llRes = LLONG_MAX;	// long long: AAAAMMDDhhmmss no cabe en el long de 32 bits de Windows
     if ( ES_VALIDO ( p_fecValor ) )
     {
-        lRes = Diferencia ( p_fecValor->Valor () );
+        llRes = Diferencia ( p_fecValor->Valor () );
     }
-	return ( lRes );
+	return ( llRes );
 }
 
-long FechaHora::Diferencia ( const string & sValor )
+long long FechaHora::Diferencia ( const string & sValor )
 {
 	return ( Diferencia ( ToLLong ( sValor ) ) );
 }
 
-long FechaHora::Diferencia ( long long llValor )
+long long FechaHora::Diferencia ( long long llValor )
 {
 	return ( Valor () - llValor );
 }
@@ -526,22 +526,22 @@ bool FechaHora::operator >= ( long long llValor )
 	return ( EsIgual ( llValor ) || EsMayor ( llValor ) );
 }
 
-long FechaHora::operator - ( FechaHora & fecValor )
+long long FechaHora::operator - ( FechaHora & fecValor )
 {
 	return ( Diferencia ( fecValor ) );
 }
 
-long FechaHora::operator - ( FechaHora * p_fecValor )
+long long FechaHora::operator - ( FechaHora * p_fecValor )
 {
 	return ( Diferencia ( p_fecValor ) );
 }
 
-long FechaHora::operator - ( const string & sValor )
+long long FechaHora::operator - ( const string & sValor )
 {
 	return ( Diferencia ( sValor ) );
 }
 
-long FechaHora::operator - ( long long llValor )
+long long FechaHora::operator - ( long long llValor )
 {
 	return ( Diferencia ( llValor ) );
 }
