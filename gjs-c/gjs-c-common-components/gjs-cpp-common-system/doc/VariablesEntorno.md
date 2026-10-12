@@ -36,14 +36,16 @@ entorno.LimpiarValor ( "TMPDIR" );
 | ---------------- | ------------------------------------------------------------- |
 | `ObtValor`       | `getenv`                                                      |
 | `ExisteVariable` | `getenv`, y comprueba si vino algo                            |
-| `EstValor`       | `putenv`, con la cadena `NOMBRE=valor` reservada con `new []` |
+| `EstValor`       | `putenv`, con la cadena `NOMBRE=valor` en un `unique_ptr`     |
 | `LimpiarValor`   | `putenv` con el valor vacío                                   |
 
 `EstValor` hace lo correcto con `putenv`, que es la parte delicada: la función
 **se queda con el puntero**, que pasa a formar parte del entorno del proceso, así
-que la cadena se reserva con `new []` y sólo se libera **si `putenv` falla**. Hay
-un comentario en el código que lo explica. Antes era `strdup` y `free`; a
-`putenv` le da igual, porque no la libera nunca.
+que la cadena se reserva en un `std::unique_ptr < char [] >`, que la suelta
+**si `putenv` falla**; si no, `release ()` se la cede al entorno. Hay un
+comentario en el código que lo explica. Antes era `strdup` y `free`; a `putenv`
+le da igual, porque no la libera nunca. Sin memoria, `make_unique` lanza
+`std::bad_alloc`, donde `strdup` devolvía `NULL` y la función `false`.
 
 ---
 

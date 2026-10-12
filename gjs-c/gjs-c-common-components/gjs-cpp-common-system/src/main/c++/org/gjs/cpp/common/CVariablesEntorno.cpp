@@ -17,6 +17,8 @@
 
 #include "CVariablesEntorno.h"
 
+#include <memory>
+
 
 
 
@@ -73,21 +75,16 @@ bool CVariablesEntorno::EstValor ( const string & sVariable, const string & sVal
 	{
 		// putenv toma posesion de la cadena ( pasa a formar parte del entorno ):
 		// se copia y, si tiene exito, NO se libera -- liberarla seria comportamiento
-		// indefinido en POSIX. En caso de fallo si se libera. Con new[] y no con
-		// strdup: putenv no la libera nunca, asi que le da igual como se reservo.
+		// indefinido en POSIX. El unique_ptr la suelta si putenv falla, y si no
+		// release () se la cede. putenv no la libera nunca, asi que le da igual
+		// como se reservo.
 		string sAsignacion = sVariable + "=" + sValor;
-		char * p_cBuffer = new ( std::nothrow ) char [ sAsignacion.size () + 1 ];
-		if ( ES_VALIDO ( p_cBuffer ) )
+		unique_ptr < char [] > cBuffer = make_unique < char [] > ( sAsignacion.size () + 1 );
+		memcpy ( cBuffer.get (), sAsignacion.c_str (), sAsignacion.size () + 1 );
+		if ( putenv ( cBuffer.get () ) == 0 )
 		{
-			memcpy ( p_cBuffer, sAsignacion.c_str (), sAsignacion.size () + 1 );
-			if ( putenv ( p_cBuffer ) == 0 )
-			{
-				bRes = true;
-			}
-			else
-			{
-				delete [] p_cBuffer;
-			}
+			cBuffer.release ();
+			bRes = true;
 		}
 	}
 	return ( bRes );

@@ -43,9 +43,12 @@ string Objeto::getTipo () const
 	const type_info & typeinfo( typeid(*this) );
 	int status;
 	// __cxa_demangle reserva el nombre con malloc y exige liberarlo con free, no
-	// con delete: el unique_ptr lo hace solo, aunque salte una excepcion.
-	unique_ptr < char, decltype ( &std::free ) > demangled (
-		abi::__cxa_demangle( typeinfo.name(), nullptr, nullptr, &status ), &std::free );
+	// con delete: el unique_ptr lo hace solo, aunque salte una excepcion. Con un
+	// lambda y no con &std::free: la direccion de una funcion de la biblioteca
+	// estandar no esta garantizada.
+	auto liberar = [] ( char * p_cNombre ) { std::free ( p_cNombre ); };
+	unique_ptr < char, decltype ( liberar ) > demangled (
+		abi::__cxa_demangle( typeinfo.name(), nullptr, nullptr, &status ), liberar );
 	return( string ( ( status == 0 ) && demangled ? demangled.get () : typeinfo.name() ) );
 }
 

@@ -62,9 +62,11 @@ nombre** con `abi::__cxa_demangle`, de modo que devuelve `Depurador` y no
 `9Depurador`. No hace falta que las derivadas declaren nada.
 
 `__cxa_demangle` devuelve el nombre en memoria de `malloc`, y su contrato obliga
-a liberarlo con `free`, no con `delete`. Lo suelta un `std::unique_ptr` con
-`std::free` como borrador, así que no queda ningún `free` a la vista y no se
-pierde aunque salte una excepción.
+a liberarlo con `free`, no con `delete`. Lo suelta un `std::unique_ptr` cuyo
+borrador es un lambda que llama a `std::free`, así que no queda ningún `free` a
+la vista y no se pierde aunque salte una excepción. Un lambda y no `&std::free`:
+desde C++20, tomar la dirección de una función de la biblioteca estándar no está
+garantizado.
 
 `assignar` protegido con `operator=` público encima es el patrón que permite a
 las derivadas extender la asignación sin reescribir el operador.

@@ -89,10 +89,12 @@ int MemLiberar ( void ** p_p_vBloque )
 		void * p_vBloque = *p_p_vBloque;
 		if ( ES_VALIDO ( p_vBloque ) )
 		{
-			delete [] static_cast < unsigned char * > ( p_vBloque );
+			// El aviso va antes de liberar: despues, el valor del puntero ya es
+			// indeterminado, y _MemBloqueLiberado lo imprime y lo busca.
 #		  if ( defined ( MODO_DEPURACION ) )
 			_MemBloqueLiberado ( p_vBloque, 0 );
 #		  endif
+			delete [] static_cast < unsigned char * > ( p_vBloque );
 		}
 		// Si ya era nulo no hay nada que liberar, y tambien vale.
 		iRes = 1;

@@ -9,6 +9,7 @@
 #	include <sys/utsname.h>
 #endif
 #include <stdlib.h>
+#include <memory>
 #include <cstdio>
 
 #include <csignal>
@@ -351,13 +352,13 @@ string TextoErrno ( int iCodigo )
 }
 
 
-static void * _inicio_heap = NULL;
+static std::unique_ptr < int > _inicio_heap;
 
 void InicializarBase ()
 {
-	if ( _inicio_heap == NULL )
+	if ( ! _inicio_heap )
 	{
-		_inicio_heap = new int ( 0 );
+		_inicio_heap = std::make_unique < int > ( 0 );
 	}
 }
 

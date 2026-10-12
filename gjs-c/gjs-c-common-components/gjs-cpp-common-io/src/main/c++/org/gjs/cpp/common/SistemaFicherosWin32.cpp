@@ -54,8 +54,18 @@ static_assert ( SFW32_ATRIB_ENCRIPTADO == FILE_ATTRIBUTE_ENCRYPTED,
 
 
 /* cygwin_create_path reserva la ruta con malloc y hay que soltarla con free:
-   la suelta el unique_ptr, sin un free a la vista. */
-typedef std::unique_ptr < char, decltype ( &std::free ) > _SFW32Ruta;
+   la suelta el unique_ptr, sin un free a la vista. Con un borrador propio y no
+   con &std::free: la direccion de una funcion de la biblioteca estandar no esta
+   garantizada. */
+struct _SFW32Liberar
+{
+	void operator() ( char * p_cRuta ) const
+	{
+		std::free ( p_cRuta );
+	}
+};
+
+typedef std::unique_ptr < char, _SFW32Liberar > _SFW32Ruta;
 
 /* Traduce la ruta al estilo que espera la API de Windows. Devuelve la copia,
    o vacio si no hay nada que traducir ( modos en los que la ruta ya viene en
@@ -66,10 +76,10 @@ typedef std::unique_ptr < char, decltype ( &std::free ) > _SFW32Ruta;
 static _SFW32Ruta _SFW32RutaWindows ( const char * p_cRuta )
 {
 #if ( defined ( CYGWIN ) && defined ( POSIX ) )
-	return ( _SFW32Ruta ( ( char * ) cygwin_create_path ( CCP_POSIX_TO_WIN_A, p_cRuta ), &std::free ) );
+	return ( _SFW32Ruta ( ( char * ) cygwin_create_path ( CCP_POSIX_TO_WIN_A, p_cRuta ) ) );
 #else
 	( void ) p_cRuta;
-	return ( _SFW32Ruta ( nullptr, &std::free ) );
+	return ( _SFW32Ruta () );
 #endif
 }
 
