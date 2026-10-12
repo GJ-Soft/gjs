@@ -17,6 +17,8 @@
 #ifndef _ORG_GJS_C_CC_CAJAMENSAJES_H
 #define _ORG_GJS_C_CC_CAJAMENSAJES_H
 
+#include <Precompilacion.h>
+
 
 
 
@@ -26,7 +28,7 @@
 
 
 int CajMsjMostrar ( int iTipo, const char * p_cTitulo, const char * p_cMensaje );
-int CajMsjMostrarConFormato ( int iTipo, const char * p_cTitulo, const char * p_cFormato, ... );
+int CajMsjMostrarConFormato ( int iTipo, const char * p_cTitulo, const char * p_cFormato, ... ) FORMATO_PRINTF ( 3, 4 );
 
 
 

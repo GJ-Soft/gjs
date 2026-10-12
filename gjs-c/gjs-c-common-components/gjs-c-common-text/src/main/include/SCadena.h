@@ -17,6 +17,8 @@
 #ifndef _ORG_GJS_C_CC_SCADENA_H
 #define _ORG_GJS_C_CC_SCADENA_H
 
+#include <Precompilacion.h>
+
 
 
 #include <stdarg.h>
@@ -38,7 +40,7 @@ typedef struct
 SCadena * SCadCrearDef ();
 SCadena * SCadCrear ( int iLong );
 SCadena * SCadGenerar ( const char * p_cValor );
-SCadena * SCadGenerarConFormato ( const char * p_cFormato, ... );
+SCadena * SCadGenerarConFormato ( const char * p_cFormato, ... ) FORMATO_PRINTF ( 1, 2 );
 SCadena * SCadGenerarConFormatoExt ( const char * p_cFormato, va_list valArgumentos );
 SCadena * SCadCrearLlena ( int iLong, char cRelleno );
 
@@ -69,8 +71,8 @@ int SCadConcatenarLiteral ( SCadena * p_cadObj, const char * p_cValor );
 int SCadCopiarCaracter ( SCadena * p_cadObj, char cValor );
 int SCadConcatenarCaracter ( SCadena * p_cadObj, char cValor );
 
-int SCadCopiarConFormato ( SCadena * p_cadObj, const char * p_cFormato, ... );
-int SCadConcatenarConFormato ( SCadena * p_cadObj, const char * p_cFormato, ... );
+int SCadCopiarConFormato ( SCadena * p_cadObj, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
+int SCadConcatenarConFormato ( SCadena * p_cadObj, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
 int SCadCopiarConFormatoExt ( SCadena * p_cadObj, const char * p_cFormato, va_list valArgumentos );
 int SCadConcatenarConFormatoExt ( SCadena * p_cadObj, const char * p_cFormato, va_list valArgumentos );
 

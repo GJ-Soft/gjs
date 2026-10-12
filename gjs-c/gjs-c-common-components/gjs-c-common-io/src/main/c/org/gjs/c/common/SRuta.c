@@ -467,7 +467,11 @@ SCadena * SRutRuta ( SRuta * p_rutObj )
 	{
         if ( SRutEsFichero ( p_rutObj ) == 1 )
         {
-		    p_cadRes = SCadGenerarConFormato ( "%s%c%s", p_rutObj->p_cadDirectorio, SisSeparadorRutaFicheros (), p_rutObj->p_cadFichero );
+		    /* Con el texto de las SCadena, no con las estructuras: %s leia los
+		       bytes de la estructura como si fueran la cadena. Lo destapo el
+		       atributo FORMATO_PRINTF de SCadGenerarConFormato. */
+		    p_cadRes = SCadGenerarConFormato ( "%s%c%s", SCadValorConstante ( p_rutObj->p_cadDirectorio ),
+											   SisSeparadorRutaFicheros (), SCadValorConstante ( p_rutObj->p_cadFichero ) );
         }
         else
         {
@@ -499,15 +503,30 @@ char * SRutRutaLit ( SRuta * p_rutObj )
 SCadena * SRutRutaAbsoluta ( SRuta * p_rutObj )
 {
 	SCadena *   p_cadRes;
+    char *      p_cDirActual;
     char *      p_cDirAbsoluto;
 
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
         if ( SRutEsRelativa ( p_rutObj ) == 1 )
         {
-            p_cDirAbsoluto = SisResolverDirectorioRelativo ( SisDirectorioActual (), SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
-		    p_cadRes = SCadGenerarConFormato ( "%s%c%s", p_cDirAbsoluto, SisSeparadorRutaFicheros (), p_rutObj->p_cadFichero );
+            /* SisDirectorioActual () devuelve una copia: pasada directamente
+               como argumento no la liberaba nadie. */
+            p_cDirActual = SisDirectorioActual ();
+            p_cDirAbsoluto = SisResolverDirectorioRelativo ( p_cDirActual, SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
+            /* Un directorio no lleva fichero detras: antes se le pegaba el
+               separador y, con %s, los bytes de la SCadena del fichero. */
+            if ( SRutEsFichero ( p_rutObj ) == 1 )
+            {
+		        p_cadRes = SCadGenerarConFormato ( "%s%c%s", p_cDirAbsoluto, SisSeparadorRutaFicheros (),
+												   SCadValorConstante ( p_rutObj->p_cadFichero ) );
+            }
+            else
+            {
+                p_cadRes = SCadGenerar ( p_cDirAbsoluto );
+            }
             MemLiberar ( (void **) &p_cDirAbsoluto );
+            MemLiberar ( (void **) &p_cDirActual );
         }
         else
         {
@@ -524,15 +543,19 @@ SCadena * SRutRutaAbsoluta ( SRuta * p_rutObj )
 char * SRutRutaAbsolutaLit ( SRuta * p_rutObj )
 {
 	char *	p_cRes;
+    char *  p_cDirActual;
     char *  p_cDirAbsoluto;
 
 	if ( ES_VALIDO ( p_rutObj ) )
 	{
         if ( SRutEsRelativa ( p_rutObj ) == 1 )
         {
-            p_cDirAbsoluto = SisResolverDirectorioRelativo ( SisDirectorioActual (), SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
+            /* Como en SRutRutaAbsoluta: la copia de SisDirectorioActual () se libera. */
+            p_cDirActual = SisDirectorioActual ();
+            p_cDirAbsoluto = SisResolverDirectorioRelativo ( p_cDirActual, SCadValorConstante ( p_rutObj->p_cadDirectorio ) );
     		p_cRes = SisComponerRuta ( p_cDirAbsoluto, SCadValorConstante ( p_rutObj->p_cadFichero ), 0 );
             MemLiberar ( (void **) &p_cDirAbsoluto );
+            MemLiberar ( (void **) &p_cDirActual );
         }
         else
         {

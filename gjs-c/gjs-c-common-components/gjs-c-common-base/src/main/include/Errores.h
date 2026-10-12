@@ -16,6 +16,8 @@
 #ifndef _ORG_GJS_C_CC_ERRORES_H
 #define _ORG_GJS_C_CC_ERRORES_H
 
+#include <Precompilacion.h>
+
 
 #include <BaseConfig.h>
 
@@ -42,7 +44,7 @@
 /* Rutinas de generación y consulta de errores producidos: */
 void ErrEstablecer ( const char * p_cModulo, int iLinea, int iCodigo );
 //void ErrEstablecer ( int iCodigo, const char * p_cDescripcion );
-void ErrEstablecerConFormato ( const char * p_cModulo, int iLinea, int iCodigo, const char * p_cDescripcion, ... );
+void ErrEstablecerConFormato ( const char * p_cModulo, int iLinea, int iCodigo, const char * p_cDescripcion, ... ) FORMATO_PRINTF ( 4, 5 );
 
 int ErrHayError ();
 

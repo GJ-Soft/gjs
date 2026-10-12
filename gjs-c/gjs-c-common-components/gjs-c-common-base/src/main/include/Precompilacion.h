@@ -115,6 +115,20 @@
 #endif
 
 
+/* Funciones con formato al estilo de printf: FORMATO_PRINTF ( f, a ) dice que el
+   parametro f es la cadena de formato y que los argumentos empiezan en el a ( 0
+   si llegan en un va_list ). Con eso gcc comprueba en cada llamada que los
+   argumentos casan con el formato, y un formato que no es literal deja de ser
+   sospechoso dentro de la funcion que lo recibe. gnu_printf y no printf: en
+   MinGW printf es el formato del runtime de Microsoft, y aqui lo interpreta
+   FrmCadena, que sigue el de C. Fuera de gcc y clang no hace nada. */
+#if ( defined ( __GNUC__ ) )
+#	define FORMATO_PRINTF( f, a )		__attribute__ ( ( format ( gnu_printf, f, a ) ) )
+#else
+#	define FORMATO_PRINTF( f, a )
+#endif
+
+
 /* Modos de depuración: */
 #if ( defined ( MODO_DEPURACION_2 ) )
 #	if ( !defined ( MODO_DEPURACION ) )

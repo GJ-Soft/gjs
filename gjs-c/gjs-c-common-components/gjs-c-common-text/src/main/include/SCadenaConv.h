@@ -1,6 +1,8 @@
 #ifndef _ORG_GJS_C_CC_SCADENACONV_H
 #define _ORG_GJS_C_CC_SCADENACONV_H
 
+#include <Precompilacion.h>
+
 
 
 #include <SConversor.h>
@@ -97,8 +99,8 @@ void SCadcConcatenarRealDoble ( SCadenaConv * p_cadObj, double dValor );
 void SCadcCopiarEnteroDobleLargo ( SCadenaConv * p_cadObj, long long llValor );
 void SCadcConcatenarEnteroDobleLargo ( SCadenaConv * p_cadObj, long long llValor );
 
-int SCadcCopiarConFormato ( SCadenaConv * p_cadObj, const char * p_cFormato, ... );
-int SCadcConcatenarConFormato ( SCadenaConv * p_cadObj, const char * p_cFormato, ... );
+int SCadcCopiarConFormato ( SCadenaConv * p_cadObj, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
+int SCadcConcatenarConFormato ( SCadenaConv * p_cadObj, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
 int SCadcCopiarConFormatoExt ( SCadenaConv * p_cadObj, const char * p_cFormato, va_list valArgumentos );
 int SCadcConcatenarConFormatoExt ( SCadenaConv * p_cadObj, const char * p_cFormato, va_list valArgumentos );
 

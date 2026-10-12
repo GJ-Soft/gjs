@@ -17,6 +17,8 @@
 #ifndef _ORG_GJS_C_CC_CADENAS_H
 #define _ORG_GJS_C_CC_CADENAS_H
 
+#include <Precompilacion.h>
+
 
 
 #include <UniChar.h>
@@ -26,7 +28,7 @@
 
 
 char * CadCrearExt ( int iTam, char cCarRelleno );
-char * CadCrearConFormato ( const char * p_cFormato, ... );
+char * CadCrearConFormato ( const char * p_cFormato, ... ) FORMATO_PRINTF ( 1, 2 );
 char * CadCrearConFormatoExt ( const char * p_cFormato, va_list valArgumentos );
 
 
@@ -57,8 +59,8 @@ int CadConcatenarExt ( char * p_cAsciiz1, const char * p_cAsciiz2, int iMax1, in
 int CadCopiarCaracterExt ( char * p_cAsciiz1, char cVal, int iMax1 ); 
 int CadConcatenarCaracterExt ( char * p_cAsciiz1, char cVal, int iMax1 ); 
 
-int CadCopiarConFormato ( char * p_cAsciiz1, const char * p_cFormato, ... );
-int CadConcatenarConFormato ( char * p_cAsciiz1, const char * p_cFormato, ... );
+int CadCopiarConFormato ( char * p_cAsciiz1, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
+int CadConcatenarConFormato ( char * p_cAsciiz1, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
 int CadCopiarConFormatoExt ( char * p_cAsciiz1, const char * p_cFormato, va_list valArgumentos );
 int CadConcatenarConFormatoExt ( char * p_cAsciiz1, const char * p_cFormato, va_list valArgumentos );
 

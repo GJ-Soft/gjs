@@ -127,6 +127,13 @@ escribía fuera del buffer interno y el proceso abortaba por corrupción del hea
 
 ## Observaciones
 
+- `FrmCadena` se declara con `FORMATO_PRINTF ( 2, 0 )`, y las funciones que
+  la usan por debajo con el suyo: gcc comprueba sus formatos como los de
+  `printf`. Lo propio de `FrmCadena` que `printf` no tiene —`%S` como `char *` y
+  el bloque `(…)`— daría un aviso donde se usara; hoy no lo usa ninguna llamada.
+  Los `snprintf` de dentro, con el especificador que monta el autómata, siguen
+  sin formato literal, y es a propósito.
+
 - Todas las escrituras en los buffers internos van por `snprintf` con el tamaño
   del buffer (`CAD_BASE_MAX_TAM + 1` para `p_cBuffer`), así que ninguna puede
   salirse. La estimación previa de anchura (`iMaxAncho`) sigue decidiendo qué

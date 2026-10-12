@@ -26,7 +26,7 @@
 
 char * VersCadena ( int iVersion, int iSubversion, int iRevision, int iCorreccion )
 {
-	const char *	p_cPatron;
+	int				iCampos;
 	char *			p_cAux;
 	char *			p_cRes;
 	int				iTam;
@@ -44,26 +44,44 @@ char * VersCadena ( int iVersion, int iSubversion, int iRevision, int iCorreccio
 				if ( iCorreccion >= 0 )
 				{
 					iTam = iTam + 12;
-					p_cPatron = VERS_PAT_4;
+					iCampos = 4;
 				}
 				else
 				{
-					p_cPatron = VERS_PAT_3;
+					iCampos = 3;
 				}
 			}
 			else
 			{
-				p_cPatron = VERS_PAT_2;
+				iCampos = 2;
 			}
 		}
 		else
 		{
-			p_cPatron = VERS_PAT_1;
+			iCampos = 1;
 		}
 		p_cAux = CadCrear ( iTam );
 		if ( ES_VALIDO ( p_cAux ) )
 		{
-			snprintf ( p_cAux, iTam + 1, p_cPatron, iVersion, iSubversion, iRevision, iCorreccion );
+			/* Un snprintf por patron, con el literal: con el patron en una
+			   variable el compilador no puede comprobar el formato contra los
+			   argumentos, y cada patron lleva los suyos y no cuatro siempre. */
+			if ( iCampos == 4 )
+			{
+				snprintf ( p_cAux, iTam + 1, VERS_PAT_4, iVersion, iSubversion, iRevision, iCorreccion );
+			}
+			else if ( iCampos == 3 )
+			{
+				snprintf ( p_cAux, iTam + 1, VERS_PAT_3, iVersion, iSubversion, iRevision );
+			}
+			else if ( iCampos == 2 )
+			{
+				snprintf ( p_cAux, iTam + 1, VERS_PAT_2, iVersion, iSubversion );
+			}
+			else
+			{
+				snprintf ( p_cAux, iTam + 1, VERS_PAT_1, iVersion );
+			}
 			p_cRes = CadDuplicar ( p_cAux );
 			MemLiberar ( (void **) &p_cAux );
 		}

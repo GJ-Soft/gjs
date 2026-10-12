@@ -17,6 +17,8 @@
 #ifndef _ORG_GJS_C_CC_FORMATOCADENA_H
 #define _ORG_GJS_C_CC_FORMATOCADENA_H
 
+#include <Precompilacion.h>
+
 
 
 #include <stdarg.h>
@@ -26,7 +28,7 @@
 
 
 
-int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos, int iMaxTam );
+int FrmCadena ( char * p_cCadena, const char * p_cFormato, va_list valArgumentos, int iMaxTam ) FORMATO_PRINTF ( 2, 0 );
 
 
 

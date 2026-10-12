@@ -1,6 +1,8 @@
 #ifndef _SLOG_H
 #define _SLOG_H
 
+#include <Precompilacion.h>
+
 
 
 #include <SCadena.h>
@@ -116,11 +118,11 @@ void SLogAnotarErrorLit ( SLog * p_logObj, const char * p_cTexto );
 
 void SLogAnotarSaltoLinea ( SLog * p_logObj );
 
-void SLogAnotarConFormato ( SLog * p_logObj, const char * p_cFormato, ... );
-void SLogAnotarNivelConFormato ( SLog * p_logObj, int iNivel, const char * p_cFormato, ... );
-void SLogAnotarForzadoConFormato ( SLog * p_logObj, const char * p_cFormato, ... );
-void SLogAnotarAvisoConFormato ( SLog * p_logObj,  const char * p_cFormato, ... );
-void SLogAnotarErrorConFormato ( SLog * p_logObj, const char * p_cFormato, ... );
+void SLogAnotarConFormato ( SLog * p_logObj, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
+void SLogAnotarNivelConFormato ( SLog * p_logObj, int iNivel, const char * p_cFormato, ... ) FORMATO_PRINTF ( 3, 4 );
+void SLogAnotarForzadoConFormato ( SLog * p_logObj, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
+void SLogAnotarAvisoConFormato ( SLog * p_logObj,  const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
+void SLogAnotarErrorConFormato ( SLog * p_logObj, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
 
 void SLogAnotarPilaErrores ( SLog * p_logObj );
 void SLogAnotarErrorSistema ( SLog * p_logObj );

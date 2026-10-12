@@ -17,6 +17,8 @@
 #ifndef _ORG_GJS_C_CC_STOKEN_H
 #define _ORG_GJS_C_CC_STOKEN_H
 
+#include <Precompilacion.h>
+
 
 
 
@@ -56,7 +58,7 @@ int STokCopiarCadena ( SToken * p_tokObj, SCadena * p_cadValor );
 int STokCopiarLiteral ( SToken * p_tokObj, const char * p_cadValor );
 int STokCopiarCaracter ( SToken * p_tokObj, char cValor );
 
-int STokCopiarConFormato ( SToken * p_tokObj, const char * p_cFormato, ...);
+int STokCopiarConFormato ( SToken * p_tokObj, const char * p_cFormato, ...) FORMATO_PRINTF ( 2, 3 );
 
 int STokLongitud ( SToken * p_tokObj );
 int STokMaxTam ( SToken * p_tokObj );

@@ -1,6 +1,8 @@
 #include "Base.h"
 
 #include "SRuta.h"
+#include "SistemaFicheros.h"
+#include "Cadenas.h"
 
 
 
@@ -37,6 +39,55 @@ static int TestSRutCrearFichero01 ()
 		printf( "Error caso 0: no se pudo crear el objeto\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
+	SRutDestruir ( &p_rutObj );
+	return ( iRes );
+}
+
+/* SRutRuta pasaba las SCadena enteras a un %s: la ruta compuesta salia con los
+   bytes de las estructuras. Y SRutRutaAbsoluta de un directorio relativo le
+   pegaba detras un separador y el fichero, que no tiene. */
+static int TestSRutRuta01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SRutRuta 01:\n" );
+	char cEsperada [ 64 ];
+	snprintf ( cEsperada, sizeof ( cEsperada ), "/tmp%cdatos.txt", SisSeparadorRutaFicheros () );
+
+	SRuta * p_rutObj = SRutCrearFicheroLit ( "/tmp", "datos.txt" );
+	SCadena * p_cadRuta = SRutRuta ( p_rutObj );
+	if ( ( ES_NULO ( p_cadRuta ) ) || ( CadComparar ( SCadValorConstante ( p_cadRuta ), cEsperada ) != COMP_IGUAL ) )
+	{
+		printf( "Error caso 1: se esperaba [%s] y se ha obtenido [%s]\n", cEsperada,
+				ES_VALIDO ( p_cadRuta ) ? SCadValorConstante ( p_cadRuta ) : "(null)" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCadDestruir ( &p_cadRuta );
+	SRutDestruir ( &p_rutObj );
+
+	char * p_cActual = SisDirectorioActual ();
+	p_rutObj = SRutCrearDirectorioLit ( "./subdir" );
+	p_cadRuta = SRutRutaAbsoluta ( p_rutObj );
+	char * p_cLit = SRutRutaAbsolutaLit ( p_rutObj );
+	if ( ( ES_NULO ( p_cadRuta ) ) || ( ES_NULO ( p_cActual ) ) ||
+		 ( CadEmpiezaPor ( SCadValorConstante ( p_cadRuta ), p_cActual ) == 0 ) ||
+		 ( CadAcabaPor ( SCadValorConstante ( p_cadRuta ), "subdir" ) == 0 ) )
+	{
+		printf( "Error caso 2: se esperaba [%s...subdir] y se ha obtenido [%s]\n",
+				ES_VALIDO ( p_cActual ) ? p_cActual : "(null)",
+				ES_VALIDO ( p_cadRuta ) ? SCadValorConstante ( p_cadRuta ) : "(null)" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( ES_NULO ( p_cLit ) ) || ( ES_NULO ( p_cadRuta ) ) ||
+		 ( CadComparar ( p_cLit, SCadValorConstante ( p_cadRuta ) ) != COMP_IGUAL ) )
+	{
+		printf( "Error caso 3: SRutRutaAbsoluta [%s] y SRutRutaAbsolutaLit [%s] no coinciden\n",
+				ES_VALIDO ( p_cadRuta ) ? SCadValorConstante ( p_cadRuta ) : "(null)",
+				ES_VALIDO ( p_cLit ) ? p_cLit : "(null)" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	MemLiberar ( (void **) &p_cLit );
+	MemLiberar ( (void **) &p_cActual );
+	SCadDestruir ( &p_cadRuta );
 	SRutDestruir ( &p_rutObj );
 	return ( iRes );
 }
@@ -388,6 +439,7 @@ int TestSRuta ()
 	printf ( "%s[Test SRuta]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSRutCrearFichero01 () == BOOL_VAL_CIERTO ) &&
 			( TestSRutCrearDirectorio01 () == BOOL_VAL_CIERTO ) &&
+			( TestSRutRuta01 () == BOOL_VAL_CIERTO ) &&
 			( TestSRutExtension01 () == BOOL_VAL_CIERTO ) &&
 			( TestSRutExtension02 () == BOOL_VAL_CIERTO ) &&
 			( TestSRutEstablecer01 () == BOOL_VAL_CIERTO ) &&

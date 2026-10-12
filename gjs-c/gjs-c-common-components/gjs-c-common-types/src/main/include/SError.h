@@ -2,6 +2,8 @@
 #ifndef _ORG_GJS_C_CC_C_COMMON_SERROR_H
 #define _ORG_GJS_C_CC_C_COMMON_SERROR_H
 
+#include <Precompilacion.h>
+
 
 
 
@@ -22,8 +24,8 @@ typedef struct
 
 SError * SErrCrear ( const char * p_cCodigo, const char * p_cDescripcion );
 SError * SErrCrearAdvertencia ( const char * p_cCodigo, const char * p_cDescripcion );
-SError * SErrCrearForm ( const char * p_cCodigo, const char * p_cFormato, ... );
-SError * SErrCrearAdvertenciaForm ( const char * p_cCodigo, const char * p_cFormato, ... );
+SError * SErrCrearForm ( const char * p_cCodigo, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
+SError * SErrCrearAdvertenciaForm ( const char * p_cCodigo, const char * p_cFormato, ... ) FORMATO_PRINTF ( 2, 3 );
 
 void SErrDestruir ( SError ** p_p_errObj );
 

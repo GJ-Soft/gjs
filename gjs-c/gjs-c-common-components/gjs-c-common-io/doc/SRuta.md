@@ -119,6 +119,14 @@ SRutDestruir ( &p_rutObj );
 
 ## Observaciones
 
+- **`SRutRuta` y `SRutRutaAbsoluta` daban rutas con basura** hasta el
+  2026-10-11: pasaban las `SCadena *` del directorio y del fichero a un `%s`, y
+  `"/tmp"` con `"datos.txt"` salía `"(nul)/\t"`. `SRutRutaAbsoluta` de un
+  directorio relativo, además, le pegaba un separador y el fichero que no tiene
+  (`…/subdir/(nul)`); `SDirectorio` la usa para buscar en POSIX. Las versiones
+  `…Lit` estaban bien. Las dos absolutas perdían, también, la copia de
+  `SisDirectorioActual ()`. Lo fija `TestSRutRuta01`.
+
 - **Los predicados de existencia y atributos duplican los de
   [SistemaFicheros](SistemaFicheros.md).** `SRutExisteFichero` y
   `SisExisteFichero` responden a lo mismo con distinto envoltorio; hay 14

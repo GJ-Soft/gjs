@@ -130,6 +130,15 @@ Reglas de conmutación:
 - Sin `WIN` y sin `POSIX`: se asume `WIN`.
 - `CC` fuerza `POSIX`.
 - `MODO_DEPURACION_2` implica `MODO_DEPURACION`.
+- `FORMATO_PRINTF ( f, a )` marca las funciones con formato al estilo de
+  `printf` (el parámetro `f` es el formato, los argumentos empiezan en `a`, o 0
+  si llegan en un `va_list`). Con gcc o clang es `format ( gnu_printf, f, a )`:
+  el compilador comprueba en cada llamada que los argumentos casan con el
+  formato. `gnu_printf` porque en MinGW `printf` es el formato del runtime de
+  Microsoft, y aquí lo interpreta `FrmCadena`. Lo llevan las 24 funciones con
+  formato del stack (las `…ConFormato`, `ConDep…`, `ErrEstablecerConFormato`,
+  `SErrCrear…Form` y `FrmCadena`); al ponerlo destapó tres llamadas de
+  `SRuta.c` que pasaban una `SCadena *` a un `%s`.
 - En `WIN` se eleva `WINVER` y `_WIN32_WINNT` a `0x0A00` (Windows 10) como mínimo; hasta el 2026-10-11 era `0x0500` (Windows 2000), que escondía las API de Vista en adelante.
 
 Los `-D` vienen del pom padre `gjs-c-common-parent`, de un perfil que **activa
