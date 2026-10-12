@@ -103,6 +103,7 @@ llamada, así que conviene inicializarlos.
   frágil.
 - `VersProcesar` no valida el formato: acepta cualquier cadena que empiece por un
   número. `"1.4.2-RC.2"` se lee como versión 1, subversión 4, revisión 2, e
-  ignora el resto sin avisar. Para las versiones tipo semver del propio proyecto
-  (`1.0.0-RC.2`) eso significa que el sufijo se pierde.
+  ignora el resto sin avisar. Para una versión semver con sufijo, como las
+  candidatas del propio proyecto (`1.0.0-RC.2`), eso significa que el sufijo se
+  pierde.
 - No hay rutina de comparación de versiones.

@@ -14,7 +14,7 @@ trabajar con fechas y horas en formato numérico.
 | ------------ | --------------------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`                            |
 | `artifactId` | `gjs-cpp-common-time`                         |
-| `version`    | `1.0.0-RC.2`                                  |
+| `version`    | `1.0.0`                                  |
 | `packaging`  | `nar` (biblioteca **shared**)                 |
 | Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent`                |
 | Depende de   | `gjs-cpp-common-base`, `gjs-cpp-common-types` |

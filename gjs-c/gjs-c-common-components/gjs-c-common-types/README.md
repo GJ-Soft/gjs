@@ -17,7 +17,7 @@ acciones y localizadores. Las entidades identificadas están en
 | ------------ | ------------------------------------------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`                                                  |
 | `artifactId` | `gjs-c-common-types`                                                |
-| `version`    | `1.0.0-RC.2`                                                        |
+| `version`    | `1.0.0`                                                        |
 | `packaging`  | `nar` (biblioteca **shared**)                                       |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`                                        |
 | Depende de   | `gjs-c-common-base-types`, `gjs-c-common-text`, `gjs-c-common-time` |

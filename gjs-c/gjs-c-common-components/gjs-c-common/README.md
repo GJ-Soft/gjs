@@ -16,7 +16,7 @@ todo el stack.
 | ------------ | ---------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`                 |
 | `artifactId` | `gjs-c-common`                     |
-| `version`    | `1.0.0-RC.2`                       |
+| `version`    | `1.0.0`                       |
 | `packaging`  | `nar` (biblioteca **shared**)      |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`       |
 | Depende de   | **los once componentes del stack** |

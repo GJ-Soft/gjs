@@ -17,7 +17,7 @@ control de concurrencia y un captor de la salida estándar.
 | ------------ | ------------------------------ |
 | `groupId`    | `org.gjsoft.c.common`             |
 | `artifactId` | `gjs-cpp-common-types`         |
-| `version`    | `1.0.0-RC.2`                   |
+| `version`    | `1.0.0`                   |
 | `packaging`  | `nar` (biblioteca **shared**)  |
 | Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent` |
 | Depende de   | `gjs-cpp-common-base`          |

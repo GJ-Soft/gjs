@@ -19,7 +19,7 @@ Define the tgz packaging for maven projects
 	<plugin>
 		<groupId>org.gjsoft.maven</groupId>
 		<artifactId>tgz-maven-plugin</artifactId>
-		<version>1.0.0-RC.2</version>
+		<version>1.0.0</version>
 	</plugin>
 
 
@@ -32,7 +32,7 @@ Define the tgz packaging for maven projects
 		<extension>
 			<groupId>org.gjsoft.maven</groupId>
 			<artifactId>tgz-maven-plugin</artifactId>
-			<version>1.0.0-RC.2</version>
+			<version>1.0.0</version>
 		</extension>
 	</extensions>
 </build>
@@ -44,7 +44,7 @@ Define the tgz packaging for maven projects
     <plugin>
 		<groupId>org.gjsoft.maven</groupId>
 		<artifactId>tgz-maven-plugin</artifactId>
-		<version>1.0.0-RC.2</version>
+		<version>1.0.0</version>
 
 		<configuration>
 			<baseDirectory>${project.basedir}/dist</baseDirectory>

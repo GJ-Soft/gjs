@@ -85,7 +85,7 @@ Los formatos salen de `AplicacionConfig.h`: `"%d.%d.%d"`, `"%d.%d"` y
 - **No se puede representar una versión 0.x.** `SVerCrear` exige
   `iVersion > 0`, así que `0.9.1` —la numeración habitual de lo que aún no ha
   llegado a la primera versión estable— no cabe. El propio stack se numera
-  `1.0.0-RC.2`, de modo que el caso no se le presenta, pero la restricción es
+  `1.0.0`, de modo que el caso no se le presenta, pero la restricción es
   arbitraria.
 - **Tampoco cabe una versión sin fecha.** `SVerCrear` exige una fecha válida,
   y no hay constructor que acepte sólo los tres números. `SVerCrearDef` rellena

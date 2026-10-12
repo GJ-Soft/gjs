@@ -7,7 +7,7 @@
      <parent>
 		<groupId>org.gjsoft.java.maven</groupId>
 		<artifactId>gjs-java-maven-base-parent</artifactId>
-		<version>1.0.0-RC.2</version>
+		<version>1.0.0</version>
         <relativePath />
     </parent>
 

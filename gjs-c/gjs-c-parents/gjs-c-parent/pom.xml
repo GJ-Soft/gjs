@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjsoft.c</groupId>
 		<artifactId>gjs-c-nar-parent</artifactId>
-		<version>1.0.0-RC.2</version>
+		<version>1.0.0</version>
 		<relativePath>../gjs-c-nar-parent</relativePath>
 	</parent>
 
@@ -46,19 +46,19 @@
 		
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->
-		<gjs-c-common-base.version>1.0.0-RC.2</gjs-c-common-base.version>
-		<gjs-c-common-base-types.version>1.0.0-RC.2</gjs-c-common-base-types.version>
-		<gjs-c-common-text.version>1.0.0-RC.2</gjs-c-common-text.version>
-		<gjs-c-common-calculation.version>1.0.0-RC.2</gjs-c-common-calculation.version>
-		<gjs-c-common-time.version>1.0.0-RC.2</gjs-c-common-time.version>
-		<gjs-c-common-types.version>1.0.0-RC.2</gjs-c-common-types.version>
-		<gjs-c-common-database.version>1.0.0-RC.2</gjs-c-common-database.version>
-		<gjs-c-common-io.version>1.0.0-RC.2</gjs-c-common-io.version>
-		<gjs-c-common-system.version>1.0.0-RC.2</gjs-c-common-system.version>
-		<gjs-c-common-support.version>1.0.0-RC.2</gjs-c-common-support.version>
-		<gjs-c-common-log.version>1.0.0-RC.2</gjs-c-common-log.version>
-		<gjs-c-common.version>1.0.0-RC.2</gjs-c-common.version>
-		<gjs-c-common-test.version>1.0.0-RC.2</gjs-c-common-test.version>
+		<gjs-c-common-base.version>1.0.0</gjs-c-common-base.version>
+		<gjs-c-common-base-types.version>1.0.0</gjs-c-common-base-types.version>
+		<gjs-c-common-text.version>1.0.0</gjs-c-common-text.version>
+		<gjs-c-common-calculation.version>1.0.0</gjs-c-common-calculation.version>
+		<gjs-c-common-time.version>1.0.0</gjs-c-common-time.version>
+		<gjs-c-common-types.version>1.0.0</gjs-c-common-types.version>
+		<gjs-c-common-database.version>1.0.0</gjs-c-common-database.version>
+		<gjs-c-common-io.version>1.0.0</gjs-c-common-io.version>
+		<gjs-c-common-system.version>1.0.0</gjs-c-common-system.version>
+		<gjs-c-common-support.version>1.0.0</gjs-c-common-support.version>
+		<gjs-c-common-log.version>1.0.0</gjs-c-common-log.version>
+		<gjs-c-common.version>1.0.0</gjs-c-common.version>
+		<gjs-c-common-test.version>1.0.0</gjs-c-common-test.version>
 	</properties>
 
 	<dependencyManagement>

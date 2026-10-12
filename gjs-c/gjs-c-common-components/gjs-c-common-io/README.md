@@ -14,7 +14,7 @@ acceso aleatorio crudo hasta ficheros de bloques ordenados por identificador.
 | ------------ | ------------------------------------------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`                                                  |
 | `artifactId` | `gjs-c-common-io`                                                   |
-| `version`    | `1.0.0-RC.2`                                                        |
+| `version`    | `1.0.0`                                                        |
 | `packaging`  | `nar` (biblioteca **shared**)                                       |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`                                        |
 | Depende de   | `gjs-c-common-base`, `gjs-c-common-base-types`, `gjs-c-common-text` |

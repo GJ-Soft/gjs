@@ -17,7 +17,7 @@ y casi 34.000 de implementación.
 | ------------ | ------------------------------------ |
 | `groupId`    | `org.gjsoft.c.common`                   |
 | `artifactId` | `gjs-c-common-base-types`            |
-| `version`    | `1.0.0-RC.2`                         |
+| `version`    | `1.0.0`                         |
 | `packaging`  | `nar` (biblioteca **shared**)        |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`         |
 | Depende de   | `org.gjsoft.c.common:gjs-c-common-base` |

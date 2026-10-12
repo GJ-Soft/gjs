@@ -23,7 +23,7 @@ Define the whl packaging for maven projects
 		<extension>
 			<groupId>org.gjsoft.maven.extensions</groupId>
 			<artifactId>whl-maven-extension</artifactId>
-			<version>1.0.0-RC.2</version>
+			<version>1.0.0</version>
 		</extension>
 	</extensions>
 </build>

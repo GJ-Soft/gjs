@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjsoft.python</groupId>
 		<artifactId>gjs-python-exe-parent</artifactId>
-		<version>1.0.0-RC.2</version>
+		<version>1.0.0</version>
 		<relativePath>../gjs-python-exe-parent</relativePath>
 	</parent>	
 

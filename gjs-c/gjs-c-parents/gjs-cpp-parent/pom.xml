@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjsoft.c</groupId>
 		<artifactId>gjs-c-nar-parent</artifactId>
-		<version>1.0.0-RC.2</version>
+		<version>1.0.0</version>
 		<relativePath>../gjs-c-nar-parent</relativePath>
 	</parent>
 
@@ -44,19 +44,19 @@
 		
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->
-		<gjs-c-common-base.version>1.0.0-RC.2</gjs-c-common-base.version>
-		<gjs-cpp-common-base.version>1.0.0-RC.2</gjs-cpp-common-base.version>
-		<gjs-cpp-common-types.version>1.0.0-RC.2</gjs-cpp-common-types.version>
-		<gjs-cpp-common-calculation.version>1.0.0-RC.2</gjs-cpp-common-calculation.version>
-		<gjs-cpp-common-time.version>1.0.0-RC.2</gjs-cpp-common-time.version>
-		<gjs-cpp-common-support.version>1.0.0-RC.2</gjs-cpp-common-support.version>
-		<gjs-cpp-common-io.version>1.0.0-RC.2</gjs-cpp-common-io.version>
-		<gjs-cpp-common-system.version>1.0.0-RC.2</gjs-cpp-common-system.version>
-		<gjs-cpp-common-log.version>1.0.0-RC.2</gjs-cpp-common-log.version>
-		<gjs-cpp-common-database.version>1.0.0-RC.2</gjs-cpp-common-database.version>
-		<gjs-cpp-common-test-mocks.version>1.0.0-RC.2</gjs-cpp-common-test-mocks.version>
-		<gjs-cpp-common-test.version>1.0.0-RC.2</gjs-cpp-common-test.version>
-		<gjs-cpp-common.version>1.0.0-RC.2</gjs-cpp-common.version>
+		<gjs-c-common-base.version>1.0.0</gjs-c-common-base.version>
+		<gjs-cpp-common-base.version>1.0.0</gjs-cpp-common-base.version>
+		<gjs-cpp-common-types.version>1.0.0</gjs-cpp-common-types.version>
+		<gjs-cpp-common-calculation.version>1.0.0</gjs-cpp-common-calculation.version>
+		<gjs-cpp-common-time.version>1.0.0</gjs-cpp-common-time.version>
+		<gjs-cpp-common-support.version>1.0.0</gjs-cpp-common-support.version>
+		<gjs-cpp-common-io.version>1.0.0</gjs-cpp-common-io.version>
+		<gjs-cpp-common-system.version>1.0.0</gjs-cpp-common-system.version>
+		<gjs-cpp-common-log.version>1.0.0</gjs-cpp-common-log.version>
+		<gjs-cpp-common-database.version>1.0.0</gjs-cpp-common-database.version>
+		<gjs-cpp-common-test-mocks.version>1.0.0</gjs-cpp-common-test-mocks.version>
+		<gjs-cpp-common-test.version>1.0.0</gjs-cpp-common-test.version>
+		<gjs-cpp-common.version>1.0.0</gjs-cpp-common.version>
 	</properties>
 	
 	<dependencyManagement>

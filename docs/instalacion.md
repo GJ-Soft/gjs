@@ -121,14 +121,9 @@ pom padre.
 
 ## 5. Instalacion inicial (bootstrap)
 
-**No se puede hacer `mvn clean install` desde la raiz en una maquina limpia.**
-Hay dos arranques distintos que resolver, independientes entre si.
-
-### 5.1 Poms padre y extensiones de build
-
-Es el caso de una maquina nueva o de un cambio de version: no hay nada de la
-version vigente en el repositorio local. Dos dependencias circulares, ambas
-estructurales:
+**No se puede hacer `mvn clean install` desde la raiz en una maquina limpia**, ni
+despues de un cambio de version: mientras la version vigente no este en el
+repositorio local, parte del arbol no se puede ni leer. Hay tres motivos:
 
 1. Los modulos de `gjs-maven` y `gjs-plugin` declaran `<relativePath/>` vacio, o
    sea "resuelve el padre solo desde el repositorio".
@@ -136,40 +131,35 @@ estructurales:
    mismo repositorio (`property-bootstrap`, `tgz`, `pyz`, `whl`). Una build
    extension se resuelve durante el *model building*, antes de que exista el
    reactor, asi que nunca puede venir del propio reactor.
+3. `nar-maven-plugin` y `openpojo` viven fuera de `gjs`, y el resto depende de
+   ellos: los padres de C/C++ declaran el primero como build extension, y
+   `gjs-java-test-base-parent` gestiona el segundo. A su vez, los dos heredan de
+   padres de `gjs`.
 
-El procedimiento por fases lo automatiza [`arranque.sh`](../arranque.sh), en la
-raiz del repositorio. El orden y el porque de cada fase estan en
-[Actualizacion de version](actualizacion-version.md), apartado 4. Para las fases
-que instalan la cadena de padres sirve el agregador `pomParents.xml`, que reune
-solo los poms padre y deja que el reactor los ordene, padre antes que hijo:
+Para eso estan los agregadores alternativos. `pomMinInstall.xml` reune lo que
+tiene que estar instalado antes que lo demas: los padres, `gjs-maven` y
+`gjs-plugin`, y lo minimo para compilar `nar-maven-plugin` y `openpojo`.
+`pomRemainingInstall.xml` reune todo lo que el anterior deja fuera. Entre los dos
+cubren exactamente los mismos modulos que `pom.xml`, sin solapes. El orden es:
 
-	mvn -f pomParents.xml clean install
+1. `mvn clean install -f pomMinInstall.xml`, en `gjs`
+2. `mvn clean install`, en `nar-maven-plugin`
+3. `mvn clean install`, en `openpojo`
+4. `mvn clean install -f pomRemainingInstall.xml`, en `gjs`
 
-No sustituye al procedimiento completo: los padres que declaran una build
-extension seguiran fallando hasta que esa extension este instalada, y hay que
-intercalar las fases que la construyen.
+Lo hace [`install-gjs.sh`](../install-gjs.sh), en la raiz de `gjs`, que busca
+`nar-maven-plugin` y `openpojo` junto a `gjs` y se detiene en el primer paso que
+falle. Los argumentos que reciba se pasan a las cuatro invocaciones; por
+ejemplo, contra un repositorio local de pruebas vacio:
 
-### 5.2 Extensiones, plugins, openpojo y nar-maven-plugin
+	./install-gjs.sh -Dmaven.repo.local=C:/Maven/.m2-test
 
-`pomMinInstall.xml` reune lo que tiene que estar instalado antes de que el resto
-del arbol se pueda siquiera leer:
+A partir de ahi el reactor completo compila de una pasada con `mvn clean
+install` desde la raiz.
 
-* `gjs-maven` y `gjs-plugin`, por lo del apartado anterior: sus extensiones se
-  resuelven en tiempo de *model building*, asi que sin ellas ni los poms que las
-  declaran se pueden construir.
-* Lo minimo para poder compilar `openpojo` y `nar-maven-plugin`, que viven fuera
-  de `gjs` y de los que depende el resto: los padres de C/C++ compilan con el
-  segundo, y `gjs-java-test-base-parent` gestiona el primero.
-
-El orden es:
-
-1. `mvn -f pomMinInstall.xml clean install`
-2. Construir `openpojo` y `nar-maven-plugin` en sus repositorios.
-3. `mvn -f pomRemainingInstall.xml clean install`, o `mvn clean install` desde la
-   raiz: a partir de aqui el reactor completo compila de una pasada.
-
-`pomMinInstall.xml` y `pomRemainingInstall.xml` cubren exactamente los mismos
-modulos que `pom.xml`, sin solapes.
+Para instalar solo la cadena de padres sirve `pomParents.xml`, que los reune y
+deja que el reactor los ordene, padre antes que hijo. Los padres que declaran una
+build extension fallan mientras esa extension no este instalada.
 
 > Las compilaciones de este reactor son **largas y pesadas**. Conviene lanzarlas
 > cuando la maquina no se este usando para otra cosa.

@@ -15,7 +15,7 @@ componente más pequeño del stack C++ y el último de la cadena.
 | ------------ | ------------------------------------------------------------------ |
 | `groupId`    | `org.gjsoft.c.common`                                                 |
 | `artifactId` | `gjs-cpp-common-test-mocks`                                        |
-| `version`    | `1.0.0-RC.2`                                                       |
+| `version`    | `1.0.0`                                                       |
 | `packaging`  | `nar` (biblioteca **shared**)                                      |
 | Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent`                                     |
 | Depende de   | `gjs-cpp-common-log`, `…-io`, `…-types`, **`gjs-cpp-common-test`** |

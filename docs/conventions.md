@@ -24,7 +24,7 @@ Stable releases follow the format:
 Release candidate releases may be published before a stable release:
 
 ```
-1.0.0-RC.2
+1.0.0-RC.1
 1.0.0-RC.2
 1.0.0-RC.3
 ```
@@ -52,7 +52,7 @@ Typical Example:
 1.0.0-SNAPSHOT
 
 ↓
-1.0.0-RC.2
+1.0.0-RC.1
 
 ↓
 1.0.0-RC.2

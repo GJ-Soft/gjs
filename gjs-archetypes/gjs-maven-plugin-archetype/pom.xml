@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.gjsoft.maven.archetypes</groupId>    
 		<artifactId>gjs-archetype-parent</artifactId>    
-		<version>1.0.0-RC.2</version>    
+		<version>1.0.0</version>    
 		<relativePath>../gjs-archetype-parent</relativePath>
 	</parent>	
 
@@ -25,7 +25,7 @@
     mvn archetype:generate \
 		-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 		-DarchetypeArtifactId=gjs-maven-plugin-archetype \
-		-DarchetypeVersion=1.0.0-RC.2 \
+		-DarchetypeVersion=1.0.0 \
 		-DshortName=test -Drule=test -Dphase=VALIDATE \
 		-Dversion=1.0.0-SNAPSHOT
     

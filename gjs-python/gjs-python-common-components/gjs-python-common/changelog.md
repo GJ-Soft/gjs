@@ -6,7 +6,7 @@ All major changes are referenced in this change log
 [Added|Changed|Deprecated|Removed|Fixed|Security]
 
 
-## 1.0.0-RC.2
+## 1.0.0
 
 ### Added
 

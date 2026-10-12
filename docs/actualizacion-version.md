@@ -20,7 +20,7 @@ version distinta de la vigente.
 | 1 | `versions:set` sobre los poms del reactor |
 | 2 | Sustitucion del resto (propiedades, arquetipos, docs, python) |
 | 3 | Verificacion estatica |
-| 4 | Instalacion por fases (bootstrap) y compilacion |
+| 4 | Compilacion por partes, con los agregadores alternativos |
 | 5 | Limpieza y commit |
 
 
@@ -102,53 +102,29 @@ build revienta con un `Non-resolvable parent POM` que parece culpa del cambio de
 version, cuando el bug llevaba ahi desde siempre.
 
 
-## 4. Instalacion por fases (bootstrap)
+## 4. Compilacion por partes
 
-**No se puede hacer `mvn clean install` desde la raiz directamente.** Hay dos
-dependencias circulares de arranque, y ambas son estructurales:
+**No se puede hacer `mvn clean install` desde la raiz directamente**: la version
+nueva todavia no esta en el repositorio local, y parte del arbol no se puede ni
+leer sin ella (padres con `<relativePath />` vacio, build extensions que produce
+el propio repositorio, y `nar-maven-plugin` y `openpojo`, que viven fuera). El
+porque detallado esta en [Instalacion](instalacion.md), apartado 5.
 
-1. Siete modulos (`gjs-maven/*`, `gjs-plugin/*`) declaran `<relativePath />`
-   **vacio**, o sea "resuelve el padre solo desde el repositorio". Con la version
-   nueva ese padre todavia no esta instalado.
-2. Varios poms padre declaran como **build extension** un jar que produce este
-   mismo repositorio (`tgz`, `pyz`, `whl`, `property-bootstrap`). Una build
-   extension se resuelve en tiempo de *model building*, antes de que exista el
-   reactor, asi que nunca puede venir del propio reactor: tiene que estar ya en
-   el repositorio local.
+Se compila con los agregadores alternativos, que existen para esto:
 
-Lo automatiza [`arranque.sh`](../arranque.sh), en la raiz del repositorio:
+	cd gjs              && mvn clean install -f pomMinInstall.xml
+	cd nar-maven-plugin && mvn clean install
+	cd openpojo         && mvn clean install
+	cd gjs              && mvn clean install -f pomRemainingInstall.xml
 
-	./arranque.sh                       # fases 1 a 6
-	./arranque.sh --externos --completo # y despues nar-maven-plugin, openpojo y la fase 7
-	./arranque.sh -- -Dmaven.repo.local=C:/Maven/.m2-test   # contra un repositorio de pruebas
+Lo mismo hace [`install-gjs.sh`](../install-gjs.sh):
 
-`./arranque.sh --ayuda` explica las opciones. Las salidas de Maven quedan en
-`target/arranque/`, una por invocacion.
+	./install-gjs.sh
+	./install-gjs.sh -Dmaven.repo.local=C:/Maven/.m2-test   # contra un repositorio de pruebas
 
-El orden que sigue, verificado a mano antes de escribir el script:
-
-	# Fase 1 - cadena de poms padre, en orden topologico (padre antes que hijo).
-	#          Varios quedaran pendientes: es normal, se recuperan en la fase 4.
-	#          (ver el script del apendice)
-
-	# Fase 2 - jar base del que dependen los parents de extensiones
-	mvn -f gjs-java/gjs-maven-common-components/gjs-maven-common-base install -DskipTests
-
-	# Fase 3 - parent de extensiones, extensiones y plugins
-	mvn -N -f gjs-java/gjs-java-parents/gjs-java-maven-extension-parent/pom.xml install -DskipTests
-	mvn -f gjs-maven  install -DskipTests
-	mvn -f gjs-plugin install -DskipTests
-
-	# Fase 4 - resto de la cadena de padres (ya resuelven las extensiones)
-	#          repetir el script de la fase 1
-
-	# Fase 5 - artefacto python del que dependen 3 parents de python
-	mvn -f gjs-python/gjs-python-common-components/gjs-python-common install -DskipTests
-
-	# Fase 6 - repetir el script de la fase 1: debe quedar todo instalado
-
-	# Fase 7 - compilacion completa
-	mvn clean install
+Si `nar-maven-plugin` u `openpojo` cambian tambien de version, se cambian antes
+que esto: los dos heredan de padres de `gjs`, y los padres de C/C++ de `gjs`
+usan el primero.
 
 > Las compilaciones de este reactor son **largas y pesadas**. Conviene lanzarlas
 > cuando la maquina no se este usando para otra cosa.
@@ -190,27 +166,3 @@ seguia en el repositorio local; al subir de version dejo de resolverse.
 
 Moraleja: cuando se renombre un artefacto, buscar el nombre viejo por **todo** el
 repositorio, no solo en el modulo renombrado.
-
-
-## Apendice: instalador topologico de padres
-
-Lo que hace `arranque.sh` en las fases 1, 4 y 6, con la funcion
-`instalar_padres`. El orden lo calcula con `tsort`, y no intenta instalar un
-padre cuyo propio padre siga pendiente.
-
-Descripcion original: Recorre los poms de empaquetado `pom`,
-los ordena de forma que un padre siempre preceda a sus hijos, y hace
-`mvn install -N` de cada uno. Los que fallan (por depender de una build extension
-aun no construida) se marcan como pendientes sin abortar, para reintentarlos en
-la pasada siguiente.
-
-Indexar por `artifactId`, no por `(groupId, artifactId)`: muchos modulos heredan
-el `groupId` del padre y la clave compuesta no casa.
-
-	# instalar_padres.py <raiz> --apply
-	#  1. localizar los pom.xml con <packaging>pom</packaging>
-	#     (excluyendo target/ y archetype-resources/)
-	#  2. leer artifactId propio y artifactId del <parent>
-	#  3. orden topologico por la relacion padre-hijo
-	#  4. mvn -q -N -f <pom> install -DskipTests, continuando ante fallos
-	#  5. listar los pendientes al terminar

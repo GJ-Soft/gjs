@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.gjsoft.java</groupId>
         <artifactId>gjs-java-springboot-parent</artifactId>
-        <version>1.0.0-RC.2</version>    
+        <version>1.0.0</version>    
         <relativePath>../../gjs-java-parents/gjs-java-springboot-parent</relativePath>
     </parent>
 

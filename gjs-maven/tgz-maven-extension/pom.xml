@@ -5,7 +5,7 @@
      <parent>
 		<groupId>org.gjsoft.java.maven</groupId>
 		<artifactId>gjs-java-maven-extension-parent</artifactId>
-		<version>1.0.0-RC.2</version>
+		<version>1.0.0</version>
         <relativePath>../../gjs-java/gjs-java-parents/gjs-java-maven-extension-parent </relativePath>
     </parent>
 
@@ -25,7 +25,7 @@
 
 		groupId      : org.gjsoft.maven.extensions
 		artifactId   : tgz-maven-extension
-		version      : 1.0.0-RC.2
+		version      : 1.0.0
 		
   Defines packaging: tgz
 	</description>

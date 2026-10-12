@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjsoft.python</groupId>
 		<artifactId>gjs-python-parent</artifactId>
-		<version>1.0.0-RC.2</version>
+		<version>1.0.0</version>
 		<relativePath>../gjs-python-parent</relativePath>
 	</parent>	
 
@@ -31,11 +31,11 @@
 		<gjs.python.artifact.main>Main:main</gjs.python.artifact.main>
 		
 		<!-- Gjs Python commom libraries -->
-		<gjs-python-common.version>1.0.0-RC.2</gjs-python-common.version>
+		<gjs-python-common.version>1.0.0</gjs-python-common.version>
 
 		<!-- Extensions versions -->
-		<whl-maven-extension.version>1.0.0-RC.2</whl-maven-extension.version>
-		<pyz-maven-extension.version>1.0.0-RC.2</pyz-maven-extension.version>
+		<whl-maven-extension.version>1.0.0</whl-maven-extension.version>
+		<pyz-maven-extension.version>1.0.0</pyz-maven-extension.version>
 	</properties>
 
 	<dependencyManagement>

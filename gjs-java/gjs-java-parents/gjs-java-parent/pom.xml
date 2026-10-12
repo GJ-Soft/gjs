@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjsoft.java</groupId>
 		<artifactId>gjs-java-base-parent</artifactId>
-		<version>1.0.0-RC.2</version>
+		<version>1.0.0</version>
 		<relativePath>../../gjs-java-base-parents/gjs-java-base-parent</relativePath>
 	</parent>	
 
@@ -41,12 +41,12 @@
 		
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->
-		<gjs-java-common-support.version>1.0.0-RC.2</gjs-java-common-support.version>
-		<gjs-java-common-test-support.version>1.0.0-RC.2</gjs-java-common-test-support.version>
-		<gjs-java-common-test-mocks.version>1.0.0-RC.2</gjs-java-common-test-mocks.version>
-		<gjs-java-common-io.version>1.0.0-RC.2</gjs-java-common-io.version>
-		<gjs-java-common.version>1.0.0-RC.2</gjs-java-common.version>
-		<gjs-java-common-test.version>1.0.0-RC.2</gjs-java-common-test.version>
+		<gjs-java-common-support.version>1.0.0</gjs-java-common-support.version>
+		<gjs-java-common-test-support.version>1.0.0</gjs-java-common-test-support.version>
+		<gjs-java-common-test-mocks.version>1.0.0</gjs-java-common-test-mocks.version>
+		<gjs-java-common-io.version>1.0.0</gjs-java-common-io.version>
+		<gjs-java-common.version>1.0.0</gjs-java-common.version>
+		<gjs-java-common-test.version>1.0.0</gjs-java-common-test.version>
 
 		<!-- Jackson -->
 		<jackson.version>3.0.3</jackson.version>

@@ -74,6 +74,11 @@ Hence the split:
 3. `mvn -f pomRemainingInstall.xml clean install`, or `mvn clean install` from
    the root: from this point on the full reactor builds in one go.
 
+`install-gjs.sh`, at the root, runs the whole sequence, building
+`nar-maven-plugin` and `openpojo` from their directories next to `gjs`. It stops
+at the first step that fails, and passes its arguments on to Maven
+(`./install-gjs.sh -Dmaven.repo.local=...`).
+
 `pomMinInstall.xml` and `pomRemainingInstall.xml` cover exactly the same modules
 as `pom.xml`, with no overlap.
 
@@ -107,7 +112,7 @@ Notes:
 
 ### Current version
 
-- 1.0.0-RC.2
+- 1.0.0
 
 
 ### Under Development

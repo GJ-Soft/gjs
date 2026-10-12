@@ -16,7 +16,7 @@ donde irá creciendo el soporte de datos del stack.
 | ------------ | -------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`            |
 | `artifactId` | `gjs-c-common-database`          |
-| `version`    | `1.0.0-RC.2`                     |
+| `version`    | `1.0.0`                     |
 | `packaging`  | `nar` (biblioteca **shared**)    |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`  |
 | Depende de   | `gjs-c-common-types`             |

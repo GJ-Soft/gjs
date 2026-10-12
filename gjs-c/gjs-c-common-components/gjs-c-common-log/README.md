@@ -15,7 +15,7 @@ Es el componente más pequeño del stack con API propia.
 | ------------ | ---------------------------------------------------------------------------------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`                                                                                         |
 | `artifactId` | `gjs-c-common-log`                                                                                         |
-| `version`    | `1.0.0-RC.2`                                                                                               |
+| `version`    | `1.0.0`                                                                                               |
 | `packaging`  | `nar` (biblioteca **shared**)                                                                              |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`                                                                               |
 | Depende de   | `gjs-c-common-text`, `gjs-c-common-time`, `gjs-c-common-io`, `gjs-c-common-system`, `gjs-c-common-support` |

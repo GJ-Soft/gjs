@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjsoft.java</groupId>
 		<artifactId>gjs-java-base-parent</artifactId>
-		<version>1.0.0-RC.2</version>    
+		<version>1.0.0</version>    
 		<relativePath>../gjs-java-base-parent</relativePath>
 	</parent>	
 

@@ -18,7 +18,7 @@ cuyo código está partido en dos por `#if defined ( WIN )` de arriba abajo.
 | ------------ | ------------------------------------------------------------------------------------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`                                                                                            |
 | `artifactId` | `gjs-c-common-system`                                                                                         |
-| `version`    | `1.0.0-RC.2`                                                                                                  |
+| `version`    | `1.0.0`                                                                                                  |
 | `packaging`  | `nar` (biblioteca **shared**)                                                                                 |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`                                                                                  |
 | Depende de   | `gjs-c-common-text`, `gjs-c-common-calculation`, `gjs-c-common-time`, `gjs-c-common-types`, `gjs-c-common-io` |

@@ -19,12 +19,12 @@ Archetype to generate the basic structure of a basic project in python language.
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-python-lib-archetype \
-							-DarchetypeVersion=1.0.0-RC.2
+							-DarchetypeVersion=1.0.0
 							
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-python-lib-archetype \
-							-DarchetypeVersion=1.0.0-RC.2 \
+							-DarchetypeVersion=1.0.0 \
 							-DshortName=test \ 
 							-DgroupId=org.gjsoft.test \
   							-Dauthor="GJ Software" \

@@ -17,7 +17,7 @@ C++ a C: muchos ficheros `.c` conservan en su cabecera el nombre original `.cpp`
 | ------------ | ----------------------------- |
 | `groupId`    | `org.gjsoft.c.common`            |
 | `artifactId` | `gjs-c-common-base`           |
-| `version`    | `1.0.0-RC.2`                  |
+| `version`    | `1.0.0`                  |
 | `packaging`  | `nar` (biblioteca **shared**) |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`  |
 

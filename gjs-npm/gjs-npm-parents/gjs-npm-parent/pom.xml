@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjsoft</groupId>
 		<artifactId>gjs-no-java-parent</artifactId>
-		<version>1.0.0-RC.2</version>
+		<version>1.0.0</version>
 		<relativePath>../../../gjs-no-java-parent</relativePath>
 	</parent>	
 
@@ -65,7 +65,7 @@
 		<local.install.libs></local.install.libs>  <!-- Library names separated by a space -->
 		
 		<!-- Extensions versions -->
-		<tgz-maven-extension.version>1.0.0-RC.2</tgz-maven-extension.version>
+		<tgz-maven-extension.version>1.0.0</tgz-maven-extension.version>
 		<!-- No se firma lo que no se publica. Estos artefactos quedan fuera del bundle
 		     de Central por el excludeArtifacts del perfil deploy-central en gjs-parent,
 		     asi que firmarlos seria trabajo tirado: son 25 modulos y gpg tarda. Es el

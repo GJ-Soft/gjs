@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.gjsoft</groupId>
         <artifactId>gjs-parent</artifactId>
-        <version>1.0.0-RC.2</version>
+        <version>1.0.0</version>
         <relativePath>../../../gjs-parent</relativePath>
     </parent>
 
@@ -81,8 +81,8 @@
 
         <!-- Dependency versions -->
         <!-- Gjs versions -->
-        <gjs-java-common-test-base.version>1.0.0-RC.2</gjs-java-common-test-base.version>
-        <gjs-java-common-base.version>1.0.0-RC.2</gjs-java-common-base.version>
+        <gjs-java-common-test-base.version>1.0.0</gjs-java-common-test-base.version>
+        <gjs-java-common-base.version>1.0.0</gjs-java-common-base.version>
 
 
 		<!-- Maven plugins -->
