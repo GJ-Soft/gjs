@@ -1,0 +1,183 @@
+# Continuous integration of gjs.
+#
+# gjs integrates: every job builds the whole of gjs together with
+# nar-maven-plugin and openpojo, both from their main branch, the same way
+# install-gjs.sh does it on a developer machine. The two projects are checked
+# out next to gjs, which is where the script looks for them.
+#
+# Jobs, one per mandatory build mode (the C/C++ modules are what changes
+# between them; see the CLAUDE.md table and gjs-c-common-parent):
+#   - cygwin:  Cygwin login shell with the CYGWIN variable defined. Profile
+#              cygwin, macros CYGWIN and POSIX, Cygwin gcc/g++.
+#   - windows: PowerShell without CYGWIN. Profile win, macro WIN, the MinGW-w64
+#              cross compiler of Cygwin (x86_64-w64-mingw32-gcc/g++).
+# Linux is not here: it has never been built.
+#
+# What the build expects from the machine, and where it comes from here:
+#   - cygwinDir and systemUser, normally in the active profile of settings.xml:
+#     passed as -D in MAVEN_ARGS (user properties win over any profile).
+#   - property-bootstrap-maven-extension in $MAVEN_HOME/lib/ext: the build of
+#     pomMinInstall.xml copies it there, so MAVEN_HOME has to be set first. It
+#     is the extension that injects environment.style, and the runtime-posix /
+#     runtime-win profiles (ncurses, Ws2_32...) depend on it.
+#   - python and pip for gjs-python, and npm for the TypeScript archetype.
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and test (${{ matrix.mode }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [ cygwin, windows ]
+    env:
+      MAVEN_ARGS: -B -ntp -DcygwinDir=C:\cygwin -DsystemUser=runneradmin
+    steps:
+      - name: Check out nar-maven-plugin
+        uses: actions/checkout@v4
+        with:
+          repository: GJ-Soft/nar-maven-plugin
+          path: nar-maven-plugin
+
+      - name: Check out openpojo
+        uses: actions/checkout@v4
+        with:
+          repository: GJ-Soft/openpojo
+          path: openpojo
+
+      # The gjs working copies use core.autocrlf=false; the Windows runners
+      # come with true. Set before checking out gjs, so that its files (test
+      # resources included) arrive as they are in the repository.
+      - name: Keep the line endings of the repository
+        run: git config --global core.autocrlf false
+
+      - name: Check out gjs
+        uses: actions/checkout@v4
+        with:
+          path: gjs
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Set MAVEN_HOME
+        shell: pwsh
+        run: |
+          $home_ = (mvn -v | Select-String 'Maven home: (.*)').Matches[0].Groups[1].Value.Trim()
+          "MAVEN_HOME=$home_" >> $env:GITHUB_ENV
+          mvn -v
+
+      # Everything but the org/gjsoft artifacts: they keep the same version
+      # from one run to the next, and a cached copy would hide a broken build.
+      - name: Cache the local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            !~/.m2/repository/org/gjsoft
+          key: m2-gjs-${{ runner.os }}-${{ hashFiles('gjs/**/pom.xml', 'nar-maven-plugin/pom.xml', 'openpojo/pom.xml') }}
+          restore-keys: m2-gjs-${{ runner.os }}-
+
+      # Both modes need Cygwin: the cygwin one for its gcc, and the windows one
+      # for the MinGW-w64 cross compiler and its sys-root, which is where
+      # windows.dir.lib.* point.
+      - name: Install Cygwin
+        # Third-party action: pinned to the commit of tag v4.
+        uses: cygwin/cygwin-install-action@006ad0b0946ca6d0a3ea2d4437677fa767392401 # v4
+        with:
+          packages: >-
+            gcc-core gcc-g++ make libncurses-devel
+            mingw64-x86_64-gcc-core mingw64-x86_64-gcc-g++
+          add-to-path: false
+
+      # As from mintty: a Cygwin login shell with CYGWIN defined. It has to be
+      # non-empty: Maven takes an empty variable as missing, and then the win
+      # profile wins. The value is the one documented in gjs-parent.
+      - name: Build and test (Cygwin)
+        if: matrix.mode == 'cygwin'
+        shell: C:\cygwin\bin\bash.exe --login -eo pipefail -o igncr '{0}'
+        run: |
+          export CYGWIN=1
+          cd "$(cygpath -u "$GITHUB_WORKSPACE")"
+          gcc --version | head -1
+          bash gjs/install-gjs.sh 2>&1 | tee build.log
+
+      # install-gjs.sh unrolled: it is a bash script, and from Git Bash, with
+      # Cygwin ahead in the PATH, the mvn launcher takes itself for Cygwin.
+      # Cygwin goes first so that x86_64-w64-mingw32-gcc is its own and not
+      # another one from the image (Strawberry Perl, C:\mingw64).
+      - name: Build and test (Windows, MinGW)
+        if: matrix.mode == 'windows'
+        shell: pwsh
+        run: |
+          Remove-Item Env:CYGWIN -ErrorAction SilentlyContinue
+          $env:PATH = "C:\cygwin\bin;$env:PATH"
+          x86_64-w64-mingw32-g++ --version | Select-Object -First 1
+          $steps = @(
+            @{ dir = 'gjs';              args = @('-f', 'pomMinInstall.xml') },
+            @{ dir = 'nar-maven-plugin'; args = @() },
+            @{ dir = 'openpojo';         args = @() },
+            @{ dir = 'gjs';              args = @('-f', 'pomRemainingInstall.xml') }
+          )
+          foreach ($s in $steps) {
+            Write-Output "=== $($s.dir) $($s.args)" | Tee-Object -FilePath build.log -Append
+            Push-Location $s.dir
+            mvn clean install @($s.args) | Tee-Object -FilePath ..\build.log -Append
+            $code = $LASTEXITCODE
+            Pop-Location
+            if ($code -ne 0) { exit $code }
+          }
+
+      # A build in the wrong mode passes just the same, so check it: every C/C++
+      # module logs the AOL it compiled for.
+      - name: Check the build mode
+        shell: bash
+        run: |
+          case "${{ matrix.mode }}" in
+            cygwin)  expected=x86_64-pc-cygwin ;;
+            windows) expected=x86_64-w64-mingw32 ;;
+          esac
+          aols=$(grep -a 'Using AOL: ' build.log | sed 's/.*Using AOL: //' | tr -d '\r' | sort | uniq -c)
+          echo "$aols"
+          if [ -z "$aols" ]; then
+            echo "No AOL in the log: no C/C++ module was built" >&2
+            exit 1
+          fi
+          if echo "$aols" | grep -v -- "$expected" >/dev/null; then
+            echo "Some module was built for an AOL other than $expected" >&2
+            exit 1
+          fi
+
+      - name: Upload the logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.mode }}-logs
+          path: |
+            build.log
+            **/target/surefire-reports/
+            gjs/gjs-archetypes/**/build.log
+          if-no-files-found: ignore
+          retention-days: 7
