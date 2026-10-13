@@ -445,6 +445,28 @@ static int _PonerSoloLectura ( const char * p_cRuta )
 	return ( iRes );
 }
 
+/* SisRutaDeSoloLectura responde por el proceso ( access, en POSIX ), no por los
+   bits del fichero. Si el proceso puede abrir para escritura un fichero al que
+   se le acaba de quitar la escritura, tiene privilegios que se saltan el solo
+   lectura, y desde el no hay forma de verlo. */
+static int _ProcesoIgnoraSoloLectura ( const char * p_cRuta )
+{
+	int		iRes;
+	FILE *	p_fFichero;
+
+	p_fFichero = fopen ( p_cRuta, "r+" );
+	if ( ES_VALIDO ( p_fFichero ) )
+	{
+		fclose ( p_fFichero );
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 # if ( defined ( WIN ) )
 /* Solo hace falta en modo WIN: en POSIX "oculto" se consigue con el nombre. */
 static int _PonerOculto ( const char * p_cRuta )
@@ -585,10 +607,17 @@ static int TestSisAtributos03 ()
 		}
 		else
 		{
-			if ( SisRutaDeSoloLectura ( p_cFichero ) != 1 )
+			if ( _ProcesoIgnoraSoloLectura ( p_cFichero ) == 1 )
 			{
-				printf ( "Error caso 4: no se detecto el solo lectura\n" );
-				iRes = BOOL_VAL_FALSO;
+				printf ( "Aviso caso 4: el proceso puede escribir en un fichero de solo lectura; no se comprueba\n" );
+			}
+			else
+			{
+				if ( SisRutaDeSoloLectura ( p_cFichero ) != 1 )
+				{
+					printf ( "Error caso 4: no se detecto el solo lectura\n" );
+					iRes = BOOL_VAL_FALSO;
+				}
 			}
 			/* Seguir siendo legible es parte del trato. */
 			if ( SisFicheroEsAccesible ( p_cFichero ) != 1 )

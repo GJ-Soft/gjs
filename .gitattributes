@@ -3,3 +3,10 @@
 # Los guiones de shell van siempre con LF: con CRLF, el bash de Cygwin falla
 # ($'\r': command not found) aunque el de Git for Windows los acepte.
 *.sh text eol=lf
+
+# Datos de prueba cuyo final de linea es justo lo que se prueba. Con text=auto
+# el repositorio los guarda todos con LF y cada copia de trabajo los saca con
+# el suyo: en Windows, CRLF, y el de UNIX deja de serlo.
+gjs-c/gjs-c-common-components/gjs-c-common-io/src/test/resources/data/EjemploDOS.txt text eol=crlf
+gjs-c/gjs-c-common-components/gjs-c-common-io/src/test/resources/data/EjemploUNIX.txt text eol=lf
+gjs-java/gjs-java-common-components/gjs-java-common-io/src/test/resources/data/ejemploOk_UNIX.csv text eol=lf

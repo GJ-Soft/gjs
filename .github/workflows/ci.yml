@@ -109,7 +109,7 @@ jobs:
         with:
           packages: >-
             gcc-core gcc-g++ make libncurses-devel
-            mingw64-x86_64-gcc-core mingw64-x86_64-gcc-g++
+            mingw64-x86_64-gcc-core mingw64-x86_64-gcc-g++ mingw64-x86_64-ncurses
           add-to-path: false
 
       # As from mintty: a Cygwin login shell with CYGWIN defined. It has to be

@@ -1,5 +1,6 @@
 #include "CppCommonIo.h"
 #include <CppBase.h>
+#include <fstream>
 
 /* Para montar el caso de "solo lectura": ponerlo NO es parte de la API, lo
    tiene que hacer el propio test. Ver _PonerSoloLectura. */
@@ -622,6 +623,17 @@ static bool _PonerSoloLectura ( const string & sRuta )
 	return ( bRes );
 }
 
+/* SisRutaDeSoloLectura responde por el proceso ( access, en POSIX ), no por los
+   bits del fichero. Si el proceso puede abrir para escritura un fichero al que
+   se le acaba de quitar la escritura, tiene privilegios que se saltan el solo
+   lectura, y desde el no hay forma de verlo. */
+static bool _ProcesoIgnoraSoloLectura ( const string & sRuta )
+{
+	fstream	fFichero ( sRuta, ios::in | ios::out );
+
+	return ( fFichero.is_open () );
+}
+
 # if ( defined ( WIN ) )
 /* Solo hace falta en modo WIN: en POSIX "oculto" se consigue con el nombre. */
 static bool _PonerOculto ( const string & sRuta )
@@ -744,10 +756,17 @@ static bool TestSisAtributos03 ()
 		}
 		else
 		{
-			if ( ! SisRutaDeSoloLectura ( sFichero ) )
+			if ( _ProcesoIgnoraSoloLectura ( sFichero ) )
 			{
-				cout << "Error caso 4: no se detecto el solo lectura" << endl;
-				bRes = false;
+				cout << "Aviso caso 4: el proceso puede escribir en un fichero de solo lectura; no se comprueba" << endl;
+			}
+			else
+			{
+				if ( ! SisRutaDeSoloLectura ( sFichero ) )
+				{
+					cout << "Error caso 4: no se detecto el solo lectura" << endl;
+					bRes = false;
+				}
 			}
 			// Seguir siendo legible es parte del trato.
 			if ( ! SisFicheroEsAccesible ( sFichero ) )
