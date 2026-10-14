@@ -84,10 +84,6 @@
 		<unix.dir.lib.system>${cygwinDir}/lib</unix.dir.lib.system>		
 		<unix.dir.lib.runtime>/usr/lib</unix.dir.lib.runtime>
 		
-		<!-- GLib  directory -->
-		<glibDir>${cygwinDir}/lib/glib-2.0</glibDir>
-		<glibDirInclude>${glibDir}/include</glibDirInclude>
-		
 		<!-- Open Xml parser directory -->
 		<xmlDir>${cygwinDir}/usr/x86_64-w64-mingw32/sys-root/mingw/lib/cmake/libxml2</xmlDir>
 		<xmlDirInclude>${xmlDir}/include</xmlDirInclude>
@@ -314,7 +310,6 @@
 									<arg value="--enable=${cpp.check.severity}"/>
 									<arg value="--max-configs=${cpp.check.configurations}"/>
 									<arg value="-I${project.basedir}/src/main/include"/>
-									<arg value="-I${glibDirInclude}"/>
 									<arg value="-I${sslDirInclude}"/>
 									<arg value="-I${oraDirInclude}"/>
 									<arg value="-I${xmlDirInclude}"/>
@@ -337,7 +332,7 @@
 									     puntero de __SIZEOF_POINTER__ y no de INTPTR_MAX: mientras dependia de
 									     <stdint.h>, quitarle los includes hacia saltar su #error y el analisis del
 									     fichero moria en silencio. Las -I de las librerias externas de aqui arriba
-									     ( glib, ssl, oracle, xml ) se quedan: esas si son codigo que analizamos. -->
+									     ( ssl, oracle, xml ) se quedan: esas si son codigo que analizamos. -->
 									<arg value="--suppress=virtualCallInConstructor"/>
 									<arg value="--suppress=uninitMemberVar"/>		
 									<arg value="--suppress=useInitializationList"/>		

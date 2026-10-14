@@ -152,12 +152,6 @@
 							<option>-Wno-conversion-null</option>
 							<option>-fpermissive</option>
 						</options>
-
-						<includePaths combine.children="append">
-							<includePath>
-								<path>${glibDirInclude}</path>
-							</includePath>
-						</includePaths>						
 					</cpp>
 					
 					<linker>
