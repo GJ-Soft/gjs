@@ -5,6 +5,7 @@
 #include <ctime>
 #include <csignal>
 #include <cerrno>
+#include <filesystem>
 
 
 using namespace std;
@@ -101,6 +102,14 @@ static bool TestDirectorioActual01 ()
 	return( bRes );
 }
 
+/* Compara como rutas, no como cadenas: en Windows ResolverDirectorioRelativo
+   compone con el separador nativo y devuelve "/subdir1/subdir2\aye", que es la
+   misma ruta que "/subdir1/subdir2/aye". */
+static bool _MismaRuta ( const string & sRuta, const string & sEsperada )
+{
+	return ( filesystem::path ( sRuta ) == filesystem::path ( sEsperada ) );
+}
+
 static bool TestResolverDirectorioRelativo01 ()
 {
 	cout << "Test ResolverDirectorioRelativo01:" << endl;
@@ -112,30 +121,36 @@ static bool TestResolverDirectorioRelativo01 ()
 
 	try
 	{
+		/* Sin "." delante no se compone nada: devuelve la base tal cual. */
 		string sRes = ResolverDirectorioRelativo ( sDirBase, sDir0 );
-		if ( sRes.compare( sDirBase ) != 0 )
+		if ( ! _MismaRuta ( sRes, sDirBase ) )
 		{
 			cout << "Error caso 1: [" << sRes << "]" << endl;
+			bRes = false;
 		}
 		sRes = ResolverDirectorioRelativo ( sDirBase, "." );
-		if ( sRes.compare( sRes ) != 0 )
+		if ( ! _MismaRuta ( sRes, sDirBase ) )
 		{
 			cout << "Error caso 2: [" << sRes << "]" << endl;
+			bRes = false;
 		}
 		sRes = ResolverDirectorioRelativo ( sDirBase, ".." );
-		if ( sRes.compare( "/subdir1/subdir2" ) != 0 )
+		if ( ! _MismaRuta ( sRes, "/subdir1/subdir2" ) )
 		{
 			cout << "Error caso 3: [" << sRes << "]" << endl;
+			bRes = false;
 		}
 		sRes = ResolverDirectorioRelativo ( sDirBase, sDir1 );
-		if ( sRes.compare( "/subdir1/subdir2/aye" ) != 0 )
+		if ( ! _MismaRuta ( sRes, "/subdir1/subdir2/aye" ) )
 		{
 			cout << "Error caso 4: [" << sRes << "]" << endl;
+			bRes = false;
 		}
 		sRes = ResolverDirectorioRelativo ( sDirBase, sDir2 );
-		if ( sRes.compare( "/subdir1/aye/aye" ) != 0 )
+		if ( ! _MismaRuta ( sRes, "/subdir1/aye/aye" ) )
 		{
 			cout << "Error caso 5: [" << sRes << "]" << endl;
+			bRes = false;
 		}
 	}
 	catch ( ... )

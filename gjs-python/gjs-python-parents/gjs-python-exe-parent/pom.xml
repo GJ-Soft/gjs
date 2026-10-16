@@ -74,7 +74,10 @@
 								<executable>python</executable>
 								<arguments>
 									<argument>-c</argument>
-									<argument>import zipfile,pathlib,subprocess,sys,shutil;t=pathlib.Path(r'${gjs.python.dir.src}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);[zipfile.ZipFile(w).extractall(t) for w in pathlib.Path(r'${gjs.python.dir.libs}').glob('*.whl')];r=pathlib.Path(r'${project.basedir}/requirements.txt');subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),'-r',str(r)]) if r.exists() else None;[shutil.rmtree(d) for d in t.glob('*.dist-info')]</argument>
+									<!-- Los *.dist-info van dentro del pyz: hay paquetes que leen de
+									     ahi su propia version ( importlib.metadata ) y sin ellos fallan
+									     al ejecutarse, como pluggy desde la 1.7. -->
+									<argument>import zipfile,pathlib,subprocess,sys;t=pathlib.Path(r'${gjs.python.dir.src}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);[zipfile.ZipFile(w).extractall(t) for w in pathlib.Path(r'${gjs.python.dir.libs}').glob('*.whl')];r=pathlib.Path(r'${project.basedir}/requirements.txt');subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),'-r',str(r)]) if r.exists() else None</argument>
 								</arguments>
 							</configuration>
 						</execution>

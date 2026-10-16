@@ -254,7 +254,10 @@
 								<executable>python</executable>
 								<arguments>
 									<argument>-c</argument>
-									<argument>import pathlib,subprocess,sys,shutil;t=pathlib.Path(r'${gjs.python.dir.test}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);r=pathlib.Path(r'${project.basedir}/requirements-test.txt');subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),'-r',str(r)]) if r.exists() else None;[shutil.rmtree(d) for d in t.glob('*.dist-info')]</argument>
+									<!-- Sin borrar los *.dist-info: esto no se empaqueta, y hay paquetes
+									     que leen su propia version de ahi ( pluggy desde la 1.7, y sin
+									     ella pytest muere al arrancar con PackageNotFoundError ). -->
+									<argument>import pathlib,subprocess,sys;t=pathlib.Path(r'${gjs.python.dir.test}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);r=pathlib.Path(r'${project.basedir}/requirements-test.txt');subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),'-r',str(r)]) if r.exists() else None</argument>
 								</arguments>
 							</configuration>
 						</execution>
@@ -431,8 +434,10 @@
 							<artifactId>exec-maven-plugin</artifactId>
 							<executions>
 								<!-- pytest-cov se instala aqui y no en requirements-test.txt: solo
-								     hace falta al medir. Sin dependencias (no-deps): sin los dist-info pip no ve el
-								     pytest ya instalado y lo pisaria con otra version. -->
+								     hace falta al medir. Sin dependencias (no-deps): instalando en un directorio ( target ) pip no
+								     mira lo que ya hay en el directorio, y pisaria el pytest instalado
+								     con otra version. Los dist-info se quedan, como en
+								     python-test-dependencies: pytest encuentra el plugin por ellos. -->
 								<execution>
 									<id>python-coverage-dependencies</id>
 									<phase>process-test-sources</phase>
@@ -444,7 +449,7 @@
 										<executable>python</executable>
 										<arguments>
 											<argument>-c</argument>
-											<argument>import pathlib,subprocess,sys,shutil;t=pathlib.Path(r'${gjs.python.dir.test}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),'--no-deps','pytest-cov','coverage']);[shutil.rmtree(d) for d in t.glob('*.dist-info')]</argument>
+											<argument>import pathlib,subprocess,sys;t=pathlib.Path(r'${gjs.python.dir.test}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),'--no-deps','pytest-cov','coverage'])</argument>
 										</arguments>
 									</configuration>
 								</execution>
@@ -463,14 +468,13 @@
 										</arguments>
 									</configuration>
 								</execution>
-								<!-- -p porque los *.dist-info se borran al instalar: sin ellos pytest
-								     no encuentra el plugin por si solo. -->
+								<!-- Sin -p pytest_cov.plugin: pytest-cov se carga solo por su
+								     dist-info, y pedirlo ademas a mano lo registra dos veces y pytest
+								     no arranca. -->
 								<execution>
 									<id>python-test</id>
 									<configuration>
 										<arguments combine.children="append">
-											<argument>-p</argument>
-											<argument>pytest_cov.plugin</argument>
 											<argument>--cov</argument>
 											<argument>--cov-config=.coveragerc</argument>
 											<argument>--cov-report=xml:${project.build.directory}/site/coverage/coverage.xml</argument>
