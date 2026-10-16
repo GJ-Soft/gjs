@@ -20,7 +20,8 @@
 #     pomMinInstall.xml copies it there, so MAVEN_HOME has to be set first. It
 #     is the extension that injects environment.style, and the runtime-posix /
 #     runtime-win profiles (ncurses, Ws2_32...) depend on it.
-#   - python and pip for gjs-python, and npm for the TypeScript archetype.
+#   - python and pip for gjs-python, plus the build and datamodel-code-generator
+#     packages; and npm for the TypeScript archetype.
 name: CI
 
 on:
@@ -81,6 +82,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.14'
+
+      # The two packages the build runs with "python -m" and does not install
+      # itself (docs/instalacion.md, requirements).
+      - name: Install the Python build tools
+        run: python -m pip install build datamodel-code-generator
 
       - name: Set MAVEN_HOME
         shell: pwsh

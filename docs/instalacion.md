@@ -38,6 +38,18 @@ Maven 3.9 no es una recomendacion: `gjs-parent` lo exige con el enforcer
 El JDK y Maven deben estar en el `PATH`. El compilador tambien, y **cual** este
 en el `PATH` determina el modo de compilacion (paso 4).
 
+El Python de Windows necesita ademas dos paquetes que la build invoca con
+`python -m` y no instala ella:
+
+	python -m pip install build datamodel-code-generator
+
+- `build`: empaqueta las ruedas de los modulos python (`python-package`).
+- `datamodel-code-generator`: genera los modelos de los proyectos REST
+  (`gjs-python-rest-parent`, y los arquetipos que lo heredan).
+
+Las dependencias de cada modulo (`requirements.txt` y `requirements-test.txt`)
+no hacen falta: la build las instala en `target`.
+
 
 ## 2. Colocacion de los repositorios
 
