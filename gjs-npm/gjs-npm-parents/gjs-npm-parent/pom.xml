@@ -136,10 +136,14 @@
 								<environmentVariables>
 									<NODE_ENV>${node.env}</NODE_ENV>
 								</environmentVariables>
-								<arguments>
-									<argument>${install.command}</argument>
-									<argument>${install.args.extra}</argument>
-								</arguments>
+								<!-- En una linea y no como dos <argument>: install.args.extra suele
+								     ir vacio, y un argumento vacio sale como "" en la linea de
+								     cmd /c. Con mas de dos comillas cmd quita la primera y la
+								     ultima, y si el npm.cmd esta en una ruta con espacios
+								     ( C:\Program Files\nodejs ) se queda en 'C:\Program' no se
+								     reconoce como comando. commandlineArgs se trocea por
+								     espacios y no genera argumentos vacios. -->
+								<commandlineArgs>${install.command} ${install.args.extra}</commandlineArgs>
 							</configuration>
 						</execution>
 						<!-- Additional local installations -->
