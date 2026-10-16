@@ -13,8 +13,6 @@ import org.springframework.core.io.Resource;
  *
  * @param <T>
  *            la clase de las entidad
- * @param <PK>
- *            la clave primaria de la entidad
  * @param <F>
  *            la clase de filtrado de datos
  *

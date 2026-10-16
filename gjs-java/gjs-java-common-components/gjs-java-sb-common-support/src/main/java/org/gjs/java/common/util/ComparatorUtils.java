@@ -16,7 +16,7 @@ import org.springframework.data.domain.Sort;
  *
  * Clase de utilidades generales de la librería Gjs
  *
- * Rutinas para crear Comparator<> genéricos a partir de un Sort u Order dado.
+ * Rutinas para crear {@code Comparator<>} genéricos a partir de un Sort u Order dado.
  *
  * @author Gjs
  * @version 1.0.0

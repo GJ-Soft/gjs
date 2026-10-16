@@ -9,12 +9,10 @@ import org.springframework.core.io.Resource;
  *
  * Clase de datos de la librería Gjs
  *
- * Implementa un servicio de datos sencillo en memoria para cualquier clase de objetos cuya clave primaria sea un Long.
+ * Implementa un servicio de datos sencillo en memoria para cualquier clase de objetos cuya clave primaria sea un String.
  *
  * @param <T>
  *            la clase de las entidad
- * @param <PK>
- *            la clave primaria de la entidad
  * @param <F>
  *            la clase de filtrado de datos
  *

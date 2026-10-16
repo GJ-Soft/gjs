@@ -294,9 +294,9 @@ public final class ValidationUtils {
 	/**
 	 * Checks if is null or valid thing name.
 	 *
-	 * @param text the text
+	 * @param name the name
 	 * @param size the size
-	 * @return true, if is null or valid text
+	 * @return true, if is null or valid thing name
 	 */
 	public static boolean isNullOrValidThingName(String name, int size) {
 		boolean res = true;
