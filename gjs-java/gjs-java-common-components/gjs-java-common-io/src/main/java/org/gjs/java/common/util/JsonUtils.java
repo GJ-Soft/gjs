@@ -67,7 +67,7 @@ public final class JsonUtils {
 	 *
 	 * @param object the object
 	 * @return the string
-	 * @throws JsonProcessingException the json processing exception
+	 * @throws JacksonException si el objeto no se puede serializar a JSON
 	 */
 	public static String objectToJson(Object object) {
 		if (Objects.isNull(object)) {

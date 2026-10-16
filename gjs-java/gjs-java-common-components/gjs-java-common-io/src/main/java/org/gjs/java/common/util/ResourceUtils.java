@@ -131,7 +131,7 @@ public final class ResourceUtils {
 	 *
 	 * @param path the path
 	 * @return the resource as string
-	 * @throws IOException
+	 * @throws IOException si no se puede leer el recurso
 	 */
 	public static String getResourceAsString(String path) throws IOException {
 		String res = null;

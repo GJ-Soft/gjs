@@ -28,59 +28,28 @@ public class AuditDto extends BaseDto {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 765227491514794314L;
 
-    /**
-     * Gets the module.
-     *
-     * @return the module
-     */
+    /** The module. */
     @Getter
     private String module;
 
-    /**
-     * Gets the primitive.
-     *
-     * @return the primitive
-     */
+    /** The primitive. */
     @Getter
     private String primitive;
 
-    /**
-     * Gets the start time.
-     *
-     * @return the start time
-     */
+    /** The start time. */
     @Getter
     private long startTime;
 
-    /**
-     * Gets the end time.
-     *
-     * @return the end time
-     */
+    /** The end time. */
     @Getter
     private long endTime;
 
-    /**
-     * Checks if is ok.
-     *
-     * @return true, if is ok
-     */
+    /** Whether the audited call ended without an exception. */
     @Getter
     private boolean ok;
 
-    /**
-     * Gets the throwed.
-     *
-     * @return the throwed
-     */
+    /** The exception thrown by the audited call, if any. */
     @Getter
-
-    /**
-     * Sets the throwed.
-     *
-     * @param throwed
-     *            the new throwed
-     */
     @Setter
     private Throwable throwed;
 

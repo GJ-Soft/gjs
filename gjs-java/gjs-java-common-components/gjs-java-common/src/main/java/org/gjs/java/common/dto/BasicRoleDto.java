@@ -42,7 +42,7 @@ public class BasicRoleDto implements Serializable, Comparable<BasicRoleDto> {
 	/**
 	 * Instantiates a new rol dto.
 	 *
-	 * @param id the id
+	 * @param name the name
 	 */
 	public BasicRoleDto(String name) {
 		this.name = name;

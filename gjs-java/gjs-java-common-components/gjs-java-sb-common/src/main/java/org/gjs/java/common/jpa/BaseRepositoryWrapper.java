@@ -56,19 +56,11 @@ public abstract class BaseRepositoryWrapper<T, ID> {
 	/** The loaded. */
 	protected boolean loaded;
 
-	/**
-	 * Sets the data file.
-	 *
-	 * @param dataFile the new data file
-	 */
+	/** The data file. */
 	@Setter
 	protected String dataFile;
 
-	/**
-	 * Sets the field correspondencies.
-	 *
-	 * @param fieldCorrespondencies the field correspondencies
-	 */
+	/** The field correspondencies. */
 	@Setter
 	protected Map<String, String> fieldCorrespondencies;
 

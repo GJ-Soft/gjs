@@ -65,7 +65,7 @@ public class LoginDto extends BaseDto {
 	/**
 	 * Instantiates a new login dto.
 	 *
-	 * @param usuario the usuario
+	 * @param userDto the user dto
 	 */
 	public LoginDto(BasicUserDto userDto) {
 		setUserDto(userDto);
