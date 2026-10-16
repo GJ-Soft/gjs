@@ -254,10 +254,15 @@
 								<executable>python</executable>
 								<arguments>
 									<argument>-c</argument>
-									<!-- Sin borrar los *.dist-info: esto no se empaqueta, y hay paquetes
+									<!-- Las dependencias del propio modulo ( requirements.txt ) tambien:
+									     el codigo que se prueba las importa. Antes solo llegaban por el
+									     pip install . de la fase install, al Python global, asi que en
+									     una maquina limpia los tests fallaban la primera vez. En una sola
+									     llamada, para que pip resuelva las dos listas juntas.
+									     Sin borrar los *.dist-info: esto no se empaqueta, y hay paquetes
 									     que leen su propia version de ahi ( pluggy desde la 1.7, y sin
 									     ella pytest muere al arrancar con PackageNotFoundError ). -->
-									<argument>import pathlib,subprocess,sys;t=pathlib.Path(r'${gjs.python.dir.test}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);r=pathlib.Path(r'${project.basedir}/requirements-test.txt');subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),'-r',str(r)]) if r.exists() else None</argument>
+									<argument>import pathlib,subprocess,sys;t=pathlib.Path(r'${gjs.python.dir.test}/${gjs.python.subdir.source}');t.mkdir(parents=True,exist_ok=True);b=pathlib.Path(r'${project.basedir}');rs=[x for n in ('requirements.txt','requirements-test.txt') for x in ('-r',str(b/n)) if (b/n).exists()];subprocess.check_call([sys.executable,'-m','pip','install','--target',str(t),*rs]) if rs else None</argument>
 								</arguments>
 							</configuration>
 						</execution>
