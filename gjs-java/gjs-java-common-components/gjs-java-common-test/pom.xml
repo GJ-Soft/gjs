@@ -16,6 +16,11 @@
 	<name>Gjs Java test </name>
 	<description>Auxiliar classes and resources for testing</description>
 
+	<properties>
+		<!-- Fachada sin codigo: para Central lleva el javadoc de relleno de gjs-parent. -->
+		<central.javadoc.placeholder.skip>false</central.javadoc.placeholder.skip>
+	</properties>
+
     <dependencies>
         <!-- Gjs -->
         <dependency>

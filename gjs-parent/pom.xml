@@ -110,6 +110,12 @@
 
 		<!-- Plugins execution control -->
 		<skip.if.not.source>true</skip.if.not.source>
+		<!-- La contraria: true en los modulos con fuentes, false en los pom. Por
+		     defecto false, para que un fallo de activacion no deje nada sin hacer. -->
+		<skip.if.source>false</skip.if.source>
+		<!-- Javadoc de relleno del perfil deploy-central, apagado: lo encienden
+		     (false) los modulos que no tienen API Java que documentar. -->
+		<central.javadoc.placeholder.skip>true</central.javadoc.placeholder.skip>
 	
 		<!-- Public Free License -->
 		<license.name>gpl_v3</license.name>
@@ -661,6 +667,7 @@
 			</activation>
 			<properties>
 				<skip.if.not.source>true</skip.if.not.source>
+				<skip.if.source>false</skip.if.source>
 			</properties>
 		</profile>
 		<profile>
@@ -673,6 +680,7 @@
 			</activation>
 			<properties>
 				<skip.if.not.source>false</skip.if.not.source>
+				<skip.if.source>true</skip.if.source>
 			</properties>
 		</profile>
 		<profile>
@@ -685,6 +693,7 @@
 			</activation>
 			<properties>
 				<skip.if.not.source>false</skip.if.not.source>
+				<skip.if.source>true</skip.if.source>
 			</properties>
 		</profile>
 		<profile>
@@ -878,6 +887,55 @@
 						     3) gpg.bestPractices=true rechaza las formas inseguras de dar la
 						        contrasena, pero tambien descarta passphraseServerId. Decidir
 						        primero como se pasa y luego si se activa. -->
+					</plugin>
+					<!-- Javadoc de relleno. Central exige un -javadoc.jar en todo artefacto que
+					     no sea pom, y admite uno con solo un README cuando no hay API que
+					     documentar ( los arquetipos, la fachada gjs-java-common-test ). Apagado
+					     salvo que el modulo ponga central.javadoc.placeholder.skip a false:
+					     entonces antrun escribe el README y el jar lo empaqueta. Sin README el
+					     directorio no existe y skipIfEmpty no crea nada. -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>javadoc-placeholder</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<skip>${central.javadoc.placeholder.skip}</skip>
+									<target>
+										<echo file="${project.build.directory}/javadoc-placeholder/README.txt">${project.groupId}:${project.artifactId}:${project.version}
+
+${project.name}: ${project.description}
+
+This artifact has no Java API, so this javadoc jar is only a placeholder.
+See ${project.url}
+</echo>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>javadoc-placeholder</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<classifier>javadoc</classifier>
+									<classesDirectory>${project.build.directory}/javadoc-placeholder</classesDirectory>
+									<skipIfEmpty>true</skipIfEmpty>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

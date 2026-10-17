@@ -26,6 +26,10 @@
 		
 		<!-- Dependency versions -->
         <wagon.webdav.jackrabbit.version>3.5.3</wagon.webdav.jackrabbit.version>    
+
+		<!-- Central: un arquetipo no tiene API Java, asi que lleva el javadoc de
+		     relleno de gjs-parent. En los arquetipos, no en este pom padre. -->
+		<central.javadoc.placeholder.skip>${skip.if.not.source}</central.javadoc.placeholder.skip>
    </properties>    
     
     <build>    
@@ -71,4 +75,30 @@
         </pluginManagement>          
     </build>    
  	
+	<profiles>
+		<!-- Central exige tambien un -sources.jar. La fuente de un arquetipo es su
+		     plantilla, que esta en los recursos, y maven-source-plugin los incluye.
+		     En un pom no hace nada. -->
+		<profile>
+			<id>deploy-central</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>    
