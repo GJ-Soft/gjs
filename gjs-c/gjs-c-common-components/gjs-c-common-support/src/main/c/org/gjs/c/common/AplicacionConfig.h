@@ -22,7 +22,7 @@
 
 #include <Base.h>
 
-#include <Tipos.h>
+#include <TiposBasicos.h>
 #include <Texto.h>
 #include <Tiempo.h>
 #include <Sistema.h>

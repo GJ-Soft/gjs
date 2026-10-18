@@ -433,3 +433,7 @@ unsigned int SIdHash ( SId * p_idObj )
 	return ( uiRes );
 }
 
+SPtr * SIdPtr ( SId * p_idObj )
+{
+	return ( SPtrCrear ( p_idObj, (PRC_DESTRUCTOR) SIdDestruir ) );
+}

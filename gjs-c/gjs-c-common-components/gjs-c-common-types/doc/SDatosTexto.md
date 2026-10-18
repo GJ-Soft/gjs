@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SDatosTexto.c` |
 | Prefijo      | `SDatTxt`                                   |
 | Struct       | `SDatosTexto`                               |
-| Funciones    | 43                                          |
+| Funciones    | 44                                          |
 | Incluido por | `TiposDatos.h`                              |
 | Test         | `SDatosTextoTest.c` → `TestSDatosTexto()`   |
 
@@ -46,7 +46,13 @@ posición de escritura y la noción de **tamaño fijo**.
 | `SDatosTexto * SDatTxtEncapsular ( … )`   | Envuelve un `SDatos` existente. |
 | `SDatosTexto * SDatTxtDuplicar ( … )`     | Copia independiente.            |
 | `void SDatTxtDestruir ( SDatosTexto ** )` | Destruye y anula el puntero.    |
+| `SPtr * SDatTxtPtr ( SDatosTexto * )`     | Lo envuelve en un `SPtr`.       |
 | `SDatTxtLimpiar` / `SDatTxtLiberar`       | Vaciar y liberar.               |
+
+`SDatTxtPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SDatTxtDestruir`, y no por separado. Con objeto
+nulo devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y
+el objeto sigue siendo del llamante.
 
 ### Escritura
 
@@ -106,6 +112,7 @@ crece.
 
 - [SDatos](../../gjs-c-common-base-types/doc/SDatos.md) — el almacenamiento.
 - [SCadena](../../gjs-c-common-text/doc/SCadena.md) — las variantes sin `Lit`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SDatTxtPtr`.
 
 ## Test
 

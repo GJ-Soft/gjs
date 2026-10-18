@@ -1,6 +1,6 @@
 # Módulos de gjs-c-common-base-types
 
-Índice y orquestación de los módulos de la librería: **74 fuentes** y **76
+Índice y orquestación de los módulos de la librería: **75 fuentes** y **77
 cabeceras**. Como la mayoría son variantes del mismo contenedor sobre distinto
 tipo de elemento, la documentación se agrupa **por familias**: cada documento
 describe el contenedor base y tabula en qué se diferencian sus especializaciones.
@@ -25,7 +25,7 @@ Volver al [README](../README.md).
   │    Cursores y contadores · Identificadores · Metadatos                │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 1. Memoria bruta                                                      │
-  │    SBloque · SBuffer · SDatos                                         │
+  │    SBloque · SBuffer · SDatos · SPtr                                  │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 0. gjs-c-common-base (Base.h: memoria, errores, cadenas, hash…)       │
   └───────────────────────────────────────────────────────────────────────┘
@@ -42,6 +42,7 @@ Volver al [README](../README.md).
 | `SBloque` | `SBlq`  | `SBloque` | 52        | ✔    | [SBloque](SBloque.md) |
 | `SBuffer` | `SBuf`  | `SBuffer` | 17        | ✔    | [SBuffer](SBuffer.md) |
 | `SDatos`  | `SDat`  | `SDatos`  | 30        | ✔    | [SDatos](SDatos.md)   |
+| `SPtr`    | `SPtr`  | `SPtr`    | 9         | ✔    | [SPtr](SPtr.md)       |
 
 ### Piezas de contenido
 
@@ -67,7 +68,6 @@ Volver al [README](../README.md).
 | `SListaParejas`               | `SLisPrj`    | `SListaParejas`               | 10        | ✔    | [Listas](Listas.md)                    |
 | `SListaReferencias`           | `SLisRef`    | `SListaReferencias`           | 15        | ✔    | [Listas](Listas.md)                    |
 | `SListaVec`                   | `SVLis`      | `SVLista`                     | 21        | ✔    | [Listas](Listas.md)                    |
-| `SListaHash`                  | —            | —                             | —         | —    | **No existe**, ver [Listas](Listas.md) |
 
 ### Secuencias
 
@@ -146,7 +146,7 @@ Volver al [README](../README.md).
 | Módulo         | Prefijo  | Struct         | Funciones | Test | Documento               |
 | -------------- | -------- | -------------- | --------- | ---- | ----------------------- |
 | `SContador`    | `SCnt`   | `SContador`    | 10        | ✔    | [Cursores](Cursores.md) |
-| `SRango`       | `SRng`   | `SRango`       | 9         | ✔    | [Cursores](Cursores.md) |
+| `SRango`       | `SRng`   | `SRango`       | 10        | ✔    | [Cursores](Cursores.md) |
 | `SCursor`      | `SCur`   | `SCursor`      | 17        | ✔    | [Cursores](Cursores.md) |
 | `SIndicador`   | `SInd`   | `SIndicador`   | 17        | ✔    | [Cursores](Cursores.md) |
 | `SIndicador2D` | `SInd2D` | `SIndicador2D` | 20        | ✔    | [Cursores](Cursores.md) |
@@ -156,8 +156,8 @@ Volver al [README](../README.md).
 | Módulo         | Prefijo  | Struct         | Funciones | Test | Documento                                   |
 | -------------- | -------- | -------------- | --------- | ---- | ------------------------------------------- |
 | `SPareja`      | `SPrj`   | `SPareja`      | 11        | ✔    | [ParejasReferencias](ParejasReferencias.md) |
-| `SReferencia`  | `SRef`   | `SReferencia`  | 16        | ✔    | [ParejasReferencias](ParejasReferencias.md) |
-| `SId`          | `SId`    | `SId`          | 24        | ✔    | [Identificadores](Identificadores.md)       |
+| `SReferencia`  | `SRef`   | `SReferencia`  | 17        | ✔    | [ParejasReferencias](ParejasReferencias.md) |
+| `SId`          | `SId`    | `SId`          | 25        | ✔    | [Identificadores](Identificadores.md)       |
 | `SGeneradorId` | `SGenId` | `SGeneradorId` | 12        | ✔    | [Identificadores](Identificadores.md)       |
 
 ### Metadatos
@@ -172,40 +172,22 @@ Volver al [README](../README.md).
 
 ## Cabeceras de configuración y tipos auxiliares
 
-### `Tipos.h`
+### `TiposBasicos.h`
 
-Cabecera fachada. Incluye las 73 cabeceras de módulo **excepto `SArbolB.h` y
+Cabecera fachada. Incluye las 74 cabeceras de módulo **excepto `SArbolB.h` y
 `SListaVec.h`**, que hay que incluir a mano.
 
-> **La fachada no compila.** Incluye `SNodoBin.h` (línea 74) y `SNodoPtr.h`
-> (línea 76), que declaran el mismo símbolo `SNodBinCrearMem` con tipos de
-> retorno distintos. Comprobado con el `gcc` del proyecto:
-> `error: conflicting types for 'SNodBinCrearMem'`. Ver [Nodos](Nodos.md).
->
-> Que el módulo se construya sin problemas se debe a que **ningún `.c` de
-> producción incluye `Tipos.h`**. Los únicos ficheros que lo hacen son dos tests
-> (`SDefDatoTest.c` y `SDefPrimitivaTest.c`), y ellos acaban usando el otro
-> `Tipos.h`, ver más abajo.
->
-> Otros dos defectos:
->
-> - La línea 96 incluye `<SSecuenciaEnteroslargosSinSigno.h>` con `l` minúscula,
->   cuando el fichero es `SSecuenciaEnterosLargosSinSigno.h`. Sólo funciona en
->   sistemas de ficheros insensibles a mayúsculas (Windows, Cygwin).
-> - Incluye `<SListaHash.h>`, que no aporta nada (ver [Listas](Listas.md)).
+> La línea 96 incluye `<SSecuenciaEnteroslargosSinSigno.h>` con `l` minúscula,
+> cuando el fichero es `SSecuenciaEnterosLargosSinSigno.h`. Sólo funciona en
+> sistemas de ficheros insensibles a mayúsculas (Windows, Cygwin).
 
-> **Cuidado: hay dos `Tipos.h` en el stack C.**
->
-> | Módulo | Qué es su `Tipos.h` |
-> |---|---|
-> | `gjs-c-common-base` | El catálogo de super-tipos (`TIP_NUMERO`, `TIP_CADENA`…) |
-> | `gjs-c-common-base-types` | Esta fachada de estructuras de datos |
->
-> Los dos se publican en el NAR `noarch` de su módulo, así que un consumidor que
-> escriba `#include <Tipos.h>` obtiene **uno u otro según el orden de los `-I`**,
-> sin ningún aviso. `BaseConfig.h` de la librería base también hace
-> `#include <Tipos.h>` esperando el catálogo. Renombrar uno de los dos evitaría
-> la ambigüedad.
+> **Antes se llamaba `Tipos.h`**, como el catálogo de super-tipos (`TIP_NUMERO`,
+> `TIP_CADENA`…) de `gjs-c-common-base`. Los dos se publicaban en el NAR
+> `noarch` de su módulo, así que `#include <Tipos.h>` obtenía **uno u otro según
+> el orden de los `-I`**, sin aviso. Dentro de este módulo el `-I` propio va
+> primero, y el `#include <Tipos.h>` de `BaseConfig.h` (que espera el catálogo)
+> traía la fachada a medio procesar. Con el nombre nuevo, `<Tipos.h>` es siempre
+> el catálogo: es lo que usan `SDefDatoTest.c` y `SDefPrimitivaTest.c`.
 
 ### `TiposBasicosConstantes.h`
 

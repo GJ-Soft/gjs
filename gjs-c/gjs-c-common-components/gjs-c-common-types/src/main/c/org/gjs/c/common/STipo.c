@@ -321,3 +321,8 @@ int STipTam ( STipo * p_tipObj )
 	}
 	return ( iRes );
 }
+
+SPtr * STipPtr ( STipo * p_tipObj )
+{
+	return ( SPtrCrear ( p_tipObj, (PRC_DESTRUCTOR) STipDestruir ) );
+}

@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SFecha.c` (509 líneas) |
 | Prefijo      | `SFec`                                              |
 | Struct       | `SFecha`                                            |
-| Funciones    | 31                                                  |
+| Funciones    | 32                                                  |
 | Incluido por | `Tiempo.h`                                          |
 | Test         | `SFechaTest.c` → `TestSFecha()`                     |
 
@@ -41,8 +41,14 @@ cómoda y con menos posibilidades de equivocarse que las 44 funciones sueltas de
 | `SFecha * SFecCrear ( … )`        | Fecha desde componentes.     |
 | `SFecha * SFecCrearLit ( … )`     | Fecha desde texto.           |
 | `void SFecDestruir ( SFecha ** )` | Destruye y anula el puntero. |
+| `SPtr * SFecPtr ( SFecha * )`     | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
 | `int SFecEsValida ( SFecha * )`   | 1 si es utilizable.          |
 | `int SFecTieneValor ( SFecha * )` | 1 si tiene fecha asignada.   |
+
+`SFecPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SFecDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 La distinción entre `EsValida` y `TieneValor` permite representar el "sin fecha"
 sin recurrir a valores centinela.
@@ -96,6 +102,7 @@ SFecDestruir ( &p_fecObj );
 - [Fechas](Fechas.md) — toda la aritmética.
 - [TiempoSistema](TiempoSistema.md) — `SFecEstablecerValorDeHoy`.
 - [gjs-c-common-text](../../gjs-c-common-text/README.md) — las variantes `Lit`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SFecPtr`.
 
 ## Test
 

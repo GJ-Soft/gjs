@@ -772,3 +772,8 @@ unsigned int SNomHash ( SNombre * p_nomObj )
 
 
 
+
+SPtr * SNomPtr ( SNombre * p_nomObj )
+{
+	return ( SPtrCrear ( p_nomObj, (PRC_DESTRUCTOR) SNomDestruir ) );
+}

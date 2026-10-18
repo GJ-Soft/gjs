@@ -5,7 +5,7 @@
 | Módulos       | 3                                                       |
 | Cabeceras     | `SParametro.h`, `SListaParametros.h`, `SListaValores.h` |
 | Prefijos      | `SPar`, `SLisPar`, `SLisVal`                            |
-| Funciones     | 15 + 30 + 30                                            |
+| Funciones     | 16 + 30 + 30                                            |
 | Incluidos por | `TiposDatos.h`                                          |
 | Tests         | Uno por módulo                                          |
 
@@ -40,12 +40,18 @@ typedef struct
 | `SParametro * SParCrearExtLit ( … )`                 | Ídem con nombre literal.     |
 | `SParametro * SParDuplicar ( SParametro * )`         | Copia independiente.         |
 | `void SParDestruir ( SParametro ** )`                | Destruye y anula el puntero. |
+| `SPtr * SParPtr ( SParametro * )`                    | Lo envuelve en un `SPtr`.    |
 | `int SParEsValido ( SParametro * )`                  | 1 si es utilizable.          |
 | `SCadena * SParNombre ( SParametro * )`              | Nombre.                      |
 | `SValor * SParValor ( SParametro * )`                | Valor.                       |
 | `int SParTipo ( SParametro * )`                      | Tipo del valor.              |
 | `int SParEstablecerNombre ( … )` / `…Lit`            | Cambia el nombre.            |
 | `int SParEstablecerValor ( … )` / `…Ext` / `…ExtLit` | Cambia el valor.             |
+
+`SParPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SParDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 El sufijo `Lit` indica que el nombre se pasa como `const char *` en lugar de
 como [SCadena](../../gjs-c-common-text/doc/SCadena.md).
@@ -76,6 +82,7 @@ SLisParDestruir ( &p_lisObj );
 - [SValor](SValor.md) — el contenido.
 - [SCadena](../../gjs-c-common-text/doc/SCadena.md) — el nombre.
 - [Listas](../../gjs-c-common-base-types/doc/Listas.md) — el almacenamiento.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SParPtr`.
 
 ## Tests
 

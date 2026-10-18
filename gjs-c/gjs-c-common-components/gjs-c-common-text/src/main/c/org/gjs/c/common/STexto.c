@@ -905,3 +905,8 @@ int _STxtPosMenorOIgual ( int iLinIni, int iColIni, int iLinFin, int iColFin )
 	return ( iRes );
 }
 
+
+SPtr * STxtPtr ( STexto * p_txtObj )
+{
+	return ( SPtrCrear ( p_txtObj, (PRC_DESTRUCTOR) STxtDestruir ) );
+}

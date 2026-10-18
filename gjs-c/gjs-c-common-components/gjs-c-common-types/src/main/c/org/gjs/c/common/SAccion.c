@@ -325,3 +325,8 @@ SAccion * SAccDuplicar (  SAccion * p_accObj )
 	return ( p_accRes );
 }
 
+
+SPtr * SAccPtr ( SAccion * p_accObj )
+{
+	return ( SPtrCrear ( p_accObj, (PRC_DESTRUCTOR) SAccDestruir ) );
+}

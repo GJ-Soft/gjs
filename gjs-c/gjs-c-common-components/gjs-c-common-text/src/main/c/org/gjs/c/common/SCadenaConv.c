@@ -2477,3 +2477,8 @@ int SCadcAcabaPorLit ( SCadenaConv * p_cadObj, const char * p_cValor )
 }
 
 
+
+SPtr * SCadcPtr ( SCadenaConv * p_cadObj )
+{
+	return ( SPtrCrear ( p_cadObj, (PRC_DESTRUCTOR) SCadcDestruir ) );
+}

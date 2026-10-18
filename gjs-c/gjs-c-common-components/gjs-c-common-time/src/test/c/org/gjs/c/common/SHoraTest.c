@@ -209,6 +209,91 @@ static int TestSHorDiferenciaFormato01 ()
 	return ( iRes );
 }
 
+/* SHorPtr envuelve el objeto en un SPtr con SHorDestruir como destructor: al
+   destruir el SPtr se libera tambien el SHora. Con MODO_DEPURACION se comprueba
+   que no queda memoria reservada. */
+static int TestSHorPtr01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SHorPtr 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SHora * p_horObj = SHorCrear ( 120000 );
+	SPtr * p_ptrObj = SHorPtr ( p_horObj );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al crear el SPtr\n" );
+		iRes = BOOL_VAL_FALSO;
+		SHorDestruir ( &p_horObj );
+	}
+	else
+	{
+		if ( SPtrEsValido ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: el SPtr deberia ser valido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SPtrObjeto ( p_ptrObj ) != p_horObj )
+		{
+			printf( "Error caso 3: el SPtr deberia envolver el mismo SHora\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El SHora pasa a ser del SPtr: se libera con el, no por separado. */
+		SPtrDestruir ( &p_ptrObj );
+		if ( ES_VALIDO ( p_ptrObj ) )
+		{
+			printf( "Error caso 4: se esperaba puntero nulo tras destruir\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 5: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	return ( iRes );
+}
+
+/* Con objeto nulo, SHorPtr da un SPtr vacio: hay que destruirlo igualmente.
+   Con MODO_DEPURACION se comprueba que no queda memoria reservada. */
+static int TestSHorPtrNulo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SHorPtrNulo 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SPtr * p_ptrObj = SHorPtr ( NULL );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: con objeto nulo se esperaba un SPtr vacio, no nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( SPtrEstaVacio ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: con objeto nulo el SPtr deberia estar vacio\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SPtrDestruir ( &p_ptrObj );
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 3: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+
+
 
 
 int TestSHora ()
@@ -217,7 +302,9 @@ int TestSHora ()
 	printf ( "%s[Test SHora]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSHorCrear01 () == BOOL_VAL_CIERTO ) &&
 			( TestSHorComparar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSHorDiferenciaFormato01 () == BOOL_VAL_CIERTO ) )
+			( TestSHorDiferenciaFormato01 () == BOOL_VAL_CIERTO ) &&
+			( TestSHorPtr01 () == BOOL_VAL_CIERTO ) &&
+			( TestSHorPtrNulo01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

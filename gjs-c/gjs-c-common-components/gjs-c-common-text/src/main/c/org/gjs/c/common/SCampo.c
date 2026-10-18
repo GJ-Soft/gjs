@@ -624,3 +624,8 @@ int SCampCumpleExpReg ( SCampo * p_campObj, const char * p_cExpReg )
 
 
 
+
+SPtr * SCampPtr ( SCampo * p_campObj )
+{
+	return ( SPtrCrear ( p_campObj, (PRC_DESTRUCTOR) SCampDestruir ) );
+}

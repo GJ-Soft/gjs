@@ -73,6 +73,21 @@ Tras el paso 1 quedan ~91 ficheros con la version vieja, en estas categorias:
 
 	grep -rho "<[a-zA-Z0-9._-]*\.version>1\.0\.0-RC\.1<" --include=pom.xml . | sort -u
 
+> **Saliendo de una version final esto NO vale.** Una cadena como `1.0.0-RC.1` solo
+> la usa gjs, pero `1.0.0` aparece por todas partes. Al pasar de `1.0.0` a
+> `1.1.0-SNAPSHOT` (2026-10-17) habia 1.038 apariciones, y la mayoria no eran la
+> version de gjs: `openpojo` 1.0.0 (publicado, no cambia), un tercero
+> (`org.eclipse.m2e:lifecycle-mapping`), los `@since`/`@version` de javadoc y las
+> cabeceras de los fuentes C (historia), la version de los proyectos que generan
+> los arquetipos (`1.0.0-SNAPSHOT`, `open-api.json`), changelogs y ejemplos de
+> `docs/`. Se hizo **por reglas**: `<version>` de poms y fragmentos de `.md`
+> (salvo terceros), propiedades `*.version` (salvo `openpojo.version`), el
+> `version : ` de las descripciones, `-DarchetypeVersion`,
+> `-DprojectParentVersion`, `projectParentVersion` de los `archetype.properties` y
+> las tablas `| version |` de los README. Ojo tambien a los agregadores
+> `pomMinInstall.xml`, `pomRemainingInstall.xml` y `pomParents.xml`: no se llaman
+> `pom.xml`. Despues, comprobar cada `<parent>` contra su `relativePath`.
+
 Como *todas* las ocurrencias de la version pertenecen a `org.gjsoft` (comprobado en
 el paso 0), la sustitucion literal en los ficheros versionados es segura:
 

@@ -5,7 +5,7 @@
 | Módulos       | 3                                                              |
 | Cabeceras     | `SIdAdap.h`, `SGeneradorIdAdap.h`, `SSecuenciaGeneradoresId.h` |
 | Prefijos      | `SIdAdp`, `SGenIdAdp`, `SSecGenId`                             |
-| Funciones     | 25 + 12 + 9                                                    |
+| Funciones     | 26 + 12 + 9                                                    |
 | Incluidos por | `TiposDatos.h`                                                 |
 | Tests         | Uno por módulo                                                 |
 
@@ -34,15 +34,20 @@ typedef struct
 
 ## `SIdAdap`
 
-| Grupo          | Funciones                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------- |
-| Ciclo de vida  | `SIdAdpCrear`, `SIdAdpCrearExt`, `SIdAdpDestruir`, `SIdAdpDuplicar`, `SIdAdpEsValido`             |
-| Acceso         | `SIdAdpPatron`, `SIdAdpValor`, `SIdAdpTam`                                                        |
-| Asignación     | `SIdAdpEstablecer`, `SIdAdpAsignar`, `SIdAdpEstablecerValorInicial`, `SIdAdpEstablecerValorFinal` |
-| Recorrido      | `SIdAdpIncrementar`, `SIdAdpDecrementar`, `SIdAdpIncrementarDesde`, `SIdAdpDecrementarDesde`      |
-| Comparación    | `SIdAdpEsIgual`, `SIdAdpEsMenor`, `SIdAdpEsMayor`, `SIdAdpEsMenorIg`, `SIdAdpEsMayorIg`           |
-| Rango          | `SIdAdpEstaEnRango`, `SIdAdpEstaEnRangoIg`                                                        |
-| Compatibilidad | `SIdAdpEsCompatible`, `SIdAdpEsCompatibleValor`                                                   |
+| Grupo          | Funciones                                                                                          |
+| -------------- | -------------------------------------------------------------------------------------------------- |
+| Ciclo de vida  | `SIdAdpCrear`, `SIdAdpCrearExt`, `SIdAdpDestruir`, `SIdAdpDuplicar`, `SIdAdpEsValido`, `SIdAdpPtr` |
+| Acceso         | `SIdAdpPatron`, `SIdAdpValor`, `SIdAdpTam`                                                         |
+| Asignación     | `SIdAdpEstablecer`, `SIdAdpAsignar`, `SIdAdpEstablecerValorInicial`, `SIdAdpEstablecerValorFinal`  |
+| Recorrido      | `SIdAdpIncrementar`, `SIdAdpDecrementar`, `SIdAdpIncrementarDesde`, `SIdAdpDecrementarDesde`       |
+| Comparación    | `SIdAdpEsIgual`, `SIdAdpEsMenor`, `SIdAdpEsMayor`, `SIdAdpEsMenorIg`, `SIdAdpEsMayorIg`            |
+| Rango          | `SIdAdpEstaEnRango`, `SIdAdpEstaEnRangoIg`                                                         |
+| Compatibilidad | `SIdAdpEsCompatible`, `SIdAdpEsCompatibleValor`                                                    |
+
+`SIdAdpPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SIdAdpDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 `SIdAdpEsCompatible` comprueba que dos identificadores compartan patrón, y
 `SIdAdpEsCompatibleValor` que un texto encaje en el patrón de uno.
@@ -85,6 +90,7 @@ serie, y esta secuencia los agrupa.
   incremento.
 - [Secuencias](../../gjs-c-common-base-types/doc/Secuencias.md) — el
   almacenamiento de `SSecuenciaGeneradoresId`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SIdAdpPtr`.
 
 ## Tests
 

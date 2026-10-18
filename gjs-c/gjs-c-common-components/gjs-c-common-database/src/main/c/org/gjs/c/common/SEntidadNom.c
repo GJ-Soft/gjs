@@ -10,14 +10,17 @@
 SEntidadNom * SEntNomCrearDef ()
 {
 	SEntidadNom *  p_entnObj;
+    SPtr *         p_ptrContenido;
     SId *          p_idEntidad;
     SNombre *      p_nomEntidad;
 
     p_idEntidad = SIdCrearDef ();
     p_nomEntidad = SNomCrearDef ();
-    p_entnObj = SEntNomEncapsularExt ( p_idEntidad, p_nomEntidad, NULL );
+    p_ptrContenido = SPtrCrearDef ( NULL );
+    p_entnObj = SEntNomEncapsularExt ( p_idEntidad, p_nomEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entnObj ) )
     {
+        SPtrDestruir ( &p_ptrContenido );
         SIdDestruir ( &p_idEntidad );
         SNomDestruir ( &p_nomEntidad );
     }
@@ -26,15 +29,33 @@ SEntidadNom * SEntNomCrearDef ()
 
 SEntidadNom * SEntNomCrear ( unsigned long ulId, SCadena * p_cadNombre )
 {
-	return ( SEntNomCrearExt ( ulId, p_cadNombre, NULL ) );
+	SEntidadNom *	p_entnObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_entnObj = SEntNomCrearExt ( ulId, p_cadNombre, p_ptrContenido );
+	if ( ES_NULO ( p_entnObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_entnObj );
 }
 
 SEntidadNom * SEntNomCrearLit ( unsigned long ulId, const char * p_cNombre )
 {
-	return ( SEntNomCrearLitExt ( ulId, p_cNombre, NULL ) );
+	SEntidadNom *	p_entnObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_entnObj = SEntNomCrearLitExt ( ulId, p_cNombre, p_ptrContenido );
+	if ( ES_NULO ( p_entnObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_entnObj );
 }
 
-SEntidadNom * SEntNomCrearExt ( unsigned long ulId, SCadena * p_cadNombre, void * p_vContenido )
+SEntidadNom * SEntNomCrearExt ( unsigned long ulId, SCadena * p_cadNombre, SPtr * p_ptrContenido )
 {
 	SEntidadNom *  p_entnObj;
     SId *          p_idEntidad;
@@ -42,7 +63,7 @@ SEntidadNom * SEntNomCrearExt ( unsigned long ulId, SCadena * p_cadNombre, void 
 
     p_idEntidad = SIdCrear ( ulId );
     p_nomEntidad = SNomCrearValor ( p_cadNombre );
-    p_entnObj = SEntNomEncapsularExt ( p_idEntidad, p_nomEntidad, p_vContenido );
+    p_entnObj = SEntNomEncapsularExt ( p_idEntidad, p_nomEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entnObj ) )
     {
         SIdDestruir ( &p_idEntidad );
@@ -51,7 +72,7 @@ SEntidadNom * SEntNomCrearExt ( unsigned long ulId, SCadena * p_cadNombre, void 
     return ( p_entnObj );
 }
 
-SEntidadNom * SEntNomCrearLitExt ( unsigned long ulId, const char * p_cNombre, void * p_vContenido )
+SEntidadNom * SEntNomCrearLitExt ( unsigned long ulId, const char * p_cNombre, SPtr * p_ptrContenido )
 {
 	SEntidadNom *  p_entnObj;
     SId *          p_idEntidad;
@@ -59,7 +80,7 @@ SEntidadNom * SEntNomCrearLitExt ( unsigned long ulId, const char * p_cNombre, v
 
     p_idEntidad = SIdCrear ( ulId );
     p_nomEntidad = SNomCrearValorLit ( p_cNombre );
-    p_entnObj = SEntNomEncapsularExt ( p_idEntidad, p_nomEntidad, p_vContenido );
+    p_entnObj = SEntNomEncapsularExt ( p_idEntidad, p_nomEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entnObj ) )
     {
         SIdDestruir ( &p_idEntidad );
@@ -70,10 +91,19 @@ SEntidadNom * SEntNomCrearLitExt ( unsigned long ulId, const char * p_cNombre, v
 
 SEntidadNom * SEntNomEncapsular ( SId * p_idEntidad, SNombre * p_nomEntidad )
 {
-	return ( SEntNomEncapsularExt ( p_idEntidad, p_nomEntidad, NULL ) );
+	SEntidadNom *	p_entnObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_entnObj = SEntNomEncapsularExt ( p_idEntidad, p_nomEntidad, p_ptrContenido );
+	if ( ES_NULO ( p_entnObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_entnObj );
 }
 
-SEntidadNom * SEntNomEncapsularExt ( SId * p_idEntidad, SNombre * p_nomEntidad, void * p_vContenido )
+SEntidadNom * SEntNomEncapsularExt ( SId * p_idEntidad, SNombre * p_nomEntidad, SPtr * p_ptrContenido )
 {
 	SEntidadNom *	p_entnObj;
 	
@@ -82,7 +112,7 @@ SEntidadNom * SEntNomEncapsularExt ( SId * p_idEntidad, SNombre * p_nomEntidad, 
         p_entnObj = (SEntidadNom *) MemReservar ( sizeof ( SEntidadNom ) );
         if ( ES_VALIDO ( p_entnObj ) )
         {
-            p_entnObj->p_entInfo = SEntEncapsularExt ( p_idEntidad, p_vContenido );
+            p_entnObj->p_entInfo = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
             if ( ES_VALIDO ( p_entnObj->p_entInfo ) )
             {
 				if ( ES_VALIDO ( p_nomEntidad ) )
@@ -107,10 +137,9 @@ SEntidadNom * SEntNomEncapsularExt ( SId * p_idEntidad, SNombre * p_nomEntidad, 
 	return ( p_entnObj );
 }
 
-void * SEntNomDestruir ( SEntidadNom ** p_p_entnObj )
+void SEntNomDestruir ( SEntidadNom ** p_p_entnObj )
 {
 	SEntidadNom *   p_entnObj;
-    void *          p_vRes;
 
 	if ( ES_VALIDO ( p_p_entnObj ) )
 	{
@@ -118,20 +147,11 @@ void * SEntNomDestruir ( SEntidadNom ** p_p_entnObj )
 
 		if ( ES_VALIDO ( p_entnObj ) )
 		{
-			p_vRes = SEntDestruir ( &(p_entnObj->p_entInfo) );
+			SEntDestruir ( &(p_entnObj->p_entInfo) );
             SNomDestruir ( &(p_entnObj->p_nomEntidad) );
 			MemLiberar ( (void **) p_p_entnObj );
 		}
-        else
-        {
-            p_vRes = NULL;
-        }
 	}
-    else
-    {
-        p_vRes = NULL;
-    }
-	return ( p_vRes );
 }
 
 int SEntNomEsValida ( SEntidadNom * p_entnObj )
@@ -322,19 +342,49 @@ int SEntNomEstablecerValorId ( SEntidadNom * p_entnObj, unsigned long ulId )
 	return ( iRes );
 }
 
-void * SEntNomEstablecerContenido ( SEntidadNom * p_entnObj, void * p_vContenido )
+int SEntNomEstablecerContenido ( SEntidadNom * p_entnObj, void * p_vContenido )
 {
-	void * p_vRes;
+	int iRes;
 
 	if ( ES_VALIDO ( p_entnObj ) )
 	{
-        p_vRes = SEntEstablecerContenido ( p_entnObj->p_entInfo, p_vContenido );
+        iRes = SEntEstablecerContenido ( p_entnObj->p_entInfo, p_vContenido );
 	}
 	else
 	{
-		p_vRes = NULL;
+		iRes = 0;
 	}
-	return ( p_vRes );
+	return ( iRes );
+}
+
+int SEntNomEstablecerContenidoExt ( SEntidadNom * p_entnObj, void * p_vContenido, PRC_DESTRUCTOR fDestructor )
+{
+	int 	iRes;
+
+	if ( ES_VALIDO ( p_entnObj ) )
+	{
+        iRes = SEntEstablecerContenidoExt ( p_entnObj->p_entInfo, p_vContenido, fDestructor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SEntNomAsignarContenido ( SEntidadNom * p_entnObj, SPtr * p_ptrContenido )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_entnObj ) )
+	{
+        iRes = SEntAsignarContenido ( p_entnObj->p_entInfo, p_ptrContenido );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
 int SEntNomEstablecerNombre ( SEntidadNom * p_entnObj, SNombre * p_nomEntidad )
@@ -863,6 +913,11 @@ unsigned int SEntNomHash ( SEntidadNom * p_entnObj )
 		uiRes = SEntHash ( p_entnObj->p_entInfo );
 	}
 	return ( uiRes );
+}
+
+SPtr * SEntNomPtr ( SEntidadNom * p_entnObj )
+{
+	return ( SPtrCrear ( p_entnObj, (PRC_DESTRUCTOR) SEntNomDestruir ) );
 }
 
 

@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SPeriodo.c` (529 líneas) |
 | Prefijo      | `SPerd`                                               |
 | Struct       | `SPeriodo`                                            |
-| Funciones    | 18                                                    |
+| Funciones    | 19                                                    |
 | Incluido por | `Tiempo.h`                                            |
 | Test         | `SPeriodoTest.c` → `TestSPeriodo()`                   |
 
@@ -40,8 +40,14 @@ Sólo guarda **la última ocurrencia**, no el historial: el resto se calcula.
 | ----------------------------------------------------------------- | ---------------------------- |
 | `SPeriodo * SPerdCrear ( int iPeriodicidad, long lFechaInicial )` | Crea el periodo.             |
 | `void SPerdDestruir ( SPeriodo ** p_perdObj )`                    | Destruye y anula el puntero. |
+| `SPtr * SPerdPtr ( SPeriodo * p_perdObj )`                        | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
 | `int SPerdEsValido ( SPeriodo * )`                                | 1 si es utilizable.          |
 | `void SPerdIniciar ( SPeriodo *, long lFechaInicial )`            | Reinicia desde una fecha.    |
+
+`SPerdPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SPerdDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 La periodicidad usa las constantes de
 [TiposPeriodicidad](TiposPeriodicidad.md).
@@ -86,6 +92,7 @@ SPerdDestruir ( &p_perdObj );
 - [TiposPeriodicidad](TiposPeriodicidad.md) — el catálogo.
 - [Fechas](Fechas.md) — la aritmética de avance.
 - [TiempoSistema](TiempoSistema.md) — `SPerdActualizarHastaHoy`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SPerdPtr`.
 
 ## Test
 

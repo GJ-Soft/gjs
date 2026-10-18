@@ -5,7 +5,7 @@
 | Módulos       | 4                                                             |
 | Cabeceras     | `SPila.h`, `SPilaPtr.h`, `SPilaEnteros.h`, `SPilaLiterales.h` |
 | Prefijos      | `SPil`, `SPilp`, `SPilEnt`, `SPilLit`                         |
-| Incluidos por | `Tipos.h`                                                     |
+| Incluidos por | `TiposBasicos.h`                                              |
 | Tests         | Uno por módulo                                                |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

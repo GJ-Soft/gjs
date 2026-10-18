@@ -527,3 +527,8 @@ static long FechaSigOcurrencia ( int iPeriodicidad, long lFecha )
 	return ( lRes );
 }
 
+
+SPtr * SPerdPtr ( SPeriodo * p_perdObj )
+{
+	return ( SPtrCrear ( p_perdObj, (PRC_DESTRUCTOR) SPerdDestruir ) );
+}

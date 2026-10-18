@@ -760,3 +760,8 @@ int SDescCumpleExpReg ( SDescripcion * p_descObj, const char * p_cExpReg )
 
 
 
+
+SPtr * SDescPtr ( SDescripcion * p_descObj )
+{
+	return ( SPtrCrear ( p_descObj, (PRC_DESTRUCTOR) SDescDestruir ) );
+}

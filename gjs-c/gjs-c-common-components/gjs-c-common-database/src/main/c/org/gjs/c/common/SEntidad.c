@@ -8,12 +8,15 @@
 SEntidad * SEntCrearDef ()
 {
 	SEntidad *  p_entObj;
+    SPtr *         p_ptrContenido;
     SId *       p_idEntidad;
 
     p_idEntidad = SIdCrearDef ();
-    p_entObj = SEntEncapsularExt ( p_idEntidad, NULL );
+    p_ptrContenido = SPtrCrearDef ( NULL );
+    p_entObj = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entObj ) )
     {
+        SPtrDestruir ( &p_ptrContenido );
         SIdDestruir ( &p_idEntidad );
     }
     return ( p_entObj );
@@ -21,16 +24,25 @@ SEntidad * SEntCrearDef ()
 
 SEntidad * SEntCrear ( unsigned long ulId )
 {
-	return ( SEntCrearExt ( ulId, NULL ) );
+	SEntidad *	p_entObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_entObj = SEntCrearExt ( ulId, p_ptrContenido );
+	if ( ES_NULO ( p_entObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_entObj );
 }
 
-SEntidad * SEntCrearExt ( unsigned long ulId, void * p_vContenido )
+SEntidad * SEntCrearExt ( unsigned long ulId,  SPtr * p_ptrContenido )
 {
 	SEntidad *  p_entObj;
     SId *       p_idEntidad;
 
     p_idEntidad = SIdCrear ( ulId );
-    p_entObj = SEntEncapsularExt ( p_idEntidad, p_vContenido );
+    p_entObj = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entObj ) )
     {
         SIdDestruir ( &p_idEntidad );
@@ -40,33 +52,42 @@ SEntidad * SEntCrearExt ( unsigned long ulId, void * p_vContenido )
 
 SEntidad * SEntEncapsular ( SId * p_idEntidad )
 {
-	return ( SEntEncapsularExt ( p_idEntidad, NULL ) );
+	SEntidad *	p_entObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_entObj = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
+	if ( ES_NULO ( p_entObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_entObj );
 }
 
-SEntidad * SEntEncapsularExt ( SId * p_idEntidad, void * p_vContenido )
+SEntidad * SEntEncapsularExt ( SId * p_idEntidad, SPtr * p_ptrContenido )
 {
 	SEntidad *	p_entObj;
 	
+    p_entObj = NULL;
     if ( ES_VALIDO ( p_idEntidad ) )
     {
-        p_entObj= (SEntidad *) MemReservar ( sizeof ( SEntidad ) );
-        if ( ES_VALIDO ( p_entObj ) )
+        /* El contenido siempre es un SPtr, aunque este vacio: SPtrCrearDef ( NULL ). */
+        if ( ES_VALIDO ( p_ptrContenido ) )
         {
-            p_entObj->p_idEntidad = p_idEntidad;
-            p_entObj->p_vContenido = p_vContenido;
+            p_entObj= (SEntidad *) MemReservar ( sizeof ( SEntidad ) );
+            if ( ES_VALIDO ( p_entObj ) )
+            {
+                p_entObj->p_idEntidad = p_idEntidad;
+                p_entObj->p_ptrContenido = p_ptrContenido;
+            }
         }
-    }
-    else
-    {
-        p_entObj = NULL;
     }
 	return ( p_entObj );
 }
 
-void * SEntDestruir ( SEntidad ** p_p_entObj )
+void SEntDestruir ( SEntidad ** p_p_entObj )
 {
 	SEntidad *  p_entObj;
-    void *      p_vRes;
 
 	if ( ES_VALIDO ( p_p_entObj ) )
 	{
@@ -74,20 +95,11 @@ void * SEntDestruir ( SEntidad ** p_p_entObj )
 
 		if ( ES_VALIDO ( p_entObj ) )
 		{
-			p_vRes = p_entObj->p_vContenido;
+			SPtrDestruir ( &(p_entObj->p_ptrContenido) );
             SIdDestruir ( &(p_entObj->p_idEntidad) );
 			MemLiberar ( (void **) p_p_entObj );
 		}
-        else
-        {
-            p_vRes = NULL;
-        }
 	}
-    else
-    {
-        p_vRes = NULL;
-    }
-    return ( p_vRes );
 }
 
 int SEntEsValida ( SEntidad * p_entObj )
@@ -96,12 +108,20 @@ int SEntEsValida ( SEntidad * p_entObj )
 
 	if ( ES_VALIDO ( p_entObj ) )
 	{
-		/* Solo el identificador. El contenido es opcional a proposito ( para eso
-		   estan SEntCrear y SEntCrearExt ), asi que exigirlo aqui haria invalida
-		   a toda entidad creada sin el. */
+		/* El identificador y que haya SPtr de contenido. El SPtr puede estar
+		   vacio: el contenido es opcional a proposito ( para eso estan SEntCrear
+		   y SEntCrearExt ), asi que exigirlo haria invalida a toda entidad
+		   creada sin el. */
 		if ( SIdEsValido ( p_entObj->p_idEntidad ) == 1 )
 		{
-			iRes = 1;
+			if ( ES_VALIDO ( p_entObj->p_ptrContenido ) )
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
 		}
 		else
 		{
@@ -121,7 +141,7 @@ int SEntTieneContenido ( SEntidad * p_entObj )
 
 	if ( ES_VALIDO ( p_entObj ) )
 	{
-		if ( ES_VALIDO ( p_entObj->p_vContenido ) == 1 )
+		if ( SPtrEstaVacio ( p_entObj->p_ptrContenido ) == 0 )
 		{
 			iRes = 1;
 		}
@@ -217,7 +237,7 @@ void * SEntContenido ( SEntidad * p_entObj )
 
 	if ( ES_VALIDO ( p_entObj ) )
 	{
-		p_vRes = p_entObj->p_vContenido;
+		p_vRes = SPtrObjeto ( p_entObj->p_ptrContenido );
 	}
 	else
 	{
@@ -226,22 +246,79 @@ void * SEntContenido ( SEntidad * p_entObj )
 	return ( p_vRes );
 }
 
-void * SEntEstablecerContenido ( SEntidad * p_entObj, void * p_vContenido )
+int SEntEstablecerContenido ( SEntidad * p_entObj, void * p_vContenido )
 {
-	void * p_vRes;
+	int iRes;
 
 	if ( ES_VALIDO ( p_entObj ) )
 	{
-		p_vRes = p_entObj->p_vContenido;
-        p_entObj->p_vContenido = p_vContenido;
+		iRes = SPtrEstablecer ( p_entObj->p_ptrContenido, p_vContenido );
 	}
 	else
 	{
-		p_vRes = NULL;
+		iRes = 0;
 	}
-	return ( p_vRes );
+	return ( iRes );
 }
 
+int SEntEstablecerContenidoExt ( SEntidad * p_entObj, void * p_vContenido, PRC_DESTRUCTOR fDestructor )
+{
+	int 	iRes;
+	SPtr *	p_ptrContenido;
+
+	if ( ES_VALIDO ( p_entObj ) )
+	{
+		/* Con el mismo objeto que ya tiene solo cambia el destructor: otro SPtr */
+		/* destruiria el objeto al sustituir al actual.                         */
+		if ( SPtrObjeto ( p_entObj->p_ptrContenido ) == p_vContenido )
+		{
+			if ( ES_VALIDO ( fDestructor ) )
+			{
+				p_entObj->p_ptrContenido->p_fDestructor = fDestructor;
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			p_ptrContenido = SPtrCrear ( p_vContenido, fDestructor );
+			iRes = SEntAsignarContenido ( p_entObj, p_ptrContenido );
+			if ( iRes == 0 )
+			{
+				SPtrDestruirSinLiberar ( &p_ptrContenido );
+			}
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SEntAsignarContenido ( SEntidad * p_entObj, SPtr * p_ptrContenido )
+{
+	int iRes;
+
+	iRes = 0;
+	if ( ES_VALIDO ( p_entObj ) )
+	{
+		if ( ES_VALIDO ( p_ptrContenido ) )
+		{
+			/* El mismo SPtr que ya tiene no se destruye: se quedaria con uno liberado. */
+			if ( p_entObj->p_ptrContenido != p_ptrContenido )
+			{
+				SPtrDestruir ( &(p_entObj->p_ptrContenido) );
+				p_entObj->p_ptrContenido = p_ptrContenido;
+			}
+			iRes = 1;
+		}
+	}
+	return ( iRes );
+}
 
 int SEntEsIgual ( SEntidad * p_entObj, SEntidad * p_entVal )
 {
@@ -599,4 +676,7 @@ unsigned int SEntHash ( SEntidad * p_entObj )
 	return ( uiRes );
 }
 
-
+SPtr * SEntPtr ( SEntidad * p_entObj )
+{
+	return ( SPtrCrear ( p_entObj, (PRC_DESTRUCTOR) SEntDestruir ) );
+}

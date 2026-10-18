@@ -208,6 +208,91 @@ static int TestSFecHorFormato01 ()
 	return ( iRes );
 }
 
+/* SFecHorPtr envuelve el objeto en un SPtr con SFecHorDestruir como destructor: al
+   destruir el SPtr se libera tambien el SFechaHora. Con MODO_DEPURACION se comprueba
+   que no queda memoria reservada. */
+static int TestSFecHorPtr01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SFecHorPtr 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SFechaHora * p_fecObj = SFecHorCrearFecHor ( 20240102, 133045 );
+	SPtr * p_ptrObj = SFecHorPtr ( p_fecObj );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al crear el SPtr\n" );
+		iRes = BOOL_VAL_FALSO;
+		SFecHorDestruir ( &p_fecObj );
+	}
+	else
+	{
+		if ( SPtrEsValido ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: el SPtr deberia ser valido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SPtrObjeto ( p_ptrObj ) != p_fecObj )
+		{
+			printf( "Error caso 3: el SPtr deberia envolver el mismo SFechaHora\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El SFechaHora pasa a ser del SPtr: se libera con el, no por separado. */
+		SPtrDestruir ( &p_ptrObj );
+		if ( ES_VALIDO ( p_ptrObj ) )
+		{
+			printf( "Error caso 4: se esperaba puntero nulo tras destruir\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 5: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	return ( iRes );
+}
+
+/* Con objeto nulo, SFecHorPtr da un SPtr vacio: hay que destruirlo igualmente.
+   Con MODO_DEPURACION se comprueba que no queda memoria reservada. */
+static int TestSFecHorPtrNulo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SFecHorPtrNulo 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SPtr * p_ptrObj = SFecHorPtr ( NULL );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: con objeto nulo se esperaba un SPtr vacio, no nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( SPtrEstaVacio ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: con objeto nulo el SPtr deberia estar vacio\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SPtrDestruir ( &p_ptrObj );
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 3: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+
+
 
 
 int TestSFechaHora ()
@@ -216,7 +301,9 @@ int TestSFechaHora ()
 	printf ( "%s[Test SFechaHora]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSFecHorCrear01 () == BOOL_VAL_CIERTO ) &&
 			( TestSFecHorComparar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSFecHorFormato01 () == BOOL_VAL_CIERTO ) )
+			( TestSFecHorFormato01 () == BOOL_VAL_CIERTO ) &&
+			( TestSFecHorPtr01 () == BOOL_VAL_CIERTO ) &&
+			( TestSFecHorPtrNulo01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

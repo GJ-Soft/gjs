@@ -81,4 +81,5 @@ SBloque * SBlqExtraer ( SBloque * p_blqObj, int iPos, int iTam );
 
 unsigned int SBlqHash ( SBloque * p_blqObj );
 
+
 #endif

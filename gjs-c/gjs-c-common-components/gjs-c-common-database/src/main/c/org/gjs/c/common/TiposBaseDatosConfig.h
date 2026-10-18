@@ -13,7 +13,7 @@
 #include <TiposDatos.h>
 #include <Texto.h>
 #include <Tiempo.h>
-#include <Tipos.h>
+#include <TiposBasicos.h>
 
 
 

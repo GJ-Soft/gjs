@@ -52,38 +52,38 @@ una de las tres reglas de `ValidacionCadenas` fijada de fábrica.
 
 | Módulo               | Prefijo        | Struct        | Funciones | Test | Documento                                       |
 | -------------------- | -------------- | ------------- | --------- | ---- | ----------------------------------------------- |
-| `SCadena`            | `SCad`         | `SCadena`     | 137       | ✔    | [SCadena](SCadena.md)                           |
-| `SCadenaConv`        | `SCadc`        | `SCadenaConv` | 169       | ✔    | [SCadenaConv](SCadenaConv.md)                   |
+| `SCadena`            | `SCad`         | `SCadena`     | 138       | ✔    | [SCadena](SCadena.md)                           |
+| `SCadenaConv`        | `SCadc`        | `SCadenaConv` | 170       | ✔    | [SCadenaConv](SCadenaConv.md)                   |
 | `ValidacionCadenas`  | `SCad` / `Cad` | —             | 6         | ✔    | [ValidacionCadenas](ValidacionCadenas.md)       |
 
 ### Cadenas con propósito
 
 | Módulo            | Prefijo   | Struct            | Funciones | Test | Documento                             |
 | ----------------- | --------- | ----------------- | --------- | ---- | ------------------------------------- |
-| `SCadenaNumerica` | `SCadn`   | `SCadenaNumerica` | 13        | ✔    | [SCadenaNumerica](SCadenaNumerica.md) |
-| `SCampo`          | `SCamp`   | `SCampo`          | 30        | ✔    | [SCampo](SCampo.md)                   |
-| `SToken`          | `STok`    | `SToken`          | 39        | ✔    | [SToken](SToken.md)                   |
+| `SCadenaNumerica` | `SCadn`   | `SCadenaNumerica` | 14        | ✔    | [SCadenaNumerica](SCadenaNumerica.md) |
+| `SCampo`          | `SCamp`   | `SCampo`          | 31        | ✔    | [SCampo](SCampo.md)                   |
+| `SToken`          | `STok`    | `SToken`          | 40        | ✔    | [SToken](SToken.md)                   |
 | `SDivisor`        | `SDiv`    | `SDivisor`        | 16        | ✔    | [SDivisor](SDivisor.md)               |
 | `SListaCadenas`   | `SLisCad` | `SListaCadenas`   | 39        | ✔    | [SListaCadenas](SListaCadenas.md)     |
 
 ### Campos con regla de contenido
 
 Los tres son [SCampo](SCampo.md) con una validación distinta. Misma estructura,
-mismas 39 funciones, mismo reparto: lo único que cambia es la regla y el tope
+mismas 40 funciones, mismo reparto: lo único que cambia es la regla y el tope
 por defecto.
 
 | Módulo         | Prefijo | Struct         | Funciones | Validación               | Tope por defecto        | Test | Documento                       |
 | -------------- | ------- | -------------- | --------- | ------------------------ | ----------------------- | ---- | ------------------------------- |
-| `SCodigo`      | `SCod`  | `SCodigo`      | 39        | `SCadEsCodigoValido`     | `COD_MAX_TAM_DEF` (10)  | ✔    | [SCodigo](SCodigo.md)           |
-| `SNombre`      | `SNom`  | `SNombre`      | 39        | `SCadEsNombreValido`     | `NOM_MAX_TAM_DEF` (35)  | ✔    | [SNombre](SNombre.md)           |
-| `SDescripcion` | `SDesc` | `SDescripcion` | 39        | `SCadEsDescripcionValida` | `DESC_MAX_TAM_DEF` (255) | ✔   | [SDescripcion](SDescripcion.md) |
+| `SCodigo`      | `SCod`  | `SCodigo`      | 40        | `SCadEsCodigoValido`     | `COD_MAX_TAM_DEF` (10)  | ✔    | [SCodigo](SCodigo.md)           |
+| `SNombre`      | `SNom`  | `SNombre`      | 40        | `SCadEsNombreValido`     | `NOM_MAX_TAM_DEF` (35)  | ✔    | [SNombre](SNombre.md)           |
+| `SDescripcion` | `SDesc` | `SDescripcion` | 40        | `SCadEsDescripcionValida` | `DESC_MAX_TAM_DEF` (255) | ✔   | [SDescripcion](SDescripcion.md) |
 
 ### Documentos
 
 | Módulo   | Prefijo       | Struct   | Funciones | Test | Documento           |
 | -------- | ------------- | -------- | --------- | ---- | ------------------- |
 | `SLinea` | `SLin`, `Lin` | `SLinea` | 45        | ✔    | [SLinea](SLinea.md) |
-| `STexto` | `STxt`, `Txt` | `STexto` | 33        | ✔    | [STexto](STexto.md) |
+| `STexto` | `STxt`, `Txt` | `STexto` | 34        | ✔    | [STexto](STexto.md) |
 
 ---
 
@@ -108,16 +108,11 @@ Límites y valores por defecto del módulo. Ver la tabla en el
 
 ### `TextoConfig.h`
 
-Configuración interna: incluye `Base.h`, `Tipos.h`, `PaginasCodigos.h`,
+Configuración interna: incluye `Base.h`, `TiposBasicos.h`, `PaginasCodigos.h`,
 `TextoConstantes.h`, `ASCII.h` y `TiposCaracter.h`, y define `OEM850`.
 
-> Dos avisos:
->
-> - Vive en `src/main/c/org/gjs/c/common/`, es decir, en el árbol de **fuentes**.
->   No se publica en el NAR `noarch` y no está disponible para los consumidores.
-> - Su `#include <Tipos.h>` es **ambiguo**: hay dos ficheros con ese nombre en el
->   stack C, el catálogo de super-tipos de `gjs-c-common-base` y la fachada de
->   `gjs-c-common-base-types`. Cuál se resuelve depende del orden de los `-I`.
+> Vive en `src/main/c/org/gjs/c/common/`, es decir, en el árbol de **fuentes**.
+> No se publica en el NAR `noarch` y no está disponible para los consumidores.
 
 ### `JuegosCaracteres.h`
 

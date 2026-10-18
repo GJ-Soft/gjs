@@ -7,7 +7,7 @@
 | Prefijo      | `SDat`                                 |
 | Struct       | `SDatos`                               |
 | Funciones    | 30                                     |
-| Incluido por | `Tipos.h`                              |
+| Incluido por | `TiposBasicos.h`                       |
 | Test         | `SDatosTest.c` → `TestSDatos()`        |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

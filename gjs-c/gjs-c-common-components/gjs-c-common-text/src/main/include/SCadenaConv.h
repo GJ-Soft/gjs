@@ -7,6 +7,7 @@
 
 #include <SConversor.h>
 #include <SCadena.h>
+#include <SPtr.h>
 
 
 
@@ -223,6 +224,8 @@ int SCadcEmpiezaPorLit ( SCadenaConv * p_cadObj, const char * p_cValor );
 int SCadcAcabaPor ( SCadenaConv * p_cadObj, SCadenaConv * p_cadValor );
 int SCadcAcabaPorCad ( SCadenaConv * p_cadObj, SCadena * p_cadValor );
 int SCadcAcabaPorLit ( SCadenaConv * p_cadObj, const char * p_cValor );
+
+SPtr * SCadcPtr ( SCadenaConv * p_cadObj );
 
 #endif
 

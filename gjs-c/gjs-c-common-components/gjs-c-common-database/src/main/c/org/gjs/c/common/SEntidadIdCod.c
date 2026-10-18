@@ -10,14 +10,17 @@
 SEntidadIdCod * SEntIdCodCrearDef ( int iMaxTamCod )
 {
 	SEntidadIdCod * p_enticObj;
+    SPtr *         p_ptrContenido;
     SId *           p_idEntidad;
     SCodigo *       p_codEntidad;
 
     p_idEntidad = SIdCrearDef ();
     p_codEntidad = SCodCrear ( iMaxTamCod );
-    p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, NULL );
+    p_ptrContenido = SPtrCrearDef ( NULL );
+    p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_enticObj ) )
     {
+        SPtrDestruir ( &p_ptrContenido );
         SIdDestruir ( &p_idEntidad );
         SCodDestruir ( &p_codEntidad );
     }
@@ -26,15 +29,33 @@ SEntidadIdCod * SEntIdCodCrearDef ( int iMaxTamCod )
 
 SEntidadIdCod * SEntIdCodCrear ( unsigned long ulId, SCadena * p_cadCodigo, int iMaxTamCod )
 {
-	return ( SEntIdCodCrearExt ( ulId, p_cadCodigo, iMaxTamCod, NULL ) );
+	SEntidadIdCod *	p_enticObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_enticObj = SEntIdCodCrearExt ( ulId, p_cadCodigo, iMaxTamCod, p_ptrContenido );
+	if ( ES_NULO ( p_enticObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_enticObj );
 }
 
 SEntidadIdCod * SEntIdCodCrearLit ( unsigned long ulId, const char * p_cCodigo, int iMaxTamCod )
 {
-	return ( SEntIdCodCrearLitExt ( ulId, p_cCodigo, iMaxTamCod, NULL ) );
+	SEntidadIdCod *	p_enticObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_enticObj = SEntIdCodCrearLitExt ( ulId, p_cCodigo, iMaxTamCod, p_ptrContenido );
+	if ( ES_NULO ( p_enticObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_enticObj );
 }
 
-SEntidadIdCod * SEntIdCodCrearExt ( unsigned long ulId, SCadena * p_cadCodigo, int iMaxTamCod, void * p_vContenido )
+SEntidadIdCod * SEntIdCodCrearExt ( unsigned long ulId, SCadena * p_cadCodigo, int iMaxTamCod, SPtr * p_ptrContenido )
 {
 	SEntidadIdCod * p_enticObj;
     SId *           p_idEntidad;
@@ -42,7 +63,7 @@ SEntidadIdCod * SEntIdCodCrearExt ( unsigned long ulId, SCadena * p_cadCodigo, i
 
     p_idEntidad = SIdCrear ( ulId );
     p_codEntidad = SCodCrearValorExt ( p_cadCodigo, iMaxTamCod );
-    p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_vContenido );
+    p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_enticObj ) )
     {
         SIdDestruir ( &p_idEntidad );
@@ -51,7 +72,7 @@ SEntidadIdCod * SEntIdCodCrearExt ( unsigned long ulId, SCadena * p_cadCodigo, i
     return ( p_enticObj );
 }
 
-SEntidadIdCod * SEntIdCodCrearLitExt ( unsigned long ulId, const char * p_cCodigo, int iMaxTamCod, void * p_vContenido )
+SEntidadIdCod * SEntIdCodCrearLitExt ( unsigned long ulId, const char * p_cCodigo, int iMaxTamCod, SPtr * p_ptrContenido )
 {
 	SEntidadIdCod * p_enticObj;
     SId *           p_idEntidad;
@@ -59,7 +80,7 @@ SEntidadIdCod * SEntIdCodCrearLitExt ( unsigned long ulId, const char * p_cCodig
 
     p_idEntidad = SIdCrear ( ulId );
     p_codEntidad = SCodCrearValorLitExt ( p_cCodigo, iMaxTamCod );
-    p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_vContenido );
+    p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_enticObj ) )
     {
         SIdDestruir ( &p_idEntidad );
@@ -70,10 +91,19 @@ SEntidadIdCod * SEntIdCodCrearLitExt ( unsigned long ulId, const char * p_cCodig
 
 SEntidadIdCod * SEntIdCodEncapsular ( SId * p_idEntidad, SCodigo * p_codEntidad )
 {
-	return ( SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, NULL ) );
+	SEntidadIdCod *	p_enticObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_ptrContenido );
+	if ( ES_NULO ( p_enticObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_enticObj );
 }
 
-SEntidadIdCod * SEntIdCodEncapsularExt ( SId * p_idEntidad, SCodigo * p_codEntidad, void * p_vContenido )
+SEntidadIdCod * SEntIdCodEncapsularExt ( SId * p_idEntidad, SCodigo * p_codEntidad, SPtr * p_ptrContenido )
 {
 	SEntidadIdCod *	p_enticObj;
 	
@@ -82,7 +112,7 @@ SEntidadIdCod * SEntIdCodEncapsularExt ( SId * p_idEntidad, SCodigo * p_codEntid
         p_enticObj = (SEntidadIdCod *) MemReservar ( sizeof ( SEntidadIdCod ) );
         if ( ES_VALIDO ( p_enticObj ) )
         {
-            p_enticObj->p_entInfo = SEntEncapsularExt ( p_idEntidad, p_vContenido );
+            p_enticObj->p_entInfo = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
             if ( ES_VALIDO ( p_enticObj->p_entInfo ) )
             {
                 p_enticObj->p_codEntidad = p_codEntidad;
@@ -100,10 +130,9 @@ SEntidadIdCod * SEntIdCodEncapsularExt ( SId * p_idEntidad, SCodigo * p_codEntid
 	return ( p_enticObj );
 }
 
-void * SEntIdCodDestruir ( SEntidadIdCod ** p_p_enticObj )
+void SEntIdCodDestruir ( SEntidadIdCod ** p_p_enticObj )
 {
 	SEntidadIdCod * p_enticObj;
-    void *          p_vRes;
 
 	if ( ES_VALIDO ( p_p_enticObj ) )
 	{
@@ -111,20 +140,11 @@ void * SEntIdCodDestruir ( SEntidadIdCod ** p_p_enticObj )
 
 		if ( ES_VALIDO ( p_enticObj ) )
 		{
-			p_vRes = SEntDestruir ( &(p_enticObj->p_entInfo) );
+			SEntDestruir ( &(p_enticObj->p_entInfo) );
             SCodDestruir ( &(p_enticObj->p_codEntidad) );
 			MemLiberar ( (void **) p_p_enticObj );
 		}
-        else
-        {
-            p_vRes = NULL;
-        }
 	}
-    else
-    {
-        p_vRes = NULL;
-    }
-	return ( p_vRes );
 }
 
 int SEntIdCodEsValida ( SEntidadIdCod * p_enticObj )
@@ -315,19 +335,49 @@ int SEntIdCodEstablecerValorId ( SEntidadIdCod * p_enticObj, unsigned long ulId 
 	return ( iRes );
 }
 
-void * SEntIdCodEstablecerContenido ( SEntidadIdCod * p_enticObj, void * p_vContenido )
+int SEntIdCodEstablecerContenido ( SEntidadIdCod * p_enticObj, void * p_vContenido )
 {
-	void * p_vRes;
+	int iRes;
 
 	if ( ES_VALIDO ( p_enticObj ) )
 	{
-        p_vRes = SEntEstablecerContenido ( p_enticObj->p_entInfo, p_vContenido );
+		iRes = SEntEstablecerContenido ( p_enticObj->p_entInfo, p_vContenido );
 	}
 	else
 	{
-		p_vRes = NULL;
+		iRes = 0;
 	}
-	return ( p_vRes );
+	return ( iRes );
+}
+
+int SEntIdCodEstablecerContenidoExt ( SEntidadIdCod * p_enticObj, void * p_vContenido, PRC_DESTRUCTOR fDestructor )
+{
+	int 	iRes;
+
+	if ( ES_VALIDO ( p_enticObj ) )
+	{
+        iRes = SEntEstablecerContenidoExt ( p_enticObj->p_entInfo, p_vContenido, fDestructor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SEntIdCodAsignarContenido ( SEntidadIdCod * p_enticObj, SPtr * p_ptrContenido )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_enticObj ) )
+	{
+		iRes = SEntAsignarContenido ( p_enticObj->p_entInfo, p_ptrContenido );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
 int SEntIdCodEstablecerCodigo ( SEntidadIdCod * p_enticObj, SCodigo * p_codEntidad )
@@ -857,4 +907,9 @@ unsigned int SEntIdCodHash ( SEntidadIdCod * p_enticObj )
 		uiRes = SEntHash ( p_enticObj->p_entInfo );
 	}
 	return ( uiRes );
+}
+
+SPtr * SEntIdCodPtr ( SEntidadIdCod * p_enticObj )
+{
+	return ( SPtrCrear ( p_enticObj, (PRC_DESTRUCTOR) SEntIdCodDestruir ) );
 }

@@ -1,6 +1,8 @@
 #ifndef _ORG_GJS_C_CC_SENTRADA_H
 #define _ORG_GJS_C_CC_SENTRADA_H
 
+#include <SPtr.h>
+
 
 
 
@@ -40,6 +42,8 @@ int SEtrEsMayor ( SEntrada * p_etrObj1, SEntrada * p_etrObj2 );
 int SEtrEsIgualLit ( SEntrada * p_etrObj, const char * p_cNombre );
 int SEtrEsMenorLit ( SEntrada * p_etrObj, const char * p_cNombre );
 int SEtrEsMayorLit ( SEntrada * p_etrObj, const char * p_cNombre );
+
+SPtr * SEtrPtr ( SEntrada * p_etrObj );
 
 
 

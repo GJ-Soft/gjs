@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SHora.c` (499 líneas) |
 | Prefijo      | `SHor`                                             |
 | Struct       | `SHora`                                            |
-| Funciones    | 31                                                 |
+| Funciones    | 32                                                 |
 | Incluido por | `Tiempo.h`                                         |
 | Test         | `SHoraTest.c` → `TestSHora()`                      |
 
@@ -34,7 +34,12 @@ hora/minuto/segundo.
 ### Ciclo de vida
 
 `SHorCrearDef`, `SHorCrear`, `SHorCrearLit`, `SHorDestruir`, `SHorEsValida`,
-`SHorTieneValor`.
+`SHorTieneValor`, `SHorPtr`.
+
+`SHorPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SHorDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 ### Acceso
 
@@ -78,6 +83,7 @@ SHorDestruir ( &p_horObj );
 - [Horas](Horas.md) — la capa de valores.
 - [TiempoSistema](TiempoSistema.md) — `SHorEstablecerValorDeAhora`.
 - [gjs-c-common-text](../../gjs-c-common-text/README.md) — las variantes `Lit`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SHorPtr`.
 
 ## Test
 

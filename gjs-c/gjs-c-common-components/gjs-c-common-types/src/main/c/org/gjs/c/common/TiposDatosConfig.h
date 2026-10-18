@@ -10,7 +10,7 @@
 
 
 
-#include <Tipos.h>
+#include <TiposBasicos.h>
 #include <Texto.h>
 #include <Tiempo.h>
 

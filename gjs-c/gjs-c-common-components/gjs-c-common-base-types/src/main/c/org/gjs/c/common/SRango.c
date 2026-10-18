@@ -162,3 +162,8 @@ int SRngEstaIncluido ( SRango * p_rngObj, int iVal )
 	return ( iRes );
 }
 
+
+SPtr * SRngPtr ( SRango * p_rngObj )
+{
+	return ( SPtrCrear ( p_rngObj, (PRC_DESTRUCTOR) SRngDestruir ) );
+}

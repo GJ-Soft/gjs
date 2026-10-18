@@ -19,12 +19,12 @@ Archetype to generate the basic structure of a maven extension.
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-maven-packaging-extension-archetype \
-							-DarchetypeVersion=1.0.0 
+							-DarchetypeVersion=1.1.0-SNAPSHOT 
 
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-maven-packaging-extension-archetype \
-							-DarchetypeVersion=1.0.0 \
+							-DarchetypeVersion=1.1.0-SNAPSHOT \
 							-DshortName=test -Dextension=tgz 
     
 	Archetype Parameters:

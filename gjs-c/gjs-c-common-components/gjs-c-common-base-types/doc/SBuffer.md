@@ -7,7 +7,7 @@
 | Prefijo      | `SBuf`                                  |
 | Struct       | `SBuffer`                               |
 | Funciones    | 17                                      |
-| Incluido por | `Tipos.h`                               |
+| Incluido por | `TiposBasicos.h`                        |
 | Test         | `SBufferTest.c` → `TestSBuffer()`       |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

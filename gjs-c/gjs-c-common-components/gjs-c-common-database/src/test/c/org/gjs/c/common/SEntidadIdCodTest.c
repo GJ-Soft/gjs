@@ -8,8 +8,10 @@
 static int TestSEntIdCodCrear01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
-	char cCarga [] = "carga";
 	printf( "Test SEntIdCodCrear 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
 
 	/* Por defecto: id 0, que todavia no es un identificador asignado. */
 	SEntidadIdCod * p_enticObj = SEntIdCodCrearDef ( COD_MAX_TAM_DEF );
@@ -65,23 +67,47 @@ static int TestSEntIdCodCrear01 ()
 	}
 	SEntIdCodDestruir ( &p_enticObj );
 
-	/* Destruir devuelve el contenido y anula el puntero. */
-	p_enticObj = SEntIdCodCrearLitExt ( 7, "COD002", COD_MAX_TAM_DEF, cCarga );
-	if ( ES_NULO ( p_enticObj ) )
+	/* Con contenido: la entidad se queda con el SPtr y lo destruye con ella. */
+	char * p_cCarga = CadDuplicar ( "carga" );
+	SPtr * p_ptrCarga = SPtrCrearDef ( p_cCarga );
+	p_enticObj = SEntIdCodCrearLitExt ( 7, "COD002", COD_MAX_TAM_DEF, p_ptrCarga );
+	if ( ES_VALIDO ( p_enticObj ) )
+	{
+		if ( SEntIdCodContenido ( p_enticObj ) != (void *) p_cCarga )
+		{
+			printf( "Error caso 7: se esperaba el contenido que se paso al crear\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
 	{
 		printf( "Error caso 0: no se pudo crear la entidad con contenido\n" );
 		iRes = BOOL_VAL_FALSO;
+		SPtrDestruir ( &p_ptrCarga );
 	}
-	if ( SEntIdCodDestruir ( &p_enticObj ) != (void *) cCarga )
-	{
-		printf( "Error caso 7: destruir deberia devolver el contenido\n" );
-		iRes = BOOL_VAL_FALSO;
-	}
+	SEntIdCodDestruir ( &p_enticObj );
 	if ( ES_VALIDO ( p_enticObj ) )
 	{
 		printf( "Error caso 8: se esperaba puntero nulo tras destruir\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
+
+	/* Sin SPtr de contenido no hay entidad; SEntIdCodCrearLitExt libera lo que habia creado. */
+	p_enticObj = SEntIdCodCrearLitExt ( 7, "COD002", COD_MAX_TAM_DEF, NULL );
+	if ( ES_VALIDO ( p_enticObj ) )
+	{
+		printf( "Error caso 9: crear con SPtr nulo deberia dar nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+		SEntIdCodDestruir ( &p_enticObj );
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	/* Destruir la entidad libera tambien el contenido. */
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 10: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
 	return ( iRes );
 }
 
@@ -299,22 +325,21 @@ static int TestSEntIdCodComparar01 ()
 
 
 
-/* SEntIdCodTieneContenido: 1 con contenido, 0 sin el y 0 con NULL. Destruir devuelve
-   el contenido sin liberarlo, asi que lo libera el test. */
+/* SEntIdCodTieneContenido: 1 con contenido, 0 sin el y 0 con NULL. Destruir libera
+   tambien el contenido. */
 static int TestSEntIdCodTieneContenido01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SEntIdCodTieneContenido 01:\n" );
 	void * p_vDato = MemReservar ( 16 );
 
-	SEntidadIdCod * p_enticObj = SEntIdCodEncapsularExt ( SIdCrear ( 9 ), SCodCrearValorLitExt ( "COD001", COD_MAX_TAM_DEF ), p_vDato );
+	SEntidadIdCod * p_enticObj = SEntIdCodEncapsularExt ( SIdCrear ( 9 ), SCodCrearValorLitExt ( "COD001", COD_MAX_TAM_DEF ), SPtrCrearDef ( p_vDato ) );
 	if ( SEntIdCodTieneContenido ( p_enticObj ) != 1 )
 	{
 		printf( "Error caso 1: con contenido se esperaba 1\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
-	void * p_vDevuelto = SEntIdCodDestruir ( &p_enticObj );
-	MemLiberar ( &p_vDevuelto );
+	SEntIdCodDestruir ( &p_enticObj );
 
 	p_enticObj = SEntIdCodEncapsular ( SIdCrear ( 9 ), SCodCrearValorLitExt ( "COD001", COD_MAX_TAM_DEF ) );
 	if ( SEntIdCodTieneContenido ( p_enticObj ) != 0 )
@@ -332,6 +357,281 @@ static int TestSEntIdCodTieneContenido01 ()
 	return ( iRes );
 }
 
+/* SEntIdCodAsignarContenido cambia el SPtr entero: destruye el anterior y se queda
+   con el nuevo. Con el mismo SPtr que ya tiene no hace nada. */
+static int TestSEntIdCodAsignarContenido01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SEntIdCodAsignarContenido 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SEntidadIdCod * p_enticObj = SEntIdCodCrearLit ( 3, "COD001", COD_MAX_TAM_DEF );
+	if ( ES_VALIDO ( p_enticObj ) )
+	{
+		char * p_cUno = CadDuplicar ( "uno" );
+		SPtr * p_ptrUno = SPtrCrearDef ( p_cUno );
+		if ( SEntIdCodAsignarContenido ( p_enticObj, p_ptrUno ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba 1 al asignar el contenido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SEntIdCodContenido ( p_enticObj ) != (void *) p_cUno )
+		{
+			printf( "Error caso 2: se esperaba el contenido asignado\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SEntIdCodAsignarContenido ( p_enticObj, p_ptrUno ) != 1 )
+		{
+			printf( "Error caso 3: se esperaba 1 al asignar el mismo SPtr\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SEntIdCodContenido ( p_enticObj ) != (void *) p_cUno )
+		{
+			printf( "Error caso 4: asignar el mismo SPtr no deberia destruirlo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		char * p_cDos = CadDuplicar ( "dos" );
+		if ( SEntIdCodAsignarContenido ( p_enticObj, SPtrCrearDef ( p_cDos ) ) != 1 )
+		{
+			printf( "Error caso 5: se esperaba 1 al asignar otro SPtr\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SEntIdCodContenido ( p_enticObj ) != (void *) p_cDos )
+		{
+			printf( "Error caso 6: se esperaba el contenido del SPtr nuevo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Sin SPtr no se cambia nada. */
+		if ( SEntIdCodAsignarContenido ( p_enticObj, NULL ) != 0 )
+		{
+			printf( "Error caso 7: asignar un SPtr nulo deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SEntIdCodContenido ( p_enticObj ) != (void *) p_cDos )
+		{
+			printf( "Error caso 8: tras fallar deberia conservar el contenido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la entidad\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SEntIdCodDestruir ( &p_enticObj );
+
+	/* Sobre una entidad nula falla, y el SPtr sigue siendo del llamante. */
+	SPtr * p_ptrSuelto = SPtrCrearDef ( NULL );
+	if ( SEntIdCodAsignarContenido ( NULL, p_ptrSuelto ) != 0 )
+	{
+		printf( "Error caso 9: asignar en una entidad nula deberia fallar\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SPtrDestruir ( &p_ptrSuelto );
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 10: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	return ( iRes );
+}
+
+/* SEntIdCodPtr envuelve la entidad en un SPtr con SEntIdCodDestruir como destructor: al
+   destruir el SPtr se libera la entidad y, con ella, su contenido. Con
+   MODO_DEPURACION se comprueba que no queda memoria reservada. */
+/* Destructor de prueba: cuenta las llamadas y libera como el de por defecto. */
+static int iNumDestrucciones = 0;
+
+static void DestructorContador ( void ** p_p_vObj )
+{
+	iNumDestrucciones = iNumDestrucciones + 1;
+	MemLiberar ( p_p_vObj );
+}
+
+static int TestSEntIdCodEstablecerContenidoExt01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SEntIdCodEstablecerContenidoExt 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	iNumDestrucciones = 0;
+	SEntidadIdCod * p_enticObj = SEntIdCodCrearLit ( 3, "COD001", COD_MAX_TAM_DEF );
+	if ( ES_VALIDO ( p_enticObj ) )
+	{
+		char * p_cUno = CadDuplicar ( "uno" );
+		if ( SEntIdCodEstablecerContenidoExt ( p_enticObj, p_cUno, DestructorContador ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba 1 al establecer con destructor\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SEntIdCodContenido ( p_enticObj ) != (void *) p_cUno )
+		{
+			printf( "Error caso 2: se esperaba el contenido establecido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Con el mismo objeto solo cambia el destructor: no se destruye. */
+		if ( SEntIdCodEstablecerContenidoExt ( p_enticObj, p_cUno, DestructorContador ) != 1 )
+		{
+			printf( "Error caso 3: se esperaba 1 al establecer el mismo objeto\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( iNumDestrucciones != 0 )
+		{
+			printf( "Error caso 4: el mismo objeto no deberia destruirse: %d\n", iNumDestrucciones );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SEntIdCodContenido ( p_enticObj ) != (void *) p_cUno )
+		{
+			printf( "Error caso 5: se esperaba conservar el mismo contenido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Sin destructor falla, tambien con el mismo objeto. */
+		if ( SEntIdCodEstablecerContenidoExt ( p_enticObj, p_cUno, NULL ) != 0 )
+		{
+			printf( "Error caso 6: sin destructor deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		char * p_cTres = CadDuplicar ( "tres" );
+		if ( SEntIdCodEstablecerContenidoExt ( p_enticObj, p_cTres, NULL ) != 0 )
+		{
+			printf( "Error caso 7: sin destructor deberia fallar con otro objeto\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SEntIdCodContenido ( p_enticObj ) != (void *) p_cUno )
+		{
+			printf( "Error caso 8: tras fallar deberia conservar el contenido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		MemLiberar ( (void **) &p_cTres );
+		/* Establecer sin Ext usa el destructor fijado con Ext. */
+		char * p_cDos = CadDuplicar ( "dos" );
+		if ( SEntIdCodEstablecerContenido ( p_enticObj, p_cDos ) != 1 )
+		{
+			printf( "Error caso 9: se esperaba 1 al establecer otro contenido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( iNumDestrucciones != 1 )
+		{
+			printf( "Error caso 10: se esperaba 1 llamada al destructor: %d\n", iNumDestrucciones );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la entidad\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SEntIdCodDestruir ( &p_enticObj );
+	if ( iNumDestrucciones != 2 )
+	{
+		printf( "Error caso 11: destruir la entidad deberia usar su destructor: %d\n", iNumDestrucciones );
+		iRes = BOOL_VAL_FALSO;
+	}
+
+	/* Sobre una entidad nula falla, y el objeto sigue siendo del llamante. */
+	char * p_cSuelto = CadDuplicar ( "suelto" );
+	if ( SEntIdCodEstablecerContenidoExt ( NULL, p_cSuelto, DestructorContador ) != 0 )
+	{
+		printf( "Error caso 12: establecer en una entidad nula deberia fallar\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	MemLiberar ( (void **) &p_cSuelto );
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 13: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+static int TestSEntIdCodPtr01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SEntIdCodPtr 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SEntidadIdCod * p_enticObj = SEntIdCodCrearLit ( 3, "COD001", COD_MAX_TAM_DEF );
+	SEntIdCodEstablecerContenido ( p_enticObj, CadDuplicar ( "carga" ) );
+	SPtr * p_ptrObj = SEntIdCodPtr ( p_enticObj );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al crear el SPtr\n" );
+		iRes = BOOL_VAL_FALSO;
+		SEntIdCodDestruir ( &p_enticObj );
+	}
+	else
+	{
+		if ( SPtrEsValido ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: el SPtr deberia ser valido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SPtrObjeto ( p_ptrObj ) != p_enticObj )
+		{
+			printf( "Error caso 3: el SPtr deberia envolver la misma SEntidadIdCod\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* La SEntidadIdCod pasa a ser del SPtr: se libera con el, no por separado. */
+		SPtrDestruir ( &p_ptrObj );
+		if ( ES_VALIDO ( p_ptrObj ) )
+		{
+			printf( "Error caso 4: se esperaba puntero nulo tras destruir\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 5: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	return ( iRes );
+}
+
+/* Con objeto nulo, SEntIdCodPtr da un SPtr vacio: hay que destruirlo igualmente.
+   Con MODO_DEPURACION se comprueba que no queda memoria reservada. */
+static int TestSEntIdCodPtrNulo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SEntIdCodPtrNulo 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SPtr * p_ptrObj = SEntIdCodPtr ( NULL );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: con objeto nulo se esperaba un SPtr vacio, no nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( SPtrEstaVacio ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: con objeto nulo el SPtr deberia estar vacio\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SPtrDestruir ( &p_ptrObj );
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 3: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	ErrLimpiar ();
+	return ( iRes );
+}
+
 int TestSEntidadIdCod ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -341,7 +641,11 @@ int TestSEntidadIdCod ()
 			( TestSEntIdCodCodigoObligatorio01 () == BOOL_VAL_CIERTO ) &&
 			( TestSEntIdCodEstablecer01 () == BOOL_VAL_CIERTO ) &&
 			( TestSEntIdCodIdentidad01 () == BOOL_VAL_CIERTO ) &&
-			( TestSEntIdCodComparar01 () == BOOL_VAL_CIERTO ) )
+			( TestSEntIdCodComparar01 () == BOOL_VAL_CIERTO ) &&
+			( TestSEntIdCodAsignarContenido01 () == BOOL_VAL_CIERTO ) &&
+			( TestSEntIdCodEstablecerContenidoExt01 () == BOOL_VAL_CIERTO ) &&
+			( TestSEntIdCodPtr01 () == BOOL_VAL_CIERTO ) &&
+			( TestSEntIdCodPtrNulo01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

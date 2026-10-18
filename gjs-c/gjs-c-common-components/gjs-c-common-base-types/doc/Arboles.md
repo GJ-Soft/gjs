@@ -5,7 +5,7 @@
 | Módulos       | 7 implementados + `SArbolB` sin portar                                                                                                |
 | Cabeceras     | `SArbol.h`, `SArbolPtr.h`, `SArbolBin.h`, `SArbolBinPtr.h`, `SArbolEnteros.h`, `SArbolBinEnteros.h`, `SArbolLiterales.h`, `SArbolB.h` |
 | Prefijos      | `SArb`, `SArbPtr`, `SArbBin`, `SArbBinPtr`, `SArbEnt`, `SArbBinEnt`, `SArbLit`                                                        |
-| Incluidos por | `Tipos.h`, **salvo `SArbolB.h`**                                                                                                      |
+| Incluidos por | `TiposBasicos.h`, **salvo `SArbolB.h`**                                                                                                      |
 | Tests         | Uno por módulo, **salvo `SArbolB`**                                                                                                   |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)
@@ -119,7 +119,7 @@ de un bloque de comentario, precedido de un `// TODO:`. Lo que hay comentado son
 anterior (`mt_rc_libs_arbol_b_param.h`, `mt_rc_libs_arbol_b_almacen_hojas.h`),
 que no existen en este repositorio.
 
-`SArbolB.c` está en el mismo estado. No está en la fachada `Tipos.h` y no tiene
+`SArbolB.c` está en el mismo estado. No está en la fachada `TiposBasicos.h` y no tiene
 test. **No es un módulo utilizable**: es un port pendiente.
 
 ## Dependencias
@@ -134,22 +134,6 @@ test. **No es un módulo utilizable**: es un port pendiente.
 `SArbolB` no tiene.
 
 ## Observaciones
-
-> **El guard de `SArbolBin.h` está roto.** Las dos primeras líneas no coinciden:
->
-> ```c
-> #ifndef _ORG_GJS_C_CC_C_COMMON_SARBOLBIN_H
-> #define _SARBOLBIN_H
-> ```
->
-> El `#ifndef` pregunta por un nombre y el `#define` define otro, así que **el
-> guard no protege nada**: si la cabecera se incluye dos veces, se expande dos
-> veces y todo lo que declara queda duplicado. Comprobado con el `gcc` del
-> proyecto: *`error: conflicting types for 'SArbolBin'`*, `SArbBinCrear`,
-> `SArbBinDestruir` y siguientes.
->
-> Es el único fichero del módulo con esa discrepancia. Basta con corregir el
-> `#define` para que use el mismo nombre.
 
 - La familia **no tiene variantes `Literales` binarias** ni `EnterosLargos`:
   las combinaciones disponibles son las siete de la tabla y no más.

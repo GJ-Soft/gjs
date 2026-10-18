@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SCadenaNumerica.c`   |
 | Prefijo      | `SCadn`                                           |
 | Struct       | `SCadenaNumerica`                                 |
-| Funciones    | 13                                                |
+| Funciones    | 14                                                |
 | Incluido por | `Texto.h`                                         |
 | Test         | `SCadenaNumericaTest.c` → `TestSCadenaNumerica()` |
 
@@ -34,6 +34,12 @@ conversión, añadiendo el control de presentación.
 | `SCadenaNumerica * SCadnCrearValor ( int iTam, int iVal )` | Con anchura y valor inicial.                           |
 | `SCadenaNumerica * SCadnDuplicar ( SCadenaNumerica * )`    | Copia independiente.                                   |
 | `void SCadnDestruir ( SCadenaNumerica ** )`                | Destruye y anula el puntero.                           |
+| `SPtr * SCadnPtr ( SCadenaNumerica * )`                    | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
+
+`SCadnPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SCadnDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 ### Valor
 
@@ -69,6 +75,7 @@ Para leer el texto formateado hay que bajar a la cadena interna con
 ## Dependencias
 
 - [SCadenaConv](SCadenaConv.md) — almacenamiento y conversión.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SCadnPtr`.
 
 ## Test
 

@@ -469,3 +469,8 @@ unsigned int SMsjHash ( SMensaje * p_msjObj )
 }
 
 
+
+SPtr * SMsjPtr ( SMensaje * p_msjObj )
+{
+	return ( SPtrCrear ( p_msjObj, (PRC_DESTRUCTOR) SMsjDestruir ) );
+}

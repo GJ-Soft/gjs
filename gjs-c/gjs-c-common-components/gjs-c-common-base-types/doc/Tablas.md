@@ -5,7 +5,7 @@
 | Módulos       | 4                                                                 |
 | Cabeceras     | `STabla.h`, `STablaPtr.h`, `STablaEnteros.h`, `STablaLiterales.h` |
 | Prefijos      | `STab`, `STabp`, `STabEnt`, `STabLit`                             |
-| Incluidos por | `Tipos.h`                                                         |
+| Incluidos por | `TiposBasicos.h`                                                  |
 | Tests         | Uno por módulo                                                    |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

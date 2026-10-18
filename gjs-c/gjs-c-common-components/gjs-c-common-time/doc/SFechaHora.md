@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SFechaHora.c` (769 líneas) |
 | Prefijo      | `SFecHor`                                               |
 | Struct       | `SFechaHora`                                            |
-| Funciones    | 48                                                      |
+| Funciones    | 49                                                      |
 | Incluido por | `Tiempo.h`                                              |
 | Test         | `SFechaHoraTest.c` → `TestSFechaHora()`                 |
 
@@ -42,8 +42,14 @@ la hora por separado.
 | `SFechaHora * SFecHorCrearFechaHora ( … )` | Desde `SFecha` y [SHora](SHora.md). |
 | `SFechaHora * SFecHorCrearFecHor ( … )`    | Desde otro `SFechaHora`.            |
 | `void SFecHorDestruir ( SFechaHora ** )`   | Destruye y anula el puntero.        |
+| `SPtr * SFecHorPtr ( SFechaHora * )`       | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
 | `int SFecHorEsValida ( SFechaHora * )`     | 1 si es utilizable.                 |
 | `int SFecHorTieneValor ( SFechaHora * )`   | 1 si tiene instante asignado.       |
+
+`SFecHorPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SFecHorDestruir`, y no por separado. Con objeto
+nulo devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y
+el objeto sigue siendo del llamante.
 
 Seis constructores: es el objeto con más formas de crearse de la librería,
 porque puede componerse desde cualquiera de las piezas.
@@ -96,6 +102,7 @@ SFecHorDestruir ( &p_fhObj );
 - [TiempoNumerico](TiempoNumerico.md) — la representación combinada.
 - [SFecha](SFecha.md) y [SHora](SHora.md) — construcción y comparación.
 - [TiempoSistema](TiempoSistema.md) — `SFecHorEstablecerValorDeAhora`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SFecHorPtr`.
 
 ## Test
 

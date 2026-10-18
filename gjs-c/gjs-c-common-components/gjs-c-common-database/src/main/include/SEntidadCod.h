@@ -3,13 +3,13 @@
 
 
 #include <SCodigo.h>
-
+#include <SPtr.h>
 
 
 typedef struct
 {
 	SCodigo	*	p_codEntidad;
-    void *      p_vContenido;
+    SPtr *      p_ptrContenido;
 
 } SEntidadCod;
 
@@ -18,12 +18,12 @@ typedef struct
 SEntidadCod * SEntCodCrearDef ( int iMaxTam );
 SEntidadCod * SEntCodCrear ( SCadena * p_cadValor, int iMaxTam );
 SEntidadCod * SEntCodCrearLit ( const char * p_cValor, int iMaxTam );
-SEntidadCod * SEntCodCrearExt ( SCadena * p_cadValor, int iMaxTam, void * p_vContenido );
-SEntidadCod * SEntCodCrearLitExt ( const char * p_cValor, int iMaxTam, void * p_vContenido );
+SEntidadCod * SEntCodCrearExt ( SCadena * p_cadValor, int iMaxTam, SPtr * p_ptrContenido );
+SEntidadCod * SEntCodCrearLitExt ( const char * p_cValor, int iMaxTam, SPtr * p_ptrContenido );
 SEntidadCod * SEntCodEncapsular ( SCodigo * p_codEntidad );
-SEntidadCod * SEntCodEncapsularExt ( SCodigo * p_codEntidad, void * p_vContenido );
+SEntidadCod * SEntCodEncapsularExt ( SCodigo * p_codEntidad, SPtr * p_ptrContenido );
 
-void * SEntCodDestruir ( SEntidadCod ** p_p_entcObj );
+void SEntCodDestruir ( SEntidadCod ** p_p_entcObj );
 
 int SEntCodEsValida ( SEntidadCod * p_entcObj );
 int SEntCodTieneContenido ( SEntidadCod * p_entcObj );
@@ -36,7 +36,9 @@ void * SEntCodContenido ( SEntidadCod * p_entcObj );
 int SEntCodEstablecerCodigo ( SEntidadCod * p_entcObj, SCodigo * p_codEntidad );
 int SEntCodEstablecerValorCodigo ( SEntidadCod * p_entcObj, SCadena * p_cadValor );
 int SEntCodEstablecerValorCodigoLit ( SEntidadCod * p_entcObj, const char * p_cValor );
-void * SEntCodEstablecerContenido ( SEntidadCod * p_entcObj, void * p_vContenido );
+int SEntCodEstablecerContenido ( SEntidadCod * p_entcObj, void * p_vContenido );
+int SEntCodEstablecerContenidoExt ( SEntidadCod * p_entcObj, void * p_vContenido, PRC_DESTRUCTOR fDestructor );
+int SEntCodAsignarContenido ( SEntidadCod * p_entcObj, SPtr * p_ptrContenido );
 
 int SEntCodEsIgual ( SEntidadCod * p_entcObj, SEntidadCod * p_entcVal );
 int SEntCodEsMenor ( SEntidadCod * p_entcObj, SEntidadCod * p_entcVal );
@@ -68,6 +70,8 @@ int SEntCodCompararCad ( SEntidadCod * p_entcObj, SCadena * p_cadVal );
 int SEntCodCompararLit ( SEntidadCod * p_entcObj, const char * p_cVal );
 
 unsigned int SEntCodHash ( SEntidadCod * p_entcObj );
+
+SPtr * SEntCodPtr ( SEntidadCod * p_entcObj );
 
 
 #endif

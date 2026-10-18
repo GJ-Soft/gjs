@@ -7,7 +7,7 @@
 | Prefijo      | `SCon`                                     |
 | Struct       | `SContenido`                               |
 | Funciones    | 26                                         |
-| Incluido por | `Tipos.h`                                  |
+| Incluido por | `TiposBasicos.h`                           |
 | Test         | `SContenidoTest.c` → `TestSContenido()`    |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

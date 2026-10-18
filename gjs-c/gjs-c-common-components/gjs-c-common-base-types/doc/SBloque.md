@@ -7,7 +7,7 @@
 | Prefijo      | `SBlq`                                  |
 | Struct       | `SBloque`                               |
 | Funciones    | 52                                      |
-| Incluido por | `Tipos.h`                               |
+| Incluido por | `TiposBasicos.h`                        |
 | Test         | `SBloqueTest.c` → `TestSBloque()`       |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

@@ -17,7 +17,7 @@ C++ a C: muchos ficheros `.c` conservan en su cabecera el nombre original `.cpp`
 | ------------ | ----------------------------- |
 | `groupId`    | `org.gjsoft.c.common`            |
 | `artifactId` | `gjs-c-common-base`           |
-| `version`    | `1.0.0`                  |
+| `version`    | `1.1.0-SNAPSHOT`         |
 | `packaging`  | `nar` (biblioteca **shared**) |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`  |
 
@@ -38,10 +38,10 @@ gjs-c-common-base
 │   └── <Modulo>.md               ← un documento por módulo
 └── src
     ├── main
-    │   ├── include/              ← 32 cabeceras (API pública)
-    │   └── c/org/gjs/c/common/   ← 23 fuentes
+    │   ├── include/              ← 33 cabeceras (API pública)
+    │   └── c/org/gjs/c/common/   ← 24 fuentes
     └── test
-        └── c/org/gjs/c/common/   ← Test.c (main) + 21 ficheros *Test.c
+        └── c/org/gjs/c/common/   ← Test.c (main) + 22 ficheros *Test.c
 ```
 
 ---
@@ -93,7 +93,7 @@ int main ( void )
 
 Cada módulo usa un **prefijo** propio en todos sus símbolos públicos
 (`Cad`, `Mem`, `Err`, `Conv`, `Tip`, `Bool`, `Hex`, `Num`, `Bytes`, `ASCII`,
-`Hash`, `Vers`, `Frm`, `SConv`, `Nib`, `Byte`, `Word`, `DWord`, `By`/`By2`/`By4`).
+`Hash`, `Vers`, `Validar`, `Frm`, `SConv`, `Nib`, `Byte`, `Word`, `DWord`, `By`/`By2`/`By4`).
 Las constantes y macros van en mayúsculas con el prefijo del módulo
 (`ERR_`, `TIP_`, `BOOL_`, `ASCII_`, `BMP_`, `ANSI_`…).
 
@@ -171,7 +171,7 @@ detalle en [`doc/MODULOS.md`](doc/MODULOS.md#cabeceras-de-configuración).
 
 Las pruebas son un ejecutable propio, no un framework externo. `src/test/c/.../Test.c`
 contiene el `main`, un array de nombres y otro de punteros a función
-(`PFUNINTV`), y ejecuta los **21** casos registrados:
+(`PFUNINTV`), y ejecuta los **22** casos registrados:
 
 ```
 Test.exe             # ejecuta todos los tests
@@ -211,8 +211,8 @@ observaciones) está en documentos independientes, orquestados desde:
 
 ## Estado y limitaciones conocidas
 
-- Este módulo compila y pasa los tests en los **dos** modos de Cygwin, y sus 23
-  fuentes y 22 ficheros de test no producen ningún aviso con `-Wall`. La
+- Este módulo compila y pasa los tests en los **dos** modos de Cygwin, y sus 24
+  fuentes y 23 ficheros de test no producen ningún aviso con `-Wall`. La
   advertencia sobre ramas `#if defined ( POSIX )` sin terminar sigue vigente para
   el resto del stack C, no para `gjs-c-common-base`.
 - `unichar` es `unsigned short`: UTF-16 **sin pares suplentes**, no representa

@@ -2,7 +2,7 @@
 
 // TODO
 
-#define NUM_TESTS        71
+#define NUM_TESTS        72
 
 extern int TestSId ();
 extern int TestSBloque ();
@@ -75,6 +75,7 @@ extern int TestSElementoPtr ();
 extern int TestSPilaLiterales ();
 extern int TestSSecuenciaLiterales ();
 extern int TestSListaEnterosLargosSinSigno ();
+extern int TestSPtr ();
 
 char ** testArrayInit ()
 {
@@ -150,6 +151,7 @@ char ** testArrayInit ()
     p_p_cTests [ 68 ] = CadDuplicar ( "SPilaLiterales" );
     p_p_cTests [ 69 ] = CadDuplicar ( "SSecuenciaLiterales" );
     p_p_cTests [ 70 ] = CadDuplicar ( "SListaEnterosLargosSinSigno" );
+    p_p_cTests [ 71 ] = CadDuplicar ( "SPtr" );
     return p_p_cTests;
 }
 
@@ -227,6 +229,7 @@ PFUNINTV * functionArrayInit ()
     p_fTests [ 68 ] = TestSPilaLiterales;
     p_fTests [ 69 ] = TestSSecuenciaLiterales;
     p_fTests [ 70 ] = TestSListaEnterosLargosSinSigno;
+    p_fTests [ 71 ] = TestSPtr;
     return p_fTests;
 }
 

@@ -2,7 +2,7 @@
 
 | Dato      | Valor                                                                                                          |
 | --------- | -------------------------------------------------------------------------------------------------------------- |
-| Cabeceras | `Precompilacion.h` (148), `BaseConfig.h` (66), `Funciones.h` (247), `Prototipos.h` (31), `TerminalANSI.h` (53) |
+| Cabeceras | `Precompilacion.h` (148), `BaseConfig.h` (59), `Funciones.h` (284), `Prototipos.h` (31), `TerminalANSI.h` (53) |
 | Fuente    | **Ninguno**                                                                                                    |
 | Espacios  | `org::gjs::cpp::common` y `…::ansi`                                                                            |
 | Test      | **Ninguno**                                                                                                    |
@@ -57,8 +57,14 @@ Dos catálogos de punteros a función:
 
 | Cabecera       | Estilo                                 | Ejemplos                                                                    |
 | -------------- | -------------------------------------- | --------------------------------------------------------------------------- |
-| `Funciones.h`  | 142 typedefs, nomenclatura del stack C | `PPRCV`, `PPRCI`, `PPRCL`, `PPRCF`, `PPRCUI`                                |
+| `Funciones.h`  | 170 typedefs, nomenclatura del stack C | `PPRCV`, `PPRCI`, `PPRCL`, `PPRCF`, `PPRCUI`                                |
 | `Prototipos.h` | 4 typedefs, nomenclatura C++           | `PROCEDIMIENTO`, `FUNCION_BOOL`, `PROCEDIMIENTO_1CAD`, `PROCEDIMIENTO_1ENT` |
+
+Los nombres son los del stack C, y cambian con él: `long long` es `Q` y
+`unsigned long long` es `UQ` (`PFUNINTQ`, `PPRCUQ`…; hasta el 2026-10-18, `LL`
+y `ULL`), y `PFUNINTLL` es ahora `int (*)(long, long)`, de la familia de dos
+argumentos iguales (`PFUNINTSS`, `PFUNINTQQ`, `PFUNINTUIUI`…). Ver
+[Funciones.h](../../gjs-c-common-base/doc/MODULOS.md#funcionesh) en el stack C.
 
 ## `TerminalANSI.h`
 
@@ -79,7 +85,7 @@ evita que `ROJO` o `AZUL` choquen con nada.
 
 > **`Funciones.h` y `Prototipos.h` son dos catálogos para lo mismo.**
 > `PROCEDIMIENTO` y `PPRCV` son ambos `void (*)()`; `FUNCION_BOOL` es
-> `bool (*)()` y `PPRCV` su equivalente sin retorno. El primero trae 142
+> `bool (*)()` y `PPRCV` su equivalente sin retorno. El primero trae 170
 > typedefs con la nomenclatura del stack C —`PPRC` más las iniciales del tipo—;
 > el segundo, cuatro con nombres legibles.
 >
@@ -87,12 +93,12 @@ evita que `ROJO` o `AZUL` choquen con nada.
 > familias a la vista y ninguna indicación de cuál usar. En la práctica el stack
 > C++ usa `FUNCION_BOOL` —el marco de pruebas de
 > [gjs-cpp-common-io](../../gjs-cpp-common-io/README.md) declara con él sus
-> tablas de tests— y las 142 de `Funciones.h` son herencia directa del stack C.
+> tablas de tests— y las 170 de `Funciones.h` son herencia directa del stack C.
 >
 > Y hay un tercer sitio: `SIGNAL_HANDLER`, declarado en
 > [Sistema.h](Sistema.md).
 
-- **142 typedefs de puntero a función en un componente C++** es difícil de
+- **170 typedefs de puntero a función en un componente C++** es difícil de
   justificar teniendo `std::function` y las plantillas variádicas. El stack C
   los necesitaba; aquí sobreviven porque el código se tradujo, no se rediseñó.
 - **`ERR_MSJ_OK` lleva tilde** —`"No se ha producido ningún error."`— y es el

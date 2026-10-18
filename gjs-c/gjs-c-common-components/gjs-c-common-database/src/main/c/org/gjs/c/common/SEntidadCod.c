@@ -8,12 +8,15 @@
 SEntidadCod * SEntCodCrearDef ( int iMaxTam )
 {
 	SEntidadCod *  p_entcObj;
+    SPtr *         p_ptrContenido;
     SCodigo *      p_codEntidad;
 
     p_codEntidad = SCodCrear ( iMaxTam );
-    p_entcObj = SEntCodEncapsularExt ( p_codEntidad, NULL );
+    p_ptrContenido = SPtrCrearDef ( NULL );
+    p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entcObj ) )
     {
+        SPtrDestruir ( &p_ptrContenido );
         SCodDestruir ( &p_codEntidad );
     }
     return ( p_entcObj );
@@ -21,21 +24,39 @@ SEntidadCod * SEntCodCrearDef ( int iMaxTam )
 
 SEntidadCod * SEntCodCrear ( SCadena * p_cadValor, int iMaxTam )
 {
-	return ( SEntCodCrearExt ( p_cadValor, iMaxTam, NULL ) );
+	SEntidadCod *	p_entcObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_entcObj = SEntCodCrearExt ( p_cadValor, iMaxTam, p_ptrContenido );
+	if ( ES_NULO ( p_entcObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_entcObj );
 }
 
 SEntidadCod * SEntCodCrearLit ( const char * p_cValor, int iMaxTam )
 {
-	return ( SEntCodCrearLitExt ( p_cValor, iMaxTam, NULL ) );
+	SEntidadCod *	p_entcObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_entcObj = SEntCodCrearLitExt ( p_cValor, iMaxTam, p_ptrContenido );
+	if ( ES_NULO ( p_entcObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_entcObj );
 }
 
-SEntidadCod * SEntCodCrearExt ( SCadena * p_cadValor, int iMaxTam, void * p_vContenido )
+SEntidadCod * SEntCodCrearExt ( SCadena * p_cadValor, int iMaxTam, SPtr * p_ptrContenido )
 {
 	SEntidadCod *  p_entcObj;
     SCodigo *      p_codEntidad;
 
     p_codEntidad = SCodCrearValorExt ( p_cadValor, iMaxTam );
-    p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_vContenido );
+    p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entcObj ) )
     {
         SCodDestruir ( &p_codEntidad );
@@ -43,13 +64,13 @@ SEntidadCod * SEntCodCrearExt ( SCadena * p_cadValor, int iMaxTam, void * p_vCon
     return ( p_entcObj );
 }
 
-SEntidadCod * SEntCodCrearLitExt ( const char * p_cValor, int iMaxTam, void * p_vContenido )
+SEntidadCod * SEntCodCrearLitExt ( const char * p_cValor, int iMaxTam, SPtr * p_ptrContenido )
 {
 	SEntidadCod *  p_entcObj;
     SCodigo *      p_codEntidad;
 
     p_codEntidad = SCodCrearValorLitExt ( p_cValor, iMaxTam );
-    p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_vContenido );
+    p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entcObj ) )
     {
         SCodDestruir ( &p_codEntidad );
@@ -59,33 +80,42 @@ SEntidadCod * SEntCodCrearLitExt ( const char * p_cValor, int iMaxTam, void * p_
 
 SEntidadCod * SEntCodEncapsular ( SCodigo * p_codEntidad )
 {
-	return ( SEntCodEncapsularExt ( p_codEntidad, NULL ) );
+	SEntidadCod *	p_entcObj;
+	SPtr *	p_ptrContenido;
+
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_ptrContenido );
+	if ( ES_NULO ( p_entcObj ) )
+	{
+		SPtrDestruir ( &p_ptrContenido );
+	}
+	return ( p_entcObj );
 }
 
-SEntidadCod * SEntCodEncapsularExt ( SCodigo * p_codEntidad, void * p_vContenido )
+SEntidadCod * SEntCodEncapsularExt ( SCodigo * p_codEntidad, SPtr * p_ptrContenido )
 {
 	SEntidadCod *	p_entcObj;
 	
+    p_entcObj = NULL;
     if ( ES_VALIDO ( p_codEntidad ) )
     {
-        p_entcObj= (SEntidadCod *) MemReservar ( sizeof ( SEntidadCod ) );
-        if ( ES_VALIDO ( p_entcObj ) )
+        /* El contenido siempre es un SPtr, aunque este vacio: SPtrCrearDef ( NULL ). */
+        if ( ES_VALIDO ( p_ptrContenido ) )
         {
-            p_entcObj->p_codEntidad = p_codEntidad;
-            p_entcObj->p_vContenido = p_vContenido;
+            p_entcObj= (SEntidadCod *) MemReservar ( sizeof ( SEntidadCod ) );
+            if ( ES_VALIDO ( p_entcObj ) )
+            {
+                p_entcObj->p_codEntidad = p_codEntidad;
+                p_entcObj->p_ptrContenido = p_ptrContenido;
+            }
         }
-    }
-    else
-    {
-        p_entcObj = NULL;
     }
 	return ( p_entcObj );
 }
 
-void * SEntCodDestruir ( SEntidadCod ** p_p_entcObj )
+void SEntCodDestruir ( SEntidadCod ** p_p_entcObj )
 {
 	SEntidadCod *   p_entcObj;
-    void *          p_vRes;
 
 	if ( ES_VALIDO ( p_p_entcObj ) )
 	{
@@ -93,20 +123,11 @@ void * SEntCodDestruir ( SEntidadCod ** p_p_entcObj )
 
 		if ( ES_VALIDO ( p_entcObj ) )
 		{
-			p_vRes = p_entcObj->p_vContenido;
+			SPtrDestruir ( &(p_entcObj->p_ptrContenido) );
             SCodDestruir ( &(p_entcObj->p_codEntidad) );
 			MemLiberar ( (void **) p_p_entcObj );
 		}
-        else
-        {
-            p_vRes = NULL;
-        }
 	}
-    else
-    {
-        p_vRes = NULL;
-    }
-    return ( p_vRes );
 }
 
 int SEntCodEsValida ( SEntidadCod * p_entcObj )
@@ -115,12 +136,20 @@ int SEntCodEsValida ( SEntidadCod * p_entcObj )
 
 	if ( ES_VALIDO ( p_entcObj ) )
 	{
-		/* Solo el identificador. El contenido es opcional a proposito ( para eso
-		   estan SEntCodCrear y SEntCodCrearExt ), asi que exigirlo aqui haria
-		   invalida a toda entidad creada sin el. */
+		/* El identificador y que haya SPtr de contenido. El SPtr puede estar
+		   vacio: el contenido es opcional a proposito ( para eso estan
+		   SEntCodCrear y SEntCodCrearExt ), asi que exigirlo haria invalida a
+		   toda entidad creada sin el. */
 		if ( SCodEsValido ( p_entcObj->p_codEntidad ) == 1 )
 		{
-			iRes = 1;
+			if ( ES_VALIDO ( p_entcObj->p_ptrContenido ) )
+			{
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
 		}
 		else
 		{
@@ -140,7 +169,7 @@ int SEntCodTieneContenido ( SEntidadCod * p_entcObj )
 
 	if ( ES_VALIDO ( p_entcObj ) )
 	{
-		if ( ES_VALIDO ( p_entcObj->p_vContenido ) == 1 )
+		if ( SPtrEstaVacio ( p_entcObj->p_ptrContenido ) == 0 )
 		{
 			iRes = 1;
 		}
@@ -273,7 +302,7 @@ void * SEntCodContenido ( SEntidadCod * p_entcObj )
 
 	if ( ES_VALIDO ( p_entcObj ) )
 	{
-		p_vRes = p_entcObj->p_vContenido;
+		p_vRes = SPtrObjeto ( p_entcObj->p_ptrContenido );
 	}
 	else
 	{
@@ -282,20 +311,78 @@ void * SEntCodContenido ( SEntidadCod * p_entcObj )
 	return ( p_vRes );
 }
 
-void * SEntCodEstablecerContenido ( SEntidadCod * p_entcObj, void * p_vContenido )
+int SEntCodEstablecerContenido ( SEntidadCod * p_entcObj, void * p_vContenido )
 {
-	void * p_vRes;
+	int iRes;
 
 	if ( ES_VALIDO ( p_entcObj ) )
 	{
-		p_vRes = p_entcObj->p_vContenido;
-        p_entcObj->p_vContenido = p_vContenido;
+		iRes = SPtrEstablecer ( p_entcObj->p_ptrContenido, p_vContenido );
 	}
 	else
 	{
-		p_vRes = NULL;
+		iRes = 0;
 	}
-	return ( p_vRes );
+	return ( iRes );
+}
+
+int SEntCodEstablecerContenidoExt ( SEntidadCod * p_entcObj, void * p_vContenido, PRC_DESTRUCTOR fDestructor )
+{
+	int 	iRes;
+	SPtr *	p_ptrContenido;
+
+	if ( ES_VALIDO ( p_entcObj ) )
+	{
+		/* Con el mismo objeto que ya tiene solo cambia el destructor: otro SPtr */
+		/* destruiria el objeto al sustituir al actual.                         */
+		if ( SPtrObjeto ( p_entcObj->p_ptrContenido ) == p_vContenido )
+		{
+			if ( ES_VALIDO ( fDestructor ) )
+			{
+				p_entcObj->p_ptrContenido->p_fDestructor = fDestructor;
+				iRes = 1;
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			p_ptrContenido = SPtrCrear ( p_vContenido, fDestructor );
+			iRes = SEntCodAsignarContenido ( p_entcObj, p_ptrContenido );
+			if ( iRes == 0 )
+			{
+				SPtrDestruirSinLiberar ( &p_ptrContenido );
+			}
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SEntCodAsignarContenido ( SEntidadCod * p_entcObj, SPtr * p_ptrContenido )
+{
+	int iRes;
+
+	iRes = 0;
+	if ( ES_VALIDO ( p_entcObj ) )
+	{
+		if ( ES_VALIDO ( p_ptrContenido ) )
+		{
+			/* El mismo SPtr que ya tiene no se destruye: se quedaria con uno liberado. */
+			if ( p_entcObj->p_ptrContenido != p_ptrContenido )
+			{
+				SPtrDestruir ( &(p_entcObj->p_ptrContenido) );
+				p_entcObj->p_ptrContenido = p_ptrContenido;
+			}
+			iRes = 1;
+		}
+	}
+	return ( iRes );
 }
 
 int SEntCodEsIgual ( SEntidadCod * p_entcObj, SEntidadCod * p_entcVal )
@@ -684,6 +771,11 @@ unsigned int SEntCodHash ( SEntidadCod * p_entcObj )
 		uiRes = SCodHash ( p_entcObj->p_codEntidad );
 	}
 	return ( uiRes );
+}
+
+SPtr * SEntCodPtr ( SEntidadCod * p_entcObj )
+{
+	return ( SPtrCrear ( p_entcObj, (PRC_DESTRUCTOR) SEntCodDestruir ) );
 }
 
 

@@ -294,3 +294,8 @@ SParametro * SParDuplicar ( SParametro * p_parObj )
 
 
 
+
+SPtr * SParPtr ( SParametro * p_parObj )
+{
+	return ( SPtrCrear ( p_parObj, (PRC_DESTRUCTOR) SParDestruir ) );
+}

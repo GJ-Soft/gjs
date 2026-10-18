@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SCadenaConv.c` (2.479 líneas) |
 | Prefijo      | `SCadc`                                                    |
 | Struct       | `SCadenaConv`                                              |
-| Funciones    | 169                                                        |
+| Funciones    | 170                                                        |
 | Incluido por | `Texto.h`                                                  |
 | Test         | `SCadenaConvTest.c` → `TestSCadenaConv()`                  |
 
@@ -98,11 +98,18 @@ Obsérvese que **no es el mismo convenio que en `SCadena`**, donde el sufijo par
 | `SCadenaConv * SCadcCrearCad ( SCadena * )`    | A partir de una `SCadena`, **copiándola**.          |
 | `SCadenaConv * SCadcEncapsular ( SCadena * )`  | A partir de una `SCadena`, **quedándose con ella**. |
 | `void SCadcDestruir ( SCadenaConv ** )`        | Destruye y anula el puntero.                        |
+| `SPtr * SCadcPtr ( SCadenaConv * )`            | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
+
+`SCadcPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SCadcDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 ## Dependencias
 
 - [SCadena](SCadena.md) — el almacenamiento del texto.
 - [SConversor](../../gjs-c-common-base/doc/SConversor.md) — las conversiones.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SCadcPtr`.
 
 ## Test
 
@@ -119,7 +126,7 @@ Obsérvese que **no es el mismo convenio que en `SCadena`**, donde el sufijo par
 - **Los sufijos no coinciden con los de [SCadena](SCadena.md)**: aquí
   `const char *` es `…Lit` y allí `…Literal`. Al pasar de un módulo al otro los
   nombres no se traducen directamente.
-- El solapamiento con `SCadena` es muy alto: 169 funciones frente a 135, y la
+- El solapamiento con `SCadena` es muy alto: 170 funciones frente a 138, y la
   mayoría hacen lo mismo. Lo único que `SCadenaConv` aporta de verdad son las
   ~25 de conversión numérica; el resto es reexposición. Elegir entre los dos
   módulos es en la práctica elegir si se va a necesitar leer o escribir números.

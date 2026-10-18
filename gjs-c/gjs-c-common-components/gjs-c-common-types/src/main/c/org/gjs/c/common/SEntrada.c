@@ -344,3 +344,8 @@ int SEtrEsMayorLit ( SEntrada * p_etrObj, const char * p_cNombre )
 }
 
 
+
+SPtr * SEtrPtr ( SEntrada * p_etrObj )
+{
+	return ( SPtrCrear ( p_etrObj, (PRC_DESTRUCTOR) SEtrDestruir ) );
+}

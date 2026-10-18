@@ -15,7 +15,7 @@ deja apuntados dos módulos que aún no existen.
 | ------------ | ------------------------------ |
 | `groupId`    | `org.gjsoft.c.common`             |
 | `artifactId` | `gjs-cpp-common-database`      |
-| `version`    | `1.0.0`                   |
+| `version`    | `1.1.0-SNAPSHOT`          |
 | `packaging`  | `nar` (biblioteca **shared**)  |
 | Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent` |
 | Depende de   | `gjs-cpp-common-support`       |

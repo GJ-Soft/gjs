@@ -199,6 +199,91 @@ static int TestSTipNulo01 ()
 	return ( iRes );
 }
 
+/* STipPtr envuelve el objeto en un SPtr con STipDestruir como destructor: al
+   destruir el SPtr se libera tambien el STipo. Con MODO_DEPURACION se comprueba
+   que no queda memoria reservada. */
+static int TestSTipPtr01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test STipPtr 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	STipo * p_tipObj = STipCrear ( TIP_NUMERO_ENTERO );
+	SPtr * p_ptrObj = STipPtr ( p_tipObj );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al crear el SPtr\n" );
+		iRes = BOOL_VAL_FALSO;
+		STipDestruir ( &p_tipObj );
+	}
+	else
+	{
+		if ( SPtrEsValido ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: el SPtr deberia ser valido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SPtrObjeto ( p_ptrObj ) != p_tipObj )
+		{
+			printf( "Error caso 3: el SPtr deberia envolver el mismo STipo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El STipo pasa a ser del SPtr: se libera con el, no por separado. */
+		SPtrDestruir ( &p_ptrObj );
+		if ( ES_VALIDO ( p_ptrObj ) )
+		{
+			printf( "Error caso 4: se esperaba puntero nulo tras destruir\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 5: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	return ( iRes );
+}
+
+/* Con objeto nulo, STipPtr da un SPtr vacio: hay que destruirlo igualmente.
+   Con MODO_DEPURACION se comprueba que no queda memoria reservada. */
+static int TestSTipPtrNulo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test STipPtrNulo 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SPtr * p_ptrObj = STipPtr ( NULL );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: con objeto nulo se esperaba un SPtr vacio, no nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( SPtrEstaVacio ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: con objeto nulo el SPtr deberia estar vacio\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SPtrDestruir ( &p_ptrObj );
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 3: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+
+
 int TestSTipo ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -208,7 +293,9 @@ int TestSTipo ()
 			( TestSTipCrearDef01 () == BOOL_VAL_CIERTO ) &&
 			( TestSTipLiteral01 () == BOOL_VAL_CIERTO ) &&
 			( TestSTipEstablecer01 () == BOOL_VAL_CIERTO ) &&
-			( TestSTipNulo01 () == BOOL_VAL_CIERTO ) )
+			( TestSTipNulo01 () == BOOL_VAL_CIERTO ) &&
+			( TestSTipPtr01 () == BOOL_VAL_CIERTO ) &&
+			( TestSTipPtrNulo01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

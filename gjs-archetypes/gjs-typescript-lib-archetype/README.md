@@ -19,12 +19,12 @@ Archetype to generate the basic structure of a basic project in typescript langu
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-typescript-lib-archetype \
-							-DarchetypeVersion=1.0.0 
+							-DarchetypeVersion=1.1.0-SNAPSHOT 
 
     mvn -B archetype:generate \
 							-DarchetypeGroupId=org.gjsoft.maven.archetypes \
 							-DarchetypeArtifactId=gjs-typescript-lib-archetype \
-							-DarchetypeVersion=1.0.0 \
+							-DarchetypeVersion=1.1.0-SNAPSHOT \
 							-DshortName=test \ 
 							-DgroupId=org.gjsoft.test 
   

@@ -38,7 +38,7 @@ propios:
 
 ```c
 #include <Base.h>            /* gjs-c-common-base        */
-#include <Tipos.h>
+#include <TiposBasicos.h>    /* gjs-c-common-base-types  */
 #include <TiposDatos.h>      /* gjs-c-common-types       */
 #include <TiposBaseDatos.h>  /* gjs-c-common-database    */
 #include <Texto.h>           /* gjs-c-common-text        */

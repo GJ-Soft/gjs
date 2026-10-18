@@ -483,3 +483,8 @@ int SIdAdpEstaEnRangoIg ( SIdAdap * p_idObj, SIdAdap * p_idVal1, SIdAdap * p_idV
 	return ( iRes );
 }
 
+
+SPtr * SIdAdpPtr ( SIdAdap * p_idObj )
+{
+	return ( SPtrCrear ( p_idObj, (PRC_DESTRUCTOR) SIdAdpDestruir ) );
+}

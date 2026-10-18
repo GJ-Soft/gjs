@@ -3,6 +3,7 @@
 #define _ORG_GJS_C_CC_C_COMMON_SERROR_H
 
 #include <Precompilacion.h>
+#include <SPtr.h>
 
 
 
@@ -36,6 +37,8 @@ const char * SErrDescripcion ( SError * p_errObj );
 int SErrEsAdvertencia ( SError * p_errObj );
 
 SError * SErrClonar ( SError * p_errObj );
+
+SPtr * SErrPtr ( SError * p_errObj );
 
 
 #endif

@@ -4,13 +4,14 @@
 
 
 #include <SId.h>
+#include <SPtr.h>
 
 
 
 typedef struct
 {
 	SId	*		p_idEntidad;
-    void *      p_vContenido;
+    SPtr *      p_ptrContenido;
 
 } SEntidad;
 
@@ -18,11 +19,11 @@ typedef struct
 
 SEntidad * SEntCrearDef ();
 SEntidad * SEntCrear ( unsigned long ulId );
-SEntidad * SEntCrearExt ( unsigned long ulId, void * p_vContenido );
+SEntidad * SEntCrearExt ( unsigned long ulId, SPtr * p_ptrContenido );
 SEntidad * SEntEncapsular ( SId * p_idEntidad );
-SEntidad * SEntEncapsularExt ( SId * p_idEntidad, void * p_vContenido );
+SEntidad * SEntEncapsularExt ( SId * p_idEntidad, SPtr * p_ptrContenido );
 
-void * SEntDestruir ( SEntidad ** p_p_entObj );
+void SEntDestruir ( SEntidad ** p_p_entObj );
 
 int SEntEsValida ( SEntidad * p_entObj );
 int SEntTieneContenido ( SEntidad * p_entObj );
@@ -33,7 +34,9 @@ void * SEntContenido ( SEntidad * p_entObj );
 
 int SEntEstablecerId ( SEntidad * p_entObj, SId * p_idEntidad );
 int SEntEstablecerValorId ( SEntidad * p_entObj, unsigned long ulId );
-void * SEntEstablecerContenido ( SEntidad * p_entObj, void * p_vContenido );
+int SEntEstablecerContenido ( SEntidad * p_entObj, void * p_vContenido );
+int SEntEstablecerContenidoExt ( SEntidad * p_entObj, void * p_vContenido, PRC_DESTRUCTOR fDestructor );
+int SEntAsignarContenido ( SEntidad * p_entObj, SPtr * p_ptrContenido );
 
 int SEntEsIgual ( SEntidad * p_entObj, SEntidad * p_entVal );
 int SEntEsMenor ( SEntidad * p_entObj, SEntidad * p_entVal );
@@ -63,7 +66,7 @@ int SEntCompararNum ( SEntidad * p_entObj, unsigned long ulId );
 
 unsigned int SEntHash ( SEntidad * p_entObj );
 
-
+SPtr * SEntPtr ( SEntidad * p_entObj );
 
 
 #endif

@@ -3,6 +3,7 @@
 
 
 #include <TiempoDefs.h>
+#include <SPtr.h>
 
 
 
@@ -55,6 +56,8 @@ int SFecEsDiferenteValor ( SFecha * p_fecObj, long lValor );
 long SFecDiferencia ( SFecha * p_fecObj, SFecha * p_fecValor );
 long SFecDiferenciaLit ( SFecha * p_fecObj, const char * p_cValor );
 long SFecDiferenciaValor ( SFecha * p_fecObj, long lValor );
+
+SPtr * SFecPtr ( SFecha * p_fecObj );
 
 
 

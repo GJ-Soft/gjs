@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.gjsoft</groupId>
 		<artifactId>gjs-no-java-parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0-SNAPSHOT</version>
 		<relativePath>../../../gjs-no-java-parent</relativePath>
 	</parent>	
 
@@ -77,7 +77,7 @@
 
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->
-		<gjs-python-common.version>1.0.0</gjs-python-common.version>
+		<gjs-python-common.version>1.1.0-SNAPSHOT</gjs-python-common.version>
 	</properties>
 	
 	<dependencyManagement>

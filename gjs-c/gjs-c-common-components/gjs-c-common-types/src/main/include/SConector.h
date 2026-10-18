@@ -2,6 +2,8 @@
 #ifndef _ORG_GJS_C_CC_SCONECTOR_H
 #define _ORG_GJS_C_CC_SCONECTOR_H
 
+#include <SPtr.h>
+
 
 
 
@@ -28,6 +30,8 @@ int SCnctEstablecerObjeto ( SConector * p_cnctObj, void * p_vObjeto );
 int SCnctEstablecerTipo ( SConector * p_cnctObj, int iTipo );
 
 void SCnctLimpiar ( SConector * p_cnctObj );
+
+SPtr * SCnctPtr ( SConector * p_cnctObj );
 
 
 

@@ -401,3 +401,8 @@ int SEtxEsMayorLit ( SEntradaExt * p_etxObj, const char * p_cNombre )
 }
 
 
+
+SPtr * SEtxPtr ( SEntradaExt * p_extObj )
+{
+	return ( SPtrCrear ( p_extObj, (PRC_DESTRUCTOR) SEtxDestruir ) );
+}

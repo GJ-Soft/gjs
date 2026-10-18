@@ -507,3 +507,8 @@ long SFecDiferenciaValor ( SFecha * p_fecObj, long lValor )
 }
 
 
+
+SPtr * SFecPtr ( SFecha * p_fecObj )
+{
+	return ( SPtrCrear ( p_fecObj, (PRC_DESTRUCTOR) SFecDestruir ) );
+}

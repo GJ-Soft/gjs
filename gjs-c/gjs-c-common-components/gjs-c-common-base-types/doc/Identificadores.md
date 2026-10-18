@@ -6,7 +6,7 @@
 | Cabeceras     | `SId.h`, `SGeneradorId.h`         |
 | Prefijos      | `SId`, `SGenId`                   |
 | Structs       | `SId`, `SGeneradorId`             |
-| Incluidos por | `Tipos.h`                         |
+| Incluidos por | `TiposBasicos.h`                  |
 | Tests         | `SIdTest.c`, `SGeneradorIdTest.c` |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)
@@ -29,7 +29,7 @@ typedef struct
 ```
 
 Un `unsigned long` envuelto. Lo que aporta el módulo es una **batería completa
-de comparaciones**: 24 funciones para lo que en el fondo es comparar dos
+de comparaciones**: 25 funciones para lo que en el fondo es comparar dos
 enteros.
 
 ### Ciclo de vida
@@ -44,6 +44,12 @@ enteros.
 | `int SIdEstablecer ( SId *, unsigned long )` | Fija el valor.                                    |
 | `int SIdAsignar ( SId *, SId * )`            | Copia el valor de otro identificador.             |
 | `unsigned int SIdHash ( SId * )`             | Hash del identificador.                           |
+| `SPtr * SIdPtr ( SId * )`                    | Envuelve el id en un [SPtr](SPtr.md) que lo destruye. |
+
+`SIdPtr` pasa la propiedad del id al `SPtr`: después hay que liberar con
+`SPtrDestruir`, que llama a `SIdDestruir`, y no destruir el id por separado. Con
+id nulo devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve
+`NULL` y el id sigue siendo del llamante.
 
 `SIdCrear` es el constructor con valor; `SIdCrearDef` el de por defecto, que deja
 el identificador a 0. Ojo con la asimetría que eso crea: un identificador recién
@@ -122,6 +128,7 @@ lo que sirve el tercer parámetro del constructor.
 ## Dependencias
 
 - `Base.h` de [gjs-c-common-base](../../gjs-c-common-base/README.md).
+- [SPtr](SPtr.md), para `SIdPtr`.
 
 ## Tests
 
@@ -139,9 +146,6 @@ lo que sirve el tercer parámetro del constructor.
   ninguna otra de `SId.c`. Sigue siendo útil para el llamante —es la única forma
   de preguntar si un identificador está *asignado*—, pero conviene tenerlo
   presente: «válido» significa cosas distintas dentro y fuera del módulo.
-- **La API añadida no tiene tests**: `SIdTest.c` cubre `SIdCrearDef`,
-  `SIdEstablecer`, las comparaciones y el hash, pero no `SIdCrear ( ulValor )`,
-  `SIdAsignar`, `SIdComparar` ni `SIdCompararNum`.
 - **`SId` no tiene `Duplicar`** aunque `SGeneradorId` sí, y aunque casi todos los
   objetos de la librería lo ofrecen. `SIdAsignar` cubre el caso parecido de
   copiar el valor sobre un identificador que ya existe, pero no crea uno nuevo.

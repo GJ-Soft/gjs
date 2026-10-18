@@ -4,6 +4,7 @@
 
 
 #include <TiempoDefs.h>
+#include <SPtr.h>
 
 
 typedef struct
@@ -55,6 +56,8 @@ int SHorEsDiferenteValor ( SHora * p_horObj, long lValor );
 long SHorDiferencia ( SHora * p_horObj, SHora * p_horValor );
 long SHorDiferenciaLit ( SHora * p_horObj, const char * p_cValor );
 long SHorDiferenciaValor ( SHora * p_horObj, long lValor );
+
+SPtr * SHorPtr ( SHora * p_horObj );
 
 
 #endif

@@ -2788,3 +2788,8 @@ void SCadImprimirJson ( SCadena * p_cadObj, const char * p_cEtiqueta )
 	}
 }
 
+
+SPtr * SCadPtr ( SCadena * p_cadObj )
+{
+	return ( SPtrCrear ( p_cadObj, (PRC_DESTRUCTOR) SCadDestruir ) );
+}

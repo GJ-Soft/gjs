@@ -27,20 +27,20 @@
 //  I = int
 //  L = long
 //  S = short
-// LL = long long
+//  Q = long long
 //  UI = unsigned int
 //  UL = unsigned long
 //  US = unsigned short
-// ULL = unsigned long long
-// F = float
-// D = double
-// LD = long double
-// C = char
-// PC = char * X
-// T = const char * X
+//  UQ = unsigned long long
+// 	F = float
+// 	D = double
+// 	LD = long double
+// 	C = char
+// 	PC = char * X
+// 	T = const char * X
 // 
-// P[X] = * X
-// PP[X] = ** X
+// 	P[X] = * X
+// 	PP[X] = ** X
 
 // NOTA: Ir añadiendio conforme se vayan necesitando:
 
@@ -60,8 +60,8 @@ typedef void (* PPRCT)(const char *);
 typedef void (* PPRCPV)(void *);
 typedef void (* PPRCPPV)(void **);
 
-typedef void (* PPRCLL)(long long);
-typedef void (* PPRCULL)(unsigned long long);
+typedef void (* PPRCQ)(long long);
+typedef void (* PPRCUQ)(unsigned long long);
 
 typedef int (* PFUNINTV)(void);
 typedef int (* PFUNINTI)(int);
@@ -79,14 +79,38 @@ typedef int (* PFUNINTT)(const char *);
 typedef int (* PFUNINTPV)(void *);
 typedef int (* PFUNINTPPV)(void **);
 
-typedef int (* PFUNINTLL)(long long);
-typedef int (* PFUNINTULL)(unsigned long long);
+typedef int (* PFUNINTQ)(long long);
+typedef int (* PFUNINTUQ)(unsigned long long);
 
 typedef int (* PFUNINTII)(int,int);
 typedef int (* PFUNINTIII)(int,int,int);
 typedef int (* PFUNINTIIII)(int,int,int,int);
 typedef int (* PFUNINTIIIII)(int,int,int,int,int);
 typedef int (* PFUNINTIIIIII)(int,int,int,int,int,int);
+
+typedef int (* PFUNINTLL)(long,long);
+
+typedef int (* PFUNINTSS)(short,short);
+
+typedef int (* PFUNINTQQ)(long long,long long);
+
+typedef int (* PFUNINTUIUI)(unsigned int,unsigned int);
+
+typedef int (* PFUNINTULUL)(unsigned long,unsigned long);
+
+typedef int (* PFUNINTUSUS)(unsigned short,unsigned short);
+
+typedef int (* PFUNINTUQUQ)(unsigned long long,unsigned long long);
+
+typedef int (* PFUNINTFF)(float,float);
+
+typedef int (* PFUNINTDD)(double,double);
+
+typedef int (* PFUNINTCC)(char,char);
+
+typedef int (* PFUNINTPCPC)(char *,char *);
+
+typedef int (* PFUNINTTT)(const char *,const char *);
 
 typedef int (* PFUNINTPVPV)(void *,void *);
 
@@ -108,8 +132,8 @@ typedef long (* PFUNLONGT)(const char *);
 typedef long (* PFUNLONGPV)(void *);
 typedef long (* PFUNLONGPPV)(void **);
 
-typedef long (* PFUNLONGLL)(long long);
-typedef long (* PFUNLONGULL)(unsigned long long);
+typedef long (* PFUNLONGQ)(long long);
+typedef long (* PFUNLONGUQ)(unsigned long long);
 
 
 typedef unsigned int (* PFUNUINTV)(void);
@@ -128,8 +152,8 @@ typedef unsigned int (* PFUNUINTT)(const char *);
 typedef unsigned int (* PFUNUINTPV)(void *);
 typedef unsigned int (* PFUNUINTPPV)(void **);
 
-typedef unsigned int (* PFUNUINTLL)(long long);
-typedef unsigned int (* PFUNUINTULL)(unsigned long long);
+typedef unsigned int (* PFUNUINTQ)(long long);
+typedef unsigned int (* PFUNUINTUQ)(unsigned long long);
 
 
 typedef unsigned long (* PFUNULONGV)(void);
@@ -148,8 +172,8 @@ typedef unsigned long (* PFUNULONGT)(const char *);
 typedef unsigned long (* PFUNULONGPV)(void *);
 typedef unsigned long (* PFUNULONGPPV)(void **);
 
-typedef unsigned long (* PFUNULONGLL)(long long);
-typedef unsigned long (* PFUNULONGULL)(unsigned long long);
+typedef unsigned long (* PFUNULONGQ)(long long);
+typedef unsigned long (* PFUNULONGUQ)(unsigned long long);
 
 
 typedef char (* PFUNCHARV)(void);
@@ -168,10 +192,9 @@ typedef char (* PFUNCHART)(const char *);
 typedef char (* PFUNCHARPV)(void *);
 typedef char (* PFUNCHARPPV)(void **);
 
-#if ( defined ( LCHAR ) )	
-typedef char (* PFUNCHARLL)(char char);
-typedef char (* PFUNCHARULL)(unsigned char char);
-#endif
+typedef char (* PFUNCHARQ)(long long);
+typedef char (* PFUNCHARUQ)(unsigned long long);
+
 
 typedef char (* PFUNCHARTI)(const char *, int );
 typedef char (* PFUNCHARTPI)(const char *, int * );
@@ -189,10 +212,8 @@ typedef char * (* PFUNPCHART)(const char *);
 typedef char * (* PFUNPCHARPV)(void *);
 typedef char * (* PFUNPCHARPPV)(void **);
 
-#if ( defined ( LPCHAR ) )	
-typedef char * (* PFUNPCHARLL)(char char);
-typedef char * (* PFUNPCHARULL)(unsigned char char);
-#endif
+typedef char * (* PFUNPCHARQ)(long long);
+typedef char * (* PFUNPCHARUQ)(unsigned long long);
 
 typedef char * (* PFUNPCHARTI)(const char *, int );
 typedef char * (* PFUNPCHARTPI)(const char *, int * );
@@ -214,10 +235,8 @@ typedef const char * (* PFUNLITT)(const char *);
 typedef const char * (* PFUNLITPV)(void *);
 typedef const char * (* PFUNLITPPV)(void **);
 
-#if ( defined ( LLIT ) )	
-typedef const char * (* PFUNLITLL)(char char);
-typedef const char * (* PFUNLITULL)(unsigned char char);
-#endif
+typedef const char * (* PFUNLITQ)(long long);
+typedef const char * (* PFUNLITUQ)(unsigned long long);
 
 typedef const char * (* PFUNLITTI)(const char *, int );
 typedef const char * (* PFUNLITTPI)(const char *, int * );
@@ -238,10 +257,8 @@ typedef float (* PFUNFLTT)(const char *);
 typedef float (* PFUNFLTPV)(void *);
 typedef float (* PFUNFLTPPV)(void **);
 
-#if ( defined ( LFLT ) )	
-typedef float (* PFUNFLTLL)(char char);
-typedef float (* PFUNFLTULL)(unsigned char char);
-#endif
+typedef float (* PFUNFLTQ)(long long);
+typedef float (* PFUNFLTUQ)(unsigned long long);
 
 
 typedef double (* PFUNDBLV)(void);
@@ -260,10 +277,8 @@ typedef double (* PFUNDBLT)(const char *);
 typedef double (* PFUNDBLPV)(void *);
 typedef double (* PFUNDBLPPV)(void **);
 
-#if ( defined ( LDBL ) )	
-typedef double (* PFUNDBLLL)(char char);
-typedef double (* PFUNDBLULL)(unsigned char char);
-#endif
+typedef double (* PFUNDBLQ)(long long);
+typedef double (* PFUNDBLUQ)(unsigned long long);
 
 
 typedef void * (* PFUNPVOIDV)(void); 
@@ -282,8 +297,8 @@ typedef void * (* PFUNPVOIDT)(const char *);
 typedef void * (* PFUNPVOIDPV)(void *);
 typedef void * (* PFUNPVOIDPPV)(void **);
 
-typedef void * (* PFUNPVOIDLL)(long long);
-typedef void * (* PFUNPVOIDULL)(unsigned long long);
+typedef void * (* PFUNPVOIDQ)(long long);
+typedef void * (* PFUNPVOIDUQ)(unsigned long long);
 
 typedef void * (* PFUNPVOIDULIUL)(unsigned long, int, unsigned long); 
 

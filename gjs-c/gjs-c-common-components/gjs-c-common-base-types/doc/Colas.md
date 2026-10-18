@@ -6,7 +6,7 @@
 | Cabeceras     | `SCola.h`, `SColaPtr.h`         |
 | Prefijos      | `SCol`, `SColp`                 |
 | Structs       | `SCola`, `SColaPtr`             |
-| Incluidos por | `Tipos.h`                       |
+| Incluidos por | `TiposBasicos.h`                |
 | Tests         | `SColaTest.c`, `SColaPtrTest.c` |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

@@ -6,7 +6,7 @@
 | Cabeceras     | `SPareja.h`, `SReferencia.h`         |
 | Prefijos      | `SPrj`, `SRef`                       |
 | Structs       | `SPareja`, `SReferencia`             |
-| Incluidos por | `Tipos.h`                            |
+| Incluidos por | `TiposBasicos.h`                     |
 | Tests         | `SParejaTest.c`, `SReferenciaTest.c` |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)
@@ -80,14 +80,14 @@ indica que lo duplica); el dato no.
 
 ### API
 
-| Grupo                 | Funciones                                                                                              |
-| --------------------- | ------------------------------------------------------------------------------------------------------ |
-| Ciclo de vida         | `SRefCrear ( const char * p_cAlias, void * p_vDatos )`, `SRefDestruir`, `SRefEsValida`, `SRefDuplicar` |
-| Consulta              | `SRefObtenerAlias`, `SRefObtenerDatos`                                                                 |
-| Modificación          | `SRefEstablecer`, `SRefEstablecerAlias`, `SRefEstablecerDatos`                                         |
-| Comparación           | `SRefEsIgual`, `SRefEsMenor`, `SRefEsMayor`                                                            |
-| Comparación por alias | `SRefEsIgualLit`, `SRefEsMenorLit`, `SRefEsMayorLit`                                                   |
-| Otros                 | `SRefHash`                                                                                             |
+| Grupo                 | Funciones                                                                                                         |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Ciclo de vida         | `SRefCrear ( const char * p_cAlias, void * p_vDatos )`, `SRefDestruir`, `SRefEsValida`, `SRefDuplicar`, `SRefPtr` |
+| Consulta              | `SRefObtenerAlias`, `SRefObtenerDatos`                                                                            |
+| Modificación          | `SRefEstablecer`, `SRefEstablecerAlias`, `SRefEstablecerDatos`                                                    |
+| Comparación           | `SRefEsIgual`, `SRefEsMenor`, `SRefEsMayor`                                                                       |
+| Comparación por alias | `SRefEsIgualLit`, `SRefEsMenorLit`, `SRefEsMayorLit`                                                              |
+| Otros                 | `SRefHash`                                                                                                        |
 
 Las comparaciones ordenan **por alias**, que es lo que permite meter referencias
 en una [lista ordenada o un conjunto](Conjuntos.md) y buscar por nombre.
@@ -95,10 +95,17 @@ en una [lista ordenada o un conjunto](Conjuntos.md) y buscar por nombre.
 `SRefObtenerAlias` devuelve `const char *`: es el alias interno, no hay que
 liberarlo ni modificarlo.
 
+`SRefPtr` pasa la propiedad de la referencia al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SRefDestruir`. Como al destruirla directamente, se
+libera el alias pero **no el dato** al que apunta. Con referencia nula devuelve
+un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y la referencia
+sigue siendo del llamante.
+
 ## Dependencias
 
 - `Base.h` de [gjs-c-common-base](../../gjs-c-common-base/README.md) — cadenas y
   hash.
+- [SPtr](SPtr.md) — `SRefPtr`.
 
 ## Tests
 

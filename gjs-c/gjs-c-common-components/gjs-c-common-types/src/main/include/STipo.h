@@ -2,6 +2,8 @@
 #ifndef _ORG_GJS_C_CC_STIPO_H
 #define _ORG_GJS_C_CC_STIPO_H
 
+#include <SPtr.h>
+
 
 
 
@@ -46,6 +48,8 @@ int STipEsHexadecimal ( STipo * p_tipObj );
 
 int STipEsDeTamVariable ( STipo * p_tipObj );
 int STipTam ( STipo * p_tipObj );
+
+SPtr * STipPtr ( STipo * p_tipObj );
 
 #endif
 

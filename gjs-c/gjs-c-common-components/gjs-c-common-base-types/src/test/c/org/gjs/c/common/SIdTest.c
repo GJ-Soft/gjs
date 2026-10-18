@@ -457,6 +457,94 @@ static int TestSIdHash01 ()
 	return ( iRes );
 }
 
+/* SIdPtr envuelve el id en un SPtr con SIdDestruir como destructor: al
+   destruir el SPtr se libera tambien el SId. Con MODO_DEPURACION se comprueba
+   que no queda memoria reservada. */
+static int TestSIdPtr01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SIdPtr 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SId * p_idObj = SIdCrear ( 42UL );
+	SPtr * p_ptrObj = SIdPtr ( p_idObj );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al crear el SPtr\n" );
+		iRes = BOOL_VAL_FALSO;
+		SIdDestruir ( &p_idObj );
+	}
+	else
+	{
+		if ( SPtrEsValido ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: el SPtr deberia ser valido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SPtrObjeto ( p_ptrObj ) != p_idObj )
+		{
+			printf( "Error caso 3: el SPtr deberia envolver el mismo SId\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SIdValor ( (SId *) SPtrObjeto ( p_ptrObj ) ) != 42UL )
+		{
+			printf( "Error caso 4: el SId envuelto deberia valer 42\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El SId pasa a ser del SPtr: se libera con el, no por separado. */
+		SPtrDestruir ( &p_ptrObj );
+		if ( ES_VALIDO ( p_ptrObj ) )
+		{
+			printf( "Error caso 5: se esperaba puntero nulo tras destruir\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 6: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	return ( iRes );
+}
+
+/* Con objeto nulo, SIdPtr da un SPtr vacio: hay que destruirlo igualmente.
+   Con MODO_DEPURACION se comprueba que no queda memoria reservada. */
+static int TestSIdPtrNulo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SIdPtrNulo 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SPtr * p_ptrObj = SIdPtr ( NULL );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: con objeto nulo se esperaba un SPtr vacio, no nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( SPtrEstaVacio ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: con objeto nulo el SPtr deberia estar vacio\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SPtrDestruir ( &p_ptrObj );
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 3: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	ErrLimpiar ();
+	return ( iRes );
+}
+
 
 
 int TestSId ()
@@ -472,7 +560,9 @@ int TestSId ()
 			( TestSIdEstaEnRango01 () == BOOL_VAL_CIERTO ) &&
 			( TestSIdComparar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSIdCompararNum01 () == BOOL_VAL_CIERTO ) &&
-			( TestSIdHash01 () == BOOL_VAL_CIERTO ) )
+			( TestSIdHash01 () == BOOL_VAL_CIERTO ) &&
+			( TestSIdPtr01 () == BOOL_VAL_CIERTO ) &&
+			( TestSIdPtrNulo01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

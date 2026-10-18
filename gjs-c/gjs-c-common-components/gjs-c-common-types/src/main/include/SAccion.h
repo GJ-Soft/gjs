@@ -3,6 +3,7 @@
 
 
 #include <Funciones.h>
+#include <SPtr.h>
 
 
 
@@ -43,6 +44,8 @@ int SAccEstablecerFuncion ( SAccion * p_accObj, PFUNINTI p_fAccion );
 int SAccEjecutar ( SAccion * p_accObj );
 
 SAccion * SAccDuplicar (  SAccion * p_accObj );
+
+SPtr * SAccPtr ( SAccion * p_accObj );
 
 
 

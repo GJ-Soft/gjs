@@ -6,6 +6,7 @@
 
 #include <SDatos.h>
 #include <SCadena.h>
+#include <SPtr.h>
 
 
 
@@ -81,6 +82,8 @@ SCadena * SDatTxtLinea ( SDatosTexto * p_datObj, int iLinea );
 
 
 void SDatTxtImprimir ( SDatosTexto * p_datObj );
+
+SPtr * SDatTxtPtr ( SDatosTexto * p_datObj );
 
 
 

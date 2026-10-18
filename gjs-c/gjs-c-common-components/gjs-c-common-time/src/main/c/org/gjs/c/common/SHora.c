@@ -497,3 +497,8 @@ long SHorDiferenciaValor ( SHora * p_horObj, long lValor )
 
 
 
+
+SPtr * SHorPtr ( SHora * p_horObj )
+{
+	return ( SPtrCrear ( p_horObj, (PRC_DESTRUCTOR) SHorDestruir ) );
+}

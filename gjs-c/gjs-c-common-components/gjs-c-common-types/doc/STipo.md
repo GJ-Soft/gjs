@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/STipo.c` |
 | Prefijo      | `STip`                                |
 | Struct       | `STipo`                               |
-| Funciones    | 23                                    |
+| Funciones    | 24                                    |
 | Incluido por | `TiposDatos.h`                        |
 | Test         | `STipoTest.c` → `TestSTipo()`         |
 
@@ -40,6 +40,12 @@ módulo de tiempo, el objeto no aporta almacenamiento, sino interfaz.
 | `STipo * STipCrear ( int iCodigo )`             | Desde un código `TIP_*`.     |
 | `STipo * STipCrearLit ( const char * p_cTipo )` | Desde el nombre del tipo.    |
 | `void STipDestruir ( STipo ** )`                | Destruye y anula el puntero. |
+| `SPtr * STipPtr ( STipo * )`                    | Lo envuelve en un `SPtr`.    |
+
+`STipPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `STipDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 `STipCrearLit` usa los literales del catálogo (`"Numero"`, `"Cadena"`,
 `"Fecha"`…), lo que permite construir un tipo desde configuración en texto.
@@ -72,6 +78,7 @@ función suelta:
 
 - [Tipos](../../gjs-c-common-base/doc/Tipos.md) — todo el conocimiento del
   catálogo; este módulo sólo lo envuelve.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `STipPtr`.
 
 ## Test
 

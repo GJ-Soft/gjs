@@ -17,6 +17,8 @@
 #ifndef _ORG_GJS_C_CC_SIDADAP_H
 #define _ORG_GJS_C_CC_SIDADAP_H
 
+#include <SPtr.h>
+
 
 
 
@@ -67,6 +69,8 @@ int SIdAdpEstaEnRango ( SIdAdap * p_idObj, SIdAdap * p_idVal1, SIdAdap * p_idVal
 int SIdAdpEsMenorIg ( SIdAdap * p_idObj, SIdAdap * p_idVal );
 int SIdAdpEsMayorIg ( SIdAdap * p_idObj, SIdAdap * p_idVal );
 int SIdAdpEstaEnRangoIg ( SIdAdap * p_idObj, SIdAdap * p_idVal1, SIdAdap * p_idVal2 );
+
+SPtr * SIdAdpPtr ( SIdAdap * p_idObj );
 
 
 

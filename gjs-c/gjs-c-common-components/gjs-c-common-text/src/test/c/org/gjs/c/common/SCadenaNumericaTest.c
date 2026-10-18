@@ -119,6 +119,91 @@ static int TestSCadnDuplicar01 ()
 	return ( iRes );
 }
 
+/* SCadnPtr envuelve el objeto en un SPtr con SCadnDestruir como destructor: al
+   destruir el SPtr se libera tambien el SCadenaNumerica. Con MODO_DEPURACION se comprueba
+   que no queda memoria reservada. */
+static int TestSCadnPtr01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCadnPtr 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SCadenaNumerica * p_cadObj = SCadnCrearValor ( 4, 42 );
+	SPtr * p_ptrObj = SCadnPtr ( p_cadObj );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al crear el SPtr\n" );
+		iRes = BOOL_VAL_FALSO;
+		SCadnDestruir ( &p_cadObj );
+	}
+	else
+	{
+		if ( SPtrEsValido ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: el SPtr deberia ser valido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SPtrObjeto ( p_ptrObj ) != p_cadObj )
+		{
+			printf( "Error caso 3: el SPtr deberia envolver el mismo SCadenaNumerica\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El SCadenaNumerica pasa a ser del SPtr: se libera con el, no por separado. */
+		SPtrDestruir ( &p_ptrObj );
+		if ( ES_VALIDO ( p_ptrObj ) )
+		{
+			printf( "Error caso 4: se esperaba puntero nulo tras destruir\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 5: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	return ( iRes );
+}
+
+/* Con objeto nulo, SCadnPtr da un SPtr vacio: hay que destruirlo igualmente.
+   Con MODO_DEPURACION se comprueba que no queda memoria reservada. */
+static int TestSCadnPtrNulo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCadnPtrNulo 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SPtr * p_ptrObj = SCadnPtr ( NULL );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: con objeto nulo se esperaba un SPtr vacio, no nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( SPtrEstaVacio ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: con objeto nulo el SPtr deberia estar vacio\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SPtrDestruir ( &p_ptrObj );
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 3: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+
+
 
 
 int TestSCadenaNumerica ()
@@ -127,7 +212,9 @@ int TestSCadenaNumerica ()
 	printf ( "%s[Test SCadenaNumerica]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSCadnCrear01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadnValor01 () == BOOL_VAL_CIERTO ) &&
-			( TestSCadnDuplicar01 () == BOOL_VAL_CIERTO ) )
+			( TestSCadnDuplicar01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCadnPtr01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCadnPtrNulo01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

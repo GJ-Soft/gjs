@@ -6,8 +6,8 @@ contenedores sobre el que se construyen las capas superiores: bloques de
 memoria, listas, secuencias, vectores, tablas, pilas, colas, conjuntos, árboles
 y grafos.
 
-Es el módulo más grande del stack C: **72 módulos** en 4.602 líneas de cabeceras
-y casi 34.000 de implementación.
+Es el módulo más grande del stack C: **73 módulos** en 4.651 líneas de cabeceras
+y algo más de 34.000 de implementación.
 
 ---
 
@@ -17,7 +17,7 @@ y casi 34.000 de implementación.
 | ------------ | ------------------------------------ |
 | `groupId`    | `org.gjsoft.c.common`                   |
 | `artifactId` | `gjs-c-common-base-types`            |
-| `version`    | `1.0.0`                         |
+| `version`    | `1.1.0-SNAPSHOT`                |
 | `packaging`  | `nar` (biblioteca **shared**)        |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`         |
 | Depende de   | `org.gjsoft.c.common:gjs-c-common-base` |
@@ -26,20 +26,20 @@ y casi 34.000 de implementación.
 
 ## Uso
 
-La cabecera fachada es `Tipos.h`:
+La cabecera fachada es `TiposBasicos.h`:
 
 ```c
-#include <Tipos.h>
+#include <TiposBasicos.h>
 ```
 
-Arrastra las 73 cabeceras de módulo, **excepto `SArbolB.h` y `SListaVec.h`**,
+Arrastra las 74 cabeceras de módulo, **excepto `SArbolB.h` y `SListaVec.h`**,
 que hay que incluir a mano.
 
 Ejemplo con una lista de enteros:
 
 ```c
 #include <Base.h>
-#include <Tipos.h>
+#include <TiposBasicos.h>
 
 int main ( void )
 {
@@ -122,7 +122,7 @@ Requiere tener instalado antes `gjs-c-common-base`.
 ## Tests
 
 Mismo arnés que el resto del stack C: un ejecutable propio cuyo `main` está en
-`src/test/c/.../Test.c` y que registra **71 suites**.
+`src/test/c/.../Test.c` y que registra **72 suites**.
 
 ```
 Test.exe               # todas
@@ -130,14 +130,14 @@ Test.exe SListaTest    # una sola
 mvn test               # vía Maven
 ```
 
-Sin test asociado: `SArbolB`, `SListaHash`, `Tipos`, `TiposBasicosConstantes`,
+Sin test asociado: `SArbolB`, `TiposBasicos`, `TiposBasicosConstantes`,
 `TiposPrimitiva` y `TiposResultado`.
 
 ---
 
 ## Documentación de los módulos
 
-Los 72 módulos son en su mayoría variantes de un mismo contenedor, así que la
+Los 73 módulos son en su mayoría variantes de un mismo contenedor, así que la
 documentación se organiza **por familias**: cada documento cubre el contenedor
 base y tabula en qué se diferencian sus especializaciones.
 
@@ -147,28 +147,16 @@ base y tabula en qué se diferencian sus especializaciones.
 
 ## Estado y limitaciones conocidas
 
-- **La fachada `Tipos.h` no compila.** Incluye a la vez `SNodoBin.h` y
-  `SNodoPtr.h`, que declaran el mismo símbolo `SNodBinCrearMem` con **tipos de
-  retorno distintos** (`SNodoBin *` y `SNodoPtr *`). Comprobado con el `gcc` del
-  proyecto: `error: conflicting types`. El módulo se construye igualmente porque
-  **ningún `.c` de producción incluye la fachada**. Ver [Nodos](doc/Nodos.md).
-- **Hay dos `Tipos.h` distintos en el stack**, uno en este módulo (la fachada) y
-  otro en `gjs-c-common-base` (el catálogo de super-tipos `TIP_*`). Los dos se
-  publican en su NAR `noarch`, así que `#include <Tipos.h>` resuelve según el
-  orden de los `-I`. Los dos tests que lo incluyen
-  (`SDefDatoTest.c`, `SDefPrimitivaTest.c`) acaban usando el de la librería base.
-- **El guard de `SArbolBin.h` está roto**: `#ifndef _ORG_GJS_C_CC_C_COMMON_SARBOLBIN_H`
-  frente a `#define _SARBOLBIN_H`. Al no coincidir, la cabecera no está protegida
-  contra la doble inclusión. Ver [Arboles](doc/Arboles.md).
-- **`SListaHash` no existe.** `SListaHash.h` es una copia literal de `SLista.h`,
-  con el mismo guard `_ORG_GJS_C_CC_C_COMMON_SLISTA_H` y el mismo `typedef …
-  SLista`. Como la fachada incluye antes `SLista.h`, el fichero **se expande a
-  nada**. No hay `.c`, ni implementación, ni test. Ver [Listas](doc/Listas.md).
+- **La fachada se llamaba `Tipos.h`**, igual que el catálogo de super-tipos
+  `TIP_*` de `gjs-c-common-base`. Los dos se publicaban en su NAR `noarch`, así
+  que `#include <Tipos.h>` resolvía según el orden de los `-I`: dentro de este
+  módulo, el `#include <Tipos.h>` de `BaseConfig.h` traía la fachada en lugar del
+  catálogo. Ahora se llama `TiposBasicos.h` y `<Tipos.h>` es siempre el de base.
 - **`SArbolB` está sin portar.** Todo el contenido de la cabecera está dentro de
   un bloque de comentario, con includes de una base de código anterior
   (`mt_rc_libs_*`). No está en la fachada y no tiene test.
   Ver [Arboles](doc/Arboles.md).
-- **`Tipos.h:96` incluye `<SSecuenciaEnteroslargosSinSigno.h>`** con `l`
+- **`TiposBasicos.h:96` incluye `<SSecuenciaEnteroslargosSinSigno.h>`** con `l`
   minúscula; el fichero real lleva `L` mayúscula. Funciona sólo porque Windows y
   Cygwin no distinguen mayúsculas en los nombres de fichero: **fallará en el modo
   Linux nativo** pendiente.

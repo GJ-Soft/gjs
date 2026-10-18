@@ -807,3 +807,8 @@ int STokCumpleExpReg ( SToken * p_tokObj, const char * p_cExpReg )
 	return ( iRes );
 }
 
+
+SPtr * STokPtr ( SToken * p_tokObj )
+{
+	return ( SPtrCrear ( p_tokObj, (PRC_DESTRUCTOR) STokDestruir ) );
+}

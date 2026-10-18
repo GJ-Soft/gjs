@@ -14,6 +14,7 @@
 
 #include <SValor.h>
 #include <SCadena.h>
+#include <SPtr.h>
 
 
 
@@ -49,6 +50,8 @@ int SParEstablecerValorExt ( SParametro * p_parObj, SCadena * p_cadValor );
 int SParEstablecerValorLitExt ( SParametro * p_parObj, const char * p_cValor );
 
 SParametro * SParDuplicar ( SParametro * p_parObj );
+
+SPtr * SParPtr ( SParametro * p_parObj );
  
 
 #endif

@@ -5,7 +5,7 @@
 | Módulos       | 5                                                                                      |
 | Cabeceras     | `SLocalizador.h`, `SLocalizadorExt.h`, `SUbicacion.h`, `SHoja.h`, `SIndiceLiterales.h` |
 | Prefijos      | `SLcz`, `SLczExt`, `SUbc`, `SHoj`, `SIndLit`                                           |
-| Funciones     | 26 + 29 + 10 + 14 + 16                                                                 |
+| Funciones     | 26 + 29 + 11 + 14 + 16                                                                 |
 | Incluidos por | `TiposDatos.h`                                                                         |
 | Tests         | Uno por módulo                                                                         |
 
@@ -146,13 +146,19 @@ typedef struct
 } SUbicacion;
 ```
 
-| Función                                                      | Descripción         |
-| ------------------------------------------------------------ | ------------------- |
-| `SUbcCrearDef` / `SUbcCrear`                                 | Construcción.       |
-| `SUbcDestruir` / `SUbcEsValida`                              | Ciclo de vida.      |
-| `SUbcPos` / `SUbcTam`                                        | Acceso.             |
-| `SUbcEstablecer` / `SUbcEstablecerPos` / `SUbcEstablecerTam` | Asignación.         |
-| `SUbcDesplazar`                                              | Mueve la ubicación. |
+| Función                                                      | Descripción               |
+| ------------------------------------------------------------ | ------------------------- |
+| `SUbcCrearDef` / `SUbcCrear`                                 | Construcción.             |
+| `SUbcDestruir` / `SUbcEsValida`                              | Ciclo de vida.            |
+| `SPtr * SUbcPtr ( SUbicacion * )`                            | Lo envuelve en un `SPtr`. |
+| `SUbcPos` / `SUbcTam`                                        | Acceso.                   |
+| `SUbcEstablecer` / `SUbcEstablecerPos` / `SUbcEstablecerTam` | Asignación.               |
+| `SUbcDesplazar`                                              | Mueve la ubicación.       |
+
+`SUbcPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SUbcDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 Describe un tramo dentro de un fichero o un búfer: dónde empieza y cuánto ocupa.
 
@@ -262,6 +268,7 @@ cubiertos por `SIndiceLiteralesTest.c`:
 - [SConjuntoPtr](../../gjs-c-common-base-types/doc/Conjuntos.md) y
   [SListaEnterosLargosSinSigno](../../gjs-c-common-base-types/doc/Listas.md) —
   el índice y las posiciones de `SLocalizadorExt`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SUbcPtr`.
 
 ## Tests
 

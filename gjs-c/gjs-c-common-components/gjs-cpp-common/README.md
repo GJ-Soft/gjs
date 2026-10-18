@@ -17,7 +17,7 @@ sólo están los arquetipos.
 | ------------ | ------------------------------ |
 | `groupId`    | `org.gjsoft.c.common`             |
 | `artifactId` | `gjs-cpp-common`               |
-| `version`    | `1.0.0`                   |
+| `version`    | `1.1.0-SNAPSHOT`          |
 | `packaging`  | `nar` (biblioteca **shared**)  |
 | Pom padre    | `org.gjsoft.c:gjs-cpp-lib-parent` |
 

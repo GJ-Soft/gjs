@@ -173,3 +173,8 @@ int SUbcEsValida ( SUbicacion * p_ubcObj )
 
 
 
+
+SPtr * SUbcPtr ( SUbicacion * p_ubcObj )
+{
+	return ( SPtrCrear ( p_ubcObj, (PRC_DESTRUCTOR) SUbcDestruir ) );
+}

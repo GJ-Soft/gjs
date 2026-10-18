@@ -22,6 +22,7 @@
 
 
 #include <SCampo.h>
+#include <SPtr.h>
 
 
 
@@ -98,6 +99,8 @@ int SDescCompararCad ( SDescripcion * p_descObj, SCadena * p_cadValor );
 int SDescCompararLit ( SDescripcion * p_descObj, const char * p_cValor );
 
 int SDescCumpleExpReg ( SDescripcion * p_descObj, const char * p_cExpReg );
+
+SPtr * SDescPtr ( SDescripcion * p_descObj );
 
 
 

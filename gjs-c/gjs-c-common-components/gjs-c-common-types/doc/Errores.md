@@ -5,7 +5,7 @@
 | Módulos       | 2                                     |
 | Cabeceras     | `SError.h`, `SListaErrores.h`         |
 | Prefijos      | `SErr`, `SLisErr`                     |
-| Funciones     | 10 + 17                               |
+| Funciones     | 11 + 17                               |
 | Incluidos por | `TiposDatos.h`                        |
 | Tests         | `SErrorTest.c`, `SListaErroresTest.c` |
 
@@ -33,10 +33,16 @@ devolverlos juntos.
 | `SError * SErrCrearAdvertenciaForm ( … )`   | Ídem formateada.                 |
 | `SError * SErrClonar ( SError * )`          | Copia independiente.             |
 | `void SErrDestruir ( SError ** )`           | Destruye y anula el puntero.     |
+| `SPtr * SErrPtr ( SError * )`               | Lo envuelve en un `SPtr`.        |
 | `int SErrEsValido ( SError * )`             | 1 si es utilizable.              |
 | `int SErrCodigo ( SError * )`               | Código del error.                |
 | `const char * SErrDescripcion ( SError * )` | Texto descriptivo.               |
 | `int SErrEsAdvertencia ( SError * )`        | 1 si es advertencia y no error.  |
+
+`SErrPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SErrDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 La distinción **error / advertencia** es la aportación del módulo: un proceso
 puede terminar con advertencias y seguir siendo correcto.
@@ -92,6 +98,7 @@ Continúan la numeración de
 - [Listas](../../gjs-c-common-base-types/doc/Listas.md) — el almacenamiento.
 - [FormatoCadena](../../gjs-c-common-base/doc/FormatoCadena.md) — las variantes
   `Form`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SErrPtr`.
 
 ## Tests
 

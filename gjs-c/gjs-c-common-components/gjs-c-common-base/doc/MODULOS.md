@@ -16,7 +16,7 @@ nivel o inferiores.
 ```
   ┌───────────────────────────────────────────────────────────────────────┐
   │ 4. Servicios de alto nivel                                            │
-  │    SConversor · Versiones · Hash                                      │
+  │    SConversor · Versiones · Hash · Validaciones                       │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 3. Texto, números y conversión                                        │
   │    CadenasBase · FormatoCadena · ConversionesTipos · Numeros          │
@@ -65,6 +65,7 @@ resuelve porque ninguno de los tres necesita inicialización previa.
 | [SConversor](SConversor.md)               | `SConv`             | Objeto conversor multi-representación                   | ✔    |
 | [Tipos](Tipos.md)                         | `Tip`               | Catálogo de super-tipos de datos                        | ✔    |
 | [UniChar](UniChar.md)                     | `Unicode`, `CadUni` | Tipo `unichar` y conversión ASCII ↔ Unicode             | ✔    |
+| [Validaciones](Validaciones.md)           | `Validar`           | Tipos de función de validación y su aplicación          | ✔    |
 | [Versiones](Versiones.md)                 | `Vers`              | Cadenas de versión `a.b.c.d`                            | ✔    |
 | [Word](Word.md)                           | `Word`              | Composición/descomposición de palabras de 2 bytes       | ✔    |
 
@@ -100,6 +101,7 @@ Versiones       → Memoria, CadenasBase, Errores
 Hash            → Memoria, CadenasBase
 ConversionesTipos → Memoria, CadenasBase, Numeros
 SConversor      → Memoria, CadenasBase, ConversionesTipos
+Validaciones    → Memoria, Errores
 ```
 
 ---
@@ -235,6 +237,16 @@ alias sencillos `PTR_FUNCION` y
 `PTR_PROCEDIMIENTO`. Los tests usan `PFUNINTV` (`int (*)(void)`) como tipo de
 cada caso de prueba, y [Hash](Hash.md) apoya en `PFUNUINTPV` su alias
 `PFUNHASH`.
+
+Cada argumento se escribe con las iniciales de su tipo: `I`, `L`, `S`, `UI`,
+`UL`, `US`, `F`, `D`, `LD`, `C`, `PC`, `T`, y `P`/`PP` delante para los
+punteros. **`long long` es `Q` y `unsigned long long` es `UQ`** (`PFUNINTQ`,
+`PPRCUQ`…): hasta el 2026-10-18 eran `LL` y `ULL`, que se confundían con dos
+`long` seguidos. Ahora `PFUNINTLL` es `int (*)(long, long)`, de la familia de
+dos argumentos iguales que usa [Validaciones](Validaciones.md) para los rangos:
+`PFUNINTSS`, `PFUNINTQQ`, `PFUNINTUIUI`, `PFUNINTULUL`, `PFUNINTUSUS`,
+`PFUNINTUQUQ`, `PFUNINTFF`, `PFUNINTDD`, `PFUNINTCC`, `PFUNINTPCPC` y
+`PFUNINTTT`, junto a `PFUNINTII` y `PFUNINTPVPV`, que ya estaban.
 
 ### `TerminalANSI.h`
 

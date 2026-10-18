@@ -5,7 +5,7 @@
 | Módulos       | 5                                                                                                         |
 | Cabeceras     | `SEntidad.h`, `SEntidadNom.h`, `SEntidadCod.h`, `SEntidadCodNom.h`, `SEntidadIdCod.h`                     |
 | Prefijos      | `SEnt`, `SEntNom`, `SEntCod`, `SEntCodNom`, `SEntIdCod`                                                   |
-| Funciones     | 37 + 52 + 43 + 56 + 52                                                                                    |
+| Funciones     | 40 + 55 + 46 + 59 + 55                                                                                    |
 | Incluidos por | `TiposBaseDatos.h`                                                                                        |
 | Tests         | Uno por módulo                                                                                            |
 
@@ -42,15 +42,20 @@ sigue el mismo contrato pero no es una entidad: guarda el `SId` directamente.
 typedef struct
 {
     SId  *  p_idEntidad;
-    void *  p_vContenido;
+    SPtr *  p_ptrContenido;
 } SEntidad;
 
 typedef struct
 {
     SCodigo * p_codEntidad;
-    void *    p_vContenido;
+    SPtr *    p_ptrContenido;
 } SEntidadCod;
 ```
+
+El contenido es un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md): el objeto
+junto con la función que sabe destruirlo. La entidad es **dueña** de ese `SPtr`
+y lo destruye con ella. Siempre hay uno, aunque esté vacío: una entidad sin
+contenido lleva un `SPtrCrearDef ( NULL )`.
 
 Las derivadas guardan un puntero a su base más el campo que añaden. El contenido
 vive siempre en la base:
@@ -103,15 +108,17 @@ retirará cuando el desarrollo esté más avanzado.
 
 ## Validez
 
-`EsValida` comprueba **sólo el identificador**, en las cinco clases. El contenido
-nunca entra, y el nombre tampoco.
+`EsValida` comprueba **el identificador** y que haya `SPtr` de contenido, en las
+cinco clases. Que el `SPtr` lleve algo no entra, y el nombre tampoco. Como los
+constructores siempre ponen un `SPtr`, en la práctica sólo decide el
+identificador.
 
 - Una entidad recién creada con `SEntCrearDef ()` **no** es válida: su id vale 0,
   que aún no es un identificador asignado.
 - Una entidad con id y sin contenido **sí** es válida. Para saber si lleva
   contenido está `TieneContenido` en las cinco clases (`SEntTieneContenido`,
-  `SEntNomTieneContenido`…): 1 si el puntero de contenido es válido, 0 si no o
-  si la entidad es nula. Las compuestas preguntan a su entidad interna.
+  `SEntNomTieneContenido`…): 1 si el `SPtr` no está vacío, 0 si lo está o si la
+  entidad es nula. Las compuestas preguntan a su entidad interna.
 - Para saber si el nombre o el código secundario sirven hay que preguntarles
   aparte, con `SNomEsValido` o `SCodEsValido`.
 
@@ -128,7 +135,9 @@ y conviene tenerlo delante:
 | `SEntidadCodNom` | Obligatorio   | Opcional: si falta, un `SNombre` vacío           |
 | `SEntidadIdCod`  | Obligatorio   | **Obligatorio**: sin código no se crea la entidad |
 
-Sin identificador válido, las cinco devuelven `NULL`.
+Sin identificador válido, las cinco devuelven `NULL`. Las variantes `…Ext`, que
+reciben el contenido, devuelven `NULL` también si el `SPtr` es nulo: para crear
+sin contenido están las que no llevan `Ext`, o un `SPtrCrearDef ( NULL )`.
 
 En `SEntidadNom` y `SEntidadCodNom`, un nombre que no supere la validación de
 `SNombre` **no impide crear la entidad**: `EncapsularExt` pone en su lugar un
@@ -149,25 +158,35 @@ cambian el prefijo y añaden lo suyo.
 
 ### Ciclo de vida
 
-| Función                                              | Descripción                                    |
-| ---------------------------------------------------- | ---------------------------------------------- |
-| `SEntCrearDef ()`                                    | Id a 0, sin contenido. No es válida todavía.   |
-| `SEntCrear ( unsigned long ulId )`                   | Con identificador, sin contenido.              |
-| `SEntCrearExt ( unsigned long ulId, void * )`        | Con identificador y contenido.                 |
-| `SEntEncapsular ( SId * )`                           | Toma la propiedad del identificador.           |
-| `SEntEncapsularExt ( SId *, void * )`                | Ídem, con contenido.                           |
-| `void * SEntDestruir ( SEntidad ** )`                | Destruye, **devuelve el contenido** y anula.   |
+| Función                                              | Descripción                                         |
+| ---------------------------------------------------- | --------------------------------------------------- |
+| `SEntCrearDef ()`                                    | Id a 0, sin contenido. No es válida todavía.        |
+| `SEntCrear ( unsigned long ulId )`                   | Con identificador, sin contenido.                   |
+| `SEntCrearExt ( unsigned long ulId, SPtr * )`        | Con identificador y contenido.                      |
+| `SEntEncapsular ( SId * )`                           | Toma la propiedad del identificador.                |
+| `SEntEncapsularExt ( SId *, SPtr * )`                | Ídem, con contenido.                                |
+| `void SEntDestruir ( SEntidad ** )`                  | Destruye, **contenido incluido**, y anula.          |
+| `SPtr * SEntPtr ( SEntidad * )`                      | La envuelve en un `SPtr` con `SEntDestruir`.        |
 
 ### Propiedad de la memoria
 
 Es la parte que más conviene tener clara:
 
 - **`Crear*` construye las piezas por su cuenta.** Si el encapsulado falla, las
-  destruye antes de devolver `NULL`: no se pierde nada.
+  destruye antes de devolver `NULL`: no se pierde nada. Las que no llevan `Ext`
+  crean también el `SPtr` vacío, y lo destruyen igual si fallan.
 - **`Encapsular*` recibe piezas ya construidas y se queda con ellas.** Si falla,
   **no las toca**: siguen siendo del llamante, que es quien debe destruirlas.
-- **`Destruir` devuelve el contenido sin destruirlo.** El contenido nunca ha sido
-  suyo. Lo demás —identificador, nombre, código— sí lo destruye.
+- **El `SPtr` de contenido que recibe un `…Ext` pasa a ser de la entidad** si se
+  crea, y sigue siendo del llamante si no.
+- **`Destruir` lo destruye todo**: identificador, nombre o código, y el
+  contenido, con el destructor de su `SPtr`. Hasta el 2026-10-18 devolvía el
+  contenido sin destruirlo; ahora quien quiera conservarlo no debe dárselo a la
+  entidad.
+- **`SEntPtr`** (y `SEntNomPtr`, `SEntCodPtr`…) pasa la propiedad de la entidad a
+  un `SPtr`: después se libera con `SPtrDestruir`, que llama a `SEntDestruir`, y
+  no por separado. Con entidad nula devuelve un `SPtr` vacío; si falla la reserva
+  del `SPtr`, devuelve `NULL` y la entidad sigue siendo del llamante.
 
 ### Acceso
 
@@ -183,13 +202,48 @@ Es la parte que más conviene tener clara:
 
 ### Asignación
 
-`SEntEstablecerId`, `SEntEstablecerValorId`, `SEntEstablecerContenido`, más los
-del campo propio en cada derivada.
+`SEntEstablecerId`, `SEntEstablecerValorId`, `SEntEstablecerContenido`,
+`SEntEstablecerContenidoExt`, `SEntAsignarContenido`, más los del campo propio
+en cada derivada.
 
 **El retorno dice si se guardó, no si la entidad quedó completa.** Para lo
 segundo está `EsValida`, que es una pregunta distinta. `SEntEstablecerId` copia
 el valor del `SId` que se le pasa: no se queda con el puntero, que sigue siendo
-del llamante. `SEntEstablecerContenido` devuelve el contenido anterior.
+del llamante.
+
+El contenido se cambia de tres maneras:
+
+| Función                                                                         | Qué cambia                                                                     |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `int SEntEstablecerContenido ( SEntidad *, void * )`                            | El objeto dentro del `SPtr`, con `SPtrEstablecer`: destruye el anterior.       |
+| `int SEntEstablecerContenidoExt ( SEntidad *, void *, PRC_DESTRUCTOR )`         | Objeto y destructor: crea un `SPtr` nuevo y lo asigna.                         |
+| `int SEntAsignarContenido ( SEntidad *, SPtr * )`                               | El `SPtr` entero: destruye el anterior y se queda con el nuevo.                |
+
+Las tres devuelven 1, o 0 si la entidad es nula. Además:
+
+- `AsignarContenido` falla con un `SPtr` nulo, y entonces no cambia nada.
+  Asignar el mismo `SPtr` que ya tiene no lo destruye.
+- `EstablecerContenidoExt` falla sin destructor, o si no puede reservar el
+  `SPtr`: la entidad conserva su contenido y el objeto sigue siendo del
+  llamante. Con **el mismo objeto** que ya tiene sólo cambia el destructor;
+  crear otro `SPtr` destruiría el objeto al sustituir al anterior. Así se le
+  puede dar a un contenido ya establecido el destructor que le faltaba.
+
+> **El destructor lo fija quien pone el contenido, y es su responsabilidad.**
+> `EstablecerContenido ( void * )` usa el destructor del `SPtr` que ya hay, y en
+> una entidad creada sin contenido ése es `MemLiberar`, que sólo vale para un
+> bloque de `MemReservar`. La entidad no sabe qué estructura tiene su
+> contenido, así que no puede corregirlo. Si se guarda así un objeto del stack
+> —una `SCadena`, un `SValor`—, al destruirlo o sustituirlo **fallará**. El
+> destructor correcto hay que darlo de una de tres formas:
+>
+> - al crear la entidad, con un `SPtr` ya hecho (`SPtrCrear`, `SPtrPreparar`,
+>   `SCadPtr`…) en el `…Ext`;
+> - con `AsignarContenido ( p_ent, SCadPtr ( p_cad ) )`;
+> - con `EstablecerContenidoExt ( p_ent, p_cad, (PRC_DESTRUCTOR) SCadDestruir )`.
+>
+> Después, `EstablecerContenido` sirve para cambiar el objeto por otro del mismo
+> tipo.
 
 ### Comparación
 
@@ -218,8 +272,8 @@ firma: **sólo el objeto**, sin parámetros añadidos.
 
 Es una consecuencia directa de la regla de identidad: el hash tiene que ir de la
 mano de `EsIgual`, así que mira lo mismo que él y nada más. El contenido no entra
-—no forma parte de la identidad, y la entidad ni siquiera sabe qué hay detrás de
-ese `void *`— y el segundo campo tampoco, por mutable. Hubo un parámetro
+—no forma parte de la identidad, y la entidad ni siquiera sabe qué hay dentro de
+su `SPtr`— y el segundo campo tampoco, por mutable. Hubo un parámetro
 opcional para pasar una función de hash del contenido; se quitó precisamente
 porque usarlo rompía el contrato con `EsIgual`.
 
@@ -241,6 +295,8 @@ hash de una entrada inválida y un hash legítimo posible.
 ## Dependencias
 
 - [Identificadores](../../gjs-c-common-base-types/doc/Identificadores.md) — `SId`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) — el contenido, y los
+  `…Ptr` de cada clase.
 - [SCodigo](../../gjs-c-common-text/doc/SCodigo.md) y
   [SNombre](../../gjs-c-common-text/doc/SNombre.md) — los campos de texto.
 - [Hash](../../gjs-c-common-base/doc/Hash.md) — indirecta: es donde acaban
@@ -249,13 +305,21 @@ hash de una entrada inválida y un hash legítimo posible.
 ## Tests
 
 `SEntidadTest.c`, `SEntidadNomTest.c`, `SEntidadCodTest.c`,
-`SEntidadCodNomTest.c`, `SEntidadIdCodTest.c`.
+`SEntidadCodNomTest.c`, `SEntidadIdCodTest.c`. En las cinco: creación con y sin
+contenido, y con `SPtr` nulo; `AsignarContenido` con otro `SPtr`, con el mismo y
+con nulo; `EstablecerContenidoExt` con destructor propio, con el mismo objeto,
+sin destructor y sobre una entidad nula, comprobando que después
+`EstablecerContenido` y `Destruir` usan ese destructor; y el `…Ptr`, con entidad
+y con `NULL`. Con `MODO_DEPURACION`
+comprueban además que destruir la entidad libera el contenido y que no queda
+memoria reservada.
 
 ## Observaciones
 
 - **Ninguna de las cinco tiene `Duplicar`**, pese a que casi todos los objetos
   del stack lo ofrecen. Copiar una entidad hay que hacerlo a mano, y hay que
-  decidir qué se hace con el contenido, que es un `void *` sin dueño conocido.
+  decidir qué se hace con el contenido: el `SPtr` sabe destruirlo, pero no
+  copiarlo.
 - **Los `Establecer…` del segundo campo asignan sobre el objeto interno, no lo
   sustituyen.** En `SEntidadNom` y `SEntidadCodNom` eso no da problema porque el
   `SNombre` siempre existe. Y

@@ -4,6 +4,7 @@
 
 
 #include <SCadenaConv.h>
+#include <SPtr.h>
 
 
 
@@ -40,6 +41,8 @@ void SCadnActivarCompletarConCeros ( SCadenaNumerica * p_cadObj );
 void SCadnDesactivarCompletarConCeros ( SCadenaNumerica * p_cadObj );
 
 SCadenaNumerica * SCadnDuplicar ( SCadenaNumerica * p_cadObj );
+
+SPtr * SCadnPtr ( SCadenaNumerica * p_cadObj );
 
 
 #endif

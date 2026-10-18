@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/STexto.c` (910 líneas) |
 | Prefijos     | `STxt` y `Txt` — **dos, ver Observaciones**         |
 | Struct       | `STexto`                                            |
-| Funciones    | 33                                                  |
+| Funciones    | 34                                                  |
 | Incluido por | `Texto.h`                                           |
 | Test         | `STextoTest.c` → `TestSTexto()`                     |
 
@@ -41,9 +41,15 @@ lleva en dos enteros, aunque el módulo también sabe trabajar con objetos
 | `STexto * STxtCrear ()`                          | Texto vacío.                  |
 | `STexto * STxtGenerar ( const char * p_cTexto )` | Texto a partir de un literal. |
 | `void STxtDestruir ( STexto ** )`                | Destruye y anula el puntero.  |
+| `SPtr * STxtPtr ( STexto * )`                    | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
 | `int STxtEsValido ( STexto * )`                  | 1 si es utilizable.           |
 | `int STxtInicializar ( STexto *, const char * )` | Recarga con otro contenido.   |
 | `void STxtVaciar ( STexto * )`                   | Vacía el texto.               |
+
+`STxtPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `STxtDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 ### Consulta
 
@@ -95,6 +101,7 @@ void STxtCursorRetroceder( STexto *, SCursor *, int iPosiciones );
 - [SListaCadenas](SListaCadenas.md) — las líneas.
 - [SCadena](SCadena.md) — cada línea.
 - [Cursores](../../gjs-c-common-base-types/doc/Cursores.md) — `SCursor`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `STxtPtr`.
 
 ## Test
 

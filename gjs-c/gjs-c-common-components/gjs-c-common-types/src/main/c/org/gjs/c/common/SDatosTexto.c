@@ -851,3 +851,8 @@ static void SDatTxtVerificarTam ( SDatosTexto * p_datObj, int iTamReq )
 
 
 
+
+SPtr * SDatTxtPtr ( SDatosTexto * p_datObj )
+{
+	return ( SPtrCrear ( p_datObj, (PRC_DESTRUCTOR) SDatTxtDestruir ) );
+}

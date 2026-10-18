@@ -25,6 +25,7 @@
 #include <SBloque.h>
 #include <SBuffer.h>
 #include <SDatos.h>
+#include <SPtr.h>
 
 #include <SContador.h>
 #include <SRango.h>

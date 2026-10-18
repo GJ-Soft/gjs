@@ -33,14 +33,14 @@ Volver al [README](../README.md).
 
 | Módulo   | Prefijo | Struct   | Funciones | Test | Documento           |
 | -------- | ------- | -------- | --------- | ---- | ------------------- |
-| `SValor` | `SVal`  | `SValor` | 88        | ✔    | [SValor](SValor.md) |
-| `STipo`  | `STip`  | `STipo`  | 23        | ✔    | [STipo](STipo.md)   |
+| `SValor` | `SVal`  | `SValor` | 89        | ✔    | [SValor](SValor.md) |
+| `STipo`  | `STip`  | `STipo`  | 24        | ✔    | [STipo](STipo.md)   |
 
 ### Parámetros
 
 | Módulo             | Prefijo   | Struct             | Funciones | Test | Documento                   |
 | ------------------ | --------- | ------------------ | --------- | ---- | --------------------------- |
-| `SParametro`       | `SPar`    | `SParametro`       | 15        | ✔    | [Parametros](Parametros.md) |
+| `SParametro`       | `SPar`    | `SParametro`       | 16        | ✔    | [Parametros](Parametros.md) |
 | `SListaParametros` | `SLisPar` | `SListaParametros` | 30        | ✔    | [Parametros](Parametros.md) |
 | `SListaValores`    | `SLisVal` | `SListaValores`    | 30        | ✔    | [Parametros](Parametros.md) |
 
@@ -48,7 +48,7 @@ Volver al [README](../README.md).
 
 | Módulo     | Prefijo | Struct     | Funciones | Test | Documento               |
 | ---------- | ------- | ---------- | --------- | ---- | ----------------------- |
-| `SMensaje` | `SMsj`  | `SMensaje` | 29        | ✔    | [SMensaje](SMensaje.md) |
+| `SMensaje` | `SMsj`  | `SMensaje` | 30        | ✔    | [SMensaje](SMensaje.md) |
 
 Las entidades (`SEntidad`, `SEntidadNom`, `SEntidadCod`, `SEntidadCodNom` y
 `SEntidadIdCod`) están en
@@ -58,14 +58,14 @@ Las entidades (`SEntidad`, `SEntidadNom`, `SEntidadCod`, `SEntidadCodNom` y
 
 | Módulo          | Prefijo   | Struct          | Funciones | Test | Documento             |
 | --------------- | --------- | --------------- | --------- | ---- | --------------------- |
-| `SError`        | `SErr`    | `SError`        | 10        | ✔    | [Errores](Errores.md) |
+| `SError`        | `SErr`    | `SError`        | 11        | ✔    | [Errores](Errores.md) |
 | `SListaErrores` | `SLisErr` | `SListaErrores` | 17        | ✔    | [Errores](Errores.md) |
 
 ### Identificadores adaptables
 
 | Módulo                    | Prefijo     | Struct                    | Funciones | Test | Documento                             |
 | ------------------------- | ----------- | ------------------------- | --------- | ---- | ------------------------------------- |
-| `SIdAdap`                 | `SIdAdp`    | `SIdAdap`                 | 25        | ✔    | [Identificadores](Identificadores.md) |
+| `SIdAdap`                 | `SIdAdp`    | `SIdAdap`                 | 26        | ✔    | [Identificadores](Identificadores.md) |
 | `SGeneradorIdAdap`        | `SGenIdAdp` | `SGeneradorIdAdap`        | 12        | ✔    | [Identificadores](Identificadores.md) |
 | `SSecuenciaGeneradoresId` | `SSecGenId` | `SSecuenciaGeneradoresId` | 9         | ✔    | [Identificadores](Identificadores.md) |
 
@@ -75,7 +75,7 @@ Las entidades (`SEntidad`, `SEntidadNom`, `SEntidadCod`, `SEntidadCodNom` y
 | ------------------ | --------- | ------------------ | --------- | ---- | ------------------------------- |
 | `SLocalizador`     | `SLcz`    | `SLocalizador`     | 26        | ✔    | [Localizacion](Localizacion.md) |
 | `SLocalizadorExt`  | `SLczExt` | `SLocalizadorExt`  | 29        | ✔    | [Localizacion](Localizacion.md) |
-| `SUbicacion`       | `SUbc`    | `SUbicacion`       | 10        | ✔    | [Localizacion](Localizacion.md) |
+| `SUbicacion`       | `SUbc`    | `SUbicacion`       | 11        | ✔    | [Localizacion](Localizacion.md) |
 | `SHoja`            | `SHoj`    | `SHoja`            | 14        | ✔    | [Localizacion](Localizacion.md) |
 | `SIndiceLiterales` | `SIndLit` | `SIndiceLiterales` | 16        | ✔    | [Localizacion](Localizacion.md) |
 
@@ -83,8 +83,8 @@ Las entidades (`SEntidad`, `SEntidadNom`, `SEntidadCod`, `SEntidadCodNom` y
 
 | Módulo              | Prefijo   | Struct              | Funciones | Fachada | Test | Documento               |
 | ------------------- | --------- | ------------------- | --------- | ------- | ---- | ----------------------- |
-| `SEntrada`          | `SEtr`    | `SEntrada`          | 17        | **—**   | ✔    | [Entradas](Entradas.md) |
-| `SEntradaExt`       | `SEtx`    | `SEntradaExt`       | 21        | **—**   | ✔    | [Entradas](Entradas.md) |
+| `SEntrada`          | `SEtr`    | `SEntrada`          | 18        | **—**   | ✔    | [Entradas](Entradas.md) |
+| `SEntradaExt`       | `SEtx`    | `SEntradaExt`       | 22        | **—**   | ✔    | [Entradas](Entradas.md) |
 | `SListaEntradas`    | `SLisEtr` | `SListaEntradas`    | 15        | ✔       | ✔    | [Entradas](Entradas.md) |
 | `SListaEntradasExt` | `SLisEtx` | `SListaEntradasExt` | 14        | ✔       | ✔    | [Entradas](Entradas.md) |
 
@@ -102,11 +102,11 @@ Las entidades (`SEntidad`, `SEntidadNom`, `SEntidadCod`, `SEntidadCodNom` y
 
 | Módulo         | Prefijo   | Struct         | Funciones | Test | Documento                       |
 | -------------- | --------- | -------------- | --------- | ---- | ------------------------------- |
-| `SAccion`      | `SAcc`    | `SAccion`      | 18        | ✔    | [SAccion](SAccion.md)           |
+| `SAccion`      | `SAcc`    | `SAccion`      | 19        | ✔    | [SAccion](SAccion.md)           |
 | `TiposAccion`  | —         | —              | 9         | ✔    | [SAccion](SAccion.md)           |
-| `SConector`    | `SCnct`   | `SConector`    | 11        | ✔    | [SConector](SConector.md)       |
+| `SConector`    | `SCnct`   | `SConector`    | 12        | ✔    | [SConector](SConector.md)       |
 | `SHiloAriadna` | `SHilAri` | `SHiloAriadna` | 9         | ✔    | [SHiloAriadna](SHiloAriadna.md) |
-| `SDatosTexto`  | `SDatTxt` | `SDatosTexto`  | 43        | ✔    | [SDatosTexto](SDatosTexto.md)   |
+| `SDatosTexto`  | `SDatTxt` | `SDatosTexto`  | 44        | ✔    | [SDatosTexto](SDatosTexto.md)   |
 
 ---
 
@@ -172,7 +172,3 @@ Constantes sanas y en uso por [SHoja](Localizacion.md):
 > Es el mismo patrón que las macros `BMP_*` de
 > [Bits](../../gjs-c-common-base/doc/Bits.md) en la librería base: un bloque
 > escrito y nunca ejercitado.
-
-> El `#include <Tipos.h>` es **ambiguo**: hay dos ficheros con ese nombre en el
-> stack. Ver
-> [gjs-c-common-base-types](../../gjs-c-common-base-types/doc/MODULOS.md#tiposh).

@@ -1,6 +1,8 @@
 #ifndef _ORG_GJS_C_CC_C_COMMON_SRANGO_H
 #define _ORG_GJS_C_CC_C_COMMON_SRANGO_H
 
+#include <SPtr.h>
+
 
 
 
@@ -28,6 +30,8 @@ int SRngEstablecerMin ( SRango * p_rngObj, int iMin );
 int SRngEstablecerMax ( SRango * p_rngObj, int iMax  );
 
 int SRngEstaIncluido ( SRango * p_rngObj, int iVal );
+
+SPtr * SRngPtr ( SRango * p_rngObj );
 
 
 

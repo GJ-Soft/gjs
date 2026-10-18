@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SCadena.c` (2.658 líneas) |
 | Prefijo      | `SCad`                                                 |
 | Struct       | `SCadena`                                              |
-| Funciones    | 137                                                    |
+| Funciones    | 138                                                    |
 | Incluido por | `Texto.h`                                              |
 | Test         | `SCadenaTest.c` → `TestSCadena()`                      |
 
@@ -54,7 +54,13 @@ objeto.
 | `SCadena * SCadDuplicar ( SCadena * )`                     | Copia independiente.                                  |
 | `char * SCadDuplicarValor ( SCadena * )`                   | Copia del contenido como `char *`.                    |
 | `void SCadDestruir ( SCadena ** )`                         | Destruye y anula el puntero.                          |
+| `SPtr * SCadPtr ( SCadena * )`                             | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
 | `int SCadInicializar ( … )` / `SCadVaciar` / `SCadLimpiar` | Reinicio.                                             |
+
+`SCadPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SCadDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 ### Acceso
 
@@ -121,6 +127,7 @@ contenido a texto hexadecimal y recuperarlo.
 - [ASCII](ASCII.md) — clasificación de caracteres.
 - [ExpresionesRegulares](ExpresionesRegulares.md) — `SCadCumpleExpReg`.
 - `Base.h` de [gjs-c-common-base](../../gjs-c-common-base/README.md).
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SCadPtr`.
 
 ## Test
 
@@ -141,7 +148,7 @@ contenido a texto hexadecimal y recuperarlo.
   distinguir. Las dos funciones nuevas son las que usan
   [SCampo](SCampo.md), [SToken](SToken.md) y la familia de campos para su propia
   comparación de tres estados.
-- El módulo ofrece 137 funciones y [SCadenaConv](SCadenaConv.md) otras 169 con
+- El módulo ofrece 138 funciones y [SCadenaConv](SCadenaConv.md) otras 170 con
   un solapamiento muy alto. Ver ese documento para la diferencia real entre
   ambos.
 - No hay operaciones sobre `unichar`: la parte Unicode se queda en las ocho

@@ -7,6 +7,7 @@
 
 #include <SFecha.h>
 #include <SHora.h>
+#include <SPtr.h>
 
 
 
@@ -76,6 +77,8 @@ int SFecHorEsDiferenteValor ( SFechaHora * p_fecObj, double dValor );
 double SFecHorDiferencia ( SFechaHora * p_fecObj, SFechaHora * p_fecValor );
 double SFecHorDiferenciaLit ( SFechaHora * p_fecObj, const char * p_cValor );
 double SFecHorDiferenciaValor ( SFechaHora * p_fecObj, double dValor );
+
+SPtr * SFecHorPtr ( SFechaHora * p_fecObj );
 
 
 #endif

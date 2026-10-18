@@ -19,7 +19,7 @@ Define the pyz packaging for maven projects
 	<plugin>
 		<groupId>org.gjsoft.maven</groupId>
 		<artifactId>pyz-maven-plugin</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0-SNAPSHOT</version>
 	</plugin>
 
 
@@ -32,7 +32,7 @@ Define the pyz packaging for maven projects
 		<extension>
 			<groupId>org.gjsoft.maven</groupId>
 			<artifactId>pyz-maven-plugin</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.0-SNAPSHOT</version>
 		</extension>
 	</extensions>
 </build>
@@ -44,7 +44,7 @@ Define the pyz packaging for maven projects
     <plugin>
 		<groupId>org.gjsoft.maven</groupId>
 		<artifactId>pyz-maven-plugin</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0-SNAPSHOT</version>
 
 		<configuration>
 			<baseDirectory>${project.basedir}/dist</baseDirectory>

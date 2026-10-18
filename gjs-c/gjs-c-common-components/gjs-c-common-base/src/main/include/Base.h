@@ -44,6 +44,7 @@
 #include <Finalizacion.h>
 #include <Intercambios.h>
 #include <Hash.h>
+#include <Validaciones.h>
 
 #endif
 

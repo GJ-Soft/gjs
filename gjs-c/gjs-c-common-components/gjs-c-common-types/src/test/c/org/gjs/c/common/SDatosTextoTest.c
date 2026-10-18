@@ -200,6 +200,91 @@ static int TestSDatTxtNulo01 ()
 	return ( iRes );
 }
 
+/* SDatTxtPtr envuelve el objeto en un SPtr con SDatTxtDestruir como destructor: al
+   destruir el SPtr se libera tambien el SDatosTexto. Con MODO_DEPURACION se comprueba
+   que no queda memoria reservada. */
+static int TestSDatTxtPtr01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SDatTxtPtr 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SDatosTexto * p_datObj = SDatTxtCrear ( 64, 0 );
+	SPtr * p_ptrObj = SDatTxtPtr ( p_datObj );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al crear el SPtr\n" );
+		iRes = BOOL_VAL_FALSO;
+		SDatTxtDestruir ( &p_datObj );
+	}
+	else
+	{
+		if ( SPtrEsValido ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: el SPtr deberia ser valido\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SPtrObjeto ( p_ptrObj ) != p_datObj )
+		{
+			printf( "Error caso 3: el SPtr deberia envolver el mismo SDatosTexto\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El SDatosTexto pasa a ser del SPtr: se libera con el, no por separado. */
+		SPtrDestruir ( &p_ptrObj );
+		if ( ES_VALIDO ( p_ptrObj ) )
+		{
+			printf( "Error caso 4: se esperaba puntero nulo tras destruir\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 5: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	return ( iRes );
+}
+
+/* Con objeto nulo, SDatTxtPtr da un SPtr vacio: hay que destruirlo igualmente.
+   Con MODO_DEPURACION se comprueba que no queda memoria reservada. */
+static int TestSDatTxtPtrNulo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SDatTxtPtrNulo 01:\n" );
+# if ( defined ( MODO_DEPURACION ) )
+	unsigned long ulBloquesAntes = MemNumBloquesActuales ();
+# endif
+	SPtr * p_ptrObj = SDatTxtPtr ( NULL );
+	if ( ES_NULO ( p_ptrObj ) )
+	{
+		printf( "Error caso 1: con objeto nulo se esperaba un SPtr vacio, no nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( SPtrEstaVacio ( p_ptrObj ) != 1 )
+		{
+			printf( "Error caso 2: con objeto nulo el SPtr deberia estar vacio\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SPtrDestruir ( &p_ptrObj );
+	}
+# if ( defined ( MODO_DEPURACION ) )
+	if ( MemNumBloquesActuales () != ulBloquesAntes )
+	{
+		printf( "Error caso 3: quedan %ld bloques sin liberar\n", (long) ( MemNumBloquesActuales () - ulBloquesAntes ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+# endif
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+
+
 int TestSDatosTexto ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -209,7 +294,9 @@ int TestSDatosTexto ()
 			( TestSDatTxtTamFijo01 () == BOOL_VAL_CIERTO ) &&
 			( TestSDatTxtContenido01 () == BOOL_VAL_CIERTO ) &&
 					( TestSDatTxtEstablecerTam01 () == BOOL_VAL_CIERTO ) &&
-			( TestSDatTxtNulo01 () == BOOL_VAL_CIERTO ) )
+			( TestSDatTxtNulo01 () == BOOL_VAL_CIERTO ) &&
+			( TestSDatTxtPtr01 () == BOOL_VAL_CIERTO ) &&
+			( TestSDatTxtPtrNulo01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

@@ -4,6 +4,7 @@
 #include <SListaCadenas.h>
 
 #include <SCursor.h>
+#include <SPtr.h>
 
 
 
@@ -61,6 +62,8 @@ char STxtCaracterActual ( STexto * p_txtObj );
 char STxtCaracterSig ( STexto * p_txtObj );
 
 SCadena * STxtExtraer ( STexto * p_txtObj, int iLinIni, int iColIni, int iLinFin, int iColFin ); 
+
+SPtr * STxtPtr ( STexto * p_txtObj );
 
 
 /*

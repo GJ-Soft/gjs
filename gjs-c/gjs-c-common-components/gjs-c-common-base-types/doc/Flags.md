@@ -6,7 +6,7 @@
 | Cabeceras     | `SVectorFlags.h`, `SMatrizFlags.h`         |
 | Prefijos      | `SVecFlg`, `SMatFlg`                       |
 | Structs       | `SVectorFlags`, `SMatrizFlags`             |
-| Incluidos por | `Tipos.h`                                  |
+| Incluidos por | `TiposBasicos.h`                           |
 | Tests         | `SVectorFlagsTest.c`, `SMatrizFlagsTest.c` |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

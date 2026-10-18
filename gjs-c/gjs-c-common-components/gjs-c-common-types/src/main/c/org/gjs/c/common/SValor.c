@@ -1940,3 +1940,8 @@ void _SValInicializar ( SValor * p_valObj, int iTipo, int iMaxTam )
 	}
 }
 
+
+SPtr * SValPtr ( SValor * p_valObj )
+{
+	return ( SPtrCrear ( p_valObj, (PRC_DESTRUCTOR) SValDestruir ) );
+}

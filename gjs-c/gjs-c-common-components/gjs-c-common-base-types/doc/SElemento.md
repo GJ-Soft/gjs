@@ -7,7 +7,7 @@
 | Prefijos      | `SElm`, `SElp`                                                    |
 | Structs       | `SElemento`, `SElementoPtr`                                       |
 | Funciones     | 47 + 19                                                           |
-| Incluidos por | `Tipos.h`                                                         |
+| Incluidos por | `TiposBasicos.h`                                                  |
 | Tests         | `SElementoTest.c`, `SElementoPtrTest.c`                           |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

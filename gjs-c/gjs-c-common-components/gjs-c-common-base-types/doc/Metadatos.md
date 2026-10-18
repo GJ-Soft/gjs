@@ -6,7 +6,7 @@
 | Cabeceras     | `SDefDato.h`, `SDefPrimitiva.h`, `SInterfaz.h` |
 | Prefijos      | `SDefDat`, `SDefPrim`, `SIntrfz`               |
 | Structs       | `SDefDato`, `SDefPrimitiva`, `SInterfaz`       |
-| Incluidos por | `Tipos.h`                                      |
+| Incluidos por | `TiposBasicos.h`                               |
 | Tests         | Uno por módulo                                 |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

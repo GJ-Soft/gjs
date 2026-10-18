@@ -6,7 +6,7 @@ o una cuenta. Es la contrapartida en C de
 [`gjs-cpp-common-database`](../gjs-cpp-common-database/README.md), y el sitio
 donde irá creciendo el soporte de datos del stack.
 
-5 módulos en 4.292 líneas.
+5 módulos en 4.772 líneas.
 
 ---
 
@@ -16,7 +16,7 @@ donde irá creciendo el soporte de datos del stack.
 | ------------ | -------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`            |
 | `artifactId` | `gjs-c-common-database`          |
-| `version`    | `1.0.0`                     |
+| `version`    | `1.1.0-SNAPSHOT`            |
 | `packaging`  | `nar` (biblioteca **shared**)    |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`  |
 | Depende de   | `gjs-c-common-types`             |

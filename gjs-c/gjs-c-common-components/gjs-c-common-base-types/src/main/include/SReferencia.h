@@ -1,6 +1,8 @@
 #ifndef _ORG_GJS_C_CC_SREFERENCIA_H
 #define _ORG_GJS_C_CC_SREFERENCIA_H
 
+#include <SPtr.h>
+
 
 
 
@@ -40,6 +42,8 @@ int SRefEsMenorLit ( SReferencia * p_refObj, const char * p_cAlias );
 int SRefEsMayorLit ( SReferencia * p_refObj, const char * p_cAlias );
 
 unsigned int SRefHash ( SReferencia * p_refObj );
+
+SPtr * SRefPtr ( SReferencia * p_refObj );
 
 
 

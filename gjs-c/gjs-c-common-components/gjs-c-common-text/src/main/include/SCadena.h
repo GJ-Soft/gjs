@@ -23,6 +23,8 @@
 
 #include <stdarg.h>
 
+#include <SPtr.h>
+
 
 
 
@@ -214,6 +216,8 @@ void SCadImprimir ( SCadena * p_cadObj );
 void SCadImprimirExt ( SCadena * p_cadObj, const char * p_cEtiqueta, char cSep, int iEnvolver );
 void SCadImprimirXml ( SCadena * p_cadObj, const char * p_cEtiqueta );
 void SCadImprimirJson ( SCadena * p_cadObj, const char * p_cEtiqueta );
+
+SPtr * SCadPtr ( SCadena * p_cadObj );
 
 
 

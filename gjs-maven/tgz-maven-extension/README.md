@@ -23,7 +23,7 @@ Define the tgz packaging for maven projects
 		<extension>
 			<groupId>org.gjsoft.maven.extensions</groupId>
 			<artifactId>tgz-maven-extension</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.0-SNAPSHOT</version>
 		</extension>
 	</extensions>
 </build>

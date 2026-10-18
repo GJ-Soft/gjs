@@ -16,7 +16,7 @@ API que **no está implementada**.
 | ------------ | -------------------------------------------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`                                                   |
 | `artifactId` | `gjs-c-common-calculation`                                           |
-| `version`    | `1.0.0`                                                         |
+| `version`    | `1.1.0-SNAPSHOT`                                                |
 | `packaging`  | `nar` (biblioteca **shared**)                                        |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`                                         |
 | Depende de   | `gjs-c-common-base-types` (y a través de él, de `gjs-c-common-base`) |

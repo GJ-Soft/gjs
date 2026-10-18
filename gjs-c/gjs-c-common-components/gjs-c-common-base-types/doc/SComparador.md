@@ -7,7 +7,7 @@
 | Prefijo      | `SCmp`                                      |
 | Struct       | `SComparador`                               |
 | Funciones    | 21                                          |
-| Incluido por | `Tipos.h`                                   |
+| Incluido por | `TiposBasicos.h`                            |
 | Test         | `SComparadorTest.c` → `TestSComparador()`   |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

@@ -6,6 +6,7 @@
 
 
 #include <SListaLiterales.h>
+#include <SPtr.h>
 
 
 
@@ -47,6 +48,8 @@ int SEtxEsMayor ( SEntradaExt * p_extObj1, SEntradaExt * p_extObj2 );
 int SEtxEsIgualLit ( SEntradaExt * p_extObj, const char * p_cNombre );
 int SEtxEsMenorLit ( SEntradaExt * p_extObj, const char * p_cNombre );
 int SEtxEsMayorLit ( SEntradaExt * p_extObj, const char * p_cNombre );
+
+SPtr * SEtxPtr ( SEntradaExt * p_extObj );
 
 
 

@@ -767,3 +767,8 @@ double SFecHorDiferenciaValor ( SFechaHora * p_fecObj, double dValor )
 
 
 
+
+SPtr * SFecHorPtr ( SFechaHora * p_fecObj )
+{
+	return ( SPtrCrear ( p_fecObj, (PRC_DESTRUCTOR) SFecHorDestruir ) );
+}

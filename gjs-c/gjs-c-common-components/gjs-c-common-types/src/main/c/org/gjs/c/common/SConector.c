@@ -28,7 +28,7 @@ SConector * SCnctCrearExt ( void * p_vObjeto, int iTipo )
 
 void SCnctDestruir ( SConector ** p_p_cnctObj )
 {
-	SCnctDestruirExt ( p_p_cnctObj, 1 );
+	SCnctDestruirExt ( p_p_cnctObj, 0 );
 }
 
 void SCnctDestruirExt ( SConector ** p_p_cnctObj, int iDestruirContenido )
@@ -158,3 +158,8 @@ void SCnctLimpiar ( SConector * p_cnctObj )
      }
 }
 
+
+SPtr * SCnctPtr ( SConector * p_cnctObj )
+{
+	return ( SPtrCrear ( p_cnctObj, (PRC_DESTRUCTOR) SCnctDestruir ) );
+}

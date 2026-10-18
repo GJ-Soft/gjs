@@ -169,3 +169,8 @@ SError * SErrClonar ( SError * p_errObj )
 	}
 	return ( p_errRes );
 }
+
+SPtr * SErrPtr ( SError * p_errObj )
+{
+	return ( SPtrCrear ( p_errObj, (PRC_DESTRUCTOR) SErrDestruir ) );
+}

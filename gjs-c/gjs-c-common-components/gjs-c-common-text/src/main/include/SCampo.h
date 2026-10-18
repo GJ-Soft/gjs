@@ -22,6 +22,7 @@
 
 
 #include <SCadena.h>
+#include <SPtr.h>
 
 
 typedef int (* PFUNINTPCAD)(SCadena *);
@@ -86,6 +87,8 @@ int SCampCompararCad ( SCampo * p_campObj, SCadena * p_cadValor );
 int SCampCompararLit ( SCampo * p_campObj, const char * p_cValor );
 
 int SCampCumpleExpReg ( SCampo * p_campObj, const char * p_cExpReg );
+
+SPtr * SCampPtr ( SCampo * p_campObj );
 
 
 

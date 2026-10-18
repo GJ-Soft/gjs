@@ -5,6 +5,7 @@
 
 #include <SEntidadCod.h>
 #include <SNombre.h>
+#include <SPtr.h>
 
 
 typedef struct
@@ -19,12 +20,12 @@ typedef struct
 SEntidadCodNom * SEntCodNomCrearDef ( int iMaxTam );
 SEntidadCodNom * SEntCodNomCrear ( SCadena * p_cadValor, int iMaxTam, SCadena * p_cadNombre );
 SEntidadCodNom * SEntCodNomCrearLit ( const char * p_cValor, int iMaxTam, const char * p_cNombre );
-SEntidadCodNom * SEntCodNomCrearExt ( SCadena * p_cadValor, int iMaxTam, SCadena * p_cadNombre, void * p_vContenido );
-SEntidadCodNom * SEntCodNomCrearLitExt ( const char * p_cValor, int iMaxTam, const char * p_cNombre, void * p_vContenido );
+SEntidadCodNom * SEntCodNomCrearExt ( SCadena * p_cadValor, int iMaxTam, SCadena * p_cadNombre, SPtr * p_ptrContenido );
+SEntidadCodNom * SEntCodNomCrearLitExt ( const char * p_cValor, int iMaxTam, const char * p_cNombre, SPtr * p_ptrContenido );
 SEntidadCodNom * SEntCodNomEncapsular ( SCodigo * p_codEntidad, SNombre * p_nomEntidad );
-SEntidadCodNom * SEntCodNomEncapsularExt ( SCodigo * p_codEntidad, SNombre * p_nomEntidad, void * p_vContenido );
+SEntidadCodNom * SEntCodNomEncapsularExt ( SCodigo * p_codEntidad, SNombre * p_nomEntidad, SPtr * p_ptrContenido );
 
-void * SEntCodNomDestruir ( SEntidadCodNom ** p_p_entcnObj );
+void SEntCodNomDestruir ( SEntidadCodNom ** p_p_entcnObj );
 
 int SEntCodNomEsValida ( SEntidadCodNom * p_entcnObj );
 int SEntCodNomTieneContenido ( SEntidadCodNom * p_entcnObj );
@@ -45,7 +46,9 @@ SEntidadCod * SEntCodNomBase ( SEntidadCodNom * p_entcnObj );
 int SEntCodNomEstablecerCodigo ( SEntidadCodNom * p_entcnObj, SCodigo * p_codEntidad );
 int SEntCodNomEstablecerValorCodigo ( SEntidadCodNom * p_entcnObj, SCadena * p_cadValor );
 int SEntCodNomEstablecerValorCodigoLit ( SEntidadCodNom * p_entcnObj, const char * p_cValor );
-void * SEntCodNomEstablecerContenido ( SEntidadCodNom * p_entcnObj, void * p_vContenido );
+int SEntCodNomEstablecerContenido ( SEntidadCodNom * p_entcnObj, void * p_vContenido );
+int SEntCodNomEstablecerContenidoExt ( SEntidadCodNom * p_entcnObj, void * p_vContenido, PRC_DESTRUCTOR fDestructor );
+int SEntCodNomAsignarContenido ( SEntidadCodNom * p_entcnObj, SPtr * p_ptrContenido );
 int SEntCodNomEstablecerNombre ( SEntidadCodNom * p_entcnObj, SNombre * p_nomEntidad );
 int SEntCodNomEstablecerValorNombre ( SEntidadCodNom * p_entcnObj, SCadena * p_cadNombre );
 int SEntCodNomEstablecerValorNombreLit ( SEntidadCodNom * p_entcnObj, const char * p_cNombre );
@@ -87,6 +90,8 @@ int SEntCodNomCompararCad ( SEntidadCodNom * p_entcnObj, SCadena * p_cadVal );
 int SEntCodNomCompararLit ( SEntidadCodNom * p_entcnObj, const char * p_cVal );
 
 unsigned int SEntCodNomHash ( SEntidadCodNom * p_entcnObj );
+
+SPtr * SEntCodNomPtr ( SEntidadCodNom * p_entcnObj );
 
 
 #endif

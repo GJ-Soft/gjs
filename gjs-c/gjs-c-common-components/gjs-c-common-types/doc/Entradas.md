@@ -5,7 +5,7 @@
 | Módulos       | 4                                                                        |
 | Cabeceras     | `SEntrada.h`, `SEntradaExt.h`, `SListaEntradas.h`, `SListaEntradasExt.h` |
 | Prefijos      | `SEtr`, `SEtx`, `SLisEtr`, `SLisEtx`                                     |
-| Funciones     | 17 + 21 + 15 + 14                                                        |
+| Funciones     | 18 + 22 + 15 + 14                                                        |
 | Incluidos por | Sólo las dos listas — **ver Observaciones**                              |
 | Tests         | Uno por módulo                                                           |
 
@@ -32,13 +32,18 @@ marcada como principal — igual que
 
 ## `SEntrada`
 
-| Grupo               | Funciones                                                                                   |
-| ------------------- | ------------------------------------------------------------------------------------------- |
-| Ciclo de vida       | `SEtrCrearDef`, `SEtrCrear`, `SEtrCrearExt`, `SEtrDestruir`, `SEtrDuplicar`, `SEtrEsValido` |
-| Acceso              | `SEtrNombre`, `SEtrDefinicion`                                                              |
-| Asignación          | `SEtrEstablecer`, `SEtrEstablecerNombre`, `SEtrEstablecerDefinicion`                        |
-| Comparación         | `SEtrEsIgual`, `SEtrEsMenor`, `SEtrEsMayor`                                                 |
-| Comparación literal | `SEtrEsIgualLit`, `SEtrEsMenorLit`, `SEtrEsMayorLit`                                        |
+| Grupo               | Funciones                                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------------ |
+| Ciclo de vida       | `SEtrCrearDef`, `SEtrCrear`, `SEtrCrearExt`, `SEtrDestruir`, `SEtrDuplicar`, `SEtrEsValido`, `SEtrPtr` |
+| Acceso              | `SEtrNombre`, `SEtrDefinicion`                                                                         |
+| Asignación          | `SEtrEstablecer`, `SEtrEstablecerNombre`, `SEtrEstablecerDefinicion`                                   |
+| Comparación         | `SEtrEsIgual`, `SEtrEsMenor`, `SEtrEsMayor`                                                            |
+| Comparación literal | `SEtrEsIgualLit`, `SEtrEsMenorLit`, `SEtrEsMayorLit`                                                   |
+
+`SEtrPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SEtrDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 La comparación es **por nombre**, lo que permite mantener listas ordenadas y
 buscar por clave.
@@ -54,6 +59,12 @@ Añade sobre la anterior:
 | `SEtxDefinicionPrinc ( … )`                 | La definición principal.    |
 | `SEtxEstablecerDefinicionPrinc ( … )`       | Fija la principal.          |
 | `SEtxInsertarDefinicion ( … )`              | Añade otra definición.      |
+| `SPtr * SEtxPtr ( SEntradaExt * )`          | Lo envuelve en un `SPtr`.   |
+
+`SEtxPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SEtxDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 ## Las listas
 
@@ -77,6 +88,7 @@ lista con búsqueda por clave:
 
 - [Cadenas](../../gjs-c-common-text/doc/Cadenas.md) — nombres y definiciones.
 - [Listas](../../gjs-c-common-base-types/doc/Listas.md) — el almacenamiento.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SEtrPtr` y `SEtxPtr`.
 
 ## Tests
 

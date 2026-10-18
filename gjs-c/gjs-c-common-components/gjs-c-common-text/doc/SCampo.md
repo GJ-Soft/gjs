@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SCampo.c` (535 líneas) |
 | Prefijo      | `SCamp`                                            |
 | Struct       | `SCampo`                                           |
-| Funciones    | 30                                                 |
+| Funciones    | 31                                                 |
 | Incluido por | `Texto.h`                                          |
 | Test         | `SCampoTest.c` → `TestSCampo()`                    |
 
@@ -54,6 +54,12 @@ SCampDestruir ( &p_campObj );
 | `SCampo * SCampCrear ( PFUNINTPCAD, int iMaxTam )`     | Campo vacío con el tope indicado.          |
 | `SCampo * SCampDuplicar ( SCampo * )`                  | Copia independiente, misma validación.     |
 | `void SCampDestruir ( SCampo ** )`                     | Destruye y anula el puntero.               |
+| `SPtr * SCampPtr ( SCampo * )`                         | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
+
+`SCampPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SCampDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 Sin función de validación, o con `iMaxTam` no positivo, `SCampCrear` devuelve
 `NULL`.
@@ -123,6 +129,7 @@ Y `SCampCumpleExpReg ( SCampo *, const char * p_cExpReg )`, que baja a
 - [SCadena](SCadena.md) — el almacenamiento y todas las operaciones.
 - [ValidacionCadenas](ValidacionCadenas.md) — las tres validaciones de la casa,
   aunque `SCampo` no la incluye: la función llega como parámetro.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SCampPtr`.
 
 ## Test
 

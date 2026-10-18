@@ -2,10 +2,10 @@
 
 | Dato          | Valor                                                                                                                                                                                                                           |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Módulos       | 11 (más `SListaHash`, que no existe)                                                                                                                                                                                            |
+| Módulos       | 11                                                                                                                                                                                                                              |
 | Cabeceras     | `SLista.h`, `SListaPtr.h`, `SListaEnteros.h`, `SListaEnterosLargos.h`, `SListaEnterosLargosSinSigno.h`, `SListaLiterales.h`, `SListaOrdenada.h`, `SListaOrdenadaPtr.h`, `SListaParejas.h`, `SListaReferencias.h`, `SListaVec.h` |
 | Prefijos      | `SLis`, `SLisp`, `SLisEnt`, `SLisEntl`, `SLisEntLss`, `SLisLit`, `SLisOrd`, `SLispOrd`, `SLisPrj`, `SLisRef`, `SVLis`                                                                                                           |
-| Incluidos por | `Tipos.h`, **salvo `SListaVec.h`**                                                                                                                                                                                              |
+| Incluidos por | `TiposBasicos.h`, **salvo `SListaVec.h`**                                                                                                                                                                                              |
 | Tests         | Uno por módulo                                                                                                                                                                                                                  |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)
@@ -371,19 +371,10 @@ Un fichero por módulo: `SListaTest.c`, `SListaPtrTest.c`, `SListaEnterosTest.c`
 
 ## Observaciones
 
-> **`SListaHash` no existe.** `SListaHash.h` es una **copia literal de
-> `SLista.h`**: mismo guard `_ORG_GJS_C_CC_C_COMMON_SLISTA_H`, mismo
-> `typedef … SLista` y las mismas 30 funciones `SLis*`. Como `Tipos.h` incluye
-> `SLista.h` en la línea 42 y `SListaHash.h` en la 59, cuando llega la segunda el
-> guard ya está definido y **el fichero se expande a nada**. No hay `SListaHash.c`,
-> ni implementación, ni test. Quien programe contra esa cabecera creerá estar
-> usando una tabla hash y estará usando una lista enlazada con búsqueda lineal.
-> Lo prudente es borrar el fichero o implementarlo de verdad.
-
 - **`SListaVec` rompe el convenio de nombres** por partida triple: el fichero se
   llama `SListaVec`, la estructura `SVLista` y el prefijo es `SVLis` en lugar de
   `SLisVec`. Además es el único módulo de la familia fuera de la fachada
-  `Tipos.h`, así que hay que incluirlo a mano.
+  `TiposBasicos.h`, así que hay que incluirlo a mano.
 - La bandera de liberación se puede cambiar en caliente en `SListaPtr` y
   `SListaOrdenadaPtr` (`…ActivarLiberacionMemoria`), pero **no** en
   [SElemento](SElemento.md) ni [SContenido](SContenido.md), donde las funciones

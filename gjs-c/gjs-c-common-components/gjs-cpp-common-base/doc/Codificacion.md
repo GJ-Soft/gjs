@@ -42,6 +42,14 @@ que aquí no hay que reservar búferes ni llevar longitudes.
 `[Test Cadenas]`, igual que `CadenasTest.cpp`, de modo que los dos son
 indistinguibles en el registro de la compilación.
 
+Cada función se prueba con tres casos: la cadena vacía, un texto ASCII y
+`a` + `ñ` + `€`, que obliga a una conversión de verdad. Lo esperado son los
+bytes de la norma (`61 C3 B1 E2 82 AC` en UTF‑8, `00 61 00 F1 20 AC` en UTF‑16
+big-endian), no la salida de la función contraria. Los errores se escriben en
+hexadecimal por `cout`: con `wcout` y el locale «C», el primer carácter que no
+sabe convertir lo deja en estado de error y a partir de ahí no escribe nada,
+que es como el test viejo de `Utf16AUnicode` fallaba sin que se viera.
+
 ## Observaciones
 
 - **`wchar_t` no mide lo mismo en todas partes.** Son 2 bytes en Windows y en
@@ -60,6 +68,15 @@ indistinguibles en el registro de la compilación.
   la 850, que sí aparece en el stack —`gjs-c-common-support` dibuja sus marcos
   con ella y `gjs-c-common-io` tiene `CF_OEMTEXT`—. El puente con esa parte del
   mundo hay que hacerlo fuera.
+- **El lado `std::string` de las funciones UTF‑16 son bytes, no texto.** Dos
+  por carácter y en **big-endian**, que es el orden por defecto de
+  `codecvt_utf16`; sin BOM ni a la entrada ni a la salida. Pasarle a
+  `Utf16AUnicode` un texto ASCII tal cual es un error: `"Esto es una cadena"` se
+  lee como 9 caracteres CJK (`U+4573`…). Así estuvo mal planteado el test hasta
+  la 1.1.0, y como el caso no marcaba el fallo, nadie lo vio.
+- **`wstring_convert` y `codecvt_utf8`/`codecvt_utf16` están obsoletos desde
+  C++17** y se retiran en C++26. Hoy compilan con aviso (el stack usa gnu++20); el día que el estándar
+  llegue a C++26 habrá que reimplementar las cuatro funciones.
 - **Los parámetros se llaman `valor`, sin notación húngara**, a diferencia del
   resto del componente. Detalle menor, pero es el único sitio donde el convenio
   se rompe en las cuatro funciones a la vez.

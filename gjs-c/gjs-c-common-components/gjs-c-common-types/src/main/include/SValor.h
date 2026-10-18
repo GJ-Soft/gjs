@@ -12,6 +12,7 @@
 #include <SFecha.h>
 #include <SHora.h>
 #include <SFechaHora.h>
+#include <SPtr.h>
 
 
 
@@ -123,6 +124,8 @@ int SValEsIgualValorNumerico ( SValor * p_valObj, SCadenaNumerica * p_cadValor )
 int SValEsIgualValorFecha ( SValor * p_valObj, SFecha * p_fecValor );
 int SValEsIgualValorHora ( SValor * p_valObj, SHora * p_horValor );
 int SValEsIgualValorFechaHora ( SValor * p_valObj, SFechaHora * p_fechValor );
+
+SPtr * SValPtr ( SValor * p_valObj );
 
 #endif
 

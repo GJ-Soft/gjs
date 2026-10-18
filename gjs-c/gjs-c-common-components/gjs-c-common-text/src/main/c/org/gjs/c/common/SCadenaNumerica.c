@@ -178,3 +178,8 @@ SCadenaNumerica * SCadnDuplicar ( SCadenaNumerica * p_cadObj )
 
 
 
+
+SPtr * SCadnPtr ( SCadenaNumerica * p_cadObj )
+{
+	return ( SPtrCrear ( p_cadObj, (PRC_DESTRUCTOR) SCadnDestruir ) );
+}

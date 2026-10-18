@@ -28,11 +28,11 @@ Volver al [README](../README.md).
 
 | Módulo           | Prefijo      | Struct           | Funciones | Test | Documento                 |
 | ---------------- | ------------ | ---------------- | --------- | ---- | ------------------------- |
-| `SEntidad`       | `SEnt`       | `SEntidad`       | 37        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadNom`    | `SEntNom`    | `SEntidadNom`    | 52        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadCod`    | `SEntCod`    | `SEntidadCod`    | 43        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadCodNom` | `SEntCodNom` | `SEntidadCodNom` | 56        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadIdCod`  | `SEntIdCod`  | `SEntidadIdCod`  | 52        | ✔    | [Entidades](Entidades.md) |
+| `SEntidad`       | `SEnt`       | `SEntidad`       | 40        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadNom`    | `SEntNom`    | `SEntidadNom`    | 55        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadCod`    | `SEntCod`    | `SEntidadCod`    | 46        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadCodNom` | `SEntCodNom` | `SEntidadCodNom` | 59        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadIdCod`  | `SEntIdCod`  | `SEntidadIdCod`  | 55        | ✔    | [Entidades](Entidades.md) |
 
 ---
 
@@ -46,8 +46,4 @@ Cabecera fachada. Incluye los cinco módulos.
 
 Configuración interna, en el árbol de **fuentes** (no se publica). Incluye las
 fachadas de los módulos de los que depende: `TiposDatos.h`, `Texto.h`,
-`Tiempo.h` y `Tipos.h`. Todavía no define nada propio.
-
-> El `#include <Tipos.h>` es **ambiguo**: hay dos ficheros con ese nombre en el
-> stack. Ver
-> [gjs-c-common-base-types](../../gjs-c-common-base-types/doc/MODULOS.md#tiposh).
+`Tiempo.h` y `TiposBasicos.h`. Todavía no define nada propio.

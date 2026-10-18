@@ -5,7 +5,7 @@
 | Módulos       | 6                                                                                                                                                   |
 | Cabeceras     | `SSecuencia.h`, `SSecuenciaPtr.h`, `SSecuenciaEnteros.h`, `SSecuenciaEnterosLargos.h`, `SSecuenciaEnterosLargosSinSigno.h`, `SSecuenciaLiterales.h` |
 | Prefijos      | `SSec`, `SSecp`, `SSecEnt`, `SSecEntL`, `SSecEntLSS`, `SSecLit`                                                                                     |
-| Incluidos por | `Tipos.h`                                                                                                                                           |
+| Incluidos por | `TiposBasicos.h`                                                                                                                                    |
 | Tests         | Uno por módulo                                                                                                                                      |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

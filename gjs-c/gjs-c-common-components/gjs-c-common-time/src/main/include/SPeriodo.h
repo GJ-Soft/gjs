@@ -7,6 +7,7 @@
 
 
 #include <TiposPeriodicidad.h>
+#include <SPtr.h>
 
 
 
@@ -45,5 +46,7 @@ int SPerdVecesQueHaOcurrido ( SPeriodo * p_perdObj );
 void SPerdIniciar ( SPeriodo * p_perdObj, long lFechaInicial );
 int SPerdActualizarHastaFecha ( SPeriodo * p_perdObj, long lFecha ); 
 int SPerdActualizarHastaHoy ( SPeriodo * p_perdObj ); 
+
+SPtr * SPerdPtr ( SPeriodo * p_perdObj );
 
 #endif

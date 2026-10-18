@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SValor.c`   |
 | Prefijo      | `SVal`                                   |
 | Struct       | `SValor`                                 |
-| Funciones    | 88                                       |
+| Funciones    | 89                                       |
 | Incluido por | `TiposDatos.h`                           |
 | Test         | `SValorTest.c` → `TestSValor()`          |
 
@@ -41,7 +41,7 @@ sino una cadena y un código que dice cómo interpretarla.
 
 ## La API: cuatro familias por tipo
 
-Las 88 funciones son, casi todas, la misma operación repetida por cada tipo del
+Las 89 funciones son, casi todas, la misma operación repetida por cada tipo del
 catálogo:
 
 | Familia                | Nº  | Forma                              | Ejemplo                           |
@@ -90,11 +90,17 @@ if ( SValEstablecerValorEntero ( p_valObj, -5 ) == 0 )
 | `SValor * SValCrearDef ()`                | Valor sin tipo.              |
 | `SValor * SValDuplicar ( SValor * )`      | Copia independiente.         |
 | `void SValDestruir ( SValor ** )`         | Destruye y anula el puntero. |
+| `SPtr * SValPtr ( SValor * )`             | Lo envuelve en un `SPtr`.    |
 | `void SValAsignar ( SValor *, SValor * )` | Asigna desde otro valor.     |
 | `void SValLimpiar ( SValor * )`           | Vacía el valor.              |
 | `int SValTipo ( SValor * )`               | Código de tipo.              |
 | `int SValTieneValor ( SValor * )`         | 1 si tiene valor asignado.   |
 | `int SValMaxTam ( SValor * )`             | Tamaño máximo.               |
+
+`SValPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SValDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 `SValAsignar` y `SValLimpiar` son las dos únicas modificaciones que siguen
 devolviendo `void`, a diferencia de los 18 `SValEstablecerValor…`.
@@ -130,6 +136,7 @@ un puntero a un dato constante sin obligar al llamante a quitarle el `const`.
 - [Tipos](../../gjs-c-common-base/doc/Tipos.md) — el catálogo `TIP_*`.
 - [gjs-c-common-time](../../gjs-c-common-time/README.md) — los tipos de fecha y
   hora.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SValPtr`.
 
 ## Test
 

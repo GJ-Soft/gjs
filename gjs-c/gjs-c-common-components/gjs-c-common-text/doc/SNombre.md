@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SNombre.c` (643 líneas) |
 | Prefijo      | `SNom`                                               |
 | Struct       | `SNombre`                                            |
-| Funciones    | 39                                                   |
+| Funciones    | 40                                                   |
 | Incluido por | `Texto.h`                                            |
 | Test         | `SNombreTest.c` → `TestSNombre()`                    |
 
@@ -58,6 +58,12 @@ SNomDestruir ( &p_nomObj );
 | `SNombre * SNomCrearValorLitExt ( const char *, int )`      | Igual, desde un literal.                 |
 | `SNombre * SNomDuplicar ( SNombre * )`                      | Copia independiente.                     |
 | `void SNomDestruir ( SNombre ** )`                          | Destruye y anula el puntero.             |
+| `SPtr * SNomPtr ( SNombre * )`                              | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
+
+`SNomPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SNomDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 Las cuatro variantes con valor devuelven `NULL` si el valor no supera la
 validación.
@@ -94,6 +100,7 @@ Y `SNomCumpleExpReg ( SNombre *, const char * p_cExpReg )`.
 
 - [SCampo](SCampo.md) — toda la mecánica; `SNombre` sólo reetiqueta.
 - [ValidacionCadenas](ValidacionCadenas.md) — `SCadEsNombreValido`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SNomPtr`.
 
 ## Test
 

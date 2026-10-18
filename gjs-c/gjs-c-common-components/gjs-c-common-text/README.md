@@ -6,7 +6,7 @@ Librería de **cadenas y texto** en C del stack GJS. Se apoya en
 las rutinas sueltas sobre `char *` hasta objetos de texto con cursor, tokens,
 patrones y expresiones regulares.
 
-18 módulos en 20.967 líneas, de las cuales sólo 2.522 son cabeceras: el grueso
+18 módulos en 21.773 líneas, de las cuales sólo 2.594 son cabeceras: el grueso
 está en tres implementaciones muy densas (`Cadenas.c`, `SCadena.c`,
 `SCadenaConv.c`).
 
@@ -18,7 +18,7 @@ está en tres implementaciones muy densas (`Cadenas.c`, `SCadena.c`,
 | ------------ | ---------------------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`                             |
 | `artifactId` | `gjs-c-common-text`                            |
-| `version`    | `1.0.0`                                   |
+| `version`    | `1.1.0-SNAPSHOT`                          |
 | `packaging`  | `nar` (biblioteca **shared**)                  |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`                   |
 | Depende de   | `gjs-c-common-base`, `gjs-c-common-base-types` |
@@ -188,10 +188,6 @@ Sin test asociado: las cabeceras sin fuente (`ASCIIOEM850`, `JuegosCaracteres`,
   ficheros comparten el mismo guard `_ORG_GJS_C_CC_JUEGOSCARACTERES_H` y su
   contenido es equivalente, así que el segundo en incluirse se expande a nada.
   Hoy es inocuo, pero son dos copias que pueden divergir.
-- **`TextoConfig.h` hace `#include <Tipos.h>`**, y hay **dos `Tipos.h`** en el
-  stack (el catálogo de tipos de `gjs-c-common-base` y la fachada de
-  `gjs-c-common-base-types`). Cuál se coge depende del orden de los `-I`. Ver
-  [gjs-c-common-base-types](../gjs-c-common-base-types/doc/MODULOS.md#tiposh).
 - `TextoConfig.h` vive en el árbol de **fuentes**, no en `src/main/include`, así
   que no se publica en el NAR `noarch`.
 - **El condicional de página de códigos de `ASCII.h` es inerte**: las dos ramas

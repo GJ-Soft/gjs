@@ -4,8 +4,7 @@
 
 
 
-
-
+#include <SPtr.h>
 
 
 
@@ -51,7 +50,7 @@ int SIdCompararNum ( SId * p_idObj, unsigned long ulId );
 
 unsigned int SIdHash ( SId * p_idObj );
 
-
+SPtr * SIdPtr (  SId * p_idObj );
 
 
 

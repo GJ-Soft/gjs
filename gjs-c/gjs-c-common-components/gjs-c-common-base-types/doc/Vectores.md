@@ -5,7 +5,7 @@
 | Módulos       | 4                                                                     |
 | Cabeceras     | `SVector.h`, `SVectorPtr.h`, `SVectorEnteros.h`, `SVectorLiterales.h` |
 | Prefijos      | `SVec`, `SVecp`, `SVecEnt`, `SVecLit`                                 |
-| Incluidos por | `Tipos.h`                                                             |
+| Incluidos por | `TiposBasicos.h`                                                      |
 | Tests         | Uno por módulo                                                        |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

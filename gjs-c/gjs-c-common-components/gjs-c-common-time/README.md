@@ -4,7 +4,7 @@ Librería de **fecha y hora** en C del stack GJS: calendario, aritmética de
 fechas, husos y zonas horarias, sistemas horarios, periodicidades, reloj y
 cronómetro.
 
-16 módulos en 7.291 líneas. Es el módulo más limpio del stack hasta ahora: los
+16 módulos en 7.584 líneas. Es el módulo más limpio del stack hasta ahora: los
 16 tienen fuente, test y están en la fachada.
 
 ---
@@ -15,7 +15,7 @@ cronómetro.
 | ------------ | ----------------------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`                              |
 | `artifactId` | `gjs-c-common-time`                             |
-| `version`    | `1.0.0`                                    |
+| `version`    | `1.1.0-SNAPSHOT`                           |
 | `packaging`  | `nar` (biblioteca **shared**)                   |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`                    |
 | Depende de   | `gjs-c-common-calculation`, `gjs-c-common-text` |

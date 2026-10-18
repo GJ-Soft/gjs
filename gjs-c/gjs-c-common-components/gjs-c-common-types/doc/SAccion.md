@@ -5,7 +5,7 @@
 | Módulos       | 2                                    |
 | Cabeceras     | `SAccion.h`, `TiposAccion.h`         |
 | Prefijos      | `SAcc`, `TipAcc`                     |
-| Funciones     | 18 + 9                               |
+| Funciones     | 19 + 9                               |
 | Incluidos por | `TiposDatos.h`                       |
 | Tests         | `SAccionTest.c`, `TiposAccionTest.c` |
 
@@ -56,13 +56,18 @@ Con sus predicados: `TipAccEsValido`, `TipAccEsCodigo`, `TipAccEsFuncion`,
 
 ## API de `SAccion`
 
-| Grupo         | Funciones                                                                                                               |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Ciclo de vida | `SAccCrear ( int iTipo )`, `SAccCrearExt ( iTipo, iCodigo, p_fAccion )`, `SAccDestruir`, `SAccDuplicar`, `SAccEsValida` |
-| Consulta      | `SAccTipo`, `SAccCodigo`, `SAccFuncion`                                                                                 |
-| Predicados    | `SAccRetornaCodigo`, `SAccInvocaMenu`, `SAccEjecutaFuncion`, `SAccOrdenaSalir`, `SAccOrdenaVolver`                      |
-| Asignación    | `SAccEstablecer`, `SAccEstablecerExt`, `SAccEstablecerCodigo`, `SAccEstablecerFuncion`                                  |
-| **Ejecución** | `int SAccEjecutar ( SAccion * )`                                                                                        |
+| Grupo         | Funciones                                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Ciclo de vida | `SAccCrear ( int iTipo )`, `SAccCrearExt ( iTipo, iCodigo, p_fAccion )`, `SAccDestruir`, `SAccDuplicar`, `SAccEsValida`, `SAccPtr` |
+| Consulta      | `SAccTipo`, `SAccCodigo`, `SAccFuncion`                                                                                            |
+| Predicados    | `SAccRetornaCodigo`, `SAccInvocaMenu`, `SAccEjecutaFuncion`, `SAccOrdenaSalir`, `SAccOrdenaVolver`                                 |
+| Asignación    | `SAccEstablecer`, `SAccEstablecerExt`, `SAccEstablecerCodigo`, `SAccEstablecerFuncion`                                             |
+| **Ejecución** | `int SAccEjecutar ( SAccion * )`                                                                                                   |
+
+`SAccPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SAccDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 Los predicados están redactados desde el punto de vista de quien despacha la
 acción —`SAccOrdenaSalir`, `SAccInvocaMenu`— en lugar de repetir los nombres del
@@ -86,6 +91,7 @@ SAccDestruir ( &p_accObj );
 
 - `Funciones.h` de [gjs-c-common-base](../../gjs-c-common-base/doc/MODULOS.md) —
   el tipo `PFUNINTI` (`int (*)(int)`).
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SAccPtr`.
 
 ## Tests
 

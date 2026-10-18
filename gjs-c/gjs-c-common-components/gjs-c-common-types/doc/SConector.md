@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SConector.c` |
 | Prefijo      | `SCnct`                                   |
 | Struct       | `SConector`                               |
-| Funciones    | 11                                        |
+| Funciones    | 12                                        |
 | Incluido por | `TiposDatos.h`                            |
 | Test         | `SConectorTest.c` → `TestSConector()`     |
 
@@ -40,6 +40,7 @@ tipo al sacarlo.
 | `SConector * SCnctCrearExt ( void * p_vObjeto, int iTipo )`      | Envuelve con tipo.                             |
 | `void SCnctDestruir ( SConector ** )`                            | Destruye **sólo el conector**.                 |
 | `void SCnctDestruirExt ( SConector **, int iDestruirContenido )` | Destruye conector y, opcionalmente, contenido. |
+| `SPtr * SCnctPtr ( SConector * )`                                | Lo envuelve en un `SPtr`.                      |
 | `int SCnctEsValido ( SConector * )`                              | 1 si es utilizable.                            |
 | `void * SCnctObjeto ( SConector * )`                             | El objeto envuelto.                            |
 | `int SCnctTipo ( SConector * )`                                  | Código de tipo.                                |
@@ -47,6 +48,12 @@ tipo al sacarlo.
 | `int SCnctEstablecerObjeto ( SConector *, void * )`              | Cambia el objeto.                              |
 | `int SCnctEstablecerTipo ( SConector *, int )`                   | Cambia el tipo.                                |
 | `void SCnctLimpiar ( SConector * )`                              | Vacía el conector.                             |
+
+`SCnctPtr` pasa la propiedad del conector al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SCnctDestruir`, y no por separado. Como
+`SCnctDestruir`, **no** libera el objeto conectado: sigue siendo del llamante,
+que lo destruye aparte. Con objeto nulo devuelve un `SPtr` vacío; si falla la
+reserva del `SPtr`, devuelve `NULL` y el conector sigue siendo del llamante.
 
 ```c
 SConector * p_cnctObj = SCnctCrearExt ( p_valObj, TIP_OBJETO );
@@ -60,7 +67,7 @@ SCnctDestruirExt ( &p_cnctObj, 1 );   /* destruye también el contenido */
 
 ## Dependencias
 
-Ninguna más allá de `Base.h`.
+`Base.h`, y [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types para `SCnctPtr`.
 
 ## Test
 
@@ -80,6 +87,11 @@ Ninguna más allá de `Base.h`.
   genérico, que para un objeto del stack —una `SCadena`, un `SValor`— libera la
   estructura pero **no sus campos internos**. Conviene destruir el contenido a
   mano y llamar a `SCnctDestruir` a secas.
+- **Hasta el 2026-10-18, `SCnctDestruir` liberaba también el contenido**, en
+  contra de lo que siempre dijo esta tabla: llamaba a
+  `SCnctDestruirExt ( …, 1 )`. Ahora pasa `0`. Un consumidor que contara con la
+  liberación implícita ahora pierde ese bloque; uno que liberaba el contenido a
+  mano antes de destruir el conector cometía una doble liberación, que desaparece.
 - **El código de tipo no está acotado a ningún catálogo.** La cabecera no dice si
   `iTipo` usa los `TIP_*` de la librería base o valores propios de la aplicación,
   y no hay validación.

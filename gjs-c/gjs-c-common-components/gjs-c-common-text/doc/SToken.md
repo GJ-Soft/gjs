@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SToken.c` (809 líneas) |
 | Prefijo      | `STok`                                              |
 | Struct       | `SToken`                                            |
-| Funciones    | 39                                                  |
+| Funciones    | 40                                                  |
 | Incluido por | `Texto.h`                                           |
 | Test         | `STokenTest.c` → `TestSToken()`                     |
 
@@ -38,8 +38,14 @@ typedef struct
 | `SToken * STokGenerarLit ( const char * )`    | A partir de un literal.          |
 | `SToken * STokDuplicar ( SToken * )`          | Copia independiente.             |
 | `void STokDestruir ( SToken ** )`             | Destruye y anula el puntero.     |
+| `SPtr * STokPtr ( SToken * )`                 | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
 | `int STokInicializar ( SToken *, int iLong )` | Reinicia con nueva longitud.     |
 | `int STokVaciar ( SToken * )`                 | Vacía el contenido.              |
+
+`STokPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `STokDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 ### Acceso
 
@@ -88,6 +94,7 @@ Y `STokCumpleExpReg ( SToken *, const char * p_cExpReg )`.
 
 - [SCadena](SCadena.md) — el almacenamiento.
 - [ExpresionesRegulares](ExpresionesRegulares.md) — `STokCumpleExpReg`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `STokPtr`.
 
 ## Test
 

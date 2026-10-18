@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SCodigo.c` (642 líneas) |
 | Prefijo      | `SCod`                                               |
 | Struct       | `SCodigo`                                            |
-| Funciones    | 39                                                   |
+| Funciones    | 40                                                   |
 | Incluido por | `Texto.h`                                            |
 | Test         | `SCodigoTest.c` → `TestSCodigo()`                    |
 
@@ -53,6 +53,12 @@ SCodDestruir ( &p_codObj );
 | `SCodigo * SCodCrearValorLitExt ( const char *, int )`      | Igual, desde un literal.                       |
 | `SCodigo * SCodDuplicar ( SCodigo * )`                      | Copia independiente.                           |
 | `void SCodDestruir ( SCodigo ** )`                          | Destruye y anula el puntero.                   |
+| `SPtr * SCodPtr ( SCodigo * )`                              | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
+
+`SCodPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SCodDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 Las cuatro variantes con valor devuelven `NULL` si el valor no supera la
 validación: **o nace válido o no nace**.
@@ -89,6 +95,7 @@ Y `SCodCumpleExpReg ( SCodigo *, const char * p_cExpReg )`.
 
 - [SCampo](SCampo.md) — toda la mecánica; `SCodigo` sólo reetiqueta.
 - [ValidacionCadenas](ValidacionCadenas.md) — `SCadEsCodigoValido`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SCodPtr`.
 
 ## Test
 

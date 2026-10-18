@@ -23,7 +23,7 @@ Define the gz packaging for maven projects
 		<extension>
 			<groupId>org.gjsoft.maven.extensions</groupId>
 			<artifactId>gz-maven-extension</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.0-SNAPSHOT</version>
 		</extension>
 	</extensions>
 </build>

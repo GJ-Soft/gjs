@@ -5,7 +5,7 @@
 | Módulos       | 5                                                                        |
 | Cabeceras     | `SContador.h`, `SRango.h`, `SCursor.h`, `SIndicador.h`, `SIndicador2D.h` |
 | Prefijos      | `SCnt`, `SRng`, `SCur`, `SInd`, `SInd2D`                                 |
-| Incluidos por | `Tipos.h`                                                                |
+| Incluidos por | `TiposBasicos.h`                                                         |
 | Tests         | Uno por módulo                                                           |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)
@@ -35,6 +35,7 @@ typedef struct { int iMin; int iMax; } SRango;
 | ---------------------------------------------- | ---------------------------- |
 | `SRango * SRngCrear ( int iMin, int iMax )`    | Crea el rango.               |
 | `void SRngDestruir ( SRango ** )`              | Destruye y anula el puntero. |
+| `SPtr * SRngPtr ( SRango * )`                  | Lo envuelve en un [SPtr](SPtr.md). |
 | `int SRngEsValido ( SRango * )`                | 1 si es utilizable.          |
 | `int SRngMin ( SRango * )`                     | Extremo inferior.            |
 | `int SRngMax ( SRango * )`                     | Extremo superior.            |
@@ -42,6 +43,11 @@ typedef struct { int iMin; int iMax; } SRango;
 | `int SRngEstablecerMin ( SRango *, int iMin )` | Cambia el mínimo.            |
 | `int SRngEstablecerMax ( SRango *, int iMax )` | Cambia el máximo.            |
 | `int SRngEstaIncluido ( SRango *, int iVal )`  | 1 si el valor cae dentro.    |
+
+`SRngPtr` pasa la propiedad del rango al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SRngDestruir`. Con rango nulo devuelve un `SPtr`
+vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el rango sigue siendo
+del llamante.
 
 Es el único de la familia que trabaja con `int`; los demás usan
 `unsigned long`.
@@ -143,6 +149,7 @@ posiciones primero por línea y luego por columna.
 
 - `Base.h` de [gjs-c-common-base](../../gjs-c-common-base/README.md).
 - `SIndicador2D` depende de `SIndicador`.
+- [SPtr](SPtr.md) — `SRngPtr`.
 
 ## Tests
 

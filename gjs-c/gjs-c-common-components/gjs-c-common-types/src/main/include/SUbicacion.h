@@ -2,6 +2,8 @@
 #ifndef _ORG_GJS_C_CC_SUBICACION_H
 #define _ORG_GJS_C_CC_SUBICACION_H
 
+#include <SPtr.h>
+
 
 
 
@@ -43,6 +45,8 @@ void SUbcEstablecerTam ( SUbicacion * p_ubcObj, unsigned long ulTam );
 int SUbcDesplazar ( SUbicacion * p_ubcObj, long lDesp );
 
 int SUbcEsValida ( SUbicacion * p_ubcObj );
+
+SPtr * SUbcPtr ( SUbicacion * p_ubcObj );
 
 
 

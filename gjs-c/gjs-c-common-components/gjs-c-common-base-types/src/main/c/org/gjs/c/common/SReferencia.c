@@ -309,3 +309,8 @@ unsigned int SRefHash ( SReferencia * p_refObj )
 }
 
 
+
+SPtr * SRefPtr ( SReferencia * p_refObj )
+{
+	return ( SPtrCrear ( p_refObj, (PRC_DESTRUCTOR) SRefDestruir ) );
+}

@@ -5,7 +5,7 @@
 | Módulos       | 6                                                                                                   |
 | Cabeceras     | `SNodo.h`, `SNodoPtr.h`, `SNodoBin.h`, `SNodoBinPtr.h`, `SNodoPorBloques.h`, `SNodoPorBloquesPtr.h` |
 | Prefijos      | `SNod`, `SNodPtr`, `SNodBin`, `SNodBinPtr`, `SNodBlq`, `SNodBlqPtr`                                 |
-| Incluidos por | `Tipos.h`                                                                                           |
+| Incluidos por | `TiposBasicos.h`                                                                                    |
 | Tests         | Uno por módulo                                                                                      |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)
@@ -128,24 +128,6 @@ sólo quedan `SNodPtrCrear ( byte * p_byDatos, int iLiberar )`, `SNodPtrDatos` y
 `SNodoPorBloquesTest.c`, `SNodoPorBloquesPtrTest.c`.
 
 ## Observaciones
-
-> **`SNodoPtr.h` declara una función que no es suya, con el tipo cambiado.** En
-> la línea 32:
->
-> ```c
-> SNodoPtr * SNodBinCrearMem ( int iTamDatos );     /* SNodoPtr.h:32  */
-> SNodoBin * SNodBinCrearMem ( int iTamDatos );     /* SNodoBin.h:29  */
-> ```
->
-> Es el **mismo símbolo con dos tipos de retorno distintos**. Incluir las dos
-> cabeceras a la vez es un error de compilación, comprobado con el `gcc` del
-> proyecto:
-> *`error: conflicting types for 'SNodBinCrearMem'`*.
->
-> Como `Tipos.h` incluye ambas (líneas 74 y 76), **la fachada del módulo no
-> compila**. Que el módulo se construya sin problemas se debe a que ningún `.c`
-> de producción incluye `Tipos.h`; ver [MODULOS.md](MODULOS.md#tiposh). La línea
-> de `SNodoPtr.h` parece un resto de copia y pega y sobra.
 
 - **`SNodoPorBloques` declara la estructura `SNodoBlq`**, no `SNodoPorBloques`:
   el nombre del fichero y el del tipo no coinciden. Lo mismo en

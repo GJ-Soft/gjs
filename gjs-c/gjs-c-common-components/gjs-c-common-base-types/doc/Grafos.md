@@ -5,7 +5,7 @@
 | Módulos       | 3                                                        |
 | Cabeceras     | `SGrafo.h`, `SNodoGrafo.h`, `SAristaGrafo.h`             |
 | Prefijos      | `SGrf`, `SNodGrf`, `SAriGrf`                             |
-| Incluidos por | `Tipos.h`                                                |
+| Incluidos por | `TiposBasicos.h`                                         |
 | Tests         | `SGrafoTest.c`, `SNodoGrafoTest.c`, `SAristaGrafoTest.c` |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

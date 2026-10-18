@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SDescripcion.c` (642 líneas) |
 | Prefijo      | `SDesc`                                                   |
 | Struct       | `SDescripcion`                                            |
-| Funciones    | 39                                                        |
+| Funciones    | 40                                                        |
 | Incluido por | `Texto.h`                                                 |
 | Test         | `SDescripcionTest.c` → `TestSDescripcion()`               |
 
@@ -58,6 +58,12 @@ SDescDestruir ( &p_descObj );
 | `SDescripcion * SDescCrearValorLitExt ( const char *, int )`     | Igual, desde un literal.                    |
 | `SDescripcion * SDescDuplicar ( SDescripcion * )`                | Copia independiente.                        |
 | `void SDescDestruir ( SDescripcion ** )`                         | Destruye y anula el puntero.                |
+| `SPtr * SDescPtr ( SDescripcion * )`                             | Envuelve el objeto en un [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) que lo destruye. |
+
+`SDescPtr` pasa la propiedad del objeto al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SDescDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 ### Acceso y estado
 
@@ -91,6 +97,7 @@ Y `SDescCumpleExpReg ( SDescripcion *, const char * p_cExpReg )`.
 
 - [SCampo](SCampo.md) — toda la mecánica; `SDescripcion` sólo reetiqueta.
 - [ValidacionCadenas](ValidacionCadenas.md) — `SCadEsDescripcionValida`.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SDescPtr`.
 
 ## Test
 

@@ -5,6 +5,7 @@
 
 #include <SEntidad.h>
 #include <SNombre.h>
+#include <SPtr.h>
 
 
 
@@ -19,12 +20,12 @@ typedef struct
 SEntidadNom * SEntNomCrearDef ();
 SEntidadNom * SEntNomCrear ( unsigned long ulId, SCadena * p_cadNombre );
 SEntidadNom * SEntNomCrearLit ( unsigned long ulId, const char * p_cNombre );
-SEntidadNom * SEntNomCrearExt ( unsigned long ulId, SCadena * p_cadNombre, void * p_vContenido );
-SEntidadNom * SEntNomCrearLitExt ( unsigned long ulId, const char * p_cNombre, void * p_vContenido );
+SEntidadNom * SEntNomCrearExt ( unsigned long ulId, SCadena * p_cadNombre, SPtr * p_ptrContenido );
+SEntidadNom * SEntNomCrearLitExt ( unsigned long ulId, const char * p_cNombre, SPtr * p_ptrContenido );
 SEntidadNom * SEntNomEncapsular ( SId * p_idEntidad, SNombre * p_nomEntidad );
-SEntidadNom * SEntNomEncapsularExt ( SId * p_idEntidad, SNombre * p_nomEntidad, void * p_vContenido );
+SEntidadNom * SEntNomEncapsularExt ( SId * p_idEntidad, SNombre * p_nomEntidad, SPtr * p_ptrContenido );
 
-void * SEntNomDestruir ( SEntidadNom ** p_p_entnObj );
+void SEntNomDestruir ( SEntidadNom ** p_p_entnObj );
 
 int SEntNomEsValida ( SEntidadNom * p_entnObj );
 int SEntNomTieneContenido ( SEntidadNom * p_entnObj );
@@ -43,7 +44,9 @@ SEntidad * SEntNomBase ( SEntidadNom * p_entnObj );
 
 int SEntNomEstablecerId ( SEntidadNom * p_entnObj, SId * p_idEntidad );
 int SEntNomEstablecerValorId ( SEntidadNom * p_entnObj, unsigned long ulId );
-void * SEntNomEstablecerContenido ( SEntidadNom * p_entnObj, void * p_vContenido );
+int SEntNomEstablecerContenido ( SEntidadNom * p_entnObj, void * p_vContenido );
+int SEntNomAsignarContenido ( SEntidadNom * p_entnObj, SPtr * p_ptrContenido );
+int SEntNomEstablecerContenidoExt ( SEntidadNom * p_entnObj, void * p_vContenido, PRC_DESTRUCTOR fDestructor );
 int SEntNomEstablecerNombre ( SEntidadNom * p_entnObj, SNombre * p_nomEntidad );
 int SEntNomEstablecerValorNombre ( SEntidadNom * p_entnObj, SCadena * p_cadNombre );
 int SEntNomEstablecerValorNombreLit ( SEntidadNom * p_entnObj, const char * p_cNombre );
@@ -82,6 +85,8 @@ int SEntNomCompararId ( SEntidadNom* p_entnObj, SId * p_idVal );
 int SEntNomCompararNum ( SEntidadNom * p_entnObj, unsigned long ulId );
 
 unsigned int SEntNomHash ( SEntidadNom * p_entnObj );
+
+SPtr * SEntNomPtr ( SEntidadNom * p_entnObj );
 
 
 

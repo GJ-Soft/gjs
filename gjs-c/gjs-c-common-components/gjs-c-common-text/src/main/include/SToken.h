@@ -24,6 +24,7 @@
 
 
 #include <SCadena.h>
+#include <SPtr.h>
 
 
 
@@ -91,6 +92,8 @@ int STokCompararCad ( SToken * p_tokObj, SCadena * p_cadValor );
 int STokCompararLit ( SToken * p_tokObj, const char * p_cValor );
 
 int STokCumpleExpReg ( SToken * p_tokObj, const char * p_cExpReg );
+
+SPtr * STokPtr ( SToken * p_tokObj );
 
 
 

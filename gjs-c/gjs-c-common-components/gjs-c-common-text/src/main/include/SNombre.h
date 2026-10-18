@@ -22,6 +22,7 @@
 
 
 #include <SCampo.h>
+#include <SPtr.h>
 
 
 
@@ -99,6 +100,8 @@ int SNomCumpleExpReg ( SNombre * p_nomObj, const char * p_cExpReg );
 
 
 unsigned int SNomHash ( SNombre * p_nomObj );
+
+SPtr * SNomPtr ( SNombre * p_nomObj );
 
 
 

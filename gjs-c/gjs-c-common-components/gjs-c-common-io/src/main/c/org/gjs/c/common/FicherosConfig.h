@@ -9,7 +9,7 @@
 #include <Base.h>
 
 
-#include <Tipos.h>
+#include <TiposBasicos.h>
 #include <Texto.h>
 
 

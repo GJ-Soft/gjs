@@ -5,7 +5,7 @@
 | Módulos       | 3                                                       |
 | Cabeceras     | `SConjunto.h`, `SConjuntoPtr.h`, `SConjuntoLiterales.h` |
 | Prefijos      | `SCnj`, `SCnjp`, `SCnjLit`                              |
-| Incluidos por | `Tipos.h`                                               |
+| Incluidos por | `TiposBasicos.h`                                        |
 | Tests         | Uno por módulo                                          |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)

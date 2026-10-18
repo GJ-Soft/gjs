@@ -7,7 +7,7 @@ escribe una aplicación: valores tipados, mensajes, errores, parámetros,
 acciones y localizadores. Las entidades identificadas están en
 [`gjs-c-common-database`](../gjs-c-common-database/README.md).
 
-30 módulos en 13.752 líneas.
+30 módulos en 13.946 líneas.
 
 ---
 
@@ -17,7 +17,7 @@ acciones y localizadores. Las entidades identificadas están en
 | ------------ | ------------------------------------------------------------------- |
 | `groupId`    | `org.gjsoft.c.common`                                                  |
 | `artifactId` | `gjs-c-common-types`                                                |
-| `version`    | `1.0.0`                                                        |
+| `version`    | `1.1.0-SNAPSHOT`                                               |
 | `packaging`  | `nar` (biblioteca **shared**)                                       |
 | Pom padre    | `org.gjsoft.c:gjs-c-lib-parent`                                        |
 | Depende de   | `gjs-c-common-base-types`, `gjs-c-common-text`, `gjs-c-common-time` |
@@ -67,7 +67,7 @@ Los códigos de tipo son los de
 (`TIP_NUMERO`, `TIP_CADENA`, `TIP_FECHA`…), y la conversión la resuelve
 [SCadenaConv](../gjs-c-common-text/doc/SCadenaConv.md) de `gjs-c-common-text`.
 
-De ahí salen las 88 funciones del módulo: **un constructor, un predicado, un
+De ahí salen las 89 funciones del módulo: **un constructor, un predicado, un
 asignador y un lector por cada tipo del catálogo**.
 
 `STipo` envuelve el mismo catálogo como objeto, y `SParametro` empareja un
@@ -120,10 +120,6 @@ los cinco módulos anteriores del stack instalados.
   `ARB_B_ORDENACION_VALIDA` que compara contra constantes que no existen. Ninguna
   se usa: [SHoja](doc/Localizacion.md) sólo emplea las dos sanas. Ver
   [MODULOS.md](doc/MODULOS.md#tiposdatosconfigh).
-- **`TiposDatosConfig.h` hace `#include <Tipos.h>`**, el nombre que colisiona
-  entre `gjs-c-common-base` y `gjs-c-common-base-types`. Cuál se resuelve depende
-  del orden de los `-I`. Ver
-  [gjs-c-common-base-types](../gjs-c-common-base-types/doc/MODULOS.md#tiposh).
 - `TiposDatosConfig.h` vive en el árbol de **fuentes**, así que sus constantes no
   se publican en el NAR `noarch`.
 - `TiposDatosErrores.h` define un único código de error (`ERR_LIS_ELEMENTO_NULO`,

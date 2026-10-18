@@ -22,6 +22,7 @@
 
 
 #include <SCampo.h>
+#include <SPtr.h>
 
 
 
@@ -99,6 +100,8 @@ int SCodCumpleExpReg ( SCodigo * p_codObj, const char * p_cExpReg );
 
 
 unsigned int SCodHash ( SCodigo * p_codObj );
+
+SPtr * SCodPtr ( SCodigo * p_codObj );
 
 
 

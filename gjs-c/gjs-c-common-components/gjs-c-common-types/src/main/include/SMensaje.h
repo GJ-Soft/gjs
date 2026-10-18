@@ -5,6 +5,7 @@
 
 #include <SId.h>
 #include <SDescripcion.h>
+#include <SPtr.h>
 
 
 
@@ -53,6 +54,8 @@ int SMsjCompararId ( SMensaje* p_msjObj, SId * p_idVal );
 int SMsjCompararNum ( SMensaje * p_msjObj, unsigned long ulId );
 
 unsigned int SMsjHash ( SMensaje * p_msjObj );
+
+SPtr * SMsjPtr ( SMensaje * p_msjObj );
 
 
 

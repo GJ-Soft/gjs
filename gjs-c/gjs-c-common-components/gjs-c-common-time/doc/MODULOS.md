@@ -57,10 +57,10 @@ Volver al [README](../README.md).
 
 | Módulo        | Prefijo   | Struct        | Funciones | Test | Documento                   |
 | ------------- | --------- | ------------- | --------- | ---- | --------------------------- |
-| `SFecha`      | `SFec`    | `SFecha`      | 31        | ✔    | [SFecha](SFecha.md)         |
-| `SHora`       | `SHor`    | `SHora`       | 31        | ✔    | [SHora](SHora.md)           |
-| `SFechaHora`  | `SFecHor` | `SFechaHora`  | 48        | ✔    | [SFechaHora](SFechaHora.md) |
-| `SPeriodo`    | `SPerd`   | `SPeriodo`    | 18        | ✔    | [SPeriodo](SPeriodo.md)     |
+| `SFecha`      | `SFec`    | `SFecha`      | 32        | ✔    | [SFecha](SFecha.md)         |
+| `SHora`       | `SHor`    | `SHora`       | 32        | ✔    | [SHora](SHora.md)           |
+| `SFechaHora`  | `SFecHor` | `SFechaHora`  | 49        | ✔    | [SFechaHora](SFechaHora.md) |
+| `SPeriodo`    | `SPerd`   | `SPeriodo`    | 19        | ✔    | [SPeriodo](SPeriodo.md)     |
 | `SReloj`      | `SRlj`    | `SReloj`      | 12        | ✔    | [Relojes](Relojes.md)       |
 | `SCronometro` | `SCron`   | `SCronometro` | 5         | ✔    | [Relojes](Relojes.md)       |
 

@@ -771,3 +771,8 @@ unsigned int SCodHash ( SCodigo * p_codObj )
 
 
 
+
+SPtr * SCodPtr ( SCodigo * p_codObj )
+{
+	return ( SPtrCrear ( p_codObj, (PRC_DESTRUCTOR) SCodDestruir ) );
+}

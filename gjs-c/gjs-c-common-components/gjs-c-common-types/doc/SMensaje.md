@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SMensaje.c` |
 | Prefijo      | `SMsj`                                   |
 | Struct       | `SMensaje`                               |
-| Funciones    | 29                                       |
+| Funciones    | 30                                       |
 | Incluido por | `TiposDatos.h`                           |
 | Test         | `SMensajeTest.c` → `TestSMensaje()`      |
 
@@ -54,17 +54,23 @@ exacto y no por tramos, y `*Base` y `Es…Ent` porque el catálogo es homogéneo
 
 ## API
 
-| Función                                                | Descripción                           |
-| ------------------------------------------------------ | ------------------------------------- |
-| `SMsjCrear ( unsigned long, SCadena * )`               | Con id y texto.                       |
-| `SMsjCrearLit ( unsigned long, const char * )`         | Ídem desde un literal.                |
-| `SMsjEncapsular ( SId *, SDescripcion * )`             | Toma la propiedad de las dos.         |
-| `void SMsjDestruir ( SMensaje ** )`                    | Destruye y anula el puntero.          |
-| `SMsjEsValido`, `SMsjId`, `SMsjValorId`                | Identificador.                        |
-| `SMsjTexto`, `SMsjValorTexto`, `SMsjValorTextoLit`     | Texto, como objeto, cadena o literal. |
-| `SMsjEs…`, `SMsjEs…Id`, `SMsjEs…Num`                   | Comparación, siempre por el id.       |
-| `SMsjComparar`, `SMsjCompararId`, `SMsjCompararNum`    | Comparación de tres vías.             |
-| `unsigned int SMsjHash ( SMensaje * )`                 | Hash del id, con `SIdHash`.           |
+| Función                                             | Descripción                           |
+| --------------------------------------------------- | ------------------------------------- |
+| `SMsjCrear ( unsigned long, SCadena * )`            | Con id y texto.                       |
+| `SMsjCrearLit ( unsigned long, const char * )`      | Ídem desde un literal.                |
+| `SMsjEncapsular ( SId *, SDescripcion * )`          | Toma la propiedad de las dos.         |
+| `void SMsjDestruir ( SMensaje ** )`                 | Destruye y anula el puntero.          |
+| `SPtr * SMsjPtr ( SMensaje * )`                     | Lo envuelve en un `SPtr`.             |
+| `SMsjEsValido`, `SMsjId`, `SMsjValorId`             | Identificador.                        |
+| `SMsjTexto`, `SMsjValorTexto`, `SMsjValorTextoLit`  | Texto, como objeto, cadena o literal. |
+| `SMsjEs…`, `SMsjEs…Id`, `SMsjEs…Num`                | Comparación, siempre por el id.       |
+| `SMsjComparar`, `SMsjCompararId`, `SMsjCompararNum` | Comparación de tres vías.             |
+| `unsigned int SMsjHash ( SMensaje * )`              | Hash del id, con `SIdHash`.           |
+
+`SMsjPtr` pasa la propiedad de la estructura al `SPtr`: después se libera con
+`SPtrDestruir`, que llama a `SMsjDestruir`, y no por separado. Con objeto nulo
+devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve `NULL` y el
+objeto sigue siendo del llamante.
 
 Sin identificador válido, los constructores devuelven `NULL`. El texto sí puede
 faltar: un mensaje sin texto sigue siendo localizable por su código.
@@ -78,6 +84,7 @@ que destruir el mensaje y crear otro.
 
 - [Identificadores](../../gjs-c-common-base-types/doc/Identificadores.md) — `SId`.
 - [SDescripcion](../../gjs-c-common-text/doc/SDescripcion.md) — el texto.
+- [SPtr](../../gjs-c-common-base-types/doc/SPtr.md) de gjs-c-common-base-types — `SMsjPtr`.
 
 ## Test
 
