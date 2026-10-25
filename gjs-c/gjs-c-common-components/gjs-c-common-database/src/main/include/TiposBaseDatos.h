@@ -14,6 +14,10 @@
 #include <SEntidadCodNom.h>
 #include <SEntidadIdCod.h>
 
+#include <SListaEntidades.h>
+#include <SConjuntoEntidades.h>
+#include <SListaEntidadesCod.h>
+#include <SConjuntoEntidadesCod.h>
 
 
 

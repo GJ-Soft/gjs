@@ -6,7 +6,7 @@ Librería de **cadenas y texto** en C del stack GJS. Se apoya en
 las rutinas sueltas sobre `char *` hasta objetos de texto con cursor, tokens,
 patrones y expresiones regulares.
 
-18 módulos en 21.773 líneas, de las cuales sólo 2.594 son cabeceras: el grueso
+19 módulos en 22.093 líneas, de las cuales sólo 2.651 son cabeceras: el grueso
 está en tres implementaciones muy densas (`Cadenas.c`, `SCadena.c`,
 `SCadenaConv.c`).
 
@@ -34,7 +34,7 @@ La cabecera fachada es `Texto.h`:
 #include <Texto.h>
 ```
 
-Arrastra 19 cabeceras. Quedan fuera y hay que incluirlas a mano:
+Arrastra 20 cabeceras. Quedan fuera y hay que incluirlas a mano:
 `ASCIIOEM850.h`, `PaginasCodigos.h` y `TiposCaracter.h`.
 
 ```c
@@ -163,7 +163,7 @@ pasar por `mvn`**: se han verificado con un `gcc` directo sobre las 18 suites.
 
 ## Tests
 
-Mismo arnés que el resto del stack: **18 suites** registradas en
+Mismo arnés que el resto del stack: **19 suites** registradas en
 `src/test/c/.../Test.c`.
 
 ```

@@ -5,7 +5,7 @@
 
 
 
-SVectorEnteros * SVecEntCrear ( int iNumElementos )
+SVectorEnteros * SVecIntCrear ( int iNumElementos )
 {
 	SVectorEnteros * p_vecObj;
 	
@@ -17,7 +17,7 @@ SVectorEnteros * SVecEntCrear ( int iNumElementos )
 			p_vecObj->p_vecDatos = SVecCrear ( iNumElementos );
 			if ( ES_NULO ( p_vecObj->p_vecDatos ) )
 			{
-				SVecEntDestruir ( &p_vecObj );
+				SVecIntDestruir ( &p_vecObj );
 			}
 		}
 	}
@@ -28,7 +28,7 @@ SVectorEnteros * SVecEntCrear ( int iNumElementos )
 	return ( p_vecObj );
 }
 
-void SVecEntDestruir ( SVectorEnteros ** p_p_vecObj )
+void SVecIntDestruir ( SVectorEnteros ** p_p_vecObj )
 {
 	SVectorEnteros * p_vecObj;
 	
@@ -44,7 +44,7 @@ void SVecEntDestruir ( SVectorEnteros ** p_p_vecObj )
 	}
 }
 
-int SVecEntEsValido ( SVectorEnteros * p_vecObj )
+int SVecIntEsValido ( SVectorEnteros * p_vecObj )
 {
 	int iRes;
 
@@ -59,7 +59,7 @@ int SVecEntEsValido ( SVectorEnteros * p_vecObj )
 	return ( iRes );
 }
 
-int SVecEntNumElementos ( SVectorEnteros * p_vecObj )
+int SVecIntNumElementos ( SVectorEnteros * p_vecObj )
 {
 	int iRes;
 
@@ -74,7 +74,7 @@ int SVecEntNumElementos ( SVectorEnteros * p_vecObj )
 	return ( iRes );
 }
 
-int SVecEntElemento ( SVectorEnteros * p_vecObj, int iElem )
+int SVecIntElemento ( SVectorEnteros * p_vecObj, int iElem )
 {
 	int				iRes;
 	SContenido *	p_conObj;
@@ -98,7 +98,7 @@ int SVecEntElemento ( SVectorEnteros * p_vecObj, int iElem )
 	return ( iRes );
 }
 
-int SVecEntAsignar ( SVectorEnteros * p_vecObj, int iElem, int iDato )
+int SVecIntAsignar ( SVectorEnteros * p_vecObj, int iElem, int iDato )
 {
 	int				iRes;
 	SContenido *	p_conObj;
@@ -157,7 +157,7 @@ int SVecEntAsignar ( SVectorEnteros * p_vecObj, int iElem, int iDato )
 	return ( iRes );
 }
 
-int SVecEntInicializar ( SVectorEnteros * p_vecObj )
+int SVecIntInicializar ( SVectorEnteros * p_vecObj )
 {
 	int iRes;
 	int iElem;
@@ -167,10 +167,10 @@ int SVecEntInicializar ( SVectorEnteros * p_vecObj )
 	{
 		iRes = 1;
 		iElem = 0;
-		iNumElems = SVecEntNumElementos ( p_vecObj );
+		iNumElems = SVecIntNumElementos ( p_vecObj );
 		while ( ( iElem < iNumElems ) && ( iRes == 1 ) )
 		{
-			iRes = SVecEntAsignar ( p_vecObj, iElem, 0 );
+			iRes = SVecIntAsignar ( p_vecObj, iElem, 0 );
 			iElem = iElem + 1;
 		}
 	}
@@ -181,7 +181,7 @@ int SVecEntInicializar ( SVectorEnteros * p_vecObj )
 	return ( iRes );
 }
 
-int SVecEntExiste ( SVectorEnteros * p_vecObj, int iDato )
+int SVecIntExiste ( SVectorEnteros * p_vecObj, int iDato )
 {
 	int iRes;
 	int iElem;
@@ -191,10 +191,10 @@ int SVecEntExiste ( SVectorEnteros * p_vecObj, int iDato )
 	{
 		iRes = 0;
 		iElem = 0;
-		iNumElems = SVecEntNumElementos ( p_vecObj );
+		iNumElems = SVecIntNumElementos ( p_vecObj );
 		while ( ( iElem < iNumElems ) && ( iRes == 0 ) )
 		{
-			if ( SVecEntElemento ( p_vecObj, iElem ) == iDato )
+			if ( SVecIntElemento ( p_vecObj, iElem ) == iDato )
 			{
 				iRes = 1;
 			}

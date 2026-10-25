@@ -5,7 +5,7 @@
 
 
 
-SPilaEnteros * SPilEntCrear ()
+SPilaEnteros * SPilIntCrear ()
 {
 	SPilaEnteros * p_pilObj;
 	
@@ -17,7 +17,7 @@ SPilaEnteros * SPilEntCrear ()
 	return ( p_pilObj );
 }
 
-void SPilEntDestruir ( SPilaEnteros ** p_p_pilObj )
+void SPilIntDestruir ( SPilaEnteros ** p_p_pilObj )
 {
 	SPilaEnteros * p_pilObj;
 	
@@ -33,7 +33,7 @@ void SPilEntDestruir ( SPilaEnteros ** p_p_pilObj )
 	}
 }
 
-int SPilEntEsValida ( SPilaEnteros * p_pilObj )
+int SPilIntEsValida ( SPilaEnteros * p_pilObj )
 {
 	int iRes;
 
@@ -48,7 +48,7 @@ int SPilEntEsValida ( SPilaEnteros * p_pilObj )
 	return ( iRes );
 }
 
-int SPilEntEstaVacia ( SPilaEnteros * p_pilObj )
+int SPilIntEstaVacia ( SPilaEnteros * p_pilObj )
 {
 	int iRes;
 
@@ -63,7 +63,7 @@ int SPilEntEstaVacia ( SPilaEnteros * p_pilObj )
 	return ( iRes );
 }
 
-int SPilEntNumElementos ( SPilaEnteros * p_pilObj )
+int SPilIntNumElementos ( SPilaEnteros * p_pilObj )
 {
 	int iRes;
 
@@ -78,7 +78,7 @@ int SPilEntNumElementos ( SPilaEnteros * p_pilObj )
 	return ( iRes );
 }
 
-int SPilEntPrimero ( SPilaEnteros * p_pilObj )
+int SPilIntPrimero ( SPilaEnteros * p_pilObj )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -102,7 +102,7 @@ int SPilEntPrimero ( SPilaEnteros * p_pilObj )
 	return ( iRes );
 }
 
-int SPilEntDesapilar ( SPilaEnteros * p_pilObj )
+int SPilIntDesapilar ( SPilaEnteros * p_pilObj )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -127,7 +127,7 @@ int SPilEntDesapilar ( SPilaEnteros * p_pilObj )
 	return ( iRes );
 }
 
-int SPilEntApilar ( SPilaEnteros * p_pilObj, int iDato )
+int SPilIntApilar ( SPilaEnteros * p_pilObj, int iDato )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -162,7 +162,7 @@ int SPilEntApilar ( SPilaEnteros * p_pilObj, int iDato )
 	return ( iRes );
 }
 
-int SPilEntEliminarPrimero ( SPilaEnteros * p_pilObj )
+int SPilIntEliminarPrimero ( SPilaEnteros * p_pilObj )
 {
 	int iRes;
 
@@ -177,7 +177,7 @@ int SPilEntEliminarPrimero ( SPilaEnteros * p_pilObj )
 	return ( iRes );
 }
 
-int SPilEntVaciar ( SPilaEnteros * p_pilObj )
+int SPilIntVaciar ( SPilaEnteros * p_pilObj )
 {
 	int iRes;
 

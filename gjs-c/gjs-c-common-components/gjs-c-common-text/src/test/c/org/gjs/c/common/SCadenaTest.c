@@ -434,6 +434,206 @@ static int TestSCadComparar01 ()
 	return ( iRes );
 }
 
+/* SCadEsMenor y SCadEsMayor ( y sus Ig y Literal ) siguen el orden de SCadComparar:
+   el de diccionario, no primero por longitud. "b" va detras de "aa" aunque sea mas
+   corta, y un prefijo va delante. */
+static int TestSCadComparaciones02 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCadComparaciones 02:\n" );
+
+	SCadena * p_cadCorta = SCadGenerar ( "b" );
+	SCadena * p_cadLarga = SCadGenerar ( "aa" );
+	SCadena * p_cadAlfa = SCadGenerar ( "alfa" );
+	if ( ES_VALIDO ( p_cadCorta ) && ES_VALIDO ( p_cadLarga ) && ES_VALIDO ( p_cadAlfa ) )
+	{
+		if ( SCadEsMenor ( p_cadCorta, p_cadLarga ) != 0 )
+		{
+			printf( "Error caso 1: \"b\" no deberia ser menor que \"aa\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadEsMayor ( p_cadCorta, p_cadLarga ) != 1 )
+		{
+			printf( "Error caso 2: \"b\" deberia ser mayor que \"aa\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadEsMenor ( p_cadLarga, p_cadCorta ) != 1 )
+		{
+			printf( "Error caso 3: \"aa\" deberia ser menor que \"b\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadEsMayorIg ( p_cadCorta, p_cadLarga ) != 1 )
+		{
+			printf( "Error caso 4: \"b\" deberia ser mayor o igual que \"aa\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadEsMenorIg ( p_cadCorta, p_cadLarga ) != 0 )
+		{
+			printf( "Error caso 5: \"b\" no deberia ser menor o igual que \"aa\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Un prefijo va delante. */
+		if ( SCadEsMenorLiteral ( p_cadAlfa, "alfabeto" ) != 1 )
+		{
+			printf( "Error caso 6: \"alfa\" deberia ser menor que \"alfabeto\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadEsMayorLiteral ( p_cadAlfa, "alf" ) != 1 )
+		{
+			printf( "Error caso 7: \"alfa\" deberia ser mayor que \"alf\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Contra la vacia. */
+		if ( SCadEsMayorLiteral ( p_cadAlfa, "" ) != 1 )
+		{
+			printf( "Error caso 8: \"alfa\" deberia ser mayor que \"\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Igual no es ni menor ni mayor. */
+		if ( SCadEsMenorLiteral ( p_cadAlfa, "alfa" ) != 0 )
+		{
+			printf( "Error caso 9: \"alfa\" no deberia ser menor que si misma\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadEsMayorLiteral ( p_cadAlfa, "alfa" ) != 0 )
+		{
+			printf( "Error caso 10: \"alfa\" no deberia ser mayor que si misma\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Con distincion, 'a' va detras de 'B'; sin ella, delante. */
+		if ( SCadEsMayorLiteral ( p_cadAlfa, "BETA" ) != 1 )
+		{
+			printf( "Error caso 11: distinguiendo, \"alfa\" deberia ser mayor que \"BETA\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SCadDesactivarDistincionTipoLetra ( p_cadAlfa );
+		if ( SCadEsMenorLiteral ( p_cadAlfa, "BETA" ) != 1 )
+		{
+			printf( "Error caso 12: sin distinguir, \"alfa\" deberia ser menor que \"BETA\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadEsMenorIgLiteral ( p_cadAlfa, "ALFA" ) != 1 )
+		{
+			printf( "Error caso 13: sin distinguir, \"alfa\" deberia ser menor o igual que \"ALFA\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Con un nulo por medio, los predicados dan 0. */
+		if ( SCadEsMenorLiteral ( p_cadAlfa, NULL ) != 0 )
+		{
+			printf( "Error caso 14: con un literal nulo deberia dar 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadEsMayor ( NULL, p_cadAlfa ) != 0 )
+		{
+			printf( "Error caso 15: con una cadena nula deberia dar 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron generar las cadenas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCadDestruir ( &p_cadCorta );
+	SCadDestruir ( &p_cadLarga );
+	SCadDestruir ( &p_cadAlfa );
+	return ( iRes );
+}
+
+/* SCadComparar y SCadCompararLiteral siguen la distincion de mayusculas de la
+   primera cadena, como SCadEsIgual. "alfa" y "BETA" ordenan al reves segun se
+   distinga o no: 'a' va detras de 'B' en ASCII, pero A va antes que B. */
+static int TestSCadComparar02 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCadComparar 02:\n" );
+
+	SCadena * p_cadA = SCadGenerar ( "alfa" );
+	SCadena * p_cadB = SCadGenerar ( "ALFA" );
+	SCadena * p_cadVacia = SCadCrear ( 10 );
+	if ( ES_VALIDO ( p_cadA ) && ES_VALIDO ( p_cadB ) && ES_VALIDO ( p_cadVacia ) )
+	{
+		/* Distinguiendo, que es como nace la cadena. */
+		if ( SCadCompararLiteral ( p_cadA, "ALFA" ) != COMP_MAYOR )
+		{
+			printf( "Error caso 1: distinguiendo, \"alfa\" deberia ser mayor que \"ALFA\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadCompararLiteral ( p_cadA, "BETA" ) != COMP_MAYOR )
+		{
+			printf( "Error caso 2: distinguiendo, \"alfa\" deberia ser mayor que \"BETA\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Sin distinguir. */
+		SCadDesactivarDistincionTipoLetra ( p_cadA );
+		if ( SCadCompararLiteral ( p_cadA, "ALFA" ) != COMP_IGUAL )
+		{
+			printf( "Error caso 3: sin distinguir, \"alfa\" deberia ser igual a \"ALFA\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadCompararLiteral ( p_cadA, "BETA" ) != COMP_MENOR )
+		{
+			printf( "Error caso 4: sin distinguir, \"alfa\" deberia ser menor que \"BETA\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadCompararLiteral ( p_cadA, "ALFAS" ) != COMP_MENOR )
+		{
+			printf( "Error caso 5: sin distinguir, \"alfa\" deberia ser menor que \"ALFAS\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Coincide con SCadEsIgualLiteral. */
+		if ( SCadEsIgualLiteral ( p_cadA, "ALFA" ) != 1 )
+		{
+			printf( "Error caso 6: sin distinguir, SCadEsIgualLiteral deberia dar 1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Manda la primera cadena: p_cadB sigue distinguiendo. */
+		if ( SCadComparar ( p_cadA, p_cadB ) != COMP_IGUAL )
+		{
+			printf( "Error caso 7: con la primera sin distinguir deberian ser iguales\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadComparar ( p_cadB, p_cadA ) != COMP_MENOR )
+		{
+			printf( "Error caso 8: con la primera distinguiendo, \"ALFA\" deberia ser menor\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* La vacia, sin distinguir. */
+		SCadDesactivarDistincionTipoLetra ( p_cadVacia );
+		if ( SCadCompararLiteral ( p_cadVacia, "" ) != COMP_IGUAL )
+		{
+			printf( "Error caso 9: sin distinguir, la vacia deberia ser igual a \"\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadCompararLiteral ( p_cadVacia, "a" ) != COMP_MENOR )
+		{
+			printf( "Error caso 10: sin distinguir, la vacia deberia ser menor que \"a\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCadComparar ( p_cadA, p_cadVacia ) != COMP_MAYOR )
+		{
+			printf( "Error caso 11: sin distinguir, \"alfa\" deberia ser mayor que la vacia\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Y al volver a activarla, vuelve el orden ASCII. */
+		SCadActivarDistincionTipoLetra ( p_cadA );
+		if ( SCadCompararLiteral ( p_cadA, "ALFA" ) != COMP_MAYOR )
+		{
+			printf( "Error caso 12: distinguiendo otra vez, \"alfa\" deberia ser mayor que \"ALFA\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron generar las cadenas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCadDestruir ( &p_cadA );
+	SCadDestruir ( &p_cadB );
+	SCadDestruir ( &p_cadVacia );
+	return ( iRes );
+}
+
 /* SCadPtr envuelve el objeto en un SPtr con SCadDestruir como destructor: al
    destruir el SPtr se libera tambien el SCadena. Con MODO_DEPURACION se comprueba
    que no queda memoria reservada. */
@@ -529,7 +729,9 @@ int TestSCadena ()
 			( TestSCadGenerar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadCopiarConcatenar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadComparaciones01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCadComparaciones02 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadComparar01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCadComparar02 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadEmpiezaAcaba01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadTransformar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCadCaracter01 () == BOOL_VAL_CIERTO ) &&

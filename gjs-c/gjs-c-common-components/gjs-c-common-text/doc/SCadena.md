@@ -3,7 +3,7 @@
 | Dato         | Valor                                                  |
 | ------------ | ------------------------------------------------------ |
 | Cabecera     | `src/main/include/SCadena.h`                           |
-| Fuente       | `src/main/c/org/gjs/c/common/SCadena.c` (2.658 líneas) |
+| Fuente       | `src/main/c/org/gjs/c/common/SCadena.c` (2.726 líneas) |
 | Prefijo      | `SCad`                                                 |
 | Struct       | `SCadena`                                              |
 | Funciones    | 138                                                    |
@@ -77,8 +77,8 @@ objeto sigue siendo del llamante.
 | `void SCadActivarDistincionTipoLetra ( SCadena * )`    | Las comparaciones distinguen. |
 | `void SCadDesactivarDistincionTipoLetra ( SCadena * )` | Dejan de distinguir.          |
 
-Afecta a toda la familia `SCadEs…`, `SCadBuscar…`, `SCadExiste…` y
-`SCadContar…`.
+Afecta a toda la familia `SCadEs…`, `SCadComparar…`, `SCadBuscar…`,
+`SCadExiste…` y `SCadContar…`.
 
 ### El resto, por familias
 
@@ -136,9 +136,19 @@ contenido a texto hexadecimal y recuperarlo.
 ## Observaciones
 
 - **La sensibilidad a mayúsculas es propiedad de la cadena, no de la
-  comparación.** `SCadEsIgual ( a, b )` puede dar resultados distintos según cómo
-  esté configurada `a`, y la cabecera no dice qué ocurre si `a` y `b` tienen
-  ajustes contrarios. Es un estado oculto que conviene fijar al crear y no tocar.
+  comparación.** `SCadEsIgual ( a, b )` y `SCadComparar ( a, b )` pueden dar
+  resultados distintos según cómo esté configurada `a`. Si `a` y `b` tienen
+  ajustes contrarios, manda el de `a`: el de `b` no se mira, así que
+  `SCadComparar ( a, b )` y `SCadComparar ( b, a )` pueden no ser simétricos. Es
+  un estado oculto que conviene fijar al crear y no tocar.
+- **`SCadEsMenor…` y `SCadEsMayor…` siguen el orden de `SCadComparar`**, el de
+  diccionario: `"aa"` va delante de `"b"` y un prefijo va delante de la cadena
+  que lo contiene. Antes ordenaban primero por longitud, así que `"b"` era menor
+  que `"aa"` y no coincidían con `SCadComparar`.
+- **Sin distinguir, el orden es el de las mayúsculas**: cada letra minúscula se
+  compara como su mayúscula (`ASCIILetraMinAMay`). Distinguiendo es el orden
+  ASCII, en el que todas las mayúsculas van antes que cualquier minúscula, así
+  que `"alfa"` es mayor que `"BETA"` distinguiendo y menor sin distinguir.
 - `SCadValor` devuelve el buffer **modificable**: escribir en él directamente
   puede dejar la cadena en un estado que el objeto no controla, por ejemplo sin
   terminador o más larga que `iMaxTam`.

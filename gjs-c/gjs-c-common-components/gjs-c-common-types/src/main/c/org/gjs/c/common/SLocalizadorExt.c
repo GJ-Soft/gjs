@@ -29,7 +29,7 @@ SLocalizadorExt * SLczExtCrear ( const char * p_cClave )
 	if ( ES_VALIDO ( p_lczeObj ) )
 	{
 		p_lczeObj->p_cClave = NULL;
-		p_lczeObj->p_lisPosiciones = SLisEntLssCrear ();
+		p_lczeObj->p_lisPosiciones = SLisIntLssCrear ();
 		if ( ES_VALIDO ( p_cClave ) )
 		{
 			if ( SLczExtEstablecerClave ( p_lczeObj,  p_cClave ) == 0 )
@@ -51,7 +51,7 @@ void SLczExtDestruir ( SLocalizadorExt ** p_p_lczeObj )
 
 		if ( ES_VALIDO ( p_lczeObj ) )
 		{
-			SLisEntLssDestruir ( &(p_lczeObj->p_lisPosiciones) );
+			SLisIntLssDestruir ( &(p_lczeObj->p_lisPosiciones) );
 			MemLiberar ( (void **) &(p_lczeObj->p_cClave) );
 			MemLiberar ( (void **) p_p_lczeObj );
 		}
@@ -65,9 +65,9 @@ int SLczExtEsValido ( SLocalizadorExt * p_lczeObj )
 	if ( ES_VALIDO ( p_lczeObj ) )
 	{
 		if ( ( CadEsTokenValido ( p_lczeObj->p_cClave ) == 1 )&&
-			 ( SLisEntLssNumElementos ( p_lczeObj->p_lisPosiciones ) > 0 ) )
+			 ( SLisIntLssNumElementos ( p_lczeObj->p_lisPosiciones ) > 0 ) )
 		{
-			if ( SLisEntLssExiste ( p_lczeObj->p_lisPosiciones, SLCZ_SIN_POSICION ) == 0 )
+			if ( SLisIntLssExiste ( p_lczeObj->p_lisPosiciones, SLCZ_SIN_POSICION ) == 0 )
 			{
 				iRes = 1;
 			}
@@ -172,9 +172,9 @@ int SLczExtEstablecerPosicionPrinc ( SLocalizadorExt * p_lczeObj, unsigned long 
 	{
 		/* Sin posiciones todavia no hay elemento 0 que establecer: la
 		   principal se anade. */
-		if ( SLisEntLssEstaVacia ( p_lczeObj->p_lisPosiciones ) == 1 )
+		if ( SLisIntLssEstaVacia ( p_lczeObj->p_lisPosiciones ) == 1 )
 		{
-			iRes = SLisEntLssInsertarAlFinal ( p_lczeObj->p_lisPosiciones, ulPosicion );
+			iRes = SLisIntLssInsertarAlFinal ( p_lczeObj->p_lisPosiciones, ulPosicion );
 		}
 		else
 		{
@@ -194,7 +194,7 @@ int SLczExtNumPosiciones ( SLocalizadorExt * p_lczeObj )
 
 	if ( ES_VALIDO ( p_lczeObj ) )
 	{
-		iRes = SLisEntLssNumElementos ( p_lczeObj->p_lisPosiciones );
+		iRes = SLisIntLssNumElementos ( p_lczeObj->p_lisPosiciones );
 	}
 	else
 	{
@@ -211,9 +211,9 @@ unsigned long SLczExtPosicion ( SLocalizadorExt * p_lczeObj, int iPos )
 	{
 		if ( iPos >= 0 )
 		{
-			if ( iPos < SLisEntLssNumElementos ( p_lczeObj->p_lisPosiciones ) )
+			if ( iPos < SLisIntLssNumElementos ( p_lczeObj->p_lisPosiciones ) )
 			{
-				ulRes = SLisEntLssElemento ( p_lczeObj->p_lisPosiciones, iPos );
+				ulRes = SLisIntLssElemento ( p_lczeObj->p_lisPosiciones, iPos );
 			}
 			else
 			{
@@ -238,7 +238,7 @@ int SLczExtEstablecerPosicion ( SLocalizadorExt * p_lczeObj, int iPos, unsigned 
 
 	if ( ES_VALIDO ( p_lczeObj ) )
 	{
-		iRes = SLisEntLssEstablecerElem ( p_lczeObj->p_lisPosiciones, iPos, ulPosicion );
+		iRes = SLisIntLssEstablecerElem ( p_lczeObj->p_lisPosiciones, iPos, ulPosicion );
 	}
 	else
 	{
@@ -253,7 +253,7 @@ int SLczExtInsertarPosicion ( SLocalizadorExt * p_lczeObj, unsigned long ulPosic
 
 	if ( ES_VALIDO ( p_lczeObj ) )
 	{
-		iRes = SLisEntLssInsertarAlFinal ( p_lczeObj->p_lisPosiciones, ulPosicion );
+		iRes = SLisIntLssInsertarAlFinal ( p_lczeObj->p_lisPosiciones, ulPosicion );
 	}
 	else
 	{

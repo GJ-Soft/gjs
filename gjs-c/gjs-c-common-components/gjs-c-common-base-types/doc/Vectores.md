@@ -4,7 +4,7 @@
 | ------------- | --------------------------------------------------------------------- |
 | Módulos       | 4                                                                     |
 | Cabeceras     | `SVector.h`, `SVectorPtr.h`, `SVectorEnteros.h`, `SVectorLiterales.h` |
-| Prefijos      | `SVec`, `SVecp`, `SVecEnt`, `SVecLit`                                 |
+| Prefijos      | `SVec`, `SVecp`, `SVecInt`, `SVecLit`                                 |
 | Incluidos por | `TiposBasicos.h`                                                      |
 | Tests         | Uno por módulo                                                        |
 
@@ -81,11 +81,11 @@ Añade dos cosas sobre la base:
 
 | Función                                             | Descripción                                   |
 | --------------------------------------------------- | --------------------------------------------- |
-| `int SVecEntInicializar ( SVectorEnteros * )`       | Pone todas las posiciones a un valor inicial. |
-| `int SVecEntExiste ( SVectorEnteros *, int iDato )` | 1 si el valor está en el vector.              |
+| `int SVecIntInicializar ( SVectorEnteros * )`       | Pone todas las posiciones a un valor inicial. |
+| `int SVecIntExiste ( SVectorEnteros *, int iDato )` | 1 si el valor está en el vector.              |
 
 Y no tiene `LimpiarElemento` ni `Limpiar`: para un vector de valores, "limpiar"
-es `SVecEntInicializar`.
+es `SVecIntInicializar`.
 
 ### `SVectorLiterales`
 

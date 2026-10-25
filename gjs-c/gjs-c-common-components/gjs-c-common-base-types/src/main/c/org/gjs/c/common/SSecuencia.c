@@ -98,7 +98,7 @@ int SSecInsertar ( SSecuencia * p_secObj, SElemento * p_elmObj )
 {
 	int iRes;
 
-	if ( ( SSecEsValida ( p_secObj ) == 1 ) && ES_VALIDO ( p_elmObj ) )
+	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_elmObj ) )
 	{
 		iRes = SLisInsertarAlFinal ( p_secObj->p_lisObjetos, p_elmObj );
 	}
@@ -113,7 +113,7 @@ int SSecEliminar ( SSecuencia * p_secObj, int iElem )
 {
 	int	iRes;
 
-	if ( SSecEsValida ( p_secObj ) == 1 ) 
+	if ( ES_VALIDO ( p_secObj ) ) 
 	{
 		iRes = SLisEliminarElem ( p_secObj->p_lisObjetos, iElem );
 	}
@@ -124,11 +124,26 @@ int SSecEliminar ( SSecuencia * p_secObj, int iElem )
 	return ( iRes );
 }
 
+SElemento * SSecExtraer ( SSecuencia * p_secObj, int iElem )
+{
+	SElemento * p_elmRes;
+
+	if ( ES_VALIDO ( p_secObj ) ) 
+	{
+		p_elmRes = SLisExtraerElem ( p_secObj->p_lisObjetos, iElem );
+	}
+	else
+	{
+		p_elmRes = NULL;
+	}
+	return ( p_elmRes );
+}
+
 int SSecVaciar ( SSecuencia * p_secObj )
 {
 	int	iRes;
 
-	if ( SSecEsValida ( p_secObj ) == 1 ) 
+	if ( ES_VALIDO ( p_secObj ) ) 
 	{
 		iRes = SLisVaciar ( p_secObj->p_lisObjetos );
 	}

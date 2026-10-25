@@ -20,27 +20,30 @@ typedef struct
 
 SConjuntoPtr * SCnjpCrear ( PFUNINTPVPV fComparar );
 
-void SCnjpDestruir ( SConjuntoPtr ** p_p_lisObj );
+void SCnjpDestruir ( SConjuntoPtr ** p_p_cnjObj );
 
-int SCnjpEsValido ( SConjuntoPtr * p_lisObj );
+int SCnjpEsValido ( SConjuntoPtr * p_cnjObj );
 
-// Operaciones sin cursor:
-int SCnjpNumElementos ( SConjuntoPtr * p_lisObj );
-int SCnjpEstaVacio ( SConjuntoPtr * p_lisObj );
-byte * SCnjpElemento ( SConjuntoPtr * p_lisObj, int iElem );
+int SCnjpNumElementos ( SConjuntoPtr * p_cnjObj );
+int SCnjpEstaVacio ( SConjuntoPtr * p_cnjObj );
+byte * SCnjpElemento ( SConjuntoPtr * p_cnjObj, int iElem );
 
-int SCnjpInsertarElem ( SConjuntoPtr * p_lisObj, byte * p_byDatos );
-int SCnjpEliminarElem ( SConjuntoPtr * p_lisObj, int iElem );
+byte * SCnjpPrimero ( SConjuntoPtr * p_cnjObj );
+byte * SCnjpUltimo ( SConjuntoPtr * p_cnjObj );
+int SCnjpPosicion ( SConjuntoPtr * p_cnjObj, byte * p_byDatos );
 
-int SCnjpVaciar ( SConjuntoPtr * p_lisObj );
+int SCnjpInsertarElem ( SConjuntoPtr * p_cnjObj, byte * p_byDatos );
+int SCnjpEliminarElem ( SConjuntoPtr * p_cnjObj, int iElem );
 
-int SCnjpExiste ( SConjuntoPtr * p_lisObj, byte * p_byDatos );
-int SCnjpBuscar ( SConjuntoPtr * p_lisObj, byte * p_byDatos );
-byte * SCnjpBuscarElem ( SConjuntoPtr * p_lisObj, byte * p_byDatos );
+int SCnjpVaciar ( SConjuntoPtr * p_cnjObj );
 
-int	SCnjpLiberacionMemoriaActivada ( SConjuntoPtr * p_lisObj );
-void SCnjpActivarLiberacionMemoria ( SConjuntoPtr * p_lisObj );
-void SCnjpDesactivarLiberacionMemoria ( SConjuntoPtr * p_lisObj );
+int SCnjpExiste ( SConjuntoPtr * p_cnjObj, byte * p_byDatos );
+int SCnjpBuscar ( SConjuntoPtr * p_cnjObj, byte * p_byDatos );
+byte * SCnjpBuscarElem ( SConjuntoPtr * p_cnjObj, byte * p_byDatos );
+
+int	SCnjpLiberacionMemoriaActivada ( SConjuntoPtr * p_cnjObj );
+void SCnjpActivarLiberacionMemoria ( SConjuntoPtr * p_cnjObj );
+void SCnjpDesactivarLiberacionMemoria ( SConjuntoPtr * p_cnjObj );
 
 
 

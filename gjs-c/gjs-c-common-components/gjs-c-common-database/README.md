@@ -6,7 +6,7 @@ o una cuenta. Es la contrapartida en C de
 [`gjs-cpp-common-database`](../gjs-cpp-common-database/README.md), y el sitio
 donde irá creciendo el soporte de datos del stack.
 
-5 módulos en 4.772 líneas.
+9 módulos en 6.947 líneas: las cinco entidades y cuatro colecciones, una lista y un conjunto de `SEntidad` y de `SEntidadCod`.
 
 ---
 
@@ -79,7 +79,7 @@ los seis módulos anteriores del stack instalados.
 
 ## Tests
 
-**5 suites**, una por módulo. Sin test sólo la cabecera fachada
+**9 suites**, una por módulo. Sin test sólo la cabecera fachada
 (`TiposBaseDatos.h`).
 
 ---
@@ -92,7 +92,7 @@ los seis módulos anteriores del stack instalados.
 
 ## Estado y limitaciones conocidas
 
-- **De momento sólo trae las entidades.** El equivalente en C++ ya tiene tabla y
+- **De momento sólo trae las entidades y sus colecciones.** El equivalente en C++ ya tiene tabla y
   ocurrencia en memoria; aquí están por venir.
 - **El desempate de `Comparar` es provisional.** Cuando dos entidades empatan en
   el id, `Comparar` desempata por el nombre o el código, y `EsIgual` no. Ver

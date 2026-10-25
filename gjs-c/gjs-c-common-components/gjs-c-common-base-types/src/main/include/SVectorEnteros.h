@@ -22,20 +22,20 @@ typedef struct
 
 
 
-SVectorEnteros * SVecEntCrear ( int iNumElementos );
+SVectorEnteros * SVecIntCrear ( int iNumElementos );
 
 
-void SVecEntDestruir ( SVectorEnteros ** p_p_vecObj );
+void SVecIntDestruir ( SVectorEnteros ** p_p_vecObj );
 
-int SVecEntEsValido ( SVectorEnteros * p_vecObj );
+int SVecIntEsValido ( SVectorEnteros * p_vecObj );
 
-int SVecEntNumElementos ( SVectorEnteros * p_vecObj );
-int SVecEntElemento ( SVectorEnteros * p_vecObj, int iElem );
-int SVecEntAsignar ( SVectorEnteros * p_vecObj, int iElem, int iDato );
+int SVecIntNumElementos ( SVectorEnteros * p_vecObj );
+int SVecIntElemento ( SVectorEnteros * p_vecObj, int iElem );
+int SVecIntAsignar ( SVectorEnteros * p_vecObj, int iElem, int iDato );
 
-int SVecEntInicializar ( SVectorEnteros * p_vecObj );
+int SVecIntInicializar ( SVectorEnteros * p_vecObj );
 
-int SVecEntExiste ( SVectorEnteros * p_vecObj, int iDato );
+int SVecIntExiste ( SVectorEnteros * p_vecObj, int iDato );
 
 
 

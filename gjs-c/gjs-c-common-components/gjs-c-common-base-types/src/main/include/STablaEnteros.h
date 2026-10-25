@@ -22,22 +22,22 @@ typedef struct
 
 
 
-STablaEnteros * STabEntCrear ( int iNumFilas, int iNumColumnas );
+STablaEnteros * STabIntCrear ( int iNumFilas, int iNumColumnas );
 
 
-void STabEntDestruir ( STablaEnteros ** p_p_tabObj );
+void STabIntDestruir ( STablaEnteros ** p_p_tabObj );
 
-int STabEntEsValida ( STablaEnteros * p_tabObj );
+int STabIntEsValida ( STablaEnteros * p_tabObj );
 
-int STabEntNumFilas ( STablaEnteros * p_tabObj );
-int STabEntNumColumnas ( STablaEnteros * p_tabObj );
-int STabEntNumElementos ( STablaEnteros * p_tabObj );
-int STabEntElemento ( STablaEnteros * p_tabObj, int iFila, int iColumna );
+int STabIntNumFilas ( STablaEnteros * p_tabObj );
+int STabIntNumColumnas ( STablaEnteros * p_tabObj );
+int STabIntNumElementos ( STablaEnteros * p_tabObj );
+int STabIntElemento ( STablaEnteros * p_tabObj, int iFila, int iColumna );
 
-int STabEntAsignar ( STablaEnteros * p_tabObj, int iFila, int iColumna, int iDato );
-int STabEntInicializar ( STablaEnteros * p_tabObj );
+int STabIntAsignar ( STablaEnteros * p_tabObj, int iFila, int iColumna, int iDato );
+int STabIntInicializar ( STablaEnteros * p_tabObj );
 
-int STabEntExiste ( STablaEnteros * p_tabObj, int iDato );
+int STabIntExiste ( STablaEnteros * p_tabObj, int iDato );
 
 
 

@@ -1,6 +1,6 @@
 # Módulos de gjs-c-common-text
 
-Índice y orquestación de los 18 módulos de la librería: **18 fuentes** y **23
+Índice y orquestación de los 19 módulos de la librería: **19 fuentes** y **24
 cabeceras**.
 
 Volver al [README](../README.md).
@@ -19,6 +19,7 @@ Volver al [README](../README.md).
   ├───────────────────────────────────────────────────────────────────────┤
   │ 3. Cadenas con propósito                                              │
   │    SCampo · SToken · SCadenaNumerica · SDivisor · SListaCadenas       │
+  │    SConjuntoCadenas                                                   │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 2. El objeto cadena                                                   │
   │    SCadena · SCadenaConv · ValidacionCadenas                          │
@@ -58,13 +59,14 @@ una de las tres reglas de `ValidacionCadenas` fijada de fábrica.
 
 ### Cadenas con propósito
 
-| Módulo            | Prefijo   | Struct            | Funciones | Test | Documento                             |
-| ----------------- | --------- | ----------------- | --------- | ---- | ------------------------------------- |
-| `SCadenaNumerica` | `SCadn`   | `SCadenaNumerica` | 14        | ✔    | [SCadenaNumerica](SCadenaNumerica.md) |
-| `SCampo`          | `SCamp`   | `SCampo`          | 31        | ✔    | [SCampo](SCampo.md)                   |
-| `SToken`          | `STok`    | `SToken`          | 40        | ✔    | [SToken](SToken.md)                   |
-| `SDivisor`        | `SDiv`    | `SDivisor`        | 16        | ✔    | [SDivisor](SDivisor.md)               |
-| `SListaCadenas`   | `SLisCad` | `SListaCadenas`   | 39        | ✔    | [SListaCadenas](SListaCadenas.md)     |
+| Módulo             | Prefijo   | Struct             | Funciones | Test | Documento                               |
+| ------------------ | --------- | ------------------ | --------- | ---- | --------------------------------------- |
+| `SCadenaNumerica`  | `SCadn`   | `SCadenaNumerica`  | 14        | ✔    | [SCadenaNumerica](SCadenaNumerica.md)   |
+| `SCampo`           | `SCamp`   | `SCampo`           | 31        | ✔    | [SCampo](SCampo.md)                     |
+| `SToken`           | `STok`    | `SToken`           | 40        | ✔    | [SToken](SToken.md)                     |
+| `SDivisor`         | `SDiv`    | `SDivisor`         | 16        | ✔    | [SDivisor](SDivisor.md)                 |
+| `SListaCadenas`    | `SLisCad` | `SListaCadenas`    | 40        | ✔    | [SListaCadenas](SListaCadenas.md)       |
+| `SConjuntoCadenas` | `SCnjCad` | `SConjuntoCadenas` | 16        | ✔    | [SConjuntoCadenas](SConjuntoCadenas.md) |
 
 ### Campos con regla de contenido
 
@@ -93,7 +95,8 @@ por defecto.
 
 Cabecera fachada. Incluye `TextoConstantes.h`, `JuegosCaracteres.h`, `ASCII.h`,
 `Cadenas.h`, `Patrones.h`, `ExpresionesRegulares.h`, `SCadena.h`,
-`SCadenaConv.h`, `SCadenaNumerica.h`, `SListaCadenas.h`, `SLinea.h`, `STexto.h`,
+`SCadenaConv.h`, `SCadenaNumerica.h`, `SListaCadenas.h`, `SConjuntoCadenas.h`,
+`SLinea.h`, `STexto.h`,
 `ValidacionCadenas.h`, `SCampo.h`, `SToken.h`, `SCodigo.h`, `SNombre.h`,
 `SDescripcion.h` y `SDivisor.h`.
 

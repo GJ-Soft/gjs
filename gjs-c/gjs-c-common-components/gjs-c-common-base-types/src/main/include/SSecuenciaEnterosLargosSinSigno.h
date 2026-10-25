@@ -22,30 +22,30 @@ typedef struct
 
 
 
-SSecuenciaEnterosLargosSinSigno * SSecEntLssCrear ();
+SSecuenciaEnterosLargosSinSigno * SSecIntLssCrear ();
 
 
-void SSecEntLssDestruir ( SSecuenciaEnterosLargosSinSigno ** p_p_secObj );
+void SSecIntLssDestruir ( SSecuenciaEnterosLargosSinSigno ** p_p_secObj );
 
-int SSecEntLssEsValida ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+int SSecIntLssEsValida ( SSecuenciaEnterosLargosSinSigno * p_secObj );
 
-int SSecEntLssNumElementos ( SSecuenciaEnterosLargosSinSigno * p_secObj );
-unsigned long SSecEntLssElemento ( SSecuenciaEnterosLargosSinSigno * p_secObj, int iElem );
+int SSecIntLssNumElementos ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+unsigned long SSecIntLssElemento ( SSecuenciaEnterosLargosSinSigno * p_secObj, int iElem );
 
-int SSecEntLssInsertar ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato );
-int SSecEntLssEliminar ( SSecuenciaEnterosLargosSinSigno * p_secObj, int iElem );
-int SSecEntLssVaciar ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+int SSecIntLssInsertar ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato );
+int SSecIntLssEliminar ( SSecuenciaEnterosLargosSinSigno * p_secObj, int iElem );
+int SSecIntLssVaciar ( SSecuenciaEnterosLargosSinSigno * p_secObj );
 
-int SSecEntLssExiste ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato );
+int SSecIntLssExiste ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato );
 
-SSecuenciaEnterosLargosSinSigno * SSecEntLssExtraerUnicos ( SSecuenciaEnterosLargosSinSigno * p_secObj );
-int SSecEntLssTieneRepetidos ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+SSecuenciaEnterosLargosSinSigno * SSecIntLssExtraerUnicos ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+int SSecIntLssTieneRepetidos ( SSecuenciaEnterosLargosSinSigno * p_secObj );
 
-unsigned long SSecEntLssMin ( SSecuenciaEnterosLargosSinSigno * p_secObj );
-unsigned long SSecEntLssMax ( SSecuenciaEnterosLargosSinSigno * p_secObj );
-void SSecEntLssObtenerParametros ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long * p_ulMin, unsigned long * p_ulMax, double * p_dMed ); 
+unsigned long SSecIntLssMin ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+unsigned long SSecIntLssMax ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+void SSecIntLssObtenerParametros ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long * p_ulMin, unsigned long * p_ulMax, double * p_dMed ); 
 
-int SSecEntLssDefinidaPositiva ( SSecuenciaEnterosLargosSinSigno * p_secObj );
+int SSecIntLssDefinidaPositiva ( SSecuenciaEnterosLargosSinSigno * p_secObj );
 
 
 #endif

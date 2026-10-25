@@ -3,10 +3,10 @@
 | Dato         | Valor                                                      |
 | ------------ | ---------------------------------------------------------- |
 | Cabecera     | `src/main/include/SListaCadenas.h`                         |
-| Fuente       | `src/main/c/org/gjs/c/common/SListaCadenas.c` (715 líneas) |
+| Fuente       | `src/main/c/org/gjs/c/common/SListaCadenas.c` (740 líneas) |
 | Prefijo      | `SLisCad`                                                  |
 | Struct       | `SListaCadenas`                                            |
-| Funciones    | 39                                                         |
+| Funciones    | 40                                                         |
 | Incluido por | `Texto.h`                                                  |
 | Test         | `SListaCadenasTest.c` → `TestSListaCadenas()`              |
 
@@ -41,14 +41,15 @@ Sigue exactamente el modelo de
 
 ### Acceso por índice
 
-| Función                                                    | Descripción                |
-| ---------------------------------------------------------- | -------------------------- |
-| `SCadena * SLisCadElemento ( SListaCadenas *, int iElem )` | Cadena de la posición.     |
-| `int SLisCadEstablecerElem ( …, int iElem, SCadena * )`    | Sustituye.                 |
-| `int SLisCadInsertarElem ( …, int iPosAnt, SCadena * )`    | Inserta tras la posición.  |
-| `int SLisCadInsertarAlInicio ( …, SCadena * )`             | Inserta al principio.      |
-| `int SLisCadInsertarAlFinal ( …, SCadena * )`              | Inserta al final.          |
-| `int SLisCadEliminarElem ( …, int iElem )`                 | Elimina el de la posición. |
+| Función                                                    | Descripción                            |
+| ---------------------------------------------------------- | -------------------------------------- |
+| `SCadena * SLisCadElemento ( SListaCadenas *, int iElem )` | Cadena de la posición.                 |
+| `int SLisCadEstablecerElem ( …, int iElem, SCadena * )`    | Sustituye.                             |
+| `int SLisCadInsertarElem ( …, int iPosAnt, SCadena * )`    | Inserta tras la posición.              |
+| `int SLisCadInsertarAlInicio ( …, SCadena * )`             | Inserta al principio.                  |
+| `int SLisCadInsertarAlFinal ( …, SCadena * )`              | Inserta al final.                      |
+| `int SLisCadEliminarElem ( …, int iElem )`                 | Elimina el de la posición.             |
+| `SCadena * SLisCadExtraerElem ( …, int iElem )`            | Saca la de la posición sin destruirla. |
 
 ### Cursor
 
@@ -98,10 +99,10 @@ Ocho funciones `…Dup` en total: `SLisCadEstablecerElemDup`,
   que las normales** (`SCadena *`, no `const SCadena *`). En `SListaLiterales` la
   firma delataba cuál duplicaba, porque las `Dup` tomaban `const char *`. Aquí no
   hay forma de saberlo por el tipo: hay que leer el nombre con cuidado.
-- **No tiene `Extraer`**: se puede eliminar un elemento (destruyéndolo) pero no
-  sacarlo de la lista conservándolo, a diferencia de
-  [SLista](../../gjs-c-common-base-types/doc/Listas.md), que sí ofrece
-  `SLisExtraerElem`.
+- **`SLisCadExtraerElem` saca la cadena sin destruirla** y la devuelve: desde ese
+  momento es del llamador, que la destruye o la vuelve a insertar. Devuelve `NULL`
+  si la posición no existe. Es la pareja de `SLisCadEliminarElem`, que la destruye.
+  Sólo hay versión por índice: no existe la equivalente sobre el cursor.
 - Tampoco expone la `SListaPtr` interna, así que no hay válvula de escape hacia
   las operaciones que esta API no cubre.
 - `SLisCadBuscarExt` busca por literal, pero no existe el `SLisCadExisteExt`

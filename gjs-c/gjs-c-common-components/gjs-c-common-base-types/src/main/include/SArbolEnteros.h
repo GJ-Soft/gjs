@@ -25,48 +25,48 @@ typedef struct
 
 
 
-SArbolEnteros * SArbEntCrear ();
+SArbolEnteros * SArbIntCrear ();
 
-void SArbEntDestruir ( SArbolEnteros ** p_p_arbObj );
+void SArbIntDestruir ( SArbolEnteros ** p_p_arbObj );
 
-int SArbEntRaiz ( SArbolEnteros * p_arbObj );
+int SArbIntRaiz ( SArbolEnteros * p_arbObj );
 
-int SArbEntEstablecerRaiz ( SArbolEnteros * p_arbObj, int iValor );
+int SArbIntEstablecerRaiz ( SArbolEnteros * p_arbObj, int iValor );
 
-int SArbEntEstaVacio ( SArbolEnteros * p_arbObj );
-int SArbEntNiveles ( SArbolEnteros * p_arbObj );
-int SArbEntNumNodos ( SArbolEnteros * p_arbObj );
+int SArbIntEstaVacio ( SArbolEnteros * p_arbObj );
+int SArbIntNiveles ( SArbolEnteros * p_arbObj );
+int SArbIntNumNodos ( SArbolEnteros * p_arbObj );
 
-int SArbEntVaciar ( SArbolEnteros * p_arbObj );
+int SArbIntVaciar ( SArbolEnteros * p_arbObj );
 
-int SArbEntActual ( SArbolEnteros * p_arbObj );
-int SArbEntEstActual ( SArbolEnteros * p_arbObj, int iValor );
+int SArbIntActual ( SArbolEnteros * p_arbObj );
+int SArbIntEstActual ( SArbolEnteros * p_arbObj, int iValor );
 
-int SArbEntMoverARaiz ( SArbolEnteros * p_arbObj );
-int SArbEntMoverAPadre ( SArbolEnteros * p_arbObj );
-int SArbEntMoverAHijo ( SArbolEnteros * p_arbObj, int iHijo );
-int SArbEntMoverAPrimHijo ( SArbolEnteros * p_arbObj );
-int SArbEntMoverAUltHijo ( SArbolEnteros * p_arbObj );
-int SArbEntMoverAPrimHermano ( SArbolEnteros * p_arbObj );
-int SArbEntMoverASigHermano ( SArbolEnteros * p_arbObj );
-int SArbEntMoverAAntHermano ( SArbolEnteros * p_arbObj );
-int SArbEntMoverAUltHermano ( SArbolEnteros * p_arbObj );
+int SArbIntMoverARaiz ( SArbolEnteros * p_arbObj );
+int SArbIntMoverAPadre ( SArbolEnteros * p_arbObj );
+int SArbIntMoverAHijo ( SArbolEnteros * p_arbObj, int iHijo );
+int SArbIntMoverAPrimHijo ( SArbolEnteros * p_arbObj );
+int SArbIntMoverAUltHijo ( SArbolEnteros * p_arbObj );
+int SArbIntMoverAPrimHermano ( SArbolEnteros * p_arbObj );
+int SArbIntMoverASigHermano ( SArbolEnteros * p_arbObj );
+int SArbIntMoverAAntHermano ( SArbolEnteros * p_arbObj );
+int SArbIntMoverAUltHermano ( SArbolEnteros * p_arbObj );
 
-int SArbEntMoverAPrimPreorden ( SArbolEnteros * p_arbObj );
-int SArbEntMoverASigPreorden ( SArbolEnteros * p_arbObj );
-int SArbEntMoverAPrimPostorden ( SArbolEnteros * p_arbObj );
-int SArbEntMoverASigPostorden ( SArbolEnteros * p_arbObj );
+int SArbIntMoverAPrimPreorden ( SArbolEnteros * p_arbObj );
+int SArbIntMoverASigPreorden ( SArbolEnteros * p_arbObj );
+int SArbIntMoverAPrimPostorden ( SArbolEnteros * p_arbObj );
+int SArbIntMoverASigPostorden ( SArbolEnteros * p_arbObj );
 
-void SArbEntDesposicionar ( SArbolEnteros * p_arbObj );
-int	SArbEntEstaPosicionado ( SArbolEnteros * p_arbObj );
-int SArbEntMoverAPrimPostorden ( SArbolEnteros * p_arbObj );
-int SArbEntMoverASigPostorden ( SArbolEnteros * p_arbObj );
-int SArbEntMoverAPrimInorden ( SArbolEnteros * p_arbObj );
-int SArbEntMoverASigInorden ( SArbolEnteros * p_arbObj );
+void SArbIntDesposicionar ( SArbolEnteros * p_arbObj );
+int	SArbIntEstaPosicionado ( SArbolEnteros * p_arbObj );
+int SArbIntMoverAPrimPostorden ( SArbolEnteros * p_arbObj );
+int SArbIntMoverASigPostorden ( SArbolEnteros * p_arbObj );
+int SArbIntMoverAPrimInorden ( SArbolEnteros * p_arbObj );
+int SArbIntMoverASigInorden ( SArbolEnteros * p_arbObj );
 
-int SArbEntEnraizar ( SArbolEnteros * p_arbObj, int iValor );
+int SArbIntEnraizar ( SArbolEnteros * p_arbObj, int iValor );
 
-int SArbEntVerificar ( SArbolEnteros * p_arbObj, int iCorregir );
+int SArbIntVerificar ( SArbolEnteros * p_arbObj, int iCorregir );
 
 
 

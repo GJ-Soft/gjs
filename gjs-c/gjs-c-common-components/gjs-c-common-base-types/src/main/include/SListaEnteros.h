@@ -22,66 +22,66 @@ typedef struct
 
 
 
-SListaEnteros * SLisEntCrear ();
+SListaEnteros * SLisIntCrear ();
 
 
-void SLisEntDestruir ( SListaEnteros ** p_p_lisObj );
+void SLisIntDestruir ( SListaEnteros ** p_p_lisObj );
 
-int SLisEntEsValida ( SListaEnteros * p_lisObj );
-int SLisEntEstaVacia ( SListaEnteros * p_lisObj );
+int SLisIntEsValida ( SListaEnteros * p_lisObj );
+int SLisIntEstaVacia ( SListaEnteros * p_lisObj );
 
 // Operaciones sin cursor:
-int SLisEntNumElementos ( SListaEnteros * p_lisObj );
-int SLisEntElemento ( SListaEnteros * p_lisObj, int iElem );
+int SLisIntNumElementos ( SListaEnteros * p_lisObj );
+int SLisIntElemento ( SListaEnteros * p_lisObj, int iElem );
 
-int SLisEntEstablecerElem ( SListaEnteros * p_lisObj, int iPos, int iDato );
-int SLisEntInsertarElem ( SListaEnteros * p_lisObj, int iPosAnt, int iDato );
-int SLisEntInsertarAlInicio ( SListaEnteros * p_lisObj, int iDato );
-int SLisEntInsertarAlFinal ( SListaEnteros * p_lisObj, int iDato );
+int SLisIntEstablecerElem ( SListaEnteros * p_lisObj, int iPos, int iDato );
+int SLisIntInsertarElem ( SListaEnteros * p_lisObj, int iPosAnt, int iDato );
+int SLisIntInsertarAlInicio ( SListaEnteros * p_lisObj, int iDato );
+int SLisIntInsertarAlFinal ( SListaEnteros * p_lisObj, int iDato );
 
-int SLisEntEliminarElem ( SListaEnteros * p_lisObj, int iElem );
+int SLisIntEliminarElem ( SListaEnteros * p_lisObj, int iElem );
 
-int SLisEntVaciar ( SListaEnteros * p_lisObj );
+int SLisIntVaciar ( SListaEnteros * p_lisObj );
 
 // Operaciones dependientes del cursor:
-int SLisEntPosicion ( SListaEnteros * p_lisObj );
-int SLisEntActual ( SListaEnteros * p_lisObj );
+int SLisIntPosicion ( SListaEnteros * p_lisObj );
+int SLisIntActual ( SListaEnteros * p_lisObj );
 
-void SLisEntInicio ( SListaEnteros * p_lisObj );
-void SLisEntFinal ( SListaEnteros * p_lisObj );
-void SLisEntSiguiente ( SListaEnteros * p_lisObj );
-void SLisEntAnterior ( SListaEnteros * p_lisObj );
-void SLisEntMoverA ( SListaEnteros * p_lisObj, int iElem );
-void SLisEntDeposicionar ( SListaEnteros * p_lisObj );
+void SLisIntInicio ( SListaEnteros * p_lisObj );
+void SLisIntFinal ( SListaEnteros * p_lisObj );
+void SLisIntSiguiente ( SListaEnteros * p_lisObj );
+void SLisIntAnterior ( SListaEnteros * p_lisObj );
+void SLisIntMoverA ( SListaEnteros * p_lisObj, int iElem );
+void SLisIntDeposicionar ( SListaEnteros * p_lisObj );
 
-int SLisEntEsNulo ( SListaEnteros * p_lisObj );
-int SLisEntEstaEnFinal ( SListaEnteros * p_lisObj );
-int SLisEntEstaEnInicio ( SListaEnteros * p_lisObj );
+int SLisIntEsNulo ( SListaEnteros * p_lisObj );
+int SLisIntEstaEnFinal ( SListaEnteros * p_lisObj );
+int SLisIntEstaEnInicio ( SListaEnteros * p_lisObj );
 
-int SLisEntInsertar ( SListaEnteros * p_lisObj, int iDato );
-// Nota: SLisEntInsertarOrdenado inserta en el primer hueco. Si la lista no esta previamente ordenada
+int SLisIntInsertar ( SListaEnteros * p_lisObj, int iDato );
+// Nota: SLisIntInsertarOrdenado inserta en el primer hueco. Si la lista no esta previamente ordenada
 // el resultado no es una lista ordenada
-int SLisEntInsertarOrdenado ( SListaEnteros * p_lisObj, int iDato );
-int SLisEntInsertarDelante ( SListaEnteros * p_lisObj, int iDato );
-int SLisEntInsertarDetras ( SListaEnteros * p_lisObj, int iDato );
-int SLisEntEliminar ( SListaEnteros * p_lisObj );
+int SLisIntInsertarOrdenado ( SListaEnteros * p_lisObj, int iDato );
+int SLisIntInsertarDelante ( SListaEnteros * p_lisObj, int iDato );
+int SLisIntInsertarDetras ( SListaEnteros * p_lisObj, int iDato );
+int SLisIntEliminar ( SListaEnteros * p_lisObj );
 
-int SLisEntExiste ( SListaEnteros * p_lisObj, int iDato );
-int SLisEntBuscar ( SListaEnteros * p_lisObj, int iDato );
+int SLisIntExiste ( SListaEnteros * p_lisObj, int iDato );
+int SLisIntBuscar ( SListaEnteros * p_lisObj, int iDato );
 
-int SLisEntEstaOrdenada ( SListaEnteros * p_lisObj );
-SListaEnteros * SLisEntOrdenar ( SListaEnteros * p_lisObj );
+int SLisIntEstaOrdenada ( SListaEnteros * p_lisObj );
+SListaEnteros * SLisIntOrdenar ( SListaEnteros * p_lisObj );
 
-SListaEnteros * SLisEntExtraerUnicos ( SListaEnteros * p_lisObj );
-SListaEnteros * SLisEntExtraerUnicosExt ( SListaEnteros * p_lisObj, int iOrdenar );
-int SLisEntTieneRepetidos ( SListaEnteros * p_lisObj );
+SListaEnteros * SLisIntExtraerUnicos ( SListaEnteros * p_lisObj );
+SListaEnteros * SLisIntExtraerUnicosExt ( SListaEnteros * p_lisObj, int iOrdenar );
+int SLisIntTieneRepetidos ( SListaEnteros * p_lisObj );
 
-int SLisEntMin ( SListaEnteros * p_lisObj );
-int SLisEntMax ( SListaEnteros * p_lisObj );
-void SLisEntObtenerParametros ( SListaEnteros * p_lisObj, int * p_iMin, int * p_iMax, double * p_dMed ); 
+int SLisIntMin ( SListaEnteros * p_lisObj );
+int SLisIntMax ( SListaEnteros * p_lisObj );
+void SLisIntObtenerParametros ( SListaEnteros * p_lisObj, int * p_iMin, int * p_iMax, double * p_dMed ); 
 
-int SLisEntDefinidaPositiva ( SListaEnteros * p_lisObj );
-int SLisEntSemidefinidaPositiva ( SListaEnteros * p_lisObj );
+int SLisIntDefinidaPositiva ( SListaEnteros * p_lisObj );
+int SLisIntSemidefinidaPositiva ( SListaEnteros * p_lisObj );
 
 #endif
 

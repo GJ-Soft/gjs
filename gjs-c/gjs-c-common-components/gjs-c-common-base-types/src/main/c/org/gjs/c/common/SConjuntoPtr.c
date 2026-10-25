@@ -104,6 +104,41 @@ byte * SCnjpElemento ( SConjuntoPtr * p_cnjObj, int iElem )
 	return ( p_byRes );
 }
 
+byte * SCnjpPrimero ( SConjuntoPtr * p_cnjObj )
+{
+	byte * p_byRes;
+
+	if ( ES_VALIDO ( p_cnjObj ) )
+	{
+		p_byRes = SLispOrdElemento ( p_cnjObj->p_lispContenido, 0 );
+	}
+	else
+	{
+		p_byRes = NULL;
+	}
+	return ( p_byRes );
+}
+
+byte * SCnjpUltimo ( SConjuntoPtr * p_cnjObj )
+{
+	byte * p_byRes;
+
+	if ( ES_VALIDO ( p_cnjObj ) )
+	{
+		p_byRes = SLispOrdElemento ( p_cnjObj->p_lispContenido, SCnjpNumElementos ( p_cnjObj ) - 1 );
+	}
+	else
+	{
+		p_byRes = NULL;
+	}
+	return ( p_byRes );
+}
+
+int SCnjpPosicion ( SConjuntoPtr * p_cnjObj, byte * p_byObj )
+{
+	return ( SCnjpBuscar ( p_cnjObj, p_byObj ) );
+}
+
 int SCnjpInsertarElem ( SConjuntoPtr * p_cnjObj, byte * p_byDatos )
 {
 	int iRes;

@@ -1,6 +1,6 @@
 # Módulos de gjs-c-common-database
 
-Índice y orquestación: **5 fuentes** y **6 cabeceras**.
+Índice y orquestación: **9 fuentes** y **10 cabeceras**.
 
 Volver al [README](../README.md).
 
@@ -10,6 +10,10 @@ Volver al [README](../README.md).
 
 ```
   ┌───────────────────────────────────────────────────────────────────────┐
+  │ 3. Colecciones                                                        │
+  │    SListaEntidades · SConjuntoEntidades                               │
+  │    SListaEntidadesCod · SConjuntoEntidadesCod                         │
+  ├───────────────────────────────────────────────────────────────────────┤
   │ 2. Derivadas                                                          │
   │    SEntidadNom · SEntidadIdCod · SEntidadCodNom                       │
   ├───────────────────────────────────────────────────────────────────────┤
@@ -34,13 +38,22 @@ Volver al [README](../README.md).
 | `SEntidadCodNom` | `SEntCodNom` | `SEntidadCodNom` | 59        | ✔    | [Entidades](Entidades.md) |
 | `SEntidadIdCod`  | `SEntIdCod`  | `SEntidadIdCod`  | 55        | ✔    | [Entidades](Entidades.md) |
 
+### Colecciones
+
+| Módulo                  | Prefijo      | Struct                  | Funciones | Test | Documento                                           |
+| ----------------------- | ------------ | ----------------------- | --------- | ---- | --------------------------------------------------- |
+| `SListaEntidades`       | `SLisEnt`    | `SListaEntidades`       | 35        | ✔    | [Colecciones de entidades](ColeccionesEntidades.md) |
+| `SConjuntoEntidades`    | `SCnjEnt`    | `SConjuntoEntidades`    | 19        | ✔    | [Colecciones de entidades](ColeccionesEntidades.md) |
+| `SListaEntidadesCod`    | `SLisEntCod` | `SListaEntidadesCod`    | 37        | ✔    | [Colecciones de entidades](ColeccionesEntidades.md) |
+| `SConjuntoEntidadesCod` | `SCnjEntCod` | `SConjuntoEntidadesCod` | 21        | ✔    | [Colecciones de entidades](ColeccionesEntidades.md) |
+
 ---
 
 ## Cabeceras sin fuente
 
 ### `TiposBaseDatos.h`
 
-Cabecera fachada. Incluye los cinco módulos.
+Cabecera fachada. Incluye los nueve módulos.
 
 ### `TiposBaseDatosConfig.h`
 

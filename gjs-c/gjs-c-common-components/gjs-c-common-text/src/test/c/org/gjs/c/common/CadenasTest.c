@@ -198,6 +198,38 @@ static int TestCadComparar01 ()
 		printf( "Error caso 10: \"h0las\" deberia ser menor que \"Holas\"\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
+	/* La cadena vacia es la menor de todas, y dos vacias son iguales. */
+	if ( CadCompararSinDistinguirTipoLetra ( "", "" ) != COMP_IGUAL )
+	{
+		printf( "Error caso 11: dos cadenas vacias deberian ser iguales\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( CadCompararSinDistinguirTipoLetra ( "", "a" ) != COMP_MENOR )
+	{
+		printf( "Error caso 12: \"\" deberia ser menor que \"a\"\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( CadCompararSinDistinguirTipoLetra ( "a", "" ) != COMP_MAYOR )
+	{
+		printf( "Error caso 13: \"a\" deberia ser mayor que \"\"\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* El nulo es menor que cualquier cadena, la vacia incluida. */
+	if ( CadCompararSinDistinguirTipoLetra ( NULL, "" ) != COMP_MENOR )
+	{
+		printf( "Error caso 14: el nulo deberia ser menor que \"\"\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( CadCompararSinDistinguirTipoLetra ( "", NULL ) != COMP_MAYOR )
+	{
+		printf( "Error caso 15: \"\" deberia ser mayor que el nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( CadCompararSinDistinguirTipoLetra ( NULL, NULL ) != COMP_IGUAL )
+	{
+		printf( "Error caso 16: dos nulos deberian ser iguales\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
 	return ( iRes );
 }
 

@@ -22,31 +22,31 @@ typedef struct
 
 
 
-SSecuenciaEnterosLargos * SSecEntlCrear ();
+SSecuenciaEnterosLargos * SSecIntlCrear ();
 
 
-void SSecEntlDestruir ( SSecuenciaEnterosLargos ** p_p_secObj );
+void SSecIntlDestruir ( SSecuenciaEnterosLargos ** p_p_secObj );
 
-int SSecEntlEsValida ( SSecuenciaEnterosLargos * p_secObj );
+int SSecIntlEsValida ( SSecuenciaEnterosLargos * p_secObj );
 
-int SSecEntlNumElementos ( SSecuenciaEnterosLargos * p_secObj );
-long SSecEntlElemento ( SSecuenciaEnterosLargos * p_secObj, int iElem );
+int SSecIntlNumElementos ( SSecuenciaEnterosLargos * p_secObj );
+long SSecIntlElemento ( SSecuenciaEnterosLargos * p_secObj, int iElem );
 
-int SSecEntlInsertar ( SSecuenciaEnterosLargos * p_secObj, long lDato );
-int SSecEntlEliminar ( SSecuenciaEnterosLargos * p_secObj, int iElem );
-int SSecEntlVaciar ( SSecuenciaEnterosLargos * p_secObj );
+int SSecIntlInsertar ( SSecuenciaEnterosLargos * p_secObj, long lDato );
+int SSecIntlEliminar ( SSecuenciaEnterosLargos * p_secObj, int iElem );
+int SSecIntlVaciar ( SSecuenciaEnterosLargos * p_secObj );
 
-int SSecEntlExiste ( SSecuenciaEnterosLargos * p_secObj, long lDato );
+int SSecIntlExiste ( SSecuenciaEnterosLargos * p_secObj, long lDato );
 
-SSecuenciaEnterosLargos * SSecEntlExtraerUnicos ( SSecuenciaEnterosLargos * p_secObj );
-int SSecEntlTieneRepetidos ( SSecuenciaEnterosLargos * p_secObj );
+SSecuenciaEnterosLargos * SSecIntlExtraerUnicos ( SSecuenciaEnterosLargos * p_secObj );
+int SSecIntlTieneRepetidos ( SSecuenciaEnterosLargos * p_secObj );
 
-long SSecEntlMin ( SSecuenciaEnterosLargos * p_secObj );
-long SSecEntlMax ( SSecuenciaEnterosLargos * p_secObj );
-void SSecEntlObtenerParametros ( SSecuenciaEnterosLargos * p_secObj, long * p_lMin, long * p_lMax, double * p_dMed ); 
+long SSecIntlMin ( SSecuenciaEnterosLargos * p_secObj );
+long SSecIntlMax ( SSecuenciaEnterosLargos * p_secObj );
+void SSecIntlObtenerParametros ( SSecuenciaEnterosLargos * p_secObj, long * p_lMin, long * p_lMax, double * p_dMed ); 
 
-int SSecEntlDefinidaPositiva ( SSecuenciaEnterosLargos * p_secObj );
-int SSecEntlSemidefinidaPositiva ( SSecuenciaEnterosLargos * p_secObj );
+int SSecIntlDefinidaPositiva ( SSecuenciaEnterosLargos * p_secObj );
+int SSecIntlSemidefinidaPositiva ( SSecuenciaEnterosLargos * p_secObj );
 
 
 

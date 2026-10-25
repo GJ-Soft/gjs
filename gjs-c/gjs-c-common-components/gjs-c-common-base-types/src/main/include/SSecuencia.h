@@ -28,6 +28,7 @@ SElemento * SSecElemento ( SSecuencia * p_secObj, int iElem );
 
 int SSecInsertar ( SSecuencia * p_secObj, SElemento * p_elObj );
 int SSecEliminar ( SSecuencia * p_secObj, int iElem );
+SElemento * SSecExtraer ( SSecuencia * p_secObj, int iElem );
 int SSecVaciar ( SSecuencia * p_secObj );
 
 SLista * SSecLista ( SSecuencia * p_secObj );

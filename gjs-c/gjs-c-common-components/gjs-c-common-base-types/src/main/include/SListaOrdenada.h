@@ -32,6 +32,7 @@ SElemento * SLisOrdElemento ( SListaOrdenada * p_lisObj, int iElem );
 int SLisOrdInsertarElem ( SListaOrdenada * p_lisObj, SElemento * p_elmObj );
 
 int SLisOrdEliminarElem ( SListaOrdenada * p_lisObj, int iElem );
+SElemento * SLisOrdExtraerElem ( SListaOrdenada * p_lisObj, int iElem );
 
 int SLisOrdVaciar ( SListaOrdenada * p_lisObj );
 

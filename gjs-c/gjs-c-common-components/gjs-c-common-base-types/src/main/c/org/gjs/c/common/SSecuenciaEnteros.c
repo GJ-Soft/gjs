@@ -5,7 +5,7 @@
 
 
 
-SSecuenciaEnteros * SSecEntCrear ()
+SSecuenciaEnteros * SSecIntCrear ()
 {
 	SSecuenciaEnteros * p_secObj;
 	
@@ -17,7 +17,7 @@ SSecuenciaEnteros * SSecEntCrear ()
 	return ( p_secObj );
 }
 
-void SSecEntDestruir ( SSecuenciaEnteros ** p_p_secObj )
+void SSecIntDestruir ( SSecuenciaEnteros ** p_p_secObj )
 {
 	SSecuenciaEnteros * p_secObj;
 	
@@ -33,7 +33,7 @@ void SSecEntDestruir ( SSecuenciaEnteros ** p_p_secObj )
 	}
 }
 
-int SSecEntEsValida ( SSecuenciaEnteros * p_secObj )
+int SSecIntEsValida ( SSecuenciaEnteros * p_secObj )
 {
 	int iRes;
 
@@ -48,7 +48,7 @@ int SSecEntEsValida ( SSecuenciaEnteros * p_secObj )
 	return ( iRes );
 }
 
-int SSecEntEstaVacia ( SSecuenciaEnteros * p_secObj )
+int SSecIntEstaVacia ( SSecuenciaEnteros * p_secObj )
 {
 	int iRes;
 
@@ -63,7 +63,7 @@ int SSecEntEstaVacia ( SSecuenciaEnteros * p_secObj )
 	return ( iRes );
 }
 
-int SSecEntNumElementos ( SSecuenciaEnteros * p_secObj )
+int SSecIntNumElementos ( SSecuenciaEnteros * p_secObj )
 {
 	int iRes;
 
@@ -78,7 +78,7 @@ int SSecEntNumElementos ( SSecuenciaEnteros * p_secObj )
 	return ( iRes );
 }
 
-int SSecEntElemento ( SSecuenciaEnteros * p_secObj, int iElem )
+int SSecIntElemento ( SSecuenciaEnteros * p_secObj, int iElem )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -102,7 +102,7 @@ int SSecEntElemento ( SSecuenciaEnteros * p_secObj, int iElem )
 	return ( iRes );
 }
 
-int SSecEntInsertar ( SSecuenciaEnteros * p_secObj, int iDato )
+int SSecIntInsertar ( SSecuenciaEnteros * p_secObj, int iDato )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -137,7 +137,7 @@ int SSecEntInsertar ( SSecuenciaEnteros * p_secObj, int iDato )
 	return ( iRes );
 }
 
-int SSecEntModificar ( SSecuenciaEnteros * p_secObj, int iElem, int iDato )
+int SSecIntModificar ( SSecuenciaEnteros * p_secObj, int iElem, int iDato )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -161,7 +161,7 @@ int SSecEntModificar ( SSecuenciaEnteros * p_secObj, int iElem, int iDato )
 	return ( iRes );
 }
 
-int SSecEntEliminar ( SSecuenciaEnteros * p_secObj, int iElem )
+int SSecIntEliminar ( SSecuenciaEnteros * p_secObj, int iElem )
 {
 	int iRes;
 
@@ -176,7 +176,7 @@ int SSecEntEliminar ( SSecuenciaEnteros * p_secObj, int iElem )
 	return ( iRes );
 }
 
-int SSecEntVaciar ( SSecuenciaEnteros * p_secObj )
+int SSecIntVaciar ( SSecuenciaEnteros * p_secObj )
 {
 	int iRes;
 
@@ -191,7 +191,7 @@ int SSecEntVaciar ( SSecuenciaEnteros * p_secObj )
 	return ( iRes );
 }
 
-int SSecEntExiste ( SSecuenciaEnteros * p_secObj, int iDato )
+int SSecIntExiste ( SSecuenciaEnteros * p_secObj, int iDato )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -219,7 +219,7 @@ int SSecEntExiste ( SSecuenciaEnteros * p_secObj, int iDato )
 	return ( iRes );
 }
 
-SSecuenciaEnteros * SSecEntExtraerUnicos ( SSecuenciaEnteros * p_secObj )
+SSecuenciaEnteros * SSecIntExtraerUnicos ( SSecuenciaEnteros * p_secObj )
 {
 	int					iError;
 	int					iDato;
@@ -228,7 +228,7 @@ SSecuenciaEnteros * SSecEntExtraerUnicos ( SSecuenciaEnteros * p_secObj )
 
 	if ( ES_VALIDO ( p_secObj ) )
 	{
-		p_secRes = SSecEntCrear ();
+		p_secRes = SSecIntCrear ();
 		iError = MemEsInvalida ( p_secRes );
 		/* Se recorre la CADENA de elementos, no por indice: SSecElemento
 		   entra por el extremo mas cercano, asi que un barrido por indice
@@ -237,9 +237,9 @@ SSecuenciaEnteros * SSecEntExtraerUnicos ( SSecuenciaEnteros * p_secObj )
 		while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) )
 		{
 			iDato = SElmEntero ( p_elmObj );
-			if ( SSecEntExiste ( p_secRes, iDato ) == 0 )
+			if ( SSecIntExiste ( p_secRes, iDato ) == 0 )
 			{
-				if ( SSecEntInsertar ( p_secRes, iDato ) != 1 )
+				if ( SSecIntInsertar ( p_secRes, iDato ) != 1 )
 				{
 					iError = 1;
 				}
@@ -248,7 +248,7 @@ SSecuenciaEnteros * SSecEntExtraerUnicos ( SSecuenciaEnteros * p_secObj )
 		}
 		if ( iError == 1 )
 		{
-			SSecEntDestruir ( &p_secRes );
+			SSecIntDestruir ( &p_secRes );
 			ERROR_ESTABLECER ( ERR_GENERAL_OPERATIVO );
 		}
 	}
@@ -259,7 +259,7 @@ SSecuenciaEnteros * SSecEntExtraerUnicos ( SSecuenciaEnteros * p_secObj )
 	return ( p_secRes );
 }
 
-int SSecEntTieneRepetidos ( SSecuenciaEnteros * p_secObj )
+int SSecIntTieneRepetidos ( SSecuenciaEnteros * p_secObj )
 {
 	int					iRes;
 	int					iError;
@@ -270,7 +270,7 @@ int SSecEntTieneRepetidos ( SSecuenciaEnteros * p_secObj )
 	if ( ES_VALIDO ( p_secObj ) )
 	{
 		iRes = 0;
-		p_secDistintos = SSecEntCrear ();
+		p_secDistintos = SSecIntCrear ();
 		iError = MemEsInvalida ( p_secDistintos );
 		/* Se recorre la CADENA de elementos, no por indice: SSecElemento
 		   entra por el extremo mas cercano, asi que un barrido por indice
@@ -279,20 +279,20 @@ int SSecEntTieneRepetidos ( SSecuenciaEnteros * p_secObj )
 		while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) && ( iRes == 0 ) )
 		{
 			iDato = SElmEntero ( p_elmObj );
-			if ( SSecEntExiste ( p_secDistintos, iDato ) == 1 )
+			if ( SSecIntExiste ( p_secDistintos, iDato ) == 1 )
 			{
 				iRes = 1;
 			}
 			else
 			{
-				if ( SSecEntInsertar ( p_secDistintos, iDato ) != 1 )
+				if ( SSecIntInsertar ( p_secDistintos, iDato ) != 1 )
 				{
 					iError = 1;
 				}
 			}
 			p_elmObj = SElmSucesor ( p_elmObj );
 		}
-		SSecEntDestruir ( &p_secDistintos );
+		SSecIntDestruir ( &p_secDistintos );
 		if ( iError == 1 )
 		{
 			ERROR_ESTABLECER ( ERR_GENERAL_OPERATIVO );
@@ -305,7 +305,7 @@ int SSecEntTieneRepetidos ( SSecuenciaEnteros * p_secObj )
 	return ( iRes );
 }
 
-int SSecEntMin ( SSecuenciaEnteros * p_secObj )
+int SSecIntMin ( SSecuenciaEnteros * p_secObj )
 {
 	int			iDato;
 	int			iRes;
@@ -336,7 +336,7 @@ int SSecEntMin ( SSecuenciaEnteros * p_secObj )
 	return ( iRes );
 }
 
-int SSecEntMax ( SSecuenciaEnteros * p_secObj )
+int SSecIntMax ( SSecuenciaEnteros * p_secObj )
 {
 	int			iDato;
 	int			iRes;
@@ -367,7 +367,7 @@ int SSecEntMax ( SSecuenciaEnteros * p_secObj )
 	return ( iRes );
 }
 
-void SSecEntObtenerParametros ( SSecuenciaEnteros * p_secObj, int * p_iMin, int * p_iMax, double * p_dMed )
+void SSecIntObtenerParametros ( SSecuenciaEnteros * p_secObj, int * p_iMin, int * p_iMax, double * p_dMed )
 {
 	int			iDato;
 	int			iNumElems;
@@ -378,7 +378,7 @@ void SSecEntObtenerParametros ( SSecuenciaEnteros * p_secObj, int * p_iMin, int 
 		*p_iMin = INT_MAX;
 		*p_iMax = INT_MIN;
 		*p_dMed = 0.0;
-		iNumElems = SSecEntNumElementos ( p_secObj );
+		iNumElems = SSecIntNumElementos ( p_secObj );
 		/* Se recorre la CADENA de elementos, no por indice: SSecElemento
 		   entra por el extremo mas cercano, asi que un barrido por indice
 		   seria cuadratico. Igual que en SListaEnteros. */
@@ -408,7 +408,7 @@ void SSecEntObtenerParametros ( SSecuenciaEnteros * p_secObj, int * p_iMin, int 
 	}
 }
 
-int SSecEntDefinidaPositiva ( SSecuenciaEnteros * p_secObj )
+int SSecIntDefinidaPositiva ( SSecuenciaEnteros * p_secObj )
 {
 	int			iDato;
 	int			iRes;
@@ -439,7 +439,7 @@ int SSecEntDefinidaPositiva ( SSecuenciaEnteros * p_secObj )
 	return ( iRes );
 }
 
-int SSecEntSemidefinidaPositiva ( SSecuenciaEnteros * p_secObj )
+int SSecIntSemidefinidaPositiva ( SSecuenciaEnteros * p_secObj )
 {
 	int			iDato;
 	int			iRes;

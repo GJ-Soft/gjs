@@ -22,65 +22,65 @@ typedef struct
 
 
 
-SListaEnterosLargosSinSigno * SLisEntLssCrear ();
+SListaEnterosLargosSinSigno * SLisIntLssCrear ();
 
 
-void SLisEntLssDestruir ( SListaEnterosLargosSinSigno ** p_p_lisObj );
+void SLisIntLssDestruir ( SListaEnterosLargosSinSigno ** p_p_lisObj );
 
-int SLisEntLssEsValida ( SListaEnterosLargosSinSigno * p_lisObj );
-int SLisEntLssEstaVacia ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssEsValida ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssEstaVacia ( SListaEnterosLargosSinSigno * p_lisObj );
 
 // Operaciones sin cursor:
-int SLisEntLssNumElementos ( SListaEnterosLargosSinSigno * p_lisObj );
-unsigned long SLisEntLssElemento ( SListaEnterosLargosSinSigno * p_lisObj, int iElem );
+int SLisIntLssNumElementos ( SListaEnterosLargosSinSigno * p_lisObj );
+unsigned long SLisIntLssElemento ( SListaEnterosLargosSinSigno * p_lisObj, int iElem );
 
-int SLisEntLssEstablecerElem ( SListaEnterosLargosSinSigno * p_lisObj, int iPos, unsigned long ulDato );
-int SLisEntLssInsertarElem ( SListaEnterosLargosSinSigno * p_lisObj, int iPosAnt, unsigned long ulDato );
-int SLisEntLssInsertarAlInicio ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
-int SLisEntLssInsertarAlFinal ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+int SLisIntLssEstablecerElem ( SListaEnterosLargosSinSigno * p_lisObj, int iPos, unsigned long ulDato );
+int SLisIntLssInsertarElem ( SListaEnterosLargosSinSigno * p_lisObj, int iPosAnt, unsigned long ulDato );
+int SLisIntLssInsertarAlInicio ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+int SLisIntLssInsertarAlFinal ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
 
-int SLisEntLssEliminarElem ( SListaEnterosLargosSinSigno * p_lisObj, int iElem );
+int SLisIntLssEliminarElem ( SListaEnterosLargosSinSigno * p_lisObj, int iElem );
 
-int SLisEntLssVaciar ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssVaciar ( SListaEnterosLargosSinSigno * p_lisObj );
 
 // Operaciones dependientes del cursor:
-int SLisEntLssPosicion ( SListaEnterosLargosSinSigno * p_lisObj );
-unsigned long SLisEntLssActual ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssPosicion ( SListaEnterosLargosSinSigno * p_lisObj );
+unsigned long SLisIntLssActual ( SListaEnterosLargosSinSigno * p_lisObj );
 
-void SLisEntLssInicio ( SListaEnterosLargosSinSigno * p_lisObj );
-void SLisEntLssFinal ( SListaEnterosLargosSinSigno * p_lisObj );
-void SLisEntLssSiguiente ( SListaEnterosLargosSinSigno * p_lisObj );
-void SLisEntLssAnterior ( SListaEnterosLargosSinSigno * p_lisObj );
-void SLisEntLssMoverA ( SListaEnterosLargosSinSigno * p_lisObj, int iElem );
-void SLisEntLssDeposicionar ( SListaEnterosLargosSinSigno * p_lisObj );
+void SLisIntLssInicio ( SListaEnterosLargosSinSigno * p_lisObj );
+void SLisIntLssFinal ( SListaEnterosLargosSinSigno * p_lisObj );
+void SLisIntLssSiguiente ( SListaEnterosLargosSinSigno * p_lisObj );
+void SLisIntLssAnterior ( SListaEnterosLargosSinSigno * p_lisObj );
+void SLisIntLssMoverA ( SListaEnterosLargosSinSigno * p_lisObj, int iElem );
+void SLisIntLssDeposicionar ( SListaEnterosLargosSinSigno * p_lisObj );
 
-int SLisEntLssEsNulo ( SListaEnterosLargosSinSigno * p_lisObj );
-int SLisEntLssEstaEnFinal ( SListaEnterosLargosSinSigno * p_lisObj );
-int SLisEntLssEstaEnInicio ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssEsNulo ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssEstaEnFinal ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssEstaEnInicio ( SListaEnterosLargosSinSigno * p_lisObj );
 
-int SLisEntLssInsertar ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
-// Nota: SLisEntLssInsertarOrdenado inserta en el primer hueco. Si la lista no esta previamente ordenada
+int SLisIntLssInsertar ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+// Nota: SLisIntLssInsertarOrdenado inserta en el primer hueco. Si la lista no esta previamente ordenada
 // el resultado no es una lista ordenada
-int SLisEntLssInsertarOrdenado ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
-int SLisEntLssInsertarDelante ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
-int SLisEntLssInsertarDetras ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
-int SLisEntLssEliminar ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssInsertarOrdenado ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+int SLisIntLssInsertarDelante ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+int SLisIntLssInsertarDetras ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+int SLisIntLssEliminar ( SListaEnterosLargosSinSigno * p_lisObj );
 
-int SLisEntLssExiste ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
-int SLisEntLssBuscar ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+int SLisIntLssExiste ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+int SLisIntLssBuscar ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
 
-int SLisEntLssEstaOrdenada ( SListaEnterosLargosSinSigno * p_lisObj );
-SListaEnterosLargosSinSigno * SLisEntLssOrdenar ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssEstaOrdenada ( SListaEnterosLargosSinSigno * p_lisObj );
+SListaEnterosLargosSinSigno * SLisIntLssOrdenar ( SListaEnterosLargosSinSigno * p_lisObj );
 
-SListaEnterosLargosSinSigno * SLisEntLssExtraerUnicos ( SListaEnterosLargosSinSigno * p_lisObj );
-SListaEnterosLargosSinSigno * SLisEntLssExtraerUnicosExt ( SListaEnterosLargosSinSigno * p_lisObj, int iOrdenar );
-int SLisEntLssTieneRepetidos ( SListaEnterosLargosSinSigno * p_lisObj );
+SListaEnterosLargosSinSigno * SLisIntLssExtraerUnicos ( SListaEnterosLargosSinSigno * p_lisObj );
+SListaEnterosLargosSinSigno * SLisIntLssExtraerUnicosExt ( SListaEnterosLargosSinSigno * p_lisObj, int iOrdenar );
+int SLisIntLssTieneRepetidos ( SListaEnterosLargosSinSigno * p_lisObj );
 
-unsigned long SLisEntLssMin ( SListaEnterosLargosSinSigno * p_lisObj );
-unsigned long SLisEntLssMax ( SListaEnterosLargosSinSigno * p_lisObj );
-void SLisEntLssObtenerParametros ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long * p_ulMin, unsigned long * p_ulMax, double * p_dMed ); 
+unsigned long SLisIntLssMin ( SListaEnterosLargosSinSigno * p_lisObj );
+unsigned long SLisIntLssMax ( SListaEnterosLargosSinSigno * p_lisObj );
+void SLisIntLssObtenerParametros ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long * p_ulMin, unsigned long * p_ulMax, double * p_dMed ); 
 
-int SLisEntLssDefinidaPositiva ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssDefinidaPositiva ( SListaEnterosLargosSinSigno * p_lisObj );
 
 
 

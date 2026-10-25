@@ -41,6 +41,7 @@ int SLisCadInsertarDupAlInicio ( SListaCadenas * p_lisObj, SCadena * p_cadDatos 
 int SLisCadInsertarDupAlFinal ( SListaCadenas * p_lisObj, SCadena * p_cadDatos );
 
 int SLisCadEliminarElem ( SListaCadenas * p_lisObj, int iElem );
+SCadena * SLisCadExtraerElem ( SListaCadenas * p_lisObj, int iElem );
 
 int SLisCadVaciar ( SListaCadenas * p_lisObj );
 

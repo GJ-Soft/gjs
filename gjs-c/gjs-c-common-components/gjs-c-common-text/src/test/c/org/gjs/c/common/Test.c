@@ -2,7 +2,7 @@
 
 
 
-#define NUM_TESTS        18
+#define NUM_TESTS        19
 
 extern int TestCadenas ();
 extern int TestExpresionesRegulares ();
@@ -22,6 +22,7 @@ extern int TestSListaCadenas ();
 extern int TestSNombre ();
 extern int TestSTexto ();
 extern int TestSToken ();
+extern int TestSConjuntoCadenas ();
 
 
 char ** testArrayInit ()
@@ -45,6 +46,7 @@ char ** testArrayInit ()
     p_p_cTests[ 15 ] = CadDuplicar ( "SNombreTest" );
     p_p_cTests[ 16 ] = CadDuplicar ( "STextoTest" );
     p_p_cTests[ 17 ] = CadDuplicar ( "STokenTest" );
+    p_p_cTests[ 18 ] = CadDuplicar ( "SConjuntoCadenasTest" );
     return p_p_cTests;
 }
 
@@ -69,6 +71,7 @@ PFUNINTV * functionArrayInit ()
     p_fTests[ 15 ] = TestSNombre;
     p_fTests[ 16 ] = TestSTexto;
     p_fTests[ 17 ] = TestSToken;
+    p_fTests[ 18 ] = TestSConjuntoCadenas;
     return p_fTests;
 }
 

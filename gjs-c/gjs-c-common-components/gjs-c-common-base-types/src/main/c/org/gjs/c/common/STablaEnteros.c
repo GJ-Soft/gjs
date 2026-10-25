@@ -5,7 +5,7 @@
 
 
 
-STablaEnteros * STabEntCrear ( int iNumFilas, int iNumColumnas )
+STablaEnteros * STabIntCrear ( int iNumFilas, int iNumColumnas )
 {
 	STablaEnteros * p_tabObj;
 	
@@ -17,7 +17,7 @@ STablaEnteros * STabEntCrear ( int iNumFilas, int iNumColumnas )
 			p_tabObj->p_tabDatos = STabCrear ( iNumFilas, iNumColumnas );
 			if ( ES_NULO ( p_tabObj->p_tabDatos ) )
 			{
-				STabEntDestruir ( &p_tabObj );
+				STabIntDestruir ( &p_tabObj );
 			}
 		}
 	}
@@ -28,7 +28,7 @@ STablaEnteros * STabEntCrear ( int iNumFilas, int iNumColumnas )
 	return ( p_tabObj );
 }
 
-void STabEntDestruir ( STablaEnteros ** p_p_tabObj )
+void STabIntDestruir ( STablaEnteros ** p_p_tabObj )
 {
 	STablaEnteros * p_tabObj;
 	
@@ -44,7 +44,7 @@ void STabEntDestruir ( STablaEnteros ** p_p_tabObj )
 	}
 }
 
-int STabEntEsValida ( STablaEnteros * p_tabObj )
+int STabIntEsValida ( STablaEnteros * p_tabObj )
 {
 	int iRes;
 
@@ -59,7 +59,7 @@ int STabEntEsValida ( STablaEnteros * p_tabObj )
 	return ( iRes );
 }
 
-int STabEntNumFilas ( STablaEnteros * p_tabObj )
+int STabIntNumFilas ( STablaEnteros * p_tabObj )
 {
 	int iRes;
 
@@ -74,7 +74,7 @@ int STabEntNumFilas ( STablaEnteros * p_tabObj )
 	return ( iRes );
 }
 
-int STabEntNumColumnas ( STablaEnteros * p_tabObj )
+int STabIntNumColumnas ( STablaEnteros * p_tabObj )
 {
 	int iRes;
 
@@ -89,7 +89,7 @@ int STabEntNumColumnas ( STablaEnteros * p_tabObj )
 	return ( iRes );
 }
 
-int STabEntNumElementos ( STablaEnteros * p_tabObj )
+int STabIntNumElementos ( STablaEnteros * p_tabObj )
 {
 	int iRes;
 
@@ -104,7 +104,7 @@ int STabEntNumElementos ( STablaEnteros * p_tabObj )
 	return ( iRes );
 }
 
-int STabEntElemento ( STablaEnteros * p_tabObj, int iFila, int iColumna )
+int STabIntElemento ( STablaEnteros * p_tabObj, int iFila, int iColumna )
 {
 	int			iRes;
 	SContenido *	p_conObj;
@@ -128,7 +128,7 @@ int STabEntElemento ( STablaEnteros * p_tabObj, int iFila, int iColumna )
 	return ( iRes );
 }
 
-int STabEntAsignar ( STablaEnteros * p_tabObj, int iFila, int iColumna, int iDato )
+int STabIntAsignar ( STablaEnteros * p_tabObj, int iFila, int iColumna, int iDato )
 {
 	int				iRes;
 	SContenido *	p_conObj;
@@ -188,7 +188,7 @@ int STabEntAsignar ( STablaEnteros * p_tabObj, int iFila, int iColumna, int iDat
 	return ( iRes );
 }
 
-int STabEntInicializar ( STablaEnteros * p_tabObj )
+int STabIntInicializar ( STablaEnteros * p_tabObj )
 {
 	int iRes;
 	int iFila;
@@ -198,12 +198,12 @@ int STabEntInicializar ( STablaEnteros * p_tabObj )
 	{
 		iRes = 1;
 		iFila = 0;
-		while ( ( iFila < STabEntNumFilas ( p_tabObj ) ) && ( iRes == 1 ) )
+		while ( ( iFila < STabIntNumFilas ( p_tabObj ) ) && ( iRes == 1 ) )
 		{
 			iColumna = 0;
-			while ( ( iColumna < STabEntNumColumnas ( p_tabObj ) ) && ( iRes == 1 ) )
+			while ( ( iColumna < STabIntNumColumnas ( p_tabObj ) ) && ( iRes == 1 ) )
 			{
-				iRes = STabEntAsignar ( p_tabObj, iFila, iColumna, 0 );
+				iRes = STabIntAsignar ( p_tabObj, iFila, iColumna, 0 );
 				iColumna = iColumna + 1;
 			}
 			iFila = iFila + 1;
@@ -216,7 +216,7 @@ int STabEntInicializar ( STablaEnteros * p_tabObj )
 	return ( iRes );
 }
 
-int STabEntExiste ( STablaEnteros * p_tabObj, int iDato )
+int STabIntExiste ( STablaEnteros * p_tabObj, int iDato )
 {
 	int iRes;
 	int iFila;
@@ -226,12 +226,12 @@ int STabEntExiste ( STablaEnteros * p_tabObj, int iDato )
 	{
 		iRes = 0;
 		iFila = 0;
-		while ( ( iFila < STabEntNumFilas ( p_tabObj ) ) && ( iRes == 0 ) )
+		while ( ( iFila < STabIntNumFilas ( p_tabObj ) ) && ( iRes == 0 ) )
 		{
 			iColumna = 0;
-			while ( ( iColumna < STabEntNumColumnas ( p_tabObj ) ) && ( iRes == 0 ) )
+			while ( ( iColumna < STabIntNumColumnas ( p_tabObj ) ) && ( iRes == 0 ) )
 			{
-				if ( STabEntElemento ( p_tabObj, iFila, iColumna ) == iDato )
+				if ( STabIntElemento ( p_tabObj, iFila, iColumna ) == iDato )
 				{
 					iRes = 1;
 				}

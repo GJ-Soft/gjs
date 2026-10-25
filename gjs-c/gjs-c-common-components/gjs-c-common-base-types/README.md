@@ -6,7 +6,7 @@ contenedores sobre el que se construyen las capas superiores: bloques de
 memoria, listas, secuencias, vectores, tablas, pilas, colas, conjuntos, árboles
 y grafos.
 
-Es el módulo más grande del stack C: **73 módulos** en 4.651 líneas de cabeceras
+Es el módulo más grande del stack C: **73 módulos** en 4.664 líneas de cabeceras
 y algo más de 34.000 de implementación.
 
 ---
@@ -43,15 +43,15 @@ Ejemplo con una lista de enteros:
 
 int main ( void )
 {
-    SListaEnteros * p_lisObj = SLisEntCrear ();
+    SListaEnteros * p_lisObj = SLisIntCrear ();
 
-    if ( SLisEntEsValida ( p_lisObj ) == 1 )
+    if ( SLisIntEsValida ( p_lisObj ) == 1 )
     {
-        SLisEntInsertarAlFinal ( p_lisObj, 42 );
-        SLisEntInsertarAlFinal ( p_lisObj, 7 );
-        printf ( "%d elementos\n", SLisEntNumElementos ( p_lisObj ) );
+        SLisIntInsertarAlFinal ( p_lisObj, 42 );
+        SLisIntInsertarAlFinal ( p_lisObj, 7 );
+        printf ( "%d elementos\n", SLisIntNumElementos ( p_lisObj ) );
     }
-    SLisEntDestruir ( &p_lisObj );
+    SLisIntDestruir ( &p_lisObj );
     return ( 0 );
 }
 ```
@@ -86,10 +86,15 @@ tipo de elemento. El sufijo del nombre y del prefijo indican cuál es:
 | --------------- | ---------------------------------------- | --------------------- | ---------- |
 | *(ninguno)*     | `SElemento` (bloque de bytes genérico)   | `SLista`              | `SLis`     |
 | `Ptr`           | punteros `void *` sin copia ni propiedad | `SListaPtr`           | `SLisp`    |
-| `Enteros`       | `int` por valor                          | `SListaEnteros`       | `SLisEnt`  |
-| `EnterosLargos` | `long` por valor                         | `SListaEnterosLargos` | `SLisEntl` |
+| `Enteros`       | `int` por valor                          | `SListaEnteros`       | `SLisInt`  |
+| `EnterosLargos` | `long` por valor                         | `SListaEnterosLargos` | `SLisIntl` |
 | `Literales`     | cadenas `char *`                         | `SListaLiterales`     | `SLisLit`  |
 | `Flags`         | bits                                     | `SVectorFlags`        | `SVecFlg`  |
+
+Las variantes de enteros se llaman `…Enteros`, pero su prefijo es `Int`, no
+`Ent` (`SLisInt`, `SLisIntl`, `SLisIntLss`, `SSecInt`, `SArbInt`…): `Ent` lo usan
+las entidades de `gjs-c-common-database` (`SLisEnt` para `SListaEntidades`,
+`SCnjEnt` para `SConjuntoEntidades`).
 
 La diferencia práctica está en **quién es dueño de la memoria**: las variantes
 base y las de valor copian el dato dentro de la estructura; las `Ptr` guardan el

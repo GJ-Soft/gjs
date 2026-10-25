@@ -4,7 +4,7 @@
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | Módulos       | 7 implementados + `SArbolB` sin portar                                                                                                |
 | Cabeceras     | `SArbol.h`, `SArbolPtr.h`, `SArbolBin.h`, `SArbolBinPtr.h`, `SArbolEnteros.h`, `SArbolBinEnteros.h`, `SArbolLiterales.h`, `SArbolB.h` |
-| Prefijos      | `SArb`, `SArbPtr`, `SArbBin`, `SArbBinPtr`, `SArbEnt`, `SArbBinEnt`, `SArbLit`                                                        |
+| Prefijos      | `SArb`, `SArbPtr`, `SArbBin`, `SArbBinPtr`, `SArbInt`, `SArbBinInt`, `SArbLit`                                                        |
 | Incluidos por | `TiposBasicos.h`, **salvo `SArbolB.h`**                                                                                                      |
 | Tests         | Uno por módulo, **salvo `SArbolB`**                                                                                                   |
 

@@ -76,6 +76,109 @@ static int TestSSecOperaciones01 ()
 	return ( iRes );
 }
 
+static int TestSSecExtraer01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecExtraer 01:\n" );
+
+	SSecuencia * p_secObj = SSecCrear ();
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		/* Secuencia vacia: no hay nada que extraer. */
+		if ( ES_VALIDO ( SSecExtraer ( p_secObj, 0 ) ) )
+		{
+			printf( "Error caso 1: extraer de una secuencia vacia deberia devolver nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SSecInsertar ( p_secObj, CrearElemEntero ( 10 ) );
+		SSecInsertar ( p_secObj, CrearElemEntero ( 20 ) );
+		SSecInsertar ( p_secObj, CrearElemEntero ( 30 ) );
+		SSecInsertar ( p_secObj, CrearElemEntero ( 40 ) );
+
+		/* Se extrae el mismo elemento que habia, vivo y desenganchado de la secuencia. */
+		SElemento * p_elmEsp = SSecElemento ( p_secObj, 1 );
+		SElemento * p_elmExt = SSecExtraer ( p_secObj, 1 );
+		if ( ES_NULO ( p_elmExt ) || ( p_elmExt != p_elmEsp ) || ( SElmEntero ( p_elmExt ) != 20 ) )
+		{
+			printf( "Error caso 2: se esperaba extraer el 20 de la posicion 1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else if ( ES_VALIDO ( SElmSucesor ( p_elmExt ) ) || ES_VALIDO ( SElmAntecesor ( p_elmExt ) ) )
+		{
+			printf( "Error caso 3: el elemento extraido no deberia conservar enlaces\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecNumElementos ( p_secObj ) != 3 ) ||
+			 ( ValorElem ( p_secObj, 0 ) != 10 ) ||
+			 ( ValorElem ( p_secObj, 1 ) != 30 ) ||
+			 ( ValorElem ( p_secObj, 2 ) != 40 ) )
+		{
+			printf( "Error caso 4: tras extraer deberian quedar 10, 30 y 40\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Posiciones fuera de rango: nulo, y la secuencia no cambia. */
+		if ( ES_VALIDO ( SSecExtraer ( p_secObj, -1 ) ) || ES_VALIDO ( SSecExtraer ( p_secObj, 3 ) ) )
+		{
+			printf( "Error caso 5: extraer fuera de rango deberia devolver nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SSecNumElementos ( p_secObj ) != 3 )
+		{
+			printf( "Error caso 6: extraer fuera de rango no deberia cambiar la secuencia\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El extraido se puede volver a insertar: la secuencia lo pone al final. */
+		if ( ES_VALIDO ( p_elmExt ) )
+		{
+			if ( SSecInsertar ( p_secObj, p_elmExt ) != 1 )
+			{
+				printf( "Error caso 7: el elemento extraido deberia poder volver a insertarse\n" );
+				iRes = BOOL_VAL_FALSO;
+				SElmDestruir ( &p_elmExt );
+			}
+			else if ( SSecElemento ( p_secObj, 3 ) != p_elmExt )
+			{
+				printf( "Error caso 8: al reinsertarlo deberia quedar al final\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		/* Los extremos; los extraidos son ya del llamador. */
+		p_elmExt = SSecExtraer ( p_secObj, 0 );
+		if ( ES_NULO ( p_elmExt ) || ( SElmEntero ( p_elmExt ) != 10 ) )
+		{
+			printf( "Error caso 9: extraer la posicion 0 deberia dar el 10\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElmDestruir ( &p_elmExt );
+		p_elmExt = SSecExtraer ( p_secObj, SSecNumElementos ( p_secObj ) - 1 );
+		if ( ES_NULO ( p_elmExt ) || ( SElmEntero ( p_elmExt ) != 20 ) )
+		{
+			printf( "Error caso 10: extraer la ultima posicion deberia dar el 20\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElmDestruir ( &p_elmExt );
+		if ( ( SSecNumElementos ( p_secObj ) != 2 ) ||
+			 ( ValorElem ( p_secObj, 0 ) != 30 ) ||
+			 ( ValorElem ( p_secObj, 1 ) != 40 ) )
+		{
+			printf( "Error caso 11: deberian quedar el 30 y el 40\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SSecExtraer ( NULL, 0 ) ) )
+		{
+			printf( "Error caso 12: extraer de una secuencia nula deberia devolver nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la secuencia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecDestruir ( &p_secObj );
+	return ( iRes );
+}
+
 static int TestSSecInvalidos01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -108,6 +211,7 @@ int TestSSecuencia ()
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SSecuencia]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSSecOperaciones01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecExtraer01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecInvalidos01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );

@@ -32,6 +32,7 @@
 #include <SCadenaNumerica.h>
 
 #include <SListaCadenas.h>
+#include <SConjuntoCadenas.h>
 #include <SLinea.h>
 #include <STexto.h>
 

@@ -4,7 +4,7 @@
 | ------------- | ------------------------------------------------------------- |
 | Módulos       | 4                                                             |
 | Cabeceras     | `SPila.h`, `SPilaPtr.h`, `SPilaEnteros.h`, `SPilaLiterales.h` |
-| Prefijos      | `SPil`, `SPilp`, `SPilEnt`, `SPilLit`                         |
+| Prefijos      | `SPil`, `SPilp`, `SPilInt`, `SPilLit`                         |
 | Incluidos por | `TiposBasicos.h`                                              |
 | Tests         | Uno por módulo                                                |
 
@@ -58,15 +58,15 @@ la primera cede la propiedad del elemento al llamante, la segunda lo destruye.
 ### `SPilaEnteros`
 
 ```c
-SPilaEnteros * p_pilObj = SPilEntCrear ();
+SPilaEnteros * p_pilObj = SPilIntCrear ();
 
-SPilEntApilar ( p_pilObj, 42 );
-int iCima = SPilEntPrimero ( p_pilObj );
-int iVal  = SPilEntDesapilar ( p_pilObj );
-SPilEntDestruir ( &p_pilObj );
+SPilIntApilar ( p_pilObj, 42 );
+int iCima = SPilIntPrimero ( p_pilObj );
+int iVal  = SPilIntDesapilar ( p_pilObj );
+SPilIntDestruir ( &p_pilObj );
 ```
 
-Al ser valores, `SPilEntDesapilar` devuelve el `int` directamente y no hay nada
+Al ser valores, `SPilIntDesapilar` devuelve el `int` directamente y no hay nada
 que liberar.
 
 ## Dependencias
@@ -98,6 +98,6 @@ que liberar.
   desde fuera.
 - `SPilaEnteros` y `SPilaLiterales` **no tienen `Lista`**: no exponen la
   estructura interna, a diferencia de la base y la variante `Ptr`.
-- `SPilEntDesapilar` devuelve `int`, así que no hay forma de distinguir
+- `SPilIntDesapilar` devuelve `int`, así que no hay forma de distinguir
   "desapilé un 0" de "la pila estaba vacía". Conviene comprobar
-  `SPilEntEstaVacia` antes.
+  `SPilIntEstaVacia` antes.

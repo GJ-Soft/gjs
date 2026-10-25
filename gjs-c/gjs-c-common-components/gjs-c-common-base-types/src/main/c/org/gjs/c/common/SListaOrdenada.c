@@ -163,6 +163,21 @@ int SLisOrdEliminarElem ( SListaOrdenada * p_lisObj, int iElem )
 	return ( iRes );
 }
 
+SElemento * SLisOrdExtraerElem ( SListaOrdenada * p_lisObj, int iElem )
+{
+	SElemento * p_elmRes;
+
+	if ( SLisOrdEsValida ( p_lisObj ) == 1 ) 
+	{
+		p_elmRes = SLisExtraerElem ( p_lisObj->p_lisContenido, iElem );
+	}
+	else
+	{
+		p_elmRes = NULL;
+	}
+	return ( p_elmRes );
+}
+
 int SLisOrdVaciar ( SListaOrdenada * p_lisObj )
 {
 	int	iRes;

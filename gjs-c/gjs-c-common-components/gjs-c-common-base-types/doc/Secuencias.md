@@ -4,7 +4,7 @@
 | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Módulos       | 6                                                                                                                                                   |
 | Cabeceras     | `SSecuencia.h`, `SSecuenciaPtr.h`, `SSecuenciaEnteros.h`, `SSecuenciaEnterosLargos.h`, `SSecuenciaEnterosLargosSinSigno.h`, `SSecuenciaLiterales.h` |
-| Prefijos      | `SSec`, `SSecp`, `SSecEnt`, `SSecEntL`, `SSecEntLSS`, `SSecLit`                                                                                     |
+| Prefijos      | `SSec`, `SSecp`, `SSecInt`, `SSecIntl`, `SSecIntLss`, `SSecLit`                                                                                     |
 | Incluidos por | `TiposBasicos.h`                                                                                                                                    |
 | Tests         | Uno por módulo                                                                                                                                      |
 
@@ -36,18 +36,19 @@ typedef struct
 
 ## API de `SSecuencia`
 
-| Función                                                | Descripción                           |
-| ------------------------------------------------------ | ------------------------------------- |
-| `SSecuencia * SSecCrear ()`                            | Secuencia vacía.                      |
-| `void SSecDestruir ( SSecuencia ** )`                  | Destruye la secuencia y su contenido. |
-| `int SSecEsValida ( SSecuencia * )`                    | 1 si es utilizable.                   |
-| `int SSecNumElementos ( SSecuencia * )`                | Número de elementos.                  |
-| `int SSecEstaVacia ( SSecuencia * )`                   | 1 si no hay elementos.                |
-| `SElemento * SSecElemento ( SSecuencia *, int iElem )` | Elemento en la posición.              |
-| `int SSecInsertar ( SSecuencia *, SElemento * )`       | Añade un elemento.                    |
-| `int SSecEliminar ( SSecuencia *, int iElem )`         | Elimina el de la posición.            |
-| `int SSecVaciar ( SSecuencia * )`                      | Elimina todos.                        |
-| `SLista * SSecLista ( SSecuencia * )`                  | **Expone la lista interna.**          |
+| Función                                                | Descripción                            |
+| ------------------------------------------------------ | -------------------------------------- |
+| `SSecuencia * SSecCrear ()`                            | Secuencia vacía.                       |
+| `void SSecDestruir ( SSecuencia ** )`                  | Destruye la secuencia y su contenido.  |
+| `int SSecEsValida ( SSecuencia * )`                    | 1 si es utilizable.                    |
+| `int SSecNumElementos ( SSecuencia * )`                | Número de elementos.                   |
+| `int SSecEstaVacia ( SSecuencia * )`                   | 1 si no hay elementos.                 |
+| `SElemento * SSecElemento ( SSecuencia *, int iElem )` | Elemento en la posición.               |
+| `int SSecInsertar ( SSecuencia *, SElemento * )`       | Añade un elemento.                     |
+| `int SSecEliminar ( SSecuencia *, int iElem )`         | Elimina el de la posición.             |
+| `SElemento * SSecExtraer ( SSecuencia *, int iElem )`  | Saca el de la posición sin destruirlo. |
+| `int SSecVaciar ( SSecuencia * )`                      | Elimina todos.                         |
+| `SLista * SSecLista ( SSecuencia * )`                  | **Expone la lista interna.**           |
 
 `SSecLista` es la válvula de escape: devuelve la [SLista](Listas.md) subyacente
 para las operaciones que la secuencia no ofrece (cursor, búsqueda, inserción en
@@ -82,18 +83,18 @@ void SSecpDesactivarLiberacionMemoria ( SSecuenciaPtr * );
 ### `SSecuenciaEnteros` y hermanas
 
 ```c
-SSecuenciaEnteros * p_secObj = SSecEntCrear ();
+SSecuenciaEnteros * p_secObj = SSecIntCrear ();
 
-SSecEntInsertar ( p_secObj, 42 );
-if ( SSecEntExiste ( p_secObj, 42 ) == 1 )
+SSecIntInsertar ( p_secObj, 42 );
+if ( SSecIntExiste ( p_secObj, 42 ) == 1 )
 {
-    int iVal = SSecEntElemento ( p_secObj, 0 );
+    int iVal = SSecIntElemento ( p_secObj, 0 );
 }
-SSecEntDestruir ( &p_secObj );
+SSecIntDestruir ( &p_secObj );
 ```
 
 Las tres comparten API salvo por el tipo del dato y por una diferencia:
-**sólo `SSecuenciaEnteros` tiene `SSecEntModificar`**; las de `long` y
+**sólo `SSecuenciaEnteros` tiene `SSecIntModificar`**; las de `long` y
 `unsigned long` no permiten cambiar un elemento ya insertado.
 
 ### `SSecuenciaLiterales`
@@ -124,7 +125,7 @@ en lugar de quedarse con el puntero. Es distinto del criterio de
 
 - **`SSecuenciaEnteros` no tiene `EstaVacia`** aunque la base sí, y las variantes
   de `long` tampoco. Hay que preguntarlo con `NumElementos () == 0`.
-- La asimetría de `SSecEntModificar` (existe sólo en la variante de `int`) no
+- La asimetría de `SSecIntModificar` (existe sólo en la variante de `int`) no
   responde a ninguna limitación técnica; parece una función que se añadió a una
   variante y no se propagó a las hermanas.
 - `SSecLista` y `SSecpLista` exponen la estructura interna. Es cómodo, pero
@@ -132,7 +133,7 @@ en lugar de quedarse con el puntero. Es distinto del criterio de
   API no permitiría, por ejemplo moviendo el cursor de la lista o insertando por
   el medio. No hay nada que lo impida.
 - El encadenado de tres envoltorios de las variantes de valor tiene coste: cada
-  `SSecEntElemento` atraviesa `SSecuencia` → `SLista` → `SElemento` → `SBloque`
+  `SSecIntElemento` atraviesa `SSecuencia` → `SLista` → `SElemento` → `SBloque`
   para leer un entero. Para vectores de enteros grandes,
   [SVectorEnteros](Vectores.md) es más directo.
 

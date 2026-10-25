@@ -1766,14 +1766,14 @@ int CadCompararSinDistinguirTipoLetraExt ( const char * p_cAsciiz1, const char *
 	int iLong2;
 	int iMinLong;
 
-	iLong1 = CadLongitudSeg ( p_cAsciiz1, iMax1 ); 
-	iLong2 = CadLongitudSeg ( p_cAsciiz2, iMax2 ); 
-	if ( ( iLong1 > 0 ) && ( iLong2 > 0 ) )
+	if ( ES_VALIDO ( p_cAsciiz1 ) && ES_VALIDO ( p_cAsciiz2 ) )
 	{
+		iLong1 = CadLongitudSeg ( p_cAsciiz1, iMax1 ); 
+		iLong2 = CadLongitudSeg ( p_cAsciiz2, iMax2 ); 
 		iMinLong = MIN ( iLong1, iLong2 );
 		iRes = COMP_IGUAL;
 		iCar = 0; 
-		while ( ( iCar < iMinLong ) && ( iRes == 1 ) )  
+		while ( ( iCar < iMinLong ) && ( iRes == COMP_IGUAL ) )  
 		{
 			if ( ASCIILetraMinAMay ( p_cAsciiz1 [ iCar ] ) < ASCIILetraMinAMay ( p_cAsciiz2 [ iCar ] ) )
 			{

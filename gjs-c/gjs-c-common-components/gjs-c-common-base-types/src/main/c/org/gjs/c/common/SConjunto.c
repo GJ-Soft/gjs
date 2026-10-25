@@ -102,6 +102,51 @@ SElemento * SCnjElemento ( SConjunto * p_cnjObj, int iElem )
 	return ( p_elmRes );
 }
 
+SElemento * SCnjPrimero ( SConjunto * p_cnjObj )
+{
+	SElemento * p_elmRes;
+
+	if ( ES_VALIDO ( p_cnjObj ) )
+	{
+		p_elmRes = SLisOrdElemento ( p_cnjObj->p_lisContenido, 0 );
+	}
+	else
+	{
+		p_elmRes = NULL;
+	}
+	return ( p_elmRes );
+}
+
+SElemento * SCnjUltimo ( SConjunto * p_cnjObj )
+{
+	SElemento * p_elmRes;
+
+	if ( ES_VALIDO ( p_cnjObj ) )
+	{
+		p_elmRes = SLisOrdElemento ( p_cnjObj->p_lisContenido, SCnjNumElementos ( p_cnjObj ) - 1 );
+	}
+	else
+	{
+		p_elmRes = NULL;
+	}
+	return ( p_elmRes );
+}
+
+int SCnjPosicion ( SConjunto * p_cnjObj, SElemento * p_elmObj )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_elmObj ) )
+	{
+		iRes = SCnjBuscar ( p_cnjObj, SElmDatos ( p_elmObj ) );
+	}
+	else
+	{
+		iRes = -1;
+	}
+	return ( iRes );
+}
+
 int SCnjInsertarElem ( SConjunto * p_cnjObj, SElemento * p_elmObj )
 {
 	int iRes;
@@ -137,6 +182,21 @@ int SCnjEliminarElem ( SConjunto * p_cnjObj, int iElem )
 		iRes = 0;
 	}
 	return ( iRes );
+}
+
+SElemento * SCnjExtraerElem ( SConjunto * p_cnjObj, int iElem )
+{
+	SElemento * p_elmRes;
+
+	if ( SCnjEsValido ( p_cnjObj ) == 1 ) 
+	{
+		p_elmRes = SLisOrdExtraerElem ( p_cnjObj->p_lisContenido, iElem );
+	}
+	else
+	{
+		p_elmRes = NULL;
+	}
+	return ( p_elmRes );
 }
 
 int SCnjVaciar ( SConjunto * p_cnjObj )

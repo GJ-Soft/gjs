@@ -4,7 +4,7 @@
 | ------------- | ----------------------------------------------------------------- |
 | Módulos       | 4                                                                 |
 | Cabeceras     | `STabla.h`, `STablaPtr.h`, `STablaEnteros.h`, `STablaLiterales.h` |
-| Prefijos      | `STab`, `STabp`, `STabEnt`, `STabLit`                             |
+| Prefijos      | `STab`, `STabp`, `STabInt`, `STabLit`                             |
 | Incluidos por | `TiposBasicos.h`                                                  |
 | Tests         | Uno por módulo                                                    |
 
@@ -63,16 +63,16 @@ memoria.
 ### `STablaEnteros`
 
 ```c
-STablaEnteros * p_tabObj = STabEntCrear ( 3, 4 );
+STablaEnteros * p_tabObj = STabIntCrear ( 3, 4 );
 
-STabEntInicializar ( p_tabObj );
-STabEntAsignar ( p_tabObj, 1, 2, 42 );
-int iVal = STabEntElemento ( p_tabObj, 1, 2 );
-STabEntDestruir ( &p_tabObj );
+STabIntInicializar ( p_tabObj );
+STabIntAsignar ( p_tabObj, 1, 2, 42 );
+int iVal = STabIntElemento ( p_tabObj, 1, 2 );
+STabIntDestruir ( &p_tabObj );
 ```
 
 Como en `SVectorEnteros`, no tiene `LimpiarElemento` ni `Limpiar`: se reinicia
-entera con `STabEntInicializar`.
+entera con `STabIntInicializar`.
 
 ### `STablaLiterales`
 

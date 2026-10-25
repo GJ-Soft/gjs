@@ -114,6 +114,51 @@ char * SCnjLitElemento ( SConjuntoLiterales * p_cnjObj, int iElem )
 	return ( p_cRes );
 }
 
+char * SCnjLitPrimero ( SConjuntoLiterales * p_cnjObj )
+{
+	char * p_cRes;
+
+	if ( ES_VALIDO ( p_cnjObj ) )
+	{
+		p_cRes = (char *) SCnjpPrimero ( p_cnjObj->p_cnjDatos );
+	}
+	else
+	{
+		p_cRes = NULL;
+	}
+	return ( p_cRes );
+}
+
+char * SCnjLitUltimo ( SConjuntoLiterales * p_cnjObj )
+{
+	char * p_cRes;
+
+	if ( ES_VALIDO ( p_cnjObj ) )
+	{
+		p_cRes = (char *) SCnjpUltimo ( p_cnjObj->p_cnjDatos );
+	}
+	else
+	{
+		p_cRes = NULL;
+	}
+	return ( p_cRes );
+}
+
+int SCnjLitPosicion ( SConjuntoLiterales * p_cnjObj, const char * p_cDato )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_cnjObj ) )
+	{
+		iRes = SCnjpPosicion ( p_cnjObj->p_cnjDatos, (byte *) p_cDato );
+	}
+	else
+	{
+		iRes = -1;
+	}
+	return ( iRes );
+}
+
 int SCnjLitInsertar ( SConjuntoLiterales * p_cnjObj, const char * p_cDato )
 {
 	int		iRes;

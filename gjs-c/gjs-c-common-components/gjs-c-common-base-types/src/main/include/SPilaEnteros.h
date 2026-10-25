@@ -22,22 +22,22 @@ typedef struct
 
 
 
-SPilaEnteros * SPilEntCrear ();
+SPilaEnteros * SPilIntCrear ();
 
 
-void SPilEntDestruir ( SPilaEnteros ** p_p_pilObj );
+void SPilIntDestruir ( SPilaEnteros ** p_p_pilObj );
 
-int SPilEntEsValida ( SPilaEnteros * p_pilObj );
+int SPilIntEsValida ( SPilaEnteros * p_pilObj );
 
-int SPilEntNumElementos ( SPilaEnteros * p_pilObj );
-int SPilEntEstaVacia ( SPilaEnteros * p_pilObj );
+int SPilIntNumElementos ( SPilaEnteros * p_pilObj );
+int SPilIntEstaVacia ( SPilaEnteros * p_pilObj );
 
-int SPilEntPrimero ( SPilaEnteros * p_pilObj );
-int SPilEntDesapilar ( SPilaEnteros * p_pilObj );
+int SPilIntPrimero ( SPilaEnteros * p_pilObj );
+int SPilIntDesapilar ( SPilaEnteros * p_pilObj );
 
-int SPilEntApilar ( SPilaEnteros * p_pilObj, int iDato );
-int SPilEntEliminarPrimero ( SPilaEnteros * p_pilObj );
-int SPilEntVaciar ( SPilaEnteros * p_pilObj );
+int SPilIntApilar ( SPilaEnteros * p_pilObj, int iDato );
+int SPilIntEliminarPrimero ( SPilaEnteros * p_pilObj );
+int SPilIntVaciar ( SPilaEnteros * p_pilObj );
 
 
 

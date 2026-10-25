@@ -117,6 +117,173 @@ static int TestSCnjpOperaciones01 ()
 	return ( iRes );
 }
 
+static int TestSCnjpPrimeroUltimo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCnjpPrimeroUltimo 01:\n" );
+
+	/* La memoria de los datos la gestiona el test ( liberacion desactivada ). */
+	byte * p_d10 = CrearDatoEntero ( 10 );
+	byte * p_d20 = CrearDatoEntero ( 20 );
+	byte * p_d30 = CrearDatoEntero ( 30 );
+	SConjuntoPtr * p_cnjObj = SCnjpCrear ( CompararEnteros );
+	if ( ES_VALIDO ( p_cnjObj ) && ES_VALIDO ( p_d10 ) && ES_VALIDO ( p_d20 ) && ES_VALIDO ( p_d30 ) )
+	{
+		SCnjpDesactivarLiberacionMemoria ( p_cnjObj );
+
+		/* Vacio: no hay ni primero ni ultimo. */
+		if ( ES_VALIDO ( SCnjpPrimero ( p_cnjObj ) ) )
+		{
+			printf( "Error caso 1: el primero de un conjunto vacio deberia ser nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SCnjpUltimo ( p_cnjObj ) ) )
+		{
+			printf( "Error caso 2: el ultimo de un conjunto vacio deberia ser nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Con un solo elemento, primero y ultimo son el mismo puntero. */
+		SCnjpInsertarElem ( p_cnjObj, p_d20 );
+		if ( SCnjpPrimero ( p_cnjObj ) != p_d20 )
+		{
+			printf( "Error caso 3: con un elemento, el primero deberia ser el 20\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCnjpUltimo ( p_cnjObj ) != p_d20 )
+		{
+			printf( "Error caso 4: con un elemento, el ultimo deberia ser el 20\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Se insertan por fuera de los extremos: primero y ultimo siguen el orden, no la insercion. */
+		SCnjpInsertarElem ( p_cnjObj, p_d30 );
+		SCnjpInsertarElem ( p_cnjObj, p_d10 );
+		if ( SCnjpPrimero ( p_cnjObj ) != p_d10 )
+		{
+			printf( "Error caso 5: el primero deberia ser el 10\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCnjpUltimo ( p_cnjObj ) != p_d30 )
+		{
+			printf( "Error caso 6: el ultimo deberia ser el 30\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Tras eliminar el ultimo, el nuevo ultimo es el 20. */
+		SCnjpEliminarElem ( p_cnjObj, 2 );
+		if ( SCnjpUltimo ( p_cnjObj ) != p_d20 )
+		{
+			printf( "Error caso 7: tras eliminar el 30, el ultimo deberia ser el 20\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SCnjpPrimero ( NULL ) ) || ES_VALIDO ( SCnjpUltimo ( NULL ) ) )
+		{
+			printf( "Error caso 8: primero y ultimo de un conjunto nulo deberian ser nulos\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear el conjunto o los datos\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCnjpDestruir ( &p_cnjObj );
+	/* El test libera sus propios datos. */
+	MemLiberar ( (void **) &p_d10 );
+	MemLiberar ( (void **) &p_d20 );
+	MemLiberar ( (void **) &p_d30 );
+	return ( iRes );
+}
+
+static int TestSCnjpPosicion01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCnjpPosicion 01:\n" );
+
+	/* La memoria de los datos la gestiona el test ( liberacion desactivada ). */
+	byte * p_d10 = CrearDatoEntero ( 10 );
+	byte * p_d20 = CrearDatoEntero ( 20 );
+	byte * p_d30 = CrearDatoEntero ( 30 );
+	byte * p_q20 = CrearDatoEntero ( 20 );
+	byte * p_q = CrearDatoEntero ( 0 );
+	SConjuntoPtr * p_cnjObj = SCnjpCrear ( CompararEnteros );
+	if ( ES_VALIDO ( p_cnjObj ) && ES_VALIDO ( p_d10 ) && ES_VALIDO ( p_d20 ) && ES_VALIDO ( p_d30 ) &&
+		 ES_VALIDO ( p_q20 ) && ES_VALIDO ( p_q ) )
+	{
+		SCnjpDesactivarLiberacionMemoria ( p_cnjObj );
+
+		/* Vacio: nada tiene posicion. */
+		if ( SCnjpPosicion ( p_cnjObj, p_d20 ) != -1 )
+		{
+			printf( "Error caso 1: en un conjunto vacio la posicion deberia ser -1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SCnjpInsertarElem ( p_cnjObj, p_d30 );
+		SCnjpInsertarElem ( p_cnjObj, p_d10 );
+		SCnjpInsertarElem ( p_cnjObj, p_d20 );
+
+		if ( ( SCnjpPosicion ( p_cnjObj, p_d10 ) != 0 ) ||
+			 ( SCnjpPosicion ( p_cnjObj, p_d20 ) != 1 ) ||
+			 ( SCnjpPosicion ( p_cnjObj, p_d30 ) != 2 ) )
+		{
+			printf( "Error caso 2: 10, 20 y 30 deberian estar en las posiciones 0, 1 y 2\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Posicion por valor: otro puntero con el mismo dato da la misma posicion. */
+		if ( SCnjpPosicion ( p_cnjObj, p_q20 ) != 1 )
+		{
+			printf( "Error caso 3: un 20 en otro puntero deberia dar la posicion 1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SCnjpPosicion ( p_cnjObj, SCnjpPrimero ( p_cnjObj ) ) != 0 ) ||
+			 ( SCnjpPosicion ( p_cnjObj, SCnjpUltimo ( p_cnjObj ) ) != 2 ) )
+		{
+			printf( "Error caso 4: el primero y el ultimo deberian estar en las posiciones 0 y 2\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Valores que no estan: menor que el minimo, intermedio y mayor que el maximo. */
+		*( (int *) p_q ) = 5;
+		if ( SCnjpPosicion ( p_cnjObj, p_q ) != -1 )
+		{
+			printf( "Error caso 5: el 5 no deberia tener posicion\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		*( (int *) p_q ) = 15;
+		if ( SCnjpPosicion ( p_cnjObj, p_q ) != -1 )
+		{
+			printf( "Error caso 6: el 15 no deberia tener posicion\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		*( (int *) p_q ) = 99;
+		if ( SCnjpPosicion ( p_cnjObj, p_q ) != -1 )
+		{
+			printf( "Error caso 7: el 99 no deberia tener posicion\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCnjpPosicion ( p_cnjObj, NULL ) != -1 )
+		{
+			printf( "Error caso 8: un dato nulo no deberia tener posicion\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCnjpPosicion ( NULL, p_d20 ) != -1 )
+		{
+			printf( "Error caso 9: en un conjunto nulo la posicion deberia ser -1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear el conjunto o los datos\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCnjpDestruir ( &p_cnjObj );
+	/* El test libera sus propios datos. */
+	MemLiberar ( (void **) &p_d10 );
+	MemLiberar ( (void **) &p_d20 );
+	MemLiberar ( (void **) &p_d30 );
+	MemLiberar ( (void **) &p_q20 );
+	MemLiberar ( (void **) &p_q );
+	return ( iRes );
+}
+
 static int TestSCnjpInvalidos01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -149,6 +316,8 @@ int TestSConjuntoPtr ()
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SConjuntoPtr]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSCnjpOperaciones01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCnjpPrimeroUltimo01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCnjpPosicion01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCnjpInvalidos01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );

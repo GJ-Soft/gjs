@@ -4,7 +4,7 @@
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Módulos       | 11                                                                                                                                                                                                                              |
 | Cabeceras     | `SLista.h`, `SListaPtr.h`, `SListaEnteros.h`, `SListaEnterosLargos.h`, `SListaEnterosLargosSinSigno.h`, `SListaLiterales.h`, `SListaOrdenada.h`, `SListaOrdenadaPtr.h`, `SListaParejas.h`, `SListaReferencias.h`, `SListaVec.h` |
-| Prefijos      | `SLis`, `SLisp`, `SLisEnt`, `SLisEntl`, `SLisEntLss`, `SLisLit`, `SLisOrd`, `SLispOrd`, `SLisPrj`, `SLisRef`, `SVLis`                                                                                                           |
+| Prefijos      | `SLis`, `SLisp`, `SLisInt`, `SLisIntl`, `SLisIntLss`, `SLisLit`, `SLisOrd`, `SLispOrd`, `SLisPrj`, `SLisRef`, `SVLis`                                                                                                           |
 | Incluidos por | `TiposBasicos.h`, **salvo `SListaVec.h`**                                                                                                                                                                                              |
 | Tests         | Uno por módulo                                                                                                                                                                                                                  |
 
@@ -74,7 +74,7 @@ constante por paso.
 conjunto recorren la cadena. La mejora, medida sobre `Min`, que es
 el caso limpio —una sola pasada, sin inserciones—:
 
-| Elementos | `SLisEntlMin` antes (por índice) | `SLisEntlMin` ahora (por cadena) |
+| Elementos | `SLisIntlMin` antes (por índice) | `SLisIntlMin` ahora (por cadena) |
 | --------- | -------------------------------- | -------------------------------- |
 | 4 000     | 0,031 s                          | no se mide                       |
 | 8 000     | 0,078 s                          | no se mide                       |
@@ -258,13 +258,13 @@ Envuelven una `SLista` y trabajan con `int`, `long` y `unsigned long`
 directamente, sin que el llamante vea `SElemento`:
 
 ```c
-SListaEnteros * p_lisObj = SLisEntCrear ();
-SLisEntInsertarAlFinal ( p_lisObj, 42 );
-int iVal = SLisEntElemento ( p_lisObj, 0 );
-SLisEntDestruir ( &p_lisObj );
+SListaEnteros * p_lisObj = SLisIntCrear ();
+SLisIntInsertarAlFinal ( p_lisObj, 42 );
+int iVal = SLisIntElemento ( p_lisObj, 0 );
+SLisIntDestruir ( &p_lisObj );
 ```
 
-Añaden `SLisEntExiste ( …, int iDato )` y `SLisEntBuscar ( …, int iDato )`, que
+Añaden `SLisIntExiste ( …, int iDato )` y `SLisIntBuscar ( …, int iDato )`, que
 la lista genérica no tiene en forma tipada, más las **funciones de conjunto**
 que se describen [más abajo](#funciones-de-conjunto-de-listas-y-secuencias-de-enteros).
 
@@ -273,14 +273,14 @@ que se describen [más abajo](#funciones-de-conjunto-de-listas-y-secuencias-de-e
 **`long` mide 4 bytes en Windows y 8 en Cygwin y Linux**, así que en Windows puro
 este tipo y `SListaEnteros` tienen el mismo rango.
 
-`SListaEnterosLargosSinSigno` (prefijo `SLisEntLss`) es la gemela sin signo
+`SListaEnterosLargosSinSigno` (prefijo `SLisIntLss`) es la gemela sin signo
 de `SListaEnterosLargos`, con la misma API salvo `SemidefinidaPositiva`, que
 ahí sería siempre cierta. Dos diferencias de contrato:
 
-- **`SLisEntLssElemento` fuera de rango devuelve `0`**, no `-1`: en sin signo
+- **`SLisIntLssElemento` fuera de rango devuelve `0`**, no `-1`: en sin signo
   `-1` es `ULONG_MAX`, un valor legítimo. Es lo mismo que hacen
-  `SLisEntLssActual` y `SSecEntLssElemento`. Como `0` también es legítimo, el
-  índice hay que comprobarlo antes contra `SLisEntLssNumElementos`.
+  `SLisIntLssActual` y `SSecIntLssElemento`. Como `0` también es legítimo, el
+  índice hay que comprobarlo antes contra `SLisIntLssNumElementos`.
 - **`Min`, `Max`, `ObtenerParametros` y `EstaOrdenada` comparan en
   `unsigned long`**, así que los valores por encima de `LONG_MAX` ordenan
   donde deben. `TestSLisEntLssConjunto02` y `TestSLisEntLssOrden02` lo
@@ -312,6 +312,10 @@ SListaOrdenada * SLisOrdCrear ( PFUNINTPVPV fComparar );
 Como el orden lo decide el comparador, esta variante **no tiene**
 `InsertarAlInicio`, `InsertarAlFinal`, `InsertarDelante` ni `InsertarDetras`:
 sólo `SLisOrdInsertarElem`, que coloca el elemento donde le toca.
+
+Para sacar un elemento sin destruirlo está `SLisOrdExtraerElem`, que delega en
+`SLisExtraerElem`: el elemento sale desenganchado y pasa a ser del llamador, y
+volver a insertarlo con `SLisOrdInsertarElem` lo devuelve a su sitio en el orden.
 
 ### `SListaParejas` y `SListaReferencias` — asociaciones
 
@@ -381,6 +385,8 @@ Un fichero por módulo: `SListaTest.c`, `SListaPtrTest.c`, `SListaEnterosTest.c`
   equivalentes están comentadas. La asimetría no está documentada en el código.
 - `SLisEliminarElem` destruye el elemento y `SLisExtraerElem` no. La diferencia
   está sólo en el verbo, y confundirlos produce una fuga o un uso tras liberar.
+  Las que la envuelven heredan la pareja: `SLisOrdExtraerElem`,
+  [`SSecExtraer`](Secuencias.md) y [`SCnjExtraerElem`](Conjuntos.md).
   `SListaPtr` no tiene `Extraer`: sólo `SLispEliminar`.
 - `SLisBuscar` devuelve la posición encontrada; el valor con el que indica "no
   está" no se aprecia en la cabecera, así que conviene comprobar el resultado
@@ -439,14 +445,14 @@ Lo que conviene saber antes de usarlas:
   **posición explícita**, así que da igual dónde esté el cursor.
 
 `Ordenar`, `ExtraerUnicos*` y `TieneRepetidos` nacieron rotas —el indicador de
-error estaba invertido y no recorrían nada— y `SSecEntlMin` / `SSecEntlMax`
+error estaba invertido y no recorrían nada— y `SSecIntlMin` / `SSecIntlMax`
 tenían los centinelas cambiados y devolvían siempre el extremo del tipo. Todo
 arreglado el 2026-09-20, y ahora hay un `Test…Conjunto01` por tipo que lo
 comprueba contra valores absolutos.
 
 En los dos tipos sin signo quedaba un resto de copiar la versión con signo:
 variables en `long` que hacían ver negativo todo lo que pasa de `LONG_MAX`.
-`SSecEntLssDefinidaPositiva` daba `0` con esos valores, y en
+`SSecIntLssDefinidaPositiva` daba `0` con esos valores, y en
 `SListaEnterosLargosSinSigno` fallaban además `Min`, `Max`,
 `ObtenerParametros` y `EstaOrdenada`. Arreglado el 2026-09-29; lo comprueban
 `TestSSecEntLssConjunto02`, `TestSLisEntLssConjunto02` y

@@ -265,6 +265,276 @@ static int TestSCnjEliminar01 ()
 	return ( iRes );
 }
 
+static int TestSCnjPrimeroUltimo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCnjPrimeroUltimo 01:\n" );
+
+	SConjunto * p_cnjObj = SCnjCrear ( CompararEnteros );
+	if ( ES_VALIDO ( p_cnjObj ) )
+	{
+		/* Vacio: no hay ni primero ni ultimo. */
+		if ( ES_VALIDO ( SCnjPrimero ( p_cnjObj ) ) )
+		{
+			printf( "Error caso 1: el primero de un conjunto vacio deberia ser nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SCnjUltimo ( p_cnjObj ) ) )
+		{
+			printf( "Error caso 2: el ultimo de un conjunto vacio deberia ser nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Con un solo elemento, primero y ultimo son el mismo. */
+		SCnjInsertarElem ( p_cnjObj, CrearElementoEntero ( 20 ) );
+		SElemento * p_elmPri = SCnjPrimero ( p_cnjObj );
+		SElemento * p_elmUlt = SCnjUltimo ( p_cnjObj );
+		if ( ES_NULO ( p_elmPri ) || ( SElmEntero ( p_elmPri ) != 20 ) )
+		{
+			printf( "Error caso 3: con un elemento, el primero deberia ser el 20\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( p_elmUlt != p_elmPri )
+		{
+			printf( "Error caso 4: con un elemento, el ultimo deberia ser el mismo que el primero\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Se insertan por fuera de los extremos: primero y ultimo siguen el orden, no la insercion. */
+		SCnjInsertarElem ( p_cnjObj, CrearElementoEntero ( 30 ) );
+		SCnjInsertarElem ( p_cnjObj, CrearElementoEntero ( 10 ) );
+		p_elmPri = SCnjPrimero ( p_cnjObj );
+		p_elmUlt = SCnjUltimo ( p_cnjObj );
+		if ( ES_NULO ( p_elmPri ) || ( SElmEntero ( p_elmPri ) != 10 ) )
+		{
+			printf( "Error caso 5: el primero deberia ser el 10\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_NULO ( p_elmUlt ) || ( SElmEntero ( p_elmUlt ) != 30 ) )
+		{
+			printf( "Error caso 6: el ultimo deberia ser el 30\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Tras eliminar el ultimo, el nuevo ultimo es el 20. */
+		SCnjEliminarElem ( p_cnjObj, 2 );
+		p_elmUlt = SCnjUltimo ( p_cnjObj );
+		if ( ES_NULO ( p_elmUlt ) || ( SElmEntero ( p_elmUlt ) != 20 ) )
+		{
+			printf( "Error caso 7: tras eliminar el 30, el ultimo deberia ser el 20\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SCnjPrimero ( NULL ) ) || ES_VALIDO ( SCnjUltimo ( NULL ) ) )
+		{
+			printf( "Error caso 8: primero y ultimo de un conjunto nulo deberian ser nulos\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el conjunto\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCnjDestruir ( &p_cnjObj );
+	return ( iRes );
+}
+
+static int TestSCnjPosicion01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCnjPosicion 01:\n" );
+
+	SConjunto * p_cnjObj = SCnjCrear ( CompararEnteros );
+	if ( ES_VALIDO ( p_cnjObj ) )
+	{
+		/* Vacio: nada tiene posicion. */
+		SElemento * p_elmFuera = CrearElementoEntero ( 20 );
+		if ( SCnjPosicion ( p_cnjObj, p_elmFuera ) != -1 )
+		{
+			printf( "Error caso 1: en un conjunto vacio la posicion deberia ser -1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SCnjInsertarElem ( p_cnjObj, CrearElementoEntero ( 30 ) );
+		SCnjInsertarElem ( p_cnjObj, CrearElementoEntero ( 10 ) );
+		SCnjInsertarElem ( p_cnjObj, CrearElementoEntero ( 20 ) );
+
+		/* Los elementos del propio conjunto estan en la posicion que da SCnjElemento. */
+		int iPos = 0;
+		while ( iPos < 3 )
+		{
+			if ( SCnjPosicion ( p_cnjObj, SCnjElemento ( p_cnjObj, iPos ) ) != iPos )
+			{
+				printf( "Error caso 2: el elemento %d deberia estar en la posicion %d\n", iPos, iPos );
+				iRes = BOOL_VAL_FALSO;
+			}
+			iPos = iPos + 1;
+		}
+		/* Posicion por valor: un elemento ajeno con el mismo dato da la posicion del del conjunto. */
+		if ( SCnjPosicion ( p_cnjObj, p_elmFuera ) != 1 )
+		{
+			printf( "Error caso 3: un 20 ajeno al conjunto deberia dar la posicion 1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCnjPosicion ( p_cnjObj, SCnjPrimero ( p_cnjObj ) ) != 0 )
+		{
+			printf( "Error caso 4: el primero deberia estar en la posicion 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCnjPosicion ( p_cnjObj, SCnjUltimo ( p_cnjObj ) ) != 2 )
+		{
+			printf( "Error caso 5: el ultimo deberia estar en la posicion 2\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Valores que no estan: menor que el minimo, intermedio y mayor que el maximo. */
+		SElmEscribirEntero ( p_elmFuera, 5 );
+		if ( SCnjPosicion ( p_cnjObj, p_elmFuera ) != -1 )
+		{
+			printf( "Error caso 6: el 5 no deberia tener posicion\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElmEscribirEntero ( p_elmFuera, 15 );
+		if ( SCnjPosicion ( p_cnjObj, p_elmFuera ) != -1 )
+		{
+			printf( "Error caso 7: el 15 no deberia tener posicion\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElmEscribirEntero ( p_elmFuera, 99 );
+		if ( SCnjPosicion ( p_cnjObj, p_elmFuera ) != -1 )
+		{
+			printf( "Error caso 8: el 99 no deberia tener posicion\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCnjPosicion ( p_cnjObj, NULL ) != -1 )
+		{
+			printf( "Error caso 9: un elemento nulo no deberia tener posicion\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElmEscribirEntero ( p_elmFuera, 20 );
+		if ( SCnjPosicion ( NULL, p_elmFuera ) != -1 )
+		{
+			printf( "Error caso 10: en un conjunto nulo la posicion deberia ser -1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElmDestruir ( &p_elmFuera );
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el conjunto\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCnjDestruir ( &p_cnjObj );
+	return ( iRes );
+}
+
+static int TestSCnjExtraerElem01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCnjExtraerElem 01:\n" );
+
+	SConjunto * p_cnjObj = SCnjCrear ( CompararEnteros );
+	if ( ES_VALIDO ( p_cnjObj ) )
+	{
+		/* Conjunto vacio: no hay nada que extraer. */
+		if ( ES_VALIDO ( SCnjExtraerElem ( p_cnjObj, 0 ) ) )
+		{
+			printf( "Error caso 1: extraer de un conjunto vacio deberia devolver nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SCnjInsertarElem ( p_cnjObj, CrearElementoEntero ( 30 ) );
+		SCnjInsertarElem ( p_cnjObj, CrearElementoEntero ( 10 ) );
+		SCnjInsertarElem ( p_cnjObj, CrearElementoEntero ( 40 ) );
+		SCnjInsertarElem ( p_cnjObj, CrearElementoEntero ( 20 ) );
+
+		/* Se extrae el mismo elemento que habia, vivo y desenganchado del conjunto. */
+		SElemento * p_elmEsp = SCnjElemento ( p_cnjObj, 1 );
+		SElemento * p_elmExt = SCnjExtraerElem ( p_cnjObj, 1 );
+		if ( ES_NULO ( p_elmExt ) || ( p_elmExt != p_elmEsp ) || ( SElmEntero ( p_elmExt ) != 20 ) )
+		{
+			printf( "Error caso 2: se esperaba extraer el 20 de la posicion 1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			if ( ES_VALIDO ( SElmSucesor ( p_elmExt ) ) || ES_VALIDO ( SElmAntecesor ( p_elmExt ) ) )
+			{
+				printf( "Error caso 3: el elemento extraido no deberia conservar enlaces\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			/* Su valor ya no esta en el conjunto. */
+			if ( SCnjExiste ( p_cnjObj, SElmDatos ( p_elmExt ) ) != 0 )
+			{
+				printf( "Error caso 4: el 20 no deberia existir tras extraerlo\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		if ( ( SCnjNumElementos ( p_cnjObj ) != 3 ) ||
+			 ( SElmEntero ( SCnjElemento ( p_cnjObj, 0 ) ) != 10 ) ||
+			 ( SElmEntero ( SCnjElemento ( p_cnjObj, 1 ) ) != 30 ) ||
+			 ( SElmEntero ( SCnjElemento ( p_cnjObj, 2 ) ) != 40 ) )
+		{
+			printf( "Error caso 5: tras extraer deberian quedar 10, 30 y 40\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Posiciones fuera de rango: nulo, y el conjunto no cambia. */
+		if ( ES_VALIDO ( SCnjExtraerElem ( p_cnjObj, -1 ) ) || ES_VALIDO ( SCnjExtraerElem ( p_cnjObj, 3 ) ) )
+		{
+			printf( "Error caso 6: extraer fuera de rango deberia devolver nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SCnjNumElementos ( p_cnjObj ) != 3 )
+		{
+			printf( "Error caso 7: extraer fuera de rango no deberia cambiar el conjunto\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El extraido se puede volver a insertar y recupera su sitio en el orden. */
+		if ( ES_VALIDO ( p_elmExt ) )
+		{
+			if ( SCnjInsertarElem ( p_cnjObj, p_elmExt ) != 1 )
+			{
+				printf( "Error caso 8: el elemento extraido deberia poder volver a insertarse\n" );
+				iRes = BOOL_VAL_FALSO;
+				SElmDestruir ( &p_elmExt );
+			}
+			else if ( SCnjElemento ( p_cnjObj, 1 ) != p_elmExt )
+			{
+				printf( "Error caso 9: al reinsertarlo deberia volver a la posicion 1\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		/* Los extremos; los extraidos son ya del llamador. */
+		p_elmExt = SCnjExtraerElem ( p_cnjObj, 0 );
+		if ( ES_NULO ( p_elmExt ) || ( SElmEntero ( p_elmExt ) != 10 ) )
+		{
+			printf( "Error caso 10: extraer la posicion 0 deberia dar el 10\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElmDestruir ( &p_elmExt );
+		p_elmExt = SCnjExtraerElem ( p_cnjObj, SCnjNumElementos ( p_cnjObj ) - 1 );
+		if ( ES_NULO ( p_elmExt ) || ( SElmEntero ( p_elmExt ) != 40 ) )
+		{
+			printf( "Error caso 11: extraer la ultima posicion deberia dar el 40\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElmDestruir ( &p_elmExt );
+		if ( ( SCnjNumElementos ( p_cnjObj ) != 2 ) ||
+			 ( SElmEntero ( SCnjPrimero ( p_cnjObj ) ) != 20 ) ||
+			 ( SElmEntero ( SCnjUltimo ( p_cnjObj ) ) != 30 ) )
+		{
+			printf( "Error caso 12: deberian quedar el 20 y el 30\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SCnjExtraerElem ( NULL, 0 ) ) )
+		{
+			printf( "Error caso 13: extraer de un conjunto nulo deberia devolver nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el conjunto\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCnjDestruir ( &p_cnjObj );
+	return ( iRes );
+}
+
 static int TestSCnjInvalidos01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -301,6 +571,9 @@ int TestSConjunto ()
 			( TestSCnjExiste01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCnjExisteExt01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCnjEliminar01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCnjPrimeroUltimo01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCnjPosicion01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCnjExtraerElem01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCnjInvalidos01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );

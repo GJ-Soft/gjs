@@ -27,55 +27,55 @@ typedef struct
 
 
 
-SArbolBinEnteros * SArbBinEntCrear ();
+SArbolBinEnteros * SArbBinIntCrear ();
 
-void SArbBinEntDestruir ( SArbolBinEnteros ** p_p_arbbObj );
+void SArbBinIntDestruir ( SArbolBinEnteros ** p_p_arbbObj );
 
-int SArbBinEntRaiz ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntEstablecerRaiz ( SArbolBinEnteros * p_arbbObj, int iValor );
+int SArbBinIntRaiz ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntEstablecerRaiz ( SArbolBinEnteros * p_arbbObj, int iValor );
 
-int SArbBinEntEstaVacio ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntNiveles ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntNumNodos ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntEstaVacio ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntNiveles ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntNumNodos ( SArbolBinEnteros * p_arbbObj );
 
-void SArbBinEntVaciar ( SArbolBinEnteros * p_arbbObj );
+void SArbBinIntVaciar ( SArbolBinEnteros * p_arbbObj );
 
-int SArbBinEntActual ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntEstActual ( SArbolBinEnteros * p_arbbObj, int iValor );
+int SArbBinIntActual ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntEstActual ( SArbolBinEnteros * p_arbbObj, int iValor );
 
-int SArbBinEntPadre ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntHijoDer ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntHijoIzq ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntPadre ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntHijoDer ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntHijoIzq ( SArbolBinEnteros * p_arbbObj );
 
-int SArbBinEntTienePadre ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntTieneHijos ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntTieneHermano ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntEsHijoIzqDelPadre ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntEsHijoDerDelPadre ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntTieneHijoIzq ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntTieneHijoDer ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntTieneHermanoIzq ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntTieneHermanoDer ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntTienePadre ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntTieneHijos ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntTieneHermano ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntEsHijoIzqDelPadre ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntEsHijoDerDelPadre ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntTieneHijoIzq ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntTieneHijoDer ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntTieneHermanoIzq ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntTieneHermanoDer ( SArbolBinEnteros * p_arbbObj );
 
-int SArbBinEntMoverARaiz ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntMoverAPadre ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntMoverAHijoIzq ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntMoverAHijoDer ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntMoverAHermano ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverARaiz ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverAPadre ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverAHijoIzq ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverAHijoDer ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverAHermano ( SArbolBinEnteros * p_arbbObj );
 
-int SArbBinEntMoverAPrimPreorden ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntMoverASigPreorden ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntMoverAPrimPostorden ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntMoverASigPostorden ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntMoverAPrimInorden ( SArbolBinEnteros * p_arbbObj );
-int SArbBinEntMoverASigInorden ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverAPrimPreorden ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverASigPreorden ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverAPrimPostorden ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverASigPostorden ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverAPrimInorden ( SArbolBinEnteros * p_arbbObj );
+int SArbBinIntMoverASigInorden ( SArbolBinEnteros * p_arbbObj );
 
-void SArbBinEntDesposicionar ( SArbolBinEnteros * p_arbbObj );
-int	SArbBinEntEstaPosicionado ( SArbolBinEnteros * p_arbbObj );
+void SArbBinIntDesposicionar ( SArbolBinEnteros * p_arbbObj );
+int	SArbBinIntEstaPosicionado ( SArbolBinEnteros * p_arbbObj );
 
-int SArbBinEntEnraizar ( SArbolBinEnteros * p_arbbObj, int iValor );
+int SArbBinIntEnraizar ( SArbolBinEnteros * p_arbbObj, int iValor );
 
-int SArbBinEntVerificar ( SArbolBinEnteros * p_arbbObj, int iCorregir );
+int SArbBinIntVerificar ( SArbolBinEnteros * p_arbbObj, int iCorregir );
 
 
 #endif

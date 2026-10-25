@@ -282,6 +282,119 @@ static int TestSLisOrdBuscarExt01 ()
 
 
 
+static int TestSLisOrdExtraerElem01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLisOrdExtraerElem 01:\n" );
+
+	SListaOrdenada * p_lisObj = SLisOrdCrear ( CompararEnteros );
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		/* Lista vacia: no hay nada que extraer. */
+		if ( ES_VALIDO ( SLisOrdExtraerElem ( p_lisObj, 0 ) ) )
+		{
+			printf( "Error caso 1: extraer de una lista vacia deberia devolver nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SLisOrdInsertarElem ( p_lisObj, CrearElementoEntero ( 30 ) );
+		SLisOrdInsertarElem ( p_lisObj, CrearElementoEntero ( 10 ) );
+		SLisOrdInsertarElem ( p_lisObj, CrearElementoEntero ( 40 ) );
+		SLisOrdInsertarElem ( p_lisObj, CrearElementoEntero ( 20 ) );
+
+		/* Se extrae el mismo elemento que habia, vivo y desenganchado de la lista. */
+		SElemento * p_elmEsp = SLisOrdElemento ( p_lisObj, 1 );
+		SElemento * p_elmExt = SLisOrdExtraerElem ( p_lisObj, 1 );
+		if ( ES_NULO ( p_elmExt ) || ( p_elmExt != p_elmEsp ) || ( SElmEntero ( p_elmExt ) != 20 ) )
+		{
+			printf( "Error caso 2: se esperaba extraer el 20 de la posicion 1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else if ( ES_VALIDO ( SElmSucesor ( p_elmExt ) ) || ES_VALIDO ( SElmAntecesor ( p_elmExt ) ) )
+		{
+			printf( "Error caso 3: el elemento extraido no deberia conservar enlaces\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		int iEsp [ 3 ] = { 10, 30, 40 };
+		int iPos = 0;
+		if ( SLisOrdNumElementos ( p_lisObj ) != 3 )
+		{
+			printf( "Error caso 4: tras extraer deberian quedar 3 elementos\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		while ( ( iPos < 3 ) && ( iRes == BOOL_VAL_CIERTO ) )
+		{
+			if ( SElmEntero ( SLisOrdElemento ( p_lisObj, iPos ) ) != iEsp [ iPos ] )
+			{
+				printf( "Error caso 5: en la posicion %d se esperaba %d\n", iPos, iEsp [ iPos ] );
+				iRes = BOOL_VAL_FALSO;
+			}
+			iPos = iPos + 1;
+		}
+		/* Posiciones fuera de rango: nulo, y la lista no cambia. */
+		if ( ES_VALIDO ( SLisOrdExtraerElem ( p_lisObj, -1 ) ) || ES_VALIDO ( SLisOrdExtraerElem ( p_lisObj, 3 ) ) )
+		{
+			printf( "Error caso 6: extraer fuera de rango deberia devolver nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SLisOrdNumElementos ( p_lisObj ) != 3 )
+		{
+			printf( "Error caso 7: extraer fuera de rango no deberia cambiar la lista\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El extraido se puede volver a insertar y recupera su sitio en el orden. */
+		if ( ES_VALIDO ( p_elmExt ) )
+		{
+			if ( SLisOrdInsertarElem ( p_lisObj, p_elmExt ) != 1 )
+			{
+				printf( "Error caso 8: el elemento extraido deberia poder volver a insertarse\n" );
+				iRes = BOOL_VAL_FALSO;
+				SElmDestruir ( &p_elmExt );
+			}
+			else if ( SLisOrdElemento ( p_lisObj, 1 ) != p_elmExt )
+			{
+				printf( "Error caso 9: al reinsertarlo deberia volver a la posicion 1\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		/* Los extremos; los extraidos son ya del llamador. */
+		p_elmExt = SLisOrdExtraerElem ( p_lisObj, 0 );
+		if ( ES_NULO ( p_elmExt ) || ( SElmEntero ( p_elmExt ) != 10 ) )
+		{
+			printf( "Error caso 10: extraer la posicion 0 deberia dar el 10\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElmDestruir ( &p_elmExt );
+		p_elmExt = SLisOrdExtraerElem ( p_lisObj, SLisOrdNumElementos ( p_lisObj ) - 1 );
+		if ( ES_NULO ( p_elmExt ) || ( SElmEntero ( p_elmExt ) != 40 ) )
+		{
+			printf( "Error caso 11: extraer la ultima posicion deberia dar el 40\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElmDestruir ( &p_elmExt );
+		if ( ( SLisOrdNumElementos ( p_lisObj ) != 2 ) ||
+			 ( SElmEntero ( SLisOrdElemento ( p_lisObj, 0 ) ) != 20 ) ||
+			 ( SElmEntero ( SLisOrdElemento ( p_lisObj, 1 ) ) != 30 ) )
+		{
+			printf( "Error caso 12: deberian quedar el 20 y el 30\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SLisOrdExtraerElem ( NULL, 0 ) ) )
+		{
+			printf( "Error caso 13: extraer de una lista nula deberia devolver nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la lista\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisOrdDestruir ( &p_lisObj );
+	return ( iRes );
+}
+
+
+
 int TestSListaOrdenada ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -291,6 +404,7 @@ int TestSListaOrdenada ()
 			( TestSLisOrdBuscar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisOrdBuscarExt01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisOrdEliminar01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLisOrdExtraerElem01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisOrdInvalidos01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );

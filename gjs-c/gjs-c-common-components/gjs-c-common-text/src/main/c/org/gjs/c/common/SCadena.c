@@ -2080,50 +2080,12 @@ int SCadEsIgualLiteral ( SCadena * p_cadObj, const char * p_cValor )
 int SCadEsMenorLiteral ( SCadena * p_cadObj, const char * p_cValor )
 {
 	int iRes;
-	int iCar;
 
 	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cValor ) )
 	{
-		if ( SCadLongitud ( p_cadObj ) < CadLongitud ( p_cValor ) )
+		if ( SCadCompararLiteral ( p_cadObj, p_cValor ) == COMP_MENOR )
 		{
 			iRes = 1;
-		}
-		else if ( SCadLongitud ( p_cadObj ) == CadLongitud ( p_cValor ) )
-		{
-			if ( p_cadObj->iDistincionTipoLetra == 1 )
-			{
-				iCar = 0; 
-				while ( ( iCar < SCadLongitud ( p_cadObj ) ) && 
-						( p_cadObj->p_cValor [ iCar ] == p_cValor [ iCar ] ) )
-				{
-					iCar = iCar + 1;
-				}
-				if ( p_cadObj->p_cValor [ iCar ]  < p_cValor [ iCar ] )
-				{
-					iRes = 1;
-				}
-				else
-				{
-					iRes = 0;
-				}
-			}
-			else
-			{
-				iCar = 0; 
-				while ( ( iCar < SCadLongitud ( p_cadObj ) ) && 
-						( ASCIILetraMinAMay ( p_cadObj->p_cValor [ iCar ] ) == ASCIILetraMinAMay ( p_cValor [ iCar ] ) ) )
-				{
-					iCar = iCar + 1;
-				}
-				if ( ASCIILetraMinAMay ( p_cadObj->p_cValor [ iCar ] ) < ASCIILetraMinAMay ( p_cValor [ iCar ] ) )
-				{
-					iRes = 1;
-				}
-				else
-				{
-					iRes = 0;
-				}
-			}
 		}
 		else
 		{
@@ -2140,50 +2102,12 @@ int SCadEsMenorLiteral ( SCadena * p_cadObj, const char * p_cValor )
 int SCadEsMayorLiteral ( SCadena * p_cadObj, const char * p_cValor )
 {
 	int iRes;
-	int iCar;
 
 	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cValor ) )
 	{
-		if ( SCadLongitud ( p_cadObj ) > CadLongitud ( p_cValor ) )
+		if ( SCadCompararLiteral ( p_cadObj, p_cValor ) == COMP_MAYOR )
 		{
 			iRes = 1;
-		}
-		else if ( SCadLongitud ( p_cadObj ) == CadLongitud ( p_cValor ) )
-		{
-			if ( p_cadObj->iDistincionTipoLetra == 1 )
-			{
-				iCar = 0; 
-				while ( ( iCar < SCadLongitud ( p_cadObj ) ) && 
-						( p_cadObj->p_cValor [ iCar ] == p_cValor [ iCar ] ) )
-				{
-					iCar = iCar + 1;
-				}
-				if ( p_cadObj->p_cValor [ iCar ]  > p_cValor [ iCar ] )
-				{
-					iRes = 1;
-				}
-				else
-				{
-					iRes = 0;
-				}
-			}
-			else
-			{
-				iCar = 0; 
-				while ( ( iCar < SCadLongitud ( p_cadObj ) ) && 
-						( ASCIILetraMinAMay ( p_cadObj->p_cValor [ iCar ] ) == ASCIILetraMinAMay ( p_cValor [ iCar ] ) ) )
-				{
-					iCar = iCar + 1;
-				}
-				if ( ASCIILetraMinAMay ( p_cadObj->p_cValor [ iCar ] ) > ASCIILetraMinAMay ( p_cValor [ iCar ] ) )
-				{
-					iRes = 1;
-				}
-				else
-				{
-					iRes = 0;
-				}
-			}
 		}
 		else
 		{
@@ -2287,7 +2211,14 @@ int SCadCompararLiteral ( SCadena * p_cadObj, const char * p_cValor )
 
 	if ( ES_VALIDO ( p_cadObj ) && ES_VALIDO ( p_cValor ) )
 	{
-		iRes = CadComparar ( p_cadObj->p_cValor, p_cValor );
+		if ( p_cadObj->iDistincionTipoLetra == 1 )
+		{
+			iRes = CadCompararExt ( p_cadObj->p_cValor, p_cValor, p_cadObj->iMaxTam, -1 );
+		}
+		else
+		{
+			iRes = CadCompararSinDistinguirTipoLetraExt ( p_cadObj->p_cValor, p_cValor, p_cadObj->iMaxTam, -1 );
+		}
 	}
 	else if ( ES_VALIDO ( p_cadObj ) )
 	{

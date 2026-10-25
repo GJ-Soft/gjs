@@ -5,7 +5,7 @@
 
 
 
-SListaEnteros * SLisEntCrear ()
+SListaEnteros * SLisIntCrear ()
 {
 	SListaEnteros * p_lisObj;
 	
@@ -17,7 +17,7 @@ SListaEnteros * SLisEntCrear ()
 	return ( p_lisObj );
 }
 
-void SLisEntDestruir ( SListaEnteros ** p_p_lisObj )
+void SLisIntDestruir ( SListaEnteros ** p_p_lisObj )
 {
 	SListaEnteros * p_lisObj;
 	
@@ -33,7 +33,7 @@ void SLisEntDestruir ( SListaEnteros ** p_p_lisObj )
 	}
 }
 
-int SLisEntEsValida ( SListaEnteros * p_lisObj )
+int SLisIntEsValida ( SListaEnteros * p_lisObj )
 {
 	int iRes;
 
@@ -48,7 +48,7 @@ int SLisEntEsValida ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntEstaVacia ( SListaEnteros * p_lisObj )
+int SLisIntEstaVacia ( SListaEnteros * p_lisObj )
 {
 	int iRes;
 
@@ -63,7 +63,7 @@ int SLisEntEstaVacia ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntNumElementos ( SListaEnteros * p_lisObj )
+int SLisIntNumElementos ( SListaEnteros * p_lisObj )
 {
 	int iRes;
 
@@ -78,7 +78,7 @@ int SLisEntNumElementos ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntElemento ( SListaEnteros * p_lisObj, int iElem )
+int SLisIntElemento ( SListaEnteros * p_lisObj, int iElem )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -102,7 +102,7 @@ int SLisEntElemento ( SListaEnteros * p_lisObj, int iElem )
 	return ( iRes );
 }
 
-int SLisEntEstablecerElem ( SListaEnteros * p_lisObj, int iPos, int iDato )
+int SLisIntEstablecerElem ( SListaEnteros * p_lisObj, int iPos, int iDato )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -126,7 +126,7 @@ int SLisEntEstablecerElem ( SListaEnteros * p_lisObj, int iPos, int iDato )
 	return ( iRes );
 }
 
-int SLisEntInsertarElem ( SListaEnteros * p_lisObj, int iPosAnt, int iDato )
+int SLisIntInsertarElem ( SListaEnteros * p_lisObj, int iPosAnt, int iDato )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -161,18 +161,18 @@ int SLisEntInsertarElem ( SListaEnteros * p_lisObj, int iPosAnt, int iDato )
 	return ( iRes );
 }
 
-int SLisEntInsertarAlInicio ( SListaEnteros * p_lisObj, int iDato )
+int SLisIntInsertarAlInicio ( SListaEnteros * p_lisObj, int iDato )
 {
-	return ( SLisEntInsertarElem ( p_lisObj, -1, iDato ) );
+	return ( SLisIntInsertarElem ( p_lisObj, -1, iDato ) );
 }
 
-int SLisEntInsertarAlFinal ( SListaEnteros * p_lisObj, int iDato )
+int SLisIntInsertarAlFinal ( SListaEnteros * p_lisObj, int iDato )
 {
 	int iRes;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		iRes = SLisEntInsertarElem ( p_lisObj, SLisEntNumElementos ( p_lisObj ), iDato );
+		iRes = SLisIntInsertarElem ( p_lisObj, SLisIntNumElementos ( p_lisObj ), iDato );
 	}
 	else
 	{
@@ -181,7 +181,7 @@ int SLisEntInsertarAlFinal ( SListaEnteros * p_lisObj, int iDato )
 	return ( iRes );
 }
 
-int SLisEntEliminarElem ( SListaEnteros * p_lisObj, int iElem )
+int SLisIntEliminarElem ( SListaEnteros * p_lisObj, int iElem )
 {
 	int iRes;
 
@@ -196,7 +196,7 @@ int SLisEntEliminarElem ( SListaEnteros * p_lisObj, int iElem )
 	return ( iRes );
 }
 
-int SLisEntVaciar ( SListaEnteros * p_lisObj )
+int SLisIntVaciar ( SListaEnteros * p_lisObj )
 {
 	int iRes;
 
@@ -211,7 +211,7 @@ int SLisEntVaciar ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntPosicion ( SListaEnteros * p_lisObj )
+int SLisIntPosicion ( SListaEnteros * p_lisObj )
 {
 	int	iRes;
 
@@ -226,7 +226,7 @@ int SLisEntPosicion ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntActual ( SListaEnteros * p_lisObj )
+int SLisIntActual ( SListaEnteros * p_lisObj )
 {
 	SElemento *		p_elmObj;
 	int				iRes;
@@ -251,7 +251,7 @@ int SLisEntActual ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-void SLisEntInicio ( SListaEnteros * p_lisObj )
+void SLisIntInicio ( SListaEnteros * p_lisObj )
 {
 	if ( ES_VALIDO ( p_lisObj ) ) 
 	{
@@ -259,7 +259,7 @@ void SLisEntInicio ( SListaEnteros * p_lisObj )
 	}
 }
 
-void SLisEntFinal ( SListaEnteros * p_lisObj )
+void SLisIntFinal ( SListaEnteros * p_lisObj )
 {
 	if ( ES_VALIDO ( p_lisObj ) ) 
 	{
@@ -267,7 +267,7 @@ void SLisEntFinal ( SListaEnteros * p_lisObj )
 	}
 }
 
-void SLisEntSiguiente ( SListaEnteros * p_lisObj )
+void SLisIntSiguiente ( SListaEnteros * p_lisObj )
 {
 	if ( ES_VALIDO ( p_lisObj ) ) 
 	{
@@ -275,7 +275,7 @@ void SLisEntSiguiente ( SListaEnteros * p_lisObj )
 	}
 }
 
-void SLisEntAnterior ( SListaEnteros * p_lisObj )
+void SLisIntAnterior ( SListaEnteros * p_lisObj )
 {
 	if ( ES_VALIDO ( p_lisObj ) ) 
 	{
@@ -283,7 +283,7 @@ void SLisEntAnterior ( SListaEnteros * p_lisObj )
 	}
 }
 
-void SLisEntMoverA ( SListaEnteros * p_lisObj, int iElem )
+void SLisIntMoverA ( SListaEnteros * p_lisObj, int iElem )
 {
 	if ( ES_VALIDO ( p_lisObj ) ) 
 	{
@@ -291,7 +291,7 @@ void SLisEntMoverA ( SListaEnteros * p_lisObj, int iElem )
 	}
 }
 
-void SLisEntDeposicionar ( SListaEnteros * p_lisObj )
+void SLisIntDeposicionar ( SListaEnteros * p_lisObj )
 {
 	if ( ES_VALIDO ( p_lisObj ) ) 
 	{
@@ -299,7 +299,7 @@ void SLisEntDeposicionar ( SListaEnteros * p_lisObj )
 	}
 }
 
-int SLisEntEsNulo ( SListaEnteros * p_lisObj )
+int SLisIntEsNulo ( SListaEnteros * p_lisObj )
 {
 	int iRes;
 
@@ -314,7 +314,7 @@ int SLisEntEsNulo ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntEstaEnFinal ( SListaEnteros * p_lisObj )
+int SLisIntEstaEnFinal ( SListaEnteros * p_lisObj )
 {
 	int iRes;
 
@@ -329,7 +329,7 @@ int SLisEntEstaEnFinal ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntEstaEnInicio ( SListaEnteros * p_lisObj )
+int SLisIntEstaEnInicio ( SListaEnteros * p_lisObj )
 {
 	int iRes;
 
@@ -344,12 +344,12 @@ int SLisEntEstaEnInicio ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntInsertar ( SListaEnteros * p_lisObj, int iDato )
+int SLisIntInsertar ( SListaEnteros * p_lisObj, int iDato )
 {
-	return ( SLisEntInsertarDetras ( p_lisObj, iDato ) );
+	return ( SLisIntInsertarDetras ( p_lisObj, iDato ) );
 }
 
-int SLisEntInsertarOrdenado ( SListaEnteros * p_lisObj, int iDato )
+int SLisIntInsertarOrdenado ( SListaEnteros * p_lisObj, int iDato )
 {
 	int			iRes;
 	int			iElem;
@@ -359,7 +359,7 @@ int SLisEntInsertarOrdenado ( SListaEnteros * p_lisObj, int iDato )
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		iRes = 0;
-		iNumElems = SLisEntNumElementos ( p_lisObj );
+		iNumElems = SLisIntNumElementos ( p_lisObj );
 		if ( iNumElems > 0 )
 		{
 			/* La busqueda va POR LA CADENA, no por indice. Desde que
@@ -379,11 +379,11 @@ int SLisEntInsertarOrdenado ( SListaEnteros * p_lisObj, int iDato )
 				iElem = iElem + 1;
 				p_elmObj = SElmSucesor ( p_elmObj );
 			}
-			iRes = SLisEntInsertarElem ( p_lisObj, iElem - 1, iDato );
+			iRes = SLisIntInsertarElem ( p_lisObj, iElem - 1, iDato );
 		}
 		else
 		{
-			iRes = SLisEntInsertar ( p_lisObj, iDato );
+			iRes = SLisIntInsertar ( p_lisObj, iDato );
 		}
 	}
 	else
@@ -393,7 +393,7 @@ int SLisEntInsertarOrdenado ( SListaEnteros * p_lisObj, int iDato )
 	return ( iRes );
 }
 
-int SLisEntInsertarDelante ( SListaEnteros * p_lisObj, int iDato )
+int SLisIntInsertarDelante ( SListaEnteros * p_lisObj, int iDato )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -428,7 +428,7 @@ int SLisEntInsertarDelante ( SListaEnteros * p_lisObj, int iDato )
 	return ( iRes );
 }
 
-int SLisEntInsertarDetras ( SListaEnteros * p_lisObj, int iDato )
+int SLisIntInsertarDetras ( SListaEnteros * p_lisObj, int iDato )
 {
 	int			iRes;
 	SElemento *	p_elmObj;
@@ -463,7 +463,7 @@ int SLisEntInsertarDetras ( SListaEnteros * p_lisObj, int iDato )
 	return ( iRes );
 }
 
-int SLisEntEliminar ( SListaEnteros * p_lisObj )
+int SLisIntEliminar ( SListaEnteros * p_lisObj )
 {
 	int iRes;
 
@@ -478,7 +478,7 @@ int SLisEntEliminar ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntExiste ( SListaEnteros * p_lisObj, int iDato )
+int SLisIntExiste ( SListaEnteros * p_lisObj, int iDato )
 {
 	int 		iRes;
 	SElemento * p_elmObj;
@@ -486,7 +486,7 @@ int SLisEntExiste ( SListaEnteros * p_lisObj, int iDato )
 	if ( ES_VALIDO ( p_lisObj )  ) 
 	{
 		iRes = 0;
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) && ( iRes == 0 ) )
 		{
@@ -504,7 +504,7 @@ int SLisEntExiste ( SListaEnteros * p_lisObj, int iDato )
 	return ( iRes );
 }
 
-int SLisEntBuscar ( SListaEnteros * p_lisObj, int iDato )
+int SLisIntBuscar ( SListaEnteros * p_lisObj, int iDato )
 {
 	int 		iRes;
 	int			iElem;
@@ -514,7 +514,7 @@ int SLisEntBuscar ( SListaEnteros * p_lisObj, int iDato )
 	{
 		iElem = 0;
 		iRes = -1;
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) && ( iRes == -1 ) )
 		{
@@ -533,7 +533,7 @@ int SLisEntBuscar ( SListaEnteros * p_lisObj, int iDato )
 	return ( iRes );
 }
 
-int SLisEntEstaOrdenada ( SListaEnteros * p_lisObj )
+int SLisIntEstaOrdenada ( SListaEnteros * p_lisObj )
 {
 	int	 		iDatoAnt;
 	int 		iDato;
@@ -544,7 +544,7 @@ int SLisEntEstaOrdenada ( SListaEnteros * p_lisObj )
 	{
 		iRes = 1;
 		iDatoAnt = INT_MIN;
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) && ( iRes == 1 ) )
 		{
@@ -564,7 +564,7 @@ int SLisEntEstaOrdenada ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-SListaEnteros * SLisEntOrdenar ( SListaEnteros * p_lisObj )
+SListaEnteros * SLisIntOrdenar ( SListaEnteros * p_lisObj )
 {
 	int 			iError;
 	int 			iDato;
@@ -573,14 +573,14 @@ SListaEnteros * SLisEntOrdenar ( SListaEnteros * p_lisObj )
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		p_lisRes = SLisEntCrear ();
+		p_lisRes = SLisIntCrear ();
 		iError = MemEsInvalida ( p_lisRes );
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) )
 		{
 			iDato = SElmEntero ( p_elmObj );
-			if ( SLisEntInsertarOrdenado ( p_lisRes, iDato ) != 1 )
+			if ( SLisIntInsertarOrdenado ( p_lisRes, iDato ) != 1 )
 			{
 				iError = 1;
 			}
@@ -588,7 +588,7 @@ SListaEnteros * SLisEntOrdenar ( SListaEnteros * p_lisObj )
 		}
 		if ( iError == 1 )
 		{
-			SLisEntDestruir ( &p_lisRes );
+			SLisIntDestruir ( &p_lisRes );
 			ERROR_ESTABLECER ( ERR_GENERAL_OPERATIVO );
 		}
 	}
@@ -599,12 +599,12 @@ SListaEnteros * SLisEntOrdenar ( SListaEnteros * p_lisObj )
 	return ( p_lisRes );
 }
 
-SListaEnteros * SLisEntExtraerUnicos ( SListaEnteros * p_lisObj )
+SListaEnteros * SLisIntExtraerUnicos ( SListaEnteros * p_lisObj )
 {
-	return ( SLisEntExtraerUnicosExt ( p_lisObj, 0 ) );
+	return ( SLisIntExtraerUnicosExt ( p_lisObj, 0 ) );
 }
 
-SListaEnteros * SLisEntExtraerUnicosExt ( SListaEnteros * p_lisObj, int iOrdenar )
+SListaEnteros * SLisIntExtraerUnicosExt ( SListaEnteros * p_lisObj, int iOrdenar )
 {
 	int 			iError;
 	int 			iDato;
@@ -613,25 +613,25 @@ SListaEnteros * SLisEntExtraerUnicosExt ( SListaEnteros * p_lisObj, int iOrdenar
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		p_lisRes = SLisEntCrear ();
+		p_lisRes = SLisIntCrear ();
 		iError = MemEsInvalida ( p_lisRes );
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) )
 		{
 			iDato = SElmEntero ( p_elmObj );
-			if ( SLisEntExiste ( p_lisRes, iDato ) == 0 )
+			if ( SLisIntExiste ( p_lisRes, iDato ) == 0 )
 			{
 				if ( iOrdenar == 0 )
 				{
-					if ( SLisEntInsertar ( p_lisRes, iDato ) != 1 )
+					if ( SLisIntInsertar ( p_lisRes, iDato ) != 1 )
 					{
 						iError = 1;
 					}
 				}
 				else
 				{
-					if ( SLisEntInsertarOrdenado ( p_lisRes, iDato ) != 1 )
+					if ( SLisIntInsertarOrdenado ( p_lisRes, iDato ) != 1 )
 					{
 						iError = 1;
 					}
@@ -641,7 +641,7 @@ SListaEnteros * SLisEntExtraerUnicosExt ( SListaEnteros * p_lisObj, int iOrdenar
 		}
 		if ( iError == 1 )
 		{
-			SLisEntDestruir ( &p_lisRes );
+			SLisIntDestruir ( &p_lisRes );
 			ERROR_ESTABLECER ( ERR_GENERAL_OPERATIVO );
 		}
 	}
@@ -652,7 +652,7 @@ SListaEnteros * SLisEntExtraerUnicosExt ( SListaEnteros * p_lisObj, int iOrdenar
 	return ( p_lisRes );
 }
 
-int SLisEntTieneRepetidos ( SListaEnteros * p_lisObj )
+int SLisIntTieneRepetidos ( SListaEnteros * p_lisObj )
 {
 	int 			iRes;
 	int 			iError;
@@ -663,27 +663,27 @@ int SLisEntTieneRepetidos ( SListaEnteros * p_lisObj )
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		iRes = 0;
-		p_lisDistintos = SLisEntCrear ();
+		p_lisDistintos = SLisIntCrear ();
 		iError = MemEsInvalida ( p_lisDistintos );
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) && ( iRes == 0 ) )
 		{
 			iDato = SElmEntero ( p_elmObj );
-			if ( SLisEntExiste ( p_lisDistintos, iDato ) == 1 )
+			if ( SLisIntExiste ( p_lisDistintos, iDato ) == 1 )
 			{
 				iRes = 1;
 			}
 			else
 			{
-				if ( SLisEntInsertarOrdenado ( p_lisDistintos, iDato ) != 1 )
+				if ( SLisIntInsertarOrdenado ( p_lisDistintos, iDato ) != 1 )
 				{
 					iError = 1;
 				}
 			}
 			p_elmObj = SElmSucesorExt ( p_elmObj, 1 );
 		}
-		SLisEntDestruir ( &p_lisDistintos );
+		SLisIntDestruir ( &p_lisDistintos );
 		if ( iError == 1 )
 		{
 			ERROR_ESTABLECER ( ERR_GENERAL_OPERATIVO );
@@ -697,7 +697,7 @@ int SLisEntTieneRepetidos ( SListaEnteros * p_lisObj )
 }
 
 
-int SLisEntMin ( SListaEnteros * p_lisObj )
+int SLisIntMin ( SListaEnteros * p_lisObj )
 {
 	int 			iDato;
 	int				iRes;
@@ -706,7 +706,7 @@ int SLisEntMin ( SListaEnteros * p_lisObj )
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		iRes = INT_MAX;
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) )
 		{
@@ -726,7 +726,7 @@ int SLisEntMin ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntMax ( SListaEnteros * p_lisObj )
+int SLisIntMax ( SListaEnteros * p_lisObj )
 {
 	int 			iDato;
 	int				iRes;
@@ -735,7 +735,7 @@ int SLisEntMax ( SListaEnteros * p_lisObj )
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		iRes = INT_MIN;
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) )
 		{
@@ -755,7 +755,7 @@ int SLisEntMax ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-void SLisEntObtenerParametros ( SListaEnteros * p_lisObj, int * p_iMin, int * p_iMax, double * p_dMed )
+void SLisIntObtenerParametros ( SListaEnteros * p_lisObj, int * p_iMin, int * p_iMax, double * p_dMed )
 {
 	int 			iDato;
 	int				iNumElems;
@@ -767,8 +767,8 @@ void SLisEntObtenerParametros ( SListaEnteros * p_lisObj, int * p_iMin, int * p_
 		*p_iMax = INT_MIN;
 		*p_dMed = 0.0;
 		/* O(1): la lista lleva la cuenta, no hay que recorrerla otra vez. */
-		iNumElems = SLisEntNumElementos ( p_lisObj );
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		iNumElems = SLisIntNumElementos ( p_lisObj );
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) )
 		{
@@ -795,7 +795,7 @@ void SLisEntObtenerParametros ( SListaEnteros * p_lisObj, int * p_iMin, int * p_
 	}
 }
 
-int SLisEntDefinidaPositiva ( SListaEnteros * p_lisObj )
+int SLisIntDefinidaPositiva ( SListaEnteros * p_lisObj )
 {
 	int 			iDato;
 	int				iRes;
@@ -804,7 +804,7 @@ int SLisEntDefinidaPositiva ( SListaEnteros * p_lisObj )
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		iRes = 1;
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) && ( iRes == 1 ) )
 		{
@@ -824,7 +824,7 @@ int SLisEntDefinidaPositiva ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
-int SLisEntSemidefinidaPositiva ( SListaEnteros * p_lisObj )
+int SLisIntSemidefinidaPositiva ( SListaEnteros * p_lisObj )
 {
 	int 			iDato;
 	int				iRes;
@@ -833,7 +833,7 @@ int SLisEntSemidefinidaPositiva ( SListaEnteros * p_lisObj )
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		iRes = 1;
-		/* La generica, no SLisEntElemento: esa devuelve el VALOR. */
+		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
 		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
 		while ( ES_VALIDO ( p_elmObj ) && ( iRes == 1 ) )
 		{

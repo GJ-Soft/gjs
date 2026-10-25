@@ -32,17 +32,21 @@ typedef struct
 
 ## API de `SConjunto`
 
-| Función                                               | Descripción                          |
-| ----------------------------------------------------- | ------------------------------------ |
-| `SConjunto * SCnjCrear ( PFUNINTPVPV fComparar )`     | Conjunto con el criterio dado.       |
-| `void SCnjDestruir ( SConjunto ** )`                  | Destruye el conjunto y su contenido. |
-| `int SCnjEsValido ( SConjunto * )`                    | 1 si es utilizable.                  |
-| `int SCnjNumElementos ( SConjunto * )`                | Número de elementos.                 |
-| `int SCnjEstaVacio ( SConjunto * )`                   | 1 si no hay elementos.               |
-| `SElemento * SCnjElemento ( SConjunto *, int iElem )` | Elemento por posición.               |
-| `int SCnjInsertarElem ( SConjunto *, SElemento * )`   | Inserta si no estaba.                |
-| `int SCnjEliminarElem ( SConjunto *, int iElem )`     | Elimina el de la posición.           |
-| `int SCnjVaciar ( SConjunto * )`                      | Vacía el conjunto.                   |
+| Función                                                  | Descripción                            |
+| -------------------------------------------------------- | -------------------------------------- |
+| `SConjunto * SCnjCrear ( PFUNINTPVPV fComparar )`        | Conjunto con el criterio dado.         |
+| `void SCnjDestruir ( SConjunto ** )`                     | Destruye el conjunto y su contenido.   |
+| `int SCnjEsValido ( SConjunto * )`                       | 1 si es utilizable.                    |
+| `int SCnjNumElementos ( SConjunto * )`                   | Número de elementos.                   |
+| `int SCnjEstaVacio ( SConjunto * )`                      | 1 si no hay elementos.                 |
+| `SElemento * SCnjElemento ( SConjunto *, int iElem )`    | Elemento por posición.                 |
+| `SElemento * SCnjPrimero ( SConjunto * )`                | El menor; `NULL` si está vacío.        |
+| `SElemento * SCnjUltimo ( SConjunto * )`                 | El mayor; `NULL` si está vacío.        |
+| `int SCnjPosicion ( SConjunto *, SElemento * )`          | Posición de su dato; -1 si no está.    |
+| `int SCnjInsertarElem ( SConjunto *, SElemento * )`      | Inserta si no estaba.                  |
+| `int SCnjEliminarElem ( SConjunto *, int iElem )`        | Elimina el de la posición.             |
+| `SElemento * SCnjExtraerElem ( SConjunto *, int iElem )` | Saca el de la posición sin destruirlo. |
+| `int SCnjVaciar ( SConjunto * )`                         | Vacía el conjunto.                     |
 
 ### Pertenencia y búsqueda
 
@@ -65,6 +69,18 @@ comparación**, no un [SComparador](SComparador.md) ya construido:
 SConjunto * p_cnjObj = SCnjCrear ( CompararEnteros );
 ```
 
+### Extremos y posición
+
+Al estar ordenado, `SCnjPrimero` y `SCnjUltimo` son el **mínimo** y el **máximo**
+según el criterio del conjunto, no el primero ni el último insertados.
+
+`SCnjPosicion` busca **por valor**: compara el dato del elemento que se le pasa,
+así que un elemento ajeno al conjunto con el mismo dato devuelve la posición del
+que sí está. Es la misma búsqueda que `SCnjBuscar`, con el elemento en lugar del
+bloque; las variantes `SCnjpPosicion` y `SCnjLitPosicion` equivalen exactamente a
+`SCnjpBuscar` y `SCnjLitBuscar`. Las tres devuelven -1 con el conjunto o el dato
+nulos.
+
 ## Las variantes
 
 | Módulo               | Se apoya en                 | Almacena                  | Criterio de orden | Dueño del dato |
@@ -77,7 +93,9 @@ SConjunto * p_cnjObj = SCnjCrear ( CompararEnteros );
 
 Misma API con `byte *` en lugar de `SElemento *`, y **sin variantes `Ext`**: al
 almacenar punteros, la comparación siempre es contra un puntero, así que
-`SCnjpExiste`, `SCnjpBuscar` y `SCnjpBuscarElem` bastan.
+`SCnjpExiste`, `SCnjpBuscar` y `SCnjpBuscarElem` bastan. Los extremos y la
+posición son `SCnjpPrimero`, `SCnjpUltimo` y `SCnjpPosicion` (y en
+`SConjuntoLiterales`, `SCnjLitPrimero`, `SCnjLitUltimo` y `SCnjLitPosicion`).
 
 Añade el control de liberación habitual:
 `SCnjpLiberacionMemoriaActivada`, `SCnjpActivarLiberacionMemoria`,

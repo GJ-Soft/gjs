@@ -6,7 +6,7 @@
 
 
 
-SArbolEnteros * SArbEntCrear () 
+SArbolEnteros * SArbIntCrear () 
 {
 	SArbolEnteros * p_arbObj;
 	
@@ -18,7 +18,7 @@ SArbolEnteros * SArbEntCrear ()
 	return ( p_arbObj );
 }
 
-void SArbEntDestruir ( SArbolEnteros ** p_p_arbObj )
+void SArbIntDestruir ( SArbolEnteros ** p_p_arbObj )
 {
 	SArbolEnteros * p_arbObj;
 	
@@ -33,7 +33,7 @@ void SArbEntDestruir ( SArbolEnteros ** p_p_arbObj )
 	}
 }
 
-int SArbEntRaiz ( SArbolEnteros * p_arbObj )
+int SArbIntRaiz ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 
@@ -48,7 +48,7 @@ int SArbEntRaiz ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntEstablecerRaiz ( SArbolEnteros * p_arbObj, int iValor )
+int SArbIntEstablecerRaiz ( SArbolEnteros * p_arbObj, int iValor )
 {
 	int 		iRes;
 	SNodo *		p_nodObj;
@@ -73,7 +73,7 @@ int SArbEntEstablecerRaiz ( SArbolEnteros * p_arbObj, int iValor )
 	return ( iRes );
 }
 
-int SArbEntEstaVacio ( SArbolEnteros * p_arbObj )
+int SArbIntEstaVacio ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 
@@ -88,7 +88,7 @@ int SArbEntEstaVacio ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntNiveles ( SArbolEnteros * p_arbObj )
+int SArbIntNiveles ( SArbolEnteros * p_arbObj )
 {
 	int iNiveles;
 
@@ -103,7 +103,7 @@ int SArbEntNiveles ( SArbolEnteros * p_arbObj )
 	return ( iNiveles );
 }
 
-int SArbEntNumNodos ( SArbolEnteros * p_arbObj )
+int SArbIntNumNodos ( SArbolEnteros * p_arbObj )
 {
 	int iNodos;
 
@@ -118,7 +118,7 @@ int SArbEntNumNodos ( SArbolEnteros * p_arbObj )
 	return ( iNodos );
 }
 
-int SArbEntVaciar ( SArbolEnteros * p_arbObj )
+int SArbIntVaciar ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 
@@ -133,7 +133,7 @@ int SArbEntVaciar ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntActual ( SArbolEnteros * p_arbObj )
+int SArbIntActual ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -148,7 +148,7 @@ int SArbEntActual ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntEstActual ( SArbolEnteros * p_arbObj, int iValor )
+int SArbIntEstActual ( SArbolEnteros * p_arbObj, int iValor )
 {
 	int 		iRes;
 
@@ -163,7 +163,7 @@ int SArbEntEstActual ( SArbolEnteros * p_arbObj, int iValor )
 	return ( iRes );
 }
 
-int SArbEntMoverARaiz ( SArbolEnteros * p_arbObj )
+int SArbIntMoverARaiz ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -178,7 +178,7 @@ int SArbEntMoverARaiz ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverAPadre ( SArbolEnteros * p_arbObj )
+int SArbIntMoverAPadre ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -193,7 +193,7 @@ int SArbEntMoverAPadre ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverAHijo ( SArbolEnteros * p_arbObj, int iHijo )
+int SArbIntMoverAHijo ( SArbolEnteros * p_arbObj, int iHijo )
 {
 	int iRes;
 	
@@ -208,7 +208,7 @@ int SArbEntMoverAHijo ( SArbolEnteros * p_arbObj, int iHijo )
 	return ( iRes );
 }
 
-int SArbEntMoverAPrimHijo ( SArbolEnteros * p_arbObj )
+int SArbIntMoverAPrimHijo ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -223,7 +223,7 @@ int SArbEntMoverAPrimHijo ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverAUltHijo ( SArbolEnteros * p_arbObj )
+int SArbIntMoverAUltHijo ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -238,7 +238,7 @@ int SArbEntMoverAUltHijo ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverAPrimHermano ( SArbolEnteros * p_arbObj )
+int SArbIntMoverAPrimHermano ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -253,7 +253,7 @@ int SArbEntMoverAPrimHermano ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverASigHermano ( SArbolEnteros * p_arbObj )
+int SArbIntMoverASigHermano ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -268,7 +268,7 @@ int SArbEntMoverASigHermano ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverAAntHermano ( SArbolEnteros * p_arbObj )
+int SArbIntMoverAAntHermano ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -283,7 +283,7 @@ int SArbEntMoverAAntHermano ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverAUltHermano ( SArbolEnteros * p_arbObj )
+int SArbIntMoverAUltHermano ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -298,7 +298,7 @@ int SArbEntMoverAUltHermano ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverAPrimPreorden ( SArbolEnteros * p_arbObj )
+int SArbIntMoverAPrimPreorden ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -313,7 +313,7 @@ int SArbEntMoverAPrimPreorden ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverASigPreorden ( SArbolEnteros * p_arbObj )
+int SArbIntMoverASigPreorden ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -328,7 +328,7 @@ int SArbEntMoverASigPreorden ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverAPrimPostorden ( SArbolEnteros * p_arbObj )
+int SArbIntMoverAPrimPostorden ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -343,7 +343,7 @@ int SArbEntMoverAPrimPostorden ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntMoverASigPostorden ( SArbolEnteros * p_arbObj )
+int SArbIntMoverASigPostorden ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 	
@@ -358,7 +358,7 @@ int SArbEntMoverASigPostorden ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-void SArbEntDesposicionar ( SArbolEnteros * p_arbObj )
+void SArbIntDesposicionar ( SArbolEnteros * p_arbObj )
 {
 	if ( ES_VALIDO ( p_arbObj ) )
 	{
@@ -366,7 +366,7 @@ void SArbEntDesposicionar ( SArbolEnteros * p_arbObj )
 	}
 }
 
-int	SArbEntEstaPosicionado ( SArbolEnteros * p_arbObj )
+int	SArbIntEstaPosicionado ( SArbolEnteros * p_arbObj )
 {
 	int iRes;
 
@@ -381,7 +381,7 @@ int	SArbEntEstaPosicionado ( SArbolEnteros * p_arbObj )
 	return ( iRes );
 }
 
-int SArbEntEnraizar ( SArbolEnteros * p_arbObj, int iValor )
+int SArbIntEnraizar ( SArbolEnteros * p_arbObj, int iValor )
 {
 	SNodo * 	p_nodObj;
 	int 		iRes;
@@ -406,7 +406,7 @@ int SArbEntEnraizar ( SArbolEnteros * p_arbObj, int iValor )
 	return ( iRes );
 }
 
-int SArbEntVerificar ( SArbolEnteros * p_arbObj, int iCorregir )
+int SArbIntVerificar ( SArbolEnteros * p_arbObj, int iCorregir )
 {
 	int iRes;
 

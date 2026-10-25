@@ -36,6 +36,9 @@ int SCnjLitNumElementos ( SConjuntoLiterales * p_cnjObj );
 int SCnjLitEstaVacio ( SConjuntoLiterales * p_cnjObj );
 
 char * SCnjLitElemento ( SConjuntoLiterales * p_cnjObj, int iElem );
+char * SCnjLitPrimero ( SConjuntoLiterales * p_cnjObj );
+char * SCnjLitUltimo ( SConjuntoLiterales * p_cnjObj );
+int SCnjLitPosicion ( SConjuntoLiterales * p_cnjObj, const char * p_cDato );
 
 int SCnjLitInsertar ( SConjuntoLiterales * p_cnjObj, const char * p_cDato );
 int SCnjLitEliminar ( SConjuntoLiterales * p_cnjObj, int iElem );

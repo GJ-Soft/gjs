@@ -1408,7 +1408,7 @@ SListaEnterosLargos * SisListaProcesos ()
  	p_bufDatos = SBufCrear ( SIS_SO_MAX_TAM_BUFFER );
 	if ( ES_VALIDO ( p_bufDatos ) )
 	{
-		p_lislPID = SLisEntlCrear ();
+		p_lislPID = SLisIntlCrear ();
 		p_dwProcesos = (DWORD *) SBufDireccion ( p_bufDatos );
 		// PENDIENTE: Puede ser que sea necesario más tamaño (comprobar caso SBufTam ( p_bufDatos )== dwTamOcupado):
 		if ( EnumProcesses ( p_dwProcesos, (DWORD) SBufTam ( p_bufDatos ), &dwTamOcupado ) != 0 )
@@ -1420,7 +1420,7 @@ SListaEnterosLargos * SisListaProcesos ()
 			{
 				if ( p_dwProcesos [ iProceso ] != 0 )
 				{
-					SLisEntlInsertar ( p_lislPID, ( long ) p_dwProcesos [iProceso] );
+					SLisIntlInsertar ( p_lislPID, ( long ) p_dwProcesos [iProceso] );
 				}
 				iProceso = iProceso + 1;
 			}
@@ -1439,7 +1439,7 @@ SListaEnterosLargos * SisListaProcesos ()
 	hSnapshot = CreateToolhelp32Snapshot ( TH32CS_SNAPPROCESS, 0 );
 	if ( hSnapshot != INVALID_HANDLE_VALUE )
 	{
-		p_lislPID = SLisEntlCrear ();
+		p_lislPID = SLisIntlCrear ();
 		pe32Datos.dwSize = sizeof ( PROCESSENTRY32 );
 		if ( Process32First ( hSnapshot, &pe32Datos ) != 0 )
 		{
@@ -1449,7 +1449,7 @@ SListaEnterosLargos * SisListaProcesos ()
 			// mete y solo despues se pide el siguiente. Al reves se perdia uno.
 			while ( ( iFinal == 0 ) && ( iError == 0 ) )
 			{
-				SLisEntlInsertar ( p_lislPID, ( long ) pe32Datos.th32ProcessID );
+				SLisIntlInsertar ( p_lislPID, ( long ) pe32Datos.th32ProcessID );
 				if ( Process32Next ( hSnapshot, &pe32Datos ) == 0 )
 				{
 					iFinal = 1;
@@ -1479,7 +1479,7 @@ SListaEnterosLargos * SisListaProcesos ()
 	p_dirProc = opendir ( "/proc" );
 	if ( ES_VALIDO ( p_dirProc ) )
 	{
-		p_lislPID = SLisEntlCrear ();
+		p_lislPID = SLisIntlCrear ();
 		if ( ES_VALIDO ( p_lislPID ) )
 		{
 			p_entDato = readdir ( p_dirProc );
@@ -1487,7 +1487,7 @@ SListaEnterosLargos * SisListaProcesos ()
 			{
 				if ( _SisEsSoloDigitos ( p_entDato->d_name ) )
 				{
-					SLisEntlInsertar ( p_lislPID, atol ( p_entDato->d_name ) );
+					SLisIntlInsertar ( p_lislPID, atol ( p_entDato->d_name ) );
 				}
 				p_entDato = readdir ( p_dirProc );
 			}
