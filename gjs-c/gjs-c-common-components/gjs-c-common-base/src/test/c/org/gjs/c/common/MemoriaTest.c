@@ -116,6 +116,50 @@ static int TestMemCopiarIgual01 ()
 	return ( iRes );
 }
 
+static int TestMemDuplicar01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test MemDuplicar 01:\n" );
+	byte byOrig [ 4 ] = { 0x10, 0x20, 0x30, 0x40 };
+
+	byte * p_byDup = (byte *) MemDuplicar ( byOrig, 4 );
+	if ( ES_NULO ( p_byDup ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al duplicar\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( ( p_byDup [ 0 ] != 0x10 ) || ( p_byDup [ 1 ] != 0x20 ) ||
+			 ( p_byDup [ 2 ] != 0x30 ) || ( p_byDup [ 3 ] != 0x40 ) )
+		{
+			printf( "Error caso 2: la copia deberia ser 10 20 30 40\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Es un bloque propio: tocarlo no cambia el original. */
+		p_byDup [ 0 ] = 0xFF;
+		if ( ( p_byDup == byOrig ) || ( byOrig [ 0 ] != 0x10 ) )
+		{
+			printf( "Error caso 3: la copia deberia ser un bloque aparte\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( MemEsValida ( p_byDup ) != 1 )
+		{
+			printf( "Error caso 4: la copia deberia ser memoria reservada valida\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	MemLiberar ( (void **) &p_byDup );
+	/* Sin bytes o sin origen no hay copia. */
+	if ( ES_VALIDO ( MemDuplicar ( byOrig, 0 ) ) || ES_VALIDO ( MemDuplicar ( NULL, 4 ) ) )
+	{
+		printf( "Error caso 5: con 0 bytes o con origen nulo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	ErrLimpiar ();
+	return ( iRes );
+}
+
 static int TestMemRedimensionar01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -180,6 +224,7 @@ int TestMemoria ()
 			( TestMemLiberar01 () == BOOL_VAL_CIERTO ) &&
 			( TestMemLimpiarLlenar01 () == BOOL_VAL_CIERTO ) &&
 			( TestMemCopiarIgual01 () == BOOL_VAL_CIERTO ) &&
+			( TestMemDuplicar01 () == BOOL_VAL_CIERTO ) &&
 			( TestMemRedimensionar01 () == BOOL_VAL_CIERTO ) &&
 			( TestMemEsValida01 () == BOOL_VAL_CIERTO ) )
 	{

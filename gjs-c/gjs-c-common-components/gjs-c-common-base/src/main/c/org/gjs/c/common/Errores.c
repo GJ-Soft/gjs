@@ -33,6 +33,7 @@
 #define ERR_TXT_POSICION_INVALIDA			"La posicion indicada es invalida"
 #define ERR_TXT_ESTRUCTURA_INVALIDA			"La estructura es invalida."
 #define ERR_TXT_CONVERSION_IMPOSIBLE		"No se puede realizar la conversion del valor indicado."
+#define ERR_TXT_COPIA_OBJETO				"No se ha podido duplicar/copiar la estructura."
 
 #define ERR_TXT_GENERAL_OPERATIVO			"Se ha producido un error al realizar la operacion."
 
@@ -380,7 +381,7 @@ void _ErrEstablecer ( const char * p_cModulo, int iLinea, int iCodigo, const cha
 	}
 }
 
-void ErrEstablecer ( const char * p_cModulo, int iLinea,int iCodigo )
+void ErrEstablecer ( const char * p_cModulo, int iLinea, int iCodigo )
 {
     _ErrEstablecer ( p_cModulo, iLinea, iCodigo, NULL );
 }
@@ -522,6 +523,10 @@ static const char * _ErrDescripcion ( int iCod )
 	{
 		p_cRes = CadDuplicar ( ERR_TXT_CONVERSION_IMPOSIBLE );
 	}
+	else if ( iCod == ERR_COPIA_OBJETO )
+	{
+		p_cRes = CadDuplicar ( ERR_TXT_COPIA_OBJETO );
+	}
 	else if ( iCod == ERR_GENERAL_OPERATIVO )
 	{
 		p_cRes = CadDuplicar ( ERR_TXT_GENERAL_OPERATIVO );
@@ -545,6 +550,7 @@ static int _ErrPredefinido ( int iCod )
 		 ( iCod == ERR_POSICION_INVALIDA ) ||
 		 ( iCod == ERR_ESTRUCTURA_INVALIDA ) ||
 		 ( iCod == ERR_CONVERSION_IMPOSIBLE ) ||
+		 ( iCod == ERR_COPIA_OBJETO ) ||
 		 ( iCod == ERR_GENERAL_OPERATIVO ) )
 	{
 		iRes = 1;

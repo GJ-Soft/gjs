@@ -4,6 +4,12 @@
 #include "TiposBasicosConfig.h"
 
 
+int _SColpEncolarPtr ( SColaPtr * p_colObj, SElementoPtr * p_elpObj );
+
+extern SElementoPtr * _SLispExtraerPtr ( SListaPtr * p_lisObj );
+extern int _SLispInsertarAlInicioPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
+extern int _SLispInsertarAlFinalPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
+
 
 
 SColaPtr * SColpCrear ()
@@ -175,6 +181,130 @@ int SColpEncolar ( SColaPtr * p_colObj, byte * p_bymObj )
 	return ( iRes );
 }
 
+/* MUEVE los nodos de p_lisValores al final de la cola, de la cabeza a la cola
+   de la lista, asi que salen en el mismo orden. p_lisValores queda vacia. Como
+   con SColpEncolar, la cola no libera los datos salvo que se destruya con
+   iLiberar = 1.
+
+   Si uno no se puede encolar vuelve a la cabeza de p_lisValores y se para con
+   ERR_INSERCION_LISTA: lo encolado hasta ahi se queda y lo que falta sigue en
+   p_lisValores, sin perder nada. */
+int SColpEncolarTodos ( SColaPtr * p_colObj, SListaPtr * p_lisValores )
+{
+	int				iRes;
+	SElementoPtr *	p_elpObj;
+
+	if ( SColpEsValida ( p_colObj ) == 1 )
+	{
+		if ( SLispEsValida ( p_lisValores ) == 1 )
+		{
+			iRes = 1;
+			/* _SLispExtraerPtr deja el cursor en el siguiente, que es la nueva cabeza. */
+			SLispInicio ( p_lisValores );
+			while ( ( iRes == 1 ) && ( SLispEstaPosicionada ( p_lisValores ) == 1 ) )
+			{
+				p_elpObj = _SLispExtraerPtr ( p_lisValores );
+				if ( ES_VALIDO ( p_elpObj ) )
+				{
+					if ( _SColpEncolarPtr ( p_colObj, p_elpObj ) != 1 )
+					{
+						_SLispInsertarAlInicioPtr ( p_lisValores, p_elpObj );
+						ERROR_ESTABLECER_FORM ( ERR_INSERCION_LISTA, ERR_TXT_INSERCION_LISTA );
+						iRes = 0;
+					}
+				}
+				else
+				{
+					ERROR_ESTABLECER_FORM ( ERR_INSERCION_LISTA, ERR_TXT_INSERCION_LISTA );
+					iRes = 0;
+				}
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Encola COPIAS de los datos de p_lisValores, en su orden, sin tocar la lista
+   ni su cursor: con fDuplicar o, si es nulo, de iNumBytes. Las copias son
+   memoria nueva y, como con SColpEncolar, la cola no las libera salvo que se
+   destruya con iLiberar = 1. Si falla una copia ( ERR_COPIA_OBJETO ) o un
+   encolado ( ERR_INSERCION_LISTA ) se para, y lo encolado hasta ahi se queda. */
+static int _SColpEncolarTodosDup ( SColaPtr * p_colObj, SListaPtr * p_lisValores, int iNumBytes, PFUNPBYTEPB fDuplicar )
+{
+	int				iRes;
+	SElementoPtr *	p_elpObj;
+	SElementoPtr *	p_elpNuevo;
+
+	if ( SColpEsValida ( p_colObj ) == 1 )
+	{
+		if ( SLispEsValida ( p_lisValores ) == 1 )
+		{
+			iRes = 1;
+			p_elpObj = p_lisValores->p_elpPrimero;
+			while ( ES_VALIDO ( p_elpObj ) && ( iRes == 1 ) )
+			{
+				if ( ES_VALIDO ( fDuplicar ) )
+				{
+					p_elpNuevo = SElpDuplicarExt ( p_elpObj, fDuplicar );
+				}
+				else
+				{
+					p_elpNuevo = SElpDuplicar ( p_elpObj, iNumBytes );
+				}
+				if ( ES_NULO ( p_elpNuevo ) )
+				{
+					ERROR_ESTABLECER ( ERR_COPIA_OBJETO );
+					iRes = 0;
+				}
+				else if ( _SColpEncolarPtr ( p_colObj, p_elpNuevo ) != 1 )
+				{
+					SElpDestruir ( &p_elpNuevo );
+					ERROR_ESTABLECER_FORM ( ERR_INSERCION_LISTA, ERR_TXT_INSERCION_LISTA );
+					iRes = 0;
+				}
+				p_elpObj = SElpSucesor ( p_elpObj );
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SColpEncolarTodosDup ( SColaPtr * p_colObj, SListaPtr * p_lisValores, int iNumBytes )
+{
+	return ( _SColpEncolarTodosDup ( p_colObj, p_lisValores, iNumBytes, NULL ) );
+}
+
+int SColpEncolarTodosDupExt ( SColaPtr * p_colObj, SListaPtr * p_lisValores, PFUNPBYTEPB fDuplicar )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( fDuplicar ) )
+	{
+		iRes = _SColpEncolarTodosDup ( p_colObj, p_lisValores, 0, fDuplicar );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int SColpEliminarPrimero ( SColaPtr * p_colObj )
 {
 	int	iRes;
@@ -286,4 +416,20 @@ void SColpDesactivarLiberacionMemoria ( SColaPtr * p_colObj )
 	{
 		SLispDesactivarLiberacionMemoria ( p_colObj->p_lisObjetos );
 	}
+}
+
+
+int _SColpEncolarPtr ( SColaPtr * p_colObj, SElementoPtr * p_elpObj )
+{
+	int iRes;
+
+	if ( ( SColpEsValida ( p_colObj ) == 1 ) && ES_VALIDO ( p_elpObj ) )
+	{
+		iRes = _SLispInsertarAlFinalPtr ( p_colObj->p_lisObjetos, p_elpObj );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }

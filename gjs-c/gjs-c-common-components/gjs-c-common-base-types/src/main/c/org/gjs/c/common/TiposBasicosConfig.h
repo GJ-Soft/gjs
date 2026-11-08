@@ -39,10 +39,17 @@
 
 #include <TiposPrimitiva.h>
 #include <TiposBasicosConstantes.h>
+#include <TiposBasicosErrores.h>
 
 
 
-//#define ERR_TXT_INSERCION					"Se ha producido un error al insertar un elemento."
+/* Textos de los errores de TiposBasicosErrores.h: son internos, no van en las
+   cabeceras publicas. */
+#define ERR_TXT_COPIA_LISTA					"No se han podido copiar todos los elementos."
+#define ERR_TXT_INSERCION_LISTA				"No se ha podido insertar un elemento en la lista destino."
+#define ERR_TXT_PILA_VACIA  				"La pila esta vacia."
+
+
 
 
 

@@ -18,6 +18,7 @@
 #define _ORG_GJS_C_CC_C_COMMON_TYPES_H
 
 #include <TiposBasicosConstantes.h>
+#include <TiposBasicosErrores.h>
 
 #include <TiposPrimitiva.h>
 #include <TiposResultado.h>

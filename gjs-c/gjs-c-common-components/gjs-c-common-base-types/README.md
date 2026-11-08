@@ -136,7 +136,7 @@ mvn test               # vía Maven
 ```
 
 Sin test asociado: `SArbolB`, `TiposBasicos`, `TiposBasicosConstantes`,
-`TiposPrimitiva` y `TiposResultado`.
+`TiposBasicosErrores`, `TiposPrimitiva` y `TiposResultado`.
 
 ---
 

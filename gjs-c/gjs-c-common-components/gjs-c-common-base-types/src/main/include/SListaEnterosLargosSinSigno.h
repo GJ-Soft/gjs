@@ -55,6 +55,7 @@ void SLisIntLssMoverA ( SListaEnterosLargosSinSigno * p_lisObj, int iElem );
 void SLisIntLssDeposicionar ( SListaEnterosLargosSinSigno * p_lisObj );
 
 int SLisIntLssEsNulo ( SListaEnterosLargosSinSigno * p_lisObj );
+int SLisIntLssEstaPosicionada ( SListaEnterosLargosSinSigno * p_lisObj );
 int SLisIntLssEstaEnFinal ( SListaEnterosLargosSinSigno * p_lisObj );
 int SLisIntLssEstaEnInicio ( SListaEnterosLargosSinSigno * p_lisObj );
 
@@ -68,6 +69,9 @@ int SLisIntLssEliminar ( SListaEnterosLargosSinSigno * p_lisObj );
 
 int SLisIntLssExiste ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
 int SLisIntLssBuscar ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+int SLisIntLssRepeticiones ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+int SLisIntLssBuscarPrimero ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato );
+int SLisIntLssBuscarSiguiente ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long ulDato, int iPos );
 
 int SLisIntLssEstaOrdenada ( SListaEnterosLargosSinSigno * p_lisObj );
 SListaEnterosLargosSinSigno * SLisIntLssOrdenar ( SListaEnterosLargosSinSigno * p_lisObj );
@@ -82,7 +86,28 @@ void SLisIntLssObtenerParametros ( SListaEnterosLargosSinSigno * p_lisObj, unsig
 
 int SLisIntLssDefinidaPositiva ( SListaEnterosLargosSinSigno * p_lisObj );
 
+SListaEnterosLargosSinSigno * SLisIntLssDuplicar ( SListaEnterosLargosSinSigno * p_lisObj );
 
+//Operaciones con otras listas
+int SLisIntLssExistenTodos ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
+int SLisIntLssExisteAlguno ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
+
+// Extrae los valores de la lista de entrada
+int SLisIntLssInsertarLista ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
+int SLisIntLssConcatenarLista ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
+// Duplica los valores de la lista de entrada
+int SLisIntLssInsertarListaDup ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
+int SLisIntLssConcatenarListaDup ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
+// Destruye la primera aparición de cada valor de la lista de entrada
+int SLisIntLssEliminarLista ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
+
+// Operaciones que generan listas nuevas
+// NOTA: Si hay algún error puede realizar una extracción parcial
+SListaEnterosLargosSinSigno * SLisIntLssExtraerLista ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
+
+SListaEnterosLargosSinSigno * SLisIntLssUnion ( SListaEnterosLargosSinSigno * p_lisValores1, SListaEnterosLargosSinSigno * p_lisValores2 );
+SListaEnterosLargosSinSigno * SLisIntLssInterseccion ( SListaEnterosLargosSinSigno * p_lisValores1, SListaEnterosLargosSinSigno * p_lisValores2 );
+SListaEnterosLargosSinSigno * SLisIntLssDiferencia ( SListaEnterosLargosSinSigno * p_lisValores1, SListaEnterosLargosSinSigno * p_lisValores2 );
 
 #endif
 

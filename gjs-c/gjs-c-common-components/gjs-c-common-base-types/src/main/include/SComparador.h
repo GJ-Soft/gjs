@@ -48,4 +48,6 @@ int SCmpEvaluarBloqueEsMayorExt ( SComparador * p_cmpObj, SBloque * p_blqObj1, b
 int SCmpEvaluarBloqueEsMenorExt ( SComparador * p_cmpObj, SBloque * p_blqObj1, byte * p_byObj2 );
 int SCmpEvaluarBloqueEsDiferenteExt ( SComparador * p_cmpObj, SBloque * p_blqObj1, byte * p_byObj2 );
 
+SComparador * SCmpDuplicar ( SComparador * p_cmpObj );
+
 #endif

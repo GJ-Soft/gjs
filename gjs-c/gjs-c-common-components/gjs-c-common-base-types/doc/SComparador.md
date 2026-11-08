@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SComparador.c` |
 | Prefijo      | `SCmp`                                      |
 | Struct       | `SComparador`                               |
-| Funciones    | 21                                          |
+| Funciones    | 22                                          |
 | Incluido por | `TiposBasicos.h`                            |
 | Test         | `SComparadorTest.c` → `TestSComparador()`   |
 
@@ -55,6 +55,7 @@ La función devuelve un entero con el convenio clásico de `strcmp`, **no** el d
 | `SComparador * SCmpLiterales ()`                    | Comparador de cadenas predefinido. |
 | `void SCmpDestruir ( SComparador ** )`              | Destruye y anula el puntero.       |
 | `int SCmpEsValido ( SComparador * )`                | 1 si tiene función de comparación. |
+| `SComparador * SCmpDuplicar ( SComparador * )`      | Otro comparador con la misma función; `NULL` si es nulo. |
 
 ### Evaluación sobre punteros
 

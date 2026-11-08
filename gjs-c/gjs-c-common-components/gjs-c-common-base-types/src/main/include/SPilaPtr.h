@@ -5,6 +5,7 @@
 
 
 #include <SListaPtr.h>
+#include <TiposBasicosErrores.h>
 
 
 
@@ -30,6 +31,9 @@ byte * SPilpPrimero ( SPilaPtr * p_pilObj );
 byte * SPilpDesapilar ( SPilaPtr * p_pilObj );
 
 int SPilpApilar ( SPilaPtr * p_pilObj, byte * p_byObj );
+int SPilpApilarTodos ( SPilaPtr * p_pilObj, SListaPtr * p_lisValores );
+int SPilpApilarTodosDup ( SPilaPtr * p_pilObj, SListaPtr * p_lisValores, int iNumBytes );
+int SPilpApilarTodosDupExt ( SPilaPtr * p_pilObj, SListaPtr * p_lisValores, PFUNPBYTEPB fDuplicar );
 int SPilpEliminarPrimero ( SPilaPtr * p_pilObj );
 int SPilpVaciar ( SPilaPtr * p_pilObj, int iLiberar );
 

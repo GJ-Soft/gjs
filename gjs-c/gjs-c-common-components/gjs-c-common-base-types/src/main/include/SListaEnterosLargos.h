@@ -55,6 +55,7 @@ void SLisIntlMoverA ( SListaEnterosLargos * p_lisObj, int iElem );
 void SLisIntlDeposicionar ( SListaEnterosLargos * p_lisObj );
 
 int SLisIntlEsNulo ( SListaEnterosLargos * p_lisObj );
+int SLisIntlEstaPosicionada ( SListaEnterosLargos * p_lisObj );
 int SLisIntlEstaEnFinal ( SListaEnterosLargos * p_lisObj );
 int SLisIntlEstaEnInicio ( SListaEnterosLargos * p_lisObj );
 
@@ -68,6 +69,9 @@ int SLisIntlEliminar ( SListaEnterosLargos * p_lisObj );
 
 int SLisIntlExiste ( SListaEnterosLargos * p_lisObj, long lDato );
 int SLisIntlBuscar ( SListaEnterosLargos * p_lisObj, long lDato );
+int SLisIntlRepeticiones ( SListaEnterosLargos * p_lisObj, long lDato );
+int SLisIntlBuscarPrimero ( SListaEnterosLargos * p_lisObj, long lDato );
+int SLisIntlBuscarSiguiente ( SListaEnterosLargos * p_lisObj, long lDato, int iPos );
 
 int SLisIntlEstaOrdenada ( SListaEnterosLargos * p_lisObj );
 SListaEnterosLargos * SLisIntlOrdenar ( SListaEnterosLargos * p_lisObj );
@@ -83,7 +87,28 @@ void SLisIntlObtenerParametros ( SListaEnterosLargos * p_lisObj, long * p_lMin, 
 int SLisIntlDefinidaPositiva ( SListaEnterosLargos * p_lisObj );
 int SLisIntlSemidefinidaPositiva ( SListaEnterosLargos * p_lisObj );
 
+SListaEnterosLargos * SLisIntlDuplicar ( SListaEnterosLargos * p_lisObj );
 
+//Operaciones con otras listas
+int SLisIntlExistenTodos ( SListaEnterosLargos * p_lisObj, SListaEnterosLargos * p_lisValores );
+int SLisIntlExisteAlguno ( SListaEnterosLargos * p_lisObj, SListaEnterosLargos * p_lisValores );
+
+// Extrae los valores de la lista de entrada
+int SLisIntlInsertarLista ( SListaEnterosLargos * p_lisObj, SListaEnterosLargos * p_lisValores );
+int SLisIntlConcatenarLista ( SListaEnterosLargos * p_lisObj, SListaEnterosLargos * p_lisValores );
+// Duplica los valores de la lista de entrada
+int SLisIntlInsertarListaDup ( SListaEnterosLargos * p_lisObj, SListaEnterosLargos * p_lisValores );
+int SLisIntlConcatenarListaDup ( SListaEnterosLargos * p_lisObj, SListaEnterosLargos * p_lisValores );
+// Destruye la primera aparición de cada valor de la lista de entrada
+int SLisIntlEliminarLista ( SListaEnterosLargos * p_lisObj, SListaEnterosLargos * p_lisValores );
+
+// Operaciones que generan listas nuevas
+// NOTA: Si hay algún error puede realizar una extracción parcial
+SListaEnterosLargos * SLisIntlExtraerLista ( SListaEnterosLargos * p_lisObj, SListaEnterosLargos * p_lisValores );
+
+SListaEnterosLargos * SLisIntlUnion ( SListaEnterosLargos * p_lisValores1, SListaEnterosLargos * p_lisValores2 );
+SListaEnterosLargos * SLisIntlInterseccion ( SListaEnterosLargos * p_lisValores1, SListaEnterosLargos * p_lisValores2 );
+SListaEnterosLargos * SLisIntlDiferencia ( SListaEnterosLargos * p_lisValores1, SListaEnterosLargos * p_lisValores2 );
 
 #endif
 

@@ -93,6 +93,7 @@ está en rango, y `ES_VALIDO` la da por buena.
 | `void MemLimpiar ( void * p_vBloque, int iNumBytes )`                    | Pone el bloque a cero.                  |
 | `void MemLlenar ( void * p_vBloque, byte byValor, int iNumBytes )`       | Rellena el bloque con un valor.         |
 | `void MemCopiar ( void * p_vDest, void * p_vOrig, int iNumBytes )`       | Copia entre bloques.                    |
+| `void * MemDuplicar ( void * p_vOrig, int iNumBytes )`                   | Copia a un bloque nuevo, del llamante.  |
 | `int MemEsValida ( void * p_vDireccion )`                                | Comprueba si la dirección es plausible. |
 | `int MemEsIgual ( void * p_vBloque1, void * p_vBloque2, int iNumBytes )` | Compara byte a byte.                    |
 
@@ -181,6 +182,14 @@ nada. En Windows usan `ZeroMemory`, `FillMemory` y `CopyMemory`; en el resto,
 `memset` y `memcpy`. `MemCopiar` valida el destino con `ES_VALIDO` **y** con
 `MemEsValida` —que hoy son la misma comprobación— y el origen sólo con
 `ES_VALIDO`; no comprueba solapamiento (es un `memcpy`, no un `memmove`).
+
+### `MemDuplicar`
+
+Reserva `iNumBytes` con `MemReservar` y copia ahí el origen. El bloque es del
+llamante, que lo libera con `MemLiberar`. Con `iNumBytes` ≤ 0 o el origen nulo
+devuelve `NULL` y anota `ERR_PARAMETROS`; si la reserva falla devuelve `NULL` con
+el error que haya dejado `MemReservar`. Lee exactamente `iNumBytes` del origen:
+que los tenga es cosa del que llama.
 
 ### `MemEsIgual`
 

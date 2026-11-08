@@ -8,15 +8,15 @@
 SEntidad * SEntCrearDef ()
 {
 	SEntidad *  p_entObj;
-    SPtr *         p_ptrContenido;
+	SPtr *         p_ptrContenido;
     SId *       p_idEntidad;
 
     p_idEntidad = SIdCrearDef ();
-    p_ptrContenido = SPtrCrearDef ( NULL );
-    p_entObj = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_entObj = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entObj ) )
     {
-        SPtrDestruir ( &p_ptrContenido );
+		SPtrDestruir ( &p_ptrContenido );
         SIdDestruir ( &p_idEntidad );
     }
     return ( p_entObj );
@@ -42,7 +42,7 @@ SEntidad * SEntCrearExt ( unsigned long ulId,  SPtr * p_ptrContenido )
     SId *       p_idEntidad;
 
     p_idEntidad = SIdCrear ( ulId );
-    p_entObj = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
+	p_entObj = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entObj ) )
     {
         SIdDestruir ( &p_idEntidad );
@@ -68,18 +68,18 @@ SEntidad * SEntEncapsularExt ( SId * p_idEntidad, SPtr * p_ptrContenido )
 {
 	SEntidad *	p_entObj;
 	
-    p_entObj = NULL;
+	p_entObj = NULL;
     if ( ES_VALIDO ( p_idEntidad ) )
     {
-        /* El contenido siempre es un SPtr, aunque este vacio: SPtrCrearDef ( NULL ). */
-        if ( ES_VALIDO ( p_ptrContenido ) )
+		/* El contenido siempre es un SPtr, aunque este vacio: SPtrCrearDef ( NULL ). */
+		if ( ES_VALIDO ( p_ptrContenido ) )
         {
-            p_entObj= (SEntidad *) MemReservar ( sizeof ( SEntidad ) );
-            if ( ES_VALIDO ( p_entObj ) )
-            {
-                p_entObj->p_idEntidad = p_idEntidad;
-                p_entObj->p_ptrContenido = p_ptrContenido;
-            }
+			p_entObj= (SEntidad *) MemReservar ( sizeof ( SEntidad ) );
+			if ( ES_VALIDO ( p_entObj ) )
+			{
+				p_entObj->p_idEntidad = p_idEntidad;
+				p_entObj->p_ptrContenido = p_ptrContenido;
+			}
         }
     }
 	return ( p_entObj );

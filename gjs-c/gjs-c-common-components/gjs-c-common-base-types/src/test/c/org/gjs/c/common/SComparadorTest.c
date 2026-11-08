@@ -169,6 +169,49 @@ static int TestSCmpInvalidos01 ()
 }
 
 
+/* La copia es otro comparador con la misma funcion, y sobrevive al original. */
+static int TestSCmpDuplicar01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCmpDuplicar 01:\n" );
+
+	SComparador * p_cmpObj = SCmpCrear ( CompararEnteros );
+	SComparador * p_cmpDup = SCmpDuplicar ( p_cmpObj );
+	if ( ES_VALIDO ( p_cmpObj ) && ES_VALIDO ( p_cmpDup ) )
+	{
+		if ( ( p_cmpDup == p_cmpObj ) || ( SCmpEsValido ( p_cmpDup ) != 1 ) ||
+			 ( p_cmpDup->fComparar != CompararEnteros ) )
+		{
+			printf( "Error caso 1: se esperaba otro comparador valido con la misma funcion\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Destruir el original no toca la copia. */
+		SCmpDestruir ( &p_cmpObj );
+		int iVal1 = 3;
+		int iVal2 = 7;
+		if ( ( SCmpEvaluar ( p_cmpDup, &iVal1, &iVal2 ) != -1 ) ||
+			 ( SCmpEvaluar ( p_cmpDup, &iVal2, &iVal1 ) != 1 ) ||
+			 ( SCmpEvaluar ( p_cmpDup, &iVal1, &iVal1 ) != 0 ) )
+		{
+			printf( "Error caso 2: la copia deberia comparar como el original\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SCmpDuplicar ( NULL ) ) )
+		{
+			printf( "Error caso 3: con un comparador nulo se esperaba nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear los comparadores\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCmpDestruir ( &p_cmpObj );
+	SCmpDestruir ( &p_cmpDup );
+	return ( iRes );
+}
+
 
 int TestSComparador ()
 {
@@ -177,7 +220,8 @@ int TestSComparador ()
 	if ( ( TestSCmpEnteros01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCmpLiterales01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCmpBloque01 () == BOOL_VAL_CIERTO ) &&
-			( TestSCmpInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSCmpInvalidos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCmpDuplicar01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

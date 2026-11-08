@@ -44,6 +44,8 @@ typedef struct
 | `SElemento * SColUltimo ( SCola * )`              | Cola, sin sacarla.                |
 | `SElemento * SColElemento ( SCola *, int iElem )` | Elemento por posición.            |
 | `int SColEncolar ( SCola *, SElemento * )`        | Añade al final.                   |
+| `int SColEncolarTodos ( SCola *, SLista * )`      | **Mueve** los de la lista al final, en su orden. |
+| `int SColEncolarTodosDup ( SCola *, SLista * )`   | Ídem con **copias**; la lista y su cursor no se tocan. |
 | `SElemento * SColDesencolar ( SCola * )`          | Saca la cabeza y **la devuelve**. |
 | `int SColEliminarPrimero ( SCola * )`             | Saca la cabeza y **la destruye**. |
 | `int SColEliminarUltimo ( SCola * )`              | Elimina el último.                |
@@ -53,6 +55,20 @@ typedef struct
 
 Como en las pilas, `SColDesencolar` cede la propiedad del elemento y
 `SColEliminarPrimero` lo destruye.
+
+### Encolar una lista entera
+
+`EncolarTodos` (mueve) y `EncolarTodosDup` (copia) van al final de la cola en
+el orden de la lista, así que salen en ese mismo orden. `SColaPtr` copia con
+`iNumBytes` y además tiene `SColpEncolarTodosDupExt`, que copia con
+`fDuplicar`.
+
+- Devuelven 1 o 0; con la lista vacía, 1.
+- Si un elemento movido no se puede encolar, vuelve a la cabeza de la lista y
+  se para con `ERR_INSERCION_LISTA`. En las `Dup`, si falla una copia se para
+  con `ERR_COPIA_OBJETO`. Lo encolado hasta ahí se queda.
+- En `SColaPtr`, como con `SColpEncolar`, la cola no libera los datos salvo
+  que se destruya con `iLiberar = 1`.
 
 ## La variante `SColaPtr`
 

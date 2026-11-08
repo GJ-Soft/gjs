@@ -323,13 +323,43 @@ int SElpEsIgual ( SElementoPtr * p_elpObj1, SElementoPtr * p_elpObj2, int iNumBy
 	return ( iRes );
 }
 
-int SElpEsIgualExt ( SElementoPtr * p_elpObj, byte * p_byObj, int iNumBytes )
+int SElpEsIgualDatos ( SElementoPtr * p_elpObj, byte * p_byObj, int iNumBytes )
 {
 	int	iRes;
 
 	if ( ES_VALIDO ( p_elpObj ) && ES_VALIDO ( p_byObj ) )
 	{
 		iRes = MemEsIgual ( (void *) SElpDatos ( p_elpObj ), (void *) p_byObj, iNumBytes );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SElpEsIgualExt ( SElementoPtr * p_elpObj1, SElementoPtr * p_elpObj2, PFUNINTPBPB fSonIguales )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_elpObj1 ) && ES_VALIDO ( p_elpObj2 ) && ES_VALIDO ( fSonIguales ) )
+	{
+		iRes = fSonIguales ( SElpDatos ( p_elpObj1 ), SElpDatos ( p_elpObj2 ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SElpEsIgualDatosExt ( SElementoPtr * p_elpObj, byte * p_byObj, PFUNINTPBPB fSonIguales )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_elpObj ) && ES_VALIDO ( p_byObj ) && ES_VALIDO ( fSonIguales ) )
+	{
+		iRes = fSonIguales ( SElpDatos ( p_elpObj ), p_byObj );
 	}
 	else
 	{
@@ -353,19 +383,24 @@ int	SElpLiberacionMemoriaActivada ( SElementoPtr * p_elpObj )
 	return ( iRes );
 }
 
-// NOTA:No se duplica el contenido, se copia el puntero (Liberar=0).
-//      Retorna un elemento duplicado pero desencadenado:
-SElementoPtr * SElpDuplicar ( SElementoPtr * p_elpObj )
+/* Duplica el CONTENIDO: los iNumBytes de los datos van a un bloque nuevo. El
+   duplicado sale desencadenado y con la liberacion activada aunque el original
+   no la tuviera, porque esa copia no es de nadie mas. */
+SElementoPtr * SElpDuplicar ( SElementoPtr * p_elpObj, int iNumBytes )
 {
-	byte *	p_byDatos;
-	SElementoPtr * p_elpDup;
+	byte *			p_byDatos;
+	SElementoPtr *	p_elpDup;
 
 	if ( SElpEsValido ( p_elpObj ) == 1 )
 	{
-		p_byDatos = p_elpObj->p_byDatos;
+		p_byDatos = (byte *) MemDuplicar ( (void *) p_elpObj->p_byDatos, iNumBytes );
 		if ( ES_VALIDO ( p_byDatos ) )
 		{
-			p_elpDup = SElpCrear ( p_elpObj->p_byDatos, 0 );
+			p_elpDup = SElpCrear ( p_byDatos, 1 );
+			if ( ES_NULO ( p_elpDup ) )
+			{
+				MemLiberar ( (void **) &p_byDatos );
+			}
 		}
 		else
 		{
@@ -377,6 +412,57 @@ SElementoPtr * SElpDuplicar ( SElementoPtr * p_elpObj )
 		p_elpDup = NULL;
 	}
 	return ( p_elpDup );
+}
+
+/* Como SElpDuplicar, pero la copia de los datos la hace fDuplicar, que debe
+   devolver memoria reservada con MemReservar: el duplicado la libera con
+   MemLiberar. */
+SElementoPtr * SElpDuplicarExt ( SElementoPtr * p_elpObj, PFUNPBYTEPB fDuplicar )
+{
+	byte *			p_byDatos;
+	SElementoPtr *	p_elpDup;
+
+	if ( SElpEsValido ( p_elpObj ) == 1 )
+	{
+		if ( ES_VALIDO ( fDuplicar ) )
+		{
+			p_byDatos = fDuplicar ( p_elpObj->p_byDatos );
+			if ( ES_VALIDO ( p_byDatos ) )
+			{
+				p_elpDup = SElpCrear ( p_byDatos, 1 );
+				if ( ES_NULO ( p_elpDup ) )
+				{
+					MemLiberar ( (void **) &p_byDatos );
+				}
+			}
+			else
+			{
+				p_elpDup = NULL;
+			}
+		}
+		else
+		{
+			p_elpDup = NULL;
+		}
+	}
+	else
+	{
+		p_elpDup = NULL;
+	}
+	return ( p_elpDup );
+}
+
+/* Anula solo los enlaces propios, sin tocar a los vecinos: es lo que hace falta
+   cuando la lista ya ha reenganchado la cadena por su cuenta. SElpDesencadenar
+   no vale ahi, porque corta tambien los enlaces que los vecinos tienen entre si.
+   Gemela de SElmDeposicionar. */
+void SElpDeposicionar ( SElementoPtr * p_elpObj )
+{
+	if ( ES_VALIDO ( p_elpObj ) )
+	{
+		p_elpObj->p_elpAnt = NULL;
+		p_elpObj->p_elpSig = NULL;
+	}
 }
 
 /* Salta iInc eslabones en la cadena. Devuelve NULL si se sale por el extremo

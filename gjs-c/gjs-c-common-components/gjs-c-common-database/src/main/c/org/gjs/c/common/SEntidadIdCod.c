@@ -10,17 +10,17 @@
 SEntidadIdCod * SEntIdCodCrearDef ( int iMaxTamCod )
 {
 	SEntidadIdCod * p_enticObj;
-    SPtr *         p_ptrContenido;
+	SPtr *         p_ptrContenido;
     SId *           p_idEntidad;
     SCodigo *       p_codEntidad;
 
     p_idEntidad = SIdCrearDef ();
     p_codEntidad = SCodCrear ( iMaxTamCod );
-    p_ptrContenido = SPtrCrearDef ( NULL );
-    p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_ptrContenido );
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_enticObj ) )
     {
-        SPtrDestruir ( &p_ptrContenido );
+		SPtrDestruir ( &p_ptrContenido );
         SIdDestruir ( &p_idEntidad );
         SCodDestruir ( &p_codEntidad );
     }
@@ -63,7 +63,7 @@ SEntidadIdCod * SEntIdCodCrearExt ( unsigned long ulId, SCadena * p_cadCodigo, i
 
     p_idEntidad = SIdCrear ( ulId );
     p_codEntidad = SCodCrearValorExt ( p_cadCodigo, iMaxTamCod );
-    p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_ptrContenido );
+	p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_enticObj ) )
     {
         SIdDestruir ( &p_idEntidad );
@@ -80,7 +80,7 @@ SEntidadIdCod * SEntIdCodCrearLitExt ( unsigned long ulId, const char * p_cCodig
 
     p_idEntidad = SIdCrear ( ulId );
     p_codEntidad = SCodCrearValorLitExt ( p_cCodigo, iMaxTamCod );
-    p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_ptrContenido );
+	p_enticObj = SEntIdCodEncapsularExt ( p_idEntidad, p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_enticObj ) )
     {
         SIdDestruir ( &p_idEntidad );
@@ -112,7 +112,7 @@ SEntidadIdCod * SEntIdCodEncapsularExt ( SId * p_idEntidad, SCodigo * p_codEntid
         p_enticObj = (SEntidadIdCod *) MemReservar ( sizeof ( SEntidadIdCod ) );
         if ( ES_VALIDO ( p_enticObj ) )
         {
-            p_enticObj->p_entInfo = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
+			p_enticObj->p_entInfo = SEntEncapsularExt ( p_idEntidad, p_ptrContenido );
             if ( ES_VALIDO ( p_enticObj->p_entInfo ) )
             {
                 p_enticObj->p_codEntidad = p_codEntidad;
@@ -356,7 +356,7 @@ int SEntIdCodEstablecerContenidoExt ( SEntidadIdCod * p_enticObj, void * p_vCont
 
 	if ( ES_VALIDO ( p_enticObj ) )
 	{
-        iRes = SEntEstablecerContenidoExt ( p_enticObj->p_entInfo, p_vContenido, fDestructor );
+		iRes = SEntEstablecerContenidoExt ( p_enticObj->p_entInfo, p_vContenido, fDestructor );
 	}
 	else
 	{

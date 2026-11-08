@@ -92,12 +92,12 @@ int SPilIntPrimero ( SPilaEnteros * p_pilObj )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -117,12 +117,12 @@ int SPilIntDesapilar ( SPilaEnteros * p_pilObj )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -143,7 +143,7 @@ int SPilIntApilar ( SPilaEnteros * p_pilObj, int iDato )
 			}
 			else
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			if ( iRes != 1 )
 			{
@@ -152,12 +152,56 @@ int SPilIntApilar ( SPilaEnteros * p_pilObj, int iDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SPilIntApilarTodos ( SPilaEnteros * p_pilObj, SListaEnteros * p_lisValores )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_pilObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SPilApilarTodos ( p_pilObj->p_pilDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SPilIntApilarTodosDup ( SPilaEnteros * p_pilObj, SListaEnteros * p_lisValores )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_pilObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SPilApilarTodosDup ( p_pilObj->p_pilDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -172,7 +216,7 @@ int SPilIntEliminarPrimero ( SPilaEnteros * p_pilObj )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -187,7 +231,7 @@ int SPilIntVaciar ( SPilaEnteros * p_pilObj )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

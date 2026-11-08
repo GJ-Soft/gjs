@@ -9,7 +9,7 @@
 
 
 #include <SPila.h>
-
+#include <SListaEnteros.h>
 
 
 typedef struct
@@ -36,6 +36,8 @@ int SPilIntPrimero ( SPilaEnteros * p_pilObj );
 int SPilIntDesapilar ( SPilaEnteros * p_pilObj );
 
 int SPilIntApilar ( SPilaEnteros * p_pilObj, int iDato );
+int SPilIntApilarTodos ( SPilaEnteros * p_pilObj, SListaEnteros * p_lisValores );
+int SPilIntApilarTodosDup ( SPilaEnteros * p_pilObj, SListaEnteros * p_lisValores );
 int SPilIntEliminarPrimero ( SPilaEnteros * p_pilObj );
 int SPilIntVaciar ( SPilaEnteros * p_pilObj );
 

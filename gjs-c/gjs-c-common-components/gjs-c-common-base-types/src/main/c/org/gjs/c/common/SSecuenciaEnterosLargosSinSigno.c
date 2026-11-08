@@ -4,6 +4,12 @@
 #include "TiposBasicosConfig.h"
 
 
+extern int _SLisIntLssBuscarSiguiente ( SLista * p_lisDatos, unsigned long ulDato, int iPos );
+extern int _SLisIntLssRepeticiones ( SLista * p_lisDatos, unsigned long ulDato );
+
+static SSecuenciaEnterosLargosSinSigno * _SSecIntLssEnvolver ( SSecuencia * p_secDatos );
+
+
 
 SSecuenciaEnterosLargosSinSigno * SSecIntLssCrear ()
 {
@@ -15,6 +21,22 @@ SSecuenciaEnterosLargosSinSigno * SSecIntLssCrear ()
 		p_secObj->p_secDatos = SSecCrear ();
 	}
 	return ( p_secObj );
+}
+
+/* Secuencia con COPIAS de los valores de la lista, que no se toca. */
+SSecuenciaEnterosLargosSinSigno * SSecIntLssCrearDesdeLista ( SListaEnterosLargosSinSigno * p_lisValores )
+{
+	SSecuenciaEnterosLargosSinSigno * p_secRes;
+
+	if ( ES_VALIDO ( p_lisValores ) )
+	{
+		p_secRes = _SSecIntLssEnvolver ( SSecCrearDesdeLista ( p_lisValores->p_lisDatos ) );
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
 }
 
 void SSecIntLssDestruir ( SSecuenciaEnterosLargosSinSigno ** p_p_secObj )
@@ -191,6 +213,50 @@ int SSecIntLssExiste ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long
 	else
 	{
 		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Busquedas por la cadena, compartidas con SListaEnterosLargosSinSigno. Repeticiones:
+   cuantos iguales hay, 0 si ninguno. Buscar es BuscarPrimero: la posicion del
+   primero igual, o -1. BuscarSiguiente busca DETRAS de iPos: con -1, desde el
+   principio. */
+int SSecIntLssRepeticiones ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		iRes = _SLisIntLssRepeticiones ( SSecLista ( p_secObj->p_secDatos ), ulDato );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SSecIntLssBuscar ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato )
+{
+	return ( SSecIntLssBuscarPrimero ( p_secObj, ulDato ) );
+}
+
+int SSecIntLssBuscarPrimero ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato )
+{
+	return ( SSecIntLssBuscarSiguiente ( p_secObj, ulDato, -1 ) );
+}
+
+int SSecIntLssBuscarSiguiente ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long ulDato, int iPos )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		iRes = _SLisIntLssBuscarSiguiente ( SSecLista ( p_secObj->p_secDatos ), ulDato, iPos );
+	}
+	else
+	{
+		iRes = -1;
 	}
 	return ( iRes );
 }
@@ -414,3 +480,60 @@ int SSecIntLssDefinidaPositiva ( SSecuenciaEnterosLargosSinSigno * p_secObj )
 	}
 	return ( iRes );
 }
+
+/* La secuencia interna, y la lista de esa secuencia. */
+SSecuencia * SSecIntLssSecuencia ( SSecuenciaEnterosLargosSinSigno * p_secObj )
+{
+	SSecuencia * p_secRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		p_secRes = p_secObj->p_secDatos;
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
+SLista * SSecIntLssLista ( SSecuenciaEnterosLargosSinSigno * p_secObj )
+{
+	SLista * p_lisRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		p_lisRes = SSecLista ( p_secObj->p_secDatos );
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+/* Envuelve una secuencia ya creada; si no hay o no se puede envolver, NULL y
+   la secuencia se destruye. */
+static SSecuenciaEnterosLargosSinSigno * _SSecIntLssEnvolver ( SSecuencia * p_secDatos )
+{
+	SSecuenciaEnterosLargosSinSigno * p_secRes;
+
+	if ( ES_VALIDO ( p_secDatos ) )
+	{
+		p_secRes = (SSecuenciaEnterosLargosSinSigno *) MemReservar ( sizeof ( SSecuenciaEnterosLargosSinSigno ) );
+		if ( ES_VALIDO ( p_secRes ) )
+		{
+			p_secRes->p_secDatos = p_secDatos;
+		}
+		else
+		{
+			SSecDestruir ( &p_secDatos );
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+

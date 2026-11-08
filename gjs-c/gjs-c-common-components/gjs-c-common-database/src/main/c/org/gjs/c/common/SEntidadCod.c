@@ -8,15 +8,15 @@
 SEntidadCod * SEntCodCrearDef ( int iMaxTam )
 {
 	SEntidadCod *  p_entcObj;
-    SPtr *         p_ptrContenido;
+	SPtr *         p_ptrContenido;
     SCodigo *      p_codEntidad;
 
     p_codEntidad = SCodCrear ( iMaxTam );
-    p_ptrContenido = SPtrCrearDef ( NULL );
-    p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_ptrContenido );
+	p_ptrContenido = SPtrCrearDef ( NULL );
+	p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entcObj ) )
     {
-        SPtrDestruir ( &p_ptrContenido );
+		SPtrDestruir ( &p_ptrContenido );
         SCodDestruir ( &p_codEntidad );
     }
     return ( p_entcObj );
@@ -56,7 +56,7 @@ SEntidadCod * SEntCodCrearExt ( SCadena * p_cadValor, int iMaxTam, SPtr * p_ptrC
     SCodigo *      p_codEntidad;
 
     p_codEntidad = SCodCrearValorExt ( p_cadValor, iMaxTam );
-    p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_ptrContenido );
+	p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entcObj ) )
     {
         SCodDestruir ( &p_codEntidad );
@@ -70,7 +70,7 @@ SEntidadCod * SEntCodCrearLitExt ( const char * p_cValor, int iMaxTam, SPtr * p_
     SCodigo *      p_codEntidad;
 
     p_codEntidad = SCodCrearValorLitExt ( p_cValor, iMaxTam );
-    p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_ptrContenido );
+	p_entcObj = SEntCodEncapsularExt ( p_codEntidad, p_ptrContenido );
     if ( ES_NULO ( p_entcObj ) )
     {
         SCodDestruir ( &p_codEntidad );
@@ -96,18 +96,18 @@ SEntidadCod * SEntCodEncapsularExt ( SCodigo * p_codEntidad, SPtr * p_ptrConteni
 {
 	SEntidadCod *	p_entcObj;
 	
-    p_entcObj = NULL;
+	p_entcObj = NULL;
     if ( ES_VALIDO ( p_codEntidad ) )
     {
-        /* El contenido siempre es un SPtr, aunque este vacio: SPtrCrearDef ( NULL ). */
-        if ( ES_VALIDO ( p_ptrContenido ) )
+		/* El contenido siempre es un SPtr, aunque este vacio: SPtrCrearDef ( NULL ). */
+		if ( ES_VALIDO ( p_ptrContenido ) )
         {
-            p_entcObj= (SEntidadCod *) MemReservar ( sizeof ( SEntidadCod ) );
-            if ( ES_VALIDO ( p_entcObj ) )
-            {
-                p_entcObj->p_codEntidad = p_codEntidad;
-                p_entcObj->p_ptrContenido = p_ptrContenido;
-            }
+			p_entcObj= (SEntidadCod *) MemReservar ( sizeof ( SEntidadCod ) );
+			if ( ES_VALIDO ( p_entcObj ) )
+			{
+				p_entcObj->p_codEntidad = p_codEntidad;
+				p_entcObj->p_ptrContenido = p_ptrContenido;
+			}
         }
     }
 	return ( p_entcObj );

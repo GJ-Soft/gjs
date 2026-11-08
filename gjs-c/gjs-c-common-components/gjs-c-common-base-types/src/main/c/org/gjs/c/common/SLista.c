@@ -3,8 +3,7 @@
 
 #include "TiposBasicosConfig.h"
 
-
-
+static SElemento * _SLisLocalizarPosicion ( SLista * p_lisObj, int iPos );
 
 SLista * SLisCrear ()
 {
@@ -216,7 +215,7 @@ int SLisInsertarElem ( SLista * p_lisObj, int iPosAnt, SElemento * p_elmObj )
 			SLisMoverA ( p_lisObj, iPosAnt );
 			if ( ES_NULO ( p_lisObj->p_elmActual ) ) 
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			else 
 			{
@@ -226,7 +225,7 @@ int SLisInsertarElem ( SLista * p_lisObj, int iPosAnt, SElemento * p_elmObj )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -246,7 +245,7 @@ int SLisInsertarAlFinal ( SLista * p_lisObj, SElemento * p_elmObj )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -335,6 +334,29 @@ SElemento * SLisActual ( SLista * p_lisObj )
 		p_elmRes = NULL;
 	}
 	return ( p_elmRes );
+}
+
+/* 1 si el cursor esta sobre un elemento; 0 si no, o si la lista no es valida. */
+int SLisEstaPosicionada ( SLista * p_lisObj )
+{
+	int iRes;
+
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( ES_VALIDO ( p_lisObj->p_elmActual ) )
+		{
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
 void SLisInicio ( SLista * p_lisObj )
@@ -475,16 +497,187 @@ void SLisDeposicionar ( SLista * p_lisObj )
 	}
 }
 
+/* Existe: 1 si hay algun elemento igual y 0 si no, tambien con una lista o un
+   dato no validos. Las Elem comparan con el contenido de p_elmObj, que no
+   hace falta que este en la lista; las Ext, con memoria cruda. */
+int SLisExisteElem ( SLista * p_lisObj, SElemento * p_elmObj )
+{
+	int	iRes;
+
+	if ( SLisBuscarPrimeroElem ( p_lisObj, p_elmObj ) >= 0 )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisExiste ( SLista * p_lisObj, SBloque * p_blqDatos )
+{
+	int	iRes;
+
+	if ( SLisBuscarPrimero ( p_lisObj, p_blqDatos ) >= 0 )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisExisteExt ( SLista * p_lisObj, byte * p_byDatos )
+{
+	int	iRes;
+
+	if ( SLisBuscarPrimeroExt ( p_lisObj, p_byDatos ) >= 0 )
+	{
+		iRes = 1;
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Repeticiones: cuantos elementos iguales hay; 0 si ninguno, tambien con una
+   lista o un dato no validos. Recorren la cadena una sola vez. */
+int SLisRepeticionesElem ( SLista * p_lisObj, SElemento * p_elmObj )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_elmObj ) )
+	{
+		iRes = SLisRepeticiones ( p_lisObj, SElmDatos ( p_elmObj ) );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisRepeticiones ( SLista * p_lisObj, SBloque * p_blqDatos )
+{
+	SElemento *	p_elmObj;
+	int			iRes;
+
+	iRes = 0;
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( ES_VALIDO ( p_blqDatos ) )
+		{
+			p_elmObj = p_lisObj->p_elmPrimero;
+			while ( ES_VALIDO ( p_elmObj ) )
+			{
+				if ( SElmEsIgualBlq ( p_elmObj, p_blqDatos ) == 1 )
+				{
+					iRes = iRes + 1;
+				}
+				p_elmObj = SElmSucesor ( p_elmObj );
+			}
+		}
+	}
+	return ( iRes );
+}
+
+int SLisRepeticionesExt ( SLista * p_lisObj, byte * p_byDatos )
+{
+	SElemento *	p_elmObj;
+	int			iRes;
+
+	iRes = 0;
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( ES_VALIDO ( p_byDatos ) )
+		{
+			p_elmObj = p_lisObj->p_elmPrimero;
+			while ( ES_VALIDO ( p_elmObj ) )
+			{
+				if ( SElmEsIgualExt ( p_elmObj, p_byDatos ) == 1 )
+				{
+					iRes = iRes + 1;
+				}
+				p_elmObj = SElmSucesor ( p_elmObj );
+			}
+		}
+	}
+	return ( iRes );
+}
+
+/* Buscar es BuscarPrimero: posicion del primer elemento igual, o -1. */
+int SLisBuscarElem ( SLista * p_lisObj, SElemento * p_elmObj )
+{
+	return ( SLisBuscarPrimeroElem ( p_lisObj, p_elmObj ) );
+}
+
 int SLisBuscar ( SLista * p_lisObj, SBloque * p_blqDatos )
+{
+	return ( SLisBuscarPrimero ( p_lisObj, p_blqDatos ) );
+}
+
+int SLisBuscarExt ( SLista * p_lisObj, byte * p_byDatos )
+{
+	return ( SLisBuscarPrimeroExt ( p_lisObj, p_byDatos ) );
+}
+
+int SLisBuscarPrimeroElem ( SLista * p_lisObj, SElemento * p_elmObj )
+{
+	return ( SLisBuscarSiguienteElem ( p_lisObj, p_elmObj, -1 ) );
+}
+
+int SLisBuscarPrimero ( SLista * p_lisObj, SBloque * p_blqDatos )
+{
+	return ( SLisBuscarSiguiente ( p_lisObj, p_blqDatos, -1 ) );
+}
+
+int SLisBuscarPrimeroExt ( SLista * p_lisObj, byte * p_byDatos )
+{
+	return ( SLisBuscarSiguienteExt ( p_lisObj, p_byDatos, -1 ) );
+}
+
+/* Posicion del siguiente elemento igual DETRAS de iPos, o -1 si no hay mas.
+   Con iPos = -1 se busca desde el principio, y un iPos menor da -1. No mueve
+   el cursor. Para recorrer los repetidos:
+
+	   iPos = SLisBuscarPrimero ( p_lisObj, p_blqDatos );
+	   while ( iPos >= 0 )
+	   {
+		   ...
+		   iPos = SLisBuscarSiguiente ( p_lisObj, p_blqDatos, iPos );
+	   }
+
+   Sin elemento, la Elem devuelve -1. */
+int SLisBuscarSiguienteElem ( SLista * p_lisObj, SElemento * p_elmObj, int iPos )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_elmObj ) )
+	{
+		iRes = SLisBuscarSiguiente ( p_lisObj, SElmDatos ( p_elmObj ), iPos );
+	}
+	else
+	{
+		iRes = -1;
+	}
+	return ( iRes );
+}
+
+int SLisBuscarSiguiente ( SLista * p_lisObj, SBloque * p_blqDatos, int iPos )
 {
 	int			iRes;
 	int			iEnc;
 	SElemento * p_elmObj;
 
-	if ( ( SLisEsValida ( p_lisObj ) == 1 ) && ES_VALIDO ( p_blqDatos ) )
+	if ( ( SLisEsValida ( p_lisObj ) == 1 ) && ES_VALIDO ( p_blqDatos ) && ( iPos >= -1 ) )
 	{
-		p_elmObj = p_lisObj->p_elmPrimero;
-		iRes = 0;
+		iRes = iPos + 1;
+		p_elmObj = _SLisLocalizarPosicion ( p_lisObj, iRes );
 		iEnc = 0;
 		while ( ( iRes < p_lisObj->iNumElementos ) && ( iEnc == 0 ) &&
 			ES_VALIDO ( p_elmObj ) )
@@ -508,16 +701,16 @@ int SLisBuscar ( SLista * p_lisObj, SBloque * p_blqDatos )
 	return ( iRes );
 }
 
-int SLisBuscarExt ( SLista * p_lisObj, byte * p_byDatos )
+int SLisBuscarSiguienteExt ( SLista * p_lisObj, byte * p_byDatos, int iPos )
 {
 	int			iRes;
 	int			iEnc;
 	SElemento * p_elmObj;
 
-	if ( ( SLisEsValida ( p_lisObj ) == 1 ) && ES_VALIDO ( p_byDatos ) )
+	if ( ( SLisEsValida ( p_lisObj ) == 1 ) && ES_VALIDO ( p_byDatos ) && ( iPos >= -1 ) )
 	{
-		p_elmObj = p_lisObj->p_elmPrimero;
-		iRes = 0;
+		iRes = iPos + 1;
+		p_elmObj = _SLisLocalizarPosicion ( p_lisObj, iRes );
 		iEnc = 0;
 		while ( ( iRes < p_lisObj->iNumElementos ) && ( iEnc == 0 ) &&
 			ES_VALIDO ( p_elmObj ) )
@@ -854,3 +1047,598 @@ SElemento * SLisExtraer ( SLista * p_lisObj )
 	return ( p_elmRes );
 }
 
+/* Lista nueva con COPIAS de los elementos ( SElmDuplicar ), en el mismo orden;
+   p_lisObj no se toca, ni su cursor. Si falla alguna copia se destruye lo
+   copiado y se devuelve NULL: nunca una copia a medias. */
+SLista * SLisDuplicar ( SLista * p_lisObj )
+{
+	SLista *	p_lisRes;
+	SElemento * p_elmObj;
+	SElemento * p_elmNuevo;
+	int			iError;
+
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		p_lisRes = SLisCrear ();
+		if ( ES_VALIDO ( p_lisRes ) )
+		{
+			iError = 0;
+			p_elmObj = p_lisObj->p_elmPrimero;
+			while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) )
+			{
+				p_elmNuevo = SElmDuplicar ( p_elmObj );
+				if ( SLisInsertarAlFinal ( p_lisRes, p_elmNuevo ) != 1 )
+				{
+					SElmDestruir ( &p_elmNuevo );
+					iError = 1;
+				}
+				p_elmObj = SElmSucesor ( p_elmObj );
+			}
+			if ( iError == 1 )
+			{
+				SLisDestruir ( &p_lisRes );
+			}
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+/* Operaciones con otras listas.
+
+   Todas recorren la CADENA de p_lisValores, no su cursor ni su indice: asi no se
+   le cambia la posicion a quien la este iterando y el recorrido es lineal. Ver
+   la nota de SLisElemento.
+
+   Con la lista de valores vacia, ExistenTodos da 1 ( no falta ninguno ) y
+   ExisteAlguno da 0. */
+int SLisExistenTodos ( SLista * p_lisObj, SLista * p_lisValores )
+{
+	SElemento * p_elmObj;
+	int			iRes;
+
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores ) == 1 )
+		{
+			iRes = 1;
+			p_elmObj = p_lisValores->p_elmPrimero;
+			while ( ES_VALIDO ( p_elmObj ) && ( iRes == 1 ) )
+			{
+				/* SLisBuscar da la posicion o -1, no un booleano. */
+				if ( SLisBuscar ( p_lisObj, SElmDatos ( p_elmObj ) ) < 0 )
+				{
+					iRes = 0;
+				}
+				p_elmObj = SElmSucesor ( p_elmObj );
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisExisteAlguno ( SLista * p_lisObj, SLista * p_lisValores )
+{
+	SElemento * p_elmObj;
+	int			iRes;
+
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores ) == 1 )
+		{
+			iRes = 0;
+			p_elmObj = p_lisValores->p_elmPrimero;
+			while ( ES_VALIDO ( p_elmObj ) && ( iRes == 0 ) )
+			{
+				if ( SLisBuscar ( p_lisObj, SElmDatos ( p_elmObj ) ) >= 0 )
+				{
+					iRes = 1;
+				}
+				p_elmObj = SElmSucesor ( p_elmObj );
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* MUEVE los elementos de p_lisValores a p_lisObj, detras del cursor y en su
+   orden; p_lisValores queda vacia.
+
+   Si un elemento no se puede insertar ( p_lisObj no vacia y sin cursor ) se
+   devuelve a la cabeza de p_lisValores y se para: lo movido hasta ahi se queda
+   movido y lo que falta sigue en p_lisValores, sin perder nada.
+
+   Con la misma lista en los dos argumentos se devuelve 0 sin tocar nada: la
+   lista se iria vaciando y llenando a la vez. */
+int SLisInsertarLista ( SLista * p_lisObj, SLista * p_lisValores )
+{
+	SElemento * p_elmObj;
+	int			iRes;
+
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores ) == 1 )
+		{
+			if ( p_lisObj != p_lisValores )
+			{
+				iRes = 1;
+				while ( ( iRes == 1 ) && ( p_lisValores->iNumElementos > 0 ) )
+				{
+					SLisInicio ( p_lisValores );
+					p_elmObj = SLisExtraer ( p_lisValores );
+					if ( ES_VALIDO ( p_elmObj ) )
+					{
+						if ( SLisInsertar ( p_lisObj, p_elmObj ) != 1 )
+						{
+							SLisInsertarAlInicio ( p_lisValores, p_elmObj );
+							iRes = 0;
+						}
+					}
+					else
+					{
+						iRes = 0;
+					}
+				}
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Como SLisInsertarLista, pero al final de p_lisObj: no depende del cursor. */
+int SLisConcatenarLista ( SLista * p_lisObj, SLista * p_lisValores )
+{
+	SElemento * p_elmObj;
+	int			iRes;
+
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores ) == 1 )
+		{
+			if ( p_lisObj != p_lisValores )
+			{
+				iRes = 1;
+				while ( ( iRes == 1 ) && ( p_lisValores->iNumElementos > 0 ) )
+				{
+					SLisInicio ( p_lisValores );
+					p_elmObj = SLisExtraer ( p_lisValores );
+					if ( ES_VALIDO ( p_elmObj ) )
+					{
+						if ( SLisInsertarAlFinal ( p_lisObj, p_elmObj ) != 1 )
+						{
+							SLisInsertarAlInicio ( p_lisValores, p_elmObj );
+							iRes = 0;
+						}
+					}
+					else
+					{
+						iRes = 0;
+					}
+				}
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Las Dup insertan COPIAS ( SElmDuplicar ) y no tocan p_lisValores. Con la
+   misma lista en los dos argumentos se devuelve 0: se insertaria en la cadena
+   que se esta recorriendo. Si falla una copia o una insercion se para, y lo
+   insertado hasta ahi se queda. */
+int SLisInsertarListaDup ( SLista * p_lisObj, SLista * p_lisValores )
+{
+	SElemento * p_elmObj;
+	SElemento * p_elmNuevo;
+	int			iRes;
+
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores ) == 1 )
+		{
+			if ( p_lisObj != p_lisValores )
+			{
+				iRes = 1;
+				p_elmObj = p_lisValores->p_elmPrimero;
+				while ( ES_VALIDO ( p_elmObj ) && ( iRes == 1 ) )
+				{
+					p_elmNuevo = SElmDuplicar ( p_elmObj );
+					if ( SLisInsertar ( p_lisObj, p_elmNuevo ) != 1 )
+					{
+						SElmDestruir ( &p_elmNuevo );
+						iRes = 0;
+					}
+					p_elmObj = SElmSucesor ( p_elmObj );
+				}
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisConcatenarListaDup ( SLista * p_lisObj, SLista * p_lisValores )
+{
+	SElemento * p_elmObj;
+	SElemento * p_elmNuevo;
+	int			iRes;
+
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores ) == 1 )
+		{
+			if ( p_lisObj != p_lisValores )
+			{
+				iRes = 1;
+				p_elmObj = p_lisValores->p_elmPrimero;
+				while ( ES_VALIDO ( p_elmObj ) && ( iRes == 1 ) )
+				{
+					p_elmNuevo = SElmDuplicar ( p_elmObj );
+					if ( SLisInsertarAlFinal ( p_lisObj, p_elmNuevo ) != 1 )
+					{
+						SElmDestruir ( &p_elmNuevo );
+						iRes = 0;
+					}
+					p_elmObj = SElmSucesor ( p_elmObj );
+				}
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Elimina ( destruye ) de p_lisObj la primera aparicion de cada valor de
+   p_lisValores: un valor repetido en p_lisValores elimina dos apariciones. Lo
+   que no se encuentra se ignora. p_lisValores no se toca.
+
+   Devuelve 1 si ha podido eliminar todo lo encontrado; si falla una eliminacion
+   se para y devuelve 0, y lo eliminado hasta ahi se queda eliminado. Con la
+   misma lista en los dos argumentos se devuelve 0 sin tocar nada: se
+   destruirian los elementos que se estan recorriendo. */
+int SLisEliminarLista ( SLista * p_lisObj, SLista * p_lisValores )
+{
+	SElemento * p_elmObj;
+	int			iPos;
+	int			iRes;
+
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores ) == 1 )
+		{
+			if ( p_lisObj != p_lisValores )
+			{
+				iRes = 1;
+				p_elmObj = p_lisValores->p_elmPrimero;
+				while ( ES_VALIDO ( p_elmObj ) && ( iRes == 1 ) )
+				{
+					iPos = SLisBuscar ( p_lisObj, SElmDatos ( p_elmObj ) );
+					if ( iPos >= 0 )
+					{
+						if ( SLisEliminarElem ( p_lisObj, iPos ) != 1 )
+						{
+							iRes = 0;
+						}
+					}
+					p_elmObj = SElmSucesor ( p_elmObj );
+				}
+			}
+			else
+			{
+				iRes = 0;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Saca de p_lisObj, a una lista nueva, la primera aparicion de cada valor de
+   p_lisValores, en el orden de p_lisValores: un valor repetido en p_lisValores
+   saca dos apariciones. Lo que no se encuentra se ignora. Los elementos se
+   mueven, no se copian.
+
+   Con la misma lista en los dos argumentos se devuelve NULL. */
+SLista * SLisExtraerLista ( SLista * p_lisObj, SLista * p_lisValores )
+{
+	SLista *	p_lisRes;
+	SElemento * p_elmObj;
+	SElemento * p_elmExt;
+	int			iPos;
+	int			iError;
+
+	if ( SLisEsValida ( p_lisObj ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores ) == 1 )
+		{
+			if ( p_lisObj != p_lisValores )
+			{
+				p_lisRes = SLisCrear ();
+				if ( ES_VALIDO ( p_lisRes ) )
+				{
+					iError = 0;
+					p_elmObj = p_lisValores->p_elmPrimero;
+					while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) )
+					{
+						iPos = SLisBuscar ( p_lisObj, SElmDatos ( p_elmObj ) );
+						if ( iPos >= 0 )
+						{
+							p_elmExt = SLisExtraerElem ( p_lisObj, iPos );
+							if ( SLisInsertarAlFinal ( p_lisRes, p_elmExt ) != 1 )
+							{
+								/* No se pierde: vuelve a p_lisObj, aunque al final. */
+								SLisInsertarAlFinal ( p_lisObj, p_elmExt );
+								iError = 1;
+							}
+						}
+						p_elmObj = SElmSucesor ( p_elmObj );
+					}
+				}
+			}
+			else
+			{
+				p_lisRes = NULL;
+			}
+		}
+		else
+		{
+			p_lisRes = NULL;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+/* Las que generan una lista nueva la devuelven con COPIAS; si algo falla, NULL.
+   La union es la concatenacion de las dos: lo que este en ambas sale dos veces. */
+SLista * SLisUnion ( SLista * p_lisValores1, SLista * p_lisValores2 )
+{
+	SLista *	p_lisRes;
+
+	if ( SLisEsValida ( p_lisValores1 ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores2 ) == 1 )
+		{
+			p_lisRes = SLisCrear ();
+			if ( ES_VALIDO ( p_lisRes ) )
+			{
+				if ( SLisConcatenarListaDup ( p_lisRes, p_lisValores1 ) == 1 )
+				{
+					if ( SLisConcatenarListaDup ( p_lisRes, p_lisValores2 ) != 1 )
+					{
+						SLisDestruir ( &p_lisRes );
+					}
+				}
+				else
+				{
+					SLisDestruir ( &p_lisRes );
+				}
+			}
+		}
+		else
+		{
+			p_lisRes = NULL;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+/* Los de p_lisValores1 que estan en p_lisValores2, en el orden de p_lisValores1. */
+SLista * SLisInterseccion ( SLista * p_lisValores1, SLista * p_lisValores2 )
+{
+	SLista *	p_lisRes;
+	SElemento * p_elmObj;
+	SElemento * p_elmNuevo;
+	int			iError;
+
+	if ( SLisEsValida ( p_lisValores1 ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores2 ) == 1 )
+		{
+			p_lisRes = SLisCrear ();
+			if ( ES_VALIDO ( p_lisRes ) )
+			{
+				iError = 0;
+				p_elmObj = p_lisValores1->p_elmPrimero;
+				while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) )
+				{
+					if ( SLisBuscar ( p_lisValores2, SElmDatos ( p_elmObj ) ) >= 0 )
+					{
+						p_elmNuevo = SElmDuplicar ( p_elmObj );
+						if ( SLisInsertarAlFinal ( p_lisRes, p_elmNuevo ) != 1 )
+						{
+							SElmDestruir ( &p_elmNuevo );
+							iError = 1;
+						}
+					}
+					p_elmObj = SElmSucesor ( p_elmObj );
+				}
+				if ( iError == 1 )
+				{
+					SLisDestruir ( &p_lisRes );
+				}
+			}
+		}
+		else
+		{
+			p_lisRes = NULL;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+/* Los de p_lisValores1 que NO estan en p_lisValores2, en el orden de p_lisValores1. */
+SLista * SLisDiferencia ( SLista * p_lisValores1, SLista * p_lisValores2 )
+{
+	SLista *	p_lisRes;
+	SElemento * p_elmObj;
+	SElemento * p_elmNuevo;
+	int			iError;
+
+	if ( SLisEsValida ( p_lisValores1 ) == 1 )
+	{
+		if ( SLisEsValida ( p_lisValores2 ) == 1 )
+		{
+			p_lisRes = SLisCrear ();
+			if ( ES_VALIDO ( p_lisRes ) )
+			{
+				iError = 0;
+				p_elmObj = p_lisValores1->p_elmPrimero;
+				while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) )
+				{
+					if ( SLisBuscar ( p_lisValores2, SElmDatos ( p_elmObj ) ) < 0 )
+					{
+						p_elmNuevo = SElmDuplicar ( p_elmObj );
+						if ( SLisInsertarAlFinal ( p_lisRes, p_elmNuevo ) != 1 )
+						{
+							SElmDestruir ( &p_elmNuevo );
+							iError = 1;
+						}
+					}
+					p_elmObj = SElmSucesor ( p_elmObj );
+				}
+				if ( iError == 1 )
+				{
+					SLisDestruir ( &p_lisRes );
+				}
+			}
+		}
+		else
+		{
+			p_lisRes = NULL;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+/* Elemento de la posicion iPos, o NULL fuera de rango. Parte del cursor si
+   esta posicionado y, si no, del extremo mas cercano. No mueve el cursor. */
+static SElemento * _SLisLocalizarPosicion ( SLista * p_lisObj, int iPos )
+{
+	SElemento * p_elmRes;
+
+	if ( ( iPos >= 0 ) && ( iPos < p_lisObj->iNumElementos ) )
+	{
+		if ( ES_VALIDO ( p_lisObj->p_elmActual ) &&
+			 ( p_lisObj->iPos >= 0 ) &&
+			 ( p_lisObj->iPos < p_lisObj->iNumElementos ) )
+		{
+			if ( iPos > p_lisObj->iPos )
+			{
+				p_elmRes = SElmSucesorExt ( p_lisObj->p_elmActual, iPos - p_lisObj->iPos );
+			}
+			else if ( iPos < p_lisObj->iPos )
+			{
+				p_elmRes = SElmAntecesorExt ( p_lisObj->p_elmActual, p_lisObj->iPos - iPos );
+			}
+			else
+			{
+				p_elmRes = p_lisObj->p_elmActual;
+			}
+		}
+		else
+		{
+			if ( iPos < p_lisObj->iNumElementos / 2 )
+			{
+				p_elmRes = SElmSucesorExt ( p_lisObj->p_elmPrimero, iPos );
+			}
+			else
+			{
+				/* El ultimo es iNumElementos - 1: hasta iPos hay
+				   iNumElementos - 1 - iPos eslabones, no iNumElementos - iPos. */
+				p_elmRes = SElmAntecesorExt ( p_lisObj->p_elmUltimo, p_lisObj->iNumElementos - 1 - iPos );
+			}
+		}
+	}
+	else
+	{
+		p_elmRes = NULL;
+	}
+	return ( p_elmRes );
+}

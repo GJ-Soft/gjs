@@ -195,6 +195,181 @@ static int TestSColpInvalidos01 ()
 }
 
 
+/* SListaPtr duena de sus datos, en el orden dado. */
+static SListaPtr * CrearListaEnteros ( int * p_iValores, int iNum )
+{
+	SListaPtr * p_lisObj = SLispCrear ();
+	int iPos = 0;
+	while ( ES_VALIDO ( p_lisObj ) && ( iPos < iNum ) )
+	{
+		SLispInsertarAlFinal ( p_lisObj, CrearDatoEntero ( p_iValores [ iPos ] ) );
+		iPos = iPos + 1;
+	}
+	return ( p_lisObj );
+}
+
+static byte * DuplicarEnteroMas100 ( byte * p_byDato )
+{
+	return ( CrearDatoEntero ( *( (int *) p_byDato ) + 100 ) );
+}
+
+static byte * DuplicarFallaEn20 ( byte * p_byDato )
+{
+	byte * p_byRes;
+
+	if ( *( (int *) p_byDato ) == 20 )
+	{
+		p_byRes = NULL;
+	}
+	else
+	{
+		p_byRes = CrearDatoEntero ( *( (int *) p_byDato ) );
+	}
+	return ( p_byRes );
+}
+
+static int ValorPrimero ( SColaPtr * p_colObj )
+{
+	byte * p_byDato = SColpPrimero ( p_colObj );
+	int iRes = -1;
+	if ( ES_VALIDO ( p_byDato ) )
+	{
+		iRes = *( (int *) p_byDato );
+	}
+	return ( iRes );
+}
+
+/* Mueve los nodos al final de la cola: salen en el orden de la lista. */
+static int TestSColpEncolarTodos01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SColpEncolarTodos 01:\n" );
+
+	int iVal [ 3 ] = { 10, 20, 30 };
+	SColaPtr * p_colObj = SColpCrear ();
+	SListaPtr * p_lisVal = CrearListaEnteros ( iVal, 3 );
+	SListaPtr * p_lisVacia = SLispCrear ();
+	if ( ES_VALIDO ( p_colObj ) && ES_VALIDO ( p_lisVal ) && ES_VALIDO ( p_lisVacia ) )
+	{
+		byte * p_by10 = SLispElemento ( p_lisVal, 0 );
+		if ( SColpEncolarTodos ( p_colObj, p_lisVal ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba 1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SColpNumElementos ( p_colObj ) != 3 ) || ( SLispNumElementos ( p_lisVal ) != 0 ) ||
+			 ( SColpPrimero ( p_colObj ) != p_by10 ) )
+		{
+			printf( "Error caso 2: se esperaban 3 encolados, el mismo 10 al frente y la lista vacia\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		int iEsp [ 3 ] = { 10, 20, 30 };
+		int iPos = 0;
+		while ( iPos < 3 )
+		{
+			byte * p_byDato = SColpDesencolar ( p_colObj );
+			if ( ES_NULO ( p_byDato ) || ( *( (int *) p_byDato ) != iEsp [ iPos ] ) )
+			{
+				printf( "Error caso 3: en la posicion %d se esperaba desencolar %d\n", iPos, iEsp [ iPos ] );
+				iRes = BOOL_VAL_FALSO;
+			}
+			MemLiberar ( (void **) &p_byDato );
+			iPos = iPos + 1;
+		}
+		if ( ( SColpEncolarTodos ( p_colObj, p_lisVacia ) != 1 ) || ( SColpEstaVacia ( p_colObj ) != 1 ) )
+		{
+			printf( "Error caso 4: con una lista vacia se esperaba 1 sin cambios\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SColpEncolarTodos ( p_colObj, NULL ) != 0 ) || ( SColpEncolarTodos ( NULL, p_lisVacia ) != 0 ) )
+		{
+			printf( "Error caso 5: con una cola o lista nula se esperaba 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear la cola y las listas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SColpDestruir ( &p_colObj, 1 );
+	SLispDestruir ( &p_lisVal );
+	SLispDestruir ( &p_lisVacia );
+	return ( iRes );
+}
+
+/* Encola copias ( iNumBytes o fDuplicar ): la lista y su cursor no cambian. */
+static int TestSColpEncolarTodosDup01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SColpEncolarTodosDup 01:\n" );
+
+	int iVal [ 3 ] = { 10, 20, 30 };
+	SColaPtr * p_colObj = SColpCrear ();
+	SColaPtr * p_colExt = SColpCrear ();
+	SColaPtr * p_colFalla = SColpCrear ();
+	SListaPtr * p_lisVal = CrearListaEnteros ( iVal, 3 );
+	if ( ES_VALIDO ( p_colObj ) && ES_VALIDO ( p_colExt ) && ES_VALIDO ( p_colFalla ) && ES_VALIDO ( p_lisVal ) )
+	{
+		SLispMoverA ( p_lisVal, 1 );
+		if ( SColpEncolarTodosDup ( p_colObj, p_lisVal, sizeof ( int ) ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba 1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SColpNumElementos ( p_colObj ) != 3 ) || ( ValorPrimero ( p_colObj ) != 10 ) ||
+			 ( SColpPrimero ( p_colObj ) == SLispElemento ( p_lisVal, 0 ) ) )
+		{
+			printf( "Error caso 2: se esperaba una copia del 10 al frente\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SLispNumElementos ( p_lisVal ) != 3 ) || ( SLispPosicion ( p_lisVal ) != 1 ) )
+		{
+			printf( "Error caso 3: la lista y su cursor no deberian cambiar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SColpEncolarTodosDupExt ( p_colExt, p_lisVal, DuplicarEnteroMas100 ) != 1 ) ||
+			 ( SColpNumElementos ( p_colExt ) != 3 ) || ( ValorPrimero ( p_colExt ) != 110 ) )
+		{
+			printf( "Error caso 4: la Ext deberia encolar con 100 mas: primero 110\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		ErrLimpiar ();
+		if ( ( SColpEncolarTodosDupExt ( p_colFalla, p_lisVal, DuplicarFallaEn20 ) != 0 ) ||
+			 ( ErrCodigo () != ERR_COPIA_OBJETO ) || ( SColpNumElementos ( p_colFalla ) != 1 ) )
+		{
+			printf( "Error caso 5: al fallar en el 20 se esperaba 0, ERR_COPIA_OBJETO y solo el 10\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		ErrLimpiar ();
+		if ( ( SColpEncolarTodosDup ( p_colFalla, p_lisVal, 0 ) != 0 ) || ( ErrCodigo () != ERR_COPIA_OBJETO ) ||
+			 ( SColpEncolarTodosDupExt ( p_colFalla, p_lisVal, NULL ) != 0 ) || ( SColpNumElementos ( p_colFalla ) != 1 ) )
+		{
+			printf( "Error caso 6: sin bytes o sin fDuplicar se esperaba 0 sin encolar nada\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		ErrLimpiar ();
+		if ( ( SColpEncolarTodosDup ( p_colObj, NULL, sizeof ( int ) ) != 0 ) ||
+			 ( SColpEncolarTodosDup ( NULL, p_lisVal, sizeof ( int ) ) != 0 ) ||
+			 ( SColpEncolarTodosDupExt ( NULL, p_lisVal, DuplicarEnteroMas100 ) != 0 ) )
+		{
+			printf( "Error caso 7: con una cola o lista nula se esperaba 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear las colas y la lista\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* Las copias son de las colas. */
+	SColpDestruir ( &p_colObj, 1 );
+	SColpDestruir ( &p_colExt, 1 );
+	SColpDestruir ( &p_colFalla, 1 );
+	SLispDestruir ( &p_lisVal );
+	return ( iRes );
+}
+
 
 int TestSColaPtr ()
 {
@@ -203,7 +378,9 @@ int TestSColaPtr ()
 	if ( ( TestSColpCrear01 () == BOOL_VAL_CIERTO ) &&
 			( TestSColpEncolar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSColpDesencolar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSColpInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSColpInvalidos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSColpEncolarTodos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSColpEncolarTodosDup01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

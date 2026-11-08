@@ -104,11 +104,80 @@ static int TestSPilLitInvalidos01 ()
 		printf( "Error caso 3: la cima de una pila nula deberia ser nula\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
+	/* Fallan con 0, no con -1, como el resto de la libreria. */
+	if ( ( SPilLitApilar ( NULL, "a" ) != 0 ) || ( SPilLitEliminarPrimero ( NULL ) != 0 ) ||
+		 ( SPilLitVaciar ( NULL ) != 0 ) )
+	{
+		printf( "Error caso 4: con una pila nula se esperaba 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SPilaLiterales * p_pilObj = SPilLitCrear ();
+	if ( ES_VALIDO ( p_pilObj ) )
+	{
+		if ( ( SPilLitApilar ( p_pilObj, NULL ) != 0 ) || ( SPilLitEstaVacia ( p_pilObj ) != 1 ) )
+		{
+			printf( "Error caso 5: apilar una cadena nula deberia dar 0 sin apilar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la pila\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SPilLitDestruir ( &p_pilObj );
 	SPilaLiterales * p_pilNula = NULL;
 	SPilLitDestruir ( &p_pilNula );
 	return ( iRes );
 }
 
+
+/* ApilarTodos mueve y ApilarTodosDup copia: el ultimo de la lista queda en la cima. */
+static int TestSPilLitApilarTodos01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SPilLitApilarTodos 01:\n" );
+
+	SPilaLiterales * p_pilObj = SPilLitCrear ();
+	SListaLiterales * p_lisVal = SLisLitCrear ();
+	SListaLiterales * p_lisDup = SLisLitCrear ();
+	if ( ES_VALIDO ( p_pilObj ) && ES_VALIDO ( p_lisVal ) && ES_VALIDO ( p_lisDup ) )
+	{
+		SLisLitInsertarDupAlFinal ( p_lisVal, "a" );
+		SLisLitInsertarDupAlFinal ( p_lisVal, "b" );
+		SLisLitInsertarDupAlFinal ( p_lisDup, "x" );
+		SLisLitInsertarDupAlFinal ( p_lisDup, "y" );
+		char * p_cB = SLisLitElemento ( p_lisVal, 1 );
+		if ( ( SPilLitApilarTodos ( p_pilObj, p_lisVal ) != 1 ) || ( SPilLitNumElementos ( p_pilObj ) != 2 ) ||
+			 ( SPilLitPrimero ( p_pilObj ) != p_cB ) || ( SLisLitNumElementos ( p_lisVal ) != 0 ) )
+		{
+			printf( "Error caso 1: se esperaban 2 apilados, la misma \"b\" en la cima y la lista vacia\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SPilLitApilarTodosDup ( p_pilObj, p_lisDup ) != 1 ) || ( SPilLitNumElementos ( p_pilObj ) != 4 ) ||
+			 ( ! PrimeroEs ( p_pilObj, "y" ) ) || ( SPilLitPrimero ( p_pilObj ) == SLisLitElemento ( p_lisDup, 1 ) ) ||
+			 ( SLisLitNumElementos ( p_lisDup ) != 2 ) )
+		{
+			printf( "Error caso 2: se esperaba una copia de \"y\" en la cima y la lista intacta\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SPilLitApilarTodos ( p_pilObj, NULL ) != 0 ) || ( SPilLitApilarTodos ( NULL, p_lisDup ) != 0 ) ||
+			 ( SPilLitApilarTodosDup ( p_pilObj, NULL ) != 0 ) || ( SPilLitApilarTodosDup ( NULL, p_lisDup ) != 0 ) )
+		{
+			printf( "Error caso 3: con una pila o lista nula se esperaba 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear la pila y las listas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SPilLitDestruir ( &p_pilObj );
+	SLisLitDestruir ( &p_lisVal );
+	SLisLitDestruir ( &p_lisDup );
+	return ( iRes );
+}
 
 
 int TestSPilaLiterales ()
@@ -116,7 +185,8 @@ int TestSPilaLiterales ()
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SPilaLiterales]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSPilLitApilar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSPilLitInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSPilLitInvalidos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSPilLitApilarTodos01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

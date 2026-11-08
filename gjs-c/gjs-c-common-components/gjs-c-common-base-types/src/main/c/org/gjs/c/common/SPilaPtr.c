@@ -3,6 +3,12 @@
 #include "TiposBasicosConfig.h"
 
 
+int _SPilpApilarPtr ( SPilaPtr * p_pilObj, SElementoPtr * p_elpObj );
+
+extern SElementoPtr * _SLispExtraerPtr ( SListaPtr * p_lisObj );
+extern int _SLispInsertarAlInicioPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
+
+
 SPilaPtr * SPilpCrear ()
 {
 	SPilaPtr * p_pilObj;
@@ -92,6 +98,10 @@ byte * SPilpPrimero ( SPilaPtr * p_pilObj )
 	else
 	{
 		p_byRes = NULL;
+		if ( SPilpEsValida ( p_pilObj ) == 1 )
+		{
+			ERROR_ESTABLECER_FORM ( ERR_PILA_VACIA, ERR_TXT_PILA_VACIA );
+		}
 	}
 	return ( p_byRes );
 }
@@ -121,6 +131,10 @@ byte * SPilpDesapilar ( SPilaPtr * p_pilObj )
 	else
 	{
 		p_byRes = NULL;
+		if ( SPilpEsValida ( p_pilObj ) == 1 )
+		{
+			ERROR_ESTABLECER_FORM ( ERR_PILA_VACIA, ERR_TXT_PILA_VACIA );
+		}
 	}
 	return ( p_byRes );
 }
@@ -132,6 +146,130 @@ int SPilpApilar ( SPilaPtr * p_pilObj, byte * p_byObj )
 	if ( ( SPilpEsValida ( p_pilObj ) == 1 ) && ES_VALIDO ( p_byObj ) )
 	{
 		iRes = SLispInsertarAlInicio ( p_pilObj->p_lisObjetos, p_byObj );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* MUEVE los nodos de p_lisValores a la pila, de la cabeza a la cola: el ultimo
+   de la lista queda en la cima. p_lisValores queda vacia. Como con
+   SPilpApilar, la pila no libera los datos salvo que se destruya con
+   iLiberar = 1.
+
+   Si uno no se puede apilar vuelve a la cabeza de p_lisValores y se para con
+   ERR_INSERCION_LISTA: lo apilado hasta ahi se queda y lo que falta sigue en
+   p_lisValores, sin perder nada. */
+int SPilpApilarTodos ( SPilaPtr * p_pilObj, SListaPtr * p_lisValores )
+{
+	int				iRes;
+	SElementoPtr *	p_elpObj;
+
+	if ( SPilpEsValida ( p_pilObj ) == 1 )
+	{
+		if ( SLispEsValida ( p_lisValores ) == 1 )
+		{
+			iRes = 1;
+			/* _SLispExtraerPtr deja el cursor en el siguiente, que es la nueva cabeza. */
+			SLispInicio ( p_lisValores );
+			while ( ( iRes == 1 ) && ( SLispEstaPosicionada ( p_lisValores ) == 1 ) )
+			{
+				p_elpObj = _SLispExtraerPtr ( p_lisValores );
+				if ( ES_VALIDO ( p_elpObj ) )
+				{
+					if ( _SPilpApilarPtr ( p_pilObj, p_elpObj ) != 1 )
+					{
+						_SLispInsertarAlInicioPtr ( p_lisValores, p_elpObj );
+						ERROR_ESTABLECER_FORM ( ERR_INSERCION_LISTA, ERR_TXT_INSERCION_LISTA );
+						iRes = 0;
+					}
+				}
+				else
+				{
+					ERROR_ESTABLECER_FORM ( ERR_INSERCION_LISTA, ERR_TXT_INSERCION_LISTA );
+					iRes = 0;
+				}
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Apila COPIAS de los datos de p_lisValores, de la cabeza a la cola, sin tocar
+   la lista ni su cursor: con fDuplicar o, si es nulo, de iNumBytes. Las copias
+   son memoria nueva y, como con SPilpApilar, la pila no las libera salvo que se
+   destruya con iLiberar = 1. Si falla una copia ( ERR_COPIA_OBJETO ) o un
+   apilado ( ERR_INSERCION_LISTA ) se para, y lo apilado hasta ahi se queda. */
+static int _SPilpApilarTodosDup ( SPilaPtr * p_pilObj, SListaPtr * p_lisValores, int iNumBytes, PFUNPBYTEPB fDuplicar )
+{
+	int				iRes;
+	SElementoPtr *	p_elpObj;
+	SElementoPtr *	p_elpNuevo;
+
+	if ( SPilpEsValida ( p_pilObj ) == 1 )
+	{
+		if ( SLispEsValida ( p_lisValores ) == 1 )
+		{
+			iRes = 1;
+			p_elpObj = p_lisValores->p_elpPrimero;
+			while ( ES_VALIDO ( p_elpObj ) && ( iRes == 1 ) )
+			{
+				if ( ES_VALIDO ( fDuplicar ) )
+				{
+					p_elpNuevo = SElpDuplicarExt ( p_elpObj, fDuplicar );
+				}
+				else
+				{
+					p_elpNuevo = SElpDuplicar ( p_elpObj, iNumBytes );
+				}
+				if ( ES_NULO ( p_elpNuevo ) )
+				{
+					ERROR_ESTABLECER ( ERR_COPIA_OBJETO );
+					iRes = 0;
+				}
+				else if ( _SPilpApilarPtr ( p_pilObj, p_elpNuevo ) != 1 )
+				{
+					SElpDestruir ( &p_elpNuevo );
+					ERROR_ESTABLECER_FORM ( ERR_INSERCION_LISTA, ERR_TXT_INSERCION_LISTA );
+					iRes = 0;
+				}
+				p_elpObj = SElpSucesor ( p_elpObj );
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SPilpApilarTodosDup ( SPilaPtr * p_pilObj, SListaPtr * p_lisValores, int iNumBytes )
+{
+	return ( _SPilpApilarTodosDup ( p_pilObj, p_lisValores, iNumBytes, NULL ) );
+}
+
+int SPilpApilarTodosDupExt ( SPilaPtr * p_pilObj, SListaPtr * p_lisValores, PFUNPBYTEPB fDuplicar )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( fDuplicar ) )
+	{
+		iRes = _SPilpApilarTodosDup ( p_pilObj, p_lisValores, 0, fDuplicar );
 	}
 	else
 	{
@@ -220,4 +358,19 @@ void SPilpDesactivarLiberacionMemoria ( SPilaPtr * p_pilObj )
 	{
 		SLispDesactivarLiberacionMemoria ( p_pilObj->p_lisObjetos );
 	}
+}
+
+int _SPilpApilarPtr ( SPilaPtr * p_pilObj, SElementoPtr * p_elpObj )
+{
+	int iRes;
+
+	if ( ( SPilpEsValida ( p_pilObj ) == 1 ) && ES_VALIDO ( p_elpObj ) )
+	{
+		iRes = _SLispInsertarAlInicioPtr ( p_pilObj->p_lisObjetos, p_elpObj );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }

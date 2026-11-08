@@ -128,18 +128,33 @@ Mismo esquema, reducido a lo que tiene sentido sin conocer el tamaño:
 | `int SElpEsValido ( SElementoPtr * )`                         | 1 si es utilizable.                |
 | `byte * SElpDatos ( SElementoPtr * )`                         | Puntero almacenado.                |
 | `int SElpModificar ( SElementoPtr *, byte *, int iLiberar )`  | Cambia el puntero y la propiedad.  |
-| `SElementoPtr * SElpDuplicar ( SElementoPtr * )`              | Copia del elemento.                |
+| `SElementoPtr * SElpDuplicar ( SElementoPtr *, int iNumBytes )` | Copia del elemento y de sus `iNumBytes` de datos. |
+| `SElementoPtr * SElpDuplicarExt ( SElementoPtr *, PFUNPBYTEPB fDuplicar )` | Copia; los datos los copia `fDuplicar`. |
 | `int SElpLiberacionMemoriaActivada ( SElementoPtr * )`        | Valor de `iLiberar`.               |
 
 Encadenado idéntico al de `SElemento`: `SElpAntecesor`, `SElpSucesor`,
 `SElpTieneAntecesor`, `SElpTieneSucesor`, `SElpEncadenarAntecesor`,
 `SElpEncadenarSucesor`, `SElpDesencadenarAntecesor`, `SElpDesencadenarSucesor`,
-`SElpDesencadenar`, `SElpAntecesorExt` y `SElpSucesorExt`. Estas dos últimas
-tienen la misma firma y el mismo comportamiento que sus gemelas de `SElemento`,
-casos límite incluidos.
+`SElpDesencadenar`, `SElpDeposicionar`, `SElpAntecesorExt` y `SElpSucesorExt`.
+Estas tres últimas tienen la misma firma y el mismo comportamiento que sus
+gemelas de `SElemento`, casos límite incluidos.
 
-Comparación: `SElpEsIgual ( SElementoPtr *, SElementoPtr *, int iNumBytes )` y
-`SElpEsIgualExt ( SElementoPtr *, byte *, int iNumBytes )`.
+Comparación, por bytes o con una función `int f ( byte *, byte * )` que
+devuelve 1 si son iguales:
+
+| Función                                                                   | Compara                                   |
+| ------------------------------------------------------------------------- | ----------------------------------------- |
+| `int SElpEsIgual ( SElementoPtr *, SElementoPtr *, int iNumBytes )`       | Dos elementos, `iNumBytes` de memoria.     |
+| `int SElpEsIgualDatos ( SElementoPtr *, byte *, int iNumBytes )`          | Un elemento con un dato suelto.            |
+| `int SElpEsIgualExt ( SElementoPtr *, SElementoPtr *, PFUNINTPBPB )`      | Dos elementos, con la función.             |
+| `int SElpEsIgualDatosExt ( SElementoPtr *, byte *, PFUNINTPBPB )`         | Un elemento con un dato, con la función.   |
+
+Las cuatro dan 0 si falta cualquiera de los parámetros, función incluida.
+
+> `SElpEsIgualDatos` es la que antes se llamaba `SElpEsIgualExt`. El nombre
+> `SElpEsIgualExt` se reutiliza con **otra firma**: un código antiguo que lo
+> llame con un `byte *` y un `int` ya no compila, lo que es preferible a que
+> compile y compare otra cosa.
 
 ## Comportamiento
 
@@ -154,14 +169,33 @@ lo que se le pase.
 ### La diferencia que importa entre las dos variantes
 
 `SElementoPtr` **no sabe cuántos bytes ocupa el dato**, y por eso sus funciones
-de comparación exigen que se les diga (`iNumBytes`). Esa es la razón de que las
-colecciones `Ptr` no puedan duplicar ni comparar contenidos por su cuenta, y de
-que dejen la propiedad de los datos al llamante.
+de comparación y de duplicado exigen que se les diga: o el tamaño
+(`iNumBytes`), o una función que sepa hacerlo (las `Ext`). Esa es la razón de que
+las colecciones `Ptr` no puedan duplicar ni comparar contenidos por su cuenta.
 
 ### Enlaces y duplicado
 
 `SElmDuplicar` copia el contenido pero **no los enlaces**: el elemento resultante
 queda suelto. Es lo que se quiere al copiar un elemento de una lista a otra.
+
+`SElpDuplicar` y `SElpDuplicarExt` hacen lo mismo con el puntero: **copian el
+contenido** a un bloque nuevo (con `MemDuplicar`, o con `fDuplicar`) y el
+duplicado sale suelto y **con `iLiberar` a 1 aunque el original lo tuviera a 0**,
+porque esa copia no es de nadie más. La memoria que devuelva `fDuplicar` tiene
+que poder liberarse con `MemLiberar`. Con `iNumBytes` ≤ 0, con `fDuplicar` nula o
+si la copia falla, devuelven `NULL`.
+
+> En la 1.0.0 `SElpDuplicar ( SElementoPtr * )` **no copiaba los datos**:
+> devolvía otro elemento con el mismo puntero y `iLiberar` a 0.
+
+### Deposicionar frente a desencadenar
+
+`SElpDesencadenar` corta el elemento de la cadena **y los enlaces de los vecinos
+hacia él**. `SElpDeposicionar` (como `SElmDeposicionar`) sólo anula los dos
+enlaces propios. Para sacar un elemento de una lista hay que reenganchar los
+vecinos entre sí y luego **deposicionar**: desencadenar en ese momento les
+cortaría el enlace recién hecho. Ese fallo partía la lista en dos en
+`SLispExtraer`.
 
 ## Dependencias
 
@@ -179,6 +213,8 @@ queda suelto. Es lo que se quiere al copiar un elemento de una lista a otra.
   propiedad se fija al construir y sólo se puede consultar.
 - Los enlaces `void *` obligan a confiar en las funciones de acceso; manipular
   `p_elmAnt` / `p_elmSig` directamente compila sin queja y rompe la estructura.
-- `SElpCrear` no valida el puntero con `MemEsValida` como sí hace
-  `SBlqAsignar`, así que acepta cualquier dirección. Es coherente con su papel
+- `SElpCrear` consulta `MemEsValida`, pero esa función sólo mira que la dirección
+  esté en rango (lo mismo que `ES_VALIDO`), no que sea un bloque de
+  `MemReservar`. En la práctica acepta cualquier dirección, y nada impide crear
+  con `iLiberar` a 1 un elemento sobre un dato de la pila. Es coherente con su papel
   (guardar punteros ajenos) pero significa que no hay red de seguridad.

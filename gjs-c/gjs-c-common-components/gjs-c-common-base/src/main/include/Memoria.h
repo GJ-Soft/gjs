@@ -92,6 +92,7 @@ int MemLiberarUnicode ( unichar ** p_p_uniCadena );
 void MemLimpiar ( void * p_vBloque, int iNumBytes );
 void MemLlenar ( void * p_vBloque, byte byValor, int iNumBytes );
 void MemCopiar ( void * p_vDest, void * p_vOrig, int iNumBytes );
+void * MemDuplicar ( void * p_vOrig, int iNumBytes );
 
 int MemEsValida ( void * p_vDireccion );
 int MemEsInvalida ( void * p_vDireccion );

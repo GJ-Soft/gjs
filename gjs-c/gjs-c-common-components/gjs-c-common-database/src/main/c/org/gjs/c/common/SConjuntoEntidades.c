@@ -5,10 +5,10 @@
 
 static int _SEntComparar ( void * p_vVal1, void * p_vVal2 )
 {
-    int 		iRes;
-    SEntidad * 	p_entVal1 = (SEntidad *) p_vVal1;
-    SEntidad * 	p_entVal2 = (SEntidad *) p_vVal2;
-    iRes = SEntComparar ( p_entVal1, p_entVal2 );
+	int 		iRes;
+	SEntidad * 	p_entVal1 = (SEntidad *) p_vVal1;
+	SEntidad * 	p_entVal2 = (SEntidad *) p_vVal2;
+	iRes = SEntComparar ( p_entVal1, p_entVal2 );
 	if ( iRes == COMP_MENOR ) 
 	{
 		iRes = -1;
@@ -21,7 +21,7 @@ static int _SEntComparar ( void * p_vVal1, void * p_vVal2 )
 	{
 		iRes = 0;
 	}
-    return ( iRes );
+	return ( iRes );
 }
 
 

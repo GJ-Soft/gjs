@@ -48,7 +48,7 @@ decide cuándo consultarlo.
 Definidos en `BaseErrores.h`: `ERR_OK` (0), `ERR_MEMORIA_INVALIDA` (1),
 `ERR_MEMORIA_INSUFICIENTE` (2), `ERR_MEMORIA_PROCESO` (3), `ERR_PARAMETROS` (4),
 `ERR_POSICION_INVALIDA` (5), `ERR_ESTRUCTURA_INVALIDA` (6),
-`ERR_CONVERSION_IMPOSIBLE` (7), `ERR_GENERAL_OPERATIVO` (90),
+`ERR_CONVERSION_IMPOSIBLE` (7), `ERR_COPIA_OBJETO` (8), `ERR_GENERAL_OPERATIVO` (90),
 `ERR_IMPOSIBLE_ABRIR_FICHERO` (100).
 
 > **El comentario del rango no cuadra con los códigos.** `BaseErrores.h` dice
@@ -87,7 +87,7 @@ llamar a `ErrLimpiar()` antes del bloque de código que se quiere vigilar.
 
 - **Predefinidos** (`ERR_OK`, `ERR_MEMORIA_INVALIDA`, `ERR_MEMORIA_INSUFICIENTE`,
   `ERR_MEMORIA_PROCESO`, `ERR_PARAMETROS`, `ERR_POSICION_INVALIDA`,
-  `ERR_ESTRUCTURA_INVALIDA`, `ERR_CONVERSION_IMPOSIBLE`,
+  `ERR_ESTRUCTURA_INVALIDA`, `ERR_CONVERSION_IMPOSIBLE`, `ERR_COPIA_OBJETO`,
   `ERR_GENERAL_OPERATIVO`): la descripción la genera la propia librería con
   `_ErrDescripcion`, y se ignora cualquier texto que se pase.
 - **Cualquier otro código**: se guarda la descripción que aporte el llamante. Si

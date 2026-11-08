@@ -5,6 +5,7 @@
 
 
 #include <SLista.h>
+#include <TiposBasicosErrores.h>
 
 
 
@@ -32,6 +33,8 @@ SElemento * SColElemento ( SCola * p_colObj, int iElem );
 SElemento * SColDesencolar ( SCola * p_colObj );
 
 int SColEncolar ( SCola * p_colObj, SElemento * p_elObj );
+int SColEncolarTodos ( SCola * p_colObj, SLista * p_lisValores );
+int SColEncolarTodosDup ( SCola * p_colObj, SLista * p_lisValores );
 int SColEliminarPrimero ( SCola * p_colObj );
 int SColEliminarUltimo ( SCola * p_colObj );
 int SColEliminar ( SCola * p_colObj, int iElem );

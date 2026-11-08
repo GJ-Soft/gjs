@@ -172,6 +172,16 @@ así conviene otra estructura.
 | `SElemento * SLisElemento ( SLista *, int iElem )` | Elemento en la posición dada. **No mueve el cursor.** |
 | `int SLisBuscar ( SLista *, SBloque * )`           | Posición del primer elemento igual, o negativo. |
 | `int SLisBuscarExt ( SLista *, byte * )`           | Ídem comparando con memoria cruda.              |
+| `int SLisBuscarElem ( SLista *, SElemento * )`     | Ídem con el contenido de un elemento, que no tiene por qué estar en la lista. Sin elemento, -1. |
+| `int SLisBuscarPrimero ( SLista *, SBloque * )` (y `…Ext`, `…Elem`) | Lo mismo que `Buscar`.                |
+| `int SLisBuscarSiguiente ( SLista *, SBloque *, int iPos )` (y `…Ext`, `…Elem`) | El siguiente igual **detrás** de `iPos`, o -1 si no hay más. Con `iPos = -1`, el primero. |
+| `int SLisRepeticiones ( SLista *, SBloque * )` (y `…Ext`, `…Elem`) | Cuántos iguales hay; 0 si ninguno, también con un nulo. |
+| `int SLisExiste ( SLista *, SBloque * )` (y `…Ext`, `…Elem`) | 1 si hay alguno igual, 0 si no.      |
+
+Para recorrer los repetidos se encadenan `BuscarPrimero` y `BuscarSiguiente`
+hasta que devuelve -1. Ninguna mueve el cursor; `BuscarSiguiente` parte de él
+si está posicionado y, si no, del extremo más cercano a `iPos`.
+`Repeticiones` recorre la cadena una sola vez.
 
 ### Modificación por índice
 
@@ -197,8 +207,13 @@ así conviene otra estructura.
 | `void SLisMoverA ( SLista *, int iElem )` | Cursor a una posición.             |
 | `void SLisDeposicionar ( SLista * )`      | Deja el cursor sin posición.       |
 | `int SLisEsNulo ( SLista * )`             | 1 si el cursor no señala a nada.   |
+| `int SLisEstaPosicionada ( SLista * )`    | 1 si señala a un elemento.         |
 | `int SLisEstaEnInicio ( SLista * )`       | 1 si el cursor está en el primero. |
 | `int SLisEstaEnFinal ( SLista * )`        | 1 si está en el último.            |
+
+`EstaPosicionada` está en todas las listas (`SLis`, `SLisp`, `SLisOrd`,
+`SLispOrd`, `SLisInt`, `SLisIntl`, `SLisIntLss`, `SLisLit`). Con una lista
+válida es lo contrario de `EsNulo`; con una lista nula o no válida las dos dan 0.
 
 ### Modificación por cursor
 
@@ -214,6 +229,50 @@ for ( SLisInicio ( p_lisObj ); SLisEsNulo ( p_lisObj ) == 0; SLisSiguiente ( p_l
     /* … */
 }
 ```
+
+### Operaciones con otras listas
+
+| Función                                                  | Descripción                                                          |
+| -------------------------------------------------------- | -------------------------------------------------------------------- |
+| `SLista * SLisDuplicar ( SLista * )`                          | Lista nueva con **copias** de todos, en el mismo orden. Con la lista vacía, otra vacía; si falla una copia, `NULL`. |
+| `int SLisExistenTodos ( SLista *, SLista * p_lisValores )`    | 1 si todos los valores están en la lista. Con valores vacíos, 1.     |
+| `int SLisExisteAlguno ( SLista *, SLista * p_lisValores )`    | 1 si está alguno. Con valores vacíos, 0.                              |
+| `int SLisInsertarLista ( SLista *, SLista * p_lisValores )`   | **Mueve** los valores detrás del cursor, en su orden.                |
+| `int SLisConcatenarLista ( SLista *, SLista * p_lisValores )` | **Mueve** los valores al final.                                      |
+| `int SLisInsertarListaDup ( SLista *, SLista * )`             | Inserta **copias** detrás del cursor; los valores no se tocan.       |
+| `int SLisConcatenarListaDup ( SLista *, SLista * )`           | Inserta **copias** al final.                                         |
+| `SLista * SLisExtraerLista ( SLista *, SLista * p_lisValores )` | Saca a una lista nueva la primera aparición de cada valor.         |
+| `int SLisEliminarLista ( SLista *, SLista * p_lisValores )`   | **Destruye** la primera aparición de cada valor.                     |
+| `SLista * SLisUnion ( SLista *, SLista * )`                   | Lista nueva con copias de las dos, una detrás de otra.               |
+| `SLista * SLisInterseccion ( SLista * V1, SLista * V2 )`      | Copias de los de V1 que están en V2, en el orden de V1.              |
+| `SLista * SLisDiferencia ( SLista * V1, SLista * V2 )`        | Copias de los de V1 que no están en V2, en el orden de V1.           |
+
+Cómo se comportan:
+
+- **Ninguna mueve el cursor de la lista de valores**: recorren su cadena de
+  elementos. Las que insertan detrás del cursor sí dependen del de la lista
+  destino, igual que `SLisInsertar`: con el destino no vacío y sin cursor,
+  fallan.
+- **Mover** (`InsertarLista`, `ConcatenarLista`) deja `p_lisValores` vacía pero
+  válida. Si un elemento no se puede insertar, vuelve a la cabeza de
+  `p_lisValores` y la función devuelve 0: lo movido hasta ahí se queda movido y
+  no se pierde nada.
+- `SLisExtraerLista` saca **una aparición por valor buscado**, en el orden de los
+  buscados: si un valor está dos veces en `p_lisValores`, saca dos. Lo que no
+  encuentra lo ignora. Los elementos se mueven, no se copian. Si algo falla a
+  medias devuelve la extracción parcial.
+- `SLisEliminarLista` busca igual que `ExtraerLista`, pero **destruye** lo que
+  encuentra en vez de devolverlo. Devuelve 1 aunque no encuentre nada; 0 si
+  falla una eliminación (lo eliminado hasta ahí se queda) o con la misma lista
+  en los dos argumentos.
+- **La unión es una concatenación**: lo que esté en las dos listas sale dos
+  veces. No es una unión de conjuntos.
+- Las que crean una lista nueva devuelven `NULL` si falla cualquier copia o
+  inserción, y una lista **vacía** (no `NULL`) si el resultado no tiene
+  elementos.
+- **Pasar la misma lista en los dos argumentos** a las que insertan o extraen
+  devuelve 0 (o `NULL`) sin tocar nada: se estaría modificando la cadena que se
+  recorre.
 
 ## Las variantes
 
@@ -252,6 +311,51 @@ void SLispDesactivarLiberacionMemoria ( SListaPtr * );
 Con la liberación activada, destruir la lista libera también los datos
 apuntados.
 
+Además de la API común, `SListaPtr` tiene:
+
+- **Extracción**: `byte * SLispExtraerElem ( SListaPtr *, int iElem )` y
+  `byte * SLispExtraer ( SListaPtr * )` sacan el nodo y devuelven **el dato**,
+  que pasa a ser del llamante (lo libera él con `MemLiberar`). El cursor queda
+  como tras `SLispEliminar`.
+- **Búsqueda**: `SLispBuscarPtr ( …, SElementoPtr *, int iNumBytes )` busca por
+  el contenido de un elemento, y `SLispBuscarExt ( …, byte *, PFUNINTPBPB )` y
+  `SLispBuscarExtPtr ( …, SElementoPtr *, PFUNINTPBPB )` con una función de
+  igualdad `int f ( byte *, byte * )` que devuelve 1 si son iguales.
+- **Repetidos**: como en `SLista`, `BuscarPrimero`, `BuscarSiguiente ( …, int
+  iPos, … )`, `Repeticiones` y `Existe`, cada una en las cuatro formas
+  ( `…`, `…Ptr`, `…Ext`, `…ExtPtr` ). `Buscar` es `BuscarPrimero`; las `Ptr`
+  buscan con los datos del elemento, y sin elemento dan -1 ( 0 `Repeticiones`
+  y `Existe` ).
+- `SElementoPtr * SLispActualPtr ( SListaPtr * )`: el **nodo** del cursor, como
+  `SLispElementoPtr` lo es del índice.
+- **Las mismas operaciones con otras listas que `SLista`**, con el mismo
+  comportamiento, más el tamaño o la función que hace falta para comparar y
+  copiar:
+
+  | Comparan con                | Copian con                 | Funciones                                                                                                   |
+  | --------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------- |
+  | `int iNumBytes`             | `int iNumBytes`            | `Duplicar`, `ExistenTodos`, `ExisteAlguno`, `InsertarListaDup`, `ConcatenarListaDup`, `ExtraerLista`, `EliminarLista`, `Union`, `Interseccion`, `Diferencia` |
+  | `PFUNINTPBPB fSonIguales`   | —                          | `ExistenTodosExt`, `ExisteAlgunoExt`, `ExtraerListaExt`, `EliminarListaExt`                                |
+  | —                           | `PFUNPBYTEPB fDuplicar`    | `DuplicarExt`, `InsertarListaDupExt`, `ConcatenarListaDupExt`, `UnionExt`                                  |
+  | `PFUNINTPBPB fSonIguales`   | `PFUNPBYTEPB fDuplicar`    | `InterseccionExt`, `DiferenciaExt`                                                                          |
+
+  `InsertarLista` y `ConcatenarLista` mueven y no necesitan ninguna de las dos.
+
+Lo propio de la variante en esas operaciones es **la propiedad de los datos**:
+
+- Al **mover**, el dato pasa a la lista destino, que lo libera según **su**
+  liberación, no según la de la lista de la que viene.
+- `SLispExtraerLista` crea la lista nueva **con la liberación del origen**: si
+  el origen no era dueño de sus datos, la extraída tampoco.
+- `SLispEliminarLista` libera los datos que elimina sólo si la lista tiene la
+  liberación activada. `SLispEliminarListaExt` sin `fSonIguales` devuelve 0
+  sin tocar nada.
+- Las copias (`…Dup`, `Union`, `Interseccion`, `Diferencia`) son memoria nueva:
+  las listas que crean estas funciones salen con la liberación activada, y al
+  insertar copias en una lista propia conviene que la tenga activada, o se
+  quedan sin liberar. `fDuplicar` tiene que devolver memoria que se pueda
+  liberar con `MemLiberar`.
+
 ### `SListaEnteros`, `SListaEnterosLargos` y `SListaEnterosLargosSinSigno` — valores
 
 Envuelven una `SLista` y trabajan con `int`, `long` y `unsigned long`
@@ -264,9 +368,21 @@ int iVal = SLisIntElemento ( p_lisObj, 0 );
 SLisIntDestruir ( &p_lisObj );
 ```
 
-Añaden `SLisIntExiste ( …, int iDato )` y `SLisIntBuscar ( …, int iDato )`, que
-la lista genérica no tiene en forma tipada, más las **funciones de conjunto**
+Añaden la búsqueda por valor, que la lista genérica no tiene en forma tipada:
+`SLisIntExiste ( …, int iDato )`, `SLisIntRepeticiones`, `SLisIntBuscar` (que es
+`BuscarPrimero`) y `SLisIntBuscarSiguiente ( …, int iDato, int iPos )`, que
+busca detrás de `iPos` como en [SLista](#consulta). Además, las **funciones de conjunto**
 que se describen [más abajo](#funciones-de-conjunto-de-listas-y-secuencias-de-enteros).
+
+Las tres tienen además las [operaciones con otras listas](#operaciones-con-otras-listas)
+de `SLista`, con su prefijo ( `SLisInt`, `SLisIntl`, `SLisIntLss` ) y el mismo
+comportamiento, porque delegan en ellas: `Duplicar`, `ExistenTodos`, `ExisteAlguno`, `InsertarLista`, `ConcatenarLista`,
+`InsertarListaDup`, `ConcatenarListaDup`, `ExtraerLista`, `EliminarLista`,
+`Union`, `Interseccion` y `Diferencia`. Las que crean una lista nueva devuelven `NULL`
+cuando la de `SLista` falla, nunca una envoltura sin lista dentro. Como
+comparan bloques de bytes, en `SListaEnterosLargosSinSigno` los valores por
+encima de `LONG_MAX` se encuentran y distinguen igual que los demás
+( `TestSLisIntLssOperacionesListas02` ).
 
 `SListaEnterosLargos` trabajaba con `long long` y pasó a `long` en septiembre de
 2026, por coherencia con el resto de la librería. Ojo con la consecuencia:
@@ -288,8 +404,8 @@ ahí sería siempre cierta. Dos diferencias de contrato:
 
 ### `SListaLiterales` — dos juegos de funciones
 
-Es la variante con la API más grande (41 funciones) porque **cada operación de
-inserción viene por duplicado**:
+Tiene una API grande (54 funciones) porque **cada operación de inserción viene
+por duplicado**:
 
 | Forma                 | Parámetro      | Qué hace con la cadena                                   |
 | --------------------- | -------------- | -------------------------------------------------------- |
@@ -300,6 +416,26 @@ La firma lo delata: las que duplican reciben `const char *`, porque no se
 quedan con el original. Elegir mal es la vía rápida a una doble liberación o a
 un puntero colgante, así que conviene fijarse en el sufijo `Dup`.
 
+`SLisLitExiste`, `SLisLitRepeticiones`, `SLisLitBuscar` (que es `BuscarPrimero`)
+y `SLisLitBuscarSiguiente ( …, const char *, int iPos )` comparan el
+**contenido** con `CadComparar`, no el puntero: encuentran la cadena aunque se
+busque con otro bloque del mismo texto. Delegan en las `Ext` de `SListaPtr`.
+
+`SLisLitExtraerUnicos` devuelve una lista nueva con **copias** de las cadenas
+distintas, en el orden de su primera aparición; `SLisLitExtraerUnicosExt ( …,
+int iOrdenar )` las ordena con `CadComparar` (por bytes) si `iOrdenar` no es 0,
+como las de enteros. `SLisLitTieneRepetidos` da 1 si alguna está repetida.
+
+Tiene también las [operaciones con otras listas](#operaciones-con-otras-listas),
+con prefijo `SLisLit`: `Duplicar`, `ExistenTodos`, `ExisteAlguno`, `InsertarLista`,
+`ConcatenarLista`, `InsertarListaDup`, `ConcatenarListaDup`, `ExtraerLista`,
+`EliminarLista`, `Union`, `Interseccion` y `Diferencia`. Delegan en las `Ext` de `SListaPtr`,
+comparando con `CadComparar` y copiando con `CadDuplicar`, así que `Duplicar`, las `…Dup` y
+las que crean una lista nueva guardan **copias propias** de las cadenas, y
+`InsertarLista`, `ConcatenarLista` y `ExtraerLista` **mueven** las mismas.
+`EliminarLista` libera las cadenas que quita sólo si la lista tiene la
+liberación activada.
+
 ### `SListaOrdenada` y `SListaOrdenadaPtr` — orden automático
 
 Mantienen los elementos ordenados según un [comparador](SComparador.md). El
@@ -309,13 +445,91 @@ constructor recibe **la función de comparación**, no un `SComparador` ya hecho
 SListaOrdenada * SLisOrdCrear ( PFUNINTPVPV fComparar );
 ```
 
+Las demás formas de crear una:
+
+| Función ( `SLisOrd` / `SLispOrd` )                         | Qué hace                                                                                       |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `Encapsular ( SComparador * )`                             | Lista vacía con **ese** comparador: pasa a ser de la lista. Si falla, `NULL` y sigue siendo del llamante. |
+| `CrearIgual ( lista )`                                     | Lista vacía con una copia (`SCmpDuplicar`) del comparador de otra, que no se toca.            |
+| `CrearDesdeLista ( SLista *, fComparar )`                  | Ordena **copias** de los elementos de una lista, que no se toca.                              |
+| `CrearDesdeLista ( SListaPtr *, fComparar, iNumBytes )`    | Ídem con copias de `iNumBytes`; `…Ext` copia con `fDuplicar`.                                 |
+| `Duplicar ( lista )`                                       | Copia con su propio comparador (`SCmpDuplicar`) y copias de los elementos, en el mismo orden. |
+| `Duplicar ( lista, iNumBytes )` / `DuplicarExt ( lista, fDuplicar )` | Ídem en `SListaOrdenadaPtr`.                                                        |
+| `DuplicarLista ( lista )` (y `iNumBytes` / `…Ext` en la `Ptr`) | Copia del contenido como `SLista` / `SListaPtr` normal.                                    |
+
+- **Si falla una copia**, `CrearDesdeLista` devuelve lo copiado hasta ahí, ya
+  ordenado, y anota `ERR_COPIA_LISTA` (ver [MODULOS](MODULOS.md));
+  `Duplicar` y `DuplicarLista` devuelven `NULL`.
+- **En la `Ptr`**, todas las copias son memoria nueva y la lista que las recibe
+  tiene la liberación activada, aunque el original no la tuviera.
+
 Como el orden lo decide el comparador, esta variante **no tiene**
 `InsertarAlInicio`, `InsertarAlFinal`, `InsertarDelante` ni `InsertarDetras`:
 sólo `SLisOrdInsertarElem`, que coloca el elemento donde le toca.
+Antes de buscar el sitio lo compara con el último: si no es menor, va al final
+sin recorrer la lista, así que insertar datos que ya llegan ordenados cuesta
+O(1) cada uno (lo aprovechan `Duplicar`, `CrearDesdeLista` de una lista
+ordenada e `Interseccion` / `Diferencia`).
+
+`SLisOrdBuscarElem` busca por el contenido de un elemento, como `SLisBuscarElem`,
+pero la igualdad la decide el comparador de la lista, igual que en
+`SLisOrdBuscar`. `SLispOrdBuscarPtr` hace lo mismo con un `SElementoPtr`.
+
+Para los repetidos tienen `BuscarPrimero`, `BuscarSiguiente ( …, int iPos )`,
+`Repeticiones` y `Existe`, como `SLista`: en `SLisOrd` con bloque, `…Ext` y
+`…Elem`, y en `SLispOrd` con dato y `…Ptr`, sin `iNumBytes` ni `Ext` porque
+compara el comparador. Como los iguales están juntos, avanzan mientras el
+elemento es menor y se paran en el primero que no lo es, sin recorrer el resto.
 
 Para sacar un elemento sin destruirlo está `SLisOrdExtraerElem`, que delega en
 `SLisExtraerElem`: el elemento sale desenganchado y pasa a ser del llamador, y
 volver a insertarlo con `SLisOrdInsertarElem` lo devuelve a su sitio en el orden.
+
+#### Operaciones con otras listas
+
+Cada una tiene dos formas: con otra lista ordenada y, con el sufijo `Lista`
+(`…InsertarListaOrd` / `…InsertarLista` en las de insertar), con una `SLista`
+/ `SListaPtr` normal. La primera delega en la segunda pasándole su contenido,
+salvo `Interseccion` y `Diferencia` (ver abajo).
+
+| Función ( `SLisOrd` / `SLispOrd` )            | Qué hace                                                                                  |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `ExistenTodos` / `ExisteAlguno`               | 1 o 0. Con la otra lista vacía, `ExistenTodos` da 1 y `ExisteAlguno` 0.                   |
+| `InsertarListaOrd` / `InsertarLista`          | **Mueve** los elementos, cada uno a su sitio; la otra queda vacía.                       |
+| `InsertarListaOrdDup` / `InsertarListaDup`    | Inserta **copias**; la otra no se toca.                                                   |
+| `ExtraerListaOrd` / `ExtraerLista`            | Lista nueva con la primera aparición de cada valor de la otra, **movida** desde esta.    |
+| `EliminarListaOrd` / `EliminarLista`          | **Destruye** la primera aparición de cada valor de la otra; 1 aunque no encuentre nada.  |
+| `Union` / `UnionLista`                        | Lista nueva con copias de las dos: lo que está en ambas sale dos veces.                   |
+| `Interseccion` / `InterseccionLista`          | Lista nueva con copias de los de la primera que están en la segunda.                      |
+| `Diferencia` / `DiferenciaLista`              | Lista nueva con copias de los de la primera que **no** están en la segunda.               |
+
+- **La igualdad la decide el comparador** de la lista ordenada (la primera),
+  no la comparación byte a byte de `SLisBuscar`: con un comparador que iguale
+  valores distintos, `Interseccion` y `Diferencia` los tratan como iguales.
+- **Las listas nuevas** llevan una copia del comparador de la primera
+  (`CrearIgual`).
+- **Con la misma lista en los dos argumentos** (o una ordenada y su propio
+  contenido), las de insertar y eliminar devuelven 0 y las de extraer `NULL`, sin tocar
+  nada. `Union` de una lista consigo misma sí vale: duplica cada elemento.
+- **Si algo falla**, las de insertar paran y devuelven 0 (lo movido o insertado
+  hasta ahí se queda, y si un elemento movido no entra vuelve a la cabeza de la
+  otra lista); `Extraer…` devuelve lo extraído hasta ahí; `Union`,
+  `Interseccion` y `Diferencia` devuelven `NULL`.
+- **Errores que anotan** (ver [MODULOS](MODULOS.md)): las de insertar y las de
+  extraer, `ERR_INSERCION_LISTA` cuando un elemento no entra; las `…Dup`,
+  `ERR_COPIA_OBJETO` cuando falla la copia. `Union` deja el error de
+  `InsertarListaDup`, que es por donde va; `Interseccion` y `Diferencia` no
+  anotan nada.
+- **`Interseccion` y `Diferencia` eligen el recorrido.** Si la segunda es otra
+  lista ordenada con **la misma función de comparación**, recorren las dos en
+  paralelo, O(n+m), sin copias auxiliares. Si es una `SLista` / `SListaPtr`, o
+  una ordenada con otro comparador, buscan cada elemento de la primera en toda
+  la segunda, O(n·m). Los cursores no se tocan en ningún caso.
+- **En `SListaOrdenadaPtr`** las que copian llevan `iNumBytes` o, en la
+  variante `…Ext`, `fDuplicar`; sin forma de copiar (`iNumBytes` ≤ 0 o
+  `fDuplicar` nulo) `Union`, `Interseccion` y `Diferencia` devuelven `NULL`.
+  `ExtraerLista` hereda la liberación de la lista de origen: si no era dueña
+  de sus datos, la nueva tampoco.
 
 ### `SListaParejas` y `SListaReferencias` — asociaciones
 
@@ -387,7 +601,15 @@ Un fichero por módulo: `SListaTest.c`, `SListaPtrTest.c`, `SListaEnterosTest.c`
   está sólo en el verbo, y confundirlos produce una fuga o un uso tras liberar.
   Las que la envuelven heredan la pareja: `SLisOrdExtraerElem`,
   [`SSecExtraer`](Secuencias.md) y [`SCnjExtraerElem`](Conjuntos.md).
-  `SListaPtr` no tiene `Extraer`: sólo `SLispEliminar`.
+  En `SListaPtr`, `SLispExtraer` y `SLispExtraerElem` devuelven el dato, no el
+  nodo: el nodo se destruye y el dato queda para el llamante.
+- Las inserciones, `Establecer` y `Eliminar` (también las `…Elem`, `…AlInicio`
+  y `…AlFinal`) devuelven **1 o 0**, en `SLista` y en `SListaPtr`, y también
+  `SLisOrdInsertarElem` y `SLispOrdInsertarElem`. Antes `SLisInsertarElem`,
+  `SLisInsertarAlInicio`, `SLisInsertarAlFinal` y las dos de las ordenadas
+  devolvían -1 con la lista no válida o el elemento nulo; ya no. Los conjuntos
+  siguen dando **-1** con un duplicado o un parámetro nulo, y 0 si falla la
+  inserción en la lista ordenada.
 - `SLisBuscar` devuelve la posición encontrada; el valor con el que indica "no
   está" no se aprecia en la cabecera, así que conviene comprobar el resultado
   contra el rango válido en lugar de asumir `-1`.

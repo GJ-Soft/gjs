@@ -206,11 +206,13 @@ Códigos de error propios de la librería (rango reservado 0-10):
 | `ERR_PARAMETROS`              | 4     |
 | `ERR_POSICION_INVALIDA`       | 5     |
 | `ERR_ESTRUCTURA_INVALIDA`     | 6     |
+| `ERR_CONVERSION_IMPOSIBLE`    | 7     |
+| `ERR_COPIA_OBJETO`            | 8     |
+| `ERR_GENERAL_OPERATIVO`       | 90    |
 | `ERR_IMPOSIBLE_ABRIR_FICHERO` | 100   |
 
-De ellos, sólo los cinco primeros tienen descripción predefinida en
-[Errores](Errores.md); el resto exige pasar el texto con
-`ERROR_ESTABLECER_FORM`.
+Todos menos `ERR_IMPOSIBLE_ABRIR_FICHERO` tienen descripción predefinida en
+[Errores](Errores.md); ése exige pasar el texto con `ERROR_ESTABLECER_FORM`.
 
 ### `ASCIICodigos.h`
 
@@ -230,23 +232,26 @@ numeración de Windows. [UniChar](UniChar.md) usa `JUEG_CAR_OEM_LATIN_I` (850).
 Catálogo de `typedef` de punteros a función y procedimiento, nombrados por su
 firma: `PPRC<args>` para los que devuelven `void` y `PFUN<retorno><args>` para
 el resto (`PFUNINTV`, `PFUNLONGT`, `PFUNPCHARPV`…). Hay una familia por tipo de
-retorno: `INT`, `LONG`, `UINT`, `ULONG`, `CHAR`, `PCHAR`, `LIT`, `FLT`, `DBL` y
+retorno: `INT`, `LONG`, `UINT`, `ULONG`, `CHAR`, `PCHAR`, `LIT`, `FLT`, `DBL`,
 `PVOID`, la de los que devuelven `void *` (`PFUNPVOIDV`, `PFUNPVOIDPV`…; hasta el
-2026-10-12 eran `PFUNVOIDV` y `PFUNVOIDULIUL`, sin más). También define los
+2026-10-12 eran `PFUNVOIDV` y `PFUNVOIDULIUL`, sin más), y `BYTE` y `PBYTE`, las
+de `byte` y `byte *` (`PFUNBYTEB`, `PFUNPBYTEPB`…). También define los
 alias sencillos `PTR_FUNCION` y
 `PTR_PROCEDIMIENTO`. Los tests usan `PFUNINTV` (`int (*)(void)`) como tipo de
 cada caso de prueba, y [Hash](Hash.md) apoya en `PFUNUINTPV` su alias
 `PFUNHASH`.
 
 Cada argumento se escribe con las iniciales de su tipo: `I`, `L`, `S`, `UI`,
-`UL`, `US`, `F`, `D`, `LD`, `C`, `PC`, `T`, y `P`/`PP` delante para los
-punteros. **`long long` es `Q` y `unsigned long long` es `UQ`** (`PFUNINTQ`,
+`UL`, `US`, `F`, `D`, `LD`, `C`, `PC`, `T`, `B` (`byte`), y `P`/`PP` delante
+para los punteros (`PB` es `byte *`). **`long long` es `Q` y `unsigned long long` es `UQ`** (`PFUNINTQ`,
 `PPRCUQ`…): hasta el 2026-10-18 eran `LL` y `ULL`, que se confundían con dos
 `long` seguidos. Ahora `PFUNINTLL` es `int (*)(long, long)`, de la familia de
 dos argumentos iguales que usa [Validaciones](Validaciones.md) para los rangos:
 `PFUNINTSS`, `PFUNINTQQ`, `PFUNINTUIUI`, `PFUNINTULUL`, `PFUNINTUSUS`,
 `PFUNINTUQUQ`, `PFUNINTFF`, `PFUNINTDD`, `PFUNINTCC`, `PFUNINTPCPC` y
-`PFUNINTTT`, junto a `PFUNINTII` y `PFUNINTPVPV`, que ya estaban.
+`PFUNINTTT`, junto a `PFUNINTII` y `PFUNINTPVPV`, que ya estaban. De `byte`
+están `PFUNINTBB`, `PFUNINTPBPB` —la función de igualdad de las variantes `Ext`
+de `SElementoPtr` y `SListaPtr`— y `PFUNPBYTEPBPB`.
 
 ### `TerminalANSI.h`
 

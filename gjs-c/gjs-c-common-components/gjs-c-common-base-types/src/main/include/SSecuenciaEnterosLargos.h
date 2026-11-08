@@ -9,6 +9,7 @@
 
 
 #include <SSecuencia.h>
+#include <SListaEnterosLargos.h>
 
 
 
@@ -23,6 +24,7 @@ typedef struct
 
 
 SSecuenciaEnterosLargos * SSecIntlCrear ();
+SSecuenciaEnterosLargos * SSecIntlCrearDesdeLista ( SListaEnterosLargos * p_lisValores );
 
 
 void SSecIntlDestruir ( SSecuenciaEnterosLargos ** p_p_secObj );
@@ -37,6 +39,10 @@ int SSecIntlEliminar ( SSecuenciaEnterosLargos * p_secObj, int iElem );
 int SSecIntlVaciar ( SSecuenciaEnterosLargos * p_secObj );
 
 int SSecIntlExiste ( SSecuenciaEnterosLargos * p_secObj, long lDato );
+int SSecIntlBuscar ( SSecuenciaEnterosLargos * p_secObj, long lDato );
+int SSecIntlRepeticiones ( SSecuenciaEnterosLargos * p_secObj, long lDato );
+int SSecIntlBuscarPrimero ( SSecuenciaEnterosLargos * p_secObj, long lDato );
+int SSecIntlBuscarSiguiente ( SSecuenciaEnterosLargos * p_secObj, long lDato, int iPos );
 
 SSecuenciaEnterosLargos * SSecIntlExtraerUnicos ( SSecuenciaEnterosLargos * p_secObj );
 int SSecIntlTieneRepetidos ( SSecuenciaEnterosLargos * p_secObj );
@@ -48,6 +54,8 @@ void SSecIntlObtenerParametros ( SSecuenciaEnterosLargos * p_secObj, long * p_lM
 int SSecIntlDefinidaPositiva ( SSecuenciaEnterosLargos * p_secObj );
 int SSecIntlSemidefinidaPositiva ( SSecuenciaEnterosLargos * p_secObj );
 
+SSecuencia * SSecIntlSecuencia ( SSecuenciaEnterosLargos * p_secObj );
+SLista * SSecIntlLista ( SSecuenciaEnterosLargos * p_secObj );
 
 
 #endif

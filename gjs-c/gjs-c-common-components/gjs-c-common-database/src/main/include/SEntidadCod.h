@@ -9,7 +9,7 @@
 typedef struct
 {
 	SCodigo	*	p_codEntidad;
-    SPtr *      p_ptrContenido;
+	SPtr *      p_ptrContenido;
 
 } SEntidadCod;
 

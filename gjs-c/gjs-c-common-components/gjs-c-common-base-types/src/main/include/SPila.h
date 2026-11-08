@@ -5,6 +5,7 @@
 
 
 #include <SLista.h>
+#include <TiposBasicosErrores.h>
 
 
 
@@ -30,6 +31,8 @@ SElemento * SPilPrimero ( SPila * p_pilObj );
 SElemento * SPilDesapilar ( SPila * p_pilObj );
 
 int SPilApilar ( SPila * p_pilObj, SElemento * p_elObj );
+int SPilApilarTodos ( SPila * p_pilObj, SLista * p_lisValores );
+int SPilApilarTodosDup ( SPila * p_pilObj, SLista * p_lisValores );
 int SPilEliminarPrimero ( SPila * p_pilObj );
 int SPilVaciar ( SPila * p_pilObj );
 

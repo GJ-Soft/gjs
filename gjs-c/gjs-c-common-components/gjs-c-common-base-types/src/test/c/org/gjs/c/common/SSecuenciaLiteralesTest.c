@@ -98,12 +98,94 @@ static int TestSSecLitInvalidos01 ()
 
 
 
+/* CrearDesdeLista copia; Secuencia y Lista dan lo de dentro. Repetidos por
+   contenido, ExtraerUnicos y TieneRepetidos. */
+static int TestSSecLitBuscarSiguiente01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecLitBuscarSiguiente 01:\n" );
+
+	const char * p_cVal [ 6 ] = { "b", "a", "b", "c", "b", "d" };
+	char cB [ 2 ] = { 'b', '\0' };
+	SListaLiterales * p_lisVal = SLisLitCrear ();
+	SSecuenciaLiterales * p_secObj = NULL;
+	SSecuenciaLiterales * p_secUni = NULL;
+	int iPos = 0;
+	while ( ES_VALIDO ( p_lisVal ) && ( iPos < 6 ) )
+	{
+		SLisLitInsertarDupAlFinal ( p_lisVal, p_cVal [ iPos ] );
+		iPos = iPos + 1;
+	}
+	if ( ES_VALIDO ( p_lisVal ) )
+	{
+		p_secObj = SSecLitCrearDesdeLista ( p_lisVal );
+		if ( ( SSecLitNumElementos ( p_secObj ) != 6 ) || ( ! ElementoEs ( p_secObj, 3, "c" ) ) ||
+			 ( SSecLitElemento ( p_secObj, 0 ) == SLisLitElemento ( p_lisVal, 0 ) ) )
+		{
+			printf( "Error caso 1: la secuencia deberia tener sus propias copias de las 6\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_NULO ( SSecLitSecuencia ( p_secObj ) ) ||
+			 ( SSecLitLista ( p_secObj ) != SSecpLista ( SSecLitSecuencia ( p_secObj ) ) ) ||
+			 ( SLispNumElementos ( SSecLitLista ( p_secObj ) ) != 6 ) )
+		{
+			printf( "Error caso 2: Secuencia y Lista deberian dar la secuencia interna y su lista\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecLitBuscarPrimero ( p_secObj, cB ) != 0 ) ||
+			 ( SSecLitBuscarSiguiente ( p_secObj, cB, 0 ) != 2 ) ||
+			 ( SSecLitBuscarSiguiente ( p_secObj, cB, 2 ) != 4 ) ||
+			 ( SSecLitBuscarSiguiente ( p_secObj, cB, 4 ) != -1 ) ||
+			 ( SSecLitBuscarSiguiente ( p_secObj, cB, -2 ) != -1 ) ||
+			 ( SSecLitBuscar ( p_secObj, "d" ) != 5 ) ||
+			 ( SSecLitRepeticiones ( p_secObj, cB ) != 3 ) ||
+			 ( SSecLitRepeticiones ( p_secObj, "x" ) != 0 ) )
+		{
+			printf( "Error caso 3: la b deberia estar en 0, 2 y 4, la d en la 5 y la x en ninguna\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_secUni = SSecLitExtraerUnicos ( p_secObj );
+		if ( ( SSecLitNumElementos ( p_secUni ) != 4 ) || ( ! ElementoEs ( p_secUni, 0, "b" ) ) ||
+			 ( ! ElementoEs ( p_secUni, 1, "a" ) ) || ( ! ElementoEs ( p_secUni, 2, "c" ) ) ||
+			 ( ! ElementoEs ( p_secUni, 3, "d" ) ) ||
+			 ( SSecLitElemento ( p_secUni, 0 ) == SSecLitElemento ( p_secObj, 0 ) ) )
+		{
+			printf( "Error caso 4: se esperaban copias de { b, a, c, d }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecLitTieneRepetidos ( p_secObj ) != 1 ) || ( SSecLitTieneRepetidos ( p_secUni ) != 0 ) ||
+			 ( SSecLitTieneRepetidos ( NULL ) != 0 ) || ES_VALIDO ( SSecLitExtraerUnicos ( NULL ) ) )
+		{
+			printf( "Error caso 5: solo la de partida deberia tener repetidos\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SSecLitCrearDesdeLista ( NULL ) ) || ES_VALIDO ( SSecLitSecuencia ( NULL ) ) ||
+			 ES_VALIDO ( SSecLitLista ( NULL ) ) || ( SSecLitRepeticiones ( NULL, cB ) != 0 ) ||
+			 ( SSecLitBuscarSiguiente ( NULL, cB, -1 ) != -1 ) || ( SSecLitInsertar ( NULL, "a" ) != 0 ) ||
+			 ( SSecLitInsertar ( p_secObj, NULL ) != 0 ) )
+		{
+			printf( "Error caso 6: con un nulo se esperaba nulo, 0 al contar o insertar y -1 al buscar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la lista\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisLitDestruir ( &p_lisVal );
+	SSecLitDestruir ( &p_secObj );
+	SSecLitDestruir ( &p_secUni );
+	return ( iRes );
+}
+
 int TestSSecuenciaLiterales ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SSecuenciaLiterales]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSSecLitOperaciones01 () == BOOL_VAL_CIERTO ) &&
-			( TestSSecLitInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSSecLitInvalidos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecLitBuscarSiguiente01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

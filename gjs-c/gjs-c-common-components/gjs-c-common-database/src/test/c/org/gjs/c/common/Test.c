@@ -22,10 +22,10 @@ char ** testArrayInit()
     p_p_cTests[ 2 ] = CadDuplicar ( "SEntidadCodTest" );
     p_p_cTests[ 3 ] = CadDuplicar ( "SEntidadCodNomTest" );
     p_p_cTests[ 4 ] = CadDuplicar ( "SEntidadIdCodTest" );
-    p_p_cTests[ 5 ] = CadDuplicar ( "SListaEntidadesTest" );
-    p_p_cTests[ 6 ] = CadDuplicar ( "SConjuntoEntidadesTest" );
-    p_p_cTests[ 7 ] = CadDuplicar ( "SListaEntidadesCodTest" );
-    p_p_cTests[ 8 ] = CadDuplicar ( "SConjuntoEntidadesCodTest" );
+	p_p_cTests[ 5 ] = CadDuplicar ( "SListaEntidadesTest" );
+	p_p_cTests[ 6 ] = CadDuplicar ( "SConjuntoEntidadesTest" );
+	p_p_cTests[ 7 ] = CadDuplicar ( "SListaEntidadesCodTest" );
+	p_p_cTests[ 8 ] = CadDuplicar ( "SConjuntoEntidadesCodTest" );
     return p_p_cTests;
 }
 
@@ -37,10 +37,10 @@ PFUNINTV * functionArrayInit()
     p_fTests[ 2 ] = TestSEntidadCod;
     p_fTests[ 3 ] = TestSEntidadCodNom;
     p_fTests[ 4 ] = TestSEntidadIdCod;
-    p_fTests[ 5 ] = TestSListaEntidades;
-    p_fTests[ 6 ] = TestSConjuntoEntidades;
-    p_fTests[ 7 ] = TestSListaEntidadesCod;
-    p_fTests[ 8 ] = TestSConjuntoEntidadesCod;
+	p_fTests[ 5 ] = TestSListaEntidades;
+	p_fTests[ 6 ] = TestSConjuntoEntidades;
+	p_fTests[ 7 ] = TestSListaEntidadesCod;
+	p_fTests[ 8 ] = TestSConjuntoEntidadesCod;
     return p_fTests;
 }
 

@@ -402,3 +402,18 @@ int SCmpEvaluarBloqueEsDiferenteExt ( SComparador * p_cmpObj, SBloque * p_blqObj
 	return ( iRes );
 }
 
+/* Otro comparador con la misma funcion; NULL si p_cmpObj es nulo. */
+SComparador * SCmpDuplicar ( SComparador * p_cmpObj )
+{
+	SComparador * p_cmpRes;
+
+	if ( ES_VALIDO ( p_cmpObj ) )
+	{
+		p_cmpRes = SCmpCrear ( p_cmpObj->fComparar );
+	}
+	else
+	{
+		p_cmpRes = NULL;
+	}
+	return ( p_cmpRes );
+}

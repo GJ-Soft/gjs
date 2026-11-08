@@ -62,8 +62,8 @@ memoria cruda en lugar de contra un [SBloque](SBloque.md):
 | `SElemento * SCnjBuscarElem ( SConjunto *, SBloque * )` | El elemento |
 | `SElemento * SCnjBuscarElemExt ( SConjunto *, byte * )` | El elemento |
 
-Como en [SListaOrdenada](Listas.md), el constructor recibe **la función de
-comparación**, no un [SComparador](SComparador.md) ya construido:
+Como `SLisOrdCrear` en [SListaOrdenada](Listas.md), el constructor recibe **la
+función de comparación**, no un [SComparador](SComparador.md) ya construido:
 
 ```c
 SConjunto * p_cnjObj = SCnjCrear ( CompararEnteros );

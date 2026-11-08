@@ -215,13 +215,84 @@ static int TestSSecIntConjunto01 ()
 }
 
 
+/* CrearDesdeLista copia; Secuencia y Lista dan lo de dentro. Repetidos con
+   BuscarPrimero / BuscarSiguiente y Repeticiones. */
+static int TestSSecIntBuscarSiguiente01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecIntBuscarSiguiente 01:\n" );
+
+	int iVal [ 6 ] = { 20, 10, 20, 30, 20, 40 };
+	SListaEnteros * p_lisVal = SLisIntCrear ();
+	SSecuenciaEnteros * p_secObj = NULL;
+	int iPos = 0;
+	while ( ES_VALIDO ( p_lisVal ) && ( iPos < 6 ) )
+	{
+		SLisIntInsertar ( p_lisVal, iVal [ iPos ] );
+		iPos = iPos + 1;
+	}
+	if ( ES_VALIDO ( p_lisVal ) )
+	{
+		p_secObj = SSecIntCrearDesdeLista ( p_lisVal );
+		/* Son copias: vaciar la lista no toca la secuencia. */
+		SLisIntVaciar ( p_lisVal );
+		if ( ( SSecIntNumElementos ( p_secObj ) != 6 ) || ( SSecIntElemento ( p_secObj, 2 ) != 20 ) )
+		{
+			printf( "Error caso 1: la secuencia deberia tener sus propias copias de los 6\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_NULO ( SSecIntSecuencia ( p_secObj ) ) ||
+			 ( SSecIntLista ( p_secObj ) != SSecLista ( SSecIntSecuencia ( p_secObj ) ) ) ||
+			 ( SLisNumElementos ( SSecIntLista ( p_secObj ) ) != 6 ) )
+		{
+			printf( "Error caso 2: Secuencia y Lista deberian dar la secuencia interna y su lista\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecIntBuscarPrimero ( p_secObj, 20 ) != 0 ) ||
+			 ( SSecIntBuscarSiguiente ( p_secObj, 20, 0 ) != 2 ) ||
+			 ( SSecIntBuscarSiguiente ( p_secObj, 20, 2 ) != 4 ) ||
+			 ( SSecIntBuscarSiguiente ( p_secObj, 20, 4 ) != -1 ) ||
+			 ( SSecIntBuscarSiguiente ( p_secObj, 20, 1 ) != 2 ) ||
+			 ( SSecIntBuscarSiguiente ( p_secObj, 20, -2 ) != -1 ) ||
+			 ( SSecIntBuscar ( p_secObj, 40 ) != 5 ) )
+		{
+			printf( "Error caso 3: el 20 deberia estar en 0, 2 y 4, y el 40 en la 5\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecIntRepeticiones ( p_secObj, 20 ) != 3 ) ||
+			 ( SSecIntRepeticiones ( p_secObj, 99 ) != 0 ) ||
+			 ( SSecIntBuscar ( p_secObj, 99 ) != -1 ) )
+		{
+			printf( "Error caso 4: el 20 deberia estar 3 veces y el 99 ninguna\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SSecIntCrearDesdeLista ( NULL ) ) || ES_VALIDO ( SSecIntSecuencia ( NULL ) ) ||
+			 ES_VALIDO ( SSecIntLista ( NULL ) ) || ( SSecIntRepeticiones ( NULL, 20 ) != 0 ) ||
+			 ( SSecIntBuscarSiguiente ( NULL, 20, -1 ) != -1 ) || ( SSecIntBuscar ( NULL, 20 ) != -1 ) )
+		{
+			printf( "Error caso 5: con un nulo se esperaba nulo, 0 al contar y -1 al buscar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la lista\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisIntDestruir ( &p_lisVal );
+	SSecIntDestruir ( &p_secObj );
+	return ( iRes );
+}
+
+
 int TestSSecuenciaEnteros ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SSecuenciaEnteros]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSSecIntOperaciones01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecIntInvalidos01 () == BOOL_VAL_CIERTO )  &&
-			( TestSSecIntConjunto01 () == BOOL_VAL_CIERTO ) )
+			( TestSSecIntConjunto01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecIntBuscarSiguiente01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

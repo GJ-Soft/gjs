@@ -43,15 +43,20 @@ int SElpEncadenarSucesor ( SElementoPtr * p_elpObj, SElementoPtr * p_elpSuc );
 int SElpDesencadenarAntecesor ( SElementoPtr * p_elpObj );
 int SElpDesencadenarSucesor ( SElementoPtr * p_elpObj );
 int SElpDesencadenar ( SElementoPtr * p_elpObj );
+void SElpDeposicionar ( SElementoPtr * p_elpObj );
 
 int SElpEsIgual ( SElementoPtr * p_elpObj1, SElementoPtr * p_elpObj2, int iNumBytes );
-int SElpEsIgualExt ( SElementoPtr * p_elpObj, byte * p_byObj, int iNumBytes );
+int SElpEsIgualDatos ( SElementoPtr * p_elpObj, byte * p_byObj, int iNumBytes );
+int SElpEsIgualExt ( SElementoPtr * p_elpObj1, SElementoPtr * p_elpObj2, PFUNINTPBPB fSonIguales );
+int SElpEsIgualDatosExt ( SElementoPtr * p_elpObj, byte * p_byObj, PFUNINTPBPB fSonIguales );
+
 
 int	SElpLiberacionMemoriaActivada ( SElementoPtr * p_elpObj );
 //void SElpActivarLiberacionMemoria ( SElementoPtr * p_elpObj );
 //void SElpDesactivarLiberacionMemoria ( SElementoPtr * p_elpObj );
 
-SElementoPtr * SElpDuplicar ( SElementoPtr * p_elpObj );
+SElementoPtr * SElpDuplicar ( SElementoPtr * p_elpObj, int iNumBytes );
+SElementoPtr * SElpDuplicarExt ( SElementoPtr * p_elpObj, PFUNPBYTEPB fDuplicar );
 
 SElementoPtr * SElpAntecesorExt ( SElementoPtr * p_elpObj, int iInc );
 SElementoPtr * SElpSucesorExt ( SElementoPtr * p_elpObj, int iInc );

@@ -38,6 +38,7 @@
 // 	C = char
 // 	PC = char * X
 // 	T = const char * X
+// 	B = byte
 // 
 // 	P[X] = * X
 // 	PP[X] = ** X
@@ -56,6 +57,8 @@ typedef void (* PPRCD)(double);
 typedef void (* PPRCC)(char);
 typedef void (* PPRCPC)(char *);
 typedef void (* PPRCT)(const char *);
+typedef void (* PPRCB)(byte);
+typedef void (* PPRCPB)(byte *);
 
 typedef void (* PPRCPV)(void *);
 typedef void (* PPRCPPV)(void **);
@@ -75,6 +78,8 @@ typedef int (* PFUNINTUL)(unsigned long);
 typedef int (* PFUNINTUS)(unsigned short);
 typedef int (* PFUNINTPC)(char *);
 typedef int (* PFUNINTT)(const char *);
+typedef int (* PFUNINTB)(byte);
+typedef int (* PFUNINTPB)(byte *);
 
 typedef int (* PFUNINTPV)(void *);
 typedef int (* PFUNINTPPV)(void **);
@@ -114,6 +119,10 @@ typedef int (* PFUNINTTT)(const char *,const char *);
 
 typedef int (* PFUNINTPVPV)(void *,void *);
 
+typedef int (* PFUNINTBB)(byte,byte);
+
+typedef int (* PFUNINTPBPB)(byte *,byte *);
+
 
 
 typedef long (* PFUNLONGV)(void);
@@ -128,6 +137,8 @@ typedef long (* PFUNLONGUL)(unsigned long);
 typedef long (* PFUNLONGUS)(unsigned short);
 typedef long (* PFUNLONGPC)(char *);
 typedef long (* PFUNLONGT)(const char *);
+typedef long (* PFUNLONGB)(byte);
+typedef long (* PFUNLONGPB)(byte *);
 
 typedef long (* PFUNLONGPV)(void *);
 typedef long (* PFUNLONGPPV)(void **);
@@ -148,6 +159,8 @@ typedef unsigned int (* PFUNUINTUL)(unsigned long);
 typedef unsigned int (* PFUNUINTUS)(unsigned short);
 typedef unsigned int (* PFUNUINTPC)(char *);
 typedef unsigned int (* PFUNUINTT)(const char *);
+typedef unsigned int (* PFUNUINTB)(byte);
+typedef unsigned int (* PFUNUINTPB)(byte *);
 
 typedef unsigned int (* PFUNUINTPV)(void *);
 typedef unsigned int (* PFUNUINTPPV)(void **);
@@ -168,6 +181,8 @@ typedef unsigned long (* PFUNULONGUL)(unsigned long);
 typedef unsigned long (* PFUNULONGUS)(unsigned short);
 typedef unsigned long (* PFUNULONGPC)(char *);
 typedef unsigned long (* PFUNULONGT)(const char *);
+typedef unsigned long (* PFUNULONGB)(byte);
+typedef unsigned long (* PFUNULONGPB)(byte *);
 
 typedef unsigned long (* PFUNULONGPV)(void *);
 typedef unsigned long (* PFUNULONGPPV)(void **);
@@ -188,6 +203,8 @@ typedef char (* PFUNCHARUL)(unsigned long);
 typedef char (* PFUNCHARUS)(unsigned short);
 typedef char (* PFUNCHARPC)(char *);
 typedef char (* PFUNCHART)(const char *);
+typedef char (* PFUNCHARB)(byte);
+typedef char (* PFUNCHARPB)(byte *);
 
 typedef char (* PFUNCHARPV)(void *);
 typedef char (* PFUNCHARPPV)(void **);
@@ -208,6 +225,8 @@ typedef char * (* PFUNPCHARUL)(unsigned long);
 typedef char * (* PFUNPCHARUS)(unsigned short);
 typedef char * (* PFUNPCHARPC)(char *);
 typedef char * (* PFUNPCHART)(const char *);
+typedef char * (* PFUNPCHARB)(byte);
+typedef char * (* PFUNPCHARPB)(byte *);
 
 typedef char * (* PFUNPCHARPV)(void *);
 typedef char * (* PFUNPCHARPPV)(void **);
@@ -231,6 +250,8 @@ typedef const char * (* PFUNLITUL)(unsigned long);
 typedef const char * (* PFUNLITUS)(unsigned short);
 typedef const char * (* PFUNLITPC)(char *);
 typedef const char * (* PFUNLITT)(const char *);
+typedef const char * (* PFUNLITB)(byte);
+typedef const char * (* PFUNLITPB)(byte *);
 
 typedef const char * (* PFUNLITPV)(void *);
 typedef const char * (* PFUNLITPPV)(void **);
@@ -253,6 +274,8 @@ typedef float (* PFUNFLTUL)(unsigned long);
 typedef float (* PFUNFLTUS)(unsigned short);
 typedef float (* PFUNFLTPC)(char *);
 typedef float (* PFUNFLTT)(const char *);
+typedef float (* PFUNFLTB)(byte);
+typedef float (* PFUNFLTPB)(byte *);
 
 typedef float (* PFUNFLTPV)(void *);
 typedef float (* PFUNFLTPPV)(void **);
@@ -273,6 +296,8 @@ typedef double (* PFUNDBLUL)(unsigned long);
 typedef double (* PFUNDBLUS)(unsigned short);
 typedef double (* PFUNDBLPC)(char *);
 typedef double (* PFUNDBLT)(const char *);
+typedef double (* PFUNDBLB)(byte);
+typedef double (* PFUNDBLPB)(byte *);
 
 typedef double (* PFUNDBLPV)(void *);
 typedef double (* PFUNDBLPPV)(void **);
@@ -293,6 +318,8 @@ typedef void * (* PFUNPVOIDD)(double);
 typedef void * (* PFUNPVOIDC)(char);
 typedef void * (* PFUNPVOIDPC)(char *);
 typedef void * (* PFUNPVOIDT)(const char *);
+typedef void * (* PFUNPVOIDB)(byte);
+typedef void * (* PFUNPVOIDPB)(byte *);
 
 typedef void * (* PFUNPVOIDPV)(void *);
 typedef void * (* PFUNPVOIDPPV)(void **);
@@ -301,6 +328,52 @@ typedef void * (* PFUNPVOIDQ)(long long);
 typedef void * (* PFUNPVOIDUQ)(unsigned long long);
 
 typedef void * (* PFUNPVOIDULIUL)(unsigned long, int, unsigned long); 
+
+
+typedef byte (* PFUNBYTEV)(void);
+typedef byte (* PFUNBYTEI)(int);
+typedef byte (* PFUNBYTEL)(long);
+typedef byte (* PFUNBYTES)(short);
+typedef byte (* PFUNBYTEF)(float);
+typedef byte (* PFUNBYTED)(double);
+typedef byte (* PFUNBYTEC)(char);
+typedef byte (* PFUNBYTEUI)(unsigned int);
+typedef byte (* PFUNBYTEUL)(unsigned long);
+typedef byte (* PFUNBYTEUS)(unsigned short);
+typedef byte (* PFUNBYTEPC)(char *);
+typedef byte (* PFUNBYTET)(const char *);
+typedef byte (* PFUNBYTEB)(byte);
+typedef byte (* PFUNBYTEPB)(byte *);
+
+typedef byte (* PFUNBYTEPV)(void *);
+typedef byte (* PFUNBYTEPPV)(void **);
+
+typedef byte (* PFUNBYTEQ)(long long);
+typedef byte (* PFUNBYTEUQ)(unsigned long long);
+
+
+typedef byte * (* PFUNPBYTEV)(void);
+typedef byte * (* PFUNPBYTEI)(int);
+typedef byte * (* PFUNPBYTEL)(long);
+typedef byte * (* PFUNPBYTES)(short);
+typedef byte * (* PFUNPBYTEF)(float);
+typedef byte * (* PFUNPBYTED)(double);
+typedef byte * (* PFUNPBYTEC)(char);
+typedef byte * (* PFUNPBYTEUI)(unsigned int);
+typedef byte * (* PFUNPBYTEUL)(unsigned long);
+typedef byte * (* PFUNPBYTEUS)(unsigned short);
+typedef byte * (* PFUNPBYTEPC)(char *);
+typedef byte * (* PFUNPBYTET)(const char *);
+typedef byte * (* PFUNPBYTEB)(byte);
+typedef byte * (* PFUNPBYTEPB)(byte *);
+
+typedef byte * (* PFUNPBYTEPV)(void *);
+typedef byte * (* PFUNPBYTEPPV)(void **);
+
+typedef byte * (* PFUNPBYTEQ)(long long);
+typedef byte * (* PFUNPBYTEUQ)(unsigned long long);
+
+typedef byte * (* PFUNPBYTEPBPB)(byte *,byte *);
 
 
 #if ( defined ( WIN ) )

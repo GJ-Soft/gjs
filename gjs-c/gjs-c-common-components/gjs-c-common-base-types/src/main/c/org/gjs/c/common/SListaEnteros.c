@@ -3,6 +3,7 @@
 #include "TiposBasicosConfig.h"
 
 
+static SListaEnteros * _SLisIntEnvolver ( SLista * p_lisDatos );
 
 
 SListaEnteros * SLisIntCrear ()
@@ -314,6 +315,21 @@ int SLisIntEsNulo ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
+int SLisIntEstaPosicionada ( SListaEnteros * p_lisObj )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		iRes = SLisEstaPosicionada ( p_lisObj->p_lisDatos );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int SLisIntEstaEnFinal ( SListaEnteros * p_lisObj )
 {
 	int iRes;
@@ -504,27 +520,98 @@ int SLisIntExiste ( SListaEnteros * p_lisObj, int iDato )
 	return ( iRes );
 }
 
-int SLisIntBuscar ( SListaEnteros * p_lisObj, int iDato )
+/* Busquedas por la cadena de una SLista de int, compartidas con
+   SSecuenciaEnteros ( por eso no son static ). BuscarSiguiente devuelve la
+   posicion del siguiente igual DETRAS de iPos, o -1: con iPos = -1 busca
+   desde el principio, y un iPos menor da -1. Repeticiones cuenta los iguales. */
+int _SLisIntBuscarSiguiente ( SLista * p_lisDatos, int iDato, int iPos )
 {
-	int 		iRes;
-	int			iElem;
-	SElemento * p_elmObj;
+	int			iRes;
+	int			iEnc;
+	SElemento *	p_elmObj;
 
-	if ( ES_VALIDO ( p_lisObj ) )
+	if ( iPos >= -1 )
 	{
-		iElem = 0;
-		iRes = -1;
-		/* La generica, no SLisIntElemento: esa devuelve el VALOR. */
-		p_elmObj = SLisElemento ( p_lisObj->p_lisDatos, 0 );
-		while ( ES_VALIDO ( p_elmObj ) && ( iRes == -1 ) )
+		iRes = iPos + 1;
+		/* La generica, no la tipada: esa devuelve el VALOR. */
+		p_elmObj = SLisElemento ( p_lisDatos, iRes );
+		iEnc = 0;
+		while ( ES_VALIDO ( p_elmObj ) && ( iEnc == 0 ) )
 		{
 			if ( SElmEntero ( p_elmObj ) == iDato )
 			{
-				iRes = iElem;
+				iEnc = 1;
 			}
-			iElem = iElem + 1;
-			p_elmObj = SElmSucesorExt ( p_elmObj, 1 );
+			else
+			{
+				p_elmObj = SElmSucesor ( p_elmObj );
+				iRes = iRes + 1;
+			}
 		}
+		if ( iEnc == 0 )
+		{
+			iRes = -1;
+		}
+	}
+	else
+	{
+		iRes = -1;
+	}
+	return ( iRes );
+}
+
+int _SLisIntRepeticiones ( SLista * p_lisDatos, int iDato )
+{
+	int			iRes;
+	SElemento *	p_elmObj;
+
+	iRes = 0;
+	p_elmObj = SLisElemento ( p_lisDatos, 0 );
+	while ( ES_VALIDO ( p_elmObj ) )
+	{
+		if ( SElmEntero ( p_elmObj ) == iDato )
+		{
+			iRes = iRes + 1;
+		}
+		p_elmObj = SElmSucesor ( p_elmObj );
+	}
+	return ( iRes );
+}
+
+/* Repeticiones: cuantos iguales hay, 0 si ninguno. Buscar es BuscarPrimero:
+   la posicion del primero igual, o -1. */
+int SLisIntRepeticiones ( SListaEnteros * p_lisObj, int iDato )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		iRes = _SLisIntRepeticiones ( p_lisObj->p_lisDatos, iDato );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisIntBuscar ( SListaEnteros * p_lisObj, int iDato )
+{
+	return ( SLisIntBuscarPrimero ( p_lisObj, iDato ) );
+}
+
+int SLisIntBuscarPrimero ( SListaEnteros * p_lisObj, int iDato )
+{
+	return ( SLisIntBuscarSiguiente ( p_lisObj, iDato, -1 ) );
+}
+
+int SLisIntBuscarSiguiente ( SListaEnteros * p_lisObj, int iDato, int iPos )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		iRes = _SLisIntBuscarSiguiente ( p_lisObj->p_lisDatos, iDato, iPos );
 	}
 	else
 	{
@@ -853,5 +940,293 @@ int SLisIntSemidefinidaPositiva ( SListaEnteros * p_lisObj )
 	return ( iRes );
 }
 
+/* Copia de los valores, en el mismo orden; NULL si falla alguna copia. */
+SListaEnteros * SLisIntDuplicar ( SListaEnteros * p_lisObj )
+{
+	SListaEnteros * p_lisRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		p_lisRes = _SLisIntEnvolver ( SLisDuplicar ( p_lisObj->p_lisDatos ) );
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+/* Operaciones con otras listas: delegan en las de SLista, que recorren la
+   cadena y no mueven el cursor de la lista de valores. Ver Listas.md. */
+int SLisIntExistenTodos ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SLisExistenTodos ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisIntExisteAlguno ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SLisExisteAlguno ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisIntInsertarLista ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SLisInsertarLista ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisIntConcatenarLista ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SLisConcatenarLista ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisIntInsertarListaDup ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SLisInsertarListaDup ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SLisIntConcatenarListaDup ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SLisConcatenarListaDup ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+SListaEnteros * SLisIntExtraerLista ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores )
+{
+	SListaEnteros * p_lisRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			p_lisRes = _SLisIntEnvolver ( SLisExtraerLista ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos ) );
+		}
+		else
+		{
+			p_lisRes = NULL;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+/* Destruye la primera aparicion de cada valor de p_lisValores; ver
+   SLisEliminarLista. */
+int SLisIntEliminarLista ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_lisObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SLisEliminarLista ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+SListaEnteros * SLisIntUnion ( SListaEnteros * p_lisValores1, SListaEnteros * p_lisValores2 )
+{
+	SListaEnteros * p_lisRes;
+
+	if ( ES_VALIDO ( p_lisValores1 ) )
+	{
+		if ( ES_VALIDO ( p_lisValores2 ) )
+		{
+			p_lisRes = _SLisIntEnvolver ( SLisUnion ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos ) );
+		}
+		else
+		{
+			p_lisRes = NULL;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+SListaEnteros * SLisIntInterseccion ( SListaEnteros * p_lisValores1, SListaEnteros * p_lisValores2 )
+{
+	SListaEnteros * p_lisRes;
+
+	if ( ES_VALIDO ( p_lisValores1 ) )
+	{
+		if ( ES_VALIDO ( p_lisValores2 ) )
+		{
+			p_lisRes = _SLisIntEnvolver ( SLisInterseccion ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos ) );
+		}
+		else
+		{
+			p_lisRes = NULL;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+SListaEnteros * SLisIntDiferencia ( SListaEnteros * p_lisValores1, SListaEnteros * p_lisValores2 )
+{
+	SListaEnteros * p_lisRes;
+
+	if ( ES_VALIDO ( p_lisValores1 ) )
+	{
+		if ( ES_VALIDO ( p_lisValores2 ) )
+		{
+			p_lisRes = _SLisIntEnvolver ( SLisDiferencia ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos ) );
+		}
+		else
+		{
+			p_lisRes = NULL;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+/* Envuelve en una SListaEnteros la SLista que devuelve una operacion de SLista,
+   y se queda con ella. No se usa SLisIntCrear porque ese crea su propia SLista
+   vacia, que al sustituirla quedaba sin liberar. Con p_lisDatos nula devuelve
+   NULL, y si no puede reservar la envoltura destruye p_lisDatos. */
+static SListaEnteros * _SLisIntEnvolver ( SLista * p_lisDatos )
+{
+	SListaEnteros * p_lisRes;
+
+	if ( ES_VALIDO ( p_lisDatos ) )
+	{
+		p_lisRes = (SListaEnteros *) MemReservar ( sizeof ( SListaEnteros ) );
+		if ( ES_VALIDO ( p_lisRes ) )
+		{
+			p_lisRes->p_lisDatos = p_lisDatos;
+		}
+		else
+		{
+			SLisDestruir ( &p_lisDatos );
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
 
 

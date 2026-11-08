@@ -56,6 +56,7 @@ void SLisLitMoverA ( SListaLiterales * p_lisObj, int iElem );
 void SLisLitDeposicionar ( SListaLiterales * p_lisObj );
 
 int SLisLitEsNulo ( SListaLiterales * p_lisObj );
+int SLisLitEstaPosicionada ( SListaLiterales * p_lisObj );
 int SLisLitEstaEnFinal ( SListaLiterales * p_lisObj );
 int SLisLitEstaEnInicio ( SListaLiterales * p_lisObj );
 
@@ -71,6 +72,13 @@ int SLisLitEliminar ( SListaLiterales * p_lisObj );
 
 int SLisLitExiste ( SListaLiterales * p_lisObj, const char * p_cDatos );
 int SLisLitBuscar ( SListaLiterales * p_lisObj, const char * p_cDatos );
+int SLisLitRepeticiones ( SListaLiterales * p_lisObj, const char * p_cDatos );
+int SLisLitBuscarPrimero ( SListaLiterales * p_lisObj, const char * p_cDatos );
+int SLisLitBuscarSiguiente ( SListaLiterales * p_lisObj, const char * p_cDatos, int iPos );
+
+SListaLiterales * SLisLitExtraerUnicos ( SListaLiterales * p_lisObj );
+SListaLiterales * SLisLitExtraerUnicosExt ( SListaLiterales * p_lisObj, int iOrdenar );
+int SLisLitTieneRepetidos ( SListaLiterales * p_lisObj );
 
 int	SLisLitLiberacionMemoriaActivada ( SListaLiterales * p_lisObj );
 void SLisLitActivarLiberacionMemoria ( SListaLiterales * p_lisObj );
@@ -78,6 +86,28 @@ void SLisLitDesactivarLiberacionMemoria ( SListaLiterales * p_lisObj );
 
 void SLisLitImprimir  ( SListaLiterales * p_lisObj );
 
+SListaLiterales * SLisLitDuplicar ( SListaLiterales * p_lisObj );
+
+//Operaciones con otras listas
+int SLisLitExistenTodos ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
+int SLisLitExisteAlguno ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
+
+// Extrae los valores de la lista de entrada
+int SLisLitInsertarLista ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
+int SLisLitConcatenarLista ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
+// Duplica los valores de la lista de entrada
+int SLisLitInsertarListaDup ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
+int SLisLitConcatenarListaDup ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
+// Destruye la primera aparición de cada valor de la lista de entrada
+int SLisLitEliminarLista ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
+
+// Operaciones que generan listas nuevas
+// NOTA: Si hay algún error puede realizar una extracción parcial
+SListaLiterales * SLisLitExtraerLista ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
+
+SListaLiterales * SLisLitUnion ( SListaLiterales * p_lisValores1, SListaLiterales * p_lisValores2 );
+SListaLiterales * SLisLitInterseccion ( SListaLiterales * p_lisValores1, SListaLiterales * p_lisValores2 );
+SListaLiterales * SLisLitDiferencia ( SListaLiterales * p_lisValores1, SListaLiterales * p_lisValores2 );
 
 #endif
 

@@ -50,21 +50,21 @@ Volver al [README](../README.md).
 | -------------- | ------- | -------------- | --------- | ---- | ----------------------------- |
 | `SContenido`   | `SCon`  | `SContenido`   | 26        | ✔    | [SContenido](SContenido.md)   |
 | `SElemento`    | `SElm`  | `SElemento`    | 47        | ✔    | [SElemento](SElemento.md)     |
-| `SElementoPtr` | `SElp`  | `SElementoPtr` | 19        | ✔    | [SElemento](SElemento.md)     |
-| `SComparador`  | `SCmp`  | `SComparador`  | 21        | ✔    | [SComparador](SComparador.md) |
+| `SElementoPtr` | `SElp`  | `SElementoPtr` | 24        | ✔    | [SElemento](SElemento.md)     |
+| `SComparador`  | `SCmp`  | `SComparador`  | 22        | ✔    | [SComparador](SComparador.md) |
 
 ### Listas
 
 | Módulo                        | Prefijo      | Struct                        | Funciones | Test | Documento                              |
 | ----------------------------- | ------------ | ----------------------------- | --------- | ---- | -------------------------------------- |
-| `SLista`                      | `SLis`       | `SLista`                      | 32        | ✔    | [Listas](Listas.md)                    |
-| `SListaPtr`                   | `SLisp`      | `SListaPtr`                   | 32        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnteros`               | `SLisInt`    | `SListaEnteros`               | 40        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnterosLargos`         | `SLisIntl`   | `SListaEnterosLargos`         | 40        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnterosLargosSinSigno` | `SLisIntLss` | `SListaEnterosLargosSinSigno` | 39        | ✔    | [Listas](Listas.md)                    |
-| `SListaLiterales`             | `SLisLit`    | `SListaLiterales`             | 41        | ✔    | [Listas](Listas.md)                    |
-| `SListaOrdenada`              | `SLisOrd`    | `SListaOrdenada`              | 24        | ✔    | [Listas](Listas.md)                    |
-| `SListaOrdenadaPtr`           | `SLispOrd`   | `SListaOrdenadaPtr`           | 24        | ✔    | [Listas](Listas.md)                    |
+| `SLista`                      | `SLis`       | `SLista`                      | 58        | ✔    | [Listas](Listas.md)                    |
+| `SListaPtr`                   | `SLisp`      | `SListaPtr`                   | 78        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnteros`               | `SLisInt`    | `SListaEnteros`               | 56        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnterosLargos`         | `SLisIntl`   | `SListaEnterosLargos`         | 56        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnterosLargosSinSigno` | `SLisIntLss` | `SListaEnterosLargosSinSigno` | 55        | ✔    | [Listas](Listas.md)                    |
+| `SListaLiterales`             | `SLisLit`    | `SListaLiterales`             | 61        | ✔    | [Listas](Listas.md)                    |
+| `SListaOrdenada`              | `SLisOrd`    | `SListaOrdenada`              | 61        | ✔    | [Listas](Listas.md)                    |
+| `SListaOrdenadaPtr`           | `SLispOrd`   | `SListaOrdenadaPtr`           | 70        | ✔    | [Listas](Listas.md)                    |
 | `SListaParejas`               | `SLisPrj`    | `SListaParejas`               | 10        | ✔    | [Listas](Listas.md)                    |
 | `SListaReferencias`           | `SLisRef`    | `SListaReferencias`           | 15        | ✔    | [Listas](Listas.md)                    |
 | `SListaVec`                   | `SVLis`      | `SVLista`                     | 21        | ✔    | [Listas](Listas.md)                    |
@@ -73,12 +73,12 @@ Volver al [README](../README.md).
 
 | Módulo                            | Prefijo      | Struct                            | Funciones | Test | Documento                   |
 | --------------------------------- | ------------ | --------------------------------- | --------- | ---- | --------------------------- |
-| `SSecuencia`                      | `SSec`       | `SSecuencia`                      | 11        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaPtr`                   | `SSecp`      | `SSecuenciaPtr`                   | 13        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnteros`               | `SSecInt`    | `SSecuenciaEnteros`               | 17        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnterosLargos`         | `SSecIntl`   | `SSecuenciaEnterosLargos`         | 16        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnterosLargosSinSigno` | `SSecIntLss` | `SSecuenciaEnterosLargosSinSigno` | 15        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaLiterales`             | `SSecLit`    | `SSecuenciaLiterales`             | 11        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuencia`                      | `SSec`       | `SSecuencia`                      | 37        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaPtr`                   | `SSecp`      | `SSecuenciaPtr`                   | 73        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnteros`               | `SSecInt`    | `SSecuenciaEnteros`               | 24        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnterosLargos`         | `SSecIntl`   | `SSecuenciaEnterosLargos`         | 23        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnterosLargosSinSigno` | `SSecIntLss` | `SSecuenciaEnterosLargosSinSigno` | 22        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaLiterales`             | `SSecLit`    | `SSecuenciaLiterales`             | 19        | ✔    | [Secuencias](Secuencias.md) |
 
 ### Vectores y flags
 
@@ -99,12 +99,12 @@ Volver al [README](../README.md).
 | `STablaPtr`          | `STabp`   | `STablaPtr`          | 13        | ✔    | [Tablas](Tablas.md)       |
 | `STablaEnteros`      | `STabInt` | `STablaEnteros`      | 10        | ✔    | [Tablas](Tablas.md)       |
 | `STablaLiterales`    | `STabLit` | `STablaLiterales`    | 14        | ✔    | [Tablas](Tablas.md)       |
-| `SPila`              | `SPil`    | `SPila`              | 11        | ✔    | [Pilas](Pilas.md)         |
-| `SPilaPtr`           | `SPilp`   | `SPilaPtr`           | 13        | ✔    | [Pilas](Pilas.md)         |
-| `SPilaEnteros`       | `SPilInt` | `SPilaEnteros`       | 10        | ✔    | [Pilas](Pilas.md)         |
-| `SPilaLiterales`     | `SPilLit` | `SPilaLiterales`     | 10        | ✔    | [Pilas](Pilas.md)         |
-| `SCola`              | `SCol`    | `SCola`              | 15        | ✔    | [Colas](Colas.md)         |
-| `SColaPtr`           | `SColp`   | `SColaPtr`           | 17        | ✔    | [Colas](Colas.md)         |
+| `SPila`              | `SPil`    | `SPila`              | 13        | ✔    | [Pilas](Pilas.md)         |
+| `SPilaPtr`           | `SPilp`   | `SPilaPtr`           | 17        | ✔    | [Pilas](Pilas.md)         |
+| `SPilaEnteros`       | `SPilInt` | `SPilaEnteros`       | 12        | ✔    | [Pilas](Pilas.md)         |
+| `SPilaLiterales`     | `SPilLit` | `SPilaLiterales`     | 12        | ✔    | [Pilas](Pilas.md)         |
+| `SCola`              | `SCol`    | `SCola`              | 17        | ✔    | [Colas](Colas.md)         |
+| `SColaPtr`           | `SColp`   | `SColaPtr`           | 21        | ✔    | [Colas](Colas.md)         |
 | `SConjunto`          | `SCnj`    | `SConjunto`          | 19        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoPtr`       | `SCnjp`   | `SConjuntoPtr`       | 18        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoLiterales` | `SCnjLit` | `SConjuntoLiterales` | 14        | ✔    | [Conjuntos](Conjuntos.md) |
@@ -208,10 +208,34 @@ Límites de la librería:
 | `DAT_TAM_INICIAL_DEF`        | 256       | Tamaño inicial de `SDatos`          |
 | `DAT_TAM_BLOQUE_DEF`         | 256       | Bloque de crecimiento de `SDatos`   |
 
+### `TiposBasicosErrores.h`
+
+Códigos de error de la librería, que tiene asignado el rango **11-20**
+(`gjs-c-common-base` tiene el 0-10, en `BaseErrores.h`):
+
+| Código                | Valor | Texto (`ERR_TXT_…`)                                           | Lo anota                                                                                  |
+| --------------------- | ----- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `ERR_COPIA_LISTA`     | 11    | «No se han podido copiar todos los elementos.»                | `SLisOrdCrearDesdeLista`, `SLispOrdCrearDesdeLista` y su Ext |
+| `ERR_INSERCION_LISTA` | 12    | «No se ha podido insertar un elemento en la lista destino.»   | `SLis(p)OrdInsertarLista(Ord)`, `SLis(p)OrdInsertarLista(Ord)Dup` (y `…DupExt`), `SLis(p)OrdExtraerLista(Ord)`, `SPil(p)ApilarTodos(Dup)`, `SCol(p)EncolarTodos(Dup)` (y sus `…DupExt`) |
+| `ERR_PILA_VACIA`      | 13    | «La pila esta vacia.»                                         | `SPil(p)Primero` y `SPil(p)Desapilar` con la pila vacía, y por ellas las de `SPilInt` y `SPilLit` |
+
+Se anotan con `ERROR_ESTABLECER_FORM` y el texto, porque el catálogo de textos
+de `Errores.c` sólo conoce los de la base.
+
+Cuando lo que falla es la copia de un elemento (`SElmDuplicar`, `SElpDuplicar`
+o su `Ext`) se anota `ERR_COPIA_OBJETO`, que es de la base (`BaseErrores.h`) y
+va con `ERROR_ESTABLECER`. Lo hacen las `…Dup` de las listas ordenadas, de las
+pilas y de las colas. `CrearDesdeLista` no: como devuelve lo copiado, anota
+`ERR_COPIA_LISTA`, que dice que la lista ha quedado incompleta. Los **códigos** son públicos: la
+incluyen `TiposBasicos.h`, `TiposBasicosConfig.h`, `SListaOrdenada.h`,
+`SListaOrdenadaPtr.h`, `SPila.h`, `SPilaPtr.h`, `SCola.h` y `SColaPtr.h`. Los **textos** son internos y están en
+`TiposBasicosConfig.h`, que no se publica.
+
 ### `TiposBasicosConfig.h`
 
-Configuración interna: incluye `Base.h`, `<sys/types.h>` en POSIX, y las dos
-cabeceras de constantes.
+Configuración interna: incluye `Base.h`, `<sys/types.h>` en POSIX, las dos
+cabeceras de constantes y la de errores, y define los textos `ERR_TXT_…` de
+esos errores.
 
 > Vive en `src/main/c/org/gjs/c/common/`, es decir, en el árbol de **fuentes** y
 > no en `src/main/include`. No se publica en el NAR `noarch`, así que no está

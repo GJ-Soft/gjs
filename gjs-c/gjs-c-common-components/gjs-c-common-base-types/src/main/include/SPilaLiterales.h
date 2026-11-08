@@ -9,7 +9,7 @@
 
 
 #include <SPilaPtr.h>
-
+#include <SListaLiterales.h>
 
 
 // NOTA: Siempre duplica la cadena.
@@ -39,6 +39,8 @@ char * SPilLitPrimero ( SPilaLiterales * p_pilObj );
 char * SPilLitDesapilar ( SPilaLiterales * p_pilObj );
 
 int SPilLitApilar ( SPilaLiterales * p_pilObj, char * p_cDato );
+int SPilLitApilarTodos ( SPilaLiterales * p_pilObj, SListaLiterales * p_lisValores );
+int SPilLitApilarTodosDup ( SPilaLiterales * p_pilObj, SListaLiterales * p_lisValores );
 int SPilLitEliminarPrimero ( SPilaLiterales * p_pilObj );
 int SPilLitVaciar ( SPilaLiterales * p_pilObj );
 

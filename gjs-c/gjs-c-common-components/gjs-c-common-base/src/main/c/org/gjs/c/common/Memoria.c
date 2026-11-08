@@ -455,6 +455,36 @@ void MemCopiar ( void * p_vDest, void * p_vOrig, int iNumBytes )
 	}
 }
 
+/* Copia iNumBytes de p_vOrig en un bloque nuevo, que pasa a ser del que llama
+   y se libera con MemLiberar. Si no se puede reservar, devuelve NULL con el
+   error que haya dejado MemReservar. */
+void * MemDuplicar ( void * p_vOrig, int iNumBytes )
+{
+	void * p_vDest;
+
+	if ( iNumBytes > 0 )
+	{
+		if ( ES_VALIDO ( p_vOrig ) )
+		{
+			p_vDest = MemReservar ( iNumBytes );
+			if ( ES_VALIDO ( p_vDest ) )
+			{
+				MemCopiar ( p_vDest, p_vOrig, iNumBytes );
+			}
+		}
+		else
+		{
+			p_vDest = NULL;
+			ERROR_ESTABLECER ( ERR_PARAMETROS );
+		}
+	}
+	else
+	{
+		p_vDest = NULL;
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+	}
+	return ( p_vDest );
+}
 
 int MemEsValida ( void * p_vDireccion )
 {

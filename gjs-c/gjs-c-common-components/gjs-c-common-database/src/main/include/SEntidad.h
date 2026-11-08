@@ -11,7 +11,7 @@
 typedef struct
 {
 	SId	*		p_idEntidad;
-    SPtr *      p_ptrContenido;
+	SPtr *      p_ptrContenido;
 
 } SEntidad;
 

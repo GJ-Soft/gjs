@@ -59,12 +59,20 @@ static int TestSPilIntApilar01 ()
 			printf( "Error caso 8: tras vaciar la pila deberia estar vacia\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		/* Desapilar en una pila vacia devuelve -1. */
-		if ( SPilIntDesapilar ( p_pilObj ) != -1 )
+		/* En una pila vacia, desapilar y la cima devuelven 0 y dejan ERR_PILA_VACIA. */
+		ErrLimpiar ();
+		if ( ( SPilIntDesapilar ( p_pilObj ) != 0 ) || ( ErrCodigo () != ERR_PILA_VACIA ) )
 		{
-			printf( "Error caso 9: desapilar en una pila vacia deberia devolver -1\n" );
+			printf( "Error caso 9: desapilar en una pila vacia deberia devolver 0 con ERR_PILA_VACIA\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
+		ErrLimpiar ();
+		if ( ( SPilIntPrimero ( p_pilObj ) != 0 ) || ( ErrCodigo () != ERR_PILA_VACIA ) )
+		{
+			printf( "Error caso 10: la cima de una pila vacia deberia ser 0 con ERR_PILA_VACIA\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		ErrLimpiar ();
 	}
 	else
 	{
@@ -75,7 +83,7 @@ static int TestSPilIntApilar01 ()
 
 	if ( ES_VALIDO ( p_pilObj ) )
 	{
-		printf( "Error caso 10: se esperaba puntero nulo tras destruir\n" );
+		printf( "Error caso 11: se esperaba puntero nulo tras destruir\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
 	return ( iRes );
@@ -107,13 +115,70 @@ static int TestSPilIntInvalidos01 ()
 }
 
 
+/* ApilarTodos mueve y ApilarTodosDup copia: el ultimo de la lista queda en la cima. */
+static int TestSPilIntApilarTodos01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SPilIntApilarTodos 01:\n" );
+
+	SPilaEnteros * p_pilObj = SPilIntCrear ();
+	SListaEnteros * p_lisVal = SLisIntCrear ();
+	SListaEnteros * p_lisDup = SLisIntCrear ();
+	if ( ES_VALIDO ( p_pilObj ) && ES_VALIDO ( p_lisVal ) && ES_VALIDO ( p_lisDup ) )
+	{
+		SLisIntInsertarAlFinal ( p_lisVal, 10 );
+		SLisIntInsertarAlFinal ( p_lisVal, 20 );
+		SLisIntInsertarAlFinal ( p_lisDup, 1 );
+		SLisIntInsertarAlFinal ( p_lisDup, 2 );
+		if ( ( SPilIntApilarTodos ( p_pilObj, p_lisVal ) != 1 ) || ( SPilIntNumElementos ( p_pilObj ) != 2 ) ||
+			 ( SPilIntPrimero ( p_pilObj ) != 20 ) || ( SLisIntNumElementos ( p_lisVal ) != 0 ) )
+		{
+			printf( "Error caso 1: se esperaban 2 apilados, el 20 en la cima y la lista vacia\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SPilIntApilarTodosDup ( p_pilObj, p_lisDup ) != 1 ) || ( SPilIntNumElementos ( p_pilObj ) != 4 ) ||
+			 ( SPilIntPrimero ( p_pilObj ) != 2 ) || ( SLisIntNumElementos ( p_lisDup ) != 2 ) )
+		{
+			printf( "Error caso 2: se esperaban 4 apilados, el 2 en la cima y la lista intacta\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		int iEsp [ 4 ] = { 2, 1, 20, 10 };
+		int iPos = 0;
+		while ( iPos < 4 )
+		{
+			if ( SPilIntDesapilar ( p_pilObj ) != iEsp [ iPos ] )
+			{
+				printf( "Error caso 3: en la posicion %d se esperaba desapilar %d\n", iPos, iEsp [ iPos ] );
+				iRes = BOOL_VAL_FALSO;
+			}
+			iPos = iPos + 1;
+		}
+		if ( ( SPilIntApilarTodos ( p_pilObj, NULL ) != 0 ) || ( SPilIntApilarTodos ( NULL, p_lisDup ) != 0 ) ||
+			 ( SPilIntApilarTodosDup ( p_pilObj, NULL ) != 0 ) || ( SPilIntApilarTodosDup ( NULL, p_lisDup ) != 0 ) )
+		{
+			printf( "Error caso 4: con una pila o lista nula se esperaba 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear la pila y las listas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SPilIntDestruir ( &p_pilObj );
+	SLisIntDestruir ( &p_lisVal );
+	SLisIntDestruir ( &p_lisDup );
+	return ( iRes );
+}
+
 
 int TestSPilaEnteros ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SPilaEnteros]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSPilIntApilar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSPilIntInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSPilIntInvalidos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSPilIntApilarTodos01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

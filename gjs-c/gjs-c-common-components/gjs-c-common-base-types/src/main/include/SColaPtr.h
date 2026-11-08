@@ -5,6 +5,7 @@
 
 
 #include <SListaPtr.h>
+#include <TiposBasicosErrores.h>
 
 
 
@@ -32,6 +33,9 @@ byte * SColpElemento ( SColaPtr * p_colObj, int iElem );
 byte * SColpDesencolar ( SColaPtr * p_colObj );
 
 int SColpEncolar ( SColaPtr * p_colObj, byte * p_byObj );
+int SColpEncolarTodos ( SColaPtr * p_colObj, SListaPtr * p_lisValores );
+int SColpEncolarTodosDup ( SColaPtr * p_colObj, SListaPtr * p_lisValores, int iNumBytes );
+int SColpEncolarTodosDupExt ( SColaPtr * p_colObj, SListaPtr * p_lisValores, PFUNPBYTEPB fDuplicar );
 int SColpEliminarPrimero ( SColaPtr * p_colObj );
 int SColpEliminarUltimo ( SColaPtr * p_colObj );
 int SColpEliminar ( SColaPtr * p_colObj, int iElem );

@@ -5,10 +5,10 @@
 
 static int _SCadComparar ( void * p_vVal1, void * p_vVal2 )
 {
-    int 		iRes;
-    SCadena * 	p_cadVal1 = (SCadena *) p_vVal1;
-    SCadena * 	p_cadVal2 = (SCadena *) p_vVal2;
-    iRes = SCadComparar ( p_cadVal1, p_cadVal2 );
+	int 		iRes;
+	SCadena * 	p_cadVal1 = (SCadena *) p_vVal1;
+	SCadena * 	p_cadVal2 = (SCadena *) p_vVal2;
+	iRes = SCadComparar ( p_cadVal1, p_cadVal2 );
 	if ( iRes == COMP_MENOR ) 
 	{
 		iRes = -1;
@@ -21,7 +21,7 @@ static int _SCadComparar ( void * p_vVal1, void * p_vVal2 )
 	{
 		iRes = 0;
 	}
-    return ( iRes );
+	return ( iRes );
 }
 
 

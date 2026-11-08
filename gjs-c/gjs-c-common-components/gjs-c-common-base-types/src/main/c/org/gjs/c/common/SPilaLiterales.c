@@ -3,6 +3,9 @@
 #include "TiposBasicosConfig.h"
 
 
+extern byte * _SLisLitDuplicar ( byte * p_byLiteral );
+
+
 
 SPilaLiterales * SPilLitCrear ()
 {
@@ -125,12 +128,57 @@ int SPilLitApilar ( SPilaLiterales * p_pilObj, char * p_cDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+
+int SPilLitApilarTodos ( SPilaLiterales * p_pilObj, SListaLiterales * p_lisValores )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_pilObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SPilpApilarTodos ( p_pilObj->p_pilDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SPilLitApilarTodosDup ( SPilaLiterales * p_pilObj, SListaLiterales * p_lisValores )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_pilObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SPilpApilarTodosDupExt ( p_pilObj->p_pilDatos, p_lisValores->p_lisDatos, _SLisLitDuplicar );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -145,7 +193,7 @@ int SPilLitEliminarPrimero ( SPilaLiterales * p_pilObj )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -160,7 +208,7 @@ int SPilLitVaciar ( SPilaLiterales * p_pilObj )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
