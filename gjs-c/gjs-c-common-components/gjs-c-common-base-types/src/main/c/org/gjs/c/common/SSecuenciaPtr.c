@@ -499,6 +499,21 @@ int SSecpInsertar ( SSecuenciaPtr * p_secObj, byte * p_byDatos )
 	return ( iRes );
 }
 
+int SSecpInsertarPtr ( SSecuenciaPtr * p_secObj, SElementoPtr * p_elpDatos )
+{
+	int iRes;
+
+	if ( ( SSecpEsValida ( p_secObj ) == 1 ) && ES_VALIDO ( p_elpDatos ) )
+	{
+		iRes = SLispInsertarAlFinalPtr ( p_secObj->p_lisDatos, p_elpDatos );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int SSecpEliminar ( SSecuenciaPtr * p_secObj, int iElem )
 {
 	int	iRes;
@@ -512,6 +527,36 @@ int SSecpEliminar ( SSecuenciaPtr * p_secObj, int iElem )
 		iRes = 0;
 	}
 	return ( iRes );
+}
+
+byte * SSecpExtraer ( SSecuenciaPtr * p_secObj, int iElem )
+{
+	byte * p_byRes;
+
+	if ( SSecpEsValida ( p_secObj ) == 1 ) 
+	{
+		p_byRes = SLispExtraerElem ( p_secObj->p_lisDatos, iElem );
+	}
+	else
+	{
+		p_byRes = NULL;
+	}
+	return ( p_byRes );
+}
+
+SElementoPtr * SSecpExtraerPtr ( SSecuenciaPtr * p_secObj, int iElem )
+{
+	SElementoPtr * p_elpRes;
+
+	if ( SSecpEsValida ( p_secObj ) == 1 ) 
+	{
+		p_elpRes = SLispExtraerElemPtr ( p_secObj->p_lisDatos, iElem );
+	}
+	else
+	{
+		p_elpRes = NULL;
+	}
+	return ( p_elpRes );
 }
 
 int SSecpVaciar ( SSecuenciaPtr * p_secObj )

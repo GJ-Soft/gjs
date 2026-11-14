@@ -56,6 +56,32 @@ int SSecIntlSemidefinidaPositiva ( SSecuenciaEnterosLargos * p_secObj );
 
 SSecuencia * SSecIntlSecuencia ( SSecuenciaEnterosLargos * p_secObj );
 SLista * SSecIntlLista ( SSecuenciaEnterosLargos * p_secObj );
+SListaEnterosLargos * SSecIntlListaIntl ( SSecuenciaEnterosLargos * p_secObj );
+
+// Operaciones con otras secuencias y listas
+int SSecIntlExistenTodos ( SSecuenciaEnterosLargos * p_secObj, SSecuenciaEnterosLargos * p_secValores );
+int SSecIntlExisteAlguno ( SSecuenciaEnterosLargos * p_secObj, SSecuenciaEnterosLargos * p_secValores );
+int SSecIntlExistenTodosLista ( SSecuenciaEnterosLargos * p_secObj, SListaEnterosLargos * p_lisValores );
+int SSecIntlExisteAlgunoLista ( SSecuenciaEnterosLargos * p_secObj, SListaEnterosLargos * p_lisValores );
+
+int SSecIntlEliminarSecuencia ( SSecuenciaEnterosLargos * p_secObj, SSecuenciaEnterosLargos * p_secValores );
+int SSecIntlEliminarLista ( SSecuenciaEnterosLargos * p_secObj, SListaEnterosLargos * p_lisValores );
+
+// Duplica los valores de la secuencia o la lista de entrada
+int SSecIntlConcatenar ( SSecuenciaEnterosLargos * p_secObj, SSecuenciaEnterosLargos * p_secValores );
+int SSecIntlConcatenarLista ( SSecuenciaEnterosLargos * p_secObj, SListaEnterosLargos * p_lisValores );
+
+// Operaciones que generan secuencias nuevas
+// NOTA: Si hay algún error puede realizar una extracción parcial
+SSecuenciaEnterosLargos * SSecIntlExtraerSecuencia ( SSecuenciaEnterosLargos * p_secObj, SSecuenciaEnterosLargos * p_secValores );
+SSecuenciaEnterosLargos * SSecIntlExtraerLista ( SSecuenciaEnterosLargos * p_secObj, SListaEnterosLargos * p_lisValores );
+
+SSecuenciaEnterosLargos * SSecIntlUnion ( SSecuenciaEnterosLargos * p_secValores1, SSecuenciaEnterosLargos * p_secValores2 );
+SSecuenciaEnterosLargos * SSecIntlInterseccion ( SSecuenciaEnterosLargos * p_secValores1, SSecuenciaEnterosLargos * p_secValores2 );
+SSecuenciaEnterosLargos * SSecIntlDiferencia ( SSecuenciaEnterosLargos * p_secValores1, SSecuenciaEnterosLargos * p_secValores2 );
+SSecuenciaEnterosLargos * SSecIntlUnionLista ( SSecuenciaEnterosLargos * p_secValores1, SListaEnterosLargos * p_lisValores2 );
+SSecuenciaEnterosLargos * SSecIntlInterseccionLista ( SSecuenciaEnterosLargos * p_secValores1, SListaEnterosLargos * p_lisValores2 );
+SSecuenciaEnterosLargos * SSecIntlDiferenciaLista ( SSecuenciaEnterosLargos * p_secValores1, SListaEnterosLargos * p_lisValores2 );
 
 
 #endif

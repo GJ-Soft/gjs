@@ -531,29 +531,30 @@ static int TestSSecOperacionesListas01 ()
 	return ( iRes );
 }
 
-/* Saca una aparicion por valor; si la de SLista falla, nulo y no una secuencia
-   sin lista. */
+/* Saca todas las apariciones de cada valor; si la de SLista falla, nulo y no una
+   secuencia sin lista. */
 static int TestSSecExtraerSecuencia01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SSecExtraerSecuencia 01:\n" );
 
-	int iVal [ 5 ] = { 10, 20, 30, 20, 40 };
+	int iVal [ 6 ] = { 20, 10, 20, 30, 40, 20 };
 	int iBus [ 4 ] = { 20, 40, 99, 20 };
 	int iTreinta [ 1 ] = { 30 };
-	SSecuencia * p_secObj = CrearSecEnteros ( iVal, 5 );
+	SSecuencia * p_secObj = CrearSecEnteros ( iVal, 6 );
 	SSecuencia * p_secBus = CrearSecEnteros ( iBus, 4 );
 	SLista * p_lisBus = CrearListaEnteros ( iTreinta, 1 );
 	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_secBus ) && ES_VALIDO ( p_lisBus ) )
 	{
+		/* Todas las apariciones de cada valor buscado, en el orden de los buscados. */
 		SSecuencia * p_secRes = SSecExtraerSecuencia ( p_secObj, p_secBus );
-		int iEspRes [ 3 ] = { 20, 40, 20 };
+		int iEspRes [ 4 ] = { 20, 20, 20, 40 };
 		int iEspObj [ 2 ] = { 10, 30 };
-		if ( ( VerificarYDestruir ( &p_secRes, iEspRes, 3 ) != BOOL_VAL_CIERTO ) ||
+		if ( ( VerificarYDestruir ( &p_secRes, iEspRes, 4 ) != BOOL_VAL_CIERTO ) ||
 			 ( VerificarSec ( p_secObj, iEspObj, 2 ) != BOOL_VAL_CIERTO ) ||
 			 ( VerificarSec ( p_secBus, iBus, 4 ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 1: se esperaba extraer { 20, 40, 20 } y dejar { 10, 30 }\n" );
+			printf( "Error caso 1: se esperaba extraer { 20, 20, 20, 40 } y dejar { 10, 30 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		p_secRes = SSecExtraerLista ( p_secObj, p_lisBus );

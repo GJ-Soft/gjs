@@ -167,12 +167,12 @@ int SIndLitInsertar ( SIndiceLiterales * p_indlObj, SLocalizador * p_lczDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -195,7 +195,7 @@ int SIndLitInsertarExt ( SIndiceLiterales * p_indlObj, const char * p_cClave, un
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

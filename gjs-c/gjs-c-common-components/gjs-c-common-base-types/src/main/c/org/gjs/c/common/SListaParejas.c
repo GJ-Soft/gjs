@@ -105,7 +105,7 @@ int SLisPrjInsertar ( SListaParejas * p_lisObj, SPareja * p_prjDatos )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

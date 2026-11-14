@@ -48,6 +48,19 @@ typedef struct
 | `SElemento * SCnjExtraerElem ( SConjunto *, int iElem )` | Saca el de la posición sin destruirlo. |
 | `int SCnjVaciar ( SConjunto * )`                         | Vacía el conjunto.                     |
 
+### Construir desde una lista, copiar y acceder a la lista
+
+| Función                                                                 | Descripción                                                                  |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `SConjunto * SCnjCrearDesdeLista ( SLista *, PFUNINTPVPV fComparar )`   | **Copias** de los valores distintos de la lista; los repetidos entran una vez. |
+| `SConjunto * SCnjEncapsularLista ( SListaOrdenada * )`                  | Se queda con la lista, sin copiarla. Si tiene repetidos, `NULL`.              |
+| `SConjunto * SCnjDuplicar ( SConjunto * )`                              | Copias de los valores y una copia del comparador.                            |
+| `SListaOrdenada * SCnjLista ( SConjunto * )`                            | La lista de dentro, que sigue siendo del conjunto.                           |
+
+`CrearDesdeLista` y `Duplicar` devuelven `NULL` si falla una copia o con la
+lista nula. `EncapsularLista` comprueba que la lista no tenga repetidos según
+su comparador; si los tiene, la lista sigue siendo del llamante.
+
 ### Pertenencia y búsqueda
 
 Tres pares de funciones, cada uno con su variante `Ext` que compara contra
@@ -81,6 +94,35 @@ bloque; las variantes `SCnjpPosicion` y `SCnjLitPosicion` equivalen exactamente 
 `SCnjpBuscar` y `SCnjLitBuscar`. Las tres devuelven -1 con el conjunto o el dato
 nulos.
 
+### Operaciones con otros conjuntos y listas
+
+Cada una tiene tres formas: con otro conjunto, con una lista ordenada (sufijo
+`ListaOrd`) y con una lista normal (sufijo `Lista`). La de conjunto pasa la
+lista del segundo; la igualdad la decide siempre **el comparador del
+conjunto**.
+
+| Función ( `SCnj` )                                         | Qué hace                                                                       |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `ExistenTodos` / `ExisteAlguno` (y `…ListaOrd`, `…Lista`)  | 1 o 0. Con los valores vacíos, `ExistenTodos` da 1 y `ExisteAlguno` 0.          |
+| `InsertarConjunto` / `InsertarListaOrd` / `InsertarLista`  | Inserta **copias** de lo que no esté; lo repetido entra una vez.               |
+| `EliminarConjunto` / `EliminarListaOrd` / `EliminarLista`  | **Destruye** lo que encuentre; 1 aunque no encuentre nada.                     |
+| `ExtraerConjunto` / `ExtraerListaOrd` / `ExtraerLista`     | Conjunto nuevo con lo encontrado, **movido** desde este.                       |
+| `Union` / `UnionListaOrd` / `UnionLista`                   | Conjunto nuevo con copias de los dos: lo que está en ambos sale **una** vez.   |
+| `Interseccion` / `InterseccionListaOrd` / `InterseccionLista` | Copias de los del primero que están en el segundo.                         |
+| `Diferencia` / `DiferenciaListaOrd` / `DiferenciaLista`    | Copias de los del primero que **no** están en el segundo.                      |
+
+- Delegan en las de [SListaOrdenada](Listas.md#operaciones-con-otras-listas-1)
+  y tienen su semántica, salvo en lo que haría perder la unicidad: `Insertar…`
+  y `Union…` no copian lo que ya está, a diferencia de `InsertarListaDup` y de
+  la unión de las listas, que es una concatenación.
+- Los conjuntos nuevos llevan una copia del comparador del primero. Si no se
+  pueden crear, las de copiar devuelven `NULL` y las `Extraer…` devuelven lo
+  extraído a este conjunto y `NULL`.
+- Las `Insertar…` devuelven 0 si falla una copia o una inserción: lo insertado
+  hasta ahí se queda. Con el mismo conjunto en los dos argumentos no hay nada
+  que insertar y devuelven 1; las `Eliminar…` devuelven 0 y las `Extraer…`
+  `NULL`, sin tocar nada.
+
 ## Las variantes
 
 | Módulo               | Se apoya en                 | Almacena                  | Criterio de orden | Dueño del dato |
@@ -91,11 +133,35 @@ nulos.
 
 ### `SConjuntoPtr`
 
-Misma API con `byte *` en lugar de `SElemento *`, y **sin variantes `Ext`**: al
-almacenar punteros, la comparación siempre es contra un puntero, así que
-`SCnjpExiste`, `SCnjpBuscar` y `SCnjpBuscarElem` bastan. Los extremos y la
-posición son `SCnjpPrimero`, `SCnjpUltimo` y `SCnjpPosicion` (y en
-`SConjuntoLiterales`, `SCnjLitPrimero`, `SCnjLitUltimo` y `SCnjLitPosicion`).
+Misma API con `byte *` en lugar de `SElemento *`. Para buscar no hay variantes
+`Ext` que comparen memoria cruda: al almacenar punteros, la comparación siempre
+es contra un puntero. Están `SCnjpExiste` y `SCnjpBuscar` con el dato, y
+`SCnjpExistePtr` y `SCnjpBuscarPtr` con un `SElementoPtr *`, que buscan su
+dato. Los extremos y la posición son `SCnjpPrimero`, `SCnjpUltimo` y
+`SCnjpPosicion` (y en `SConjuntoLiterales`, `SCnjLitPrimero`, `SCnjLitUltimo`
+y `SCnjLitPosicion`).
+
+Para los nodos: `SCnjpElementoPtr ( …, int iElem )` devuelve el
+`SElementoPtr` de la posición, `SCnjpExtraerElem` saca el dato, que pasa a ser
+del llamante, y `SCnjpExtraerElemPtr` saca el nodo suelto, que se destruye con
+`SElpDestruir`.
+
+Como no sabe copiar sus datos, las funciones que copian reciben cómo hacerlo:
+`int iNumBytes` o, en las `Ext`, `PFUNPBYTEPB fDuplicar`. Así
+`SCnjpCrearDesdeLista ( SListaPtr *, PFUNINTPVPV fComparar, int iNumBytes )` y
+`SCnjpCrearDesdeListaExt ( …, PFUNPBYTEPB fDuplicar )`, `SCnjpDuplicar` y
+`SCnjpDuplicarExt`, `SCnjpInsertar` / `SCnjpInsertarListaOrd` /
+`SCnjpInsertarLista` (la de conjunto se llama sólo `Insertar`) y sus `Ext`, y
+`Union`, `Interseccion` y `Diferencia` en sus tres formas, con y sin `Ext`.
+`ExistenTodos`, `ExisteAlguno`, `Eliminar…` y `Extraer…` no copian y no lo
+necesitan. `SCnjpEncapsularLista ( SListaOrdenadaPtr * )` y
+`SListaOrdenadaPtr * SCnjpLista ( SConjuntoPtr * )` funcionan como las de
+`SConjunto`.
+
+Los conjuntos que crean `CrearDesdeLista`, `Duplicar`, `Union`,
+`Interseccion` y `Diferencia` son dueños de sus copias. Los que crean las
+`Extraer…` heredan la liberación del original. Las `Insertar…` meten copias
+nuevas, que sólo libera el conjunto si tiene la liberación activada.
 
 Añade el control de liberación habitual:
 `SCnjpLiberacionMemoriaActivada`, `SCnjpActivarLiberacionMemoria`,
@@ -111,7 +177,23 @@ SConjuntoLiterales * SCnjLitCrear ();
 
 El criterio de orden está fijado a la comparación de cadenas, que es
 precisamente lo que la hace cómoda: un conjunto de cadenas sin duplicados sin
-tener que escribir nada.
+tener que escribir nada. Como `SCnjLitInsertar`, todo lo que entra se copia.
+
+`SCnjLitConjunto` devuelve el `SConjuntoPtr` interno y `SCnjLitLista`, su
+`SListaOrdenadaPtr`. Tiene las operaciones con otros conjuntos, con otro
+`SConjuntoLiterales` o con una `SListaLiterales`, delegando en las de
+`SConjuntoPtr`:
+
+| Función ( `SCnjLit` )                                   | Qué hace                                                     |
+| ------------------------------------------------------- | ------------------------------------------------------------ |
+| `ExistenTodos` / `ExisteAlguno` (y `…Lista`)            | 1 o 0.                                                       |
+| `ConcatenarConjunto` / `ConcatenarLista`                | Inserta **copias** de las que falten; los valores no se tocan. |
+| `EliminarConjunto` / `EliminarLista`                    | **Destruye** las que encuentre.                              |
+| `ExtraerConjunto` / `ExtraerLista`                      | Conjunto nuevo con las encontradas, **movidas** desde este.  |
+| `Union` / `Interseccion` / `Diferencia` (y `…Lista`)    | Conjunto nuevo con copias; lo común sale una vez.            |
+
+Con un nulo devuelven 0 o `NULL` sin tocar nada. Si no se puede crear el
+conjunto de una `Extraer…`, las cadenas vuelven al de origen.
 
 ## Dependencias
 
@@ -125,15 +207,11 @@ tener que escribir nada.
 
 ## Observaciones
 
-- **La cabecera no dice qué devuelve `SCnjInsertarElem` cuando el elemento ya
-  estaba.** Es la operación más característica de un conjunto y su resultado
-  (¿0 por "no insertado"? ¿1 por "ya está, todo bien"?) sólo se puede averiguar
-  leyendo la implementación o el test.
+- `SCnjInsertarElem`, `SCnjpInsertarElem` y `SCnjLitInsertar` devuelven 1 si
+  insertan y 0 si no: con el valor ya en el conjunto, con un nulo o si falla la
+  inserción. Lo que no se inserta sigue siendo del llamante.
 - `SCnjEliminarElem` sólo elimina **por posición**, no por valor. Para quitar un
   elemento conocido hay que hacer `SCnjBuscar` y luego `SCnjEliminarElem`, con la
   búsqueda repetida que eso implica.
-- El parámetro de `SCnjEliminarElem` se llama `iElemj` en la cabecera, con una
-  `j` de más. Es sólo el nombre del parámetro, no afecta a la compilación.
-- No hay operaciones de conjunto propiamente dichas: no existen unión,
-  intersección ni diferencia. La familia aporta pertenencia y unicidad, no
-  álgebra de conjuntos.
+- `SCnjCrearDesdeLista` no puede deducir el criterio de una `SLista`, así que
+  recibe la función de comparación, como `SLisOrdCrearDesdeLista`.

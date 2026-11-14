@@ -3,8 +3,6 @@
 #include "TiposBasicosConfig.h"
 
 
-static SListaEnteros * _SLisIntEnvolver ( SLista * p_lisDatos );
-
 
 SListaEnteros * SLisIntCrear ()
 {
@@ -16,6 +14,28 @@ SListaEnteros * SLisIntCrear ()
 		p_lisObj->p_lisDatos = SLisCrear ();
 	}
 	return ( p_lisObj );
+}
+
+/* La lista pasa a ser de la lista de enteros, que la destruye con ella. Si
+   la lista no es valida, o no se puede crear, devuelve NULL y la lista sigue
+   siendo del llamante. */
+SListaEnteros * SLisIntEncapsular ( SLista * p_lisDatos )
+{
+	SListaEnteros * p_lisRes;
+
+	if ( SLisEsValida ( p_lisDatos ) == 1 )
+	{
+		p_lisRes = (SListaEnteros *) MemReservar ( sizeof ( SListaEnteros ) );
+		if ( ES_VALIDO ( p_lisRes ) )
+		{
+			p_lisRes->p_lisDatos = p_lisDatos;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
 }
 
 void SLisIntDestruir ( SListaEnteros ** p_p_lisObj )
@@ -143,7 +163,7 @@ int SLisIntInsertarElem ( SListaEnteros * p_lisObj, int iPosAnt, int iDato )
 			}
 			else 
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			if ( iRes != 1 )
 			{
@@ -152,12 +172,12 @@ int SLisIntInsertarElem ( SListaEnteros * p_lisObj, int iPosAnt, int iDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -177,7 +197,7 @@ int SLisIntInsertarAlFinal ( SListaEnteros * p_lisObj, int iDato )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -425,7 +445,7 @@ int SLisIntInsertarDelante ( SListaEnteros * p_lisObj, int iDato )
 			}
 			else
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			if ( iRes != 1 )
 			{
@@ -434,7 +454,7 @@ int SLisIntInsertarDelante ( SListaEnteros * p_lisObj, int iDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
@@ -460,7 +480,7 @@ int SLisIntInsertarDetras ( SListaEnteros * p_lisObj, int iDato )
 			}
 			else
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			if ( iRes != 1 )
 			{
@@ -469,7 +489,7 @@ int SLisIntInsertarDetras ( SListaEnteros * p_lisObj, int iDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
@@ -943,11 +963,17 @@ int SLisIntSemidefinidaPositiva ( SListaEnteros * p_lisObj )
 /* Copia de los valores, en el mismo orden; NULL si falla alguna copia. */
 SListaEnteros * SLisIntDuplicar ( SListaEnteros * p_lisObj )
 {
-	SListaEnteros * p_lisRes;
+	SListaEnteros *	p_lisRes;
+	SLista *		p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		p_lisRes = _SLisIntEnvolver ( SLisDuplicar ( p_lisObj->p_lisDatos ) );
+		p_lisDatos = SLisDuplicar ( p_lisObj->p_lisDatos );
+		p_lisRes = SLisIntEncapsular ( p_lisDatos );
+		if ( ES_NULO ( p_lisRes ) )
+		{
+			SLisDestruir ( &p_lisDatos );
+		}
 	}
 	else
 	{
@@ -1092,13 +1118,21 @@ int SLisIntConcatenarListaDup ( SListaEnteros * p_lisObj, SListaEnteros * p_lisV
 
 SListaEnteros * SLisIntExtraerLista ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores )
 {
-	SListaEnteros * p_lisRes;
+	SListaEnteros *	p_lisRes;
+	SLista *		p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		if ( ES_VALIDO ( p_lisValores ) )
 		{
-			p_lisRes = _SLisIntEnvolver ( SLisExtraerLista ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos ) );
+			p_lisDatos = SLisExtraerLista ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos );
+			p_lisRes = SLisIntEncapsular ( p_lisDatos );
+			if ( ES_NULO ( p_lisRes ) )
+			{
+				/* No se pierde lo extraido: vuelve al final de p_lisObj. */
+				SLisConcatenarLista ( p_lisObj->p_lisDatos, p_lisDatos );
+				SLisDestruir ( &p_lisDatos );
+			}
 		}
 		else
 		{
@@ -1112,7 +1146,7 @@ SListaEnteros * SLisIntExtraerLista ( SListaEnteros * p_lisObj, SListaEnteros * 
 	return ( p_lisRes );
 }
 
-/* Destruye la primera aparicion de cada valor de p_lisValores; ver
+/* Destruye todas las apariciones de cada valor de p_lisValores; ver
    SLisEliminarLista. */
 int SLisIntEliminarLista ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores )
 {
@@ -1138,13 +1172,19 @@ int SLisIntEliminarLista ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValore
 
 SListaEnteros * SLisIntUnion ( SListaEnteros * p_lisValores1, SListaEnteros * p_lisValores2 )
 {
-	SListaEnteros * p_lisRes;
+	SListaEnteros *	p_lisRes;
+	SLista *		p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisValores1 ) )
 	{
 		if ( ES_VALIDO ( p_lisValores2 ) )
 		{
-			p_lisRes = _SLisIntEnvolver ( SLisUnion ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos ) );
+			p_lisDatos = SLisUnion ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos );
+			p_lisRes = SLisIntEncapsular ( p_lisDatos );
+			if ( ES_NULO ( p_lisRes ) )
+			{
+				SLisDestruir ( &p_lisDatos );
+			}
 		}
 		else
 		{
@@ -1160,13 +1200,19 @@ SListaEnteros * SLisIntUnion ( SListaEnteros * p_lisValores1, SListaEnteros * p_
 
 SListaEnteros * SLisIntInterseccion ( SListaEnteros * p_lisValores1, SListaEnteros * p_lisValores2 )
 {
-	SListaEnteros * p_lisRes;
+	SListaEnteros *	p_lisRes;
+	SLista *		p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisValores1 ) )
 	{
 		if ( ES_VALIDO ( p_lisValores2 ) )
 		{
-			p_lisRes = _SLisIntEnvolver ( SLisInterseccion ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos ) );
+			p_lisDatos = SLisInterseccion ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos );
+			p_lisRes = SLisIntEncapsular ( p_lisDatos );
+			if ( ES_NULO ( p_lisRes ) )
+			{
+				SLisDestruir ( &p_lisDatos );
+			}
 		}
 		else
 		{
@@ -1182,13 +1228,19 @@ SListaEnteros * SLisIntInterseccion ( SListaEnteros * p_lisValores1, SListaEnter
 
 SListaEnteros * SLisIntDiferencia ( SListaEnteros * p_lisValores1, SListaEnteros * p_lisValores2 )
 {
-	SListaEnteros * p_lisRes;
+	SListaEnteros *	p_lisRes;
+	SLista *		p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisValores1 ) )
 	{
 		if ( ES_VALIDO ( p_lisValores2 ) )
 		{
-			p_lisRes = _SLisIntEnvolver ( SLisDiferencia ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos ) );
+			p_lisDatos = SLisDiferencia ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos );
+			p_lisRes = SLisIntEncapsular ( p_lisDatos );
+			if ( ES_NULO ( p_lisRes ) )
+			{
+				SLisDestruir ( &p_lisDatos );
+			}
 		}
 		else
 		{
@@ -1202,31 +1254,5 @@ SListaEnteros * SLisIntDiferencia ( SListaEnteros * p_lisValores1, SListaEnteros
 	return ( p_lisRes );
 }
 
-/* Envuelve en una SListaEnteros la SLista que devuelve una operacion de SLista,
-   y se queda con ella. No se usa SLisIntCrear porque ese crea su propia SLista
-   vacia, que al sustituirla quedaba sin liberar. Con p_lisDatos nula devuelve
-   NULL, y si no puede reservar la envoltura destruye p_lisDatos. */
-static SListaEnteros * _SLisIntEnvolver ( SLista * p_lisDatos )
-{
-	SListaEnteros * p_lisRes;
-
-	if ( ES_VALIDO ( p_lisDatos ) )
-	{
-		p_lisRes = (SListaEnteros *) MemReservar ( sizeof ( SListaEnteros ) );
-		if ( ES_VALIDO ( p_lisRes ) )
-		{
-			p_lisRes->p_lisDatos = p_lisDatos;
-		}
-		else
-		{
-			SLisDestruir ( &p_lisDatos );
-		}
-	}
-	else
-	{
-		p_lisRes = NULL;
-	}
-	return ( p_lisRes );
-}
 
 

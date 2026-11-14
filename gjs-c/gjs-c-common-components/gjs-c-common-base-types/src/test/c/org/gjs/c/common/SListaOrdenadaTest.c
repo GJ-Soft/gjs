@@ -1064,7 +1064,7 @@ static int TestSLisOrdInsertarListaDup01 ()
 	return ( iRes );
 }
 
-/* Saca la primera aparicion de cada valor, moviendola, a una lista nueva. */
+/* Saca todas las apariciones de cada valor, moviendolas, a una lista nueva. */
 static int TestSLisOrdExtraerLista01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -1083,35 +1083,35 @@ static int TestSLisOrdExtraerLista01 ()
 		/* p_lisObj = { 10, 20, 20, 20, 30, 40 } */
 		SElemento * p_elm40 = SLisOrdElemento ( p_lisObj, 5 );
 		p_lisRes = SLisOrdExtraerListaOrd ( p_lisObj, p_lisValOrd );
-		int iEsp [ 2 ] = { 20, 40 };
-		if ( ES_NULO ( p_lisRes ) || ( VerificarOrdenada ( p_lisRes, iEsp, 2 ) != BOOL_VAL_CIERTO ) )
+		int iEsp [ 4 ] = { 20, 20, 20, 40 };
+		if ( ES_NULO ( p_lisRes ) || ( VerificarOrdenada ( p_lisRes, iEsp, 4 ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 1: se esperaba { 20, 40 }\n" );
+			printf( "Error caso 1: se esperaba { 20, 20, 20, 40 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		else
 		{
-			if ( ( SLisOrdElemento ( p_lisRes, 1 ) != p_elm40 ) || ( p_lisRes->p_cmpObj == p_lisObj->p_cmpObj ) )
+			if ( ( SLisOrdElemento ( p_lisRes, 3 ) != p_elm40 ) || ( p_lisRes->p_cmpObj == p_lisObj->p_cmpObj ) )
 			{
 				printf( "Error caso 2: se esperaba el mismo elemento y otro comparador\n" );
 				iRes = BOOL_VAL_FALSO;
 			}
 		}
-		int iQueda [ 4 ] = { 10, 20, 20, 30 };
-		if ( ( VerificarOrdenada ( p_lisObj, iQueda, 4 ) != BOOL_VAL_CIERTO ) ||
+		int iQueda [ 2 ] = { 10, 30 };
+		if ( ( VerificarOrdenada ( p_lisObj, iQueda, 2 ) != BOOL_VAL_CIERTO ) ||
 			 ( SLisOrdNumElementos ( p_lisValOrd ) != 3 ) )
 		{
-			printf( "Error caso 3: deberian quedar { 10, 20, 20, 30 } y los valores sin tocar\n" );
+			printf( "Error caso 3: deberian quedar { 10, 30 } y los valores sin tocar\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		p_lisRes2 = SLisOrdExtraerLista ( p_lisObj, p_lisVal );
-		int iEsp2 [ 3 ] = { 10, 20, 20 };
+		int iEsp2 [ 1 ] = { 10 };
 		int iQueda2 [ 1 ] = { 30 };
-		if ( ES_NULO ( p_lisRes2 ) || ( VerificarOrdenada ( p_lisRes2, iEsp2, 3 ) != BOOL_VAL_CIERTO ) ||
+		if ( ES_NULO ( p_lisRes2 ) || ( VerificarOrdenada ( p_lisRes2, iEsp2, 1 ) != BOOL_VAL_CIERTO ) ||
 			 ( VerificarOrdenada ( p_lisObj, iQueda2, 1 ) != BOOL_VAL_CIERTO ) ||
 			 ( VerificarLista ( p_lisVal, iVal, 4 ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 4: se esperaba { 10, 20, 20 } y que quedara { 30 }\n" );
+			printf( "Error caso 4: se esperaba { 10 } y que quedara { 30 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( ES_VALIDO ( SLisOrdExtraerListaOrd ( p_lisObj, p_lisObj ) ) ||
@@ -1490,7 +1490,6 @@ static int TestSLisOrdBuscarElem01 ()
 	return ( iRes );
 }
 
-/* Destruye una aparicion por valor buscado; la igualdad la decide el comparador. */
 /* Repetidos en una ordenada: estan juntos y la igualdad la decide el
    comparador. Por bloque, por memoria cruda y por elemento. */
 static int TestSLisOrdBuscarSiguiente01 ()
@@ -1602,6 +1601,8 @@ static int TestSLisOrdBuscarSiguiente01 ()
 	return ( iRes );
 }
 
+/* Destruye todas las apariciones de cada valor buscado; la igualdad la decide
+   el comparador. */
 static int TestSLisOrdEliminarLista01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -1610,22 +1611,23 @@ static int TestSLisOrdEliminarLista01 ()
 	int iObj [ 6 ] = { 40, 20, 10, 30, 20, 20 };
 	int iValOrd [ 3 ] = { 50, 40, 20 };
 	int iVal [ 4 ] = { 20, 10, 20, 50 };
-	int iDec [ 3 ] = { 33, 12, 25 };
+	int iDec [ 4 ] = { 33, 12, 25, 35 };
 	int iValDec [ 2 ] = { 39, 21 };
 	SListaOrdenada * p_lisObj = CrearOrdenadaEnteros ( iObj, 6, CompararEnteros );
 	SListaOrdenada * p_lisValOrd = CrearOrdenadaEnteros ( iValOrd, 3, CompararEnteros );
 	SLista * p_lisVal = CrearListaEnteros ( iVal, 4 );
-	SListaOrdenada * p_lisDec = CrearOrdenadaEnteros ( iDec, 3, CompararDecenas );
+	SListaOrdenada * p_lisDec = CrearOrdenadaEnteros ( iDec, 4, CompararDecenas );
 	SLista * p_lisValDec = CrearListaEnteros ( iValDec, 2 );
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisValOrd ) && ES_VALIDO ( p_lisVal ) &&
 		 ES_VALIDO ( p_lisDec ) && ES_VALIDO ( p_lisValDec ) )
 	{
-		/* p_lisObj = { 10, 20, 20, 20, 30, 40 }; el 50 no esta y se ignora. */
-		int iQueda [ 4 ] = { 10, 20, 20, 30 };
+		/* p_lisObj = { 10, 20, 20, 20, 30, 40 }: se van los tres 20; el 50 no esta
+		   y se ignora. */
+		int iQueda [ 2 ] = { 10, 30 };
 		if ( ( SLisOrdEliminarListaOrd ( p_lisObj, p_lisValOrd ) != 1 ) ||
-			 ( VerificarOrdenada ( p_lisObj, iQueda, 4 ) != BOOL_VAL_CIERTO ) )
+			 ( VerificarOrdenada ( p_lisObj, iQueda, 2 ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 1: se esperaba 1 y que quedara { 10, 20, 20, 30 }\n" );
+			printf( "Error caso 1: se esperaba 1 y que quedara { 10, 30 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		int iEspValOrd [ 3 ] = { 20, 40, 50 };
@@ -1634,7 +1636,7 @@ static int TestSLisOrdEliminarLista01 ()
 			printf( "Error caso 2: los valores no deberian cambiar\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		/* El 20 esta dos veces en los valores: elimina dos. */
+		/* Que el 20 este dos veces en los valores no elimina mas: queda { 30 }. */
 		int iQueda2 [ 1 ] = { 30 };
 		if ( ( SLisOrdEliminarLista ( p_lisObj, p_lisVal ) != 1 ) ||
 			 ( VerificarOrdenada ( p_lisObj, iQueda2, 1 ) != BOOL_VAL_CIERTO ) ||
@@ -1650,7 +1652,7 @@ static int TestSLisOrdEliminarLista01 ()
 			printf( "Error caso 4: sin nada que eliminar se esperaba 1 sin cambios\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		/* Por decenas el 39 es igual que el 33 y el 21 que el 25. */
+		/* Por decenas el 39 es igual que el 33 y el 35, y el 21 que el 25. */
 		int iQuedaDec [ 1 ] = { 12 };
 		if ( ( SLisOrdEliminarLista ( p_lisDec, p_lisValDec ) != 1 ) ||
 			 ( VerificarOrdenada ( p_lisDec, iQuedaDec, 1 ) != BOOL_VAL_CIERTO ) )

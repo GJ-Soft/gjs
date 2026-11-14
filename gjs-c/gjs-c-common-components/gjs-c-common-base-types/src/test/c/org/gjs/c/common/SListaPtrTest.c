@@ -978,27 +978,28 @@ static int TestSLispExtraerLista01 ()
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SLispExtraerLista 01:\n" );
 
-	int iVal [ 5 ] = { 10, 20, 30, 20, 40 };
+	int iVal [ 6 ] = { 20, 10, 20, 30, 40, 20 };
 	int iBus [ 4 ] = { 20, 40, 99, 20 };
-	int iValExt [ 3 ] = { 12, 25, 33 };
+	int iValExt [ 5 ] = { 12, 25, 33, 42, 13 };
 	int iBusExt [ 2 ] = { 3, 2 };
-	SListaPtr * p_lisObj = CrearListaEnteros ( iVal, 5 );
+	SListaPtr * p_lisObj = CrearListaEnteros ( iVal, 6 );
 	SListaPtr * p_lisBus = CrearListaEnteros ( iBus, 4 );
-	SListaPtr * p_lisObjExt = CrearListaEnteros ( iValExt, 3 );
+	SListaPtr * p_lisObjExt = CrearListaEnteros ( iValExt, 5 );
 	SListaPtr * p_lisBusExt = CrearListaEnteros ( iBusExt, 2 );
 	SListaPtr * p_lisRes = NULL;
 	SListaPtr * p_lisResExt = NULL;
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisBus ) && ES_VALIDO ( p_lisObjExt ) && ES_VALIDO ( p_lisBusExt ) )
 	{
-		/* Una aparicion por valor buscado, en el orden de los buscados; el 99 no esta. */
+		/* Todas las apariciones de cada valor buscado, en el orden de los buscados: el
+		   20 esta tres veces y sale entero con el primero; el 99 no esta. */
 		p_lisRes = SLispExtraerLista ( p_lisObj, p_lisBus, sizeof ( int ) );
-		int iEspRes [ 3 ] = { 20, 40, 20 };
+		int iEspRes [ 4 ] = { 20, 20, 20, 40 };
 		int iEspObj [ 2 ] = { 10, 30 };
 		if ( ES_NULO ( p_lisRes ) ||
-			 ( VerificarContenido ( p_lisRes, iEspRes, 3 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarContenido ( p_lisRes, iEspRes, 4 ) != BOOL_VAL_CIERTO ) ||
 			 ( VerificarCadena ( p_lisRes ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 1: se esperaba extraer { 20, 40, 20 }\n" );
+			printf( "Error caso 1: se esperaba extraer { 20, 20, 20, 40 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( ( VerificarContenido ( p_lisObj, iEspObj, 2 ) != BOOL_VAL_CIERTO ) ||
@@ -1039,13 +1040,13 @@ static int TestSLispExtraerLista01 ()
 		SLispDestruir ( &p_lisBus10 );
 
 		p_lisResExt = SLispExtraerListaExt ( p_lisObjExt, p_lisBusExt, SonIgualesMod10 );
-		int iEspResExt [ 2 ] = { 33, 12 };
+		int iEspResExt [ 4 ] = { 33, 13, 12, 42 };
 		int iEspObjExt [ 1 ] = { 25 };
 		if ( ES_NULO ( p_lisResExt ) ||
-			 ( VerificarContenido ( p_lisResExt, iEspResExt, 2 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarContenido ( p_lisResExt, iEspResExt, 4 ) != BOOL_VAL_CIERTO ) ||
 			 ( VerificarContenido ( p_lisObjExt, iEspObjExt, 1 ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 6: modulo 10 se esperaba extraer { 33, 12 } y dejar { 25 }\n" );
+			printf( "Error caso 6: modulo 10 se esperaba extraer { 33, 13, 12, 42 } y dejar { 25 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( ES_VALIDO ( SLispExtraerListaExt ( p_lisObjExt, p_lisBusExt, NULL ) ) )
@@ -1068,27 +1069,28 @@ static int TestSLispExtraerLista01 ()
 	return ( iRes );
 }
 
-/* Destruye una aparicion por valor buscado; los valores no cambian, y sin
+/* Destruye todas las apariciones de cada valor buscado; los valores no cambian, y sin
    liberacion en la lista no se liberan los datos. */
 static int TestSLispEliminarLista01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SLispEliminarLista 01:\n" );
 
-	int iVal [ 5 ] = { 10, 20, 30, 20, 40 };
+	int iVal [ 6 ] = { 20, 10, 20, 30, 40, 20 };
 	int iBus [ 4 ] = { 20, 40, 99, 20 };
-	int iValExt [ 3 ] = { 12, 25, 33 };
+	int iValExt [ 5 ] = { 12, 25, 33, 42, 13 };
 	int iBusExt [ 2 ] = { 3, 2 };
-	SListaPtr * p_lisObj = CrearListaEnteros ( iVal, 5 );
+	SListaPtr * p_lisObj = CrearListaEnteros ( iVal, 6 );
 	SListaPtr * p_lisBus = CrearListaEnteros ( iBus, 4 );
-	SListaPtr * p_lisObjExt = CrearListaEnteros ( iValExt, 3 );
+	SListaPtr * p_lisObjExt = CrearListaEnteros ( iValExt, 5 );
 	SListaPtr * p_lisBusExt = CrearListaEnteros ( iBusExt, 2 );
 	SListaPtr * p_lisVacia = SLispCrear ();
 	SListaPtr * p_lisSinLib = SLispCrear ();
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisBus ) && ES_VALIDO ( p_lisObjExt ) &&
 		 ES_VALIDO ( p_lisBusExt ) && ES_VALIDO ( p_lisVacia ) && ES_VALIDO ( p_lisSinLib ) )
 	{
-		/* El 99 no esta y se ignora; el 20 esta dos veces en los buscados. */
+		/* El 99 no esta y se ignora; el 20 esta tres veces y se van todas, aunque
+		   tambien este dos veces en los buscados. */
 		if ( SLispEliminarLista ( p_lisObj, p_lisBus, sizeof ( int ) ) != 1 )
 		{
 			printf( "Error caso 1: se esperaba 1\n" );
@@ -1145,7 +1147,7 @@ static int TestSLispEliminarLista01 ()
 		}
 		SLispDestruir ( &p_lisBusLoc );
 
-		/* Modulo 10: el 3 elimina el 33 y el 2 el 12. */
+		/* Modulo 10: el 3 elimina el 33 y el 13, y el 2 el 12 y el 42. */
 		int iEspObjExt [ 1 ] = { 25 };
 		if ( ( SLispEliminarListaExt ( p_lisObjExt, p_lisBusExt, SonIgualesMod10 ) != 1 ) ||
 			 ( VerificarCadena ( p_lisObjExt ) != BOOL_VAL_CIERTO ) ||
@@ -1442,6 +1444,119 @@ static int TestSLispEstaPosicionada01 ()
 	return ( iRes );
 }
 
+/* Las de nodo mueven el SElementoPtr tal cual: el extraido sale suelto, sin
+   enlaces, y se puede volver a enganchar en la misma lista o en otra. */
+static int TestSLispNodos01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLispNodos 01:\n" );
+
+	int iVal [ 4 ] = { 10, 20, 30, 40 };
+	SListaPtr * p_lisObj = CrearListaEnteros ( iVal, 4 );
+	SListaPtr * p_lisVacia = SLispCrear ();
+	SElementoPtr * p_elpObj = NULL;
+	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisVacia ) )
+	{
+		p_elpObj = SLispExtraerElemPtr ( p_lisObj, 1 );
+		int iEsp1 [ 3 ] = { 10, 30, 40 };
+		if ( ES_NULO ( p_elpObj ) || ( *( (int *) SElpDatos ( p_elpObj ) ) != 20 ) ||
+			 ( SElpTieneAntecesor ( p_elpObj ) != 0 ) || ( SElpTieneSucesor ( p_elpObj ) != 0 ) ||
+			 ( VerificarContenido ( p_lisObj, iEsp1, 3 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarCadena ( p_lisObj ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 1: se esperaba extraer suelto el 20 y dejar { 10, 30, 40 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		int iEsp2 [ 4 ] = { 20, 10, 30, 40 };
+		if ( ( SLispInsertarAlInicioPtr ( p_lisObj, p_elpObj ) != 1 ) ||
+			 ( VerificarContenido ( p_lisObj, iEsp2, 4 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarCadena ( p_lisObj ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 2: al inicio deberia quedar { 20, 10, 30, 40 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Por el cursor: queda en el sucesor del extraido. */
+		SLispMoverA ( p_lisObj, 2 );
+		p_elpObj = SLispExtraerPtr ( p_lisObj );
+		if ( ES_NULO ( p_elpObj ) || ( *( (int *) SElpDatos ( p_elpObj ) ) != 30 ) ||
+			 ( SLispPosicion ( p_lisObj ) != 2 ) || ( *( (int *) SLispActual ( p_lisObj ) ) != 40 ) )
+		{
+			printf( "Error caso 3: se esperaba extraer el 30 y quedar en el 40\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		int iEsp4 [ 4 ] = { 20, 10, 40, 30 };
+		if ( ( SLispInsertarAlFinalPtr ( p_lisObj, p_elpObj ) != 1 ) ||
+			 ( VerificarContenido ( p_lisObj, iEsp4, 4 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarCadena ( p_lisObj ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 4: al final deberia quedar { 20, 10, 40, 30 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Detras de la posicion 1. */
+		p_elpObj = SLispExtraerElemPtr ( p_lisObj, 0 );
+		int iEsp5 [ 4 ] = { 10, 40, 20, 30 };
+		if ( ( SLispInsertarElemPtr ( p_lisObj, 1, p_elpObj ) != 1 ) ||
+			 ( VerificarContenido ( p_lisObj, iEsp5, 4 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarCadena ( p_lisObj ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 5: detras de la posicion 1 deberia quedar { 10, 40, 20, 30 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Nodos nuevos en el cursor: delante ocupa su posicion, detras e Insertar la siguiente. */
+		SLispMoverA ( p_lisObj, 1 );
+		int iEsp6 [ 7 ] = { 10, 50, 60, 70, 40, 20, 30 };
+		if ( ( SLispInsertarDelantePtr ( p_lisObj, SElpCrear ( CrearDatoEntero ( 50 ), 1 ) ) != 1 ) ||
+			 ( SLispPosicion ( p_lisObj ) != 1 ) ||
+			 ( SLispInsertarDetrasPtr ( p_lisObj, SElpCrear ( CrearDatoEntero ( 60 ), 1 ) ) != 1 ) ||
+			 ( SLispPosicion ( p_lisObj ) != 2 ) ||
+			 ( SLispInsertarPtr ( p_lisObj, SElpCrear ( CrearDatoEntero ( 70 ), 1 ) ) != 1 ) ||
+			 ( SLispPosicion ( p_lisObj ) != 3 ) || ( *( (int *) SLispActual ( p_lisObj ) ) != 70 ) ||
+			 ( VerificarContenido ( p_lisObj, iEsp6, 7 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarCadena ( p_lisObj ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 6: deberia quedar { 10, 50, 60, 70, 40, 20, 30 } con el cursor en el 70\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* De una lista a otra, y en una vacia. */
+		p_elpObj = SLispExtraerElemPtr ( p_lisObj, 6 );
+		int iEsp7 [ 1 ] = { 30 };
+		if ( ( SLispInsertarDelantePtr ( p_lisVacia, p_elpObj ) != 1 ) ||
+			 ( VerificarContenido ( p_lisVacia, iEsp7, 1 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarCadena ( p_lisVacia ) != BOOL_VAL_CIERTO ) ||
+			 ( SLispPosicion ( p_lisVacia ) != 0 ) || ( SLispNumElementos ( p_lisObj ) != 6 ) )
+		{
+			printf( "Error caso 7: el 30 deberia pasar a la lista vacia\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_elpObj = NULL;
+		/* Nulos y fuera de rango: nada cambia. */
+		SElementoPtr * p_elpSuelto = SElpCrear ( CrearDatoEntero ( 80 ), 1 );
+		if ( ES_VALIDO ( SLispExtraerElemPtr ( p_lisObj, 9 ) ) ||
+			 ES_VALIDO ( SLispExtraerElemPtr ( NULL, 0 ) ) ||
+			 ES_VALIDO ( SLispExtraerPtr ( NULL ) ) ||
+			 ( SLispInsertarAlFinalPtr ( p_lisObj, NULL ) != 0 ) ||
+			 ( SLispInsertarAlInicioPtr ( p_lisObj, NULL ) != 0 ) ||
+			 ( SLispInsertarElemPtr ( NULL, 0, p_elpSuelto ) != 0 ) ||
+			 ( SLispInsertarAlFinalPtr ( NULL, p_elpSuelto ) != 0 ) ||
+			 ( SLispInsertarPtr ( NULL, p_elpSuelto ) != 0 ) ||
+			 ( SLispNumElementos ( p_lisObj ) != 6 ) )
+		{
+			printf( "Error caso 8: con nulos o fuera de rango se esperaba nulo o 0 sin cambios\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElpDestruir ( &p_elpSuelto );
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear las listas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SElpDestruir ( &p_elpObj );
+	SLispDestruir ( &p_lisObj );
+	SLispDestruir ( &p_lisVacia );
+	return ( iRes );
+}
+
 int TestSListaPtr ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -1465,7 +1580,8 @@ int TestSListaPtr ()
 			( TestSLispEliminarLista01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLispConjuntos01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLispDuplicar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSLispEstaPosicionada01 () == BOOL_VAL_CIERTO ) )
+			( TestSLispEstaPosicionada01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLispNodos01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

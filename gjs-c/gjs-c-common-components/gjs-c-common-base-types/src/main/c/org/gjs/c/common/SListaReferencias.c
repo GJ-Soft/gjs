@@ -152,7 +152,7 @@ int SLisRefInsertar ( SListaReferencias * p_lisObj, SReferencia * p_refDatos )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -168,7 +168,7 @@ int SLisRefInsertarExt ( SListaReferencias * p_lisObj, const char * p_cAlias, vo
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

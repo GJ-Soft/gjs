@@ -1075,9 +1075,9 @@ int SLisOrdEliminarListaOrd ( SListaOrdenada * p_lisObj, SListaOrdenada * p_lisV
 	return ( iRes );
 }
 
-/* Elimina ( destruye ) de p_lisObj la primera aparicion de cada valor de
-   p_lisValores: un valor repetido en p_lisValores elimina dos apariciones. Lo
-   que no se encuentra se ignora. p_lisValores no se toca. Como en
+/* Elimina ( destruye ) de p_lisObj todas las apariciones de cada valor de
+   p_lisValores: que un valor se repita en p_lisValores no cambia nada. Lo que
+   no se encuentra se ignora. p_lisValores no se toca. Como en
    ExtraerLista, la igualdad la decide el comparador de p_lisObj.
 
    Devuelve 1 si ha podido eliminar todo lo encontrado; si falla una eliminacion
@@ -1100,9 +1100,14 @@ int SLisOrdEliminarLista ( SListaOrdenada * p_lisObj, SLista * p_lisValores )
 				while ( ES_VALIDO ( p_elmObj ) && ( iRes == 1 ) )
 				{
 					iPos = SLisOrdBuscar ( p_lisObj, SElmDatos ( p_elmObj ) );
-					if ( iPos >= 0 )
+					while ( ( iPos >= 0 ) && ( iRes == 1 ) )
 					{
-						if ( SLisOrdEliminarElem ( p_lisObj, iPos ) != 1 )
+						if ( SLisOrdEliminarElem ( p_lisObj, iPos ) == 1 )
+						{
+							/* El siguiente igual ha pasado a ocupar iPos: se sigue buscando desde ahi. */
+							iPos = SLisOrdBuscarSiguiente ( p_lisObj, SElmDatos ( p_elmObj ), iPos - 1 );
+						}
+						else
 						{
 							iRes = 0;
 						}
@@ -1283,8 +1288,8 @@ SListaOrdenada * SLisOrdExtraerListaOrd ( SListaOrdenada * p_lisObj, SListaOrden
 }
 
 /* Saca de p_lisObj, a una lista nueva con una copia de su comparador, la
-   primera aparicion de cada valor de p_lisValores: un valor repetido en
-   p_lisValores saca dos apariciones. Lo que no se encuentra se ignora. Los
+   todas las apariciones de cada valor de p_lisValores: que un valor se repita
+   en p_lisValores no cambia nada. Lo que no se encuentra se ignora. Los
    elementos se mueven, no se copian, y la lista nueva los ordena.
 
    Si un elemento no se puede insertar en la nueva, vuelve a su sitio en
@@ -1314,12 +1319,17 @@ SListaOrdenada * SLisOrdExtraerLista ( SListaOrdenada * p_lisObj, SLista * p_lis
 					while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) )
 					{
 						iPos = SLisOrdBuscar ( p_lisObj, SElmDatos ( p_elmObj ) );
-						if ( iPos >= 0 )
+						while ( ( iPos >= 0 ) && ( iError == 0 ) )
 						{
 							p_elmExt = SLisOrdExtraerElem ( p_lisObj, iPos );
 							if ( ES_VALIDO ( p_elmExt ) )
 							{
-								if ( SLisOrdInsertarElem ( p_lisRes, p_elmExt ) != 1 )
+								if ( SLisOrdInsertarElem ( p_lisRes, p_elmExt ) == 1 )
+								{
+									/* El siguiente igual ha pasado a ocupar iPos: se sigue buscando desde ahi. */
+									iPos = SLisOrdBuscarSiguiente ( p_lisObj, SElmDatos ( p_elmObj ), iPos - 1 );
+								}
+								else
 								{
 									if ( SLisOrdInsertarElem ( p_lisObj, p_elmExt ) != 1 )
 									{

@@ -118,7 +118,7 @@ int SSecRealdInsertar ( SSecuenciaRealesDobles * p_secObj, double dDato )
 			}
 			else
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			if ( iRes != 1 )
 			{
@@ -127,12 +127,12 @@ int SSecRealdInsertar ( SSecuenciaRealesDobles * p_secObj, double dDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

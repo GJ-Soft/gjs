@@ -104,28 +104,29 @@ int SHojInsertar ( SHoja * p_hojObj, const char * p_cClave, unsigned long ulPosi
 {
  	int iRes;
 	int iFin;
+	int iPos;
 
- 	iRes = -1;
+ 	iRes = 0;
  	if ( ES_VALIDO ( p_hojObj ) )
  	{
  	 	if ( ( p_hojObj->iPrimLibre >= 0 ) && ( p_hojObj->iPrimLibre < p_hojObj->iMaxElems ) )
  	 	{
- 	 	 	iRes = p_hojObj->iPrimLibre;
-			p_hojObj->p_p_lczContenido[ iRes ] = SLczCrear ( p_cClave );
-			SLczEstablecerPosicion ( p_hojObj->p_p_lczContenido[ iRes ], ulPosicion );
+ 	 	 	iPos = p_hojObj->iPrimLibre;
+			p_hojObj->p_p_lczContenido[ iPos ] = SLczCrear ( p_cClave );
+			SLczEstablecerPosicion ( p_hojObj->p_p_lczContenido[ iPos ], ulPosicion );
  	 	 	p_hojObj->iNumElems = p_hojObj->iNumElems + 1;
 			if ( p_hojObj->iNumElems == 1 )
 			{
-				p_hojObj->p_cMinClave = SLczClave ( p_hojObj->p_p_lczContenido[ iRes ] );
+				p_hojObj->p_cMinClave = SLczClave ( p_hojObj->p_p_lczContenido[ iPos ] );
 				p_hojObj->p_cMaxClave = p_hojObj->p_cMinClave;
 			}
 			else if ( CadComparar ( p_hojObj->p_cMinClave, p_cClave ) == COMP_MAYOR )
 			{
-				p_hojObj->p_cMinClave = SLczClave ( p_hojObj->p_p_lczContenido[ iRes ] );
+				p_hojObj->p_cMinClave = SLczClave ( p_hojObj->p_p_lczContenido[ iPos ] );
 			}
 			else if ( CadComparar ( p_hojObj->p_cMaxClave, p_cClave ) == COMP_MENOR )
 			{
-				p_hojObj->p_cMaxClave = SLczClave ( p_hojObj->p_p_lczContenido[ iRes ] );
+				p_hojObj->p_cMaxClave = SLczClave ( p_hojObj->p_p_lczContenido[ iPos ] );
 			}
  	 	 	if ( p_hojObj->iNumElems >= p_hojObj->iMaxElems )
  	 	 	{
@@ -137,7 +138,7 @@ int SHojInsertar ( SHoja * p_hojObj, const char * p_cClave, unsigned long ulPosi
 				while ( ( SLczEsValido ( p_hojObj->p_p_lczContenido[ p_hojObj->iPrimLibre ] ) == 1 ) && ( iFin == 0 ) ) 
 				{
 					p_hojObj->iPrimLibre = ( p_hojObj->iPrimLibre + 1 ) % p_hojObj->iMaxElems;
-					if ( p_hojObj->iPrimLibre == iRes )
+					if ( p_hojObj->iPrimLibre == iPos )
 					{
 						iFin = 1;
 					}
@@ -147,15 +148,16 @@ int SHojInsertar ( SHoja * p_hojObj, const char * p_cClave, unsigned long ulPosi
 					p_hojObj->iPrimLibre = -1;
 				}
  	 	 	}
+ 	 	 	iRes = 1;
  	 	}
  	 	else
  	 	{
- 	 	 	iRes = -1;
+ 	 	 	iRes = 0;
  	 	}
  	}
  	else
  	{
- 	 	iRes = -1;
+ 	 	iRes = 0;
  	}
  	return ( iRes );
 }

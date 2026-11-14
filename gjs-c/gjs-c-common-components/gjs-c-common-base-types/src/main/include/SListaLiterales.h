@@ -20,6 +20,7 @@ typedef struct
 
 
 SListaLiterales * SLisLitCrear ();
+SListaLiterales * SLisLitEncapsular ( SListaPtr * p_lisDatos );
 
 
 void SLisLitDestruir ( SListaLiterales ** p_p_lisObj );
@@ -98,7 +99,7 @@ int SLisLitConcatenarLista ( SListaLiterales * p_lisObj, SListaLiterales * p_lis
 // Duplica los valores de la lista de entrada
 int SLisLitInsertarListaDup ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
 int SLisLitConcatenarListaDup ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
-// Destruye la primera aparición de cada valor de la lista de entrada
+// Destruye todas las apariciones de cada valor de la lista de entrada
 int SLisLitEliminarLista ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores );
 
 // Operaciones que generan listas nuevas

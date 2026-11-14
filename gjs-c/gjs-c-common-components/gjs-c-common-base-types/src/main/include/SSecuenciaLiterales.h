@@ -54,6 +54,32 @@ int SSecLitTieneRepetidos ( SSecuenciaLiterales * p_secObj );
 
 SSecuenciaPtr * SSecLitSecuencia ( SSecuenciaLiterales * p_secObj );
 SListaPtr * SSecLitLista ( SSecuenciaLiterales * p_secObj );
+SListaLiterales * SSecLitListaLit ( SSecuenciaLiterales * p_secObj );
+
+// Operaciones con otras secuencias y listas
+int SSecLitExistenTodos ( SSecuenciaLiterales * p_secObj, SSecuenciaLiterales * p_secValores );
+int SSecLitExisteAlguno ( SSecuenciaLiterales * p_secObj, SSecuenciaLiterales * p_secValores );
+int SSecLitExistenTodosLista ( SSecuenciaLiterales * p_secObj, SListaLiterales * p_lisValores );
+int SSecLitExisteAlgunoLista ( SSecuenciaLiterales * p_secObj, SListaLiterales * p_lisValores );
+
+int SSecLitEliminarSecuencia ( SSecuenciaLiterales * p_secObj, SSecuenciaLiterales * p_secValores );
+int SSecLitEliminarLista ( SSecuenciaLiterales * p_secObj, SListaLiterales * p_lisValores );
+
+// Duplica los valores de la secuencia o la lista de entrada
+int SSecLitConcatenar ( SSecuenciaLiterales * p_secObj, SSecuenciaLiterales * p_secValores );
+int SSecLitConcatenarLista ( SSecuenciaLiterales * p_secObj, SListaLiterales * p_lisValores );
+
+// Operaciones que generan secuencias nuevas
+// NOTA: Si hay algún error puede realizar una extracción parcial
+SSecuenciaLiterales * SSecLitExtraerSecuencia ( SSecuenciaLiterales * p_secObj, SSecuenciaLiterales * p_secValores );
+SSecuenciaLiterales * SSecLitExtraerLista ( SSecuenciaLiterales * p_secObj, SListaLiterales * p_lisValores );
+
+SSecuenciaLiterales * SSecLitUnion ( SSecuenciaLiterales * p_secValores1, SSecuenciaLiterales * p_secValores2 );
+SSecuenciaLiterales * SSecLitInterseccion ( SSecuenciaLiterales * p_secValores1, SSecuenciaLiterales * p_secValores2 );
+SSecuenciaLiterales * SSecLitDiferencia ( SSecuenciaLiterales * p_secValores1, SSecuenciaLiterales * p_secValores2 );
+SSecuenciaLiterales * SSecLitUnionLista ( SSecuenciaLiterales * p_secValores1, SListaLiterales * p_lisValores2 );
+SSecuenciaLiterales * SSecLitInterseccionLista ( SSecuenciaLiterales * p_secValores1, SListaLiterales * p_lisValores2 );
+SSecuenciaLiterales * SSecLitDiferenciaLista ( SSecuenciaLiterales * p_secValores1, SListaLiterales * p_lisValores2 );
 
 
 #endif

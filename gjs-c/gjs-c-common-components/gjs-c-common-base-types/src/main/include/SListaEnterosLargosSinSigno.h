@@ -23,6 +23,7 @@ typedef struct
 
 
 SListaEnterosLargosSinSigno * SLisIntLssCrear ();
+SListaEnterosLargosSinSigno * SLisIntLssEncapsular ( SLista * p_lisDatos );
 
 
 void SLisIntLssDestruir ( SListaEnterosLargosSinSigno ** p_p_lisObj );
@@ -98,7 +99,7 @@ int SLisIntLssConcatenarLista ( SListaEnterosLargosSinSigno * p_lisObj, SListaEn
 // Duplica los valores de la lista de entrada
 int SLisIntLssInsertarListaDup ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
 int SLisIntLssConcatenarListaDup ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
-// Destruye la primera aparición de cada valor de la lista de entrada
+// Destruye todas las apariciones de cada valor de la lista de entrada
 int SLisIntLssEliminarLista ( SListaEnterosLargosSinSigno * p_lisObj, SListaEnterosLargosSinSigno * p_lisValores );
 
 // Operaciones que generan listas nuevas

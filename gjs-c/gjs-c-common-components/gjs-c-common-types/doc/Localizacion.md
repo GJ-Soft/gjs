@@ -200,7 +200,7 @@ recorrerla.
 | `SHoja * SHojCrearDef ()`                                                        | Hoja con `ARB_B_NUM_ELEM_POR_HOJA_DEF` (30) elementos.        |
 | `SHoja * SHojCrear ( int iMaxElems )`                                            | Hoja con capacidad dada.                                      |
 | `void SHojDestruir ( SHoja ** )`                                                 | Destruye y anula el puntero.                                  |
-| `int SHojInsertar ( SHoja *, const char * p_cClave, unsigned long ulPosicion )`  | Inserta manteniendo el orden. Devuelve el hueco usado o `-1`. |
+| `int SHojInsertar ( SHoja *, const char * p_cClave, unsigned long ulPosicion )`  | Inserta manteniendo el orden. Devuelve 1, o 0 si está llena.  |
 | `unsigned long SHojBuscar ( SHoja *, const char * p_cClave )`                    | Posición asociada a la clave, o `SLCZ_SIN_POSICION`.          |
 | `int SHojExiste ( SHoja *, const char * p_cClave )`                              | 1 si la clave está.                                           |
 | `int SHojModificar ( SHoja *, const char * p_cClave, unsigned long ulPosicion )` | Cambia la posición.                                           |
@@ -236,7 +236,7 @@ está su registro.
 
 - **El índice es dueño de sus localizadores.** `SIndLitInsertar` se queda con
   el que recibe y lo destruye al eliminarlo, al vaciar o al destruir el índice.
-  Si lo rechaza (devuelve `-1`), sigue siendo del llamante.
+  Si lo rechaza (devuelve 0), sigue siendo del llamante.
   `SIndLitInsertarExt` crea el suyo y, si no entra, lo destruye.
 - **Solo entran localizadores válidos**: con clave y con posición. Una clave
   repetida se rechaza y la que había no cambia.

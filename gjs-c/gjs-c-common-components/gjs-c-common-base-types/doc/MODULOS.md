@@ -58,13 +58,13 @@ Volver al [README](../README.md).
 | Módulo                        | Prefijo      | Struct                        | Funciones | Test | Documento                              |
 | ----------------------------- | ------------ | ----------------------------- | --------- | ---- | -------------------------------------- |
 | `SLista`                      | `SLis`       | `SLista`                      | 58        | ✔    | [Listas](Listas.md)                    |
-| `SListaPtr`                   | `SLisp`      | `SListaPtr`                   | 78        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnteros`               | `SLisInt`    | `SListaEnteros`               | 56        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnterosLargos`         | `SLisIntl`   | `SListaEnterosLargos`         | 56        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnterosLargosSinSigno` | `SLisIntLss` | `SListaEnterosLargosSinSigno` | 55        | ✔    | [Listas](Listas.md)                    |
-| `SListaLiterales`             | `SLisLit`    | `SListaLiterales`             | 61        | ✔    | [Listas](Listas.md)                    |
+| `SListaPtr`                   | `SLisp`      | `SListaPtr`                   | 86        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnteros`               | `SLisInt`    | `SListaEnteros`               | 57        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnterosLargos`         | `SLisIntl`   | `SListaEnterosLargos`         | 57        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnterosLargosSinSigno` | `SLisIntLss` | `SListaEnterosLargosSinSigno` | 56        | ✔    | [Listas](Listas.md)                    |
+| `SListaLiterales`             | `SLisLit`    | `SListaLiterales`             | 62        | ✔    | [Listas](Listas.md)                    |
 | `SListaOrdenada`              | `SLisOrd`    | `SListaOrdenada`              | 61        | ✔    | [Listas](Listas.md)                    |
-| `SListaOrdenadaPtr`           | `SLispOrd`   | `SListaOrdenadaPtr`           | 70        | ✔    | [Listas](Listas.md)                    |
+| `SListaOrdenadaPtr`           | `SLispOrd`   | `SListaOrdenadaPtr`           | 71        | ✔    | [Listas](Listas.md)                    |
 | `SListaParejas`               | `SLisPrj`    | `SListaParejas`               | 10        | ✔    | [Listas](Listas.md)                    |
 | `SListaReferencias`           | `SLisRef`    | `SListaReferencias`           | 15        | ✔    | [Listas](Listas.md)                    |
 | `SListaVec`                   | `SVLis`      | `SVLista`                     | 21        | ✔    | [Listas](Listas.md)                    |
@@ -74,11 +74,11 @@ Volver al [README](../README.md).
 | Módulo                            | Prefijo      | Struct                            | Funciones | Test | Documento                   |
 | --------------------------------- | ------------ | --------------------------------- | --------- | ---- | --------------------------- |
 | `SSecuencia`                      | `SSec`       | `SSecuencia`                      | 37        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaPtr`                   | `SSecp`      | `SSecuenciaPtr`                   | 73        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnteros`               | `SSecInt`    | `SSecuenciaEnteros`               | 24        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnterosLargos`         | `SSecIntl`   | `SSecuenciaEnterosLargos`         | 23        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnterosLargosSinSigno` | `SSecIntLss` | `SSecuenciaEnterosLargosSinSigno` | 22        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaLiterales`             | `SSecLit`    | `SSecuenciaLiterales`             | 19        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaPtr`                   | `SSecp`      | `SSecuenciaPtr`                   | 76        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnteros`               | `SSecInt`    | `SSecuenciaEnteros`               | 41        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnterosLargos`         | `SSecIntl`   | `SSecuenciaEnterosLargos`         | 40        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnterosLargosSinSigno` | `SSecIntLss` | `SSecuenciaEnterosLargosSinSigno` | 39        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaLiterales`             | `SSecLit`    | `SSecuenciaLiterales`             | 36        | ✔    | [Secuencias](Secuencias.md) |
 
 ### Vectores y flags
 
@@ -105,9 +105,9 @@ Volver al [README](../README.md).
 | `SPilaLiterales`     | `SPilLit` | `SPilaLiterales`     | 12        | ✔    | [Pilas](Pilas.md)         |
 | `SCola`              | `SCol`    | `SCola`              | 17        | ✔    | [Colas](Colas.md)         |
 | `SColaPtr`           | `SColp`   | `SColaPtr`           | 21        | ✔    | [Colas](Colas.md)         |
-| `SConjunto`          | `SCnj`    | `SConjunto`          | 19        | ✔    | [Conjuntos](Conjuntos.md) |
-| `SConjuntoPtr`       | `SCnjp`   | `SConjuntoPtr`       | 18        | ✔    | [Conjuntos](Conjuntos.md) |
-| `SConjuntoLiterales` | `SCnjLit` | `SConjuntoLiterales` | 14        | ✔    | [Conjuntos](Conjuntos.md) |
+| `SConjunto`          | `SCnj`    | `SConjunto`          | 47        | ✔    | [Conjuntos](Conjuntos.md) |
+| `SConjuntoPtr`       | `SCnjp`   | `SConjuntoPtr`       | 64        | ✔    | [Conjuntos](Conjuntos.md) |
+| `SConjuntoLiterales` | `SCnjLit` | `SConjuntoLiterales` | 32        | ✔    | [Conjuntos](Conjuntos.md) |
 
 ### Nodos
 

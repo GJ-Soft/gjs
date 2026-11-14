@@ -1,6 +1,7 @@
 #include "Base.h"
 
 #include "SSecuenciaEnterosLargosSinSigno.h"
+#include "SListaEnterosLargosSinSigno.h"
 
 
 
@@ -317,6 +318,286 @@ static int TestSSecIntLssBuscarSiguiente01 ()
 }
 
 
+static SSecuenciaEnterosLargosSinSigno * CrearSec ( unsigned long * p_ulValores, int iNum )
+{
+	SSecuenciaEnterosLargosSinSigno * p_secObj = SSecIntLssCrear ();
+	int iPos = 0;
+	while ( ES_VALIDO ( p_secObj ) && ( iPos < iNum ) )
+	{
+		SSecIntLssInsertar ( p_secObj, p_ulValores [ iPos ] );
+		iPos = iPos + 1;
+	}
+	return ( p_secObj );
+}
+
+static SListaEnterosLargosSinSigno * CrearLista ( unsigned long * p_ulValores, int iNum )
+{
+	SListaEnterosLargosSinSigno * p_lisObj = SLisIntLssCrear ();
+	int iPos = 0;
+	while ( ES_VALIDO ( p_lisObj ) && ( iPos < iNum ) )
+	{
+		SLisIntLssInsertarAlFinal ( p_lisObj, p_ulValores [ iPos ] );
+		iPos = iPos + 1;
+	}
+	return ( p_lisObj );
+}
+
+/* Comprueba numero y orden de los valores. */
+static int VerificarSec ( SSecuenciaEnterosLargosSinSigno * p_secObj, unsigned long * p_ulEsperados, int iNum )
+{
+	int iRes = BOOL_VAL_CIERTO;
+
+	if ( ( SSecIntLssEsValida ( p_secObj ) != 1 ) || ( SSecIntLssNumElementos ( p_secObj ) != iNum ) )
+	{
+		printf( "  Verificacion: se esperaban %d elementos: %d\n", iNum, SSecIntLssNumElementos ( p_secObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	int iPos = 0;
+	while ( ( iPos < iNum ) && ( iRes == BOOL_VAL_CIERTO ) )
+	{
+		if ( SSecIntLssElemento ( p_secObj, iPos ) != p_ulEsperados [ iPos ] )
+		{
+			printf( "  Verificacion: en pos %d se esperaba %lu: %lu\n", iPos, p_ulEsperados [ iPos ], SSecIntLssElemento ( p_secObj, iPos ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		iPos = iPos + 1;
+	}
+	return ( iRes );
+}
+
+/* Igual, para una lista. */
+static int VerificarLista ( SListaEnterosLargosSinSigno * p_lisObj, unsigned long * p_ulEsperados, int iNum )
+{
+	int iRes = BOOL_VAL_CIERTO;
+
+	if ( ( SLisIntLssEsValida ( p_lisObj ) != 1 ) || ( SLisIntLssNumElementos ( p_lisObj ) != iNum ) )
+	{
+		printf( "  Verificacion: se esperaban %d elementos: %d\n", iNum, SLisIntLssNumElementos ( p_lisObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	int iPos = 0;
+	while ( ( iPos < iNum ) && ( iRes == BOOL_VAL_CIERTO ) )
+	{
+		if ( SLisIntLssElemento ( p_lisObj, iPos ) != p_ulEsperados [ iPos ] )
+		{
+			printf( "  Verificacion: en pos %d se esperaba %lu: %lu\n", iPos, p_ulEsperados [ iPos ], SLisIntLssElemento ( p_lisObj, iPos ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		iPos = iPos + 1;
+	}
+	return ( iRes );
+}
+
+/* ListaIntLss da una lista con COPIAS: cambiarla no toca la secuencia. */
+static int TestSSecIntLssListaIntLss01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecIntLssListaIntLss 01:\n" );
+
+	unsigned long ulV [ 3 ] = { 5, 1, 5 };
+	unsigned long ulEsp [ 4 ] = { 5, 1, 5, 8 };
+	SSecuenciaEnterosLargosSinSigno * p_secObj = CrearSec ( ulV, 3 );
+	SListaEnterosLargosSinSigno * p_lisRes = NULL;
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		p_lisRes = SSecIntLssListaIntLss ( p_secObj );
+		if ( VerificarLista ( p_lisRes, ulV, 3 ) != BOOL_VAL_CIERTO )
+		{
+			printf( "Error caso 1: la lista deberia ser { 5, 1, 5 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SLisIntLssInsertarAlFinal ( p_lisRes, 8 ) != 1 ) ||
+			 ( VerificarLista ( p_lisRes, ulEsp, 4 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarSec ( p_secObj, ulV, 3 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 2: insertar en la lista no deberia tocar la secuencia\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SSecIntLssListaIntLss ( NULL ) ) )
+		{
+			printf( "Error caso 3: con una secuencia nula se esperaba nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la secuencia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisIntLssDestruir ( &p_lisRes );
+	SSecIntLssDestruir ( &p_secObj );
+	return ( iRes );
+}
+
+/* Pertenencia; Concatenar copia, Eliminar destruye todas las apariciones y
+   Extraer mueve. */
+static int TestSSecIntLssOperacionesListas01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecIntLssOperacionesListas 01:\n" );
+
+	unsigned long ulVal [ 5 ] = { 1, 2, 3, 2, 4 };
+	unsigned long ul29 [ 2 ] = { 2, 9 };
+	unsigned long ul43 [ 2 ] = { 4, 3 };
+	unsigned long ul9 [ 1 ] = { 9 };
+	unsigned long ul1 [ 1 ] = { 1 };
+	SSecuenciaEnterosLargosSinSigno * p_secObj = CrearSec ( ulVal, 5 );
+	SSecuenciaEnterosLargosSinSigno * p_sec29 = CrearSec ( ul29, 2 );
+	SSecuenciaEnterosLargosSinSigno * p_sec9 = CrearSec ( ul9, 1 );
+	SListaEnterosLargosSinSigno * p_lis43 = CrearLista ( ul43, 2 );
+	SListaEnterosLargosSinSigno * p_lis9 = CrearLista ( ul9, 1 );
+	SListaEnterosLargosSinSigno * p_lis1 = CrearLista ( ul1, 1 );
+	SSecuenciaEnterosLargosSinSigno * p_secRes = NULL;
+	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_sec29 ) && ES_VALIDO ( p_sec9 ) && ES_VALIDO ( p_lis43 ) &&
+		 ES_VALIDO ( p_lis9 ) && ES_VALIDO ( p_lis1 ) )
+	{
+		if ( ( SSecIntLssExistenTodos ( p_secObj, p_sec29 ) != 0 ) || ( SSecIntLssExisteAlguno ( p_secObj, p_sec29 ) != 1 ) ||
+			 ( SSecIntLssExistenTodosLista ( p_secObj, p_lis43 ) != 1 ) || ( SSecIntLssExisteAlgunoLista ( p_secObj, p_lis9 ) != 0 ) )
+		{
+			printf( "Error caso 1: se esperaba 0, 1, 1 y 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Concatenar copia: la lista y la otra secuencia no cambian. */
+		unsigned long ulEsp2 [ 9 ] = { 1, 2, 3, 2, 4, 4, 3, 2, 9 };
+		if ( ( SSecIntLssConcatenarLista ( p_secObj, p_lis43 ) != 1 ) ||
+			 ( SSecIntLssConcatenar ( p_secObj, p_sec29 ) != 1 ) ||
+			 ( VerificarSec ( p_secObj, ulEsp2, 9 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarLista ( p_lis43, ul43, 2 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarSec ( p_sec29, ul29, 2 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 2: se esperaban copias al final y los valores sin tocar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Eliminar quita todas las apariciones. */
+		unsigned long ulEsp3 [ 4 ] = { 1, 2, 2, 2 };
+		if ( ( SSecIntLssEliminarLista ( p_secObj, p_lis43 ) != 1 ) ||
+			 ( SSecIntLssEliminarSecuencia ( p_secObj, p_sec9 ) != 1 ) ||
+			 ( VerificarSec ( p_secObj, ulEsp3, 4 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 3: deberia quedar { 1, 2, 2, 2 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Extraer mueve, todas las apariciones de cada valor. */
+		unsigned long ulEsp4 [ 3 ] = { 2, 2, 2 };
+		p_secRes = SSecIntLssExtraerLista ( p_secObj, p_lis1 );
+		if ( ( VerificarSec ( p_secRes, ul1, 1 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarSec ( p_secObj, ulEsp4, 3 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 4: se esperaba sacar el 1 y dejar { 2, 2, 2 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SSecIntLssDestruir ( &p_secRes );
+		p_secRes = SSecIntLssExtraerSecuencia ( p_secObj, p_sec29 );
+		if ( ( VerificarSec ( p_secRes, ulEsp4, 3 ) != BOOL_VAL_CIERTO ) ||
+			 ( SSecIntLssNumElementos ( p_secObj ) != 0 ) )
+		{
+			printf( "Error caso 5: se esperaba sacar los tres 2 y dejarla vacia\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SSecIntLssDestruir ( &p_secRes );
+		if ( ( SSecIntLssExistenTodos ( NULL, p_sec29 ) != 0 ) || ( SSecIntLssExisteAlgunoLista ( p_sec29, NULL ) != 0 ) ||
+			 ( SSecIntLssConcatenarLista ( p_sec29, NULL ) != 0 ) || ( SSecIntLssConcatenar ( NULL, p_sec9 ) != 0 ) ||
+			 ( SSecIntLssConcatenar ( p_sec29, p_sec29 ) != 0 ) ||
+			 ( SSecIntLssEliminarSecuencia ( p_sec29, p_sec29 ) != 0 ) || ( SSecIntLssEliminarLista ( NULL, p_lis9 ) != 0 ) ||
+			 ES_VALIDO ( SSecIntLssExtraerSecuencia ( p_sec29, p_sec29 ) ) ||
+			 ES_VALIDO ( SSecIntLssExtraerLista ( p_sec29, NULL ) ) ||
+			 ( VerificarSec ( p_sec29, ul29, 2 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 6: con nulos o la misma secuencia se esperaba 0 o nulo sin cambios\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear las secuencias o las listas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecIntLssDestruir ( &p_secObj );
+	SSecIntLssDestruir ( &p_sec29 );
+	SSecIntLssDestruir ( &p_sec9 );
+	SLisIntLssDestruir ( &p_lis43 );
+	SLisIntLssDestruir ( &p_lis9 );
+	SLisIntLssDestruir ( &p_lis1 );
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+/* Union es concatenacion; Interseccion y Diferencia, en el orden de V1. Las
+   tres con copias, sin tocar las de entrada. */
+static int TestSSecIntLssUnion01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecIntLssUnion 01:\n" );
+
+	unsigned long ulV1 [ 4 ] = { 1, 2, 3, 4 };
+	unsigned long ulV2 [ 3 ] = { 4, 2, 5 };
+	unsigned long ulEspU [ 7 ] = { 1, 2, 3, 4, 4, 2, 5 };
+	unsigned long ulEspI [ 2 ] = { 2, 4 };
+	unsigned long ulEspD [ 2 ] = { 1, 3 };
+	SSecuenciaEnterosLargosSinSigno * p_sec1 = CrearSec ( ulV1, 4 );
+	SSecuenciaEnterosLargosSinSigno * p_sec2 = CrearSec ( ulV2, 3 );
+	SListaEnterosLargosSinSigno * p_lis2 = CrearLista ( ulV2, 3 );
+	SSecuenciaEnterosLargosSinSigno * p_secU = NULL;
+	SSecuenciaEnterosLargosSinSigno * p_secI = NULL;
+	SSecuenciaEnterosLargosSinSigno * p_secD = NULL;
+	SSecuenciaEnterosLargosSinSigno * p_secUL = NULL;
+	SSecuenciaEnterosLargosSinSigno * p_secIL = NULL;
+	SSecuenciaEnterosLargosSinSigno * p_secDL = NULL;
+	if ( ES_VALIDO ( p_sec1 ) && ES_VALIDO ( p_sec2 ) && ES_VALIDO ( p_lis2 ) )
+	{
+		p_secU = SSecIntLssUnion ( p_sec1, p_sec2 );
+		p_secI = SSecIntLssInterseccion ( p_sec1, p_sec2 );
+		p_secD = SSecIntLssDiferencia ( p_sec1, p_sec2 );
+		if ( ( VerificarSec ( p_secU, ulEspU, 7 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarSec ( p_secI, ulEspI, 2 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarSec ( p_secD, ulEspD, 2 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 1: con secuencias se esperaba { 1, 2, 3, 4, 4, 2, 5 }, { 2, 4 } y { 1, 3 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_secUL = SSecIntLssUnionLista ( p_sec1, p_lis2 );
+		p_secIL = SSecIntLssInterseccionLista ( p_sec1, p_lis2 );
+		p_secDL = SSecIntLssDiferenciaLista ( p_sec1, p_lis2 );
+		if ( ( VerificarSec ( p_secUL, ulEspU, 7 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarSec ( p_secIL, ulEspI, 2 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarSec ( p_secDL, ulEspD, 2 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 2: con listas se esperaba { 1, 2, 3, 4, 4, 2, 5 }, { 2, 4 } y { 1, 3 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( VerificarSec ( p_sec1, ulV1, 4 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarSec ( p_sec2, ulV2, 3 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarLista ( p_lis2, ulV2, 3 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 3: las de entrada no deberian cambiar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SSecIntLssUnion ( p_sec1, NULL ) ) || ES_VALIDO ( SSecIntLssInterseccion ( NULL, p_sec2 ) ) ||
+			 ES_VALIDO ( SSecIntLssDiferencia ( p_sec1, NULL ) ) || ES_VALIDO ( SSecIntLssUnionLista ( NULL, p_lis2 ) ) ||
+			 ES_VALIDO ( SSecIntLssInterseccionLista ( p_sec1, NULL ) ) || ES_VALIDO ( SSecIntLssDiferenciaLista ( NULL, p_lis2 ) ) )
+		{
+			printf( "Error caso 4: con nulos se esperaba nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear las secuencias o la lista\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecIntLssDestruir ( &p_secU );
+	SSecIntLssDestruir ( &p_secI );
+	SSecIntLssDestruir ( &p_secD );
+	SSecIntLssDestruir ( &p_secUL );
+	SSecIntLssDestruir ( &p_secIL );
+	SSecIntLssDestruir ( &p_secDL );
+	SSecIntLssDestruir ( &p_sec1 );
+	SSecIntLssDestruir ( &p_sec2 );
+	SLisIntLssDestruir ( &p_lis2 );
+	ErrLimpiar ();
+	return ( iRes );
+}
+
 int TestSSecuenciaEnterosLargosSinSigno ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -325,7 +606,10 @@ int TestSSecuenciaEnterosLargosSinSigno ()
 			( TestSSecIntLssInvalidos01 () == BOOL_VAL_CIERTO )  &&
 			( TestSSecIntLssConjunto01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecIntLssConjunto02 () == BOOL_VAL_CIERTO ) &&
-			( TestSSecIntLssBuscarSiguiente01 () == BOOL_VAL_CIERTO ) )
+			( TestSSecIntLssBuscarSiguiente01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecIntLssListaIntLss01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecIntLssOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecIntLssUnion01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

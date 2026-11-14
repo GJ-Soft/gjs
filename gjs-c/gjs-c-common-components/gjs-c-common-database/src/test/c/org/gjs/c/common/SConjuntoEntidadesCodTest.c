@@ -109,9 +109,9 @@ static int TestSCnjEntCodInsertar01 ()
 		}
 		/* Un codigo ya presente se rechaza, y la entidad sigue siendo del llamador. */
 		SEntidadCod * p_entcDup = CrearEntidad ( "BETA" );
-		if ( SCnjEntCodInsertar ( p_cnjObj, p_entcDup ) != -1 )
+		if ( SCnjEntCodInsertar ( p_cnjObj, p_entcDup ) != 0 )
 		{
-			printf( "Error caso 4: insertar un codigo duplicado deberia devolver -1\n" );
+			printf( "Error caso 4: insertar un codigo duplicado deberia devolver 0\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( ( SCnjEntCodNumElementos ( p_cnjObj ) != 3 ) || ( ! CodigoEs ( p_entcDup, "BETA" ) ) )
@@ -120,9 +120,9 @@ static int TestSCnjEntCodInsertar01 ()
 			iRes = BOOL_VAL_FALSO;
 		}
 		SEntCodDestruir ( &p_entcDup );
-		if ( SCnjEntCodInsertar ( p_cnjObj, NULL ) != -1 )
+		if ( SCnjEntCodInsertar ( p_cnjObj, NULL ) != 0 )
 		{
-			printf( "Error caso 6: insertar una entidad nula deberia devolver -1\n" );
+			printf( "Error caso 6: insertar una entidad nula deberia devolver 0\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( ( ! CodigoEs ( SCnjEntCodPrimero ( p_cnjObj ), "ALFA" ) ) || ( ! CodigoEs ( SCnjEntCodUltimo ( p_cnjObj ), "GAMMA" ) ) )
@@ -434,9 +434,9 @@ static int TestSCnjEntCodInvalidos01 ()
 		iRes = BOOL_VAL_FALSO;
 	}
 	SEntidadCod * p_entcObj = CrearEntidad ( "ALFA" );
-	if ( SCnjEntCodInsertar ( NULL, p_entcObj ) != -1 )
+	if ( SCnjEntCodInsertar ( NULL, p_entcObj ) != 0 )
 	{
-		printf( "Error caso 3: insertar en un conjunto nulo deberia devolver -1\n" );
+		printf( "Error caso 3: insertar en un conjunto nulo deberia devolver 0\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
 	SEntCodDestruir ( &p_entcObj );

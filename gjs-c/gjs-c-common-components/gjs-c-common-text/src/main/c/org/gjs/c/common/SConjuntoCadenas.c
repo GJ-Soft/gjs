@@ -170,7 +170,7 @@ int SCnjCadInsertar ( SConjuntoCadenas * p_cnjObj, SCadena * p_cadDato )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -193,12 +193,12 @@ int SCnjCadInsertarDup ( SConjuntoCadenas * p_cnjObj, SCadena * p_cadDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

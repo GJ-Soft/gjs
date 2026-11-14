@@ -7,6 +7,7 @@ extern int _SLisIntBuscarSiguiente ( SLista * p_lisDatos, int iDato, int iPos );
 extern int _SLisIntRepeticiones ( SLista * p_lisDatos, int iDato );
 
 static SSecuenciaEnteros * _SSecIntEnvolver ( SSecuencia * p_secDatos );
+static SSecuenciaEnteros * _SSecIntEnvolverExtraidos ( SSecuenciaEnteros * p_secObj, SSecuencia * p_secExt );
 
 
 
@@ -140,7 +141,7 @@ int SSecIntInsertar ( SSecuenciaEnteros * p_secObj, int iDato )
 			}
 			else
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			if ( iRes != 1 )
 			{
@@ -149,12 +150,12 @@ int SSecIntInsertar ( SSecuenciaEnteros * p_secObj, int iDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -567,6 +568,388 @@ SLista * SSecIntLista ( SSecuenciaEnteros * p_secObj )
 	return ( p_lisRes );
 }
 
+/* Lista nueva con COPIAS de los valores, en el mismo orden. */
+SListaEnteros * SSecIntListaInt ( SSecuenciaEnteros * p_secObj )
+{
+	SListaEnteros *	p_lisRes;
+	SLista *		p_lisDatos;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		p_lisDatos = SLisDuplicar ( SSecIntLista ( p_secObj ) );
+		p_lisRes = SLisIntEncapsular ( p_lisDatos );
+		if ( ES_NULO ( p_lisRes ) )
+		{
+			SLisDestruir ( &p_lisDatos );
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
+/* Las operaciones con otras secuencias y listas delegan en las de
+   SSecuencia, con su misma semantica ( ver Secuencias.md ). */
+int SSecIntExistenTodos ( SSecuenciaEnteros * p_secObj, SSecuenciaEnteros * p_secValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		if ( ES_VALIDO ( p_secValores ) )
+		{
+			iRes = SSecExistenTodos ( p_secObj->p_secDatos, p_secValores->p_secDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SSecIntExisteAlguno ( SSecuenciaEnteros * p_secObj, SSecuenciaEnteros * p_secValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		if ( ES_VALIDO ( p_secValores ) )
+		{
+			iRes = SSecExisteAlguno ( p_secObj->p_secDatos, p_secValores->p_secDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SSecIntExistenTodosLista ( SSecuenciaEnteros * p_secObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SSecExistenTodosLista ( p_secObj->p_secDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SSecIntExisteAlgunoLista ( SSecuenciaEnteros * p_secObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SSecExisteAlgunoLista ( p_secObj->p_secDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Eliminar destruye todas las apariciones de cada valor. */
+int SSecIntEliminarSecuencia ( SSecuenciaEnteros * p_secObj, SSecuenciaEnteros * p_secValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		if ( ES_VALIDO ( p_secValores ) )
+		{
+			iRes = SSecEliminarSecuencia ( p_secObj->p_secDatos, p_secValores->p_secDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SSecIntEliminarLista ( SSecuenciaEnteros * p_secObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SSecEliminarLista ( p_secObj->p_secDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Concatenar anade al final COPIAS de los valores, que no se tocan. */
+int SSecIntConcatenar ( SSecuenciaEnteros * p_secObj, SSecuenciaEnteros * p_secValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		if ( ES_VALIDO ( p_secValores ) )
+		{
+			iRes = SSecConcatenarDup ( p_secObj->p_secDatos, p_secValores->p_secDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SSecIntConcatenarLista ( SSecuenciaEnteros * p_secObj, SListaEnteros * p_lisValores )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SSecConcatenarListaDup ( p_secObj->p_secDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+/* Las Extraer MUEVEN los valores a una secuencia nueva. Si no se puede
+   crear, vuelven al final de p_secObj y se devuelve NULL. */
+SSecuenciaEnteros * SSecIntExtraerSecuencia ( SSecuenciaEnteros * p_secObj, SSecuenciaEnteros * p_secValores )
+{
+	SSecuenciaEnteros *	p_secRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		if ( ES_VALIDO ( p_secValores ) )
+		{
+			p_secRes = _SSecIntEnvolverExtraidos ( p_secObj, SSecExtraerSecuencia ( p_secObj->p_secDatos, p_secValores->p_secDatos ) );
+		}
+		else
+		{
+			p_secRes = NULL;
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
+SSecuenciaEnteros * SSecIntExtraerLista ( SSecuenciaEnteros * p_secObj, SListaEnteros * p_lisValores )
+{
+	SSecuenciaEnteros *	p_secRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			p_secRes = _SSecIntEnvolverExtraidos ( p_secObj, SSecExtraerLista ( p_secObj->p_secDatos, p_lisValores->p_lisDatos ) );
+		}
+		else
+		{
+			p_secRes = NULL;
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
+/* Union, Interseccion y Diferencia crean una secuencia nueva con COPIAS de
+   los valores; si algo falla, NULL. */
+SSecuenciaEnteros * SSecIntUnion ( SSecuenciaEnteros * p_secValores1, SSecuenciaEnteros * p_secValores2 )
+{
+	SSecuenciaEnteros *	p_secRes;
+
+	if ( ES_VALIDO ( p_secValores1 ) )
+	{
+		if ( ES_VALIDO ( p_secValores2 ) )
+		{
+			p_secRes = _SSecIntEnvolver ( SSecUnion ( p_secValores1->p_secDatos, p_secValores2->p_secDatos ) );
+		}
+		else
+		{
+			p_secRes = NULL;
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
+SSecuenciaEnteros * SSecIntInterseccion ( SSecuenciaEnteros * p_secValores1, SSecuenciaEnteros * p_secValores2 )
+{
+	SSecuenciaEnteros *	p_secRes;
+
+	if ( ES_VALIDO ( p_secValores1 ) )
+	{
+		if ( ES_VALIDO ( p_secValores2 ) )
+		{
+			p_secRes = _SSecIntEnvolver ( SSecInterseccion ( p_secValores1->p_secDatos, p_secValores2->p_secDatos ) );
+		}
+		else
+		{
+			p_secRes = NULL;
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
+SSecuenciaEnteros * SSecIntDiferencia ( SSecuenciaEnteros * p_secValores1, SSecuenciaEnteros * p_secValores2 )
+{
+	SSecuenciaEnteros *	p_secRes;
+
+	if ( ES_VALIDO ( p_secValores1 ) )
+	{
+		if ( ES_VALIDO ( p_secValores2 ) )
+		{
+			p_secRes = _SSecIntEnvolver ( SSecDiferencia ( p_secValores1->p_secDatos, p_secValores2->p_secDatos ) );
+		}
+		else
+		{
+			p_secRes = NULL;
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
+SSecuenciaEnteros * SSecIntUnionLista ( SSecuenciaEnteros * p_secValores1, SListaEnteros * p_lisValores2 )
+{
+	SSecuenciaEnteros *	p_secRes;
+
+	if ( ES_VALIDO ( p_secValores1 ) )
+	{
+		if ( ES_VALIDO ( p_lisValores2 ) )
+		{
+			p_secRes = _SSecIntEnvolver ( SSecUnionLista ( p_secValores1->p_secDatos, p_lisValores2->p_lisDatos ) );
+		}
+		else
+		{
+			p_secRes = NULL;
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
+SSecuenciaEnteros * SSecIntInterseccionLista ( SSecuenciaEnteros * p_secValores1, SListaEnteros * p_lisValores2 )
+{
+	SSecuenciaEnteros *	p_secRes;
+
+	if ( ES_VALIDO ( p_secValores1 ) )
+	{
+		if ( ES_VALIDO ( p_lisValores2 ) )
+		{
+			p_secRes = _SSecIntEnvolver ( SSecInterseccionLista ( p_secValores1->p_secDatos, p_lisValores2->p_lisDatos ) );
+		}
+		else
+		{
+			p_secRes = NULL;
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
+SSecuenciaEnteros * SSecIntDiferenciaLista ( SSecuenciaEnteros * p_secValores1, SListaEnteros * p_lisValores2 )
+{
+	SSecuenciaEnteros *	p_secRes;
+
+	if ( ES_VALIDO ( p_secValores1 ) )
+	{
+		if ( ES_VALIDO ( p_lisValores2 ) )
+		{
+			p_secRes = _SSecIntEnvolver ( SSecDiferenciaLista ( p_secValores1->p_secDatos, p_lisValores2->p_lisDatos ) );
+		}
+		else
+		{
+			p_secRes = NULL;
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
 /* Envuelve una secuencia ya creada; si no hay o no se puede envolver, NULL y
    la secuencia se destruye. */
 static SSecuenciaEnteros * _SSecIntEnvolver ( SSecuencia * p_secDatos )
@@ -592,4 +975,29 @@ static SSecuenciaEnteros * _SSecIntEnvolver ( SSecuencia * p_secDatos )
 	return ( p_secRes );
 }
 
+/* Envuelve lo que haya sacado una Extraer de SSecuencia. Si no se
+   puede, los valores vuelven al final de p_secObj: no se pierden. */
+static SSecuenciaEnteros * _SSecIntEnvolverExtraidos ( SSecuenciaEnteros * p_secObj, SSecuencia * p_secExt )
+{
+	SSecuenciaEnteros * p_secRes;
+
+	if ( ES_VALIDO ( p_secExt ) )
+	{
+		p_secRes = (SSecuenciaEnteros *) MemReservar ( sizeof ( SSecuenciaEnteros ) );
+		if ( ES_VALIDO ( p_secRes ) )
+		{
+			p_secRes->p_secDatos = p_secExt;
+		}
+		else
+		{
+			SSecConcatenar ( p_secObj->p_secDatos, p_secExt );
+			SSecDestruir ( &p_secExt );
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
 

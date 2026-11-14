@@ -133,7 +133,7 @@ int SLisValInsertarElem ( SListaValores * p_lisObj, int iPosAnt, SValor * p_valD
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

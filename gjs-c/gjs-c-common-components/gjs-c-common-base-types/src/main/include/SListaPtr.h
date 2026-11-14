@@ -38,9 +38,13 @@ int SLispEstablecerElem ( SListaPtr * p_lisObj, int iElem, byte * p_byDatos );
 int SLispInsertarElem ( SListaPtr * p_lisObj, int iPosAnt, byte * p_byDatos );
 int SLispInsertarAlInicio ( SListaPtr * p_lisObj, byte * p_byDatos );
 int SLispInsertarAlFinal ( SListaPtr * p_lisObj, byte * p_byDatos );
+int SLispInsertarElemPtr ( SListaPtr * p_lisObj, int iPosAnt, SElementoPtr * p_elpDatos );
+int SLispInsertarAlInicioPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
+int SLispInsertarAlFinalPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
 
 int SLispEliminarElem ( SListaPtr * p_lisObj, int iElem );
 byte * SLispExtraerElem ( SListaPtr * p_lisObj, int iElem );
+SElementoPtr * SLispExtraerElemPtr ( SListaPtr * p_lisObj, int iElem );
 
 int SLispVaciar ( SListaPtr * p_lisObj );
 
@@ -87,8 +91,12 @@ int SLispEstablecer ( SListaPtr * p_lisObj, byte * p_byDatos );
 int SLispInsertar ( SListaPtr * p_lisObj, byte * p_byDatos );
 int SLispInsertarDelante ( SListaPtr * p_lisObj, byte * p_byDatos );
 int SLispInsertarDetras ( SListaPtr * p_lisObj, byte * p_byDatos );
+int SLispInsertarPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
+int SLispInsertarDelantePtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
+int SLispInsertarDetrasPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
 int SLispEliminar ( SListaPtr * p_lisObj );
 byte * SLispExtraer ( SListaPtr * p_lisObj );
+SElementoPtr * SLispExtraerPtr ( SListaPtr * p_lisObj );
 
 SListaPtr * SLispDuplicar ( SListaPtr * p_lisObj, int iNumBytes );
 SListaPtr * SLispDuplicarExt ( SListaPtr * p_lisObj, PFUNPBYTEPB fDuplicar );

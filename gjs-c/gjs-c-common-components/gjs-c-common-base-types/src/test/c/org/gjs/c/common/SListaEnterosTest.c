@@ -690,21 +690,22 @@ static int TestSLisIntExtraerLista01 ()
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SLisIntExtraerLista 01:\n" );
 
-	int iVal [ 5 ] = { 10, 20, 30, 20, 40 };
+	int iVal [ 6 ] = { 20, 10, 20, 30, 40, 20 };
 	int iBus [ 4 ] = { 20, 40, 99, 20 };
-	SListaEnteros * p_lisObj = CrearListaEnteros ( iVal, 5 );
+	SListaEnteros * p_lisObj = CrearListaEnteros ( iVal, 6 );
 	SListaEnteros * p_lisBus = CrearListaEnteros ( iBus, 4 );
 	SListaEnteros * p_lisRes = NULL;
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisBus ) )
 	{
-		/* Una aparicion por valor buscado, en el orden de los buscados; el 99 no esta. */
+		/* Todas las apariciones de cada valor buscado, en el orden de los buscados: el
+		   20 esta tres veces y sale entero con el primero; el 99 no esta. */
 		p_lisRes = SLisIntExtraerLista ( p_lisObj, p_lisBus );
-		int iEspRes [ 3 ] = { 20, 40, 20 };
+		int iEspRes [ 4 ] = { 20, 20, 20, 40 };
 		int iEspObj [ 2 ] = { 10, 30 };
 		if ( ES_NULO ( p_lisRes ) || ( SLisIntEsValida ( p_lisRes ) != 1 ) ||
-			 ( VerificarContenido ( p_lisRes, iEspRes, 3 ) != BOOL_VAL_CIERTO ) )
+			 ( VerificarContenido ( p_lisRes, iEspRes, 4 ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 1: se esperaba extraer { 20, 40, 20 }\n" );
+			printf( "Error caso 1: se esperaba extraer { 20, 20, 20, 40 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( VerificarContenido ( p_lisObj, iEspObj, 2 ) != BOOL_VAL_CIERTO )
@@ -731,20 +732,21 @@ static int TestSLisIntExtraerLista01 ()
 	return ( iRes );
 }
 
-/* Destruye una aparicion por valor buscado; los valores no cambian. */
+/* Destruye todas las apariciones de cada valor buscado; los valores no cambian. */
 static int TestSLisIntEliminarLista01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SLisIntEliminarLista 01:\n" );
 
-	int iVal [ 5 ] = { 10, 20, 30, 20, 40 };
+	int iVal [ 6 ] = { 20, 10, 20, 30, 40, 20 };
 	int iBus [ 4 ] = { 20, 40, 99, 20 };
-	SListaEnteros * p_lisObj = CrearListaEnteros ( iVal, 5 );
+	SListaEnteros * p_lisObj = CrearListaEnteros ( iVal, 6 );
 	SListaEnteros * p_lisBus = CrearListaEnteros ( iBus, 4 );
 	SListaEnteros * p_lisVacia = SLisIntCrear ();
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisBus ) && ES_VALIDO ( p_lisVacia ) )
 	{
-		/* El 99 no esta y se ignora; el 20 esta dos veces en los buscados. */
+		/* El 99 no esta y se ignora; el 20 esta tres veces y se van todas, aunque
+		   tambien este dos veces en los buscados. */
 		if ( SLisIntEliminarLista ( p_lisObj, p_lisBus ) != 1 )
 		{
 			printf( "Error caso 1: se esperaba 1\n" );
@@ -1045,6 +1047,44 @@ static int TestSLisIntEstaPosicionada01 ()
 	return ( iRes );
 }
 
+/* Encapsular se queda con la SLista que se le da, sin copiarla, y la
+   destruye con ella; con una nula devuelve NULL. */
+static int TestSLisIntEncapsular01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLisIntEncapsular 01:\n" );
+
+	int iV [ 3 ] = { 7, 2, 7 };
+	SListaEnteros * p_lisCopia = CrearListaEnteros ( iV, 3 );
+	SListaEnteros * p_lisRes = NULL;
+	if ( ES_VALIDO ( p_lisCopia ) )
+	{
+		/* Se le quita la SLista a p_lisCopia para encapsularla. */
+		SLista * p_lisDatos = p_lisCopia->p_lisDatos;
+		p_lisCopia->p_lisDatos = NULL;
+		p_lisRes = SLisIntEncapsular ( p_lisDatos );
+		if ( ES_NULO ( p_lisRes ) || ( p_lisRes->p_lisDatos != p_lisDatos ) ||
+			 ( VerificarContenido ( p_lisRes, iV, 3 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 1: deberia envolver esa misma lista, con { 7, 2, 7 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SLisIntEncapsular ( NULL ) ) )
+		{
+			printf( "Error caso 2: con una lista nula se esperaba nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la lista\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisIntDestruir ( &p_lisRes );
+	SLisIntDestruir ( &p_lisCopia );
+	return ( iRes );
+}
+
 int TestSListaEnteros ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -1065,7 +1105,8 @@ int TestSListaEnteros ()
 			( TestSLisIntOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntDuplicar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntRepeticiones01 () == BOOL_VAL_CIERTO ) &&
-			( TestSLisIntEstaPosicionada01 () == BOOL_VAL_CIERTO ) )
+			( TestSLisIntEstaPosicionada01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLisIntEncapsular01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

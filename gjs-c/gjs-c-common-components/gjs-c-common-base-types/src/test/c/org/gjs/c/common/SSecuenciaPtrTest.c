@@ -396,36 +396,37 @@ static int TestSSecpOperacionesListas01 ()
 	return ( iRes );
 }
 
-/* Saca una aparicion por valor, por bytes o con fSonIguales; si la de
+/* Saca todas las apariciones de cada valor, por bytes o con fSonIguales; si la de
    SListaPtr falla, nulo y no una secuencia sin lista. */
 static int TestSSecpExtraerSecuencia01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SSecpExtraerSecuencia 01:\n" );
 
-	int iVal [ 5 ] = { 10, 20, 30, 20, 40 };
+	int iVal [ 6 ] = { 20, 10, 20, 30, 40, 20 };
 	int iBus [ 4 ] = { 20, 40, 99, 20 };
 	int iTreinta [ 1 ] = { 30 };
-	int iValExt [ 3 ] = { 12, 25, 33 };
+	int iValExt [ 5 ] = { 12, 25, 33, 42, 13 };
 	int iBusExt [ 2 ] = { 3, 2 };
 	int iCinco [ 1 ] = { 5 };
-	SSecuenciaPtr * p_secObj = CrearSecEnteros ( iVal, 5 );
+	SSecuenciaPtr * p_secObj = CrearSecEnteros ( iVal, 6 );
 	SSecuenciaPtr * p_secBus = CrearSecEnteros ( iBus, 4 );
 	SListaPtr * p_lisBus = CrearListaEnteros ( iTreinta, 1 );
-	SSecuenciaPtr * p_secObjExt = CrearSecEnteros ( iValExt, 3 );
+	SSecuenciaPtr * p_secObjExt = CrearSecEnteros ( iValExt, 5 );
 	SSecuenciaPtr * p_secBusExt = CrearSecEnteros ( iBusExt, 2 );
 	SListaPtr * p_lisBusExt = CrearListaEnteros ( iCinco, 1 );
 	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_secBus ) && ES_VALIDO ( p_lisBus ) &&
 		 ES_VALIDO ( p_secObjExt ) && ES_VALIDO ( p_secBusExt ) && ES_VALIDO ( p_lisBusExt ) )
 	{
+		/* Todas las apariciones de cada valor buscado, en el orden de los buscados. */
 		SSecuenciaPtr * p_secRes = SSecpExtraerSecuencia ( p_secObj, p_secBus, sizeof ( int ) );
-		int iEspRes [ 3 ] = { 20, 40, 20 };
+		int iEspRes [ 4 ] = { 20, 20, 20, 40 };
 		int iEspObj [ 2 ] = { 10, 30 };
-		if ( ( VerificarYDestruir ( &p_secRes, iEspRes, 3 ) != BOOL_VAL_CIERTO ) ||
+		if ( ( VerificarYDestruir ( &p_secRes, iEspRes, 4 ) != BOOL_VAL_CIERTO ) ||
 			 ( VerificarSec ( p_secObj, iEspObj, 2 ) != BOOL_VAL_CIERTO ) ||
 			 ( VerificarSec ( p_secBus, iBus, 4 ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 1: se esperaba extraer { 20, 40, 20 } y dejar { 10, 30 }\n" );
+			printf( "Error caso 1: se esperaba extraer { 20, 20, 20, 40 } y dejar { 10, 30 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		p_secRes = SSecpExtraerLista ( p_secObj, p_lisBus, sizeof ( int ) );
@@ -438,12 +439,12 @@ static int TestSSecpExtraerSecuencia01 ()
 		}
 		/* Modulo 10, en el orden de los buscados. */
 		p_secRes = SSecpExtraerSecuenciaExt ( p_secObjExt, p_secBusExt, SonIgualesMod10 );
-		int iEspResExt [ 2 ] = { 33, 12 };
+		int iEspResExt [ 4 ] = { 33, 13, 12, 42 };
 		int iEspObjExt [ 1 ] = { 25 };
-		if ( ( VerificarYDestruir ( &p_secRes, iEspResExt, 2 ) != BOOL_VAL_CIERTO ) ||
+		if ( ( VerificarYDestruir ( &p_secRes, iEspResExt, 4 ) != BOOL_VAL_CIERTO ) ||
 			 ( VerificarSec ( p_secObjExt, iEspObjExt, 1 ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 3: modulo 10 se esperaba extraer { 33, 12 } y dejar { 25 }\n" );
+			printf( "Error caso 3: modulo 10 se esperaba extraer { 33, 13, 12, 42 } y dejar { 25 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		p_secRes = SSecpExtraerListaExt ( p_secObjExt, p_lisBusExt, SonIgualesMod10 );
@@ -793,6 +794,71 @@ static int TestSSecpInvalidos01 ()
 
 
 
+/* InsertarPtr engancha un nodo al final; Extraer y ExtraerPtr sacan el de la
+   posicion sin destruirlo: el dato, o el nodo suelto. */
+static int TestSSecpExtraer01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecpExtraer 01:\n" );
+
+	int iVal [ 4 ] = { 10, 20, 30, 40 };
+	SSecuenciaPtr * p_secObj = CrearSecEnteros ( iVal, 4 );
+	SElementoPtr * p_elpObj = NULL;
+	byte * p_byDato = NULL;
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		p_byDato = SSecpExtraer ( p_secObj, 1 );
+		int iEsp1 [ 3 ] = { 10, 30, 40 };
+		if ( ES_NULO ( p_byDato ) || ( *( (int *) p_byDato ) != 20 ) ||
+			 ( VerificarSec ( p_secObj, iEsp1, 3 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 1: se esperaba extraer el 20 y dejar { 10, 30, 40 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El dato es ahora del que llama. */
+		MemLiberar ( (void **) &p_byDato );
+		p_elpObj = SSecpExtraerPtr ( p_secObj, 0 );
+		int iEsp2 [ 2 ] = { 30, 40 };
+		if ( ES_NULO ( p_elpObj ) || ( *( (int *) SElpDatos ( p_elpObj ) ) != 10 ) ||
+			 ( SElpTieneAntecesor ( p_elpObj ) != 0 ) || ( SElpTieneSucesor ( p_elpObj ) != 0 ) ||
+			 ( VerificarSec ( p_secObj, iEsp2, 2 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 2: se esperaba extraer suelto el 10 y dejar { 30, 40 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		int iEsp3 [ 3 ] = { 30, 40, 10 };
+		if ( ( SSecpInsertarPtr ( p_secObj, p_elpObj ) != 1 ) ||
+			 ( VerificarSec ( p_secObj, iEsp3, 3 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 3: el nodo deberia volver al final: { 30, 40, 10 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_elpObj = NULL;
+		/* Nulos y fuera de rango: nada cambia. */
+		SElementoPtr * p_elpSuelto = SElpCrear ( CrearDatoEntero ( 50 ), 1 );
+		if ( ES_VALIDO ( SSecpExtraer ( p_secObj, 3 ) ) ||
+			 ES_VALIDO ( SSecpExtraer ( NULL, 0 ) ) ||
+			 ES_VALIDO ( SSecpExtraerPtr ( p_secObj, -1 ) ) ||
+			 ES_VALIDO ( SSecpExtraerPtr ( NULL, 0 ) ) ||
+			 ( SSecpInsertarPtr ( p_secObj, NULL ) != 0 ) ||
+			 ( SSecpInsertarPtr ( NULL, p_elpSuelto ) != 0 ) ||
+			 ( VerificarSec ( p_secObj, iEsp3, 3 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 4: con nulos o fuera de rango se esperaba nulo o 0 sin cambios\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElpDestruir ( &p_elpSuelto );
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la secuencia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SElpDestruir ( &p_elpObj );
+	SSecpDestruir ( &p_secObj );
+	return ( iRes );
+}
+
 int TestSSecuenciaPtr ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -804,7 +870,8 @@ int TestSSecuenciaPtr ()
 			( TestSSecpOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecpExtraerSecuencia01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecpConjuntos01 () == BOOL_VAL_CIERTO ) &&
-			( TestSSecpInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSSecpInvalidos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecpExtraer01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

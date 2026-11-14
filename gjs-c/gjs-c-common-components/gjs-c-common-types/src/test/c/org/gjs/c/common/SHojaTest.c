@@ -115,7 +115,7 @@ static int TestSHojCompleta01 ()
 			iRes = BOOL_VAL_FALSO;
 		}
 		/* La hoja esta llena: una nueva insercion debe fallar (-1). */
-		if ( SHojInsertar ( p_hojObj, "ccc", 3 ) != -1 )
+		if ( SHojInsertar ( p_hojObj, "ccc", 3 ) != 0 )
 		{
 			printf( "Error caso 2: se esperaba fallo al insertar en hoja completa\n" );
 			iRes = BOOL_VAL_FALSO;

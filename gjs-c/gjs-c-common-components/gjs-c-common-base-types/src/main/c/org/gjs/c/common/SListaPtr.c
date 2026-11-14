@@ -4,15 +4,7 @@
 #include "TiposBasicosConfig.h"
 
 
-SElementoPtr * _SLispExtraerElemPtr ( SListaPtr * p_lisObj, int iElem );
-SElementoPtr * _SLispExtraerPtr ( SListaPtr * p_lisObj );
-int _SLispInsertarElemPtr ( SListaPtr * p_lisObj, int iPosAnt, SElementoPtr * p_elpDatos );
-int _SLispInsertarAlInicioPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
-int _SLispInsertarAlFinalPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
-int _SLispInsertarPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
 static SElementoPtr * _SLispLocalizarPosicion ( SListaPtr * p_lisObj, int iPos );
-int _SLispInsertarDelantePtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
-int _SLispInsertarDetrasPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
 
 
 SListaPtr * SLispCrear ()
@@ -343,7 +335,7 @@ byte * SLispExtraerElem ( SListaPtr * p_lisObj, int iElem )
 	SElementoPtr *	p_elpObj;
 	byte *			p_byRes;
 
-	p_elpObj = _SLispExtraerElemPtr ( p_lisObj, iElem );
+	p_elpObj = SLispExtraerElemPtr ( p_lisObj, iElem );
 	if ( ES_VALIDO ( p_elpObj ) ) 
 	{
 		p_byRes = SElpDatos ( p_elpObj );
@@ -1218,7 +1210,7 @@ byte * SLispExtraer ( SListaPtr * p_lisObj )
 	SElementoPtr *	p_elpObj;
 	byte *			p_byRes;
 
-	p_elpObj = _SLispExtraerPtr ( p_lisObj );
+	p_elpObj = SLispExtraerPtr ( p_lisObj );
 	if ( ES_VALIDO ( p_elpObj ) ) 
 	{
 		p_byRes = SElpDatos ( p_elpObj );
@@ -1285,7 +1277,7 @@ SListaPtr * SLispDuplicar ( SListaPtr * p_lisObj, int iNumBytes )
 			while ( ES_VALIDO ( p_elpObj ) && ( iError == 0 ) )
 			{
 				p_elpNuevo = SElpDuplicar ( p_elpObj, iNumBytes );
-				if ( _SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
+				if ( SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
 				{
 					SElpDestruir ( &p_elpNuevo );
 					iError = 1;
@@ -1324,7 +1316,7 @@ SListaPtr * SLispDuplicarExt ( SListaPtr * p_lisObj, PFUNPBYTEPB fDuplicar )
 				while ( ES_VALIDO ( p_elpObj ) && ( iError == 0 ) )
 				{
 					p_elpNuevo = SElpDuplicarExt ( p_elpObj, fDuplicar );
-					if ( _SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
+					if ( SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
 					{
 						SElpDestruir ( &p_elpNuevo );
 						iError = 1;
@@ -1500,9 +1492,9 @@ int SLispExisteAlgunoExt ( SListaPtr * p_lisObj, SListaPtr * p_lisValores, PFUNI
 	return ( iRes );
 }
 
-/* Elimina ( destruye ) de p_lisObj la primera aparicion de cada valor de
-   p_lisValores: un valor repetido en p_lisValores elimina dos apariciones. Lo
-   que no se encuentra se ignora. p_lisValores no se toca.
+/* Elimina ( destruye ) de p_lisObj todas las apariciones de cada valor de
+   p_lisValores: que un valor se repita en p_lisValores no cambia nada. Lo que
+   no se encuentra se ignora. p_lisValores no se toca.
 
    Devuelve 1 si ha podido eliminar todo lo encontrado; si falla una eliminacion
    se para y devuelve 0, y lo eliminado hasta ahi se queda eliminado. Con la
@@ -1526,10 +1518,15 @@ int SLispEliminarLista ( SListaPtr * p_lisObj, SListaPtr * p_lisValores, int iNu
 				p_elpObj = p_lisValores->p_elpPrimero;
 				while ( ES_VALIDO ( p_elpObj ) && ( iRes == 1 ) )
 				{
-					iPos = SLispBuscar ( p_lisObj, SElpDatos ( p_elpObj ), iNumBytes );
-					if ( iPos >= 0 )
+					iPos = SLispBuscarPrimero ( p_lisObj, SElpDatos ( p_elpObj ), iNumBytes );
+					while ( ( iPos >= 0 ) && ( iRes == 1 ) )
 					{
-						if ( SLispEliminarElem ( p_lisObj, iPos ) != 1 )
+						if ( SLispEliminarElem ( p_lisObj, iPos ) == 1 )
+						{
+							/* El siguiente ha pasado a ocupar iPos: se sigue buscando desde ahi. */
+							iPos = SLispBuscarSiguiente ( p_lisObj, SElpDatos ( p_elpObj ), iPos - 1, iNumBytes );
+						}
+						else
 						{
 							iRes = 0;
 						}
@@ -1574,10 +1571,15 @@ int SLispEliminarListaExt ( SListaPtr * p_lisObj, SListaPtr * p_lisValores, PFUN
 					p_elpObj = p_lisValores->p_elpPrimero;
 					while ( ES_VALIDO ( p_elpObj ) && ( iRes == 1 ) )
 					{
-						iPos = SLispBuscarExt ( p_lisObj, SElpDatos ( p_elpObj ), fSonIguales );
-						if ( iPos >= 0 )
+						iPos = SLispBuscarPrimeroExt ( p_lisObj, SElpDatos ( p_elpObj ), fSonIguales );
+						while ( ( iPos >= 0 ) && ( iRes == 1 ) )
 						{
-							if ( SLispEliminarElem ( p_lisObj, iPos ) != 1 )
+							if ( SLispEliminarElem ( p_lisObj, iPos ) == 1 )
+							{
+								/* El siguiente ha pasado a ocupar iPos: se sigue buscando desde ahi. */
+								iPos = SLispBuscarSiguienteExt ( p_lisObj, SElpDatos ( p_elpObj ), iPos - 1, fSonIguales );
+							}
+							else
 							{
 								iRes = 0;
 							}
@@ -1632,12 +1634,12 @@ int SLispInsertarLista ( SListaPtr * p_lisObj, SListaPtr * p_lisValores )
 				while ( ( iRes == 1 ) && ( p_lisValores->iNumElementos > 0 ) )
 				{
 					SLispInicio ( p_lisValores );
-					p_elpObj = _SLispExtraerPtr ( p_lisValores );
+					p_elpObj = SLispExtraerPtr ( p_lisValores );
 					if ( ES_VALIDO ( p_elpObj ) )
 					{
-						if ( _SLispInsertarPtr ( p_lisObj, p_elpObj ) != 1 )
+						if ( SLispInsertarPtr ( p_lisObj, p_elpObj ) != 1 )
 						{
-							_SLispInsertarAlInicioPtr ( p_lisValores, p_elpObj );
+							SLispInsertarAlInicioPtr ( p_lisValores, p_elpObj );
 							iRes = 0;
 						}
 					}
@@ -1680,12 +1682,12 @@ int SLispConcatenarLista ( SListaPtr * p_lisObj, SListaPtr * p_lisValores )
 				while ( ( iRes == 1 ) && ( p_lisValores->iNumElementos > 0 ) )
 				{
 					SLispInicio ( p_lisValores );
-					p_elpObj = _SLispExtraerPtr ( p_lisValores );
+					p_elpObj = SLispExtraerPtr ( p_lisValores );
 					if ( ES_VALIDO ( p_elpObj ) )
 					{
-						if ( _SLispInsertarAlFinalPtr ( p_lisObj, p_elpObj ) != 1 )
+						if ( SLispInsertarAlFinalPtr ( p_lisObj, p_elpObj ) != 1 )
 						{
-							_SLispInsertarAlInicioPtr ( p_lisValores, p_elpObj );
+							SLispInsertarAlInicioPtr ( p_lisValores, p_elpObj );
 							iRes = 0;
 						}
 					}
@@ -1736,7 +1738,7 @@ int SLispInsertarListaDup ( SListaPtr * p_lisObj, SListaPtr * p_lisValores, int 
 				while ( ES_VALIDO ( p_elpObj ) && ( iRes == 1 ) )
 				{
 					p_elpNuevo = SElpDuplicar ( p_elpObj, iNumBytes );
-					if ( _SLispInsertarPtr ( p_lisObj, p_elpNuevo ) != 1 )
+					if ( SLispInsertarPtr ( p_lisObj, p_elpNuevo ) != 1 )
 					{
 						SElpDestruir ( &p_elpNuevo );
 						iRes = 0;
@@ -1778,7 +1780,7 @@ int SLispConcatenarListaDup ( SListaPtr * p_lisObj, SListaPtr * p_lisValores, in
 				while ( ES_VALIDO ( p_elpObj ) && ( iRes == 1 ) )
 				{
 					p_elpNuevo = SElpDuplicar ( p_elpObj, iNumBytes );
-					if ( _SLispInsertarAlFinalPtr ( p_lisObj, p_elpNuevo ) != 1 )
+					if ( SLispInsertarAlFinalPtr ( p_lisObj, p_elpNuevo ) != 1 )
 					{
 						SElpDestruir ( &p_elpNuevo );
 						iRes = 0;
@@ -1822,7 +1824,7 @@ int SLispInsertarListaDupExt ( SListaPtr * p_lisObj, SListaPtr * p_lisValores, P
 					while ( ES_VALIDO ( p_elpObj ) && ( iRes == 1 ) )
 					{
 						p_elpNuevo = SElpDuplicarExt ( p_elpObj, fDuplicar );
-						if ( _SLispInsertarPtr ( p_lisObj, p_elpNuevo ) != 1 )
+						if ( SLispInsertarPtr ( p_lisObj, p_elpNuevo ) != 1 )
 						{
 							SElpDestruir ( &p_elpNuevo );
 							iRes = 0;
@@ -1871,7 +1873,7 @@ int SLispConcatenarListaDupExt ( SListaPtr * p_lisObj, SListaPtr * p_lisValores,
 					while ( ES_VALIDO ( p_elpObj ) && ( iRes == 1 ) )
 					{
 						p_elpNuevo = SElpDuplicarExt ( p_elpObj, fDuplicar );
-						if ( _SLispInsertarAlFinalPtr ( p_lisObj, p_elpNuevo ) != 1 )
+						if ( SLispInsertarAlFinalPtr ( p_lisObj, p_elpNuevo ) != 1 )
 						{
 							SElpDestruir ( &p_elpNuevo );
 							iRes = 0;
@@ -1901,9 +1903,10 @@ int SLispConcatenarListaDupExt ( SListaPtr * p_lisObj, SListaPtr * p_lisValores,
 	return ( iRes );
 }
 
-/* Saca de p_lisObj, a una lista nueva, la primera aparicion de cada valor de
-   p_lisValores, en el orden de p_lisValores: un valor repetido en p_lisValores
-   saca dos apariciones. Lo que no se encuentra se ignora.
+/* Saca de p_lisObj, a una lista nueva, todas las apariciones de cada valor de
+   p_lisValores: van por el orden de p_lisValores y, las de un mismo valor, en
+   el que tenian en p_lisObj. Que un valor se repita en p_lisValores no cambia
+   nada. Lo que no se encuentra se ignora.
 
    Los NODOS se mueven, no se copian, y la lista nueva hereda la liberacion de
    p_lisObj: si p_lisObj no era duena de sus datos, la nueva tampoco.
@@ -1931,14 +1934,19 @@ SListaPtr * SLispExtraerLista ( SListaPtr * p_lisObj, SListaPtr * p_lisValores, 
 					p_elpObj = p_lisValores->p_elpPrimero;
 					while ( ES_VALIDO ( p_elpObj ) && ( iError == 0 ) )
 					{
-						iPos = SLispBuscar ( p_lisObj, SElpDatos ( p_elpObj ), iNumBytes );
-						if ( iPos >= 0 )
+						iPos = SLispBuscarPrimero ( p_lisObj, SElpDatos ( p_elpObj ), iNumBytes );
+						while ( ( iPos >= 0 ) && ( iError == 0 ) )
 						{
-							p_elpExt = _SLispExtraerElemPtr ( p_lisObj, iPos );
-							if ( _SLispInsertarAlFinalPtr ( p_lisRes, p_elpExt ) != 1 )
+							p_elpExt = SLispExtraerElemPtr ( p_lisObj, iPos );
+							if ( SLispInsertarAlFinalPtr ( p_lisRes, p_elpExt ) == 1 )
+							{
+								/* El siguiente ha pasado a ocupar iPos: se sigue buscando desde ahi. */
+								iPos = SLispBuscarSiguiente ( p_lisObj, SElpDatos ( p_elpObj ), iPos - 1, iNumBytes );
+							}
+							else
 							{
 								/* No se pierde: vuelve a p_lisObj, aunque al final. */
-								_SLispInsertarAlFinalPtr ( p_lisObj, p_elpExt );
+								SLispInsertarAlFinalPtr ( p_lisObj, p_elpExt );
 								iError = 1;
 							}
 						}
@@ -1987,13 +1995,19 @@ SListaPtr * SLispExtraerListaExt ( SListaPtr * p_lisObj, SListaPtr * p_lisValore
 						p_elpObj = p_lisValores->p_elpPrimero;
 						while ( ES_VALIDO ( p_elpObj ) && ( iError == 0 ) )
 						{
-							iPos = SLispBuscarExt ( p_lisObj, SElpDatos ( p_elpObj ), fSonIguales );
-							if ( iPos >= 0 )
+							iPos = SLispBuscarPrimeroExt ( p_lisObj, SElpDatos ( p_elpObj ), fSonIguales );
+							while ( ( iPos >= 0 ) && ( iError == 0 ) )
 							{
-								p_elpExt = _SLispExtraerElemPtr ( p_lisObj, iPos );
-								if ( _SLispInsertarAlFinalPtr ( p_lisRes, p_elpExt ) != 1 )
+								p_elpExt = SLispExtraerElemPtr ( p_lisObj, iPos );
+								if ( SLispInsertarAlFinalPtr ( p_lisRes, p_elpExt ) == 1 )
 								{
-									_SLispInsertarAlFinalPtr ( p_lisObj, p_elpExt );
+									/* El siguiente ha pasado a ocupar iPos: se sigue buscando desde ahi. */
+									iPos = SLispBuscarSiguienteExt ( p_lisObj, SElpDatos ( p_elpObj ), iPos - 1, fSonIguales );
+								}
+								else
+								{
+									/* No se pierde: vuelve a p_lisObj, aunque al final. */
+									SLispInsertarAlFinalPtr ( p_lisObj, p_elpExt );
 									iError = 1;
 								}
 							}
@@ -2127,7 +2141,7 @@ SListaPtr * SLispInterseccion ( SListaPtr * p_lisValores1, SListaPtr * p_lisValo
 					if ( SLispBuscar ( p_lisValores2, SElpDatos ( p_elpObj ), iNumBytes ) >= 0 )
 					{
 						p_elpNuevo = SElpDuplicar ( p_elpObj, iNumBytes );
-						if ( _SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
+						if ( SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
 						{
 							SElpDestruir ( &p_elpNuevo );
 							iError = 1;
@@ -2175,7 +2189,7 @@ SListaPtr * SLispDiferencia ( SListaPtr * p_lisValores1, SListaPtr * p_lisValore
 					if ( SLispBuscar ( p_lisValores2, SElpDatos ( p_elpObj ), iNumBytes ) < 0 )
 					{
 						p_elpNuevo = SElpDuplicar ( p_elpObj, iNumBytes );
-						if ( _SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
+						if ( SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
 						{
 							SElpDestruir ( &p_elpNuevo );
 							iError = 1;
@@ -2226,7 +2240,7 @@ SListaPtr * SLispInterseccionExt ( SListaPtr * p_lisValores1, SListaPtr * p_lisV
 							if ( SLispBuscarExt ( p_lisValores2, SElpDatos ( p_elpObj ), fSonIguales ) >= 0 )
 							{
 								p_elpNuevo = SElpDuplicarExt ( p_elpObj, fDuplicar );
-								if ( _SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
+								if ( SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
 								{
 									SElpDestruir ( &p_elpNuevo );
 									iError = 1;
@@ -2287,7 +2301,7 @@ SListaPtr * SLispDiferenciaExt ( SListaPtr * p_lisValores1, SListaPtr * p_lisVal
 							if ( SLispBuscarExt ( p_lisValores2, SElpDatos ( p_elpObj ), fSonIguales ) < 0 )
 							{
 								p_elpNuevo = SElpDuplicarExt ( p_elpObj, fDuplicar );
-								if ( _SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
+								if ( SLispInsertarAlFinalPtr ( p_lisRes, p_elpNuevo ) != 1 )
 								{
 									SElpDestruir ( &p_elpNuevo );
 									iError = 1;
@@ -2323,14 +2337,14 @@ SListaPtr * SLispDiferenciaExt ( SListaPtr * p_lisValores1, SListaPtr * p_lisVal
 	return ( p_lisRes );
 }
 
-SElementoPtr * _SLispExtraerElemPtr ( SListaPtr * p_lisObj, int iElem )
+SElementoPtr * SLispExtraerElemPtr ( SListaPtr * p_lisObj, int iElem )
 {
 	SElementoPtr * p_elpRes;
 
 	if ( SLispEsValida ( p_lisObj ) == 1 )
 	{
 		SLispMoverA ( p_lisObj, iElem );
-		p_elpRes = _SLispExtraerPtr ( p_lisObj );
+		p_elpRes = SLispExtraerPtr ( p_lisObj );
 	}
 	else
 	{
@@ -2341,7 +2355,7 @@ SElementoPtr * _SLispExtraerElemPtr ( SListaPtr * p_lisObj, int iElem )
 
 /* Saca el nodo del cursor sin destruirlo. El cursor queda en el sucesor, o en
    el antecesor si se saco el ultimo, igual que en SLispEliminar. */
-SElementoPtr * _SLispExtraerPtr ( SListaPtr * p_lisObj )
+SElementoPtr * SLispExtraerPtr ( SListaPtr * p_lisObj )
 {
 	SElementoPtr * p_elpRes;
 	SElementoPtr * p_elpAnt;
@@ -2397,7 +2411,7 @@ SElementoPtr * _SLispExtraerPtr ( SListaPtr * p_lisObj )
 	return ( p_elpRes );
 }
 
-int _SLispInsertarElemPtr ( SListaPtr * p_lisObj, int iPosAnt, SElementoPtr * p_elpDatos )
+int SLispInsertarElemPtr ( SListaPtr * p_lisObj, int iPosAnt, SElementoPtr * p_elpDatos )
 {
 	int iRes;
 
@@ -2406,12 +2420,12 @@ int _SLispInsertarElemPtr ( SListaPtr * p_lisObj, int iPosAnt, SElementoPtr * p_
 		if ( iPosAnt < 0 )
 		{
 			SLispInicio ( p_lisObj );
-			iRes = _SLispInsertarDelantePtr ( p_lisObj, p_elpDatos );
+			iRes = SLispInsertarDelantePtr ( p_lisObj, p_elpDatos );
 		}
 		else if ( iPosAnt >= p_lisObj->iNumElementos )
 		{
 			SLispFinal ( p_lisObj );
-			iRes = _SLispInsertarDetrasPtr ( p_lisObj, p_elpDatos );
+			iRes = SLispInsertarDetrasPtr ( p_lisObj, p_elpDatos );
 		}
 		else
 		{
@@ -2422,7 +2436,7 @@ int _SLispInsertarElemPtr ( SListaPtr * p_lisObj, int iPosAnt, SElementoPtr * p_
 			}
 			else
 			{
-				iRes = _SLispInsertarPtr ( p_lisObj, p_elpDatos );
+				iRes = SLispInsertarPtr ( p_lisObj, p_elpDatos );
 			}
 		}
 	}
@@ -2433,18 +2447,18 @@ int _SLispInsertarElemPtr ( SListaPtr * p_lisObj, int iPosAnt, SElementoPtr * p_
 	return ( iRes );
 }
 
-int _SLispInsertarAlInicioPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
+int SLispInsertarAlInicioPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
 {
-	return ( _SLispInsertarElemPtr ( p_lisObj, -1, p_elpDatos ) );
+	return ( SLispInsertarElemPtr ( p_lisObj, -1, p_elpDatos ) );
 }
 
-int _SLispInsertarAlFinalPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
+int SLispInsertarAlFinalPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
 {
 	int iRes;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		iRes = _SLispInsertarElemPtr ( p_lisObj, p_lisObj->iNumElementos, p_elpDatos );
+		iRes = SLispInsertarElemPtr ( p_lisObj, p_lisObj->iNumElementos, p_elpDatos );
 	}
 	else
 	{
@@ -2453,14 +2467,14 @@ int _SLispInsertarAlFinalPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
 	return ( iRes );
 }
 
-int _SLispInsertarPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
+int SLispInsertarPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
 {
-	return ( _SLispInsertarDetrasPtr ( p_lisObj, p_elpDatos ) );
+	return ( SLispInsertarDetrasPtr ( p_lisObj, p_elpDatos ) );
 }
 
 /* Las dos de abajo enganchan el NODO tal cual: tiene que venir suelto ( recien
    creado o extraido ), porque SElpDesencadenar corta los enlaces que traiga. */
-int _SLispInsertarDelantePtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
+int SLispInsertarDelantePtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
 {
 	int iRes;
 
@@ -2507,7 +2521,7 @@ int _SLispInsertarDelantePtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
 	return ( iRes );
 }
 
-int _SLispInsertarDetrasPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
+int SLispInsertarDetrasPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos )
 {
 	int	iRes;
 

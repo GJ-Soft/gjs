@@ -196,7 +196,7 @@ int SLisErrInsertar ( SListaErrores * p_lisObj, SError * p_errObj )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -212,7 +212,7 @@ int SLisErrInsertarExt ( SListaErrores * p_lisObj, const char * p_cCodigo, const
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

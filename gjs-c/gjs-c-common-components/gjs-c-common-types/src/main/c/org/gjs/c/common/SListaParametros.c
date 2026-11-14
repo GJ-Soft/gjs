@@ -126,7 +126,7 @@ int SLisParInsertarElem ( SListaParametros * p_lisObj, int iPosAnt, SParametro *
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -146,7 +146,7 @@ int SLisParInsertarAlFinal ( SListaParametros * p_lisObj, SParametro * p_parDato
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

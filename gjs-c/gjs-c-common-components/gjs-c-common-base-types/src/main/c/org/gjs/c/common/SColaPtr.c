@@ -6,9 +6,6 @@
 
 int _SColpEncolarPtr ( SColaPtr * p_colObj, SElementoPtr * p_elpObj );
 
-extern SElementoPtr * _SLispExtraerPtr ( SListaPtr * p_lisObj );
-extern int _SLispInsertarAlInicioPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
-extern int _SLispInsertarAlFinalPtr ( SListaPtr * p_lisObj, SElementoPtr * p_elpDatos );
 
 
 
@@ -199,16 +196,16 @@ int SColpEncolarTodos ( SColaPtr * p_colObj, SListaPtr * p_lisValores )
 		if ( SLispEsValida ( p_lisValores ) == 1 )
 		{
 			iRes = 1;
-			/* _SLispExtraerPtr deja el cursor en el siguiente, que es la nueva cabeza. */
+			/* SLispExtraerPtr deja el cursor en el siguiente, que es la nueva cabeza. */
 			SLispInicio ( p_lisValores );
 			while ( ( iRes == 1 ) && ( SLispEstaPosicionada ( p_lisValores ) == 1 ) )
 			{
-				p_elpObj = _SLispExtraerPtr ( p_lisValores );
+				p_elpObj = SLispExtraerPtr ( p_lisValores );
 				if ( ES_VALIDO ( p_elpObj ) )
 				{
 					if ( _SColpEncolarPtr ( p_colObj, p_elpObj ) != 1 )
 					{
-						_SLispInsertarAlInicioPtr ( p_lisValores, p_elpObj );
+						SLispInsertarAlInicioPtr ( p_lisValores, p_elpObj );
 						ERROR_ESTABLECER_FORM ( ERR_INSERCION_LISTA, ERR_TXT_INSERCION_LISTA );
 						iRes = 0;
 					}
@@ -425,7 +422,7 @@ int _SColpEncolarPtr ( SColaPtr * p_colObj, SElementoPtr * p_elpObj )
 
 	if ( ( SColpEsValida ( p_colObj ) == 1 ) && ES_VALIDO ( p_elpObj ) )
 	{
-		iRes = _SLispInsertarAlFinalPtr ( p_colObj->p_lisObjetos, p_elpObj );
+		iRes = SLispInsertarAlFinalPtr ( p_colObj->p_lisObjetos, p_elpObj );
 	}
 	else
 	{

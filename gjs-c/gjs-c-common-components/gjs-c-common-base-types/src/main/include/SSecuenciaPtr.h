@@ -52,7 +52,12 @@ int SSecpBuscarSiguienteExtPtr ( SSecuenciaPtr * p_secObj, SElementoPtr * p_elpD
 
 
 int SSecpInsertar ( SSecuenciaPtr * p_secObj, byte * p_byDatos );
+int SSecpInsertarPtr ( SSecuenciaPtr * p_secObj, SElementoPtr * p_elpDatos );
 int SSecpEliminar ( SSecuenciaPtr * p_secObj, int iElem );
+byte * SSecpExtraer ( SSecuenciaPtr * p_secObj, int iElem );
+SElementoPtr * SSecpExtraerPtr ( SSecuenciaPtr * p_secObj, int iElem );
+
+
 int SSecpVaciar ( SSecuenciaPtr * p_secObj );
 
 SSecuenciaPtr * SSecpDuplicar ( SSecuenciaPtr * p_secObj, int iNumBytes );

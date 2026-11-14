@@ -107,9 +107,9 @@ static int TestSCnjCadInsertar01 ()
 			iRes = BOOL_VAL_FALSO;
 		}
 		/* Un valor ya presente se rechaza, y la cadena sigue siendo del llamador. */
-		if ( SCnjCadInsertar ( p_cnjObj, p_cadDup ) != -1 )
+		if ( SCnjCadInsertar ( p_cnjObj, p_cadDup ) != 0 )
 		{
-			printf( "Error caso 5: insertar un valor duplicado deberia devolver -1\n" );
+			printf( "Error caso 5: insertar un valor duplicado deberia devolver 0\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( SCnjCadNumElementos ( p_cnjObj ) != 3 )
@@ -122,9 +122,9 @@ static int TestSCnjCadInsertar01 ()
 			printf( "Error caso 7: la cadena rechazada deberia seguir intacta\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( SCnjCadInsertar ( p_cnjObj, NULL ) != -1 )
+		if ( SCnjCadInsertar ( p_cnjObj, NULL ) != 0 )
 		{
-			printf( "Error caso 8: insertar una cadena nula deberia devolver -1\n" );
+			printf( "Error caso 8: insertar una cadena nula deberia devolver 0\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		SCadDestruir ( &p_cadDup );
@@ -187,9 +187,9 @@ static int TestSCnjCadInsertarDup01 ()
 			printf( "Error caso 6: la copia no deberia cambiar al cambiar la original\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( SCnjCadInsertarDup ( p_cnjObj, NULL ) != -1 )
+		if ( SCnjCadInsertarDup ( p_cnjObj, NULL ) != 0 )
 		{
-			printf( "Error caso 7: insertar una cadena nula deberia devolver -1\n" );
+			printf( "Error caso 7: insertar una cadena nula deberia devolver 0\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 	}
@@ -527,9 +527,9 @@ static int TestSCnjCadInvalidos01 ()
 		printf( "Error caso 4: el elemento de un conjunto nulo deberia ser nulo\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
-	if ( ( SCnjCadInsertar ( NULL, p_cadObj ) != -1 ) || ( SCnjCadInsertarDup ( NULL, p_cadObj ) != -1 ) )
+	if ( ( SCnjCadInsertar ( NULL, p_cadObj ) != 0 ) || ( SCnjCadInsertarDup ( NULL, p_cadObj ) != 0 ) )
 	{
-		printf( "Error caso 5: insertar en un conjunto nulo deberia devolver -1\n" );
+		printf( "Error caso 5: insertar en un conjunto nulo deberia devolver 0\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
 	if ( ( SCnjCadEliminar ( NULL, 0 ) != 0 ) || ( SCnjCadVaciar ( NULL ) != 0 ) )

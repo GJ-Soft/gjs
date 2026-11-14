@@ -95,6 +95,13 @@ void SSecpDesactivarLiberacionMemoria ( SSecuenciaPtr * );
 con `fDuplicar`; la secuencia nueva es dueña de las copias.
 `SSecpEncapsularLista` funciona como la de `SSecuencia`.
 
+Para sacar un elemento sin destruirlo, `byte * SSecpExtraer ( SSecuenciaPtr *,
+int iElem )` devuelve el dato, que pasa a ser del llamante, y `SElementoPtr *
+SSecpExtraerPtr ( SSecuenciaPtr *, int iElem )` el nodo suelto, que se puede
+volver a añadir al final con `int SSecpInsertarPtr ( SSecuenciaPtr *,
+SElementoPtr * )`. Delegan en `SLispExtraerElem`, `SLispExtraerElemPtr` y
+`SLispInsertarAlFinalPtr`.
+
 Para buscar tiene las de `SListaPtr`: `Buscar`, `BuscarPrimero`,
 `BuscarSiguiente`, `Repeticiones` y `Existe`, cada una en cuatro formas.
 `SSecpBuscar ( …, byte *, int iNumBytes )` y `SSecpBuscarPtr ( …, SElementoPtr
@@ -125,7 +132,17 @@ Las tres comparten API salvo por el tipo del dato y por una diferencia:
   detrás de `iPos`: con -1, desde el principio. Comparten el recorrido con las
   de [SListaEnteros](Listas.md) y sus hermanas.
 - `SSecIntSecuencia` devuelve la `SSecuencia` interna y `SSecIntLista`, su
-  `SLista`.
+  `SLista`. `SSecIntListaInt` (`SSecIntlListaIntl`, `SSecIntLssListaIntLss`)
+  devuelve en cambio una `SListaEnteros` **nueva**, con copias de los valores.
+- Tienen las [operaciones con otras secuencias y listas](#operaciones-con-otras-secuencias-y-listas),
+  con otra secuencia de su tipo o con la lista de su tipo: `ExistenTodos` /
+  `ExisteAlguno` (y `…Lista`), `EliminarSecuencia` / `EliminarLista`,
+  `Concatenar` / `ConcatenarLista`, `ExtraerSecuencia` / `ExtraerLista` y
+  `Union`, `Interseccion` y `Diferencia` (y `…Lista`). Delegan en las de
+  `SSecuencia`, con una diferencia: **`Concatenar` copia**, con
+  `SSecConcatenarDup`, y los valores no se tocan. Las `Extraer…` mueven y,
+  si no se puede crear la secuencia, devuelven lo extraído al final de la de
+  origen.
 
 ### `SSecuenciaLiterales`
 
@@ -143,7 +160,19 @@ Como `SSecuencia` y `SSecuenciaPtr`, tiene búsqueda que devuelve posición:
 Comparan el contenido, como las de [SListaLiterales](Listas.md).
 `SSecLitCrearDesdeLista ( SListaLiterales * )` crea la secuencia con copias de
 las cadenas; `SSecLitSecuencia` devuelve la `SSecuenciaPtr` interna y
-`SSecLitLista`, su `SListaPtr`. `SSecLitInsertar` falla con 0, no con -1.
+`SSecLitLista`, su `SListaPtr`; `SSecLitListaLit` devuelve una `SListaLiterales`
+**nueva**, con copias de las cadenas. `SSecLitInsertar` falla con 0, no con -1.
+
+Tiene las [operaciones con otras secuencias y listas](#operaciones-con-otras-secuencias-y-listas),
+con otra `SSecuenciaLiterales` o con una `SListaLiterales`, comparando el
+contenido: `ExistenTodos` / `ExisteAlguno` (y `…Lista`), `Concatenar` /
+`ConcatenarLista`, `EliminarSecuencia` / `EliminarLista`, `ExtraerSecuencia` /
+`ExtraerLista` y `Union`, `Interseccion` y `Diferencia` (y `…Lista`). Delegan en
+las `Ext` de `SSecuenciaPtr`. Las `Concatenar…` añaden **copias**, como todo lo
+que entra en la secuencia, y los valores no se tocan; `Union`, `Interseccion` y
+`Diferencia` también crean la secuencia nueva con copias. Las `Extraer…` mueven
+las cadenas a una secuencia nueva y, si no se puede crear, las devuelven al
+final de la de origen.
 
 `SSecLitInsertar` recibe `const char *`, lo que indica que **duplica la cadena**
 en lugar de quedarse con el puntero. Es distinto del criterio de
@@ -154,16 +183,19 @@ en lugar de quedarse con el puntero. Es distinto del criterio de
 `SSecuencia` y `SSecuenciaPtr` tienen las
 [operaciones con otras listas](Listas.md#operaciones-con-otras-listas) de
 `SLista` y `SListaPtr`, en dos formas: con otra secuencia y, con el sufijo
-`Lista`, con una lista.
+`Lista`, con una lista. Las secuencias de enteros y de literales las tienen
+también, salvo `ConcatenarDup`: en ellas `Concatenar` ya copia ( ver
+[`SSecuenciaEnteros`](#ssecuenciaenteros-y-hermanas) y
+[`SSecuenciaLiterales`](#ssecuencialiterales) ).
 
 | Función ( `SSec` / `SSecp` )                     | Qué hace                                                        |
 | ------------------------------------------------ | --------------------------------------------------------------- |
 | `ExistenTodos` / `ExistenTodosLista`             | 1 si están todos los valores. Con valores vacíos, 1.            |
 | `ExisteAlguno` / `ExisteAlgunoLista`             | 1 si está alguno. Con valores vacíos, 0.                        |
-| `EliminarSecuencia` / `EliminarLista`            | **Destruye** la primera aparición de cada valor.                |
+| `EliminarSecuencia` / `EliminarLista`            | **Destruye** todas las apariciones de cada valor.               |
 | `Concatenar` / `ConcatenarLista`                 | **Mueve** los valores al final; la otra queda vacía.            |
 | `ConcatenarDup` / `ConcatenarListaDup`           | Añade **copias** al final; la otra no se toca.                  |
-| `ExtraerSecuencia` / `ExtraerLista`              | Secuencia nueva con la primera aparición de cada valor, **movida**. |
+| `ExtraerSecuencia` / `ExtraerLista`              | Secuencia nueva con todas las apariciones de cada valor, **movidas**. |
 | `Union` / `UnionLista`                           | Secuencia nueva con copias de las dos: es una concatenación.    |
 | `Interseccion` / `InterseccionLista`             | Copias de los de la primera que están en la segunda.            |
 | `Diferencia` / `DiferenciaLista`                 | Copias de los de la primera que no están en la segunda.         |

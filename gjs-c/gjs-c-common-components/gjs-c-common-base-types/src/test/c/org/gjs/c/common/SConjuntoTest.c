@@ -108,9 +108,9 @@ static int TestSCnjInsertar01 ()
 		}
 		/* Insertar un duplicado no debe anadirse; el conjunto no toma el elemento. */
 		SElemento * p_elmDup = CrearElementoEntero ( 20 );
-		if ( SCnjInsertarElem ( p_cnjObj, p_elmDup ) != -1 )
+		if ( SCnjInsertarElem ( p_cnjObj, p_elmDup ) != 0 )
 		{
-			printf( "Error caso 4: insertar un duplicado deberia devolver -1\n" );
+			printf( "Error caso 4: insertar un duplicado deberia devolver 0\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		SElmDestruir ( &p_elmDup );
@@ -562,6 +562,450 @@ static int TestSCnjInvalidos01 ()
 
 
 
+static SLista * CrearListaEnteros ( int * p_iValores, int iNum )
+{
+	SLista * p_lisObj = SLisCrear ();
+	int iPos = 0;
+	while ( ES_VALIDO ( p_lisObj ) && ( iPos < iNum ) )
+	{
+		SLisInsertarAlFinal ( p_lisObj, CrearElementoEntero ( p_iValores [ iPos ] ) );
+		iPos = iPos + 1;
+	}
+	return ( p_lisObj );
+}
+
+static SListaOrdenada * CrearOrdenadaEnteros ( int * p_iValores, int iNum )
+{
+	SListaOrdenada * p_lisObj = SLisOrdCrear ( CompararEnteros );
+	int iPos = 0;
+	while ( ES_VALIDO ( p_lisObj ) && ( iPos < iNum ) )
+	{
+		SLisOrdInsertarElem ( p_lisObj, CrearElementoEntero ( p_iValores [ iPos ] ) );
+		iPos = iPos + 1;
+	}
+	return ( p_lisObj );
+}
+
+static SConjunto * CrearConjuntoEnteros ( int * p_iValores, int iNum )
+{
+	SLista * p_lisObj = CrearListaEnteros ( p_iValores, iNum );
+	SConjunto * p_cnjObj = SCnjCrearDesdeLista ( p_lisObj, CompararEnteros );
+	SLisDestruir ( &p_lisObj );
+	return ( p_cnjObj );
+}
+
+/* Numero y valores, en orden, sin desreferenciar un nulo. */
+static int VerificarConjunto ( SConjunto * p_cnjObj, int * p_iEsperados, int iNum )
+{
+	int iRes = BOOL_VAL_CIERTO;
+
+	if ( ( SCnjEsValido ( p_cnjObj ) != 1 ) || ( SCnjNumElementos ( p_cnjObj ) != iNum ) )
+	{
+		printf( "  Verificacion: se esperaba un conjunto de %d elementos: %d\n", iNum, SCnjNumElementos ( p_cnjObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	int iPos = 0;
+	while ( ( iPos < iNum ) && ( iRes == BOOL_VAL_CIERTO ) )
+	{
+		SElemento * p_elmObj = SCnjElemento ( p_cnjObj, iPos );
+		if ( ES_NULO ( p_elmObj ) || ( SElmEntero ( p_elmObj ) != p_iEsperados [ iPos ] ) )
+		{
+			printf( "  Verificacion: en pos %d se esperaba %d\n", iPos, p_iEsperados [ iPos ] );
+			iRes = BOOL_VAL_FALSO;
+		}
+		iPos = iPos + 1;
+	}
+	return ( iRes );
+}
+
+/* Comprueba un conjunto devuelto por una operacion y lo destruye. */
+static int VerificarYDestruir ( SConjunto ** p_p_cnjObj, int * p_iEsperados, int iNum )
+{
+	int iRes = VerificarConjunto ( *p_p_cnjObj, p_iEsperados, iNum );
+	SCnjDestruir ( p_p_cnjObj );
+	return ( iRes );
+}
+
+/* CrearDesdeLista y Duplicar copian y quitan los repetidos; EncapsularLista se
+   queda con la lista, salvo que tenga repetidos. */
+static int TestSCnjCrearDesdeLista01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCnjCrearDesdeLista 01:\n" );
+
+	int iVal [ 5 ] = { 30, 10, 30, 20, 10 };
+	int iEsp [ 3 ] = { 10, 20, 30 };
+	int iRep [ 3 ] = { 20, 10, 20 };
+	SLista * p_lisVal = CrearListaEnteros ( iVal, 5 );
+	SListaOrdenada * p_lisOrd = CrearOrdenadaEnteros ( iEsp, 3 );
+	SListaOrdenada * p_lisRep = CrearOrdenadaEnteros ( iRep, 3 );
+	SConjunto * p_cnjObj = NULL;
+	SConjunto * p_cnjEnc = NULL;
+	SConjunto * p_cnjDup = NULL;
+	if ( ES_VALIDO ( p_lisVal ) && ES_VALIDO ( p_lisOrd ) && ES_VALIDO ( p_lisRep ) )
+	{
+		p_cnjObj = SCnjCrearDesdeLista ( p_lisVal, CompararEnteros );
+		if ( ( VerificarConjunto ( p_cnjObj, iEsp, 3 ) != BOOL_VAL_CIERTO ) ||
+			 ( SLisNumElementos ( p_lisVal ) != 5 ) ||
+			 ( SCnjElemento ( p_cnjObj, 2 ) == SLisElemento ( p_lisVal, 0 ) ) )
+		{
+			printf( "Error caso 1: se esperaban copias de { 10, 20, 30 } y la lista sin tocar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cnjDup = SCnjDuplicar ( p_cnjObj );
+		if ( ( VerificarConjunto ( p_cnjDup, iEsp, 3 ) != BOOL_VAL_CIERTO ) ||
+			 ( SCnjElemento ( p_cnjDup, 0 ) == SCnjElemento ( p_cnjObj, 0 ) ) )
+		{
+			printf( "Error caso 2: el duplicado deberia tener copias de { 10, 20, 30 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cnjEnc = SCnjEncapsularLista ( p_lisOrd );
+		if ( ( VerificarConjunto ( p_cnjEnc, iEsp, 3 ) != BOOL_VAL_CIERTO ) ||
+			 ( SCnjLista ( p_cnjEnc ) != p_lisOrd ) )
+		{
+			printf( "Error caso 3: se esperaba un conjunto con la misma lista\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			/* Ahora es del conjunto. */
+			p_lisOrd = NULL;
+		}
+		/* Con repetidos no es un conjunto: la lista sigue siendo del test. */
+		if ( ES_VALIDO ( SCnjEncapsularLista ( p_lisRep ) ) ||
+			 ( SLisOrdNumElementos ( p_lisRep ) != 3 ) )
+		{
+			printf( "Error caso 4: con repetidos se esperaba nulo y la lista intacta\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SCnjCrearDesdeLista ( NULL, CompararEnteros ) ) ||
+			 ES_VALIDO ( SCnjEncapsularLista ( NULL ) ) ||
+			 ES_VALIDO ( SCnjDuplicar ( NULL ) ) ||
+			 ES_VALIDO ( SCnjLista ( NULL ) ) )
+		{
+			printf( "Error caso 5: con nulos se esperaba nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear las listas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisDestruir ( &p_lisVal );
+	SLisOrdDestruir ( &p_lisOrd );
+	SLisOrdDestruir ( &p_lisRep );
+	SCnjDestruir ( &p_cnjObj );
+	SCnjDestruir ( &p_cnjEnc );
+	SCnjDestruir ( &p_cnjDup );
+	return ( iRes );
+}
+
+static int TestSCnjExistenTodos01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCnjExistenTodos 01:\n" );
+
+	int iA [ 3 ] = { 10, 20, 30 };
+	int iTodos [ 2 ] = { 30, 20 };
+	int iAlguno [ 2 ] = { 40, 20 };
+	int iNinguno [ 1 ] = { 40 };
+	SConjunto * p_cnjA = CrearConjuntoEnteros ( iA, 3 );
+	SConjunto * p_cnjTodos = CrearConjuntoEnteros ( iTodos, 2 );
+	SConjunto * p_cnjAlguno = CrearConjuntoEnteros ( iAlguno, 2 );
+	SListaOrdenada * p_lisOrdTodos = CrearOrdenadaEnteros ( iTodos, 2 );
+	SListaOrdenada * p_lisOrdNinguno = CrearOrdenadaEnteros ( iNinguno, 1 );
+	SLista * p_lisAlguno = CrearListaEnteros ( iAlguno, 2 );
+	SLista * p_lisNinguno = CrearListaEnteros ( iNinguno, 1 );
+	if ( ES_VALIDO ( p_cnjA ) && ES_VALIDO ( p_cnjTodos ) && ES_VALIDO ( p_cnjAlguno ) && ES_VALIDO ( p_lisOrdTodos ) &&
+		 ES_VALIDO ( p_lisOrdNinguno ) && ES_VALIDO ( p_lisAlguno ) && ES_VALIDO ( p_lisNinguno ) )
+	{
+		if ( ( SCnjExistenTodos ( p_cnjA, p_cnjTodos ) != 1 ) || ( SCnjExistenTodos ( p_cnjA, p_cnjAlguno ) != 0 ) ||
+			 ( SCnjExisteAlguno ( p_cnjA, p_cnjAlguno ) != 1 ) )
+		{
+			printf( "Error caso 1: con conjuntos se esperaba 1, 0 y 1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SCnjExistenTodosListaOrd ( p_cnjA, p_lisOrdTodos ) != 1 ) ||
+			 ( SCnjExistenTodosListaOrd ( p_cnjA, p_lisOrdNinguno ) != 0 ) ||
+			 ( SCnjExisteAlgunoListaOrd ( p_cnjA, p_lisOrdTodos ) != 1 ) ||
+			 ( SCnjExisteAlgunoListaOrd ( p_cnjA, p_lisOrdNinguno ) != 0 ) )
+		{
+			printf( "Error caso 2: con listas ordenadas se esperaba 1, 0, 1 y 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SCnjExistenTodosLista ( p_cnjA, p_lisAlguno ) != 0 ) ||
+			 ( SCnjExisteAlgunoLista ( p_cnjA, p_lisAlguno ) != 1 ) ||
+			 ( SCnjExisteAlgunoLista ( p_cnjA, p_lisNinguno ) != 0 ) )
+		{
+			printf( "Error caso 3: con listas se esperaba 0, 1 y 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SCnjExistenTodos ( NULL, p_cnjTodos ) != 0 ) || ( SCnjExistenTodos ( p_cnjA, NULL ) != 0 ) ||
+			 ( SCnjExisteAlguno ( p_cnjA, NULL ) != 0 ) || ( SCnjExistenTodosLista ( NULL, p_lisAlguno ) != 0 ) ||
+			 ( SCnjExisteAlgunoListaOrd ( NULL, p_lisOrdTodos ) != 0 ) )
+		{
+			printf( "Error caso 4: con nulos se esperaba 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear los conjuntos o las listas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCnjDestruir ( &p_cnjA );
+	SCnjDestruir ( &p_cnjTodos );
+	SCnjDestruir ( &p_cnjAlguno );
+	SLisOrdDestruir ( &p_lisOrdTodos );
+	SLisOrdDestruir ( &p_lisOrdNinguno );
+	SLisDestruir ( &p_lisAlguno );
+	SLisDestruir ( &p_lisNinguno );
+	return ( iRes );
+}
+
+/* Insertan copias de lo que no esta; lo repetido entra una vez. */
+static int TestSCnjInsertarLista01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCnjInsertarLista 01:\n" );
+
+	int iA [ 2 ] = { 10, 30 };
+	int iVal [ 4 ] = { 30, 20, 20, 40 };
+	int iCnj [ 2 ] = { 5, 10 };
+	int iOrd [ 2 ] = { 50, 50 };
+	SConjunto * p_cnjA = CrearConjuntoEnteros ( iA, 2 );
+	SConjunto * p_cnjVal = CrearConjuntoEnteros ( iCnj, 2 );
+	SLista * p_lisVal = CrearListaEnteros ( iVal, 4 );
+	SListaOrdenada * p_lisOrd = CrearOrdenadaEnteros ( iOrd, 2 );
+	if ( ES_VALIDO ( p_cnjA ) && ES_VALIDO ( p_cnjVal ) && ES_VALIDO ( p_lisVal ) && ES_VALIDO ( p_lisOrd ) )
+	{
+		int iEsp1 [ 4 ] = { 10, 20, 30, 40 };
+		if ( ( SCnjInsertarLista ( p_cnjA, p_lisVal ) != 1 ) ||
+			 ( VerificarConjunto ( p_cnjA, iEsp1, 4 ) != BOOL_VAL_CIERTO ) ||
+			 ( SLisNumElementos ( p_lisVal ) != 4 ) )
+		{
+			printf( "Error caso 1: deberia quedar { 10, 20, 30, 40 } y la lista sin tocar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		int iEsp2 [ 5 ] = { 5, 10, 20, 30, 40 };
+		if ( ( SCnjInsertarConjunto ( p_cnjA, p_cnjVal ) != 1 ) ||
+			 ( VerificarConjunto ( p_cnjA, iEsp2, 5 ) != BOOL_VAL_CIERTO ) ||
+			 ( SCnjElemento ( p_cnjA, 0 ) == SCnjElemento ( p_cnjVal, 0 ) ) )
+		{
+			printf( "Error caso 2: deberia quedar { 5, 10, 20, 30, 40 } con copias\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		int iEsp3 [ 6 ] = { 5, 10, 20, 30, 40, 50 };
+		if ( ( SCnjInsertarListaOrd ( p_cnjA, p_lisOrd ) != 1 ) ||
+			 ( VerificarConjunto ( p_cnjA, iEsp3, 6 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 3: el 50 repetido deberia entrar una vez\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Consigo mismo no hay nada que insertar. */
+		if ( ( SCnjInsertarConjunto ( p_cnjA, p_cnjA ) != 1 ) ||
+			 ( VerificarConjunto ( p_cnjA, iEsp3, 6 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 4: consigo mismo se esperaba 1 sin cambios\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SCnjInsertarLista ( NULL, p_lisVal ) != 0 ) || ( SCnjInsertarLista ( p_cnjA, NULL ) != 0 ) ||
+			 ( SCnjInsertarConjunto ( p_cnjA, NULL ) != 0 ) || ( SCnjInsertarListaOrd ( p_cnjA, NULL ) != 0 ) ||
+			 ( VerificarConjunto ( p_cnjA, iEsp3, 6 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 5: con nulos se esperaba 0 sin cambios\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear los conjuntos o las listas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCnjDestruir ( &p_cnjA );
+	SCnjDestruir ( &p_cnjVal );
+	SLisDestruir ( &p_lisVal );
+	SLisOrdDestruir ( &p_lisOrd );
+	return ( iRes );
+}
+
+/* Eliminar destruye y Extraer mueve a un conjunto nuevo. */
+static int TestSCnjExtraerLista01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCnjExtraerLista 01:\n" );
+
+	int iA [ 6 ] = { 10, 20, 30, 40, 50, 60 };
+	int iEli [ 3 ] = { 20, 99, 20 };
+	int iEliCnj [ 1 ] = { 40 };
+	int iExt [ 2 ] = { 50, 10 };
+	int iExtOrd [ 1 ] = { 60 };
+	SConjunto * p_cnjA = CrearConjuntoEnteros ( iA, 6 );
+	SConjunto * p_cnjEli = CrearConjuntoEnteros ( iEliCnj, 1 );
+	SLista * p_lisEli = CrearListaEnteros ( iEli, 3 );
+	SLista * p_lisExt = CrearListaEnteros ( iExt, 2 );
+	SListaOrdenada * p_lisExtOrd = CrearOrdenadaEnteros ( iExtOrd, 1 );
+	SConjunto * p_cnjRes = NULL;
+	if ( ES_VALIDO ( p_cnjA ) && ES_VALIDO ( p_cnjEli ) && ES_VALIDO ( p_lisEli ) && ES_VALIDO ( p_lisExt ) &&
+		 ES_VALIDO ( p_lisExtOrd ) )
+	{
+		int iEsp1 [ 4 ] = { 10, 30, 50, 60 };
+		if ( ( SCnjEliminarLista ( p_cnjA, p_lisEli ) != 1 ) ||
+			 ( SCnjEliminarConjunto ( p_cnjA, p_cnjEli ) != 1 ) ||
+			 ( VerificarConjunto ( p_cnjA, iEsp1, 4 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 1: deberia quedar { 10, 30, 50, 60 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SElemento * p_elm50 = SCnjElemento ( p_cnjA, 2 );
+		p_cnjRes = SCnjExtraerLista ( p_cnjA, p_lisExt );
+		int iEspRes [ 2 ] = { 10, 50 };
+		int iEsp2 [ 2 ] = { 30, 60 };
+		if ( ( SCnjElemento ( p_cnjRes, 1 ) != p_elm50 ) ||
+			 ( VerificarYDestruir ( &p_cnjRes, iEspRes, 2 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarConjunto ( p_cnjA, iEsp2, 2 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 2: se esperaba mover { 10, 50 } y dejar { 30, 60 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cnjRes = SCnjExtraerListaOrd ( p_cnjA, p_lisExtOrd );
+		int iEsp3 [ 1 ] = { 30 };
+		if ( ( VerificarYDestruir ( &p_cnjRes, iExtOrd, 1 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarConjunto ( p_cnjA, iEsp3, 1 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 3: se esperaba mover { 60 } y dejar { 30 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SCnjExtraerConjunto ( p_cnjA, p_cnjA ) ) ||
+			 ES_VALIDO ( SCnjExtraerLista ( p_cnjA, NULL ) ) ||
+			 ES_VALIDO ( SCnjExtraerListaOrd ( NULL, p_lisExtOrd ) ) ||
+			 ( SCnjEliminarConjunto ( p_cnjA, p_cnjA ) != 0 ) ||
+			 ( SCnjEliminarLista ( NULL, p_lisEli ) != 0 ) ||
+			 ( SCnjEliminarListaOrd ( p_cnjA, NULL ) != 0 ) ||
+			 ( VerificarConjunto ( p_cnjA, iEsp3, 1 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 4: con el mismo conjunto o un nulo se esperaba nulo o 0 sin cambios\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear los conjuntos o las listas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCnjDestruir ( &p_cnjA );
+	SCnjDestruir ( &p_cnjEli );
+	SLisDestruir ( &p_lisEli );
+	SLisDestruir ( &p_lisExt );
+	SLisOrdDestruir ( &p_lisExtOrd );
+	return ( iRes );
+}
+
+/* Union, Interseccion y Diferencia de conjuntos: copias, sin repetidos, y los
+   de entrada sin tocar. */
+static int TestSCnjUnion01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SCnjUnion 01:\n" );
+
+	int iA [ 3 ] = { 10, 20, 30 };
+	int iB [ 2 ] = { 20, 40 };
+	int iL [ 3 ] = { 40, 20, 40 };
+	SConjunto * p_cnjA = CrearConjuntoEnteros ( iA, 3 );
+	SConjunto * p_cnjB = CrearConjuntoEnteros ( iB, 2 );
+	SListaOrdenada * p_lisOrd = CrearOrdenadaEnteros ( iL, 3 );
+	SLista * p_lisVal = CrearListaEnteros ( iL, 3 );
+	SConjunto * p_cnjRes = NULL;
+	if ( ES_VALIDO ( p_cnjA ) && ES_VALIDO ( p_cnjB ) && ES_VALIDO ( p_lisOrd ) && ES_VALIDO ( p_lisVal ) )
+	{
+		int iUni [ 4 ] = { 10, 20, 30, 40 };
+		int iInt [ 1 ] = { 20 };
+		int iDif [ 2 ] = { 10, 30 };
+		p_cnjRes = SCnjUnion ( p_cnjA, p_cnjB );
+		if ( ( SCnjElemento ( p_cnjRes, 0 ) == SCnjElemento ( p_cnjA, 0 ) ) ||
+			 ( VerificarYDestruir ( &p_cnjRes, iUni, 4 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 1: la union deberia ser { 10, 20, 30, 40 }, con copias\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cnjRes = SCnjInterseccion ( p_cnjA, p_cnjB );
+		if ( VerificarYDestruir ( &p_cnjRes, iInt, 1 ) != BOOL_VAL_CIERTO )
+		{
+			printf( "Error caso 2: la interseccion deberia ser { 20 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cnjRes = SCnjDiferencia ( p_cnjA, p_cnjB );
+		if ( VerificarYDestruir ( &p_cnjRes, iDif, 2 ) != BOOL_VAL_CIERTO )
+		{
+			printf( "Error caso 3: la diferencia deberia ser { 10, 30 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Con listas que repiten el 40: sale una vez. */
+		p_cnjRes = SCnjUnionLista ( p_cnjA, p_lisVal );
+		if ( VerificarYDestruir ( &p_cnjRes, iUni, 4 ) != BOOL_VAL_CIERTO )
+		{
+			printf( "Error caso 4: la union con la lista deberia ser { 10, 20, 30, 40 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cnjRes = SCnjUnionListaOrd ( p_cnjA, p_lisOrd );
+		if ( VerificarYDestruir ( &p_cnjRes, iUni, 4 ) != BOOL_VAL_CIERTO )
+		{
+			printf( "Error caso 5: la union con la ordenada deberia ser { 10, 20, 30, 40 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cnjRes = SCnjInterseccionLista ( p_cnjA, p_lisVal );
+		if ( VerificarYDestruir ( &p_cnjRes, iInt, 1 ) != BOOL_VAL_CIERTO )
+		{
+			printf( "Error caso 6: la interseccion con la lista deberia ser { 20 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cnjRes = SCnjInterseccionListaOrd ( p_cnjA, p_lisOrd );
+		if ( VerificarYDestruir ( &p_cnjRes, iInt, 1 ) != BOOL_VAL_CIERTO )
+		{
+			printf( "Error caso 7: la interseccion con la ordenada deberia ser { 20 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cnjRes = SCnjDiferenciaLista ( p_cnjA, p_lisVal );
+		if ( VerificarYDestruir ( &p_cnjRes, iDif, 2 ) != BOOL_VAL_CIERTO )
+		{
+			printf( "Error caso 8: la diferencia con la lista deberia ser { 10, 30 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cnjRes = SCnjDiferenciaListaOrd ( p_cnjA, p_lisOrd );
+		if ( VerificarYDestruir ( &p_cnjRes, iDif, 2 ) != BOOL_VAL_CIERTO )
+		{
+			printf( "Error caso 9: la diferencia con la ordenada deberia ser { 10, 30 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( VerificarConjunto ( p_cnjA, iA, 3 ) != BOOL_VAL_CIERTO ) ||
+			 ( VerificarConjunto ( p_cnjB, iB, 2 ) != BOOL_VAL_CIERTO ) ||
+			 ( SLisNumElementos ( p_lisVal ) != 3 ) || ( SLisOrdNumElementos ( p_lisOrd ) != 3 ) )
+		{
+			printf( "Error caso 10: los de entrada no deberian cambiar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SCnjUnion ( NULL, p_cnjB ) ) || ES_VALIDO ( SCnjUnion ( p_cnjA, NULL ) ) ||
+			 ES_VALIDO ( SCnjInterseccion ( NULL, p_cnjB ) ) || ES_VALIDO ( SCnjDiferencia ( p_cnjA, NULL ) ) ||
+			 ES_VALIDO ( SCnjUnionLista ( p_cnjA, NULL ) ) || ES_VALIDO ( SCnjUnionListaOrd ( NULL, p_lisOrd ) ) ||
+			 ES_VALIDO ( SCnjInterseccionLista ( NULL, p_lisVal ) ) || ES_VALIDO ( SCnjDiferenciaListaOrd ( NULL, p_lisOrd ) ) )
+		{
+			printf( "Error caso 11: con nulos se esperaba nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear los conjuntos o las listas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SCnjDestruir ( &p_cnjA );
+	SCnjDestruir ( &p_cnjB );
+	SLisOrdDestruir ( &p_lisOrd );
+	SLisDestruir ( &p_lisVal );
+	return ( iRes );
+}
+
 int TestSConjunto ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -574,7 +1018,12 @@ int TestSConjunto ()
 			( TestSCnjPrimeroUltimo01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCnjPosicion01 () == BOOL_VAL_CIERTO ) &&
 			( TestSCnjExtraerElem01 () == BOOL_VAL_CIERTO ) &&
-			( TestSCnjInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSCnjInvalidos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCnjCrearDesdeLista01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCnjExistenTodos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCnjInsertarLista01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCnjExtraerLista01 () == BOOL_VAL_CIERTO ) &&
+			( TestSCnjUnion01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

@@ -57,6 +57,32 @@ int SSecIntSemidefinidaPositiva ( SSecuenciaEnteros * p_secObj );
 
 SSecuencia * SSecIntSecuencia ( SSecuenciaEnteros * p_secObj );
 SLista * SSecIntLista ( SSecuenciaEnteros * p_secObj );
+SListaEnteros * SSecIntListaInt ( SSecuenciaEnteros * p_secObj );
+
+// Operaciones con otras secuencias y listas
+int SSecIntExistenTodos ( SSecuenciaEnteros * p_secObj, SSecuenciaEnteros * p_secValores );
+int SSecIntExisteAlguno ( SSecuenciaEnteros * p_secObj, SSecuenciaEnteros * p_secValores );
+int SSecIntExistenTodosLista ( SSecuenciaEnteros * p_secObj, SListaEnteros * p_lisValores );
+int SSecIntExisteAlgunoLista ( SSecuenciaEnteros * p_secObj, SListaEnteros * p_lisValores );
+
+int SSecIntEliminarSecuencia ( SSecuenciaEnteros * p_secObj, SSecuenciaEnteros * p_secValores );
+int SSecIntEliminarLista ( SSecuenciaEnteros * p_secObj, SListaEnteros * p_lisValores );
+
+// Duplica los valores de la secuencia o la lista de entrada
+int SSecIntConcatenar ( SSecuenciaEnteros * p_secObj, SSecuenciaEnteros * p_secValores );
+int SSecIntConcatenarLista ( SSecuenciaEnteros * p_secObj, SListaEnteros * p_lisValores );
+
+// Operaciones que generan secuencias nuevas
+// NOTA: Si hay algún error puede realizar una extracción parcial
+SSecuenciaEnteros * SSecIntExtraerSecuencia ( SSecuenciaEnteros * p_secObj, SSecuenciaEnteros * p_secValores );
+SSecuenciaEnteros * SSecIntExtraerLista ( SSecuenciaEnteros * p_secObj, SListaEnteros * p_lisValores );
+
+SSecuenciaEnteros * SSecIntUnion ( SSecuenciaEnteros * p_secValores1, SSecuenciaEnteros * p_secValores2 );
+SSecuenciaEnteros * SSecIntInterseccion ( SSecuenciaEnteros * p_secValores1, SSecuenciaEnteros * p_secValores2 );
+SSecuenciaEnteros * SSecIntDiferencia ( SSecuenciaEnteros * p_secValores1, SSecuenciaEnteros * p_secValores2 );
+SSecuenciaEnteros * SSecIntUnionLista ( SSecuenciaEnteros * p_secValores1, SListaEnteros * p_lisValores2 );
+SSecuenciaEnteros * SSecIntInterseccionLista ( SSecuenciaEnteros * p_secValores1, SListaEnteros * p_lisValores2 );
+SSecuenciaEnteros * SSecIntDiferenciaLista ( SSecuenciaEnteros * p_secValores1, SListaEnteros * p_lisValores2 );
 
 #endif
 

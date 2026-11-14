@@ -102,9 +102,9 @@ static int TestSCnjEntInsertar01 ()
 		}
 		/* Un id ya presente se rechaza, y la entidad sigue siendo del llamador. */
 		SEntidad * p_entDup = SEntCrear ( 20 );
-		if ( SCnjEntInsertar ( p_cnjObj, p_entDup ) != -1 )
+		if ( SCnjEntInsertar ( p_cnjObj, p_entDup ) != 0 )
 		{
-			printf( "Error caso 4: insertar un id duplicado deberia devolver -1\n" );
+			printf( "Error caso 4: insertar un id duplicado deberia devolver 0\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( ( SCnjEntNumElementos ( p_cnjObj ) != 3 ) || ( ! IdEs ( p_entDup, 20 ) ) )
@@ -113,9 +113,9 @@ static int TestSCnjEntInsertar01 ()
 			iRes = BOOL_VAL_FALSO;
 		}
 		SEntDestruir ( &p_entDup );
-		if ( SCnjEntInsertar ( p_cnjObj, NULL ) != -1 )
+		if ( SCnjEntInsertar ( p_cnjObj, NULL ) != 0 )
 		{
-			printf( "Error caso 6: insertar una entidad nula deberia devolver -1\n" );
+			printf( "Error caso 6: insertar una entidad nula deberia devolver 0\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( ( ! IdEs ( SCnjEntPrimero ( p_cnjObj ), 10 ) ) || ( ! IdEs ( SCnjEntUltimo ( p_cnjObj ), 30 ) ) )
@@ -397,9 +397,9 @@ static int TestSCnjEntInvalidos01 ()
 		iRes = BOOL_VAL_FALSO;
 	}
 	SEntidad * p_entObj = SEntCrear ( 1 );
-	if ( SCnjEntInsertar ( NULL, p_entObj ) != -1 )
+	if ( SCnjEntInsertar ( NULL, p_entObj ) != 0 )
 	{
-		printf( "Error caso 3: insertar en un conjunto nulo deberia devolver -1\n" );
+		printf( "Error caso 3: insertar en un conjunto nulo deberia devolver 0\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
 	SEntDestruir ( &p_entObj );

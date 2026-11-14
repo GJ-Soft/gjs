@@ -23,6 +23,7 @@ typedef struct
 
 
 SListaEnteros * SLisIntCrear ();
+SListaEnteros * SLisIntEncapsular ( SLista * p_lisDatos );
 
 
 void SLisIntDestruir ( SListaEnteros ** p_p_lisObj );
@@ -99,7 +100,7 @@ int SLisIntConcatenarLista ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValo
 // Duplica los valores de la lista de entrada
 int SLisIntInsertarListaDup ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores );
 int SLisIntConcatenarListaDup ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores );
-// Destruye la primera aparición de cada valor de la lista de entrada
+// Destruye todas las apariciones de cada valor de la lista de entrada
 int SLisIntEliminarLista ( SListaEnteros * p_lisObj, SListaEnteros * p_lisValores );
 
 // Operaciones que generan listas nuevas

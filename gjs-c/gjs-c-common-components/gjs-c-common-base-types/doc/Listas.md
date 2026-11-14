@@ -241,8 +241,8 @@ for ( SLisInicio ( p_lisObj ); SLisEsNulo ( p_lisObj ) == 0; SLisSiguiente ( p_l
 | `int SLisConcatenarLista ( SLista *, SLista * p_lisValores )` | **Mueve** los valores al final.                                      |
 | `int SLisInsertarListaDup ( SLista *, SLista * )`             | Inserta **copias** detrás del cursor; los valores no se tocan.       |
 | `int SLisConcatenarListaDup ( SLista *, SLista * )`           | Inserta **copias** al final.                                         |
-| `SLista * SLisExtraerLista ( SLista *, SLista * p_lisValores )` | Saca a una lista nueva la primera aparición de cada valor.         |
-| `int SLisEliminarLista ( SLista *, SLista * p_lisValores )`   | **Destruye** la primera aparición de cada valor.                     |
+| `SLista * SLisExtraerLista ( SLista *, SLista * p_lisValores )` | Saca a una lista nueva todas las apariciones de cada valor.        |
+| `int SLisEliminarLista ( SLista *, SLista * p_lisValores )`   | **Destruye** todas las apariciones de cada valor.                    |
 | `SLista * SLisUnion ( SLista *, SLista * )`                   | Lista nueva con copias de las dos, una detrás de otra.               |
 | `SLista * SLisInterseccion ( SLista * V1, SLista * V2 )`      | Copias de los de V1 que están en V2, en el orden de V1.              |
 | `SLista * SLisDiferencia ( SLista * V1, SLista * V2 )`        | Copias de los de V1 que no están en V2, en el orden de V1.           |
@@ -257,8 +257,9 @@ Cómo se comportan:
   válida. Si un elemento no se puede insertar, vuelve a la cabeza de
   `p_lisValores` y la función devuelve 0: lo movido hasta ahí se queda movido y
   no se pierde nada.
-- `SLisExtraerLista` saca **una aparición por valor buscado**, en el orden de los
-  buscados: si un valor está dos veces en `p_lisValores`, saca dos. Lo que no
+- `SLisExtraerLista` saca **todas las apariciones de cada valor buscado**: van
+  por el orden de los buscados y, las de un mismo valor, en el que tenían en la
+  lista. Que un valor esté dos veces en `p_lisValores` no saca más. Lo que no
   encuentra lo ignora. Los elementos se mueven, no se copian. Si algo falla a
   medias devuelve la extracción parcial.
 - `SLisEliminarLista` busca igual que `ExtraerLista`, pero **destruye** lo que
@@ -317,6 +318,17 @@ Además de la API común, `SListaPtr` tiene:
   `byte * SLispExtraer ( SListaPtr * )` sacan el nodo y devuelven **el dato**,
   que pasa a ser del llamante (lo libera él con `MemLiberar`). El cursor queda
   como tras `SLispEliminar`.
+- **Nodos**: `SElementoPtr * SLispExtraerElemPtr ( SListaPtr *, int iElem )` y
+  `SLispExtraerPtr ( SListaPtr * )` sacan **el nodo** suelto, sin enlaces y con
+  el dato dentro, y dejan el cursor igual que las de arriba.
+  `SLispInsertarElemPtr ( …, int iPosAnt, SElementoPtr * )`,
+  `SLispInsertarAlInicioPtr`, `SLispInsertarAlFinalPtr`, `SLispInsertarPtr`,
+  `SLispInsertarDelantePtr` y `SLispInsertarDetrasPtr` enganchan un nodo donde
+  sus parejas sin `Ptr` enganchan un dato, y devuelven 1 o 0. El nodo tiene que
+  venir suelto (recién creado con `SElpCrear` o extraído): se engancha tal cual,
+  sin copiarlo. Dentro de la lista, el dato se libera según la liberación de la
+  lista; un nodo extraído que no se vuelve a insertar lo destruye el llamante
+  con `SElpDestruir`.
 - **Búsqueda**: `SLispBuscarPtr ( …, SElementoPtr *, int iNumBytes )` busca por
   el contenido de un elemento, y `SLispBuscarExt ( …, byte *, PFUNINTPBPB )` y
   `SLispBuscarExtPtr ( …, SElementoPtr *, PFUNINTPBPB )` con una función de
@@ -368,6 +380,12 @@ int iVal = SLisIntElemento ( p_lisObj, 0 );
 SLisIntDestruir ( &p_lisObj );
 ```
 
+`SLisIntEncapsular ( SLista * )` (y `SLisIntlEncapsular`, `SLisIntLssEncapsular`)
+envuelve una `SLista` ya hecha, sin copiarla: pasa a ser de la lista de enteros,
+que la destruye con ella. Sus elementos deben ser del tipo de la envoltura. Si
+la lista no es válida, o falla la reserva, devuelve `NULL` y la lista **sigue
+siendo del llamante**, como `SSecEncapsularLista`.
+
 Añaden la búsqueda por valor, que la lista genérica no tiene en forma tipada:
 `SLisIntExiste ( …, int iDato )`, `SLisIntRepeticiones`, `SLisIntBuscar` (que es
 `BuscarPrimero`) y `SLisIntBuscarSiguiente ( …, int iDato, int iPos )`, que
@@ -404,7 +422,7 @@ ahí sería siempre cierta. Dos diferencias de contrato:
 
 ### `SListaLiterales` — dos juegos de funciones
 
-Tiene una API grande (54 funciones) porque **cada operación de inserción viene
+Tiene una API grande (62 funciones) porque **cada operación de inserción viene
 por duplicado**:
 
 | Forma                 | Parámetro      | Qué hace con la cadena                                   |
@@ -420,6 +438,11 @@ un puntero colgante, así que conviene fijarse en el sufijo `Dup`.
 y `SLisLitBuscarSiguiente ( …, const char *, int iPos )` comparan el
 **contenido** con `CadComparar`, no el puntero: encuentran la cadena aunque se
 busque con otro bloque del mismo texto. Delegan en las `Ext` de `SListaPtr`.
+
+`SLisLitEncapsular ( SListaPtr * )` envuelve una `SListaPtr` de cadenas ya
+hecha, sin copiarla, con la misma convención que la de enteros: si falla,
+`NULL` y la lista sigue siendo del llamante. Las cadenas se liberan según la
+liberación de esa lista.
 
 `SLisLitExtraerUnicos` devuelve una lista nueva con **copias** de las cadenas
 distintas, en el orden de su primera aparición; `SLisLitExtraerUnicosExt ( …,
@@ -484,6 +507,9 @@ elemento es menor y se paran en el primero que no lo es, sin recorrer el resto.
 Para sacar un elemento sin destruirlo está `SLisOrdExtraerElem`, que delega en
 `SLisExtraerElem`: el elemento sale desenganchado y pasa a ser del llamador, y
 volver a insertarlo con `SLisOrdInsertarElem` lo devuelve a su sitio en el orden.
+En `SListaOrdenadaPtr`, `byte * SLispOrdExtraerElem ( SListaOrdenadaPtr *, int
+iElem )` delega en `SLispExtraerElem` y devuelve el dato, que pasa a ser del
+llamador.
 
 #### Operaciones con otras listas
 
@@ -497,8 +523,8 @@ salvo `Interseccion` y `Diferencia` (ver abajo).
 | `ExistenTodos` / `ExisteAlguno`               | 1 o 0. Con la otra lista vacía, `ExistenTodos` da 1 y `ExisteAlguno` 0.                   |
 | `InsertarListaOrd` / `InsertarLista`          | **Mueve** los elementos, cada uno a su sitio; la otra queda vacía.                       |
 | `InsertarListaOrdDup` / `InsertarListaDup`    | Inserta **copias**; la otra no se toca.                                                   |
-| `ExtraerListaOrd` / `ExtraerLista`            | Lista nueva con la primera aparición de cada valor de la otra, **movida** desde esta.    |
-| `EliminarListaOrd` / `EliminarLista`          | **Destruye** la primera aparición de cada valor de la otra; 1 aunque no encuentre nada.  |
+| `ExtraerListaOrd` / `ExtraerLista`            | Lista nueva con todas las apariciones de cada valor de la otra, **movidas** desde esta.  |
+| `EliminarListaOrd` / `EliminarLista`          | **Destruye** todas las apariciones de cada valor de la otra; 1 aunque no encuentre nada. |
 | `Union` / `UnionLista`                        | Lista nueva con copias de las dos: lo que está en ambas sale dos veces.                   |
 | `Interseccion` / `InterseccionLista`          | Lista nueva con copias de los de la primera que están en la segunda.                      |
 | `Diferencia` / `DiferenciaLista`              | Lista nueva con copias de los de la primera que **no** están en la segunda.               |
@@ -607,9 +633,11 @@ Un fichero por módulo: `SListaTest.c`, `SListaPtrTest.c`, `SListaEnterosTest.c`
   y `…AlFinal`) devuelven **1 o 0**, en `SLista` y en `SListaPtr`, y también
   `SLisOrdInsertarElem` y `SLispOrdInsertarElem`. Antes `SLisInsertarElem`,
   `SLisInsertarAlInicio`, `SLisInsertarAlFinal` y las dos de las ordenadas
-  devolvían -1 con la lista no válida o el elemento nulo; ya no. Los conjuntos
-  siguen dando **-1** con un duplicado o un parámetro nulo, y 0 si falla la
-  inserción en la lista ordenada.
+  devolvían -1 con la lista no válida o el elemento nulo; ya no. Tampoco queda
+  ninguna inserción que devuelva -1 o una posición: las de las listas de
+  enteros y de reales, las secuencias, los conjuntos (también con un
+  duplicado), las pilas y las de `types`, `text` y `database` devuelven
+  1 o 0.
 - `SLisBuscar` devuelve la posición encontrada; el valor con el que indica "no
   está" no se aprecia en la cabecera, así que conviene comprobar el resultado
   contra el rango válido en lugar de asumir `-1`.

@@ -83,7 +83,7 @@ int SLisOrdExisteAlguno ( SListaOrdenada * p_lisObj, SListaOrdenada * p_lisValor
 int SLisOrdExistenTodosLista ( SListaOrdenada * p_lisObj, SLista * p_lisValores );
 int SLisOrdExisteAlgunoLista ( SListaOrdenada * p_lisObj, SLista * p_lisValores );
 
-// Elimina ( destruye ) la primera aparición de cada valor de la lista de entrada
+// Elimina ( destruye ) todas las apariciones de cada valor de la lista de entrada
 int SLisOrdEliminarListaOrd ( SListaOrdenada * p_lisObj, SListaOrdenada * p_lisValores );
 int SLisOrdEliminarLista ( SListaOrdenada * p_lisObj, SLista * p_lisValores );
 

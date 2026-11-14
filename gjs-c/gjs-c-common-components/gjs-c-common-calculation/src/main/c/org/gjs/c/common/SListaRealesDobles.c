@@ -118,7 +118,7 @@ int SLisRealdInsertarElem ( SListaRealesDobles * p_lisObj, int iPosAnt, double d
 			}
 			else
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			if ( iRes != 1 )
 			{
@@ -127,12 +127,12 @@ int SLisRealdInsertarElem ( SListaRealesDobles * p_lisObj, int iPosAnt, double d
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -152,7 +152,7 @@ int SLisRealdInsertarAlFinal ( SListaRealesDobles * p_lisObj, double dDato )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -341,7 +341,7 @@ int SLisRealdInsertarDelante ( SListaRealesDobles * p_lisObj, double dDato )
 			}
 			else
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			if ( iRes != 1 )
 			{
@@ -350,12 +350,12 @@ int SLisRealdInsertarDelante ( SListaRealesDobles * p_lisObj, double dDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }
@@ -376,7 +376,7 @@ int SLisRealdInsertarDetras ( SListaRealesDobles * p_lisObj, double dDato )
 			}
 			else
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			if ( iRes != 1 )
 			{
@@ -385,12 +385,12 @@ int SLisRealdInsertarDetras ( SListaRealesDobles * p_lisObj, double dDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

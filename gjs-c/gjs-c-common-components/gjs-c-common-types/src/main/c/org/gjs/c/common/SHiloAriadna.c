@@ -112,7 +112,7 @@ int SHilAriApilar ( SHiloAriadna * p_pilObj, char * p_cTexto )
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

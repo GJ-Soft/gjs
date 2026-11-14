@@ -409,21 +409,22 @@ static int TestSLisLitExtraerLista01 ()
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SLisLitExtraerLista 01:\n" );
 
-	const char * p_cVal [ 5 ] = { "a", "b", "c", "b", "d" };
+	const char * p_cVal [ 6 ] = { "b", "a", "b", "c", "d", "b" };
 	const char * p_cBus [ 4 ] = { "b", "d", "x", "b" };
-	SListaLiterales * p_lisObj = CrearListaLiterales ( p_cVal, 5 );
+	SListaLiterales * p_lisObj = CrearListaLiterales ( p_cVal, 6 );
 	SListaLiterales * p_lisBus = CrearListaLiterales ( p_cBus, 4 );
 	SListaLiterales * p_lisRes = NULL;
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisBus ) )
 	{
-		/* Una aparicion por valor buscado, en el orden de los buscados; la x no esta. */
+		/* Todas las apariciones de cada valor buscado, en el orden de los buscados: la
+		   b esta tres veces y sale entera con la primera; la x no esta. */
 		p_lisRes = SLisLitExtraerLista ( p_lisObj, p_lisBus );
-		const char * p_cEspRes [ 3 ] = { "b", "d", "b" };
+		const char * p_cEspRes [ 4 ] = { "b", "b", "b", "d" };
 		const char * p_cEspObj [ 2 ] = { "a", "c" };
-		if ( ES_NULO ( p_lisRes ) || ( VerificarContenido ( p_lisRes, p_cEspRes, 3 ) != BOOL_VAL_CIERTO ) ||
+		if ( ES_NULO ( p_lisRes ) || ( VerificarContenido ( p_lisRes, p_cEspRes, 4 ) != BOOL_VAL_CIERTO ) ||
 			 ( SLisLitLiberacionMemoriaActivada ( p_lisRes ) != 1 ) )
 		{
-			printf( "Error caso 1: se esperaba extraer { b, d, b } con la liberacion del origen\n" );
+			printf( "Error caso 1: se esperaba extraer { b, b, b, d } con la liberacion del origen\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( VerificarContenido ( p_lisObj, p_cEspObj, 2 ) != BOOL_VAL_CIERTO )
@@ -448,22 +449,23 @@ static int TestSLisLitExtraerLista01 ()
 	return ( iRes );
 }
 
-/* Destruye una aparicion por valor buscado comparando el contenido; los valores
+/* Destruye todas las apariciones de cada valor buscado comparando el contenido; los valores
    no cambian, y sin liberacion no se liberan las cadenas. */
 static int TestSLisLitEliminarLista01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SLisLitEliminarLista 01:\n" );
 
-	const char * p_cVal [ 5 ] = { "a", "b", "c", "b", "d" };
+	const char * p_cVal [ 6 ] = { "b", "a", "b", "c", "d", "b" };
 	const char * p_cBus [ 4 ] = { "b", "d", "x", "b" };
-	SListaLiterales * p_lisObj = CrearListaLiterales ( p_cVal, 5 );
+	SListaLiterales * p_lisObj = CrearListaLiterales ( p_cVal, 6 );
 	SListaLiterales * p_lisBus = CrearListaLiterales ( p_cBus, 4 );
 	SListaLiterales * p_lisVacia = SLisLitCrear ();
 	SListaLiterales * p_lisSinLib = SLisLitCrear ();
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisBus ) && ES_VALIDO ( p_lisVacia ) && ES_VALIDO ( p_lisSinLib ) )
 	{
-		/* La x no esta y se ignora; la b esta dos veces en los buscados. */
+		/* La x no esta y se ignora; la b esta tres veces y se van todas, aunque
+		   tambien este dos veces en los buscados. */
 		if ( SLisLitEliminarLista ( p_lisObj, p_lisBus ) != 1 )
 		{
 			printf( "Error caso 1: se esperaba 1\n" );
@@ -799,6 +801,44 @@ static int TestSLisLitEstaPosicionada01 ()
 	return ( iRes );
 }
 
+/* Encapsular se queda con la SListaPtr que se le da, sin copiarla, y la
+   destruye con sus cadenas; con una nula devuelve NULL. */
+static int TestSLisLitEncapsular01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLisLitEncapsular 01:\n" );
+
+	const char * p_cV [ 3 ] = { "b", "a", "b" };
+	SListaLiterales * p_lisCopia = CrearListaLiterales ( p_cV, 3 );
+	SListaLiterales * p_lisRes = NULL;
+	if ( ES_VALIDO ( p_lisCopia ) )
+	{
+		/* Se le quita la SListaPtr a p_lisCopia para encapsularla. */
+		SListaPtr * p_lisDatos = p_lisCopia->p_lisDatos;
+		p_lisCopia->p_lisDatos = NULL;
+		p_lisRes = SLisLitEncapsular ( p_lisDatos );
+		if ( ES_NULO ( p_lisRes ) || ( p_lisRes->p_lisDatos != p_lisDatos ) ||
+			 ( VerificarContenido ( p_lisRes, p_cV, 3 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 1: deberia envolver esa misma lista, con { b, a, b }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SLisLitEncapsular ( NULL ) ) )
+		{
+			printf( "Error caso 2: con una lista nula se esperaba nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la lista\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisLitDestruir ( &p_lisRes );
+	SLisLitDestruir ( &p_lisCopia );
+	return ( iRes );
+}
+
 int TestSListaLiterales ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -815,7 +855,8 @@ int TestSListaLiterales ()
 			( TestSLisLitOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisLitDuplicar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisLitRepeticiones01 () == BOOL_VAL_CIERTO ) &&
-			( TestSLisLitEstaPosicionada01 () == BOOL_VAL_CIERTO ) )
+			( TestSLisLitEstaPosicionada01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLisLitEncapsular01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

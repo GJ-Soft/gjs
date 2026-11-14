@@ -80,7 +80,7 @@ static int TestSIndLitInsertar01 ()
 		iRes = BOOL_VAL_FALSO;
 	}
 	/* Repetida: se rechaza y la que habia no cambia. */
-	if ( SIndLitInsertarExt ( p_indlObj, "pera", 99UL ) != -1 )
+	if ( SIndLitInsertarExt ( p_indlObj, "pera", 99UL ) != 0 )
 	{
 		printf( "Error caso 6: una clave repetida deberia rechazarse\n" );
 		iRes = BOOL_VAL_FALSO;
@@ -91,15 +91,15 @@ static int TestSIndLitInsertar01 ()
 		iRes = BOOL_VAL_FALSO;
 	}
 	/* Sin clave o sin posicion, no entra. */
-	if ( ( SIndLitInsertarExt ( p_indlObj, NULL, 5UL ) != -1 ) ||
-		 ( SIndLitInsertarExt ( p_indlObj, "fresa", SLCZ_SIN_POSICION ) != -1 ) )
+	if ( ( SIndLitInsertarExt ( p_indlObj, NULL, 5UL ) != 0 ) ||
+		 ( SIndLitInsertarExt ( p_indlObj, "fresa", SLCZ_SIN_POSICION ) != 0 ) )
 	{
 		printf( "Error caso 8: sin clave o sin posicion no deberia insertarse\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
 	/* Si Insertar rechaza el localizador, sigue siendo del llamante. */
 	SLocalizador * p_lczRepetido = SLczCrearExt ( "uva", 1UL );
-	if ( SIndLitInsertar ( p_indlObj, p_lczRepetido ) != -1 )
+	if ( SIndLitInsertar ( p_indlObj, p_lczRepetido ) != 0 )
 	{
 		printf( "Error caso 9: el localizador repetido deberia rechazarse\n" );
 		iRes = BOOL_VAL_FALSO;
@@ -234,7 +234,7 @@ static int TestSIndLitNulo01 ()
 		printf( "Error caso 1: un indice nulo no es valido y esta vacio\n" );
 		iRes = BOOL_VAL_FALSO;
 	}
-	if ( ( SIndLitInsertarExt ( NULL, "pera", 1UL ) != -1 ) || ( SIndLitBuscar ( NULL, "pera" ) != -1 ) ||
+	if ( ( SIndLitInsertarExt ( NULL, "pera", 1UL ) != 0 ) || ( SIndLitBuscar ( NULL, "pera" ) != -1 ) ||
 		 ( SIndLitExiste ( NULL, "pera" ) != 0 ) || ( SIndLitPosicion ( NULL, "pera" ) != SLCZ_SIN_POSICION ) )
 	{
 		printf( "Error caso 2: las operaciones sobre nulo deberian fallar sin colgarse\n" );

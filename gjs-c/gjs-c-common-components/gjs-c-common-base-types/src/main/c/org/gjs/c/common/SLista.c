@@ -1352,9 +1352,9 @@ int SLisConcatenarListaDup ( SLista * p_lisObj, SLista * p_lisValores )
 	return ( iRes );
 }
 
-/* Elimina ( destruye ) de p_lisObj la primera aparicion de cada valor de
-   p_lisValores: un valor repetido en p_lisValores elimina dos apariciones. Lo
-   que no se encuentra se ignora. p_lisValores no se toca.
+/* Elimina ( destruye ) de p_lisObj todas las apariciones de cada valor de
+   p_lisValores: que un valor se repita en p_lisValores no cambia nada. Lo que
+   no se encuentra se ignora. p_lisValores no se toca.
 
    Devuelve 1 si ha podido eliminar todo lo encontrado; si falla una eliminacion
    se para y devuelve 0, y lo eliminado hasta ahi se queda eliminado. Con la
@@ -1376,10 +1376,15 @@ int SLisEliminarLista ( SLista * p_lisObj, SLista * p_lisValores )
 				p_elmObj = p_lisValores->p_elmPrimero;
 				while ( ES_VALIDO ( p_elmObj ) && ( iRes == 1 ) )
 				{
-					iPos = SLisBuscar ( p_lisObj, SElmDatos ( p_elmObj ) );
-					if ( iPos >= 0 )
+					iPos = SLisBuscarPrimero ( p_lisObj, SElmDatos ( p_elmObj ) );
+					while ( ( iPos >= 0 ) && ( iRes == 1 ) )
 					{
-						if ( SLisEliminarElem ( p_lisObj, iPos ) != 1 )
+						if ( SLisEliminarElem ( p_lisObj, iPos ) == 1 )
+						{
+							/* El siguiente ha pasado a ocupar iPos: se sigue buscando desde ahi. */
+							iPos = SLisBuscarSiguiente ( p_lisObj, SElmDatos ( p_elmObj ), iPos - 1 );
+						}
+						else
 						{
 							iRes = 0;
 						}
@@ -1404,10 +1409,11 @@ int SLisEliminarLista ( SLista * p_lisObj, SLista * p_lisValores )
 	return ( iRes );
 }
 
-/* Saca de p_lisObj, a una lista nueva, la primera aparicion de cada valor de
-   p_lisValores, en el orden de p_lisValores: un valor repetido en p_lisValores
-   saca dos apariciones. Lo que no se encuentra se ignora. Los elementos se
-   mueven, no se copian.
+/* Saca de p_lisObj, a una lista nueva, todas las apariciones de cada valor de
+   p_lisValores: van por el orden de p_lisValores y, las de un mismo valor, en
+   el que tenian en p_lisObj. Que un valor se repita en p_lisValores no cambia
+   nada. Lo que no se encuentra se ignora. Los elementos se mueven, no se
+   copian.
 
    Con la misma lista en los dos argumentos se devuelve NULL. */
 SLista * SLisExtraerLista ( SLista * p_lisObj, SLista * p_lisValores )
@@ -1431,11 +1437,16 @@ SLista * SLisExtraerLista ( SLista * p_lisObj, SLista * p_lisValores )
 					p_elmObj = p_lisValores->p_elmPrimero;
 					while ( ES_VALIDO ( p_elmObj ) && ( iError == 0 ) )
 					{
-						iPos = SLisBuscar ( p_lisObj, SElmDatos ( p_elmObj ) );
-						if ( iPos >= 0 )
+						iPos = SLisBuscarPrimero ( p_lisObj, SElmDatos ( p_elmObj ) );
+						while ( ( iPos >= 0 ) && ( iError == 0 ) )
 						{
 							p_elmExt = SLisExtraerElem ( p_lisObj, iPos );
-							if ( SLisInsertarAlFinal ( p_lisRes, p_elmExt ) != 1 )
+							if ( SLisInsertarAlFinal ( p_lisRes, p_elmExt ) == 1 )
+							{
+								/* El siguiente ha pasado a ocupar iPos: se sigue buscando desde ahi. */
+								iPos = SLisBuscarSiguiente ( p_lisObj, SElmDatos ( p_elmObj ), iPos - 1 );
+							}
+							else
 							{
 								/* No se pierde: vuelve a p_lisObj, aunque al final. */
 								SLisInsertarAlFinal ( p_lisObj, p_elmExt );

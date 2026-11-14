@@ -1090,22 +1090,23 @@ static int TestSLisExtraerLista01 ()
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SLisExtraerLista 01:\n" );
 
-	int iVal [ 5 ] = { 10, 20, 30, 20, 40 };
+	int iVal [ 6 ] = { 20, 10, 20, 30, 40, 20 };
 	int iBus [ 4 ] = { 20, 40, 99, 20 };
-	SLista * p_lisObj = CrearListaEnteros ( iVal, 5 );
+	SLista * p_lisObj = CrearListaEnteros ( iVal, 6 );
 	SLista * p_lisBus = CrearListaEnteros ( iBus, 4 );
 	SLista * p_lisRes = NULL;
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisBus ) )
 	{
-		/* Una aparicion por valor buscado, en el orden de los buscados; el 99 no esta. */
+		/* Todas las apariciones de cada valor buscado, en el orden de los buscados: el
+		   20 esta tres veces y sale entero con el primero; el 99 no esta. */
 		p_lisRes = SLisExtraerLista ( p_lisObj, p_lisBus );
-		int iEspRes [ 3 ] = { 20, 40, 20 };
+		int iEspRes [ 4 ] = { 20, 20, 20, 40 };
 		int iEspObj [ 2 ] = { 10, 30 };
 		if ( ES_NULO ( p_lisRes ) ||
 			 ( VerificarCadena ( p_lisRes ) != BOOL_VAL_CIERTO ) ||
-			 ( VerificarContenido ( p_lisRes, iEspRes, 3 ) != BOOL_VAL_CIERTO ) )
+			 ( VerificarContenido ( p_lisRes, iEspRes, 4 ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 1: se esperaba extraer { 20, 40, 20 }\n" );
+			printf( "Error caso 1: se esperaba extraer { 20, 20, 20, 40 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( ( VerificarCadena ( p_lisObj ) != BOOL_VAL_CIERTO ) ||
@@ -1131,20 +1132,21 @@ static int TestSLisExtraerLista01 ()
 	return ( iRes );
 }
 
-/* Destruye una aparicion por valor buscado; los valores no cambian. */
+/* Destruye todas las apariciones de cada valor buscado; los valores no cambian. */
 static int TestSLisEliminarLista01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SLisEliminarLista 01:\n" );
 
-	int iVal [ 5 ] = { 10, 20, 30, 20, 40 };
+	int iVal [ 6 ] = { 20, 10, 20, 30, 40, 20 };
 	int iBus [ 4 ] = { 20, 40, 99, 20 };
-	SLista * p_lisObj = CrearListaEnteros ( iVal, 5 );
+	SLista * p_lisObj = CrearListaEnteros ( iVal, 6 );
 	SLista * p_lisBus = CrearListaEnteros ( iBus, 4 );
 	SLista * p_lisVacia = SLisCrear ();
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisBus ) && ES_VALIDO ( p_lisVacia ) )
 	{
-		/* El 99 no esta y se ignora; el 20 esta dos veces en los buscados. */
+		/* El 99 no esta y se ignora; el 20 esta tres veces y se van todas, aunque
+		   tambien este dos veces en los buscados. */
 		if ( SLisEliminarLista ( p_lisObj, p_lisBus ) != 1 )
 		{
 			printf( "Error caso 1: se esperaba 1\n" );

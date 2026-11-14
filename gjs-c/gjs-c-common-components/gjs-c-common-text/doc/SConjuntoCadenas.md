@@ -74,7 +74,7 @@ cada `SCadena`.
 
 | Forma                | Qué hace con la cadena                                                                   |
 | -------------------- | ---------------------------------------------------------------------------------------- |
-| `SCnjCadInsertar`    | Guarda el puntero. Si devuelve -1 (duplicada o nula), sigue siendo del llamador.         |
+| `SCnjCadInsertar`    | Guarda el puntero. Si devuelve 0 (duplicada o nula), sigue siendo del llamador.          |
 | `SCnjCadInsertarDup` | Guarda una **copia**. La original es siempre del llamador.                               |
 | `SCnjCadExtraer`     | Saca la cadena sin destruirla: pasa a ser del llamador. `NULL` si la posición no existe. |
 

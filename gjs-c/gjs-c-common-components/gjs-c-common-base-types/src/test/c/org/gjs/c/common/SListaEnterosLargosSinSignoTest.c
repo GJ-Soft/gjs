@@ -734,21 +734,22 @@ static int TestSLisIntLssExtraerLista01 ()
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SLisIntLssExtraerLista 01:\n" );
 
-	unsigned long ulVal [ 5 ] = { 10, 20, 30, 20, 40 };
+	unsigned long ulVal [ 6 ] = { 20, 10, 20, 30, 40, 20 };
 	unsigned long ulBus [ 4 ] = { 20, 40, 99, 20 };
-	SListaEnterosLargosSinSigno * p_lisObj = CrearListaEnteros ( ulVal, 5 );
+	SListaEnterosLargosSinSigno * p_lisObj = CrearListaEnteros ( ulVal, 6 );
 	SListaEnterosLargosSinSigno * p_lisBus = CrearListaEnteros ( ulBus, 4 );
 	SListaEnterosLargosSinSigno * p_lisRes = NULL;
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisBus ) )
 	{
-		/* Una aparicion por valor buscado, en el orden de los buscados; el 99 no esta. */
+		/* Todas las apariciones de cada valor buscado, en el orden de los buscados: el
+		   20 esta tres veces y sale entero con el primero; el 99 no esta. */
 		p_lisRes = SLisIntLssExtraerLista ( p_lisObj, p_lisBus );
-		unsigned long ulEspRes [ 3 ] = { 20, 40, 20 };
+		unsigned long ulEspRes [ 4 ] = { 20, 20, 20, 40 };
 		unsigned long ulEspObj [ 2 ] = { 10, 30 };
 		if ( ES_NULO ( p_lisRes ) || ( SLisIntLssEsValida ( p_lisRes ) != 1 ) ||
-			 ( VerificarContenido ( p_lisRes, ulEspRes, 3 ) != BOOL_VAL_CIERTO ) )
+			 ( VerificarContenido ( p_lisRes, ulEspRes, 4 ) != BOOL_VAL_CIERTO ) )
 		{
-			printf( "Error caso 1: se esperaba extraer { 20, 40, 20 }\n" );
+			printf( "Error caso 1: se esperaba extraer { 20, 20, 20, 40 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( VerificarContenido ( p_lisObj, ulEspObj, 2 ) != BOOL_VAL_CIERTO )
@@ -775,20 +776,21 @@ static int TestSLisIntLssExtraerLista01 ()
 	return ( iRes );
 }
 
-/* Destruye una aparicion por valor buscado; los valores no cambian. */
+/* Destruye todas las apariciones de cada valor buscado; los valores no cambian. */
 static int TestSLisIntLssEliminarLista01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf( "Test SLisIntLssEliminarLista 01:\n" );
 
-	unsigned long ulVal [ 5 ] = { 10, ULONG_MAX, 30, ULONG_MAX, 40 };
+	unsigned long ulVal [ 6 ] = { ULONG_MAX, 10, ULONG_MAX, 30, 40, ULONG_MAX };
 	unsigned long ulBus [ 4 ] = { ULONG_MAX, 40, 99, ULONG_MAX };
-	SListaEnterosLargosSinSigno * p_lisObj = CrearListaEnteros ( ulVal, 5 );
+	SListaEnterosLargosSinSigno * p_lisObj = CrearListaEnteros ( ulVal, 6 );
 	SListaEnterosLargosSinSigno * p_lisBus = CrearListaEnteros ( ulBus, 4 );
 	SListaEnterosLargosSinSigno * p_lisVacia = SLisIntLssCrear ();
 	if ( ES_VALIDO ( p_lisObj ) && ES_VALIDO ( p_lisBus ) && ES_VALIDO ( p_lisVacia ) )
 	{
-		/* El 99 no esta y se ignora; el ULONG_MAX esta dos veces en los buscados. */
+		/* El 99 no esta y se ignora; el ULONG_MAX esta tres veces y se van todas, aunque
+		   tambien este dos veces en los buscados. */
 		if ( SLisIntLssEliminarLista ( p_lisObj, p_lisBus ) != 1 )
 		{
 			printf( "Error caso 1: se esperaba 1\n" );
@@ -1135,6 +1137,44 @@ static int TestSLisIntLssEstaPosicionada01 ()
 	return ( iRes );
 }
 
+/* Encapsular se queda con la SLista que se le da, sin copiarla, y la
+   destruye con ella; con una nula devuelve NULL. */
+static int TestSLisIntLssEncapsular01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLisIntLssEncapsular 01:\n" );
+
+	unsigned long ulV [ 3 ] = { 7, 2, 7 };
+	SListaEnterosLargosSinSigno * p_lisCopia = CrearListaEnteros ( ulV, 3 );
+	SListaEnterosLargosSinSigno * p_lisRes = NULL;
+	if ( ES_VALIDO ( p_lisCopia ) )
+	{
+		/* Se le quita la SLista a p_lisCopia para encapsularla. */
+		SLista * p_lisDatos = p_lisCopia->p_lisDatos;
+		p_lisCopia->p_lisDatos = NULL;
+		p_lisRes = SLisIntLssEncapsular ( p_lisDatos );
+		if ( ES_NULO ( p_lisRes ) || ( p_lisRes->p_lisDatos != p_lisDatos ) ||
+			 ( VerificarContenido ( p_lisRes, ulV, 3 ) != BOOL_VAL_CIERTO ) )
+		{
+			printf( "Error caso 1: deberia envolver esa misma lista, con { 7, 2, 7 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SLisIntLssEncapsular ( NULL ) ) )
+		{
+			printf( "Error caso 2: con una lista nula se esperaba nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear la lista\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisIntLssDestruir ( &p_lisRes );
+	SLisIntLssDestruir ( &p_lisCopia );
+	return ( iRes );
+}
+
 int TestSListaEnterosLargosSinSigno ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -1155,7 +1195,8 @@ int TestSListaEnterosLargosSinSigno ()
 			( TestSLisIntLssOperacionesListas02 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntLssDuplicar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntLssRepeticiones01 () == BOOL_VAL_CIERTO ) &&
-			( TestSLisIntLssEstaPosicionada01 () == BOOL_VAL_CIERTO ) )
+			( TestSLisIntLssEstaPosicionada01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLisIntLssEncapsular01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

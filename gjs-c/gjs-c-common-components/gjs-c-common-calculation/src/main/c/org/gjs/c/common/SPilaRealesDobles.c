@@ -143,7 +143,7 @@ int SPilRealdApilar ( SPilaRealesDobles * p_pilObj, double dDato )
 			}
 			else
 			{
-				iRes = -1;
+				iRes = 0;
 			}
 			if ( iRes != 1 )
 			{
@@ -152,12 +152,12 @@ int SPilRealdApilar ( SPilaRealesDobles * p_pilObj, double dDato )
 		}
 		else
 		{
-			iRes = -1;
+			iRes = 0;
 		}
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

@@ -170,7 +170,7 @@ int SCnjEntCodInsertar ( SConjuntoEntidadesCod * p_cnjObj, SEntidadCod * p_entcD
 	}
 	else
 	{
-		iRes = -1;
+		iRes = 0;
 	}
 	return ( iRes );
 }

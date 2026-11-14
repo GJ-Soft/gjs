@@ -3,8 +3,6 @@
 #include "TiposBasicosConfig.h"
 
 
-static SListaLiterales * _SLisLitEnvolver ( SListaPtr * p_lisDatos );
-
 
 /* Igualdad y copia de literales para las Ext de SListaPtr: CadComparar y
    CadDuplicar, que reserva con MemReservar y se libera con MemLiberar. */
@@ -39,6 +37,29 @@ SListaLiterales * SLisLitCrear ()
 		p_lisObj->p_lisDatos = SLispCrear ();
 	}
 	return ( p_lisObj );
+}
+
+/* La lista pasa a ser de la lista de literales, que la destruye con ella:
+   sus datos deben ser cadenas, y se liberan segun la liberacion de esa
+   lista. Si la lista no es valida, o no se puede crear, devuelve NULL y la
+   lista sigue siendo del llamante. */
+SListaLiterales * SLisLitEncapsular ( SListaPtr * p_lisDatos )
+{
+	SListaLiterales * p_lisRes;
+
+	if ( SLispEsValida ( p_lisDatos ) == 1 )
+	{
+		p_lisRes = (SListaLiterales *) MemReservar ( sizeof ( SListaLiterales ) );
+		if ( ES_VALIDO ( p_lisRes ) )
+		{
+			p_lisRes->p_lisDatos = p_lisDatos;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
 }
 
 void SLisLitDestruir ( SListaLiterales ** p_p_lisObj )
@@ -772,11 +793,17 @@ SListaLiterales * SLisLitExtraerUnicos ( SListaLiterales * p_lisObj )
 
 SListaLiterales * SLisLitExtraerUnicosExt ( SListaLiterales * p_lisObj, int iOrdenar )
 {
-	SListaLiterales * p_lisRes;
+	SListaLiterales *	p_lisRes;
+	SListaPtr *			p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		p_lisRes = _SLisLitEnvolver ( _SLisLitExtraerUnicos ( p_lisObj->p_lisDatos, iOrdenar ) );
+		p_lisDatos = _SLisLitExtraerUnicos ( p_lisObj->p_lisDatos, iOrdenar );
+		p_lisRes = SLisLitEncapsular ( p_lisDatos );
+		if ( ES_NULO ( p_lisRes ) )
+		{
+			SLispDestruir ( &p_lisDatos );
+		}
 	}
 	else
 	{
@@ -857,11 +884,17 @@ void SLisLitImprimir  ( SListaLiterales * p_lisObj )
 /* Copia de los valores, en el mismo orden; NULL si falla alguna copia. */
 SListaLiterales * SLisLitDuplicar ( SListaLiterales * p_lisObj )
 {
-	SListaLiterales * p_lisRes;
+	SListaLiterales *	p_lisRes;
+	SListaPtr *			p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
-		p_lisRes = _SLisLitEnvolver ( SLispDuplicarExt ( p_lisObj->p_lisDatos, _SLisLitDuplicar ) );
+		p_lisDatos = SLispDuplicarExt ( p_lisObj->p_lisDatos, _SLisLitDuplicar );
+		p_lisRes = SLisLitEncapsular ( p_lisDatos );
+		if ( ES_NULO ( p_lisRes ) )
+		{
+			SLispDestruir ( &p_lisDatos );
+		}
 	}
 	else
 	{
@@ -1008,13 +1041,21 @@ int SLisLitConcatenarListaDup ( SListaLiterales * p_lisObj, SListaLiterales * p_
 /* Mueve las cadenas; la lista nueva hereda la liberacion de p_lisObj. */
 SListaLiterales * SLisLitExtraerLista ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores )
 {
-	SListaLiterales * p_lisRes;
+	SListaLiterales *	p_lisRes;
+	SListaPtr *			p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisObj ) )
 	{
 		if ( ES_VALIDO ( p_lisValores ) )
 		{
-			p_lisRes = _SLisLitEnvolver ( SLispExtraerListaExt ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos, _SLisLitSonIguales ) );
+			p_lisDatos = SLispExtraerListaExt ( p_lisObj->p_lisDatos, p_lisValores->p_lisDatos, _SLisLitSonIguales );
+			p_lisRes = SLisLitEncapsular ( p_lisDatos );
+			if ( ES_NULO ( p_lisRes ) )
+			{
+				/* No se pierde lo extraido: vuelve al final de p_lisObj. */
+				SLispConcatenarLista ( p_lisObj->p_lisDatos, p_lisDatos );
+				SLispDestruir ( &p_lisDatos );
+			}
 		}
 		else
 		{
@@ -1028,7 +1069,7 @@ SListaLiterales * SLisLitExtraerLista ( SListaLiterales * p_lisObj, SListaLitera
 	return ( p_lisRes );
 }
 
-/* Destruye la primera aparicion de cada valor de p_lisValores, comparando el
+/* Destruye todas las apariciones de cada valor de p_lisValores, comparando el
    contenido; las cadenas se liberan segun la liberacion de p_lisObj. */
 int SLisLitEliminarLista ( SListaLiterales * p_lisObj, SListaLiterales * p_lisValores )
 {
@@ -1055,13 +1096,19 @@ int SLisLitEliminarLista ( SListaLiterales * p_lisObj, SListaLiterales * p_lisVa
 /* Las tres devuelven una lista con COPIAS de las cadenas, duena de ellas. */
 SListaLiterales * SLisLitUnion ( SListaLiterales * p_lisValores1, SListaLiterales * p_lisValores2 )
 {
-	SListaLiterales * p_lisRes;
+	SListaLiterales *	p_lisRes;
+	SListaPtr *			p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisValores1 ) )
 	{
 		if ( ES_VALIDO ( p_lisValores2 ) )
 		{
-			p_lisRes = _SLisLitEnvolver ( SLispUnionExt ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos, _SLisLitDuplicar ) );
+			p_lisDatos = SLispUnionExt ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos, _SLisLitDuplicar );
+			p_lisRes = SLisLitEncapsular ( p_lisDatos );
+			if ( ES_NULO ( p_lisRes ) )
+			{
+				SLispDestruir ( &p_lisDatos );
+			}
 		}
 		else
 		{
@@ -1077,13 +1124,19 @@ SListaLiterales * SLisLitUnion ( SListaLiterales * p_lisValores1, SListaLiterale
 
 SListaLiterales * SLisLitInterseccion ( SListaLiterales * p_lisValores1, SListaLiterales * p_lisValores2 )
 {
-	SListaLiterales * p_lisRes;
+	SListaLiterales *	p_lisRes;
+	SListaPtr *			p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisValores1 ) )
 	{
 		if ( ES_VALIDO ( p_lisValores2 ) )
 		{
-			p_lisRes = _SLisLitEnvolver ( SLispInterseccionExt ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos, _SLisLitSonIguales, _SLisLitDuplicar ) );
+			p_lisDatos = SLispInterseccionExt ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos, _SLisLitSonIguales, _SLisLitDuplicar );
+			p_lisRes = SLisLitEncapsular ( p_lisDatos );
+			if ( ES_NULO ( p_lisRes ) )
+			{
+				SLispDestruir ( &p_lisDatos );
+			}
 		}
 		else
 		{
@@ -1099,13 +1152,19 @@ SListaLiterales * SLisLitInterseccion ( SListaLiterales * p_lisValores1, SListaL
 
 SListaLiterales * SLisLitDiferencia ( SListaLiterales * p_lisValores1, SListaLiterales * p_lisValores2 )
 {
-	SListaLiterales * p_lisRes;
+	SListaLiterales *	p_lisRes;
+	SListaPtr *			p_lisDatos;
 
 	if ( ES_VALIDO ( p_lisValores1 ) )
 	{
 		if ( ES_VALIDO ( p_lisValores2 ) )
 		{
-			p_lisRes = _SLisLitEnvolver ( SLispDiferenciaExt ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos, _SLisLitSonIguales, _SLisLitDuplicar ) );
+			p_lisDatos = SLispDiferenciaExt ( p_lisValores1->p_lisDatos, p_lisValores2->p_lisDatos, _SLisLitSonIguales, _SLisLitDuplicar );
+			p_lisRes = SLisLitEncapsular ( p_lisDatos );
+			if ( ES_NULO ( p_lisRes ) )
+			{
+				SLispDestruir ( &p_lisDatos );
+			}
 		}
 		else
 		{
@@ -1118,34 +1177,3 @@ SListaLiterales * SLisLitDiferencia ( SListaLiterales * p_lisValores1, SListaLit
 	}
 	return ( p_lisRes );
 }
-
-
-/* Envuelve en una SListaLiterales la SListaPtr que devuelve una operacion de
-   SListaPtr, y se queda con ella. No se usa SLisLitCrear porque ese crea su
-   propia SListaPtr vacia, que al sustituirla quedaria sin liberar. Con
-   p_lisDatos nula devuelve NULL, y si no puede reservar la envoltura destruye
-   p_lisDatos. */
-static SListaLiterales * _SLisLitEnvolver ( SListaPtr * p_lisDatos )
-{
-	SListaLiterales * p_lisRes;
-
-	if ( ES_VALIDO ( p_lisDatos ) )
-	{
-		p_lisRes = (SListaLiterales *) MemReservar ( sizeof ( SListaLiterales ) );
-		if ( ES_VALIDO ( p_lisRes ) )
-		{
-			p_lisRes->p_lisDatos = p_lisDatos;
-		}
-		else
-		{
-			SLispDestruir ( &p_lisDatos );
-		}
-	}
-	else
-	{
-		p_lisRes = NULL;
-	}
-	return ( p_lisRes );
-}
-
-

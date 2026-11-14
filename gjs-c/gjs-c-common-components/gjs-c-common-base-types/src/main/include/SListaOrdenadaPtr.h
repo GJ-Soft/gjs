@@ -38,8 +38,8 @@ int SLispOrdEstaVacia ( SListaOrdenadaPtr * p_lisObj );
 byte * SLispOrdElemento ( SListaOrdenadaPtr * p_lisObj, int iElem );
 
 int SLispOrdInsertarElem ( SListaOrdenadaPtr * p_lisObj, byte * p_byDatos );
-
 int SLispOrdEliminarElem ( SListaOrdenadaPtr * p_lisObj, int iElem );
+byte * SLispOrdExtraerElem ( SListaOrdenadaPtr * p_lisObj, int iElem );
 
 int SLispOrdVaciar ( SListaOrdenadaPtr * p_lisObj );
 
@@ -89,7 +89,7 @@ int SLispOrdExisteAlguno ( SListaOrdenadaPtr * p_lisObj, SListaOrdenadaPtr * p_l
 int SLispOrdExistenTodosLista ( SListaOrdenadaPtr * p_lisObj, SListaPtr * p_lisValores );
 int SLispOrdExisteAlgunoLista ( SListaOrdenadaPtr * p_lisObj, SListaPtr * p_lisValores );
 
-// Elimina ( destruye ) la primera aparición de cada valor de la lista de entrada
+// Elimina ( destruye ) todas las apariciones de cada valor de la lista de entrada
 int SLispOrdEliminarListaOrd ( SListaOrdenadaPtr * p_lisObj, SListaOrdenadaPtr * p_lisValores );
 int SLispOrdEliminarLista ( SListaOrdenadaPtr * p_lisObj, SListaPtr * p_lisValores );
 
