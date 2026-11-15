@@ -1,6 +1,6 @@
 # Módulos de gjs-c-common-base-types
 
-Índice y orquestación de los módulos de la librería: **75 fuentes** y **77
+Índice y orquestación de los módulos de la librería: **77 fuentes** y **79
 cabeceras**. Como la mayoría son variantes del mismo contenedor sobre distinto
 tipo de elemento, la documentación se agrupa **por familias**: cada documento
 describe el contenedor base y tabula en qué se diferencian sus especializaciones.
@@ -65,8 +65,6 @@ Volver al [README](../README.md).
 | `SListaLiterales`             | `SLisLit`    | `SListaLiterales`             | 62        | ✔    | [Listas](Listas.md)                    |
 | `SListaOrdenada`              | `SLisOrd`    | `SListaOrdenada`              | 61        | ✔    | [Listas](Listas.md)                    |
 | `SListaOrdenadaPtr`           | `SLispOrd`   | `SListaOrdenadaPtr`           | 71        | ✔    | [Listas](Listas.md)                    |
-| `SListaParejas`               | `SLisPrj`    | `SListaParejas`               | 10        | ✔    | [Listas](Listas.md)                    |
-| `SListaReferencias`           | `SLisRef`    | `SListaReferencias`           | 15        | ✔    | [Listas](Listas.md)                    |
 | `SListaVec`                   | `SVLis`      | `SVLista`                     | 21        | ✔    | [Listas](Listas.md)                    |
 
 ### Secuencias
@@ -79,6 +77,9 @@ Volver al [README](../README.md).
 | `SSecuenciaEnterosLargos`         | `SSecIntl`   | `SSecuenciaEnterosLargos`         | 40        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaEnterosLargosSinSigno` | `SSecIntLss` | `SSecuenciaEnterosLargosSinSigno` | 39        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaLiterales`             | `SSecLit`    | `SSecuenciaLiterales`             | 36        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaUnica`                 | `SSecUn`     | `SSecuenciaUnica`                 | 38        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaUnicaPtr`              | `SSecpUn`    | `SSecuenciaUnicaPtr`              | 77        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaParejas`               | `SSecPrj`    | `SSecuenciaParejas`               | 10        | ✔    | [Secuencias](Secuencias.md) |
 
 ### Vectores y flags
 
@@ -108,6 +109,7 @@ Volver al [README](../README.md).
 | `SConjunto`          | `SCnj`    | `SConjunto`          | 47        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoPtr`       | `SCnjp`   | `SConjuntoPtr`       | 64        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoLiterales` | `SCnjLit` | `SConjuntoLiterales` | 32        | ✔    | [Conjuntos](Conjuntos.md) |
+| `SConjuntoReferencias` | `SCnjRef` | `SConjuntoReferencias` | 15        | ✔    | [Conjuntos](Conjuntos.md) |
 
 ### Nodos
 
@@ -156,7 +158,7 @@ Volver al [README](../README.md).
 | Módulo         | Prefijo  | Struct         | Funciones | Test | Documento                                   |
 | -------------- | -------- | -------------- | --------- | ---- | ------------------------------------------- |
 | `SPareja`      | `SPrj`   | `SPareja`      | 11        | ✔    | [ParejasReferencias](ParejasReferencias.md) |
-| `SReferencia`  | `SRef`   | `SReferencia`  | 17        | ✔    | [ParejasReferencias](ParejasReferencias.md) |
+| `SReferencia`  | `SRef`   | `SReferencia`  | 19        | ✔    | [ParejasReferencias](ParejasReferencias.md) |
 | `SId`          | `SId`    | `SId`          | 25        | ✔    | [Identificadores](Identificadores.md)       |
 | `SGeneradorId` | `SGenId` | `SGeneradorId` | 12        | ✔    | [Identificadores](Identificadores.md)       |
 

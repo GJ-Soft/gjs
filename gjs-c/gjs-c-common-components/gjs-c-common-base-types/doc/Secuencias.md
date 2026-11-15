@@ -1,12 +1,12 @@
 # Secuencias
 
-| Dato          | Valor                                                                                                                                               |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Módulos       | 6                                                                                                                                                   |
-| Cabeceras     | `SSecuencia.h`, `SSecuenciaPtr.h`, `SSecuenciaEnteros.h`, `SSecuenciaEnterosLargos.h`, `SSecuenciaEnterosLargosSinSigno.h`, `SSecuenciaLiterales.h` |
-| Prefijos      | `SSec`, `SSecp`, `SSecInt`, `SSecIntl`, `SSecIntLss`, `SSecLit`                                                                                     |
-| Incluidos por | `TiposBasicos.h`                                                                                                                                    |
-| Tests         | Uno por módulo                                                                                                                                      |
+| Dato          | Valor                                                                                                                                                                                                                   |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Módulos       | 9                                                                                                                                                                                                                       |
+| Cabeceras     | `SSecuencia.h`, `SSecuenciaPtr.h`, `SSecuenciaEnteros.h`, `SSecuenciaEnterosLargos.h`, `SSecuenciaEnterosLargosSinSigno.h`, `SSecuenciaLiterales.h`, `SSecuenciaUnica.h`, `SSecuenciaUnicaPtr.h`, `SSecuenciaParejas.h` |
+| Prefijos      | `SSec`, `SSecp`, `SSecInt`, `SSecIntl`, `SSecIntLss`, `SSecLit`, `SSecUn`, `SSecpUn`, `SSecPrj`                                                                                                                         |
+| Incluidos por | `TiposBasicos.h`                                                                                                                                                                                                        |
+| Tests         | Uno por módulo                                                                                                                                                                                                          |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)
 
@@ -75,6 +75,9 @@ una posición concreta).
 | `SSecuenciaEnterosLargos`         | `SSecuencia`    | `long`                    | `long`                   | Búsqueda por valor                  |
 | `SSecuenciaEnterosLargosSinSigno` | `SSecuencia`    | `unsigned long`           | `unsigned long`          | Búsqueda por valor                  |
 | `SSecuenciaLiterales`             | `SSecuenciaPtr` | `char *`                  | `char *`                 | Búsqueda por contenido, `ExtraerUnicos` |
+| `SSecuenciaUnica`                 | `SSecuencia`    | [SElemento](SElemento.md) | `SElemento *`            | Sin repetidos                       |
+| `SSecuenciaUnicaPtr`              | `SSecuenciaPtr` | `byte *`                  | `byte *`                 | Sin repetidos, liberación           |
+| `SSecuenciaParejas`               | `SSecuenciaPtr` | [SPareja](ParejasReferencias.md) | `SPareja *`       | Destruye sus parejas                |
 
 Obsérvese el encadenado: las variantes de valor no envuelven directamente una
 lista, sino una `SSecuencia`, que a su vez envuelve una `SLista`. Son tres
@@ -178,6 +181,63 @@ final de la de origen.
 en lugar de quedarse con el puntero. Es distinto del criterio de
 [SListaLiterales](Listas.md), que ofrece las dos formas con y sin `Dup`.
 
+### `SSecuenciaUnica` y `SSecuenciaUnicaPtr` — sin repetidos
+
+Secuencias que **no admiten dos valores iguales**, en el orden de inserción.
+`SSecuenciaUnica` (prefijo `SSecUn`) envuelve una `SSecuencia` y compara el
+contenido de los `SElemento`; `SSecuenciaUnicaPtr` (prefijo `SSecpUn`) envuelve
+una `SSecuenciaPtr` y, como esta, compara con `iNumBytes` o, en las `Ext`, con
+`fSonIguales`, y copia con `iNumBytes` o con `fDuplicar`. La estructura no
+guarda el criterio: es el llamante el que debe usar siempre el mismo.
+
+- **`Insertar`** añade al final si no hay otro igual. Si lo hay devuelve 0 y el
+  dato sigue siendo del llamante. Las `InsertarPtr` enganchan ese mismo nodo.
+- **`CrearDesdeLista` y `CrearDesdeSecuencia`** copian una vez cada valor, en el
+  orden de su primera aparición; si falla una copia, `NULL`. En la `Ptr`, las
+  `Ext` reciben `fSonIguales` y `fDuplicar`.
+- **`EsValida`** comprueba además que no haya repetidos, recorriendo la
+  secuencia para cada elemento. Las demás funciones no la llaman: `Insertar` y
+  las operaciones ya mantienen la secuencia sin repetidos. Sólo se puede romper
+  por debajo, a través de `SSecUnSecuencia` o `SSecpUnSecuencia`.
+- Tiene `Existe`, `Buscar`, `Elemento`, `Eliminar`, `Extraer`, `Vaciar`,
+  `Duplicar` y los accesores a la secuencia y la lista internas; la `Ptr`,
+  además, el control de liberación.
+
+Las operaciones con otras colecciones tienen tres formas: con otra secuencia
+única (`…Un`, o sin sufijo en `ExistenTodos`, `ExisteAlguno` y `Concatenar`), con
+una secuencia (`…Secuencia`) y con una lista (`…Lista`).
+
+| Función ( `SSecUn` / `SSecpUn` )                    | Qué hace                                                                 |
+| --------------------------------------------------- | ------------------------------------------------------------------------ |
+| `ExistenTodos` / `ExisteAlguno`                     | Como en `SSecuencia`.                                                    |
+| `EliminarSecuenciaUn` / `…Secuencia` / `…Lista`     | **Destruye** los valores que encuentre.                                  |
+| `Concatenar` / `…Secuencia` / `…Lista`              | **Mueve** al final los que falten; los que ya están se quedan en la de entrada, y de los repetidos de esta sólo pasa el primero. |
+| `ConcatenarDup` / `…SecuenciaDup` / `…ListaDup`     | Añade **copias** de los que falten; la de entrada no se toca.            |
+| `ExtraerSecuenciaUn` / `…Secuencia` / `…Lista`      | Secuencia única nueva con los encontrados, **movidos**, en el orden de los buscados. |
+| `Union`                                             | Copias de la primera y, detrás, de los de la segunda que no están.       |
+| `Interseccion` / `Diferencia`                       | Copias de los de la primera que están, o no, en la segunda.              |
+
+Con la misma lista en los dos argumentos, las que mueven o copian devuelven 0;
+con nulos, 0 o `NULL`. Si no se puede crear la secuencia de una `Extraer…`, lo
+extraído vuelve al final de la de origen.
+
+### `SSecuenciaParejas`
+
+Secuencia de [parejas](ParejasReferencias.md) sobre una `SSecuenciaPtr`, que
+sustituye en noviembre de 2026 a `SListaParejas`. Es **dueña de sus parejas**:
+las destruye al eliminarlas, al vaciar y al destruirse, con `SPrjDestruir`, que
+libera o no los dos miembros según la pareja.
+
+| Función                                                              | Descripción                                                  |
+| -------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `int SSecPrjInsertar ( SSecuenciaParejas *, SPareja * )`             | Al final. Si no entra, 0 y la pareja sigue siendo del llamante. |
+| `int SSecPrjInsertarExt ( SSecuenciaParejas *, void *, void * )`     | Crea la pareja sin propiedad de los miembros; si no entra, la destruye. |
+| `SPareja * SSecPrjElemento ( SSecuenciaParejas *, int iElem )`       | La pareja de la posición.                                    |
+| `int SSecPrjEliminarElem ( SSecuenciaParejas *, int iElem )`         | La destruye; 0 si no hay ninguna en esa posición.            |
+| `int SSecPrjVaciar ( SSecuenciaParejas * )`                          | Destruye todas.                                              |
+
+Además `Crear`, `Destruir`, `EsValida`, `EstaVacia` y `NumElementos`.
+
 ## Operaciones con otras secuencias y listas
 
 `SSecuencia` y `SSecuenciaPtr` tienen las
@@ -219,12 +279,14 @@ también, salvo `ConcatenarDup`: en ellas `Concatenar` ya copia ( ver
 
 - [Listas](Listas.md) — `SLista` y `SListaPtr` hacen todo el trabajo.
 - [SElemento](SElemento.md) — el contenido de la variante base.
+- [ParejasReferencias](ParejasReferencias.md) — `SSecuenciaParejas`.
 
 ## Tests
 
 `SSecuenciaTest.c`, `SSecuenciaPtrTest.c`, `SSecuenciaEnterosTest.c`,
 `SSecuenciaEnterosLargosTest.c`, `SSecuenciaEnterosLargosSinSignoTest.c`,
-`SSecuenciaLiteralesTest.c`.
+`SSecuenciaLiteralesTest.c`, `SSecuenciaUnicaTest.c`, `SSecuenciaUnicaPtrTest.c`,
+`SSecuenciaParejasTest.c`.
 
 ## Observaciones
 

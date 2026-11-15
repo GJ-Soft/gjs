@@ -59,6 +59,8 @@
 #include <SListaOrdenadaPtr.h>
 #include <SConjunto.h>
 #include <SConjuntoPtr.h>
+#include <SSecuenciaUnica.h>
+#include <SSecuenciaUnicaPtr.h>
 
 #include <SId.h>
 #include <SGeneradorId.h>
@@ -105,9 +107,8 @@
 #include <SArbolLiterales.h>
 
 
-
-#include <SListaReferencias.h>
-#include <SListaParejas.h>
+#include <SConjuntoReferencias.h>
+#include <SSecuenciaParejas.h>
 
 
 #endif

@@ -8,7 +8,7 @@ ${symbol_pound}include <CTest.h>
 ${symbol_pound}include "${capitalizedName}.h"
 
 ${symbol_pound}include <Funciones.h>
-${symbol_pound}include <SListaReferencias.h>
+${symbol_pound}include <SConjuntoReferencias.h>
 ${symbol_pound}include <CEntorno.h>
 
 extern int TestSample ();
@@ -20,9 +20,9 @@ int main( int argc, char * argv[] )
 	int iRes = 0;
 	EntInicializar ( 1, "Test${capitalizedName}", 1, 0 );
 
-	SListaReferencias * p_lisTests = SLisRefCrear ();
-	SLisRefInsertarExt ( p_lisTests, "Sample", (void *) TestSample );
-	SLisRefInsertarExt ( p_lisTests, "SampleType", (void *) TestSampleType );
+	SConjuntoReferencias * p_cnjTests = SCnjRefCrear ();
+	SCnjRefInsertarExt ( p_cnjTests, "Sample", (void *) TestSample );
+	SCnjRefInsertarExt ( p_cnjTests, "SampleType", (void *) TestSampleType );
 
 
 	char * p_cTest = NULL;
@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
 	}
 	if ( ( CadLongitud( p_cTest ) > 0 ) && ( CadComparar ( p_cTest, "null" ) != 0 ) )
 	{
-		SReferencia * p_refObj = SLisRefBuscar ( p_lisTests, p_cTest );
+		SReferencia * p_refObj = SCnjRefBuscar ( p_cnjTests, p_cTest );
 		if ( ES_VALIDO ( p_refObj ) )
 		{
 			PFUNINTV fTest = ( PFUNINTV ) SRefObtenerDatos ( p_refObj );
@@ -54,7 +54,7 @@ int main( int argc, char * argv[] )
 	{
 		iRes = -1;
 	}
-	SLisRefDestruir ( &p_lisTests );
+	SCnjRefDestruir ( &p_cnjTests );
 	EntFinalizar ();
 	return ( iRes );
 }

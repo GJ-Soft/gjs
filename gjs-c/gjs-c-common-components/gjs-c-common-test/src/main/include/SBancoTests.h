@@ -4,7 +4,7 @@
 
 
 #include <Funciones.h>
-#include <SListaReferencias.h>
+#include <SConjuntoReferencias.h>
 
 
 
@@ -13,7 +13,7 @@
 
 typedef struct
 {
-	SListaReferencias * p_lisTests;
+	SConjuntoReferencias * p_cnjTests;
 
 } SBancoTests;
 

@@ -1,12 +1,12 @@
 # Conjuntos
 
-| Dato          | Valor                                                   |
-| ------------- | ------------------------------------------------------- |
-| Módulos       | 3                                                       |
-| Cabeceras     | `SConjunto.h`, `SConjuntoPtr.h`, `SConjuntoLiterales.h` |
-| Prefijos      | `SCnj`, `SCnjp`, `SCnjLit`                              |
-| Incluidos por | `TiposBasicos.h`                                        |
-| Tests         | Uno por módulo                                          |
+| Dato          | Valor                                                                             |
+| ------------- | --------------------------------------------------------------------------------- |
+| Módulos       | 4                                                                                 |
+| Cabeceras     | `SConjunto.h`, `SConjuntoPtr.h`, `SConjuntoLiterales.h`, `SConjuntoReferencias.h` |
+| Prefijos      | `SCnj`, `SCnjp`, `SCnjLit`, `SCnjRef`                                             |
+| Incluidos por | `TiposBasicos.h`                                                                  |
+| Tests         | Uno por módulo                                                                    |
 
 [Índice de módulos](MODULOS.md) · [README](../README.md)
 
@@ -130,6 +130,7 @@ conjunto**.
 | `SConjunto`          | [SListaOrdenada](Listas.md) | [SElemento](SElemento.md) | El que se pase    | El conjunto    |
 | `SConjuntoPtr`       | `SListaOrdenadaPtr`         | `byte *`                  | El que se pase    | Configurable   |
 | `SConjuntoLiterales` | `SConjuntoPtr`              | `char *`                  | Fijo, de cadenas  | Configurable   |
+| `SConjuntoReferencias` | `SConjuntoPtr`            | [SReferencia](ParejasReferencias.md) | Fijo, por alias | El conjunto |
 
 ### `SConjuntoPtr`
 
@@ -195,15 +196,47 @@ tener que escribir nada. Como `SCnjLitInsertar`, todo lo que entra se copia.
 Con un nulo devuelven 0 o `NULL` sin tocar nada. Si no se puede crear el
 conjunto de una `Extraer…`, las cadenas vuelven al de origen.
 
+### `SConjuntoReferencias`
+
+Conjunto de [referencias](ParejasReferencias.md) ordenado por alias, que
+sustituye en noviembre de 2026 a `SListaReferencias`. Asocia un **alias** a un
+dato y busca por él: es lo que usa [SBancoTests](../../gjs-c-common-test/doc/SBancoTests.md)
+para dar de alta los tests por nombre.
+
+Ordena con `SRefComparar` y, al ser un conjunto, **no admite dos referencias con
+el mismo alias**: la segunda no entra. Es dueño de sus referencias, que
+destruye al eliminarlas, al vaciar y al destruirse; los datos a los que apuntan
+no son suyos.
+
+| Función                                                                                    | Descripción                                                |
+| ------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| `int SCnjRefInsertar ( SConjuntoReferencias *, SReferencia * )`                            | 0 si no es válida o el alias ya está; sigue siendo del llamante. |
+| `int SCnjRefInsertarExt ( SConjuntoReferencias *, const char * p_cAlias, void * p_vDato )` | Crea la referencia; si no entra, la destruye.              |
+| `SReferencia * SCnjRefBuscar ( SConjuntoReferencias *, const char * p_cAlias )`            | La referencia, que sigue siendo del conjunto, o `NULL`.    |
+| `int SCnjRefExiste ( SConjuntoReferencias *, const char * p_cAlias )`                      | 1 si está el alias.                                        |
+| `SReferencia * SCnjRefElemento ( SConjuntoReferencias *, int iElem )`                      | Por posición, en el orden de los alias.                    |
+| `const char * SCnjRefAliasElemento` / `void * SCnjRefDatosElemento`                        | Alias y dato de la posición.                               |
+| `int SCnjRefEliminar ( …, const char * p_cAlias )` / `SCnjRefEliminarElem ( …, int iElem )` | Destruyen la referencia; 0 si no está.                    |
+| `int SCnjRefVaciar ( SConjuntoReferencias * )`                                             | Destruye todas.                                            |
+
+Además `Crear`, `Destruir`, `EsValido`, `EstaVacio` y `NumElementos`.
+
+- **Una referencia sin dato no entra**: `SRefEsValida` exige alias y dato, y
+  `SRefComparar` sólo compara referencias válidas.
+- `Existe`, `Buscar` y `Eliminar` buscan con una referencia sonda en la pila, sin
+  reservar memoria.
+
 ## Dependencias
 
 - [Listas](Listas.md) — `SListaOrdenada` y `SListaOrdenadaPtr`.
 - [SComparador](SComparador.md) — el criterio de orden.
 - [SElemento](SElemento.md) y [SBloque](SBloque.md) — el contenido.
+- [ParejasReferencias](ParejasReferencias.md) — `SConjuntoReferencias`.
 
 ## Tests
 
-`SConjuntoTest.c`, `SConjuntoPtrTest.c`, `SConjuntoLiteralesTest.c`.
+`SConjuntoTest.c`, `SConjuntoPtrTest.c`, `SConjuntoLiteralesTest.c`,
+`SConjuntoReferenciasTest.c`.
 
 ## Observaciones
 

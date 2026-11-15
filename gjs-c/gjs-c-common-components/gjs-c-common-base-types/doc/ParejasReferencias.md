@@ -22,8 +22,9 @@ Dos formas de **asociar dos cosas**:
 | `SPareja`     | Dos punteros cualesquiera     | Tuplas, resultados dobles        |
 | `SReferencia` | Un alias de texto con un dato | Diccionarios, tablas de símbolos |
 
-Son la carga de [SListaParejas y SListaReferencias](Listas.md), que es donde se
-usan de verdad.
+Son la carga de [SSecuenciaParejas](Secuencias.md#ssecuenciaparejas) y
+[SConjuntoReferencias](Conjuntos.md#sconjuntoreferencias), que es donde se usan
+de verdad.
 
 ## `SPareja`
 
@@ -85,9 +86,14 @@ indica que lo duplica); el dato no.
 | Ciclo de vida         | `SRefCrear ( const char * p_cAlias, void * p_vDatos )`, `SRefDestruir`, `SRefEsValida`, `SRefDuplicar`, `SRefPtr` |
 | Consulta              | `SRefObtenerAlias`, `SRefObtenerDatos`                                                                            |
 | Modificación          | `SRefEstablecer`, `SRefEstablecerAlias`, `SRefEstablecerDatos`                                                    |
-| Comparación           | `SRefEsIgual`, `SRefEsMenor`, `SRefEsMayor`                                                                       |
-| Comparación por alias | `SRefEsIgualLit`, `SRefEsMenorLit`, `SRefEsMayorLit`                                                              |
+| Comparación           | `SRefComparar`, `SRefEsIgual`, `SRefEsMenor`, `SRefEsMayor`                                                       |
+| Comparación por alias | `SRefCompararLit`, `SRefEsIgualLit`, `SRefEsMenorLit`, `SRefEsMayorLit`                                           |
 | Otros                 | `SRefHash`                                                                                                        |
+
+`SRefComparar ( SReferencia *, SReferencia * )` y `SRefCompararLit ( SReferencia *,
+const char * )` dan `COMP_MENOR`, `COMP_IGUAL` o `COMP_MAYOR` comparando los
+alias con `CadComparar`, sin mirar los datos; con una referencia no válida
+—nula, sin alias o **sin dato**— devuelven `COMP_DIFERENTE`.
 
 Las comparaciones ordenan **por alias**, que es lo que permite meter referencias
 en una [lista ordenada o un conjunto](Conjuntos.md) y buscar por nombre.
@@ -110,6 +116,7 @@ sigue siendo del llamante.
 ## Tests
 
 `SParejaTest.c` → `TestSPareja()`, `SReferenciaTest.c` → `TestSReferencia()`.
+`TestSRefCompararOrden01` comprueba `SRefComparar` y `SRefCompararLit`.
 
 ## Observaciones
 

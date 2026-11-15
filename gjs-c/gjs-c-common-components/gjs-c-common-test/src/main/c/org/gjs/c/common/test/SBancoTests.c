@@ -14,8 +14,8 @@ SBancoTests * SBanTstCrear ()
 	p_bantstObj = ( SBancoTests * ) MemReservar ( sizeof ( SBancoTests ) );
 	if ( ES_VALIDO ( p_bantstObj ) )
 	{
-		p_bantstObj->p_lisTests = SLisRefCrear ();
-		if ( ES_NULO ( p_bantstObj->p_lisTests ) )
+		p_bantstObj->p_cnjTests = SCnjRefCrear ();
+		if ( ES_NULO ( p_bantstObj->p_cnjTests ) )
 		{
 			MemLiberar ( (void **) &p_bantstObj );
 		}
@@ -33,7 +33,7 @@ void SBanTstDestruir ( SBancoTests ** p_p_bantstObj )
 		p_bantstObj = *p_p_bantstObj;
 		if ( ES_VALIDO ( p_bantstObj ) )
 		{
-			SLisRefDestruir ( &( p_bantstObj->p_lisTests ) );
+			SCnjRefDestruir ( &( p_bantstObj->p_cnjTests ) );
 			MemLiberar ( (void **) p_p_bantstObj );
 		}
 	}
@@ -43,7 +43,7 @@ void SBanTstNuevoTest ( SBancoTests * p_bantstObj, const char * p_cNombre, PFUNI
 {
 	if ( ES_VALIDO ( p_bantstObj ) )
 	{
-		SLisRefInsertarExt ( p_bantstObj->p_lisTests, p_cNombre, (void *) p_fTest );
+		SCnjRefInsertarExt ( p_bantstObj->p_cnjTests, p_cNombre, (void *) p_fTest );
 	}
 }
 
@@ -53,7 +53,7 @@ int SBanTstNumTests ( SBancoTests * p_bantstObj )
 
 	if ( ES_VALIDO ( p_bantstObj ) )
 	{
-		iRes = SLisRefNumElementos ( p_bantstObj->p_lisTests );
+		iRes = SCnjRefNumElementos ( p_bantstObj->p_cnjTests );
 	}
 	else
 	{
@@ -75,10 +75,10 @@ int SBanTstEjecutar ( SBancoTests * p_bantstObj )
 		InicializarEntorno ();
 		iRes = 1;
 		iTest = 0;
-		iNumTests = SLisRefNumElementos ( p_bantstObj->p_lisTests );
+		iNumTests = SCnjRefNumElementos ( p_bantstObj->p_cnjTests );
 		while ( iTest < iNumTests )
 		{
-			PFUNINTV fTest = (PFUNINTV) SLisRefDatosElemento ( p_bantstObj->p_lisTests, iTest );
+			PFUNINTV fTest = (PFUNINTV) SCnjRefDatosElemento ( p_bantstObj->p_cnjTests, iTest );
 			if ( ES_VALIDO ( fTest ) )
 			{
 				if ( fTest () == 1 )
@@ -116,7 +116,7 @@ int SBanTstEjecutarTest ( SBancoTests * p_bantstObj, const char * p_cTest )
 	{
 		if ( CadLongitud ( p_cTest ) > 0 )
 		{
-			SReferencia * p_refObj = SLisRefBuscar ( p_bantstObj->p_lisTests, p_cTest );
+			SReferencia * p_refObj = SCnjRefBuscar ( p_bantstObj->p_cnjTests, p_cTest );
 			if ( ES_VALIDO ( p_refObj ) )
 			{
 				PFUNINTV fTest = ( PFUNINTV ) SRefObtenerDatos ( p_refObj );

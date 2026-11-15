@@ -488,7 +488,7 @@ int SSecpInsertar ( SSecuenciaPtr * p_secObj, byte * p_byDatos )
 {
 	int iRes;
 
-	if ( ( SSecpEsValida ( p_secObj ) == 1 ) && ES_VALIDO ( p_byDatos ) )
+	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_byDatos ) )
 	{
 		iRes = SLispInsertarAlFinal ( p_secObj->p_lisDatos, p_byDatos );
 	}
@@ -503,7 +503,7 @@ int SSecpInsertarPtr ( SSecuenciaPtr * p_secObj, SElementoPtr * p_elpDatos )
 {
 	int iRes;
 
-	if ( ( SSecpEsValida ( p_secObj ) == 1 ) && ES_VALIDO ( p_elpDatos ) )
+	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_elpDatos ) )
 	{
 		iRes = SLispInsertarAlFinalPtr ( p_secObj->p_lisDatos, p_elpDatos );
 	}
@@ -518,7 +518,7 @@ int SSecpEliminar ( SSecuenciaPtr * p_secObj, int iElem )
 {
 	int	iRes;
 
-	if ( SSecpEsValida ( p_secObj ) == 1 ) 
+	if ( ES_VALIDO ( p_secObj ) ) 
 	{
 		iRes = SLispEliminarElem ( p_secObj->p_lisDatos, iElem );
 	}
@@ -533,7 +533,7 @@ byte * SSecpExtraer ( SSecuenciaPtr * p_secObj, int iElem )
 {
 	byte * p_byRes;
 
-	if ( SSecpEsValida ( p_secObj ) == 1 ) 
+	if ( ES_VALIDO ( p_secObj ) ) 
 	{
 		p_byRes = SLispExtraerElem ( p_secObj->p_lisDatos, iElem );
 	}
@@ -548,7 +548,7 @@ SElementoPtr * SSecpExtraerPtr ( SSecuenciaPtr * p_secObj, int iElem )
 {
 	SElementoPtr * p_elpRes;
 
-	if ( SSecpEsValida ( p_secObj ) == 1 ) 
+	if ( ES_VALIDO ( p_secObj ) ) 
 	{
 		p_elpRes = SLispExtraerElemPtr ( p_secObj->p_lisDatos, iElem );
 	}
@@ -563,7 +563,7 @@ int SSecpVaciar ( SSecuenciaPtr * p_secObj )
 {
 	int	iRes;
 
-	if ( SSecpEsValida ( p_secObj ) == 1 ) 
+	if ( ES_VALIDO ( p_secObj ) ) 
 	{
 		iRes = SLispVaciar ( p_secObj->p_lisDatos );
 	}
@@ -625,7 +625,7 @@ int	SSecpLiberacionMemoriaActivada ( SSecuenciaPtr * p_secObj )
 {
 	int	iRes;
 
-	if ( SSecpEsValida ( p_secObj ) == 1 ) 
+	if ( ES_VALIDO ( p_secObj ) ) 
 	{
 		iRes = SLispLiberacionMemoriaActivada ( p_secObj->p_lisDatos );
 	}
@@ -638,7 +638,7 @@ int	SSecpLiberacionMemoriaActivada ( SSecuenciaPtr * p_secObj )
 
 void SSecpActivarLiberacionMemoria ( SSecuenciaPtr * p_secObj )
 {
-	if ( SSecpEsValida ( p_secObj ) == 1 ) 
+	if ( ES_VALIDO ( p_secObj ) ) 
 	{
 		SLispActivarLiberacionMemoria ( p_secObj->p_lisDatos );
 	}
@@ -646,7 +646,7 @@ void SSecpActivarLiberacionMemoria ( SSecuenciaPtr * p_secObj )
 
 void SSecpDesactivarLiberacionMemoria ( SSecuenciaPtr * p_secObj )
 {
-	if ( SSecpEsValida ( p_secObj ) == 1 ) 
+	if ( ES_VALIDO ( p_secObj ) ) 
 	{
 		SLispDesactivarLiberacionMemoria ( p_secObj->p_lisDatos );
 	}

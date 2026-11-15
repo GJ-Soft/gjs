@@ -111,6 +111,56 @@ static int TestSRefComparar01 ()
 	return ( iRes );
 }
 
+/* Comparar y CompararLit dan COMP_MENOR, COMP_IGUAL o COMP_MAYOR segun el
+   alias, sin mirar los datos; con una referencia no valida, COMP_DIFERENTE. */
+static int TestSRefCompararOrden01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SRefCompararOrden 01:\n" );
+
+	int iDato1 = 1;
+	int iDato2 = 2;
+	SReferencia * p_r1 = SRefCrear ( "aaa", &iDato1 );
+	SReferencia * p_r2 = SRefCrear ( "bbb", &iDato1 );
+	SReferencia * p_r3 = SRefCrear ( "aaa", &iDato2 );
+	SReferencia * p_rSinDatos = SRefCrear ( "aaa", NULL );
+	if ( ES_VALIDO ( p_r1 ) && ES_VALIDO ( p_r2 ) && ES_VALIDO ( p_r3 ) && ES_VALIDO ( p_rSinDatos ) )
+	{
+		if ( ( SRefComparar ( p_r1, p_r2 ) != COMP_MENOR ) || ( SRefComparar ( p_r2, p_r1 ) != COMP_MAYOR ) )
+		{
+			printf( "Error caso 1: \"aaa\" deberia ser menor que \"bbb\" y al reves\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SRefComparar ( p_r1, p_r3 ) != COMP_IGUAL )
+		{
+			printf( "Error caso 2: con el mismo alias y otros datos deberian ser iguales\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SRefCompararLit ( p_r2, "aaa" ) != COMP_MAYOR ) || ( SRefCompararLit ( p_r2, "ccc" ) != COMP_MENOR ) ||
+			 ( SRefCompararLit ( p_r2, "bbb" ) != COMP_IGUAL ) )
+		{
+			printf( "Error caso 3: \"bbb\" frente a \"aaa\", \"ccc\" y \"bbb\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SRefComparar ( p_r1, NULL ) != COMP_DIFERENTE ) || ( SRefComparar ( NULL, p_r1 ) != COMP_DIFERENTE ) ||
+			 ( SRefComparar ( p_r1, p_rSinDatos ) != COMP_DIFERENTE ) || ( SRefCompararLit ( NULL, "aaa" ) != COMP_DIFERENTE ) )
+		{
+			printf( "Error caso 4: con una referencia nula o sin datos se esperaba COMP_DIFERENTE\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear las referencias\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SRefDestruir ( &p_r1 );
+	SRefDestruir ( &p_r2 );
+	SRefDestruir ( &p_r3 );
+	SRefDestruir ( &p_rSinDatos );
+	return ( iRes );
+}
+
 static int TestSRefDuplicar01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -265,6 +315,7 @@ int TestSReferencia ()
 	printf ( "%s[Test SReferencia]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSRefCrear01 () == BOOL_VAL_CIERTO ) &&
 			( TestSRefComparar01 () == BOOL_VAL_CIERTO ) &&
+			( TestSRefCompararOrden01 () == BOOL_VAL_CIERTO ) &&
 			( TestSRefDuplicar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSRefInvalidos01 () == BOOL_VAL_CIERTO ) &&
 			( TestSRefPtr01 () == BOOL_VAL_CIERTO ) &&

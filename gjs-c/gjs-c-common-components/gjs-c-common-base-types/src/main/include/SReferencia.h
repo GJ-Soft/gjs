@@ -34,6 +34,8 @@ int SRefEstablecerDatos ( SReferencia * p_refObj,void * p_vDatos );
 
 SReferencia * SRefDuplicar (  SReferencia * p_refObj );
 
+int SRefComparar ( SReferencia * p_refObj1, SReferencia * p_refObj2 );
+int SRefCompararLit ( SReferencia * p_refObj, const char * p_cAlias );
 int SRefEsIgual ( SReferencia * p_refObj1, SReferencia * p_refObj2 );
 int SRefEsMenor ( SReferencia * p_refObj1, SReferencia * p_refObj2 );
 int SRefEsMayor ( SReferencia * p_refObj1, SReferencia * p_refObj2 );

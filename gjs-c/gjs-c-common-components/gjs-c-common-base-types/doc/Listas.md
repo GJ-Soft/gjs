@@ -2,9 +2,9 @@
 
 | Dato          | Valor                                                                                                                                                                                                                           |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Módulos       | 11                                                                                                                                                                                                                              |
-| Cabeceras     | `SLista.h`, `SListaPtr.h`, `SListaEnteros.h`, `SListaEnterosLargos.h`, `SListaEnterosLargosSinSigno.h`, `SListaLiterales.h`, `SListaOrdenada.h`, `SListaOrdenadaPtr.h`, `SListaParejas.h`, `SListaReferencias.h`, `SListaVec.h` |
-| Prefijos      | `SLis`, `SLisp`, `SLisInt`, `SLisIntl`, `SLisIntLss`, `SLisLit`, `SLisOrd`, `SLispOrd`, `SLisPrj`, `SLisRef`, `SVLis`                                                                                                           |
+| Módulos       | 9                                                                                                                                                                                                                               |
+| Cabeceras     | `SLista.h`, `SListaPtr.h`, `SListaEnteros.h`, `SListaEnterosLargos.h`, `SListaEnterosLargosSinSigno.h`, `SListaLiterales.h`, `SListaOrdenada.h`, `SListaOrdenadaPtr.h`, `SListaVec.h` |
+| Prefijos      | `SLis`, `SLisp`, `SLisInt`, `SLisIntl`, `SLisIntLss`, `SLisLit`, `SLisOrd`, `SLispOrd`, `SVLis`                                                                                                           |
 | Incluidos por | `TiposBasicos.h`, **salvo `SListaVec.h`**                                                                                                                                                                                              |
 | Tests         | Uno por módulo                                                                                                                                                                                                                  |
 
@@ -94,8 +94,8 @@ sobre una `SLista`, así que les afectaba igual. Entran por
 | 32 000    | 1,422 s    | no se mide |
 
 **Y las cuatro familias montadas sobre `SListaPtr` y `SSecuenciaPtr` también**
-(2026-09-21): `SListaLiterales`, `SListaReferencias`, `SListaParejas` y
-`SSecuenciaLiterales`. Aquí hizo falta antes una pieza que no existía.
+(2026-09-21): `SListaLiterales`, `SListaReferencias`, `SListaParejas` (hoy
+`SConjuntoReferencias` y `SSecuenciaParejas`) y `SSecuenciaLiterales`. Aquí hizo falta antes una pieza que no existía.
 
 ### El accesor al nodo en las variantes `Ptr`
 
@@ -287,8 +287,6 @@ Cómo se comportan:
 | `SListaLiterales`             | `SListaPtr`                              | `char *`                             | Según la función usada | API `…Dup`            |
 | `SListaOrdenada`              | `SLista` + [SComparador](SComparador.md) | Bloque de bytes                      | La lista               | Orden automático      |
 | `SListaOrdenadaPtr`           | `SListaPtr` + `SComparador`              | `byte *`                             | Configurable           | Orden + liberación    |
-| `SListaParejas`               | `SListaPtr`                              | [SPareja](ParejasReferencias.md)     | La lista               | `InsertarExt`         |
-| `SListaReferencias`           | `SListaPtr`                              | [SReferencia](ParejasReferencias.md) | La lista               | Búsqueda por alias    |
 | `SListaVec`                   | *(propia)*                               | `void *` en vector                   | Configurable           | Capacidad fija        |
 
 ### `SListaPtr` — punteros sin copia
@@ -557,23 +555,11 @@ salvo `Interseccion` y `Diferencia` (ver abajo).
   `ExtraerLista` hereda la liberación de la lista de origen: si no era dueña
   de sus datos, la nueva tampoco.
 
-### `SListaParejas` y `SListaReferencias` — asociaciones
+### Parejas y referencias
 
-Ambas envuelven `SListaPtr` y guardan objetos de
-[ParejasReferencias](ParejasReferencias.md).
-
-`SListaReferencias` es la más útil de las dos: asocia un **alias** de texto a un
-dato y permite buscar por él, que es como se implementan los diccionarios
-sencillos en las capas superiores.
-
-| Función                                                                                 | Descripción               |
-| --------------------------------------------------------------------------------------- | ------------------------- |
-| `int SLisRefInsertarExt ( SListaReferencias *, const char * p_cAlias, void * p_vDato )` | Da de alta la asociación. |
-| `SReferencia * SLisRefBuscar ( SListaReferencias *, const char * p_cAlias )`            | Busca por alias.          |
-| `int SLisRefExiste ( SListaReferencias *, const char * p_cAlias )`                      | 1 si existe el alias.     |
-| `void * SLisRefDatosElemento ( SListaReferencias *, int iElem )`                        | Dato de la posición.      |
-| `const char * SLisRefAliasElemento ( SListaReferencias *, int iElem )`                  | Alias de la posición.     |
-| `int SLisRefEliminar ( SListaReferencias *, const char * p_cAlias )`                    | Baja por alias.           |
+`SListaParejas` y `SListaReferencias` ya no existen: en noviembre de 2026
+pasaron a ser [`SSecuenciaParejas`](Secuencias.md#ssecuenciaparejas) y
+[`SConjuntoReferencias`](Conjuntos.md#sconjuntoreferencias).
 
 ### `SListaVec` — la excepción
 
@@ -604,14 +590,13 @@ y el recorrido con cursor.
 
 - [SElemento](SElemento.md) y [SBloque](SBloque.md) — almacenamiento.
 - [SComparador](SComparador.md) — las variantes ordenadas.
-- [ParejasReferencias](ParejasReferencias.md) — `SListaParejas`, `SListaReferencias`.
 
 ## Tests
 
 Un fichero por módulo: `SListaTest.c`, `SListaPtrTest.c`, `SListaEnterosTest.c`,
 `SListaEnterosLargosTest.c`, `SListaEnterosLargosSinSignoTest.c`,
 `SListaLiteralesTest.c`, `SListaOrdenadaTest.c`, `SListaOrdenadaPtrTest.c`,
-`SListaParejasTest.c`, `SListaReferenciasTest.c`, `SListaVecTest.c`.
+`SListaVecTest.c`.
 
 ## Observaciones
 

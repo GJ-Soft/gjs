@@ -23,7 +23,7 @@ sus módulos y lo ejecuta.
 ```c
 typedef struct
 {
-    SListaReferencias * p_lisTests;
+    SConjuntoReferencias * p_cnjTests;
 } SBancoTests;
 ```
 
@@ -68,7 +68,7 @@ por tanto el que decide si la fase `nar-test` de Maven da el build por bueno.
 
 ## Dependencias
 
-[SListaReferencias](../../gjs-c-common-base-types/doc/ParejasReferencias.md),
+[SConjuntoReferencias](../../gjs-c-common-base-types/doc/Conjuntos.md#sconjuntoreferencias),
 `Funciones.h` para `PFUNINTV`, y [ContextoTests](ContextoTests.md).
 
 ## Test
@@ -83,7 +83,7 @@ por tanto el que decide si la fase `nar-test` de Maven da el build por bueno.
   salida de una ejecución completa no dice qué test está corriendo —lo dice el
   propio test, con su `printf` de `STestEjecutar`—.
 - **`SBanTstNuevoTest` no devuelve nada**, así que un alta que falle por falta de
-  memoria pasa desapercibida y el test simplemente no se ejecuta. `SBanTstNumTests`
+  memoria, o por repetir un nombre ya dado de alta, pasa desapercibida y el test simplemente no se ejecuta. `SBanTstNumTests`
   es la única forma de detectarlo, comparando con lo que se esperaba.
 - **`EjecutarTextExe` lleva `Text` donde debería decir `Test`.** El mismo error
   de escritura está en [`STestEjecutarTextExe`](STest.md), de modo que se

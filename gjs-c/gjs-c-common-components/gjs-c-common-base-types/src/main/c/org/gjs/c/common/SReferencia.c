@@ -163,6 +163,36 @@ SReferencia * SRefDuplicar (  SReferencia * p_refObj )
 	return ( p_refRes );
 }
 
+int SRefComparar ( SReferencia * p_refObj1, SReferencia * p_refObj2 )
+{
+	int iRes;
+
+	if ( ( SRefEsValida ( p_refObj1 ) == 1 ) && ( SRefEsValida ( p_refObj2 ) == 1 ) )
+	{
+		iRes = CadComparar ( p_refObj1->p_cAlias, p_refObj2->p_cAlias );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SRefCompararLit ( SReferencia * p_refObj, const char * p_cAlias )
+{
+	int iRes;
+
+	if ( SRefEsValida ( p_refObj ) == 1 )
+	{
+		iRes = CadComparar ( p_refObj->p_cAlias, p_cAlias );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int SRefEsIgual ( SReferencia * p_refObj1, SReferencia * p_refObj2 )
 {
 	int iRes;

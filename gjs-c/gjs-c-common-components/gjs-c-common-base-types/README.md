@@ -6,7 +6,7 @@ contenedores sobre el que se construyen las capas superiores: bloques de
 memoria, listas, secuencias, vectores, tablas, pilas, colas, conjuntos, árboles
 y grafos.
 
-Es el módulo más grande del stack C: **73 módulos** en 4.664 líneas de cabeceras
+Es el módulo más grande del stack C: **75 módulos** en 4.664 líneas de cabeceras
 y algo más de 34.000 de implementación.
 
 ---
@@ -32,7 +32,7 @@ La cabecera fachada es `TiposBasicos.h`:
 #include <TiposBasicos.h>
 ```
 
-Arrastra las 74 cabeceras de módulo, **excepto `SArbolB.h` y `SListaVec.h`**,
+Arrastra las 76 cabeceras de módulo, **excepto `SArbolB.h` y `SListaVec.h`**,
 que hay que incluir a mano.
 
 Ejemplo con una lista de enteros:
@@ -127,7 +127,7 @@ Requiere tener instalado antes `gjs-c-common-base`.
 ## Tests
 
 Mismo arnés que el resto del stack C: un ejecutable propio cuyo `main` está en
-`src/test/c/.../Test.c` y que registra **72 suites**.
+`src/test/c/.../Test.c` y que registra **74 suites**.
 
 ```
 Test.exe               # todas
@@ -142,7 +142,7 @@ Sin test asociado: `SArbolB`, `TiposBasicos`, `TiposBasicosConstantes`,
 
 ## Documentación de los módulos
 
-Los 73 módulos son en su mayoría variantes de un mismo contenedor, así que la
+Los 75 módulos son en su mayoría variantes de un mismo contenedor, así que la
 documentación se organiza **por familias**: cada documento cubre el contenedor
 base y tabula en qué se diferencian sus especializaciones.
 

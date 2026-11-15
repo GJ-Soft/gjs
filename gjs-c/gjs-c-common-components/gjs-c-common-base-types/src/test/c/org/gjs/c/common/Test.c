@@ -2,7 +2,7 @@
 
 // TODO
 
-#define NUM_TESTS        72
+#define NUM_TESTS        74
 
 extern int TestSId ();
 extern int TestSBloque ();
@@ -68,14 +68,16 @@ extern int TestSVectorLiterales ();
 extern int TestSPilaEnteros ();
 extern int TestSListaLiterales ();
 extern int TestSListaEnterosLargos ();
-extern int TestSListaParejas ();
-extern int TestSListaReferencias ();
+extern int TestSSecuenciaParejas ();
+extern int TestSConjuntoReferencias ();
 extern int TestSListaVec ();
 extern int TestSElementoPtr ();
 extern int TestSPilaLiterales ();
 extern int TestSSecuenciaLiterales ();
 extern int TestSListaEnterosLargosSinSigno ();
 extern int TestSPtr ();
+extern int TestSSecuenciaUnica ();
+extern int TestSSecuenciaUnicaPtr ();
 
 char ** testArrayInit ()
 {
@@ -144,14 +146,16 @@ char ** testArrayInit ()
     p_p_cTests [ 61 ] = CadDuplicar ( "SPilaEnteros" );
     p_p_cTests [ 62 ] = CadDuplicar ( "SListaLiterales" );
     p_p_cTests [ 63 ] = CadDuplicar ( "SListaEnterosLargos" );
-    p_p_cTests [ 64 ] = CadDuplicar ( "SListaParejas" );
-    p_p_cTests [ 65 ] = CadDuplicar ( "SListaReferencias" );
+    p_p_cTests [ 64 ] = CadDuplicar ( "SSecuenciaParejas" );
+    p_p_cTests [ 65 ] = CadDuplicar ( "SConjuntoReferencias" );
     p_p_cTests [ 66 ] = CadDuplicar ( "SListaVec" );
     p_p_cTests [ 67 ] = CadDuplicar ( "SElementoPtr" );
     p_p_cTests [ 68 ] = CadDuplicar ( "SPilaLiterales" );
     p_p_cTests [ 69 ] = CadDuplicar ( "SSecuenciaLiterales" );
     p_p_cTests [ 70 ] = CadDuplicar ( "SListaEnterosLargosSinSigno" );
 	p_p_cTests [ 71 ] = CadDuplicar ( "SPtr" );
+    p_p_cTests [ 72 ] = CadDuplicar ( "SSecuenciaUnica" );
+    p_p_cTests [ 73 ] = CadDuplicar ( "SSecuenciaUnicaPtr" );
     return p_p_cTests;
 }
 
@@ -222,14 +226,16 @@ PFUNINTV * functionArrayInit ()
     p_fTests [ 61 ] = TestSPilaEnteros;
     p_fTests [ 62 ] = TestSListaLiterales;
     p_fTests [ 63 ] = TestSListaEnterosLargos;
-    p_fTests [ 64 ] = TestSListaParejas;
-    p_fTests [ 65 ] = TestSListaReferencias;
+    p_fTests [ 64 ] = TestSSecuenciaParejas;
+    p_fTests [ 65 ] = TestSConjuntoReferencias;
     p_fTests [ 66 ] = TestSListaVec;
     p_fTests [ 67 ] = TestSElementoPtr;
     p_fTests [ 68 ] = TestSPilaLiterales;
     p_fTests [ 69 ] = TestSSecuenciaLiterales;
     p_fTests [ 70 ] = TestSListaEnterosLargosSinSigno;
 	p_fTests [ 71 ] = TestSPtr;
+    p_fTests [ 72 ] = TestSSecuenciaUnica;
+    p_fTests [ 73 ] = TestSSecuenciaUnicaPtr;
     return p_fTests;
 }
 
