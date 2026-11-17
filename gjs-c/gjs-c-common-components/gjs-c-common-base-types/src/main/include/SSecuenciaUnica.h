@@ -28,8 +28,10 @@ int SSecUnNumElementos ( SSecuenciaUnica * p_secObj );
 int SSecUnEstaVacia ( SSecuenciaUnica * p_secObj );
 SElemento * SSecUnElemento ( SSecuenciaUnica * p_secObj, int iElem );
 
-int SSecUnExiste ( SSecuenciaUnica * p_secObj, SElemento * p_elmObj );
-int SSecUnBuscar ( SSecuenciaUnica * p_secObj, SElemento * p_elmObj );
+int SSecUnExiste ( SSecuenciaUnica * p_secObj, SBloque * p_blqDatos );
+int SSecUnBuscar ( SSecuenciaUnica * p_secObj, SBloque * p_blqDatos );
+int SSecUnExisteExt ( SSecuenciaUnica * p_secObj, byte * p_byDatos );
+int SSecUnBuscarExt ( SSecuenciaUnica * p_secObj, byte * p_byDatos );
 
 // Si ya hay uno igual, no inserta y devuelve 0
 int SSecUnInsertar ( SSecuenciaUnica * p_secObj, SElemento * p_elmObj );

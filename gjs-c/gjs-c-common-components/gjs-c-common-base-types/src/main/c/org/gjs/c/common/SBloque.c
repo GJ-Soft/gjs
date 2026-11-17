@@ -605,6 +605,127 @@ int SBlqEscribirCadena ( SBloque * p_blqObj, const char * p_cValor )
 	return ( iRes );
 }
 
+static char * _SBlqLeerCadena ( SBloque * p_blqObj, int iPos, int * p_iLong )
+{
+	char *	p_cRes;
+	int		iLong;
+
+	p_cRes = NULL;
+	*p_iLong = -1;
+	if ( SBlqEsValido ( p_blqObj ) == 1 )
+	{
+		if ( iPos >= 0 )
+		{
+			if ( iPos < p_blqObj->iTam )
+			{
+				// El nulo tiene que estar dentro del bloque:
+				iLong = MemDistanciaAPrimerNulo ( (void *) &(p_blqObj->p_byDatos [ iPos ]), p_blqObj->iTam - iPos );
+				if ( iLong >= 0 )
+				{
+					p_cRes = CadCrear ( iLong );
+					if ( ES_VALIDO ( p_cRes ) )
+					{
+						MemCopiar ( (void *) p_cRes, (void *) &(p_blqObj->p_byDatos [ iPos ]), iLong );
+						*p_iLong = iLong;
+					}
+				}
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		}
+	}
+	else
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+	}
+	return ( p_cRes );
+}
+
+int SBlqLeerEnteroEnPos ( SBloque * p_blqObj, int iPos )
+{
+	int iRes;
+
+	if ( SBlqLeerBuffer ( p_blqObj, iPos, (byte *) &iRes, sizeof ( iRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+long SBlqLeerEnteroLargoEnPos ( SBloque * p_blqObj, int iPos )
+{
+	long lRes;
+
+	if ( SBlqLeerBuffer ( p_blqObj, iPos, (byte *) &lRes, sizeof ( lRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		lRes = 0;
+	}
+	return ( lRes );
+}
+
+float SBlqLeerRealEnPos ( SBloque * p_blqObj, int iPos )
+{
+	float fRes;
+
+	if ( SBlqLeerBuffer ( p_blqObj, iPos, (byte *) &fRes, sizeof ( fRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		fRes = 0;
+	}
+	return ( fRes );
+}
+
+unsigned int SBlqLeerEnteroSinSignoEnPos ( SBloque * p_blqObj, int iPos )
+{
+	unsigned int uiRes;
+
+	if ( SBlqLeerBuffer ( p_blqObj, iPos, (byte *) &uiRes, sizeof ( uiRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		uiRes = 0;
+	}
+	return ( uiRes );
+}
+
+unsigned long SBlqLeerEnteroLargoSinSignoEnPos ( SBloque * p_blqObj, int iPos )
+{
+	unsigned long ulRes;
+
+	if ( SBlqLeerBuffer ( p_blqObj, iPos, (byte *) &ulRes, sizeof ( ulRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		ulRes = 0;
+	}
+	return ( ulRes );
+}
+
+double SBlqLeerRealDobleEnPos ( SBloque * p_blqObj, int iPos )
+{
+	double dRes;
+
+	if ( SBlqLeerBuffer ( p_blqObj, iPos, (byte *) &dRes, sizeof ( dRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		dRes = 0;
+	}
+	return ( dRes );
+}
+
+char * SBlqLeerCadenaEnPos ( SBloque * p_blqObj, int iPos )
+{
+	int iLong;
+
+	return ( _SBlqLeerCadena ( p_blqObj, iPos, &iLong ) );
+}
+
 int SBlqEscribirEnteroEnPos ( SBloque * p_blqObj, int iPos, int iValor )
 {
 	return ( SBlqEscribirBuffer ( p_blqObj, iPos, (byte *) &iValor, sizeof ( int ) ) );
@@ -637,19 +758,52 @@ int SBlqEscribirRealDobleEnPos ( SBloque * p_blqObj, int iPos, double dValor )
 
 int SBlqEscribirCadenaEnPos ( SBloque * p_blqObj, int iPos, const char * p_cValor )
 {
-	return ( SBlqEscribirBuffer ( p_blqObj, iPos, (byte *) p_cValor, CadLongitud ( p_cValor ) ) );
+	int iRes;
+
+	// Con el nulo, para que SBlqLeerCadenaEnPos sepa donde acaba:
+	if ( ES_VALIDO ( p_cValor ) )
+	{
+		iRes = SBlqEscribirBuffer ( p_blqObj, iPos, (byte *) p_cValor, CadLongitud ( p_cValor ) + 1 );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }
 
-int SBlqCopiarDe ( SBloque * p_blqObj, byte * p_byValor )
+int SBlqLeerBuffer ( SBloque * p_blqObj, int iPos, byte * p_byValor, int iTam )
 {
 	int iRes;
 
-	if ( ES_VALIDO ( p_blqObj ) && ES_VALIDO ( p_byValor ) )
+	if ( SBlqEsValido ( p_blqObj ) == 1 )
 	{
-		if ( p_blqObj->iTam > 0 )
+		if ( ES_VALIDO ( p_byValor ) )
 		{
-			MemCopiar ( &(p_blqObj->p_byDatos [0]), p_byValor, p_blqObj->iTam );
-			iRes = 1;
+			if ( iTam > 0 )
+			{
+				if ( iPos >= 0 )
+				{
+					// Restando no se desborda con posiciones grandes:
+					if ( iTam <= p_blqObj->iTam - iPos )
+					{
+						MemCopiar ( (void *) p_byValor, (void *) &(p_blqObj->p_byDatos [ iPos ]), iTam );
+						iRes = 1;
+					}
+					else
+					{
+						iRes = 0;
+					}
+				}
+				else
+				{
+					iRes = 0;
+				}
+			}
+			else
+			{
+				iRes = 0;
+			}
 		}
 		else
 		{
@@ -672,6 +826,230 @@ int SBlqEscribirBuffer ( SBloque * p_blqObj, int iPos, byte * p_byValor, int iTa
 		if ( ( iPos >= 0 ) && ( iPos + iTam <= p_blqObj->iTam ) )
 		{
 			MemCopiar ( &(p_blqObj->p_byDatos [ iPos ]), &(p_byValor [ 0 ]), iTam );
+			iRes = 1;
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+byte SBlqLeerByteExt ( SBloque * p_blqObj, int * p_iPos )
+{
+	byte byRes;
+
+	if ( SBlqLeerBufferExt ( p_blqObj, p_iPos, &byRes, 1 ) == 0 )
+	{
+		byRes = 0x00;
+	}
+	return ( byRes );
+}
+
+int SBlqEscribirByteExt ( SBloque * p_blqObj, int * p_iPos, byte byValor )
+{
+	return ( SBlqEscribirBufferExt ( p_blqObj, p_iPos, &byValor, 1 ) );
+}
+
+int SBlqLeerEnteroEnPosExt ( SBloque * p_blqObj, int * p_iPos )
+{
+	int iRes;
+
+	if ( SBlqLeerBufferExt ( p_blqObj, p_iPos, (byte *) &iRes, sizeof ( iRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+long SBlqLeerEnteroLargoEnPosExt ( SBloque * p_blqObj, int * p_iPos )
+{
+	long lRes;
+
+	if ( SBlqLeerBufferExt ( p_blqObj, p_iPos, (byte *) &lRes, sizeof ( lRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		lRes = 0;
+	}
+	return ( lRes );
+}
+
+float SBlqLeerRealEnPosExt ( SBloque * p_blqObj, int * p_iPos )
+{
+	float fRes;
+
+	if ( SBlqLeerBufferExt ( p_blqObj, p_iPos, (byte *) &fRes, sizeof ( fRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		fRes = 0;
+	}
+	return ( fRes );
+}
+
+unsigned int SBlqLeerEnteroSinSignoEnPosExt ( SBloque * p_blqObj, int * p_iPos )
+{
+	unsigned int uiRes;
+
+	if ( SBlqLeerBufferExt ( p_blqObj, p_iPos, (byte *) &uiRes, sizeof ( uiRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		uiRes = 0;
+	}
+	return ( uiRes );
+}
+
+unsigned long SBlqLeerEnteroLargoSinSignoEnPosExt ( SBloque * p_blqObj, int * p_iPos )
+{
+	unsigned long ulRes;
+
+	if ( SBlqLeerBufferExt ( p_blqObj, p_iPos, (byte *) &ulRes, sizeof ( ulRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		ulRes = 0;
+	}
+	return ( ulRes );
+}
+
+double SBlqLeerRealDobleEnPosExt ( SBloque * p_blqObj, int * p_iPos )
+{
+	double dRes;
+
+	if ( SBlqLeerBufferExt ( p_blqObj, p_iPos, (byte *) &dRes, sizeof ( dRes ) ) == 0 )
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		dRes = 0;
+	}
+	return ( dRes );
+}
+
+char * SBlqLeerCadenaEnPosExt ( SBloque * p_blqObj, int * p_iPos )
+{
+	char *	p_cRes;
+	int		iLong;
+
+	if ( ES_VALIDO ( p_iPos ) )
+	{
+		p_cRes = _SBlqLeerCadena ( p_blqObj, *p_iPos, &iLong );
+		if ( ES_VALIDO ( p_cRes ) )
+		{
+			// Avanza tambien el nulo:
+			*p_iPos = *p_iPos + iLong + 1;
+		}
+	}
+	else
+	{
+		ERROR_ESTABLECER ( ERR_LECTURA_MEMORIA );
+		p_cRes = NULL;
+	}
+	return ( p_cRes );
+}
+
+int SBlqEscribirEnteroEnPosExt ( SBloque * p_blqObj, int * p_iPos, int iValor )
+{
+	return ( SBlqEscribirBufferExt ( p_blqObj, p_iPos, (byte *) &iValor, sizeof ( int ) ) );
+}
+
+int SBlqEscribirEnteroLargoEnPosExt ( SBloque * p_blqObj, int * p_iPos, long lValor )
+{
+	return ( SBlqEscribirBufferExt ( p_blqObj, p_iPos, (byte *) &lValor, sizeof ( long ) ) );
+}
+
+int SBlqEscribirRealEnPosExt ( SBloque * p_blqObj, int * p_iPos, float fValor )
+{
+	return ( SBlqEscribirBufferExt ( p_blqObj, p_iPos, (byte *) &fValor, sizeof ( float ) ) );
+}
+
+int SBlqEscribirEnteroSinSignoEnPosExt ( SBloque * p_blqObj, int * p_iPos, unsigned int uiValor )
+{
+	return ( SBlqEscribirBufferExt ( p_blqObj, p_iPos, (byte *) &uiValor, sizeof ( unsigned int ) ) );
+}
+
+int SBlqEscribirEnteroLargoSinSignoEnPosExt ( SBloque * p_blqObj, int * p_iPos, unsigned long ulValor )
+{
+	return ( SBlqEscribirBufferExt ( p_blqObj, p_iPos, (byte *) &ulValor, sizeof ( unsigned long ) ) );
+}
+
+int SBlqEscribirRealDobleEnPosExt ( SBloque * p_blqObj, int * p_iPos, double dValor )
+{
+	return ( SBlqEscribirBufferExt ( p_blqObj, p_iPos, (byte *) &dValor, sizeof ( double ) ) );
+}
+
+int SBlqEscribirCadenaEnPosExt ( SBloque * p_blqObj, int * p_iPos, const char * p_cValor )
+{
+	int iRes;
+
+	// Con el nulo, para que SBlqLeerCadenaEnPosExt sepa donde acaba:
+	if ( ES_VALIDO ( p_cValor ) )
+	{
+		iRes = SBlqEscribirBufferExt ( p_blqObj, p_iPos, (byte *) p_cValor, CadLongitud ( p_cValor ) + 1 );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SBlqLeerBufferExt ( SBloque * p_blqObj, int * p_iPos, byte * p_byValor, int iTam )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_iPos ) )
+	{
+		iRes = SBlqLeerBuffer ( p_blqObj, *p_iPos, p_byValor, iTam );
+		if ( iRes == 1 )
+		{
+			*p_iPos = *p_iPos + iTam;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SBlqEscribirBufferExt ( SBloque * p_blqObj, int * p_iPos, byte * p_byValor, int iTam )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_iPos ) )
+	{
+		if ( iTam > 0 )
+		{
+			iRes = SBlqEscribirBuffer ( p_blqObj, *p_iPos, p_byValor, iTam );
+			if ( iRes == 1 )
+			{
+				*p_iPos = *p_iPos + iTam;
+			}
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SBlqCopiarDe ( SBloque * p_blqObj, byte * p_byValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_blqObj ) && ES_VALIDO ( p_byValor ) )
+	{
+		if ( p_blqObj->iTam > 0 )
+		{
+			MemCopiar ( &(p_blqObj->p_byDatos [0]), p_byValor, p_blqObj->iTam );
 			iRes = 1;
 		}
 		else
@@ -839,6 +1217,44 @@ SBloque * SBlqExtraer ( SBloque * p_blqObj, int iPos, int iTam )
 		else
 		{
 			p_blqDatos = NULL;
+		}
+	}
+	else
+	{
+		p_blqDatos = NULL;
+	}
+	return ( p_blqDatos );
+}
+
+int SBlqVolcarExt ( SBloque * p_blqObj, int * p_iPos, SBloque * p_blqDatos )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_iPos ) )
+	{
+		iRes = SBlqVolcar ( p_blqObj, *p_iPos, p_blqDatos );
+		if ( iRes == 1 )
+		{
+			*p_iPos = *p_iPos + SBlqTam ( p_blqDatos );
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+SBloque * SBlqExtraerExt ( SBloque * p_blqObj, int * p_iPos, int iTam )
+{
+	SBloque * p_blqDatos;
+
+	if ( ES_VALIDO ( p_iPos ) )
+	{
+		p_blqDatos = SBlqExtraer ( p_blqObj, *p_iPos, iTam );
+		if ( ES_VALIDO ( p_blqDatos ) )
+		{
+			*p_iPos = *p_iPos + iTam;
 		}
 	}
 	else

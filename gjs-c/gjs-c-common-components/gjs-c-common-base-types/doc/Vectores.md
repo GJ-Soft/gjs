@@ -109,6 +109,9 @@ falta crecer, la estructura adecuada es una [lista](Listas.md) o una
 Las posiciones empiezan vacías. `SVecElemento` sobre una posición sin asignar
 devuelve `NULL`, que es indistinguible de un índice fuera de rango.
 
+Para pasar de lista a vector y al revés, ver
+[UtilesColecciones](UtilesColecciones.md).
+
 ## Dependencias
 
 - [SContenido](SContenido.md) — almacenamiento de la variante base.

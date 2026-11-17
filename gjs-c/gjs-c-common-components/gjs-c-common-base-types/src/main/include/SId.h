@@ -5,7 +5,8 @@
 
 
 #include <SPtr.h>
-
+#include <SBloque.h>
+#include <SBloqueMultiPlataforma.h>
 
 
 typedef struct
@@ -19,6 +20,8 @@ typedef struct
 
 SId * SIdCrearDef ();
 SId * SIdCrear ( unsigned long ulValor );
+SId * SIdLeerDeBloqueBin ( SBloque * p_blqDatos );
+SId * SIdLeerDeBloqueMplBin ( SBloqueMultiPlataforma * p_blqDatos );
 
 void SIdDestruir ( SId ** p_p_idObj );
 
@@ -50,10 +53,13 @@ int SIdCompararNum ( SId * p_idObj, unsigned long ulId );
 
 unsigned int SIdHash ( SId * p_idObj );
 
-SPtr * SIdPtr (  SId * p_idObj );
+SPtr * SIdPtr ( SId * p_idObj );
 
-
-
+int SIdTamBloqueBin ();
+SBloque * SIdBloqueBin ( SId * p_idObj );
+SBloqueMultiPlataforma * SIdBloqueMplBin ( SId * p_idObj );
+int SIdLlenarBloqueBin ( SId * p_idObj, SBloque * p_blqDatos );
+int SIdLlenarBloqueMplBin ( SId * p_idObj, SBloqueMultiPlataforma * p_blqDatos );
 
 #endif
 

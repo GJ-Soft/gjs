@@ -51,8 +51,10 @@ int SBlqEsIgualExt ( SBloque * p_blqObj, byte * p_byDatos );
 int SBlqLiberacionMemoriaActivada ( SBloque * p_blqObj );
 
 int SBlqLimpiar ( SBloque * p_blqObj );
+
 byte SBlqLeerByte ( SBloque * p_blqObj, int iPos );
 int SBlqEscribirByte ( SBloque * p_blqObj, int iPos, byte byValor );
+
 int SBlqEscribirEntero ( SBloque * p_blqObj, int iValor );
 int SBlqEscribirEnteroLargo ( SBloque * p_blqObj, long lValor );
 int SBlqEscribirReal ( SBloque * p_blqObj, float fValor );
@@ -60,6 +62,14 @@ int SBlqEscribirEnteroSinSigno ( SBloque * p_blqObj, unsigned int uiValor );
 int SBlqEscribirEnteroLargoSinSigno ( SBloque * p_blqObj, unsigned long ulValor );
 int SBlqEscribirRealDoble ( SBloque * p_blqObj, double dValor );
 int SBlqEscribirCadena ( SBloque * p_blqObj, const char * p_cValor );
+
+int SBlqLeerEnteroEnPos ( SBloque * p_blqObj, int iPos );
+long SBlqLeerEnteroLargoEnPos ( SBloque * p_blqObj, int iPos );
+float SBlqLeerRealEnPos ( SBloque * p_blqObj, int iPos );
+unsigned int SBlqLeerEnteroSinSignoEnPos ( SBloque * p_blqObj, int iPos );
+unsigned long SBlqLeerEnteroLargoSinSignoEnPos ( SBloque * p_blqObj, int iPos );
+double SBlqLeerRealDobleEnPos ( SBloque * p_blqObj, int iPos );
+char * SBlqLeerCadenaEnPos ( SBloque * p_blqObj, int iPos );
 int SBlqEscribirEnteroEnPos ( SBloque * p_blqObj, int iPos, int iValor );
 int SBlqEscribirEnteroLargoEnPos ( SBloque * p_blqObj, int iPos, long lValor );
 int SBlqEscribirRealEnPos ( SBloque * p_blqObj, int iPos, float fValor );
@@ -67,7 +77,32 @@ int SBlqEscribirEnteroSinSignoEnPos ( SBloque * p_blqObj, int iPos, unsigned int
 int SBlqEscribirEnteroLargoSinSignoEnPos ( SBloque * p_blqObj, int iPos, unsigned long ulValor );
 int SBlqEscribirRealDobleEnPos ( SBloque * p_blqObj, int iPos, double dValor );
 int SBlqEscribirCadenaEnPos ( SBloque * p_blqObj, int iPos, const char * p_cValor );
+
+int SBlqLeerBuffer ( SBloque * p_blqObj, int iPos, byte * p_byValor, int iTam );
 int SBlqEscribirBuffer ( SBloque * p_blqObj, int iPos, byte * p_byValor, int iTam );
+
+byte SBlqLeerByteExt ( SBloque * p_blqObj, int * p_iPos );
+int SBlqEscribirByteExt ( SBloque * p_blqObj, int * p_iPos, byte byValor );
+
+int SBlqLeerEnteroEnPosExt ( SBloque * p_blqObj, int * p_iPos );
+long SBlqLeerEnteroLargoEnPosExt ( SBloque * p_blqObj, int * p_iPos );
+float SBlqLeerRealEnPosExt ( SBloque * p_blqObj, int * p_iPos );
+unsigned int SBlqLeerEnteroSinSignoEnPosExt ( SBloque * p_blqObj, int * p_iPos );
+unsigned long SBlqLeerEnteroLargoSinSignoEnPosExt ( SBloque * p_blqObj, int * p_iPos );
+double SBlqLeerRealDobleEnPosExt ( SBloque * p_blqObj, int * p_iPos );
+char * SBlqLeerCadenaEnPosExt ( SBloque * p_blqObj, int * p_iPos );
+int SBlqEscribirEnteroEnPosExt ( SBloque * p_blqObj, int * p_iPos, int iValor );
+int SBlqEscribirEnteroLargoEnPosExt ( SBloque * p_blqObj, int * p_iPos, long lValor );
+int SBlqEscribirRealEnPosExt ( SBloque * p_blqObj, int * p_iPos, float fValor );
+int SBlqEscribirEnteroSinSignoEnPosExt ( SBloque * p_blqObj, int * p_iPos, unsigned int uiValor );
+int SBlqEscribirEnteroLargoSinSignoEnPosExt ( SBloque * p_blqObj, int * p_iPos, unsigned long ulValor );
+int SBlqEscribirRealDobleEnPosExt ( SBloque * p_blqObj, int * p_iPos, double dValor );
+int SBlqEscribirCadenaEnPosExt ( SBloque * p_blqObj, int * p_iPos, const char * p_cValor );
+
+int SBlqLeerBufferExt ( SBloque * p_blqObj, int * p_iPos, byte * p_byValor, int iTam );
+int SBlqEscribirBufferExt ( SBloque * p_blqObj, int * p_iPos, byte * p_byValor, int iTam );
+
+
 int SBlqCopiarDe ( SBloque * p_blqObj, byte * p_byValor );
 int SBlqCopiarEn ( SBloque * p_blqObj, byte * p_byValor );
 int SBlqCopiar ( SBloque * p_blqDest, SBloque * p_blqOrig );
@@ -78,6 +113,8 @@ int SBlqTamCompatible ( SBloque * p_blqObj, int iTam );
 
 int SBlqVolcar ( SBloque * p_blqObj, int iPos, SBloque * p_blqDatos );
 SBloque * SBlqExtraer ( SBloque * p_blqObj, int iPos, int iTam );
+int SBlqVolcarExt ( SBloque * p_blqObj, int * p_iPos, SBloque * p_blqDatos );
+SBloque * SBlqExtraerExt ( SBloque * p_blqObj, int * p_iPos, int iTam );
 
 unsigned int SBlqHash ( SBloque * p_blqObj );
 

@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SContenido.c` |
 | Prefijo      | `SCon`                                     |
 | Struct       | `SContenido`                               |
-| Funciones    | 26                                         |
+| Funciones    | 37                                         |
 | Incluido por | `TiposBasicos.h`                           |
 | Test         | `SContenidoTest.c` → `TestSContenido()`    |
 
@@ -42,7 +42,9 @@ Hay **dos banderas de propiedad en juego**: la de `SContenido` (si destruye su
 | ------------------------------------------------------------------------ | --------------------------------- |
 | `SContenido * SConCrear ( int iTam )`                                    | Contenido propio de `iTam` bytes. |
 | `SContenido * SConCrearEntero ()`                                        | Del tamaño de un `int`.           |
+| `SContenido * SConCrearEnteroSinSigno ()`                                | Del tamaño de un `unsigned int`.  |
 | `SContenido * SConCrearEnteroLargo ()`                                   | Del tamaño de un `long`.          |
+| `SContenido * SConCrearEnteroLargoSinSigno ()`                           | Del tamaño de un `unsigned long`. |
 | `SContenido * SConCrearReal ()`                                          | Del tamaño de un `float`.         |
 | `SContenido * SConCrearRealDoble ()`                                     | Del tamaño de un `double`.        |
 | `SContenido * SConCrearCadena ()`                                        | Para una cadena.                  |
@@ -62,12 +64,30 @@ Hay **dos banderas de propiedad en juego**: la de `SContenido` (si destruye su
 
 ### Lectura y escritura tipadas
 
-Lectura: `SConEntero`, `SConEnteroLargo`, `SConReal`, `SConRealDoble`,
-`SConCadena`.
+Lectura: `SConEntero`, `SConEnteroSinSigno`, `SConEnteroLargo`,
+`SConEnteroLargoSinSigno`, `SConReal`, `SConRealDoble`, `SConCadena`.
 
-Escritura: `SConEscribirEntero`, `SConEscribirEnteroLargo`, `SConEscribirReal`,
-`SConEscribirRealDoble`, `SConEscribirCadena` y
+Escritura: `SConEscribirEntero`, `SConEscribirEnteroSinSigno`,
+`SConEscribirEnteroLargo`, `SConEscribirEnteroLargoSinSigno`,
+`SConEscribirReal`, `SConEscribirRealDoble`, `SConEscribirCadena` y
 `SConEscribirByte ( SContenido *, int iPos, byte )`.
+
+Con un contenido nulo, las lecturas dan 0 (`NULL` la de cadena) y las
+escrituras devuelven 0.
+
+### Comparación
+
+| Función                                            | Descripción                                                      |
+| -------------------------------------------------- | ---------------------------------------------------------------- |
+| `int SConEsIgual ( SContenido *, SContenido * )`   | 1 si los dos bloques tienen el mismo tamaño y los mismos bytes.  |
+| `int SConEsIgualBlq ( SContenido *, SBloque * )`   | Lo mismo contra un bloque suelto.                                |
+| `int SConEsIgualExt ( SContenido *, byte * )`      | Compara tantos bytes como mida el bloque del contenido.          |
+| `unsigned int SConHash ( SContenido * )`           | `SBlqHash` del bloque interno; 0 con un contenido nulo.          |
+
+Las tres comparaciones dan 0 si alguno de los dos argumentos es nulo. Son las
+mismas que `SElmEsIgual`, `SElmEsIgualBlq`, `SElmEsIgualExt` y `SElmHash` de
+[SElemento](SElemento.md). Un `int` y un `long` con el mismo valor no son
+iguales: los bloques miden distinto.
 
 ### Modificación
 
@@ -119,7 +139,5 @@ si se encapsula algo que se va a seguir usando fuera, pasar `iLiberar` a 0.
   **declaradas y comentadas** en la cabecera: no se puede cambiar la bandera
   después de construir, sólo consultarla con
   `SConLiberacionMemoriaActivada`.
-- La API de lectura tipada es más corta que la de [SBloque](SBloque.md): no hay
-  variantes sin signo (`SConEnteroSinSigno` y compañía no existen), aunque
-  `SElemento` sí las tiene. Para esos tipos hay que bajar al bloque con
-  `SConDatos`.
+- La API de lectura y escritura tipada es la misma que la de
+  [SElemento](SElemento.md), variantes sin signo incluidas.

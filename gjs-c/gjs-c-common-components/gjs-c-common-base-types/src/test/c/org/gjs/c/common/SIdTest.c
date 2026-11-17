@@ -545,6 +545,226 @@ static int TestSIdPtrNulo01 ()
 	return ( iRes );
 }
 
+static int TestSIdBloqueBin01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SIdBloqueBin 01:\n" );
+
+	int iTamBin = (int) sizeof ( unsigned long );
+	SId * p_idObj = SIdCrear ( 123456789UL );
+	SBloque * p_blqDatos = SIdBloqueBin ( p_idObj );
+	if ( ES_NULO ( p_blqDatos ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al pasar a bloque\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( SBlqTam ( p_blqDatos ) != iTamBin )
+		{
+			printf( "Error caso 2: se esperaba un bloque de %d bytes: %d\n", iTamBin, SBlqTam ( p_blqDatos ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* 123456789 = 0x075BCD15, en little endian. */
+		if ( ( SBlqLeerByte ( p_blqDatos, 0 ) != 0x15 ) || ( SBlqLeerByte ( p_blqDatos, 1 ) != 0xCD ) ||
+			 ( SBlqLeerByte ( p_blqDatos, 2 ) != 0x5B ) || ( SBlqLeerByte ( p_blqDatos, 3 ) != 0x07 ) )
+		{
+			printf( "Error caso 3: los bytes deberian ser 15 CD 5B 07\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		SId * p_idLeido = SIdLeerDeBloqueBin ( p_blqDatos );
+		if ( ES_NULO ( p_idLeido ) )
+		{
+			printf( "Error caso 4: no se esperaba nulo al leer del bloque\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else if ( SIdValor ( p_idLeido ) != 123456789UL )
+		{
+			printf( "Error caso 5: se esperaba 123456789: %lu\n", SIdValor ( p_idLeido ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SIdDestruir ( &p_idLeido );
+
+		/* Rellenar un bloque que ya existe, con el valor maximo. */
+		SId * p_idMax = SIdCrear ( ULONG_MAX );
+		if ( SIdLlenarBloqueBin ( p_idMax, p_blqDatos ) != 1 )
+		{
+			printf( "Error caso 6: se esperaba 1 al rellenar el bloque\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_idLeido = SIdLeerDeBloqueBin ( p_blqDatos );
+		if ( ES_NULO ( p_idLeido ) || ( SIdValor ( p_idLeido ) != ULONG_MAX ) )
+		{
+			printf( "Error caso 7: se esperaba ULONG_MAX tras rellenar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		SIdDestruir ( &p_idLeido );
+		SIdDestruir ( &p_idMax );
+	}
+	SBlqDestruir ( &p_blqDatos );
+
+	/* El bloque tiene que medir justo un unsigned long. */
+	SBloque * p_blqMalo = SBlqCrear ( iTamBin + 1 );
+	if ( SIdLlenarBloqueBin ( p_idObj, p_blqMalo ) != 0 )
+	{
+		printf( "Error caso 8: con un bloque de otro tamano deberia fallar\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SIdLeerDeBloqueBin ( p_blqMalo ) ) )
+	{
+		printf( "Error caso 9: leer de un bloque de otro tamano deberia dar NULL\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SBlqDestruir ( &p_blqMalo );
+
+	if ( ES_VALIDO ( SIdBloqueBin ( NULL ) ) )
+	{
+		printf( "Error caso 10: un identificador nulo deberia dar NULL\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SIdLeerDeBloqueBin ( NULL ) ) )
+	{
+		printf( "Error caso 11: un bloque nulo deberia dar NULL\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SIdLlenarBloqueBin ( p_idObj, NULL ) != 0 )
+	{
+		printf( "Error caso 12: rellenar un bloque nulo deberia fallar\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SIdDestruir ( &p_idObj );
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+/* Con unsigned long de 4 bytes, compararlo con 2^32 da siempre falso y el
+   compilador avisa; como parametro unsigned long long no. */
+static int EsDosA32 ( unsigned long long ullValor )
+{
+	return ( ullValor == 4294967296ULL );
+}
+
+/* Lo que mide SIdBloqueBin: el unsigned long de esta maquina. */
+static int TestSIdTamBloqueBin01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SIdTamBloqueBin 01:\n" );
+
+	int iTamEsperado = ( sizeof ( unsigned long ) == 8 ) ? 8 : 4;
+	SId * p_idObj = SIdCrear ( 123456789UL );
+	SBloque * p_blqDatos = SIdBloqueBin ( p_idObj );
+	if ( ( SIdTamBloqueBin () != iTamEsperado ) || ( SBlqTam ( p_blqDatos ) != SIdTamBloqueBin () ) )
+	{
+		printf( "Error caso 1: se esperaba %d, y que fuera lo que mide SIdBloqueBin: %d %d\n", iTamEsperado, SIdTamBloqueBin (), SBlqTam ( p_blqDatos ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SBlqDestruir ( &p_blqDatos );
+	SIdDestruir ( &p_idObj );
+	return ( iRes );
+}
+
+static int TestSIdBloqueMplBin01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SIdBloqueMplBin 01:\n" );
+
+	/* 8 bytes en todas las plataformas: 123456789 = 0x075BCD15. */
+	SId * p_idObj = SIdCrear ( 123456789UL );
+	SBloqueMultiPlataforma * p_blqDatos = SIdBloqueMplBin ( p_idObj );
+	const byte byEsperados[] = { 0x15, 0xCD, 0x5B, 0x07, 0x00, 0x00, 0x00, 0x00 };
+	if ( SBlqMplTam ( p_blqDatos ) != 8 )
+	{
+		printf( "Error caso 1: se esperaba un bloque de 8 bytes: %d\n", SBlqMplTam ( p_blqDatos ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		for ( int i = 0; i < 8; i = i + 1 )
+		{
+			if ( SBlqMplLeerByte ( p_blqDatos, i ) != byEsperados[ i ] )
+			{
+				printf( "Error caso 2: byte %d: se esperaba 0x%02X: 0x%02X\n", i, byEsperados[ i ], SBlqMplLeerByte ( p_blqDatos, i ) );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+	}
+	SId * p_idLeido = SIdLeerDeBloqueMplBin ( p_blqDatos );
+	if ( ES_NULO ( p_idLeido ) || ( SIdValor ( p_idLeido ) != 123456789UL ) )
+	{
+		printf( "Error caso 3: se esperaba leer 123456789\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SIdDestruir ( &p_idLeido );
+
+	/* Rellenar el mismo bloque con el maximo de esta maquina. */
+	SId * p_idMax = SIdCrear ( ULONG_MAX );
+	if ( SIdLlenarBloqueMplBin ( p_idMax, p_blqDatos ) != 1 )
+	{
+		printf( "Error caso 4: se esperaba 1 al rellenar el bloque\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	p_idLeido = SIdLeerDeBloqueMplBin ( p_blqDatos );
+	if ( ES_NULO ( p_idLeido ) || ( SIdValor ( p_idLeido ) != ULONG_MAX ) )
+	{
+		printf( "Error caso 5: se esperaba ULONG_MAX tras rellenar\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SIdDestruir ( &p_idLeido );
+	SIdDestruir ( &p_idMax );
+	SBlqMplDestruir ( &p_blqDatos );
+
+	/* Un bloque de 4 no vale, aunque sea lo que mide un unsigned long en Windows. */
+	SBloqueMultiPlataforma * p_blqMalo = SBlqMplCrear ( 4 );
+	ErrLimpiar ();
+	if ( ( SIdLlenarBloqueMplBin ( p_idObj, p_blqMalo ) != 0 ) || ( ErrCodigo () != ERR_PARAMETROS ) )
+	{
+		printf( "Error caso 6: rellenar un bloque de 4 deberia dar 0 y ERR_PARAMETROS\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SIdLeerDeBloqueMplBin ( p_blqMalo ) ) )
+	{
+		printf( "Error caso 7: leer de un bloque de 4 deberia dar NULL\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SBlqMplDestruir ( &p_blqMalo );
+
+	/* 2^32, escrito por una maquina con unsigned long de 8. */
+	byte byDosA32[] = { 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 };
+	p_blqDatos = SBlqMplCrear ( 8 );
+	SBlqMplEscribirBuffer ( p_blqDatos, 0, byDosA32, 8 );
+	ErrLimpiar ();
+	p_idLeido = SIdLeerDeBloqueMplBin ( p_blqDatos );
+	if ( sizeof ( unsigned long ) == 8 )
+	{
+		if ( ES_NULO ( p_idLeido ) || ( EsDosA32 ( SIdValor ( p_idLeido ) ) == BOOL_VAL_FALSO ) )
+		{
+			printf( "Error caso 8: con unsigned long de 8 bytes deberia leerse 2^32\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		if ( ES_VALIDO ( p_idLeido ) || ( ErrCodigo () != ERR_CONVERSION_IMPOSIBLE ) )
+		{
+			printf( "Error caso 9: con unsigned long de 4 bytes deberia dar NULL y ERR_CONVERSION_IMPOSIBLE: %d\n", ErrCodigo () );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	SIdDestruir ( &p_idLeido );
+	SBlqMplDestruir ( &p_blqDatos );
+
+	if ( ES_VALIDO ( SIdBloqueMplBin ( NULL ) ) || ES_VALIDO ( SIdLeerDeBloqueMplBin ( NULL ) ) ||
+		 ( SIdLlenarBloqueMplBin ( p_idObj, NULL ) != 0 ) )
+	{
+		printf( "Error caso 10: con nulos deberia dar NULL o 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SIdDestruir ( &p_idObj );
+	ErrLimpiar ();
+	return ( iRes );
+}
+
 
 
 int TestSId ()
@@ -562,7 +782,10 @@ int TestSId ()
 			( TestSIdCompararNum01 () == BOOL_VAL_CIERTO ) &&
 			( TestSIdHash01 () == BOOL_VAL_CIERTO ) &&
 			( TestSIdPtr01 () == BOOL_VAL_CIERTO ) &&
-			( TestSIdPtrNulo01 () == BOOL_VAL_CIERTO ) )
+			( TestSIdPtrNulo01 () == BOOL_VAL_CIERTO ) &&
+			( TestSIdBloqueBin01 () == BOOL_VAL_CIERTO ) &&
+			( TestSIdBloqueMplBin01 () == BOOL_VAL_CIERTO ) &&
+			( TestSIdTamBloqueBin01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

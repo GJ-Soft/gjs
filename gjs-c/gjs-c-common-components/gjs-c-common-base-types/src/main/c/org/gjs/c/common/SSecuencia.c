@@ -143,13 +143,13 @@ SElemento * SSecElemento ( SSecuencia * p_secObj, int iElem )
    cuantos iguales hay ( 0 si ninguno ), y Buscar ( que es BuscarPrimero ) y
    BuscarSiguiente la posicion o -1. BuscarSiguiente busca DETRAS de iPos: con
    -1, desde el principio. */
-int SSecExiste ( SSecuencia * p_secObj, SElemento * p_elmObj )
+int SSecExiste ( SSecuencia * p_secObj, SBloque * p_blqDatos )
 {
 	int	iRes;
 
 	if ( ES_VALIDO ( p_secObj ) )
 	{
-		iRes = SLisExisteElem ( p_secObj->p_lisDatos, p_elmObj );
+		iRes = SLisExiste ( p_secObj->p_lisDatos, p_blqDatos );
 	}
 	else
 	{
@@ -158,13 +158,13 @@ int SSecExiste ( SSecuencia * p_secObj, SElemento * p_elmObj )
 	return ( iRes );
 }
 
-int SSecRepeticiones ( SSecuencia * p_secObj, SElemento * p_elmObj )
+int SSecRepeticiones ( SSecuencia * p_secObj, SBloque * p_blqDatos )
 {
 	int	iRes;
 
 	if ( ES_VALIDO ( p_secObj ) )
 	{
-		iRes = SLisRepeticionesElem ( p_secObj->p_lisDatos, p_elmObj );
+		iRes = SLisRepeticiones ( p_secObj->p_lisDatos, p_blqDatos );
 	}
 	else
 	{
@@ -173,13 +173,13 @@ int SSecRepeticiones ( SSecuencia * p_secObj, SElemento * p_elmObj )
 	return ( iRes );
 }
 
-int SSecBuscar ( SSecuencia * p_secObj, SElemento * p_elmObj )
+int SSecBuscar ( SSecuencia * p_secObj, SBloque * p_blqDatos )
 {
 	int	iRes;
 
 	if ( ES_VALIDO ( p_secObj ) )
 	{
-		iRes = SLisBuscarElem ( p_secObj->p_lisDatos, p_elmObj );
+		iRes = SLisBuscar ( p_secObj->p_lisDatos, p_blqDatos );
 	}
 	else
 	{
@@ -188,13 +188,13 @@ int SSecBuscar ( SSecuencia * p_secObj, SElemento * p_elmObj )
 	return ( iRes );
 }
 
-int SSecBuscarPrimero ( SSecuencia * p_secObj, SElemento * p_elmObj )
+int SSecBuscarPrimero ( SSecuencia * p_secObj, SBloque * p_blqDatos )
 {
 	int	iRes;
 
 	if ( ES_VALIDO ( p_secObj ) )
 	{
-		iRes = SLisBuscarPrimeroElem ( p_secObj->p_lisDatos, p_elmObj );
+		iRes = SLisBuscarPrimero ( p_secObj->p_lisDatos, p_blqDatos );
 	}
 	else
 	{
@@ -203,13 +203,88 @@ int SSecBuscarPrimero ( SSecuencia * p_secObj, SElemento * p_elmObj )
 	return ( iRes );
 }
 
-int SSecBuscarSiguiente ( SSecuencia * p_secObj, SElemento * p_elmObj, int iPos )
+int SSecBuscarSiguiente ( SSecuencia * p_secObj, SBloque * p_blqDatos, int iPos )
 {
 	int	iRes;
 
 	if ( ES_VALIDO ( p_secObj ) )
 	{
-		iRes = SLisBuscarSiguienteElem ( p_secObj->p_lisDatos, p_elmObj, iPos );
+		iRes = SLisBuscarSiguiente ( p_secObj->p_lisDatos, p_blqDatos, iPos );
+	}
+	else
+	{
+		iRes = -1;
+	}
+	return ( iRes );
+}
+
+int SSecExisteExt ( SSecuencia * p_secObj, byte * p_byDatos )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		iRes = SLisExisteExt ( p_secObj->p_lisDatos, p_byDatos );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SSecRepeticionesExt ( SSecuencia * p_secObj, byte * p_byDatos )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		iRes = SLisRepeticionesExt ( p_secObj->p_lisDatos, p_byDatos );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SSecBuscarExt ( SSecuencia * p_secObj, byte * p_byDatos )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		iRes = SLisBuscarExt ( p_secObj->p_lisDatos, p_byDatos );
+	}
+	else
+	{
+		iRes = -1;
+	}
+	return ( iRes );
+}
+
+int SSecBuscarPrimeroExt ( SSecuencia * p_secObj, byte * p_byDatos )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		iRes = SLisBuscarPrimeroExt ( p_secObj->p_lisDatos, p_byDatos );
+	}
+	else
+	{
+		iRes = -1;
+	}
+	return ( iRes );
+}
+
+int SSecBuscarSiguienteExt ( SSecuencia * p_secObj, byte * p_byDatos, int iPos )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		iRes = SLisBuscarSiguienteExt ( p_secObj->p_lisDatos, p_byDatos, iPos );
 	}
 	else
 	{

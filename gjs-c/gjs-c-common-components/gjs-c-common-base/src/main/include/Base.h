@@ -45,6 +45,7 @@
 #include <Intercambios.h>
 #include <Hash.h>
 #include <Validaciones.h>
+#include <TiposMultiPlataforma.h>
 
 #endif
 

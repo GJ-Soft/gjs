@@ -51,6 +51,35 @@ enteros.
 id nulo devuelve un `SPtr` vacío; si falla la reserva del `SPtr`, devuelve
 `NULL` y el id sigue siendo del llamante.
 
+### En binario
+
+| Función                                            | Descripción                                          |
+| -------------------------------------------------- | ---------------------------------------------------- |
+| `SBloque * SIdBloqueBin ( SId * )`                 | Bloque nuevo con el valor, del llamante.             |
+| `int SIdTamBloqueBin ()`                           | Lo que mide ese bloque: el `unsigned long` de la máquina. |
+| `int SIdLlenarBloqueBin ( SId *, SBloque * )`      | Escribe el valor en un bloque que ya existe.         |
+| `SId * SIdLeerDeBloqueBin ( SBloque * )`           | Identificador nuevo con el valor leído del bloque.   |
+| `SBloqueMultiPlataforma * SIdBloqueMplBin ( SId * )` | Igual, en formato multiplataforma.                 |
+| `int SIdLlenarBloqueMplBin ( SId *, SBloqueMultiPlataforma * )` | Igual, en formato multiplataforma.      |
+| `SId * SIdLeerDeBloqueMplBin ( SBloqueMultiPlataforma * )` | Igual, en formato multiplataforma.          |
+
+El valor se guarda como un `unsigned long`, en el orden de bytes de la máquina,
+y el bloque tiene que medir **exactamente** eso: si no, `SIdLlenarBloqueBin`
+devuelve 0, `SIdLeerDeBloqueBin` devuelve `NULL` y las dos anotan
+`ERR_PARAMETROS`. Como `unsigned long` mide 4 bytes en Windows y 8 en Cygwin y
+Linux, **un bloque escrito en una plataforma no se puede leer en la otra**.
+
+Las versiones `…Mpl…` usan un [SBloqueMultiPlataforma](SBloqueMultiPlataforma.md):
+el valor ocupa **8 bytes en little-endian en todas las plataformas**, y el bloque
+tiene que medir exactamente eso. Son las que hay que usar para ficheros y
+comunicaciones. Leído en Windows, un identificador escrito en Cygwin o Linux que
+no quepa en 32 bits da `NULL` con `ERR_CONVERSION_IMPOSIBLE`.
+
+`SIdTamBloqueBin` sirve para leer una copia guardada de la que sólo se tiene la
+dirección, como hace el comparador de [SConjuntoId](Conjuntos.md#sconjuntoid).
+[SConjuntoId](Conjuntos.md#sconjuntoid) y [SSecuenciaId](Secuencias.md#ssecuenciaid)
+guardan los `SId` por copia, con `SIdBloqueBin`.
+
 `SIdCrear` es el constructor con valor; `SIdCrearDef` el de por defecto, que deja
 el identificador a 0. Ojo con la asimetría que eso crea: un identificador recién
 creado con `SIdCrearDef` **no** pasa `SIdEsValido`, porque esa función no
@@ -129,6 +158,7 @@ lo que sirve el tercer parámetro del constructor.
 
 - `Base.h` de [gjs-c-common-base](../../gjs-c-common-base/README.md).
 - [SPtr](SPtr.md), para `SIdPtr`.
+- [SBloque](SBloque.md), para la representación en binario.
 
 ## Tests
 

@@ -6,7 +6,7 @@
 | Fuentes       | `src/main/c/org/gjs/c/common/SElemento.c`, `SElementoPtr.c`       |
 | Prefijos      | `SElm`, `SElp`                                                    |
 | Structs       | `SElemento`, `SElementoPtr`                                       |
-| Funciones     | 47 + 19                                                           |
+| Funciones     | 49 + 24                                                           |
 | Incluidos por | `TiposBasicos.h`                                                  |
 | Tests         | `SElementoTest.c`, `SElementoPtrTest.c`                           |
 

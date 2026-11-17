@@ -34,6 +34,7 @@
 #define ERR_TXT_ESTRUCTURA_INVALIDA			"La estructura es invalida."
 #define ERR_TXT_CONVERSION_IMPOSIBLE		"No se puede realizar la conversion del valor indicado."
 #define ERR_TXT_COPIA_OBJETO				"No se ha podido duplicar/copiar la estructura."
+#define ERR_TXT_LECTURA_MEMORIA				"No se ha podido leer la direccion de memoria."
 
 #define ERR_TXT_GENERAL_OPERATIVO			"Se ha producido un error al realizar la operacion."
 
@@ -527,6 +528,10 @@ static const char * _ErrDescripcion ( int iCod )
 	{
 		p_cRes = CadDuplicar ( ERR_TXT_COPIA_OBJETO );
 	}
+	else if ( iCod == ERR_LECTURA_MEMORIA )
+	{
+		p_cRes = CadDuplicar ( ERR_TXT_LECTURA_MEMORIA );
+	}
 	else if ( iCod == ERR_GENERAL_OPERATIVO )
 	{
 		p_cRes = CadDuplicar ( ERR_TXT_GENERAL_OPERATIVO );
@@ -551,6 +556,7 @@ static int _ErrPredefinido ( int iCod )
 		 ( iCod == ERR_ESTRUCTURA_INVALIDA ) ||
 		 ( iCod == ERR_CONVERSION_IMPOSIBLE ) ||
 		 ( iCod == ERR_COPIA_OBJETO ) ||
+		 ( iCod == ERR_LECTURA_MEMORIA ) ||
 		 ( iCod == ERR_GENERAL_OPERATIVO ) )
 	{
 		iRes = 1;

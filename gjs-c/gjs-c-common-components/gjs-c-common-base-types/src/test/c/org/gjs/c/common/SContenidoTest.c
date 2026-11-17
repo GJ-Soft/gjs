@@ -90,6 +90,193 @@ static int TestSConEnteros01 ()
 	return ( iRes );
 }
 
+static int TestSConSinSigno01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SConSinSigno 01:\n" );
+
+	SContenido * p_conObj = SConCrearEnteroSinSigno ();
+	if ( ES_VALIDO ( p_conObj ) )
+	{
+		if ( SBlqTam ( SConDatos ( p_conObj ) ) != sizeof ( unsigned int ) )
+		{
+			printf( "Error caso 1: se esperaba el tamano de un unsigned int: %d\n", SBlqTam ( SConDatos ( p_conObj ) ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SConEscribirEnteroSinSigno ( p_conObj, 4000000000U ) != 1 )
+		{
+			printf( "Error caso 2: se esperaba resultado 1 al escribir sin signo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SConEnteroSinSigno ( p_conObj ) != 4000000000U )
+		{
+			printf( "Error caso 3: se esperaba 4000000000: %u\n", SConEnteroSinSigno ( p_conObj ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el contenido sin signo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SConDestruir ( &p_conObj );
+
+	p_conObj = SConCrearEnteroLargoSinSigno ();
+	if ( ES_VALIDO ( p_conObj ) )
+	{
+		if ( SBlqTam ( SConDatos ( p_conObj ) ) != sizeof ( unsigned long ) )
+		{
+			printf( "Error caso 4: se esperaba el tamano de un unsigned long: %d\n", SBlqTam ( SConDatos ( p_conObj ) ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* ULONG_MAX vale en las dos anchuras de long ( 4 bytes en Windows, 8 en Cygwin ). */
+		if ( SConEscribirEnteroLargoSinSigno ( p_conObj, ULONG_MAX ) != 1 )
+		{
+			printf( "Error caso 5: se esperaba resultado 1 al escribir largo sin signo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SConEnteroLargoSinSigno ( p_conObj ) != ULONG_MAX )
+		{
+			printf( "Error caso 6: se esperaba ULONG_MAX: %lu\n", SConEnteroLargoSinSigno ( p_conObj ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 7: no se pudo crear el contenido largo sin signo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SConDestruir ( &p_conObj );
+
+	if ( SConEnteroSinSigno ( NULL ) != 0 )
+	{
+		printf( "Error caso 8: un contenido nulo deberia leer 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SConEnteroLargoSinSigno ( NULL ) != 0 )
+	{
+		printf( "Error caso 9: un contenido nulo deberia leer 0 en largo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SConEscribirEnteroSinSigno ( NULL, 1 ) != 0 )
+	{
+		printf( "Error caso 10: escribir sin signo en un nulo deberia fallar\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SConEscribirEnteroLargoSinSigno ( NULL, 1 ) != 0 )
+	{
+		printf( "Error caso 11: escribir largo sin signo en un nulo deberia fallar\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	return ( iRes );
+}
+
+static int TestSConEsIgual01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SConEsIgual 01:\n" );
+
+	int iValor = 4321;
+	SContenido * p_conA = SConCrearEntero ();
+	SContenido * p_conB = SConCrearEntero ();
+	/* Ocho bytes en las dos plataformas: no se usa long, que mide 4 en Windows. */
+	SContenido * p_conOcho = SConCrear ( 2 * sizeof ( int ) );
+	SBloque * p_blqObj = SBlqCrearEntero ();
+	if ( ES_VALIDO ( p_conA ) && ES_VALIDO ( p_conB ) && ES_VALIDO ( p_conOcho ) && ES_VALIDO ( p_blqObj ) )
+	{
+		SConEscribirEntero ( p_conA, 4321 );
+		SConEscribirEntero ( p_conB, 4321 );
+		for ( int i = 0; i < (int) sizeof ( int ); i = i + 1 )
+		{
+			SConEscribirByte ( p_conOcho, i, ( (byte *) &iValor )[ i ] );
+			SConEscribirByte ( p_conOcho, i + (int) sizeof ( int ), 0 );
+		}
+		SBlqEscribirEntero ( p_blqObj, 4321 );
+
+		if ( SConEsIgual ( p_conA, p_conB ) != 1 )
+		{
+			printf( "Error caso 1: dos contenidos con 4321 deberian ser iguales\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SConEsIgualBlq ( p_conA, p_blqObj ) != 1 )
+		{
+			printf( "Error caso 2: el contenido deberia ser igual al bloque con 4321\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SConEsIgualExt ( p_conA, (byte *) &iValor ) != 1 )
+		{
+			printf( "Error caso 3: el contenido deberia ser igual a los bytes de 4321\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Valor absoluto: HashBinario sobre los 4 bytes little endian de 4321. */
+		if ( SConHash ( p_conA ) != 2247291377U )
+		{
+			printf( "Error caso 4: se esperaba el hash 2247291377: %u\n", SConHash ( p_conA ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SConHash ( p_conB ) != 2247291377U )
+		{
+			printf( "Error caso 5: contenidos iguales deberian dar el mismo hash: %u\n", SConHash ( p_conB ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		SConEscribirEntero ( p_conB, 1234 );
+		if ( SConEsIgual ( p_conA, p_conB ) != 0 )
+		{
+			printf( "Error caso 6: 4321 y 1234 no deberian ser iguales\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		iValor = 1234;
+		if ( SConEsIgualExt ( p_conA, (byte *) &iValor ) != 0 )
+		{
+			printf( "Error caso 7: el contenido no deberia ser igual a los bytes de 1234\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Los mismos bytes al principio y distinto tamano: no son iguales. */
+		if ( SConEsIgual ( p_conA, p_conOcho ) != 0 )
+		{
+			printf( "Error caso 8: bloques de distinto tamano no deberian ser iguales\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		if ( SConEsIgual ( NULL, p_conA ) != 0 )
+		{
+			printf( "Error caso 9: con el primero nulo deberia dar 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SConEsIgual ( p_conA, NULL ) != 0 )
+		{
+			printf( "Error caso 10: con el segundo nulo deberia dar 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SConEsIgualBlq ( p_conA, NULL ) != 0 )
+		{
+			printf( "Error caso 11: con el bloque nulo deberia dar 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SConEsIgualExt ( p_conA, NULL ) != 0 )
+		{
+			printf( "Error caso 12: con los bytes nulos deberia dar 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SConHash ( NULL ) != 0 )
+		{
+			printf( "Error caso 13: el hash de un nulo deberia ser 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear los contenidos\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SConDestruir ( &p_conA );
+	SConDestruir ( &p_conB );
+	SConDestruir ( &p_conOcho );
+	SBlqDestruir ( &p_blqObj );
+	return ( iRes );
+}
+
 static int TestSConDuplicar01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -199,6 +386,8 @@ int TestSContenido ()
 	printf ( "%s[Test SContenido]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSConCrear01 () == BOOL_VAL_CIERTO ) &&
 			( TestSConEnteros01 () == BOOL_VAL_CIERTO ) &&
+			( TestSConSinSigno01 () == BOOL_VAL_CIERTO ) &&
+			( TestSConEsIgual01 () == BOOL_VAL_CIERTO ) &&
 			( TestSConDuplicar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSConEncapsular01 () == BOOL_VAL_CIERTO ) &&
 			( TestSConInvalidos01 () == BOOL_VAL_CIERTO ) )

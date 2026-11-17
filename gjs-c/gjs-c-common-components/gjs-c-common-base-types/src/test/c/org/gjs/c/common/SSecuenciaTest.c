@@ -324,7 +324,8 @@ static int TestSSecCrearDesdeLista01 ()
 	return ( iRes );
 }
 
-/* Busca por contenido: vale un elemento que no esta en la secuencia. */
+/* Busca por contenido: vale el bloque de un elemento que no esta en la
+   secuencia. */
 static int TestSSecBuscar01 ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -334,19 +335,21 @@ static int TestSSecBuscar01 ()
 	SSecuencia * p_secObj = CrearSecEnteros ( iVal, 4 );
 	SElemento * p_elm20 = CrearElemEntero ( 20 );
 	SElemento * p_elm99 = CrearElemEntero ( 99 );
+	SBloque * p_blq20 = SElmDatos ( p_elm20 );
+	SBloque * p_blq99 = SElmDatos ( p_elm99 );
 	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_elm20 ) && ES_VALIDO ( p_elm99 ) )
 	{
-		if ( SSecBuscar ( p_secObj, p_elm20 ) != 1 )
+		if ( SSecBuscar ( p_secObj, p_blq20 ) != 1 )
 		{
 			printf( "Error caso 1: el 20 deberia estar en la posicion 1\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( SSecBuscar ( p_secObj, p_elm99 ) != -1 )
+		if ( SSecBuscar ( p_secObj, p_blq99 ) != -1 )
 		{
 			printf( "Error caso 2: el 99 no deberia encontrarse\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( ( SSecBuscar ( p_secObj, NULL ) != -1 ) || ( SSecBuscar ( NULL, p_elm20 ) != -1 ) )
+		if ( ( SSecBuscar ( p_secObj, NULL ) != -1 ) || ( SSecBuscar ( NULL, p_blq20 ) != -1 ) )
 		{
 			printf( "Error caso 3: con un nulo se esperaba -1\n" );
 			iRes = BOOL_VAL_FALSO;
@@ -376,47 +379,49 @@ static int TestSSecBuscarSiguiente01 ()
 	SSecuencia * p_secVacia = SSecCrear ();
 	SElemento * p_elm20 = CrearElemEntero ( 20 );
 	SElemento * p_elm99 = CrearElemEntero ( 99 );
+	SBloque * p_blq20 = SElmDatos ( p_elm20 );
+	SBloque * p_blq99 = SElmDatos ( p_elm99 );
 	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_secVacia ) && ES_VALIDO ( p_elm20 ) && ES_VALIDO ( p_elm99 ) )
 	{
-		if ( ( SSecBuscarPrimero ( p_secObj, p_elm20 ) != 0 ) ||
-			 ( SSecBuscarSiguiente ( p_secObj, p_elm20, 0 ) != 2 ) ||
-			 ( SSecBuscarSiguiente ( p_secObj, p_elm20, 2 ) != 4 ) ||
-			 ( SSecBuscarSiguiente ( p_secObj, p_elm20, 4 ) != -1 ) )
+		if ( ( SSecBuscarPrimero ( p_secObj, p_blq20 ) != 0 ) ||
+			 ( SSecBuscarSiguiente ( p_secObj, p_blq20, 0 ) != 2 ) ||
+			 ( SSecBuscarSiguiente ( p_secObj, p_blq20, 2 ) != 4 ) ||
+			 ( SSecBuscarSiguiente ( p_secObj, p_blq20, 4 ) != -1 ) )
 		{
 			printf( "Error caso 1: el 20 deberia estar en 0, 2 y 4\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		/* Desde la posicion siguiente, no desde la misma. */
-		if ( ( SSecBuscarSiguiente ( p_secObj, p_elm20, 1 ) != 2 ) ||
-			 ( SSecBuscarSiguiente ( p_secObj, p_elm20, 3 ) != 4 ) ||
-			 ( SSecBuscar ( p_secObj, p_elm20 ) != 0 ) )
+		if ( ( SSecBuscarSiguiente ( p_secObj, p_blq20, 1 ) != 2 ) ||
+			 ( SSecBuscarSiguiente ( p_secObj, p_blq20, 3 ) != 4 ) ||
+			 ( SSecBuscar ( p_secObj, p_blq20 ) != 0 ) )
 		{
 			printf( "Error caso 2: detras de la 1 el 20 esta en la 2, y Buscar es BuscarPrimero\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( ( SSecRepeticiones ( p_secObj, p_elm20 ) != 3 ) || ( SSecExiste ( p_secObj, p_elm20 ) != 1 ) ||
-			 ( SSecRepeticiones ( p_secObj, p_elm99 ) != 0 ) || ( SSecExiste ( p_secObj, p_elm99 ) != 0 ) ||
-			 ( SSecBuscarPrimero ( p_secObj, p_elm99 ) != -1 ) )
+		if ( ( SSecRepeticiones ( p_secObj, p_blq20 ) != 3 ) || ( SSecExiste ( p_secObj, p_blq20 ) != 1 ) ||
+			 ( SSecRepeticiones ( p_secObj, p_blq99 ) != 0 ) || ( SSecExiste ( p_secObj, p_blq99 ) != 0 ) ||
+			 ( SSecBuscarPrimero ( p_secObj, p_blq99 ) != -1 ) )
 		{
 			printf( "Error caso 3: el 20 deberia estar 3 veces y el 99 ninguna\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( ( SSecRepeticiones ( p_secVacia, p_elm20 ) != 0 ) || ( SSecExiste ( p_secVacia, p_elm20 ) != 0 ) ||
-			 ( SSecBuscarPrimero ( p_secVacia, p_elm20 ) != -1 ) )
+		if ( ( SSecRepeticiones ( p_secVacia, p_blq20 ) != 0 ) || ( SSecExiste ( p_secVacia, p_blq20 ) != 0 ) ||
+			 ( SSecBuscarPrimero ( p_secVacia, p_blq20 ) != -1 ) )
 		{
 			printf( "Error caso 4: en una secuencia vacia no deberia estar nada\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( ( SSecBuscarSiguiente ( p_secObj, p_elm20, 5 ) != -1 ) ||
-			 ( SSecBuscarSiguiente ( p_secObj, p_elm20, -2 ) != -1 ) )
+		if ( ( SSecBuscarSiguiente ( p_secObj, p_blq20, 5 ) != -1 ) ||
+			 ( SSecBuscarSiguiente ( p_secObj, p_blq20, -2 ) != -1 ) )
 		{
 			printf( "Error caso 5: desde el final o con una posicion menor que -1 se esperaba -1\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( ( SSecBuscarSiguiente ( NULL, p_elm20, -1 ) != -1 ) || ( SSecBuscarSiguiente ( p_secObj, NULL, -1 ) != -1 ) ||
-			 ( SSecBuscarPrimero ( NULL, p_elm20 ) != -1 ) ||
-			 ( SSecRepeticiones ( NULL, p_elm20 ) != 0 ) || ( SSecRepeticiones ( p_secObj, NULL ) != 0 ) ||
-			 ( SSecExiste ( NULL, p_elm20 ) != 0 ) || ( SSecExiste ( p_secObj, NULL ) != 0 ) )
+		if ( ( SSecBuscarSiguiente ( NULL, p_blq20, -1 ) != -1 ) || ( SSecBuscarSiguiente ( p_secObj, NULL, -1 ) != -1 ) ||
+			 ( SSecBuscarPrimero ( NULL, p_blq20 ) != -1 ) ||
+			 ( SSecRepeticiones ( NULL, p_blq20 ) != 0 ) || ( SSecRepeticiones ( p_secObj, NULL ) != 0 ) ||
+			 ( SSecExiste ( NULL, p_blq20 ) != 0 ) || ( SSecExiste ( p_secObj, NULL ) != 0 ) )
 		{
 			printf( "Error caso 6: con un nulo se esperaba -1 al buscar y 0 al contar\n" );
 			iRes = BOOL_VAL_FALSO;
@@ -431,6 +436,106 @@ static int TestSSecBuscarSiguiente01 ()
 	SElmDestruir ( &p_elm99 );
 	SSecDestruir ( &p_secObj );
 	SSecDestruir ( &p_secVacia );
+	return ( iRes );
+}
+
+/* Las Ext buscan por memoria cruda, que tiene que medir lo que el bloque de
+   cada elemento: aqui, un int. */
+static int TestSSecBuscarExt01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecBuscarExt 01:\n" );
+
+	int iVal [ 6 ] = { 20, 10, 20, 30, 20, 40 };
+	SSecuencia * p_secObj = CrearSecEnteros ( iVal, 6 );
+	SSecuencia * p_secVacia = SSecCrear ();
+	int i20 = 20;
+	int i99 = 99;
+	byte * p_by20 = (byte *) &i20;
+	byte * p_by99 = (byte *) &i99;
+	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_secVacia ) )
+	{
+		if ( ( SSecBuscarPrimeroExt ( p_secObj, p_by20 ) != 0 ) ||
+			 ( SSecBuscarSiguienteExt ( p_secObj, p_by20, 0 ) != 2 ) ||
+			 ( SSecBuscarSiguienteExt ( p_secObj, p_by20, 2 ) != 4 ) ||
+			 ( SSecBuscarSiguienteExt ( p_secObj, p_by20, 4 ) != -1 ) )
+		{
+			printf( "Error caso 1: el 20 deberia estar en 0, 2 y 4\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecBuscarSiguienteExt ( p_secObj, p_by20, 1 ) != 2 ) || ( SSecBuscarSiguienteExt ( p_secObj, p_by20, -1 ) != 0 ) ||
+			 ( SSecBuscarExt ( p_secObj, p_by20 ) != 0 ) )
+		{
+			printf( "Error caso 2: detras de la 1 el 20 esta en la 2, y BuscarExt es BuscarPrimeroExt\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecRepeticionesExt ( p_secObj, p_by20 ) != 3 ) || ( SSecExisteExt ( p_secObj, p_by20 ) != 1 ) ||
+			 ( SSecRepeticionesExt ( p_secObj, p_by99 ) != 0 ) || ( SSecExisteExt ( p_secObj, p_by99 ) != 0 ) ||
+			 ( SSecBuscarExt ( p_secObj, p_by99 ) != -1 ) || ( SSecBuscarPrimeroExt ( p_secObj, p_by99 ) != -1 ) )
+		{
+			printf( "Error caso 3: el 20 deberia estar 3 veces y el 99 ninguna\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecRepeticionesExt ( p_secVacia, p_by20 ) != 0 ) || ( SSecExisteExt ( p_secVacia, p_by20 ) != 0 ) ||
+			 ( SSecBuscarPrimeroExt ( p_secVacia, p_by20 ) != -1 ) )
+		{
+			printf( "Error caso 4: en una secuencia vacia no deberia estar nada\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecBuscarSiguienteExt ( p_secObj, p_by20, 5 ) != -1 ) ||
+			 ( SSecBuscarSiguienteExt ( p_secObj, p_by20, -2 ) != -1 ) )
+		{
+			printf( "Error caso 5: desde el final o con una posicion menor que -1 se esperaba -1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecBuscarSiguienteExt ( NULL, p_by20, -1 ) != -1 ) || ( SSecBuscarSiguienteExt ( p_secObj, NULL, -1 ) != -1 ) ||
+			 ( SSecBuscarExt ( NULL, p_by20 ) != -1 ) || ( SSecBuscarExt ( p_secObj, NULL ) != -1 ) ||
+			 ( SSecBuscarPrimeroExt ( NULL, p_by20 ) != -1 ) || ( SSecBuscarPrimeroExt ( p_secObj, NULL ) != -1 ) ||
+			 ( SSecRepeticionesExt ( NULL, p_by20 ) != 0 ) || ( SSecRepeticionesExt ( p_secObj, NULL ) != 0 ) ||
+			 ( SSecExisteExt ( NULL, p_by20 ) != 0 ) || ( SSecExisteExt ( p_secObj, NULL ) != 0 ) )
+		{
+			printf( "Error caso 6: con un nulo se esperaba -1 al buscar y 0 al contar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear las secuencias\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecDestruir ( &p_secObj );
+	SSecDestruir ( &p_secVacia );
+	return ( iRes );
+}
+
+/* Con bloque, el tamaño cuenta: 8 bytes que empiezan por el int 20 no son el
+   int 20. */
+static int TestSSecBuscarTam01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecBuscarTam 01:\n" );
+
+	int iVal [ 2 ] = { 10, 20 };
+	SSecuencia * p_secObj = CrearSecEnteros ( iVal, 2 );
+	SBloque * p_blqLargo = SBlqCrear ( 8 );
+	if ( ES_VALIDO ( p_secObj ) && ES_VALIDO ( p_blqLargo ) )
+	{
+		SBlqEscribirEnteroEnPos ( p_blqLargo, 0, 20 );
+		SBlqEscribirEnteroEnPos ( p_blqLargo, 4, 0 );
+		if ( ( SSecBuscar ( p_secObj, p_blqLargo ) != -1 ) || ( SSecExiste ( p_secObj, p_blqLargo ) != 0 ) ||
+			 ( SSecRepeticiones ( p_secObj, p_blqLargo ) != 0 ) )
+		{
+			printf( "Error caso 1: un bloque de 8 bytes no deberia igualar a un int\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear la secuencia o el bloque\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SBlqDestruir ( &p_blqLargo );
+	SSecDestruir ( &p_secObj );
 	return ( iRes );
 }
 
@@ -700,6 +805,8 @@ int TestSSecuencia ()
 			( TestSSecCrearDesdeLista01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecBuscar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecBuscarSiguiente01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecBuscarExt01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecBuscarTam01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecExtraerSecuencia01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecConjuntos01 () == BOOL_VAL_CIERTO ) &&

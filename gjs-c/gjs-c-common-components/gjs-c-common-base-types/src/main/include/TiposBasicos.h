@@ -24,6 +24,7 @@
 #include <TiposResultado.h>
 
 #include <SBloque.h>
+#include <SBloqueMultiPlataforma.h>
 #include <SBuffer.h>
 #include <SDatos.h>
 #include <SPtr.h>
@@ -109,6 +110,10 @@
 
 #include <SConjuntoReferencias.h>
 #include <SSecuenciaParejas.h>
+#include <SConjuntoId.h>
+#include <SSecuenciaId.h>
+
+#include <UtilesColecciones.h>
 
 
 #endif

@@ -99,6 +99,8 @@ int MemEsInvalida ( void * p_vDireccion );
 
 int MemEsIgual ( void * p_vBloque1, void * p_vBloque2, int iNumBytes );
 
+int MemDistanciaAPrimerNulo ( void * p_vBloque, int iMaxBytes );
+
 #endif
 
 

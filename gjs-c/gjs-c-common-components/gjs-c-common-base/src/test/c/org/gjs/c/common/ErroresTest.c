@@ -197,6 +197,7 @@ static int TestErrCodigosDadosDeAlta01 ()
 							ERR_ESTRUCTURA_INVALIDA,
 							ERR_CONVERSION_IMPOSIBLE,
 							ERR_COPIA_OBJETO,
+							ERR_LECTURA_MEMORIA,
 							ERR_GENERAL_OPERATIVO };
 	int		iNumCodigos = (int) ( sizeof ( iCodigos ) / sizeof ( iCodigos [ 0 ] ) );
 	int		iIdx;

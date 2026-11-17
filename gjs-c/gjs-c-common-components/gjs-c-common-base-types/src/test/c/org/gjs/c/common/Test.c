@@ -2,7 +2,7 @@
 
 // TODO
 
-#define NUM_TESTS        74
+#define NUM_TESTS        78
 
 extern int TestSId ();
 extern int TestSBloque ();
@@ -78,6 +78,10 @@ extern int TestSListaEnterosLargosSinSigno ();
 extern int TestSPtr ();
 extern int TestSSecuenciaUnica ();
 extern int TestSSecuenciaUnicaPtr ();
+extern int TestUtilesColecciones ();
+extern int TestSBloqueMultiPlataforma ();
+extern int TestSConjuntoId ();
+extern int TestSSecuenciaId ();
 
 char ** testArrayInit ()
 {
@@ -156,6 +160,10 @@ char ** testArrayInit ()
 	p_p_cTests [ 71 ] = CadDuplicar ( "SPtr" );
     p_p_cTests [ 72 ] = CadDuplicar ( "SSecuenciaUnica" );
     p_p_cTests [ 73 ] = CadDuplicar ( "SSecuenciaUnicaPtr" );
+    p_p_cTests [ 74 ] = CadDuplicar ( "UtilesColecciones" );
+    p_p_cTests [ 75 ] = CadDuplicar ( "SBloqueMultiPlataforma" );
+    p_p_cTests [ 76 ] = CadDuplicar ( "SConjuntoId" );
+    p_p_cTests [ 77 ] = CadDuplicar ( "SSecuenciaId" );
     return p_p_cTests;
 }
 
@@ -236,6 +244,10 @@ PFUNINTV * functionArrayInit ()
 	p_fTests [ 71 ] = TestSPtr;
     p_fTests [ 72 ] = TestSSecuenciaUnica;
     p_fTests [ 73 ] = TestSSecuenciaUnicaPtr;
+    p_fTests [ 74 ] = TestUtilesColecciones;
+    p_fTests [ 75 ] = TestSBloqueMultiPlataforma;
+    p_fTests [ 76 ] = TestSConjuntoId;
+    p_fTests [ 77 ] = TestSSecuenciaId;
     return p_fTests;
 }
 

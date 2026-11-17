@@ -96,6 +96,7 @@ está en rango, y `ES_VALIDO` la da por buena.
 | `void * MemDuplicar ( void * p_vOrig, int iNumBytes )`                   | Copia a un bloque nuevo, del llamante.  |
 | `int MemEsValida ( void * p_vDireccion )`                                | Comprueba si la dirección es plausible. |
 | `int MemEsIgual ( void * p_vBloque1, void * p_vBloque2, int iNumBytes )` | Compara byte a byte.                    |
+| `int MemDistanciaAPrimerNulo ( void * p_vBloque, int iMaxBytes )`        | Bytes hasta el primer `0x00`.           |
 
 ## Comportamiento
 
@@ -195,7 +196,30 @@ que los tenga es cosa del que llama.
 
 Comparación byte a byte con salida temprana. Con `iNumBytes == 0` devuelve `1`
 (dos bloques de longitud cero son iguales). Si alguno de los punteros no supera
-`ES_VALIDO` devuelve `0` sin anotar error.
+`ES_VALIDO` devuelve `0` y anota `ERR_MEMORIA_INVALIDA`; con `iNumBytes`
+negativo, `0` y `ERR_PARAMETROS`. Que los bloques sean distintos no anota nada.
+
+### `MemDistanciaAPrimerNulo`
+
+Cuenta los bytes que hay desde `p_vBloque` hasta el primer `0x00`, sin
+contarlo: es `strnlen` sobre memoria cruda, hecho con `memchr`. Un bloque que
+empieza por `0x00` da `0`.
+
+**Nunca lee más de `iMaxBytes`.** El nulo puede estar en el último de ellos
+(posición `iMaxBytes - 1`); si no aparece en el tramo devuelve `-1` y anota
+`ERR_LECTURA_MEMORIA`, en vez de seguir leyendo más allá del bloque.
+
+| Caso                                    | Devuelve  | Error anotado          |
+| --------------------------------------- | --------- | ---------------------- |
+| Nulo dentro de los `iMaxBytes` primeros | distancia | ninguno                |
+| Sin nulo en el tramo                    | `-1`      | `ERR_LECTURA_MEMORIA`  |
+| `iMaxBytes <= 0`                        | `-1`      | `ERR_PARAMETROS`       |
+| Puntero que no supera `ES_VALIDO`       | `-1`      | `ERR_MEMORIA_INVALIDA` |
+
+No comprueba si la memoria se puede leer: no hay forma fiable de hacerlo, y el
+riesgo real es leer más allá del bloque por memoria que sí es legible. El tope
+es lo que evita las dos cosas, así que tiene que ser el tamaño del bloque, no
+un valor grande cualquiera.
 
 ## Dependencias
 

@@ -38,9 +38,19 @@ SContenido * SConCrearEntero ()
 	return ( SConCrear ( sizeof ( int ) ) );
 }
 
+SContenido * SConCrearEnteroSinSigno ()
+{
+	return ( SConCrear ( sizeof ( unsigned int ) ) );
+}
+
 SContenido * SConCrearEnteroLargo ()
 {
 	return ( SConCrear ( sizeof ( long ) ) );
+}
+
+SContenido * SConCrearEnteroLargoSinSigno ()
+{
+	return ( SConCrear ( sizeof ( unsigned long ) ) );
 }
 
 SContenido * SConCrearReal ()
@@ -183,6 +193,21 @@ int SConEntero ( SContenido * p_conObj )
 	return ( iRes );
 }
 
+unsigned int SConEnteroSinSigno ( SContenido * p_conObj )
+{
+	unsigned int uiRes;
+
+	if ( ES_VALIDO ( p_conObj ) )
+	{
+		uiRes = SBlqEnteroSinSigno ( p_conObj->p_blqDatos );
+	}
+	else
+	{
+		uiRes = 0;
+	}
+	return ( uiRes );
+}
+
 long SConEnteroLargo ( SContenido * p_conObj )
 {
 	long lRes;
@@ -196,6 +221,21 @@ long SConEnteroLargo ( SContenido * p_conObj )
 		lRes = 0;
 	}
 	return ( lRes );
+}
+
+unsigned long SConEnteroLargoSinSigno ( SContenido * p_conObj )
+{
+	unsigned long ulRes;
+
+	if ( ES_VALIDO ( p_conObj ) )
+	{
+		ulRes = SBlqEnteroLargoSinSigno ( p_conObj->p_blqDatos );
+	}
+	else
+	{
+		ulRes = 0;
+	}
+	return ( ulRes );
 }
 
 float SConReal ( SContenido * p_conObj )
@@ -347,6 +387,21 @@ int SConEscribirEntero ( SContenido * p_conObj, int iValor )
 	return ( iRes );
 }
 
+int SConEscribirEnteroSinSigno ( SContenido * p_conObj, unsigned int uiValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_conObj ) )
+	{
+		iRes = SBlqEscribirEnteroSinSigno ( p_conObj->p_blqDatos, uiValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int SConEscribirEnteroLargo ( SContenido * p_conObj, long lValor )
 {
 	int iRes;
@@ -354,6 +409,21 @@ int SConEscribirEnteroLargo ( SContenido * p_conObj, long lValor )
 	if ( ES_VALIDO ( p_conObj ) )
 	{
 		iRes = SBlqEscribirEnteroLargo ( p_conObj->p_blqDatos, lValor );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SConEscribirEnteroLargoSinSigno ( SContenido * p_conObj, unsigned long ulValor )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_conObj ) )
+	{
+		iRes = SBlqEscribirEnteroLargoSinSigno ( p_conObj->p_blqDatos, ulValor );
 	}
 	else
 	{
@@ -407,6 +477,72 @@ int SConEscribirCadena ( SContenido * p_conObj, const char * p_cValor )
 	return ( iRes );
 }
 
+int SConEsIgual ( SContenido * p_conObj1, SContenido * p_conObj2 )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_conObj1 ) )
+	{
+		if ( ES_VALIDO ( p_conObj2 ) )
+		{
+			iRes = SBlqEsIgual ( SConDatos ( p_conObj1 ), SConDatos ( p_conObj2 ) );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SConEsIgualBlq ( SContenido * p_conObj, SBloque * p_blqObj )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_conObj ) )
+	{
+		if ( ES_VALIDO ( p_blqObj ) )
+		{
+			iRes = SBlqEsIgual ( SConDatos ( p_conObj ), p_blqObj );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SConEsIgualExt ( SContenido * p_conObj, byte * p_byObj )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_conObj ) )
+	{
+		if ( ES_VALIDO ( p_byObj ) )
+		{
+			iRes = SBlqEsIgualExt ( SConDatos ( p_conObj ), p_byObj );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int	SConLiberacionMemoriaActivada ( SContenido * p_conObj )
 {
 	int iRes;
@@ -449,6 +585,21 @@ SContenido * SConDuplicar ( SContenido * p_conObj )
 		p_conDup = NULL;
 	}
 	return ( p_conDup );
+}
+
+unsigned int SConHash ( SContenido * p_conObj )
+{
+	unsigned int uiRes;
+
+	if ( ES_VALIDO ( p_conObj ) )
+	{
+		uiRes = SBlqHash ( p_conObj->p_blqDatos );
+	}
+	else
+	{
+		uiRes = 0;
+	}
+	return ( uiRes );
 }
 
 

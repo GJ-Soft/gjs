@@ -21,7 +21,9 @@ typedef struct
 
 SContenido * SConCrear ( int iTam );
 SContenido * SConCrearEntero ();
+SContenido * SConCrearEnteroSinSigno ();
 SContenido * SConCrearEnteroLargo ();
+SContenido * SConCrearEnteroLargoSinSigno ();
 SContenido * SConCrearReal ();
 SContenido * SConCrearRealDoble ();
 SContenido * SConCrearCadena ();
@@ -34,7 +36,9 @@ int SConEsValido ( SContenido * p_conObj );
 
 SBloque * SConDatos ( SContenido * p_conObj );
 int SConEntero ( SContenido * p_conObj );
+unsigned int SConEnteroSinSigno ( SContenido * p_conObj );
 long SConEnteroLargo ( SContenido * p_conObj );
+unsigned long SConEnteroLargoSinSigno ( SContenido * p_conObj );
 float SConReal ( SContenido * p_conObj );
 double SConRealDoble ( SContenido * p_conObj );
 char * SConCadena ( SContenido * p_conObj );
@@ -44,7 +48,9 @@ int SConModificar ( SContenido * p_conObj, SBloque * p_blqDatos );
 int SConModificarDir ( SContenido * p_conObj, byte * p_byDirDatos, int iTamDatos, int iLiberar );
 int SConEscribirByte ( SContenido * p_conObj, int iPos, byte byValor );
 int SConEscribirEntero ( SContenido * p_conObj, int iValor );
+int SConEscribirEnteroSinSigno ( SContenido * p_conObj, unsigned int uiValor );
 int SConEscribirEnteroLargo ( SContenido * p_conObj, long lValor );
+int SConEscribirEnteroLargoSinSigno ( SContenido * p_conObj, unsigned long ulValor );
 int SConEscribirReal ( SContenido * p_conObj, float fValor );
 int SConEscribirRealDoble ( SContenido * p_conObj, double dValor );
 int SConEscribirCadena ( SContenido * p_conObj, const char * p_cValor );
@@ -54,6 +60,13 @@ int	SConLiberacionMemoriaActivada ( SContenido * p_conObj );
 //void SConDesactivarLiberacionMemoria ( SContenido * p_conObj );
 
 SContenido * SConDuplicar ( SContenido * p_conObj );
+
+int SConEsIgual ( SContenido * p_conObj1, SContenido * p_conObj2 );
+int SConEsIgualBlq ( SContenido * p_conObj, SBloque * p_blqObj );
+int SConEsIgualExt ( SContenido * p_conObj, byte * p_byObj );
+
+unsigned int SConHash ( SContenido * p_conObj );
+
 
 
 

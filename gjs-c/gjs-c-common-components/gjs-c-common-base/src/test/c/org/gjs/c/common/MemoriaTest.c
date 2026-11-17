@@ -215,6 +215,148 @@ static int TestMemEsValida01 ()
 
 
 
+static int TestMemEsIgualErrores01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test MemEsIgualErrores 01:\n" );
+	byte byBloque [ 4 ] = { 1, 2, 3, 4 };
+
+	ErrLimpiar ();
+	if ( MemEsIgual ( NULL, byBloque, 4 ) != 0 )
+	{
+		printf( "Error caso 1: con el primero nulo deberia dar 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ErrCodigo () != ERR_MEMORIA_INVALIDA )
+	{
+		printf( "Error caso 2: se esperaba ERR_MEMORIA_INVALIDA: %d\n", ErrCodigo () );
+		iRes = BOOL_VAL_FALSO;
+	}
+	ErrLimpiar ();
+	if ( MemEsIgual ( byBloque, NULL, 4 ) != 0 )
+	{
+		printf( "Error caso 3: con el segundo nulo deberia dar 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ErrCodigo () != ERR_MEMORIA_INVALIDA )
+	{
+		printf( "Error caso 4: se esperaba ERR_MEMORIA_INVALIDA: %d\n", ErrCodigo () );
+		iRes = BOOL_VAL_FALSO;
+	}
+	ErrLimpiar ();
+	if ( MemEsIgual ( byBloque, byBloque, -1 ) != 0 )
+	{
+		printf( "Error caso 5: con tamano negativo deberia dar 0\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ErrCodigo () != ERR_PARAMETROS )
+	{
+		printf( "Error caso 6: se esperaba ERR_PARAMETROS: %d\n", ErrCodigo () );
+		iRes = BOOL_VAL_FALSO;
+	}
+	ErrLimpiar ();
+	/* Distintos no es un error. */
+	if ( MemEsIgual ( byBloque, byBloque + 1, 2 ) != 0 )
+	{
+		printf( "Error caso 7: 1,2 y 2,3 no deberian ser iguales\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ErrCodigo () != ERR_OK )
+	{
+		printf( "Error caso 8: comparar bloques distintos no deberia anotar error: %d\n", ErrCodigo () );
+		iRes = BOOL_VAL_FALSO;
+	}
+	ErrLimpiar ();
+	return ( iRes );
+}
+
+static int TestMemDistanciaAPrimerNulo01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test MemDistanciaAPrimerNulo 01:\n" );
+	byte byBloque [ 6 ] = { 'a', 'b', 'c', 0x00, 'd', 0x00 };
+	byte byVacio [ 1 ] = { 0x00 };
+	byte bySinNulo [ 4 ] = { 'w', 'x', 'y', 'z' };
+
+	ErrLimpiar ();
+	if ( MemDistanciaAPrimerNulo ( byBloque, 6 ) != 3 )
+	{
+		printf( "Error caso 1: se esperaba 3: %d\n", MemDistanciaAPrimerNulo ( byBloque, 6 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* Se para en el primer nulo, no en el ultimo. */
+	if ( MemDistanciaAPrimerNulo ( byBloque + 4, 2 ) != 1 )
+	{
+		printf( "Error caso 2: se esperaba 1: %d\n", MemDistanciaAPrimerNulo ( byBloque + 4, 2 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( MemDistanciaAPrimerNulo ( byVacio, 1 ) != 0 )
+	{
+		printf( "Error caso 3: se esperaba 0: %d\n", MemDistanciaAPrimerNulo ( byVacio, 1 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* El nulo justo en el ultimo byte permitido cuenta. */
+	if ( MemDistanciaAPrimerNulo ( byBloque, 4 ) != 3 )
+	{
+		printf( "Error caso 4: con el nulo en el ultimo byte se esperaba 3: %d\n", MemDistanciaAPrimerNulo ( byBloque, 4 ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ErrCodigo () != ERR_OK )
+	{
+		printf( "Error caso 5: encontrar el nulo no deberia anotar error: %d\n", ErrCodigo () );
+		iRes = BOOL_VAL_FALSO;
+	}
+
+	/* Sin nulo dentro del tope: no se lee mas alla. */
+	ErrLimpiar ();
+	if ( MemDistanciaAPrimerNulo ( bySinNulo, 4 ) != -1 )
+	{
+		printf( "Error caso 6: sin nulo en el tramo se esperaba -1\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ErrCodigo () != ERR_LECTURA_MEMORIA )
+	{
+		printf( "Error caso 7: se esperaba ERR_LECTURA_MEMORIA: %d\n", ErrCodigo () );
+		iRes = BOOL_VAL_FALSO;
+	}
+	ErrLimpiar ();
+	if ( MemDistanciaAPrimerNulo ( byBloque, 3 ) != -1 )
+	{
+		printf( "Error caso 8: con el nulo justo fuera del tope se esperaba -1\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ErrCodigo () != ERR_LECTURA_MEMORIA )
+	{
+		printf( "Error caso 9: se esperaba ERR_LECTURA_MEMORIA: %d\n", ErrCodigo () );
+		iRes = BOOL_VAL_FALSO;
+	}
+
+	ErrLimpiar ();
+	if ( MemDistanciaAPrimerNulo ( byBloque, 0 ) != -1 )
+	{
+		printf( "Error caso 10: con tope 0 se esperaba -1\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ErrCodigo () != ERR_PARAMETROS )
+	{
+		printf( "Error caso 11: se esperaba ERR_PARAMETROS: %d\n", ErrCodigo () );
+		iRes = BOOL_VAL_FALSO;
+	}
+	ErrLimpiar ();
+	if ( MemDistanciaAPrimerNulo ( NULL, 4 ) != -1 )
+	{
+		printf( "Error caso 12: con un nulo se esperaba -1\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ErrCodigo () != ERR_MEMORIA_INVALIDA )
+	{
+		printf( "Error caso 13: se esperaba ERR_MEMORIA_INVALIDA: %d\n", ErrCodigo () );
+		iRes = BOOL_VAL_FALSO;
+	}
+	ErrLimpiar ();
+	return ( iRes );
+}
+
 int TestMemoria ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -226,7 +368,9 @@ int TestMemoria ()
 			( TestMemCopiarIgual01 () == BOOL_VAL_CIERTO ) &&
 			( TestMemDuplicar01 () == BOOL_VAL_CIERTO ) &&
 			( TestMemRedimensionar01 () == BOOL_VAL_CIERTO ) &&
-			( TestMemEsValida01 () == BOOL_VAL_CIERTO ) )
+			( TestMemEsValida01 () == BOOL_VAL_CIERTO ) &&
+			( TestMemEsIgualErrores01 () == BOOL_VAL_CIERTO ) &&
+			( TestMemDistanciaAPrimerNulo01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

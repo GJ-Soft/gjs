@@ -2,9 +2,9 @@
 
 | Dato          | Valor                                                                             |
 | ------------- | --------------------------------------------------------------------------------- |
-| Módulos       | 4                                                                                 |
-| Cabeceras     | `SConjunto.h`, `SConjuntoPtr.h`, `SConjuntoLiterales.h`, `SConjuntoReferencias.h` |
-| Prefijos      | `SCnj`, `SCnjp`, `SCnjLit`, `SCnjRef`                                             |
+| Módulos       | 5                                                                                 |
+| Cabeceras     | `SConjunto.h`, `SConjuntoPtr.h`, `SConjuntoLiterales.h`, `SConjuntoReferencias.h`, `SConjuntoId.h` |
+| Prefijos      | `SCnj`, `SCnjp`, `SCnjLit`, `SCnjRef`, `SCnjId`                                           |
 | Incluidos por | `TiposBasicos.h`                                                                  |
 | Tests         | Uno por módulo                                                                    |
 
@@ -226,17 +226,53 @@ Además `Crear`, `Destruir`, `EsValido`, `EstaVacio` y `NumElementos`.
 - `Existe`, `Buscar` y `Eliminar` buscan con una referencia sonda en la pila, sin
   reservar memoria.
 
+### `SConjuntoId`
+
+Conjunto de [identificadores](Identificadores.md) sin repetir, ordenado por
+`SIdComparar`, sobre un `SConjunto`. Es la prueba de concepto de un conjunto de
+**estructuras guardadas por copia**: no guarda los `SId` sino su contenido
+(`SIdBloqueBin`), y para comparar dos lo vuelve a leer como `SId`.
+
+| Función                                                         | Descripción                                                  |
+| --------------------------------------------------------------- | ------------------------------------------------------------ |
+| `int SCnjIdInsertar ( SConjuntoId *, SId * )`                   | Guarda una copia; 0 si ya hay uno igual o con un nulo. El `SId` sigue siendo del llamante. |
+| `int SCnjIdInsertarExt ( SConjuntoId *, unsigned long )`        | Lo mismo por valor.                                          |
+| `int SCnjIdExiste` / `SCnjIdBuscar ( SConjuntoId *, SId * )`    | 1 / la posición si hay uno igual; 0 / -1 si no.              |
+| `SCnjIdExisteExt` / `SCnjIdBuscarExt ( …, unsigned long )`      | Lo mismo por valor.                                          |
+| `SId * SCnjIdElemento ( SConjuntoId *, int iElem )`             | **`SId` nuevo** leído de la copia, del llamante.             |
+| `unsigned long SCnjIdValorElemento ( SConjuntoId *, int iElem )` | El valor; 0 si no hay elemento, que no se distingue de un 0. |
+| `int SCnjIdEliminar ( …, SId * )` / `SCnjIdEliminarExt ( …, unsigned long )` | Busca y elimina; 0 si no está.                  |
+| `int SCnjIdEliminarElem ( SConjuntoId *, int iElem )`           | Por posición.                                                |
+| `int SCnjIdVaciar ( SConjuntoId * )`                            | Elimina todos.                                               |
+| `SConjunto * SCnjIdConjunto ( SConjuntoId * )`                  | Expone el `SConjunto` interno.                               |
+
+Además `Crear`, `Destruir`, `EsValido`, `EstaVacio` y `NumElementos`.
+
+- **El orden es el de `SIdComparar`, no el de los bytes**: guardados en
+  little-endian, 256 (`00 01 …`) iría antes que 1 (`01 00 …`) comparando
+  memoria. El comparador lee cada copia como `SId` y los compara.
+- **El comparador sólo recibe la dirección de los datos**, no su tamaño
+  (`SCmpEvaluarBloque` lo llama cuando los dos bloques miden lo mismo). Por eso
+  `SId` da `SIdTamBloqueBin ()`, y el comparador arma en la pila un `SBloque` de
+  ese tamaño sobre la copia para leerla. Para una estructura de tamaño variable
+  el comparador necesitaría que se le pasara el tamaño, o un formato que lo
+  lleve dentro.
+- Cada comparación crea y destruye dos `SId`: es el precio de comparar como
+  estructura y no como bytes.
+
+## Dependencias
 ## Dependencias
 
 - [Listas](Listas.md) — `SListaOrdenada` y `SListaOrdenadaPtr`.
 - [SComparador](SComparador.md) — el criterio de orden.
 - [SElemento](SElemento.md) y [SBloque](SBloque.md) — el contenido.
 - [ParejasReferencias](ParejasReferencias.md) — `SConjuntoReferencias`.
+- [Identificadores](Identificadores.md) — `SConjuntoId`.
 
 ## Tests
 
 `SConjuntoTest.c`, `SConjuntoPtrTest.c`, `SConjuntoLiteralesTest.c`,
-`SConjuntoReferenciasTest.c`.
+`SConjuntoReferenciasTest.c`, `SConjuntoIdTest.c`.
 
 ## Observaciones
 

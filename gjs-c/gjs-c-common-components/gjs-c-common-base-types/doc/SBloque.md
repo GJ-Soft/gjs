@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/SBloque.c` |
 | Prefijo      | `SBlq`                                  |
 | Struct       | `SBloque`                               |
-| Funciones    | 52                                      |
+| Funciones    | 80                                      |
 | Incluido por | `TiposBasicos.h`                        |
 | Test         | `SBloqueTest.c` → `TestSBloque()`       |
 
@@ -76,6 +76,13 @@ typedef struct
 `SBlqLeerByte ( SBloque *, int iPos )` interpretan el contenido como el tipo
 correspondiente.
 
+La familia `…EnPos` lee el tipo en una posición concreta: `SBlqLeerEnteroEnPos`,
+`SBlqLeerEnteroLargoEnPos`, `SBlqLeerEnteroSinSignoEnPos`,
+`SBlqLeerEnteroLargoSinSignoEnPos`, `SBlqLeerRealEnPos`,
+`SBlqLeerRealDobleEnPos` y `SBlqLeerCadenaEnPos`, más
+`SBlqLeerBuffer ( SBloque *, int iPos, byte *, int iTam )`, que copia `iTam`
+bytes a memoria externa. Son las simétricas de las `SBlqEscribir…EnPos`.
+
 ### Escritura tipada
 
 Dos familias simétricas, una que escribe al principio del bloque y otra en una
@@ -94,6 +101,23 @@ posición concreta:
 Más `SBlqEscribirByte ( SBloque *, int iPos, byte )` y
 `SBlqEscribirBuffer ( SBloque *, int iPos, byte *, int iTam )`.
 
+### Lectura y escritura secuencial
+
+Las `…Ext` toman la posición por puntero (`int * p_iPos`) y, si la operación
+sale bien, la dejan **justo detrás de lo leído o escrito**. Así se recorre un
+bloque campo a campo sin llevar la cuenta a mano:
+
+```c
+int iPos = 0;
+SBlqEscribirEnteroEnPosExt ( p_blq, &iPos, 42 );          /* iPos = 4 */
+SBlqEscribirCadenaEnPosExt ( p_blq, &iPos, "gjs" );       /* iPos = 8 */
+```
+
+Hay una por cada `…EnPos` de lectura y de escritura (`SBlqLeerEnteroEnPosExt`,
+`SBlqEscribirRealDobleEnPosExt`…), más `SBlqLeerByteExt`, `SBlqEscribirByteExt`,
+`SBlqLeerBufferExt`, `SBlqEscribirBufferExt`, `SBlqVolcarExt` y
+`SBlqExtraerExt`.
+
 ### Copia, comparación y extracción
 
 | Función                                                   | Descripción                            |
@@ -103,6 +127,7 @@ Más `SBlqEscribirByte ( SBloque *, int iPos, byte )` y
 | `int SBlqCopiar ( SBloque * dest, SBloque * orig )`       | Copia entre bloques.                   |
 | `int SBlqVolcar ( SBloque *, int iPos, SBloque * )`       | Vuelca otro bloque en una posición.    |
 | `SBloque * SBlqExtraer ( SBloque *, int iPos, int iTam )` | Trozo como bloque nuevo.               |
+| `SBlqVolcarExt`, `SBlqExtraerExt`                         | Igual, avanzando `*p_iPos`.            |
 | `int SBlqEsIgual ( SBloque *, SBloque * )`                | Compara contenidos.                    |
 | `int SBlqEsIgualExt ( SBloque *, byte * )`                | Compara con memoria externa.           |
 | `int SBlqEsCompatible ( SBloque *, SBloque * )`           | Mismo tamaño.                          |
@@ -126,6 +151,30 @@ Es el punto que hay que tener claro para no filtrar ni liberar dos veces:
 `SBlqDatos` devuelve el puntero **interno**: no hay que liberarlo y deja de ser
 válido cuando se destruye el bloque. Para quedarse con una copia está
 `SBlqDuplicarDatos`.
+
+### Lectura en posición
+
+- **Todo o nada.** Lo leído tiene que caber entero entre `iPos` y el final del
+  bloque. Si no cabe, o la posición es negativa, o el bloque o el destino no
+  son válidos, las lecturas tipadas devuelven `0` y anotan
+  `ERR_LECTURA_MEMORIA`; `SBlqLeerBuffer` devuelve `0` y no copia nada.
+  `SBlqLeerBuffer` exige además `iTam > 0`.
+- **La posición sólo avanza si la operación sale bien.** Una `…Ext` que falla
+  deja `*p_iPos` como estaba; sin `p_iPos` no hace nada.
+- Los valores se guardan con el orden de bytes de la máquina, y `long` y
+  `unsigned long` miden 4 bytes en Windows y 8 en Cygwin y Linux. Para un
+  formato que no dependa de la plataforma está
+  [SBloqueMultiPlataforma](SBloqueMultiPlataforma.md).
+
+### Cadenas en posición
+
+`SBlqEscribirCadenaEnPos` y `SBlqEscribirCadenaEnPosExt` escriben la cadena
+**con su nulo**, así que ocupan `CadLongitud + 1` bytes; si no caben enteras,
+no escriben nada. `SBlqLeerCadenaEnPos` y su `Ext` leen hasta ese nulo, que
+tiene que estar dentro del bloque: si no lo encuentran devuelven `NULL` y anotan
+`ERR_LECTURA_MEMORIA`, sin leer más allá del final. La cadena devuelta es
+**nueva y del llamante**, que la libera con `MemLiberarCadena`. La `Ext` deja la
+posición detrás del nulo.
 
 ### Validaciones
 
@@ -152,4 +201,8 @@ positivo y un `iLiberar` que sea 0 o 1; si algo falla devuelve `NULL`.
   puede rechazar direcciones legítimas fuera de ese rango.
 - La lectura tipada no comprueba que el tamaño del bloque case con el del tipo
   leído: `SBlqRealDoble` sobre un bloque de 4 bytes lee fuera. `SBlqTamCompatible`
-  existe precisamente para eso, pero hay que llamarlo explícitamente.
+  existe precisamente para eso, pero hay que llamarlo explícitamente. Las
+  `SBlqLeer…EnPos` sí lo comprueban.
+- `SBlqCadena` y `SBlqEscribirCadena` no son simétricas: la primera devuelve el
+  `char *` guardado en el bloque y la segunda copia los caracteres. Las de
+  posición sí lo son entre sí.

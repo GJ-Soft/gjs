@@ -136,16 +136,16 @@ SElemento * SSecUnElemento ( SSecuenciaUnica * p_secObj, int iElem )
 	return ( p_elmRes );
 }
 
-/* Buscan por el contenido de p_elmObj, que no hace falta que este en la
-   secuencia. Buscar da la posicion, o -1: como no hay repetidos, es la
-   unica. */
-int SSecUnExiste ( SSecuenciaUnica * p_secObj, SElemento * p_elmObj )
+/* Buscan un elemento cuyo bloque sea igual a p_blqDatos, que no hace falta
+   que este en la secuencia. Buscar da la posicion, o -1: como no hay
+   repetidos, es la unica. */
+int SSecUnExiste ( SSecuenciaUnica * p_secObj, SBloque * p_blqDatos )
 {
 	int	iRes;
 
 	if ( ES_VALIDO ( p_secObj ) )
 	{
-		iRes = SSecExiste ( p_secObj->p_secDatos, p_elmObj );
+		iRes = SSecExiste ( p_secObj->p_secDatos, p_blqDatos );
 	}
 	else
 	{
@@ -154,13 +154,45 @@ int SSecUnExiste ( SSecuenciaUnica * p_secObj, SElemento * p_elmObj )
 	return ( iRes );
 }
 
-int SSecUnBuscar ( SSecuenciaUnica * p_secObj, SElemento * p_elmObj )
+int SSecUnBuscar ( SSecuenciaUnica * p_secObj, SBloque * p_blqDatos )
 {
 	int	iRes;
 
 	if ( ES_VALIDO ( p_secObj ) )
 	{
-		iRes = SSecBuscar ( p_secObj->p_secDatos, p_elmObj );
+		iRes = SSecBuscar ( p_secObj->p_secDatos, p_blqDatos );
+	}
+	else
+	{
+		iRes = -1;
+	}
+	return ( iRes );
+}
+
+/* Como las anteriores, con memoria cruda: se comparan tantos bytes como mida
+   el bloque de cada elemento. */
+int SSecUnExisteExt ( SSecuenciaUnica * p_secObj, byte * p_byDatos )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		iRes = SSecExisteExt ( p_secObj->p_secDatos, p_byDatos );
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SSecUnBuscarExt ( SSecuenciaUnica * p_secObj, byte * p_byDatos )
+{
+	int	iRes;
+
+	if ( ES_VALIDO ( p_secObj ) )
+	{
+		iRes = SSecBuscarExt ( p_secObj->p_secDatos, p_byDatos );
 	}
 	else
 	{
@@ -179,7 +211,7 @@ int SSecUnInsertar ( SSecuenciaUnica * p_secObj, SElemento * p_elmObj )
 	{
 		if ( ES_VALIDO ( p_elmObj ) )
 		{
-			if ( SSecExiste ( p_secObj->p_secDatos, p_elmObj ) == 0 )
+			if ( SSecExiste ( p_secObj->p_secDatos, SElmDatos ( p_elmObj ) ) == 0 )
 			{
 				iRes = SSecInsertar ( p_secObj->p_secDatos, p_elmObj );
 			}
@@ -717,7 +749,7 @@ static int _SSecUnCopiar ( SSecuencia * p_secDest, SLista * p_lisValores )
 			p_elmObj = SLisElemento ( p_lisValores, 0 );
 			while ( ES_VALIDO ( p_elmObj ) && ( iRes == 1 ) )
 			{
-				if ( SSecExiste ( p_secDest, p_elmObj ) == 0 )
+				if ( SSecExiste ( p_secDest, SElmDatos ( p_elmObj ) ) == 0 )
 				{
 					p_elmNuevo = SElmDuplicar ( p_elmObj );
 					if ( SSecInsertar ( p_secDest, p_elmNuevo ) != 1 )
@@ -763,7 +795,7 @@ static int _SSecUnMover ( SSecuencia * p_secDest, SLista * p_lisValores )
 			{
 				/* El sucesor, ANTES de extraer. */
 				p_elmSig = SElmSucesor ( p_elmObj );
-				if ( SSecExiste ( p_secDest, p_elmObj ) == 0 )
+				if ( SSecExiste ( p_secDest, SElmDatos ( p_elmObj ) ) == 0 )
 				{
 					p_elmExt = SLisExtraerElem ( p_lisValores, iPos );
 					if ( SSecInsertar ( p_secDest, p_elmExt ) != 1 )

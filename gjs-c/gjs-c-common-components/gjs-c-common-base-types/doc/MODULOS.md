@@ -1,6 +1,6 @@
 # Módulos de gjs-c-common-base-types
 
-Índice y orquestación de los módulos de la librería: **77 fuentes** y **79
+Índice y orquestación de los módulos de la librería: **81 fuentes** y **83
 cabeceras**. Como la mayoría son variantes del mismo contenedor sobre distinto
 tipo de elemento, la documentación se agrupa **por familias**: cada documento
 describe el contenedor base y tabula en qué se diferencian sus especializaciones.
@@ -25,7 +25,7 @@ Volver al [README](../README.md).
   │    Cursores y contadores · Identificadores · Metadatos                │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 1. Memoria bruta                                                      │
-  │    SBloque · SBuffer · SDatos · SPtr                                  │
+  │    SBloque · SBloqueMultiPlataforma · SBuffer · SDatos · SPtr         │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 0. gjs-c-common-base (Base.h: memoria, errores, cadenas, hash…)       │
   └───────────────────────────────────────────────────────────────────────┘
@@ -37,19 +37,20 @@ Volver al [README](../README.md).
 
 ### Memoria bruta
 
-| Módulo    | Prefijo | Struct    | Funciones | Test | Documento             |
-| --------- | ------- | --------- | --------- | ---- | --------------------- |
-| `SBloque` | `SBlq`  | `SBloque` | 52        | ✔    | [SBloque](SBloque.md) |
-| `SBuffer` | `SBuf`  | `SBuffer` | 17        | ✔    | [SBuffer](SBuffer.md) |
-| `SDatos`  | `SDat`  | `SDatos`  | 30        | ✔    | [SDatos](SDatos.md)   |
-| `SPtr`    | `SPtr`  | `SPtr`    | 9         | ✔    | [SPtr](SPtr.md)       |
+| Módulo                   | Prefijo   | Struct                   | Funciones | Test | Documento                                           |
+| ------------------------ | --------- | ------------------------ | --------- | ---- | --------------------------------------------------- |
+| `SBloque`                | `SBlq`    | `SBloque`                | 80        | ✔    | [SBloque](SBloque.md)                               |
+| `SBloqueMultiPlataforma` | `SBlqMpl` | `SBloqueMultiPlataforma` | 87        | ✔    | [SBloqueMultiPlataforma](SBloqueMultiPlataforma.md) |
+| `SBuffer`                | `SBuf`    | `SBuffer`                | 17        | ✔    | [SBuffer](SBuffer.md)                               |
+| `SDatos`                 | `SDat`    | `SDatos`                 | 30        | ✔    | [SDatos](SDatos.md)                                 |
+| `SPtr`                   | `SPtr`    | `SPtr`                   | 9         | ✔    | [SPtr](SPtr.md)                                     |
 
 ### Piezas de contenido
 
 | Módulo         | Prefijo | Struct         | Funciones | Test | Documento                     |
 | -------------- | ------- | -------------- | --------- | ---- | ----------------------------- |
-| `SContenido`   | `SCon`  | `SContenido`   | 26        | ✔    | [SContenido](SContenido.md)   |
-| `SElemento`    | `SElm`  | `SElemento`    | 47        | ✔    | [SElemento](SElemento.md)     |
+| `SContenido`   | `SCon`  | `SContenido`   | 37        | ✔    | [SContenido](SContenido.md)   |
+| `SElemento`    | `SElm`  | `SElemento`    | 49        | ✔    | [SElemento](SElemento.md)     |
 | `SElementoPtr` | `SElp`  | `SElementoPtr` | 24        | ✔    | [SElemento](SElemento.md)     |
 | `SComparador`  | `SCmp`  | `SComparador`  | 22        | ✔    | [SComparador](SComparador.md) |
 
@@ -71,15 +72,16 @@ Volver al [README](../README.md).
 
 | Módulo                            | Prefijo      | Struct                            | Funciones | Test | Documento                   |
 | --------------------------------- | ------------ | --------------------------------- | --------- | ---- | --------------------------- |
-| `SSecuencia`                      | `SSec`       | `SSecuencia`                      | 37        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuencia`                      | `SSec`       | `SSecuencia`                      | 42        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaPtr`                   | `SSecp`      | `SSecuenciaPtr`                   | 76        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaEnteros`               | `SSecInt`    | `SSecuenciaEnteros`               | 41        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaEnterosLargos`         | `SSecIntl`   | `SSecuenciaEnterosLargos`         | 40        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaEnterosLargosSinSigno` | `SSecIntLss` | `SSecuenciaEnterosLargosSinSigno` | 39        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaLiterales`             | `SSecLit`    | `SSecuenciaLiterales`             | 36        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaUnica`                 | `SSecUn`     | `SSecuenciaUnica`                 | 38        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaUnica`                 | `SSecUn`     | `SSecuenciaUnica`                 | 40        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaUnicaPtr`              | `SSecpUn`    | `SSecuenciaUnicaPtr`              | 77        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaParejas`               | `SSecPrj`    | `SSecuenciaParejas`               | 10        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaId`                    | `SSecId`     | `SSecuenciaId`                    | 22        | ✔    | [Secuencias](Secuencias.md) |
 
 ### Vectores y flags
 
@@ -110,6 +112,7 @@ Volver al [README](../README.md).
 | `SConjuntoPtr`       | `SCnjp`   | `SConjuntoPtr`       | 64        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoLiterales` | `SCnjLit` | `SConjuntoLiterales` | 32        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoReferencias` | `SCnjRef` | `SConjuntoReferencias` | 15        | ✔    | [Conjuntos](Conjuntos.md) |
+| `SConjuntoId`        | `SCnjId`  | `SConjuntoId`        | 18        | ✔    | [Conjuntos](Conjuntos.md) |
 
 ### Nodos
 
@@ -159,7 +162,7 @@ Volver al [README](../README.md).
 | -------------- | -------- | -------------- | --------- | ---- | ------------------------------------------- |
 | `SPareja`      | `SPrj`   | `SPareja`      | 11        | ✔    | [ParejasReferencias](ParejasReferencias.md) |
 | `SReferencia`  | `SRef`   | `SReferencia`  | 19        | ✔    | [ParejasReferencias](ParejasReferencias.md) |
-| `SId`          | `SId`    | `SId`          | 25        | ✔    | [Identificadores](Identificadores.md)       |
+| `SId`          | `SId`    | `SId`          | 32        | ✔    | [Identificadores](Identificadores.md)       |
 | `SGeneradorId` | `SGenId` | `SGeneradorId` | 12        | ✔    | [Identificadores](Identificadores.md)       |
 
 ### Metadatos
@@ -170,16 +173,22 @@ Volver al [README](../README.md).
 | `SDefPrimitiva` | `SDefPrim` | `SDefPrimitiva` | 13        | ✔    | [Metadatos](Metadatos.md) |
 | `SInterfaz`     | `SIntrfz`  | `SInterfaz`     | 8         | ✔    | [Metadatos](Metadatos.md) |
 
+### Utilidades entre colecciones
+
+| Módulo              | Prefijo                | Struct | Funciones | Test | Documento                                 |
+| ------------------- | ---------------------- | ------ | --------- | ---- | ----------------------------------------- |
+| `UtilesColecciones` | el de la de origen     | —      | 8         | ✔    | [UtilesColecciones](UtilesColecciones.md) |
+
 ---
 
 ## Cabeceras de configuración y tipos auxiliares
 
 ### `TiposBasicos.h`
 
-Cabecera fachada. Incluye las 74 cabeceras de módulo **excepto `SArbolB.h` y
+Cabecera fachada. Incluye las 77 cabeceras de módulo **excepto `SArbolB.h` y
 `SListaVec.h`**, que hay que incluir a mano.
 
-> La línea 96 incluye `<SSecuenciaEnteroslargosSinSigno.h>` con `l` minúscula,
+> La línea 100 incluye `<SSecuenciaEnteroslargosSinSigno.h>` con `l` minúscula,
 > cuando el fichero es `SSecuenciaEnterosLargosSinSigno.h`. Sólo funciona en
 > sistemas de ficheros insensibles a mayúsculas (Windows, Cygwin).
 

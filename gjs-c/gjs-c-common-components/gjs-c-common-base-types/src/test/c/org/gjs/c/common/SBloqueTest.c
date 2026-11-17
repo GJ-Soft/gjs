@@ -497,6 +497,501 @@ static int TestSBlqInvalidos01 ()
 	return ( iRes );
 }
 
+static int CadenaEs ( char * p_cCad, const char * p_cEsperada )
+{
+	return ( ES_VALIDO ( p_cCad ) && ( CadComparar ( p_cCad, p_cEsperada ) == COMP_IGUAL ) );
+}
+
+static int TestSBlqLeerEnPos01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SBlqLeerEnPos 01:\n" );
+
+	SBloque * p_blqObj = SBlqCrear ( 48 );
+	if ( ES_VALIDO ( p_blqObj ) )
+	{
+		/* Posiciones sin alinear a proposito. */
+		SBlqEscribirEnteroEnPos ( p_blqObj, 1, -12345 );
+		SBlqEscribirEnteroSinSignoEnPos ( p_blqObj, 5, 4000000000U );
+		SBlqEscribirRealEnPos ( p_blqObj, 9, 1.25f );
+		SBlqEscribirRealDobleEnPos ( p_blqObj, 13, -2.5 );
+		SBlqEscribirEnteroLargoEnPos ( p_blqObj, 21, -7L );
+		SBlqEscribirEnteroLargoSinSignoEnPos ( p_blqObj, 29, ULONG_MAX );
+
+		if ( SBlqLeerEnteroEnPos ( p_blqObj, 1 ) != -12345 )
+		{
+			printf( "Error caso 1: se esperaba -12345: %d\n", SBlqLeerEnteroEnPos ( p_blqObj, 1 ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerEnteroSinSignoEnPos ( p_blqObj, 5 ) != 4000000000U )
+		{
+			printf( "Error caso 2: se esperaba 4000000000: %u\n", SBlqLeerEnteroSinSignoEnPos ( p_blqObj, 5 ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerRealEnPos ( p_blqObj, 9 ) != 1.25f )
+		{
+			printf( "Error caso 3: se esperaba 1.25\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerRealDobleEnPos ( p_blqObj, 13 ) != -2.5 )
+		{
+			printf( "Error caso 4: se esperaba -2.5\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerEnteroLargoEnPos ( p_blqObj, 21 ) != -7L )
+		{
+			printf( "Error caso 5: se esperaba -7: %ld\n", SBlqLeerEnteroLargoEnPos ( p_blqObj, 21 ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerEnteroLargoSinSignoEnPos ( p_blqObj, 29 ) != ULONG_MAX )
+		{
+			printf( "Error caso 6: se esperaba ULONG_MAX: %lu\n", SBlqLeerEnteroLargoSinSignoEnPos ( p_blqObj, 29 ) );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* El entero de la posicion 1 ocupa los bytes 1 a 4, en little endian. */
+		if ( ( SBlqLeerByte ( p_blqObj, 1 ) != 0xC7 ) || ( SBlqLeerByte ( p_blqObj, 2 ) != 0xCF ) ||
+			 ( SBlqLeerByte ( p_blqObj, 3 ) != 0xFF ) || ( SBlqLeerByte ( p_blqObj, 4 ) != 0xFF ) )
+		{
+			printf( "Error caso 7: los bytes de -12345 deberian ser C7 CF FF FF\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		/* Fuera del bloque: 0 y ERR_LECTURA_MEMORIA. */
+		ErrLimpiar ();
+		if ( SBlqLeerEnteroEnPos ( p_blqObj, 45 ) != 0 )
+		{
+			printf( "Error caso 8: un entero que se sale del bloque deberia leer 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ErrCodigo () != ERR_LECTURA_MEMORIA )
+		{
+			printf( "Error caso 9: se esperaba ERR_LECTURA_MEMORIA: %d\n", ErrCodigo () );
+			iRes = BOOL_VAL_FALSO;
+		}
+		ErrLimpiar ();
+		/* El ultimo entero que cabe si se lee. */
+		if ( SBlqLeerEnteroEnPos ( p_blqObj, 44 ) != 0 )
+		{
+			printf( "Error caso 10: el final del bloque esta a cero\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ErrCodigo () != ERR_OK )
+		{
+			printf( "Error caso 11: leer el ultimo entero no deberia anotar error: %d\n", ErrCodigo () );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerRealDobleEnPos ( p_blqObj, -1 ) != 0 )
+		{
+			printf( "Error caso 12: una posicion negativa deberia leer 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerEnteroLargoEnPos ( NULL, 0 ) != 0 )
+		{
+			printf( "Error caso 13: un bloque nulo deberia leer 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		ErrLimpiar ();
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el bloque\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SBlqDestruir ( &p_blqObj );
+	return ( iRes );
+}
+
+static int TestSBlqLeerBuffer01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SBlqLeerBuffer 01:\n" );
+
+	byte byOrig [ 5 ] = { 10, 20, 30, 40, 50 };
+	byte byDest [ 5 ] = { 0, 0, 0, 0, 0 };
+	SBloque * p_blqObj = SBlqCrear ( 5 );
+	if ( ES_VALIDO ( p_blqObj ) )
+	{
+		SBlqEscribirBuffer ( p_blqObj, 0, byOrig, 5 );
+		if ( SBlqLeerBuffer ( p_blqObj, 1, byDest, 3 ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba 1 al leer 3 bytes desde la 1\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( byDest [ 0 ] != 20 ) || ( byDest [ 1 ] != 30 ) || ( byDest [ 2 ] != 40 ) || ( byDest [ 3 ] != 0 ) )
+		{
+			printf( "Error caso 2: se esperaba 20, 30, 40 y el resto intacto\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerBuffer ( p_blqObj, 3, byDest, 3 ) != 0 )
+		{
+			printf( "Error caso 3: leer pasado el final deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerBuffer ( p_blqObj, 0, byDest, 5 ) != 1 )
+		{
+			printf( "Error caso 4: leer el bloque entero deberia funcionar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerBuffer ( p_blqObj, 0, byDest, 0 ) != 0 )
+		{
+			printf( "Error caso 5: leer 0 bytes deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerBuffer ( p_blqObj, -1, byDest, 1 ) != 0 )
+		{
+			printf( "Error caso 6: una posicion negativa deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Sin desbordar al sumar posicion y tamano. */
+		if ( SBlqLeerBuffer ( p_blqObj, INT_MAX, byDest, 1 ) != 0 )
+		{
+			printf( "Error caso 7: una posicion enorme deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerBuffer ( p_blqObj, 0, NULL, 1 ) != 0 )
+		{
+			printf( "Error caso 8: un destino nulo deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el bloque\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SBlqDestruir ( &p_blqObj );
+	return ( iRes );
+}
+
+static int TestSBlqCadenaEnPos01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SBlqCadenaEnPos 01:\n" );
+
+	SBloque * p_blqObj = SBlqCrear ( 10 );
+	if ( ES_VALIDO ( p_blqObj ) )
+	{
+		for ( int i = 0; i < 10; i = i + 1 )
+		{
+			SBlqEscribirByte ( p_blqObj, i, 'x' );
+		}
+		if ( SBlqEscribirCadenaEnPos ( p_blqObj, 2, "hola" ) != 1 )
+		{
+			printf( "Error caso 1: se esperaba 1 al escribir la cadena\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Escribe tambien el nulo, en la posicion 6. */
+		if ( SBlqLeerByte ( p_blqObj, 6 ) != 0x00 )
+		{
+			printf( "Error caso 2: se esperaba el nulo en la posicion 6\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		char * p_cCad = SBlqLeerCadenaEnPos ( p_blqObj, 2 );
+		if ( ! CadenaEs ( p_cCad, "hola" ) )
+		{
+			printf( "Error caso 3: se esperaba \"hola\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		MemLiberarCadena ( &p_cCad );
+
+		p_cCad = SBlqLeerCadenaEnPos ( p_blqObj, 4 );
+		if ( ! CadenaEs ( p_cCad, "la" ) )
+		{
+			printf( "Error caso 4: desde la posicion 4 se esperaba \"la\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		MemLiberarCadena ( &p_cCad );
+
+		/* Sin nulo hasta el final del bloque: NULL, sin leer fuera. */
+		ErrLimpiar ();
+		p_cCad = SBlqLeerCadenaEnPos ( p_blqObj, 7 );
+		if ( ES_VALIDO ( p_cCad ) )
+		{
+			printf( "Error caso 5: sin nulo dentro del bloque se esperaba NULL\n" );
+			iRes = BOOL_VAL_FALSO;
+			MemLiberarCadena ( &p_cCad );
+		}
+		if ( ErrCodigo () != ERR_LECTURA_MEMORIA )
+		{
+			printf( "Error caso 6: se esperaba ERR_LECTURA_MEMORIA: %d\n", ErrCodigo () );
+			iRes = BOOL_VAL_FALSO;
+		}
+		ErrLimpiar ();
+
+		/* "hola" mas el nulo son 5 bytes: en la posicion 6 no caben. */
+		if ( SBlqEscribirCadenaEnPos ( p_blqObj, 6, "hola" ) != 0 )
+		{
+			printf( "Error caso 7: la cadena no cabe y deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqEscribirCadenaEnPos ( p_blqObj, 5, "hola" ) != 1 )
+		{
+			printf( "Error caso 8: en la posicion 5 cabe justa\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		/* La cadena vacia es solo el nulo. */
+		if ( SBlqEscribirCadenaEnPos ( p_blqObj, 0, "" ) != 1 )
+		{
+			printf( "Error caso 9: la cadena vacia deberia escribirse\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		p_cCad = SBlqLeerCadenaEnPos ( p_blqObj, 0 );
+		if ( ! CadenaEs ( p_cCad, "" ) )
+		{
+			printf( "Error caso 10: se esperaba la cadena vacia\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		MemLiberarCadena ( &p_cCad );
+
+		if ( ES_VALIDO ( SBlqLeerCadenaEnPos ( p_blqObj, 10 ) ) )
+		{
+			printf( "Error caso 11: fuera del bloque se esperaba NULL\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqEscribirCadenaEnPos ( p_blqObj, 0, NULL ) != 0 )
+		{
+			printf( "Error caso 12: escribir una cadena nula deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		ErrLimpiar ();
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el bloque\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SBlqDestruir ( &p_blqObj );
+	return ( iRes );
+}
+
+static int TestSBlqSecuencialExt01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SBlqSecuencialExt 01:\n" );
+
+	/* byte + int + unsigned long + double + "gjs" con nulo + float */
+	int iTamUl = (int) sizeof ( unsigned long );
+	int iFin = 1 + 4 + iTamUl + 8 + 4 + 4;
+	int iPos;
+	SBloque * p_blqObj = SBlqCrear ( iFin );
+	if ( ES_VALIDO ( p_blqObj ) )
+	{
+		iPos = 0;
+		if ( SBlqEscribirByteExt ( p_blqObj, &iPos, 0x7F ) != 1 || iPos != 1 )
+		{
+			printf( "Error caso 1: tras el byte se esperaba la posicion 1: %d\n", iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqEscribirEnteroEnPosExt ( p_blqObj, &iPos, 42 ) != 1 || iPos != 5 )
+		{
+			printf( "Error caso 2: tras el entero se esperaba la posicion 5: %d\n", iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqEscribirEnteroLargoSinSignoEnPosExt ( p_blqObj, &iPos, ULONG_MAX ) != 1 || iPos != 5 + iTamUl )
+		{
+			printf( "Error caso 3: tras el largo sin signo se esperaba la posicion %d: %d\n", 5 + iTamUl, iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqEscribirRealDobleEnPosExt ( p_blqObj, &iPos, -0.5 ) != 1 || iPos != 13 + iTamUl )
+		{
+			printf( "Error caso 4: tras el doble se esperaba la posicion %d: %d\n", 13 + iTamUl, iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* La cadena avanza tambien el nulo. */
+		if ( SBlqEscribirCadenaEnPosExt ( p_blqObj, &iPos, "gjs" ) != 1 || iPos != 17 + iTamUl )
+		{
+			printf( "Error caso 5: tras la cadena se esperaba la posicion %d: %d\n", 17 + iTamUl, iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqEscribirRealEnPosExt ( p_blqObj, &iPos, 3.0f ) != 1 || iPos != iFin )
+		{
+			printf( "Error caso 6: tras el real se esperaba la posicion %d: %d\n", iFin, iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* Lleno: falla y la posicion no se mueve. */
+		if ( SBlqEscribirByteExt ( p_blqObj, &iPos, 1 ) != 0 || iPos != iFin )
+		{
+			printf( "Error caso 7: con el bloque lleno deberia fallar sin mover la posicion: %d\n", iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		iPos = 0;
+		if ( SBlqLeerByteExt ( p_blqObj, &iPos ) != 0x7F )
+		{
+			printf( "Error caso 8: se esperaba el byte 0x7F\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerEnteroEnPosExt ( p_blqObj, &iPos ) != 42 )
+		{
+			printf( "Error caso 9: se esperaba 42\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerEnteroLargoSinSignoEnPosExt ( p_blqObj, &iPos ) != ULONG_MAX )
+		{
+			printf( "Error caso 10: se esperaba ULONG_MAX\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerRealDobleEnPosExt ( p_blqObj, &iPos ) != -0.5 )
+		{
+			printf( "Error caso 11: se esperaba -0.5\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		char * p_cCad = SBlqLeerCadenaEnPosExt ( p_blqObj, &iPos );
+		if ( ! CadenaEs ( p_cCad, "gjs" ) )
+		{
+			printf( "Error caso 12: se esperaba \"gjs\"\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		MemLiberarCadena ( &p_cCad );
+		if ( SBlqLeerRealEnPosExt ( p_blqObj, &iPos ) != 3.0f )
+		{
+			printf( "Error caso 13: se esperaba 3.0 justo despues de la cadena\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( iPos != iFin )
+		{
+			printf( "Error caso 14: al terminar se esperaba la posicion %d: %d\n", iFin, iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		/* Al final: lectura fallida, 0 y sin moverse. */
+		ErrLimpiar ();
+		if ( SBlqLeerEnteroEnPosExt ( p_blqObj, &iPos ) != 0 || iPos != iFin )
+		{
+			printf( "Error caso 15: leer al final deberia dar 0 sin mover la posicion: %d\n", iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ErrCodigo () != ERR_LECTURA_MEMORIA )
+		{
+			printf( "Error caso 16: se esperaba ERR_LECTURA_MEMORIA: %d\n", ErrCodigo () );
+			iRes = BOOL_VAL_FALSO;
+		}
+		ErrLimpiar ();
+
+		/* Las otras parejas, de una en una. */
+		iPos = 0;
+		SBlqEscribirEnteroLargoEnPosExt ( p_blqObj, &iPos, -99L );
+		SBlqEscribirEnteroSinSignoEnPosExt ( p_blqObj, &iPos, 3000000000U );
+		iPos = 0;
+		if ( SBlqLeerEnteroLargoEnPosExt ( p_blqObj, &iPos ) != -99L )
+		{
+			printf( "Error caso 17: se esperaba -99\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqLeerEnteroSinSignoEnPosExt ( p_blqObj, &iPos ) != 3000000000U )
+		{
+			printf( "Error caso 18: se esperaba 3000000000\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( iPos != (int) sizeof ( long ) + 4 )
+		{
+			printf( "Error caso 19: se esperaba la posicion %d: %d\n", (int) sizeof ( long ) + 4, iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		/* Sin posicion no se hace nada. */
+		if ( SBlqEscribirEnteroEnPosExt ( p_blqObj, NULL, 1 ) != 0 )
+		{
+			printf( "Error caso 20: sin posicion deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SBlqLeerCadenaEnPosExt ( p_blqObj, NULL ) ) )
+		{
+			printf( "Error caso 21: sin posicion se esperaba NULL\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		ErrLimpiar ();
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudo crear el bloque\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SBlqDestruir ( &p_blqObj );
+	return ( iRes );
+}
+
+static int TestSBlqVolcarExtraerExt01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SBlqVolcarExtraerExt 01:\n" );
+
+	byte byDatos [ 3 ] = { 7, 8, 9 };
+	int iPos;
+	SBloque * p_blqObj = SBlqCrear ( 8 );
+	SBloque * p_blqDatos = SBlqCrear ( 3 );
+	if ( ES_VALIDO ( p_blqObj ) && ES_VALIDO ( p_blqDatos ) )
+	{
+		SBlqCopiarDe ( p_blqDatos, byDatos );
+		iPos = 2;
+		if ( SBlqVolcarExt ( p_blqObj, &iPos, p_blqDatos ) != 1 || iPos != 5 )
+		{
+			printf( "Error caso 1: tras volcar 3 bytes en la 2 se esperaba la posicion 5: %d\n", iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SBlqLeerByte ( p_blqObj, 2 ) != 7 ) || ( SBlqLeerByte ( p_blqObj, 4 ) != 9 ) )
+		{
+			printf( "Error caso 2: los bytes volcados no estan en su sitio\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		/* No cabe: falla sin mover. */
+		iPos = 6;
+		if ( SBlqVolcarExt ( p_blqObj, &iPos, p_blqDatos ) != 0 || iPos != 6 )
+		{
+			printf( "Error caso 3: si no cabe deberia fallar sin mover la posicion: %d\n", iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		iPos = 2;
+		SBloque * p_blqExtr = SBlqExtraerExt ( p_blqObj, &iPos, 3 );
+		if ( ES_NULO ( p_blqExtr ) )
+		{
+			printf( "Error caso 4: no se esperaba nulo al extraer\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			if ( SBlqEsIgual ( p_blqExtr, p_blqDatos ) != 1 )
+			{
+				printf( "Error caso 5: lo extraido deberia ser 7, 8, 9\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			if ( iPos != 5 )
+			{
+				printf( "Error caso 6: tras extraer se esperaba la posicion 5: %d\n", iPos );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		SBlqDestruir ( &p_blqExtr );
+
+		iPos = 6;
+		if ( ES_VALIDO ( SBlqExtraerExt ( p_blqObj, &iPos, 3 ) ) || iPos != 6 )
+		{
+			printf( "Error caso 7: extraer fuera deberia dar NULL sin mover la posicion: %d\n", iPos );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ES_VALIDO ( SBlqExtraerExt ( p_blqObj, NULL, 3 ) ) )
+		{
+			printf( "Error caso 8: sin posicion se esperaba NULL\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( SBlqVolcarExt ( p_blqObj, NULL, p_blqDatos ) != 0 )
+		{
+			printf( "Error caso 9: sin posicion deberia fallar\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+	else
+	{
+		printf( "Error caso 0: no se pudieron crear los bloques\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SBlqDestruir ( &p_blqObj );
+	SBlqDestruir ( &p_blqDatos );
+	return ( iRes );
+}
+
 
 
 int TestSBloque ()
@@ -513,7 +1008,12 @@ int TestSBloque ()
 			( TestSBlqVolcar01 () == BOOL_VAL_CIERTO ) &&
 			( TestSBlqExtraer01 () == BOOL_VAL_CIERTO ) &&
 			( TestSBlqLimpiar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSBlqInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSBlqInvalidos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSBlqLeerEnPos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSBlqLeerBuffer01 () == BOOL_VAL_CIERTO ) &&
+			( TestSBlqCadenaEnPos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSBlqSecuencialExt01 () == BOOL_VAL_CIERTO ) &&
+			( TestSBlqVolcarExtraerExt01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

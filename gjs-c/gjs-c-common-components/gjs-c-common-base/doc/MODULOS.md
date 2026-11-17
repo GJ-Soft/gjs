@@ -24,6 +24,7 @@ nivel o inferiores.
   ├───────────────────────────────────────────────────────────────────────┤
   │ 2. Infraestructura                                                    │
   │    Memoria · InfoMemoria · Errores · Finalizacion · OrdenBytes        │
+  │    TiposMultiPlataforma                                               │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 1. Primitivas sin dependencias                                        │
   │    Bits · Nibble · Byte · Word · DWord · Booleano · Intercambios      │
@@ -42,32 +43,33 @@ resuelve porque ninguno de los tres necesita inicialización previa.
 
 ## Índice de módulos
 
-| Módulo                                    | Prefijo             | Propósito                                               | Test |
-| ----------------------------------------- | ------------------- | ------------------------------------------------------- | ---- |
-| [ASCIIEstandar](ASCIIEstandar.md)         | `ASCII`             | Consulta y clasificación de caracteres ASCII (0-127)    | ✔    |
-| [Bits](Bits.md)                           | `By`, `BMP_`        | Máscaras de bits y macros de mapas de bits              | ✔    |
-| [Booleano](Booleano.md)                   | `Bool`              | Enteros usados como booleanos                           | ✔    |
-| [Byte](Byte.md)                           | `Byte`              | Descomposición de bytes en nibbles y paso a hexadecimal | ✔    |
-| [CadenasBase](CadenasBase.md)             | `Cad`               | Creación, medida, copia y comparación de cadenas        | ✔    |
-| [ConversionesTipos](ConversionesTipos.md) | `Conv`              | Conversiones entre tipos básicos y cadena               | ✔    |
-| [DWord](DWord.md)                         | `DWord`             | Composición/descomposición de palabras de 4 bytes       | ✔    |
-| [Errores](Errores.md)                     | `Err`               | Subsistema global de errores                            | ✔    |
-| [Finalizacion](Finalizacion.md)           | —                   | Terminación forzada por error grave                     | —    |
-| [FormatoCadena](FormatoCadena.md)         | `Frm`               | Formateo de cadenas con lista variable de argumentos    | ✔    |
-| [Hash](Hash.md)                           | `Hash`              | Funciones hash por tabla de sustitución                 | ✔    |
-| [Hexadecimal](Hexadecimal.md)             | `Hex`               | Dígitos hexadecimales                                   | ✔    |
-| [InfoMemoria](InfoMemoria.md)             | `Mem`               | Contabilidad de memoria en modo depuración              | —    |
-| [Intercambios](Intercambios.md)           | `Intercambiar`      | Intercambio de valores entre dos variables              | ✔    |
-| [Memoria](Memoria.md)                     | `Mem`               | Reserva, liberación y manipulación de bloques           | ✔    |
-| [Nibble](Nibble.md)                       | `Nib`               | Valor numérico de medio byte                            | ✔    |
-| [Numeros](Numeros.md)                     | `Num`               | Conteo de dígitos y partes entera/decimal               | ✔    |
-| [OrdenBytes](OrdenBytes.md)               | `Bytes`             | Detección y cambio del orden de bytes (endianness)      | ✔    |
-| [SConversor](SConversor.md)               | `SConv`             | Objeto conversor multi-representación                   | ✔    |
-| [Tipos](Tipos.md)                         | `Tip`               | Catálogo de super-tipos de datos                        | ✔    |
-| [UniChar](UniChar.md)                     | `Unicode`, `CadUni` | Tipo `unichar` y conversión ASCII ↔ Unicode             | ✔    |
-| [Validaciones](Validaciones.md)           | `Validar`           | Tipos de función de validación y su aplicación          | ✔    |
-| [Versiones](Versiones.md)                 | `Vers`              | Cadenas de versión `a.b.c.d`                            | ✔    |
-| [Word](Word.md)                           | `Word`              | Composición/descomposición de palabras de 2 bytes       | ✔    |
+| Módulo                                          | Prefijo             | Propósito                                               | Test |
+| ----------------------------------------------- | ------------------- | ------------------------------------------------------- | ---- |
+| [ASCIIEstandar](ASCIIEstandar.md)               | `ASCII`             | Consulta y clasificación de caracteres ASCII (0-127)    | ✔    |
+| [Bits](Bits.md)                                 | `By`, `BMP_`        | Máscaras de bits y macros de mapas de bits              | ✔    |
+| [Booleano](Booleano.md)                         | `Bool`              | Enteros usados como booleanos                           | ✔    |
+| [Byte](Byte.md)                                 | `Byte`              | Descomposición de bytes en nibbles y paso a hexadecimal | ✔    |
+| [CadenasBase](CadenasBase.md)                   | `Cad`               | Creación, medida, copia y comparación de cadenas        | ✔    |
+| [ConversionesTipos](ConversionesTipos.md)       | `Conv`              | Conversiones entre tipos básicos y cadena               | ✔    |
+| [DWord](DWord.md)                               | `DWord`             | Composición/descomposición de palabras de 4 bytes       | ✔    |
+| [Errores](Errores.md)                           | `Err`               | Subsistema global de errores                            | ✔    |
+| [Finalizacion](Finalizacion.md)                 | —                   | Terminación forzada por error grave                     | —    |
+| [FormatoCadena](FormatoCadena.md)               | `Frm`               | Formateo de cadenas con lista variable de argumentos    | ✔    |
+| [Hash](Hash.md)                                 | `Hash`              | Funciones hash por tabla de sustitución                 | ✔    |
+| [Hexadecimal](Hexadecimal.md)                   | `Hex`               | Dígitos hexadecimales                                   | ✔    |
+| [InfoMemoria](InfoMemoria.md)                   | `Mem`               | Contabilidad de memoria en modo depuración              | —    |
+| [Intercambios](Intercambios.md)                 | `Intercambiar`      | Intercambio de valores entre dos variables              | ✔    |
+| [Memoria](Memoria.md)                           | `Mem`               | Reserva, liberación y manipulación de bloques           | ✔    |
+| [Nibble](Nibble.md)                             | `Nib`               | Valor numérico de medio byte                            | ✔    |
+| [Numeros](Numeros.md)                           | `Num`               | Conteo de dígitos y partes entera/decimal               | ✔    |
+| [OrdenBytes](OrdenBytes.md)                     | `Bytes`             | Detección y cambio del orden de bytes (endianness)      | ✔    |
+| [SConversor](SConversor.md)                     | `SConv`             | Objeto conversor multi-representación                   | ✔    |
+| [Tipos](Tipos.md)                               | `Tip`               | Catálogo de super-tipos de datos                        | ✔    |
+| [TiposMultiPlataforma](TiposMultiPlataforma.md) | `Mpl`, `MPL_`       | Formato binario fijo para ficheros y comunicaciones     | ✔    |
+| [UniChar](UniChar.md)                           | `Unicode`, `CadUni` | Tipo `unichar` y conversión ASCII ↔ Unicode             | ✔    |
+| [Validaciones](Validaciones.md)                 | `Validar`           | Tipos de función de validación y su aplicación          | ✔    |
+| [Versiones](Versiones.md)                       | `Vers`              | Cadenas de versión `a.b.c.d`                            | ✔    |
+| [Word](Word.md)                                 | `Word`              | Composición/descomposición de palabras de 2 bytes       | ✔    |
 
 ---
 
@@ -95,6 +97,7 @@ Byte            → Memoria, CadenasBase, Hexadecimal
 UniChar         → Memoria, CadenasBase
 Tipos           → Memoria
 OrdenBytes      → Memoria, Errores
+TiposMultiPlataforma → Memoria, Errores
 InfoMemoria     → (ninguna; la alimenta Memoria)
 ASCIIEstandar   → ASCIICodigos
 Versiones       → Memoria, CadenasBase, Errores
@@ -174,8 +177,6 @@ cabeceras del sistema que correspondan al entorno (`windows.h` o
   (8191), `MAX_ERRORES` (512), `ERR_MAX_TAM_MSJ` (1024),
   `MEM_MAX_NUM_BLOQUES` / `MEM_MAX_TAM_BLOQUE` (16384),
   `CONV_MAX_TAM_CADENA` (64), `CLASE_MAX_TAM_NOMBRE` (50).
-- Tamaños y dígitos máximos por tipo: `TIP_TAM_*`, `TIP_MAX_DIG_*`,
-  `TIP_MAX_TAM_CAD_*`.
 - Literales: `CAD_VACIA`, `VALOR_NULO` (`"null"`), `ERR_MSJ_OK`,
   `ERR_MSJ_DEFECTO`, `CAD_BASE_TXT_VALOR_NULO`, `CAD_BASE_TXT_DEMASIADO_LARGO`.
 
@@ -193,6 +194,13 @@ que hay que incluir aparte.
 Resultados de comparación: `COMP_DIFERENTE` (0), `COMP_IGUAL` (1),
 `COMP_MENOR` (2), `COMP_MAYOR` (3).
 
+Tamaños y dígitos máximos por tipo: `TIP_TAM_*` (con `TIP_TAM_LLONG` y
+`TIP_TAM_ULLONG`), `TIP_MAX_DIG_*` y `TIP_MAX_TAM_CAD_*`. Son los de la máquina;
+los de un formato que no cambie de una plataforma a otra están en
+[TiposMultiPlataforma](TiposMultiPlataforma.md). Las `TIP_MAX_*` usan `ceil`,
+`log10` y los límites de `limits.h` y `float.h`, que tiene que tener incluidos
+quien las use; con `Base.h` ya están.
+
 ### `BaseErrores.h`
 
 Códigos de error propios de la librería (rango reservado 0-10):
@@ -208,6 +216,7 @@ Códigos de error propios de la librería (rango reservado 0-10):
 | `ERR_ESTRUCTURA_INVALIDA`     | 6     |
 | `ERR_CONVERSION_IMPOSIBLE`    | 7     |
 | `ERR_COPIA_OBJETO`            | 8     |
+| `ERR_LECTURA_MEMORIA`         | 9     |
 | `ERR_GENERAL_OPERATIVO`       | 90    |
 | `ERR_IMPOSIBLE_ABRIR_FICHERO` | 100   |
 

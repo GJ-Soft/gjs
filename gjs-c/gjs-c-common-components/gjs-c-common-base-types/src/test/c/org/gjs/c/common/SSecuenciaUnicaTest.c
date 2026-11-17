@@ -114,10 +114,26 @@ static int TestSSecUnInsertar01 ()
 			printf( "Error caso 3: deberia quedar { 3, 1 }\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
-		if ( ( SSecUnExiste ( p_secObj, p_elmSonda ) != 1 ) || ( SSecUnBuscar ( p_secObj, p_elmSonda ) != 1 ) ||
-			 ( SSecUnBuscar ( p_secObj, p_elmRepetido ) != 0 ) )
+		if ( ( SSecUnExiste ( p_secObj, SElmDatos ( p_elmSonda ) ) != 1 ) || ( SSecUnBuscar ( p_secObj, SElmDatos ( p_elmSonda ) ) != 1 ) ||
+			 ( SSecUnBuscar ( p_secObj, SElmDatos ( p_elmRepetido ) ) != 0 ) )
 		{
 			printf( "Error caso 4: el 1 deberia estar en la posicion 1 y el 3 en la 0\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		int i1 = 1;
+		int i3 = 3;
+		int i9 = 9;
+		if ( ( SSecUnExisteExt ( p_secObj, (byte *) &i1 ) != 1 ) || ( SSecUnBuscarExt ( p_secObj, (byte *) &i1 ) != 1 ) ||
+			 ( SSecUnBuscarExt ( p_secObj, (byte *) &i3 ) != 0 ) ||
+			 ( SSecUnExisteExt ( p_secObj, (byte *) &i9 ) != 0 ) || ( SSecUnBuscarExt ( p_secObj, (byte *) &i9 ) != -1 ) )
+		{
+			printf( "Error caso 4b: por memoria, el 1 en la 1, el 3 en la 0 y el 9 en ninguna\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecUnExisteExt ( NULL, (byte *) &i1 ) != 0 ) || ( SSecUnBuscarExt ( NULL, (byte *) &i1 ) != -1 ) ||
+			 ( SSecUnExisteExt ( p_secObj, NULL ) != 0 ) || ( SSecUnBuscarExt ( p_secObj, NULL ) != -1 ) )
+		{
+			printf( "Error caso 4c: con nulos, ExisteExt 0 y BuscarExt -1\n" );
 			iRes = BOOL_VAL_FALSO;
 		}
 		SElemento * p_elmExt = SSecUnExtraer ( p_secObj, 0 );
@@ -139,7 +155,7 @@ static int TestSSecUnInsertar01 ()
 		}
 		int iEsp2 [ 2 ] = { 1, 3 };
 		if ( ( VerificarSec ( p_secObj, iEsp2, 2 ) != BOOL_VAL_CIERTO ) ||
-			 ( SSecUnEliminar ( p_secObj, 0 ) != 1 ) || ( SSecUnExiste ( p_secObj, p_elmSonda ) != 0 ) )
+			 ( SSecUnEliminar ( p_secObj, 0 ) != 1 ) || ( SSecUnExiste ( p_secObj, SElmDatos ( p_elmSonda ) ) != 0 ) )
 		{
 			printf( "Error caso 7: deberia quedar { 1, 3 } y luego eliminarse el 1\n" );
 			iRes = BOOL_VAL_FALSO;
@@ -150,7 +166,8 @@ static int TestSSecUnInsertar01 ()
 			iRes = BOOL_VAL_FALSO;
 		}
 		if ( ( SSecUnInsertar ( NULL, p_elmSonda ) != 0 ) || ( SSecUnInsertar ( p_secObj, NULL ) != 0 ) ||
-			 ( SSecUnExiste ( NULL, p_elmSonda ) != 0 ) || ( SSecUnBuscar ( NULL, p_elmSonda ) != -1 ) ||
+			 ( SSecUnExiste ( NULL, SElmDatos ( p_elmSonda ) ) != 0 ) || ( SSecUnBuscar ( NULL, SElmDatos ( p_elmSonda ) ) != -1 ) ||
+			 ( SSecUnExiste ( p_secObj, NULL ) != 0 ) || ( SSecUnBuscar ( p_secObj, NULL ) != -1 ) ||
 			 ( SSecUnEsValida ( NULL ) != 0 ) || ( SSecUnNumElementos ( NULL ) != 0 ) )
 		{
 			printf( "Error caso 9: con nulos se esperaba 0 o -1\n" );

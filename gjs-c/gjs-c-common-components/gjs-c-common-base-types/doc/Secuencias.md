@@ -2,9 +2,9 @@
 
 | Dato          | Valor                                                                                                                                                                                                                   |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Módulos       | 9                                                                                                                                                                                                                       |
-| Cabeceras     | `SSecuencia.h`, `SSecuenciaPtr.h`, `SSecuenciaEnteros.h`, `SSecuenciaEnterosLargos.h`, `SSecuenciaEnterosLargosSinSigno.h`, `SSecuenciaLiterales.h`, `SSecuenciaUnica.h`, `SSecuenciaUnicaPtr.h`, `SSecuenciaParejas.h` |
-| Prefijos      | `SSec`, `SSecp`, `SSecInt`, `SSecIntl`, `SSecIntLss`, `SSecLit`, `SSecUn`, `SSecpUn`, `SSecPrj`                                                                                                                         |
+| Módulos       | 10                                                                                                                                                                                                                      |
+| Cabeceras     | `SSecuencia.h`, `SSecuenciaPtr.h`, `SSecuenciaEnteros.h`, `SSecuenciaEnterosLargos.h`, `SSecuenciaEnterosLargosSinSigno.h`, `SSecuenciaLiterales.h`, `SSecuenciaUnica.h`, `SSecuenciaUnicaPtr.h`, `SSecuenciaParejas.h`, `SSecuenciaId.h` |
+| Prefijos      | `SSec`, `SSecp`, `SSecInt`, `SSecIntl`, `SSecIntLss`, `SSecLit`, `SSecUn`, `SSecpUn`, `SSecPrj`, `SSecId`                                                                                                                       |
 | Incluidos por | `TiposBasicos.h`                                                                                                                                                                                                        |
 | Tests         | Uno por módulo                                                                                                                                                                                                          |
 
@@ -49,11 +49,12 @@ typedef struct
 | `int SSecNumElementos ( SSecuencia * )`                | Número de elementos.                   |
 | `int SSecEstaVacia ( SSecuencia * )`                   | 1 si no hay elementos.                 |
 | `SElemento * SSecElemento ( SSecuencia *, int iElem )` | Elemento en la posición.               |
-| `int SSecBuscar ( SSecuencia *, SElemento * )`         | Posición del primero con el mismo contenido, o -1. |
-| `int SSecBuscarPrimero ( SSecuencia *, SElemento * )`  | Lo mismo que `SSecBuscar`.             |
-| `int SSecBuscarSiguiente ( SSecuencia *, SElemento *, int iPos )` | El siguiente igual **detrás** de `iPos`, o -1 si no hay más. Con `iPos = -1`, el primero. |
-| `int SSecRepeticiones ( SSecuencia *, SElemento * )`   | Cuántos iguales hay; 0 si ninguno, también con un nulo. |
-| `int SSecExiste ( SSecuencia *, SElemento * )`         | 1 si hay alguno igual, 0 si no.        |
+| `int SSecBuscar ( SSecuencia *, SBloque * )`           | Posición del primero cuyo bloque es igual, o -1. |
+| `int SSecBuscarPrimero ( SSecuencia *, SBloque * )`    | Lo mismo que `SSecBuscar`.             |
+| `int SSecBuscarSiguiente ( SSecuencia *, SBloque *, int iPos )` | El siguiente igual **detrás** de `iPos`, o -1 si no hay más. Con `iPos = -1`, el primero. |
+| `int SSecRepeticiones ( SSecuencia *, SBloque * )`     | Cuántos iguales hay; 0 si ninguno, también con un nulo. |
+| `int SSecExiste ( SSecuencia *, SBloque * )`           | 1 si hay alguno igual, 0 si no.        |
+| `SSecBuscarExt`, `…PrimeroExt`, `…SiguienteExt`, `SSecRepeticionesExt`, `SSecExisteExt` ( `SSecuencia *, byte *`[, `int iPos`] ) | Igual, con memoria cruda: se comparan tantos bytes como mida el bloque de cada elemento. |
 | `int SSecInsertar ( SSecuencia *, SElemento * )`       | Añade un elemento.                     |
 | `int SSecEliminar ( SSecuencia *, int iElem )`         | Elimina el de la posición.             |
 | `SElemento * SSecExtraer ( SSecuencia *, int iElem )`  | Saca el de la posición sin destruirlo. |
@@ -78,6 +79,7 @@ una posición concreta).
 | `SSecuenciaUnica`                 | `SSecuencia`    | [SElemento](SElemento.md) | `SElemento *`            | Sin repetidos                       |
 | `SSecuenciaUnicaPtr`              | `SSecuenciaPtr` | `byte *`                  | `byte *`                 | Sin repetidos, liberación           |
 | `SSecuenciaParejas`               | `SSecuenciaPtr` | [SPareja](ParejasReferencias.md) | `SPareja *`       | Destruye sus parejas                |
+| `SSecuenciaId`                    | `SSecuencia`    | copia de un [SId](Identificadores.md) | `SId *` nuevo | Búsqueda por `SId` y por valor     |
 
 Obsérvese el encadenado: las variantes de valor no envuelven directamente una
 lista, sino una `SSecuencia`, que a su vez envuelve una `SLista`. Son tres
@@ -201,7 +203,9 @@ guarda el criterio: es el llamante el que debe usar siempre el mismo.
   por debajo, a través de `SSecUnSecuencia` o `SSecpUnSecuencia`.
 - Tiene `Existe`, `Buscar`, `Elemento`, `Eliminar`, `Extraer`, `Vaciar`,
   `Duplicar` y los accesores a la secuencia y la lista internas; la `Ptr`,
-  además, el control de liberación.
+  además, el control de liberación. En `SSecuenciaUnica`, `SSecUnExiste` y
+  `SSecUnBuscar` reciben, como las de `SSecuencia`, el `SBloque *` a buscar,
+  y `SSecUnExisteExt` y `SSecUnBuscarExt`, la memoria cruda ( `byte *` ).
 
 Las operaciones con otras colecciones tienen tres formas: con otra secuencia
 única (`…Un`, o sin sufijo en `ExistenTodos`, `ExisteAlguno` y `Concatenar`), con
@@ -237,6 +241,29 @@ libera o no los dos miembros según la pareja.
 | `int SSecPrjVaciar ( SSecuenciaParejas * )`                          | Destruye todas.                                              |
 
 Además `Crear`, `Destruir`, `EsValida`, `EstaVacia` y `NumElementos`.
+
+### `SSecuenciaId`
+
+Secuencia de [identificadores](Identificadores.md) en orden de inserción y con
+repetidos, sobre una `SSecuencia`. Es la prueba de concepto de una secuencia de
+**estructuras guardadas por copia**: no guarda los `SId` sino su contenido
+(`SIdBloqueBin`), y los vuelve a leer como `SId` al consultarlos.
+
+- **El llamante sigue siendo dueño de los `SId` que pasa**: `Insertar` guarda
+  una copia, y el original se puede cambiar o destruir sin que la secuencia lo
+  note. Las `…Ext` reciben el valor y usan un `SId` en la pila.
+- **`SSecIdElemento` devuelve un `SId` nuevo** leído de la copia, que es del
+  llamante y hay que destruir; cambiarlo no toca la secuencia.
+  `SSecIdValorElemento` da el valor y devuelve 0 si no hay elemento, que no se
+  distingue de un identificador 0.
+- Búsqueda por `SId` y por valor: `Existe`, `Repeticiones`, `Buscar` (que es
+  `BuscarPrimero`) y `BuscarSiguiente`, cada una con su `…Ext`. Comparan **los
+  bytes de la copia**, porque `SSecuencia` no tiene criterio de comparación: con
+  `SId` es lo mismo que comparar valores, pero una estructura cuya igualdad no
+  sea la de su contenido binario necesitaría otra cosa.
+- `SSecIdEliminarElem`, `SSecIdVaciar` y `SSecIdSecuencia`, que expone la
+  `SSecuencia` interna. Además `Crear`, `Destruir`, `EsValida`, `EstaVacia` y
+  `NumElementos`.
 
 ## Operaciones con otras secuencias y listas
 
@@ -280,13 +307,14 @@ también, salvo `ConcatenarDup`: en ellas `Concatenar` ya copia ( ver
 - [Listas](Listas.md) — `SLista` y `SListaPtr` hacen todo el trabajo.
 - [SElemento](SElemento.md) — el contenido de la variante base.
 - [ParejasReferencias](ParejasReferencias.md) — `SSecuenciaParejas`.
+- [Identificadores](Identificadores.md) — `SSecuenciaId`.
 
 ## Tests
 
 `SSecuenciaTest.c`, `SSecuenciaPtrTest.c`, `SSecuenciaEnterosTest.c`,
 `SSecuenciaEnterosLargosTest.c`, `SSecuenciaEnterosLargosSinSignoTest.c`,
 `SSecuenciaLiteralesTest.c`, `SSecuenciaUnicaTest.c`, `SSecuenciaUnicaPtrTest.c`,
-`SSecuenciaParejasTest.c`.
+`SSecuenciaParejasTest.c`, `SSecuenciaIdTest.c`.
 
 ## Observaciones
 

@@ -4,6 +4,10 @@
 #include "TiposBasicosConfig.h"
 
 
+#define _SID_TAM_DATOS_BIN		( (int) sizeof ( unsigned long ) )
+#define _SID_TAM_DATOS_MPL_BIN		( (int) MplTamULong () )
+
+
 
 SId * SIdCrearDef ()
 {
@@ -25,6 +29,76 @@ SId * SIdCrear ( unsigned long ulValor )
 	if ( ES_VALIDO ( p_idObj ) )
 	{
 		SIdEstablecer ( p_idObj, ulValor );
+	}
+	return ( p_idObj );
+}
+
+SId * SIdLeerDeBloqueBin ( SBloque * p_blqDatos )
+{
+	SId *			p_idObj;
+	unsigned long	ulValor;
+	int				iPos;
+
+	if ( SBlqEsValido ( p_blqDatos ) == 1 )
+	{
+		if ( SBlqTam ( p_blqDatos ) == _SID_TAM_DATOS_BIN )
+		{
+			iPos = 0;
+			ulValor = SBlqLeerEnteroLargoSinSignoEnPosExt ( p_blqDatos, &iPos );
+			if ( iPos == _SID_TAM_DATOS_BIN )
+			{
+				p_idObj = SIdCrear ( ulValor );
+			}
+			else
+			{
+				p_idObj = NULL;
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_PARAMETROS );
+			p_idObj = NULL;
+		}
+	}
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+		p_idObj = NULL;
+	}
+	return ( p_idObj );
+}
+
+SId * SIdLeerDeBloqueMplBin ( SBloqueMultiPlataforma * p_blqDatos )
+{
+	SId *			p_idObj;
+	unsigned long	ulValor;
+	int				iPos;
+
+	if ( SBlqMplEsValido ( p_blqDatos ) == 1 )
+	{
+		if ( SBlqMplTam ( p_blqDatos ) == _SID_TAM_DATOS_MPL_BIN )
+		{
+			iPos = 0;
+			ulValor = SBlqMplLeerEnteroLargoSinSignoEnPosExt ( p_blqDatos, &iPos );
+			if ( iPos == _SID_TAM_DATOS_MPL_BIN )
+			{
+				p_idObj = SIdCrear ( ulValor );
+			}
+			else
+			{
+				p_idObj = NULL;
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_PARAMETROS );
+			p_idObj = NULL;
+		}
+	}
+	else
+	{
+		ERROR_ESTABLECER ( ERR_PARAMETROS );
+		p_idObj = NULL;
 	}
 	return ( p_idObj );
 }
@@ -436,4 +510,121 @@ unsigned int SIdHash ( SId * p_idObj )
 SPtr * SIdPtr ( SId * p_idObj )
 {
 	return ( SPtrCrear ( p_idObj, (PRC_DESTRUCTOR) SIdDestruir ) );
+}
+
+/* Lo que mide el bloque de SIdBloqueBin: para leer una copia guardada de la
+   que solo se tiene la direccion. */
+int SIdTamBloqueBin ()
+{
+	return ( _SID_TAM_DATOS_BIN );
+}
+
+SBloque * SIdBloqueBin ( SId * p_idObj )
+{
+	SBloque	* p_blqDatos;
+
+	if ( ES_VALIDO ( p_idObj ) )
+	{
+		p_blqDatos = SBlqCrear ( _SID_TAM_DATOS_BIN );
+		if ( ES_VALIDO ( p_blqDatos ) )
+		{
+			if ( SIdLlenarBloqueBin ( p_idObj, p_blqDatos ) == 0 )
+			{
+				SBlqDestruir ( &p_blqDatos );
+			}
+		}
+	}
+	else
+	{
+		p_blqDatos = NULL;
+	}
+	return ( p_blqDatos );
+}
+
+SBloqueMultiPlataforma * SIdBloqueMplBin ( SId * p_idObj )
+{
+	SBloqueMultiPlataforma	* p_blqDatos;
+
+	if ( ES_VALIDO ( p_idObj ) )
+	{
+		p_blqDatos = SBlqMplCrear ( _SID_TAM_DATOS_MPL_BIN );
+		if ( ES_VALIDO ( p_blqDatos ) )
+		{
+			if ( SIdLlenarBloqueMplBin ( p_idObj, p_blqDatos ) == 0 )
+			{
+				SBlqMplDestruir ( &p_blqDatos );
+			}
+		}
+	}
+	else
+	{
+		p_blqDatos = NULL;
+	}
+	return ( p_blqDatos );
+}
+
+int SIdLlenarBloqueBin ( SId * p_idObj, SBloque * p_blqDatos )
+{
+	int	iPos;
+	int	iRes;
+
+	if ( ES_VALIDO ( p_idObj ) )
+	{
+		if ( SBlqEsValido ( p_blqDatos ) == 1 )
+		{
+			if ( SBlqTam ( p_blqDatos ) == _SID_TAM_DATOS_BIN )
+			{
+				iPos = 0;
+				iRes = SBlqEscribirEnteroLargoSinSignoEnPosExt ( p_blqDatos, &iPos, SIdValor ( p_idObj ) );
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_PARAMETROS );
+				iRes = 0;
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_PARAMETROS );
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SIdLlenarBloqueMplBin ( SId * p_idObj, SBloqueMultiPlataforma * p_blqDatos )
+{
+	int	iPos;
+	int	iRes;
+
+	if ( ES_VALIDO ( p_idObj ) )
+	{
+		if ( SBlqMplEsValido ( p_blqDatos ) == 1 )
+		{
+			if ( SBlqMplTam ( p_blqDatos ) == _SID_TAM_DATOS_MPL_BIN )
+			{
+				iPos = 0;
+				iRes = SBlqMplEscribirEnteroLargoSinSignoEnPosExt ( p_blqDatos, &iPos, SIdValor ( p_idObj ) );
+			}
+			else
+			{
+				ERROR_ESTABLECER ( ERR_PARAMETROS );
+				iRes = 0;
+			}
+		}
+		else
+		{
+			ERROR_ESTABLECER ( ERR_PARAMETROS );
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
 }

@@ -2,7 +2,7 @@
 
 
 
-#define NUM_TESTS        22
+#define NUM_TESTS        23
 
 extern int TestCadenasBase ();
 extern int TestFormatoCadena ();
@@ -26,6 +26,7 @@ extern int TestASCIIEstandar ();
 extern int TestUniChar ();
 extern int TestVersiones ();
 extern int TestValidaciones ();
+extern int TestTiposMultiPlataforma ();
 
 char ** testArrayInit ()
 {
@@ -52,6 +53,7 @@ char ** testArrayInit ()
     p_p_cTests[ 19 ] = CadDuplicar ( "UniCharTest" );
     p_p_cTests[ 20 ] = CadDuplicar ( "VersionesTest" );
 	p_p_cTests[ 21 ] = CadDuplicar ( "ValidacionesTest" );
+	p_p_cTests[ 22 ] = CadDuplicar ( "TiposMultiPlataformaTest" );
     return p_p_cTests;
 }
 
@@ -80,6 +82,7 @@ PFUNINTV * functionArrayInit ()
     p_fTests[ 19 ] = TestUniChar;
     p_fTests[ 20 ] = TestVersiones;
 	p_fTests[ 21 ] = TestValidaciones;
+	p_fTests[ 22 ] = TestTiposMultiPlataforma;
     return p_fTests;
 }
 

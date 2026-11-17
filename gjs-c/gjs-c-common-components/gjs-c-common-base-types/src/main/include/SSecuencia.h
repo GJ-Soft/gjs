@@ -28,11 +28,16 @@ int SSecNumElementos ( SSecuencia * p_secObj );
 int SSecEstaVacia ( SSecuencia * p_secObj );
 SElemento * SSecElemento ( SSecuencia * p_secObj, int iElem );
 
-int SSecExiste ( SSecuencia * p_secObj, SElemento * p_elmObj );
-int SSecRepeticiones ( SSecuencia * p_secObj, SElemento * p_elmObj );
-int SSecBuscar ( SSecuencia * p_secObj, SElemento * p_elmObj );
-int SSecBuscarPrimero ( SSecuencia * p_secObj, SElemento * p_elmObj );
-int SSecBuscarSiguiente ( SSecuencia * p_secObj, SElemento * p_elmObj, int iPos );
+int SSecExiste ( SSecuencia * p_secObj, SBloque * p_blqDatos );
+int SSecRepeticiones ( SSecuencia * p_secObj, SBloque * p_blqDatos );
+int SSecBuscar ( SSecuencia * p_secObj, SBloque * p_blqDatos );
+int SSecBuscarPrimero ( SSecuencia * p_secObj, SBloque * p_blqDatos );
+int SSecBuscarSiguiente ( SSecuencia * p_secObj, SBloque * p_blqDatos, int iPos );
+int SSecExisteExt ( SSecuencia * p_secObj, byte * p_byDatos );
+int SSecRepeticionesExt ( SSecuencia * p_secObj, byte * p_byDatos );
+int SSecBuscarExt ( SSecuencia * p_secObj, byte * p_byDatos );
+int SSecBuscarPrimeroExt ( SSecuencia * p_secObj, byte * p_byDatos );
+int SSecBuscarSiguienteExt ( SSecuencia * p_secObj, byte * p_byDatos, int iPos );
 
 int SSecInsertar ( SSecuencia * p_secObj, SElemento * p_elObj );
 int SSecEliminar ( SSecuencia * p_secObj, int iElem );
