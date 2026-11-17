@@ -119,13 +119,121 @@ static int TestSVecLitInvalidos01 ()
 
 
 
+/* Una posicion por cadena, con su copia y la liberacion activada; una cadena
+   nula deja su posicion vacia. 0 cadenas, el vector nulo o un numero
+   negativo dan nulo: un vector no tiene 0 posiciones. */
+static int TestSVecLitCrearDesdeVector01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SVecLitCrearDesdeVector 01:\n" );
+
+	const char * p_cVal [ 3 ] = { "uno", NULL, "" };
+	SVectorLiterales * p_vecObj = SVecLitCrearDesdeVector ( p_cVal, 3 );
+	if ( ES_NULO ( p_vecObj ) || ( SVecLitNumElementos ( p_vecObj ) != 3 ) ||
+		 ! ElementoEs ( p_vecObj, 0, "uno" ) || ES_VALIDO ( SVecLitElemento ( p_vecObj, 1 ) ) ||
+		 ! ElementoEs ( p_vecObj, 2, "" ) )
+	{
+		printf( "Error caso 1: se esperaba { uno, vacia, \"\" }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( SVecLitElemento ( p_vecObj, 0 ) == p_cVal [ 0 ] ) || ( SVecLitElemento ( p_vecObj, 2 ) == p_cVal [ 2 ] ) )
+	{
+		printf( "Error caso 2: el vector deberia guardar copias, no las cadenas del vector\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SVecLitLiberacionMemoriaActivada ( p_vecObj ) != 1 )
+	{
+		printf( "Error caso 3: el vector deberia ser dueno de sus copias\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SVectorLiterales * p_vecParcial = SVecLitCrearDesdeVector ( p_cVal, 1 );
+	if ( ES_NULO ( p_vecParcial ) || ( SVecLitNumElementos ( p_vecParcial ) != 1 ) || ! ElementoEs ( p_vecParcial, 0, "uno" ) )
+	{
+		printf( "Error caso 4: con 1 cadena se esperaba { uno }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SVecLitCrearDesdeVector ( p_cVal, 0 ) ) )
+	{
+		printf( "Error caso 5: con 0 cadenas se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SVecLitCrearDesdeVector ( NULL, 2 ) ) )
+	{
+		printf( "Error caso 6: con el vector nulo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SVecLitCrearDesdeVector ( p_cVal, -1 ) ) )
+	{
+		printf( "Error caso 7: con un numero negativo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SVecLitDestruir ( &p_vecObj );
+	SVecLitDestruir ( &p_vecParcial );
+	return ( iRes );
+}
+
+static const char * SiguienteCadena ( int * p_iCont )
+{
+	static const char * p_cValores [ 3 ] = { "x", "y", "z" };
+	const char * p_cRes;
+
+	p_cRes = p_cValores [ *p_iCont % 3 ];
+	*p_iCont = *p_iCont + 1;
+	return ( p_cRes );
+}
+
+/* Cualquier numero de cadenas, NULL incluido, sin marca de fin; cada
+   argumento se evalua una sola vez. */
+static int TestSVecLitCrearConValores01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SVecLitCrearConValores 01:\n" );
+
+	SVectorLiterales * p_vecObj = SVecLitCrearConValores ( "a", NULL, "c", "a" );
+	if ( ES_NULO ( p_vecObj ) || ( SVecLitNumElementos ( p_vecObj ) != 4 ) ||
+		 ! ElementoEs ( p_vecObj, 0, "a" ) || ES_VALIDO ( SVecLitElemento ( p_vecObj, 1 ) ) ||
+		 ! ElementoEs ( p_vecObj, 2, "c" ) || ! ElementoEs ( p_vecObj, 3, "a" ) )
+	{
+		printf( "Error caso 1: se esperaba { a, vacia, c, a }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SVectorLiterales * p_vecUna = SVecLitCrearConValores ( "sola" );
+	if ( ES_NULO ( p_vecUna ) || ( SVecLitNumElementos ( p_vecUna ) != 1 ) || ! ElementoEs ( p_vecUna, 0, "sola" ) )
+	{
+		printf( "Error caso 2: se esperaba { sola }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* El orden en que se evaluan los inicializadores no esta fijado: se
+	   comprueba el numero de llamadas y que esten las tres cadenas. */
+	int iCont = 0;
+	SVectorLiterales * p_vecLlamadas = SVecLitCrearConValores ( SiguienteCadena ( &iCont ), SiguienteCadena ( &iCont ), SiguienteCadena ( &iCont ) );
+	if ( iCont != 3 )
+	{
+		printf( "Error caso 3: se esperaban 3 llamadas: %d\n", iCont );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( SVecLitNumElementos ( p_vecLlamadas ) != 3 ) || ( SVecLitExiste ( p_vecLlamadas, "x" ) != 1 ) ||
+		 ( SVecLitExiste ( p_vecLlamadas, "y" ) != 1 ) || ( SVecLitExiste ( p_vecLlamadas, "z" ) != 1 ) )
+	{
+		printf( "Error caso 4: se esperaban las cadenas x, y y z\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SVecLitDestruir ( &p_vecObj );
+	SVecLitDestruir ( &p_vecUna );
+	SVecLitDestruir ( &p_vecLlamadas );
+	return ( iRes );
+}
+
+
 int TestSVectorLiterales ()
 {
 	int iRes = BOOL_VAL_CIERTO;
 	printf ( "%s[Test SVectorLiterales]%s\n", ANSI_AMARILLO,  ANSI_RESETEAR );
 	if ( ( TestSVecLitCrear01 () == BOOL_VAL_CIERTO ) &&
 			( TestSVecLitAsignar01 () == BOOL_VAL_CIERTO ) &&
-			( TestSVecLitInvalidos01 () == BOOL_VAL_CIERTO ) )
+			( TestSVecLitInvalidos01 () == BOOL_VAL_CIERTO ) &&
+			( TestSVecLitCrearDesdeVector01 () == BOOL_VAL_CIERTO ) &&
+			( TestSVecLitCrearConValores01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

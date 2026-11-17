@@ -44,6 +44,54 @@ SConjuntoLiterales * SCnjLitCrear ()
 	return ( p_cnjObj );
 }
 
+/* Copia de cada una de las iNumValores primeras cadenas de p_p_cValores, en el
+   orden del conjunto: las repetidas entran una vez. Con 0 cadenas da un
+   conjunto vacio; NULL si el vector es nulo, el numero es negativo, alguna
+   cadena es nula o falla alguna copia o insercion. */
+SConjuntoLiterales * SCnjLitCrearDesdeVector ( const char * const * p_p_cValores, int iNumValores )
+{
+	SConjuntoLiterales *	p_cnjRes;
+	int		iPos;
+	int		iError;
+
+	if ( ES_VALIDO ( p_p_cValores ) )
+	{
+		if ( iNumValores >= 0 )
+		{
+			p_cnjRes = SCnjLitCrear ();
+			if ( ES_VALIDO ( p_cnjRes ) )
+			{
+				iError = 0;
+				iPos = 0;
+				while ( ( iError == 0 ) && ( iPos < iNumValores ) )
+				{
+					if ( SCnjLitExiste ( p_cnjRes, p_p_cValores [ iPos ] ) == 0 )
+					{
+						if ( SCnjLitInsertar ( p_cnjRes, p_p_cValores [ iPos ] ) != 1 )
+						{
+							iError = 1;
+						}
+					}
+					iPos = iPos + 1;
+				}
+				if ( iError == 1 )
+				{
+					SCnjLitDestruir ( &p_cnjRes );
+				}
+			}
+		}
+		else
+		{
+			p_cnjRes = NULL;
+		}
+	}
+	else
+	{
+		p_cnjRes = NULL;
+	}
+	return ( p_cnjRes );
+}
+
 void SCnjLitDestruir ( SConjuntoLiterales ** p_p_cnjObj )
 {
 	SConjuntoLiterales * p_cnjObj;

@@ -24,10 +24,10 @@
 
 
 /* Macros: */
-#define BOOL_VALIDO( iValor )				( ( iValor == 1 ) || ( iValor == 0 ) )
+#define BOOL_VALIDO( iValor )				( ( ( iValor ) == 1 ) || ( ( iValor ) == 0 ) )
 
-#define BOOL_ES_CIERTO( iValor )			( iValor == 1 )
-#define BOOL_ES_FALSO( iValor )			    ( iValor == 0 )
+#define BOOL_ES_CIERTO( iValor )			( ( iValor ) == 1 )
+#define BOOL_ES_FALSO( iValor )			    ( ( iValor ) == 0 )
 
 
 

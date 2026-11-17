@@ -40,6 +40,53 @@ SSecuenciaEnterosLargosSinSigno * SSecIntLssCrearDesdeLista ( SListaEnterosLargo
 	return ( p_secRes );
 }
 
+/* Secuencia con los iNumValores primeros de p_ulValores, en orden. Con 0
+   valores da una secuencia vacia; NULL si el vector es nulo, el numero es
+   negativo o falla alguna insercion. */
+SSecuenciaEnterosLargosSinSigno * SSecIntLssCrearDesdeVector ( const unsigned long * p_ulValores, int iNumValores )
+{
+	SSecuenciaEnterosLargosSinSigno *	p_secRes;
+	int		iPos;
+	int		iError;
+
+	if ( ES_VALIDO ( p_ulValores ) )
+	{
+		if ( iNumValores >= 0 )
+		{
+			p_secRes = SSecIntLssCrear ();
+			if ( ES_VALIDO ( p_secRes ) )
+			{
+				iError = 0;
+				iPos = 0;
+				while ( ( iError == 0 ) && ( iPos < iNumValores ) )
+				{
+					if ( SSecIntLssInsertar ( p_secRes, p_ulValores [ iPos ] ) == 1 )
+					{
+						iPos = iPos + 1;
+					}
+					else
+					{
+						iError = 1;
+					}
+				}
+				if ( iError == 1 )
+				{
+					SSecIntLssDestruir ( &p_secRes );
+				}
+			}
+		}
+		else
+		{
+			p_secRes = NULL;
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
 void SSecIntLssDestruir ( SSecuenciaEnterosLargosSinSigno ** p_p_secObj )
 {
 	SSecuenciaEnterosLargosSinSigno * p_secObj;

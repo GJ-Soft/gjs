@@ -24,6 +24,15 @@ typedef struct
 
 SListaEnterosLargosSinSigno * SLisIntLssCrear ();
 SListaEnterosLargosSinSigno * SLisIntLssEncapsular ( SLista * p_lisDatos );
+SListaEnterosLargosSinSigno * SLisIntLssCrearDesdeVector ( const unsigned long * p_ulValores, int iNumValores );
+
+/* Lista con los valores que se le pasen, cuantos sean y sean cuales sean (el 0
+   tambien): el numero lo cuenta el compilador, sin marca de fin. Necesita al
+   menos un valor; para una lista vacia, SLisIntLssCrear. Cada valor se evalua una
+   vez: el segundo vector solo lo mide sizeof. */
+#define SLisIntLssCrearConValores( ... ) \
+	SLisIntLssCrearDesdeVector ( (const unsigned long []) { __VA_ARGS__ }, \
+		(int) ( sizeof ( (const unsigned long []) { __VA_ARGS__ } ) / sizeof ( unsigned long ) ) )
 
 
 void SLisIntLssDestruir ( SListaEnterosLargosSinSigno ** p_p_lisObj );

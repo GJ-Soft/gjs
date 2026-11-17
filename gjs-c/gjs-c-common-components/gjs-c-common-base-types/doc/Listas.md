@@ -384,6 +384,38 @@ que la destruye con ella. Sus elementos deben ser del tipo de la envoltura. Si
 la lista no es válida, o falla la reserva, devuelve `NULL` y la lista **sigue
 siendo del llamante**, como `SSecEncapsularLista`.
 
+Las tres, y `SListaLiterales`, se pueden crear ya cargadas.
+`SLisIntCrearDesdeVector ( const int *, int iNumValores )` (y `SLisIntlCrearDesdeVector`
+con `const long *`, `SLisIntLssCrearDesdeVector` con `const unsigned long *` y
+`SLisLitCrearDesdeVector` con `const char * const *`) copia los `iNumValores`
+primeros valores del vector, en orden, y deja el cursor al inicio. Con 0 valores
+da una lista vacía, y con el vector nulo, un número negativo o una inserción
+fallida, `NULL`. `SLisIntCrearConValores ( ... )` (y `SLisIntlCrearConValores`,
+`SLisIntLssCrearConValores`, `SLisLitCrearConValores`) es una **macro** sobre
+ella que admite cualquier número de valores, el 0 incluido, sin número delante
+ni marca de fin:
+
+```c
+SListaEnteros * p_lisObj = SLisIntCrearConValores ( 5, 0, 7, -3, 0 );   // { 5, 0, 7, -3, 0 }
+SListaLiterales * p_lisLit = SLisLitCrearConValores ( "uno", "", "tres" );
+```
+
+Una función variádica no puede saber dónde acaban sus argumentos; la macro los
+mete en un literal compuesto `(const int []) { … }` y el compilador cuenta los
+valores con `sizeof`, así que el número no puede descuadrar. Cada valor se
+evalúa una sola vez (el segundo literal solo lo mide `sizeof`) y se comprueba
+su tipo como al inicializar el del vector. Necesita al menos un valor: para una
+lista vacía está `…Crear ()`. Por ser una macro no tiene dirección; si hace
+falta un puntero a función, se usa la `…CrearDesdeVector`.
+
+En `SListaLiterales` la lista guarda **copias** de las cadenas (`CadDuplicar`),
+con la liberación activada, así que se le pueden pasar literales de cadena o
+cadenas que luego se liberen. Una cadena nula hace fallar la creación entera:
+se destruye la lista con las copias ya hechas y se devuelve `NULL`. El vector
+es `const char * const *` porque solo se lee; en C un `char **` no se convierte
+solo a ese tipo (con GCC 14 es un error, no un aviso), así que un vector
+`char * []` necesita el molde `(const char * const *)`.
+
 Añaden la búsqueda por valor, que la lista genérica no tiene en forma tipada:
 `SLisIntExiste ( …, int iDato )`, `SLisIntRepeticiones`, `SLisIntBuscar` (que es
 `BuscarPrimero`) y `SLisIntBuscarSiguiente ( …, int iDato, int iPos )`, que

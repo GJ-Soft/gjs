@@ -180,6 +180,14 @@ El criterio de orden está fijado a la comparación de cadenas, que es
 precisamente lo que la hace cómoda: un conjunto de cadenas sin duplicados sin
 tener que escribir nada. Como `SCnjLitInsertar`, todo lo que entra se copia.
 
+`SCnjLitCrearDesdeVector ( const char * const *, int iNumValores )` crea el
+conjunto con copias de las `iNumValores` primeras cadenas del vector, y
+`SCnjLitCrearConValores ( "b", "a", "b" )` es su macro, para cualquier número de
+cadenas. Las repetidas entran una vez y salen en el orden del conjunto: el
+ejemplo da `{ a, b }`. Con 0 cadenas da un conjunto vacío; una cadena nula hace
+fallar la creación entera y devuelve `NULL`. Un vector `char * []` necesita el
+molde `(const char * const *)`, como en [SListaLiterales](Listas.md).
+
 `SCnjLitConjunto` devuelve el `SConjuntoPtr` interno y `SCnjLitLista`, su
 `SListaOrdenadaPtr`. Tiene las operaciones con otros conjuntos, con otro
 `SConjuntoLiterales` o con una `SListaLiterales`, delegando en las de
@@ -260,7 +268,6 @@ Además `Crear`, `Destruir`, `EsValido`, `EstaVacio` y `NumElementos`.
 - Cada comparación crea y destruye dos `SId`: es el precio de comparar como
   estructura y no como bytes.
 
-## Dependencias
 ## Dependencias
 
 - [Listas](Listas.md) — `SListaOrdenada` y `SListaOrdenadaPtr`.

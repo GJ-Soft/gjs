@@ -27,6 +27,15 @@ typedef struct
 
 
 SConjuntoLiterales * SCnjLitCrear ();
+SConjuntoLiterales * SCnjLitCrearDesdeVector ( const char * const * p_p_cValores, int iNumValores );
+
+/* Conjunto con copias de las cadenas que se le pasen, cuantas sean: las
+   repetidas entran una vez. El numero lo cuenta el compilador, sin marca de
+   fin. Necesita al menos un valor: para un conjunto vacio, SCnjLitCrear.
+   Cada valor se evalua una vez: el segundo vector solo lo mide sizeof. */
+#define SCnjLitCrearConValores( ... ) \
+	SCnjLitCrearDesdeVector ( (const char * const []) { __VA_ARGS__ }, \
+		(int) ( sizeof ( (const char * const []) { __VA_ARGS__ } ) / sizeof ( char * ) ) )
 
 
 void SCnjLitDestruir ( SConjuntoLiterales ** p_p_cnjObj );

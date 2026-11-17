@@ -455,6 +455,115 @@ static int TestSSecLitUnion01 ()
 	return ( iRes );
 }
 
+/* Copias de las cadenas pedidas, en orden; 0 cadenas dan una secuencia vacia,
+   y el vector nulo, un numero negativo o una cadena nula, nulo. */
+static int TestSSecLitCrearDesdeVector01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecLitCrearDesdeVector 01:\n" );
+
+	const char * p_cVal [ 3 ] = { "uno", "", "tres" };
+	SSecuenciaLiterales * p_secObj = SSecLitCrearDesdeVector ( p_cVal, 3 );
+	if ( ES_NULO ( p_secObj ) || ( VerificarSec ( p_secObj, p_cVal, 3 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { uno, \"\", tres }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( SSecLitElemento ( p_secObj, 0 ) == p_cVal [ 0 ] ) || ( SSecLitElemento ( p_secObj, 2 ) == p_cVal [ 2 ] ) )
+	{
+		printf( "Error caso 2: la secuencia deberia guardar copias, no las cadenas del vector\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecuenciaLiterales * p_secParcial = SSecLitCrearDesdeVector ( p_cVal, 2 );
+	if ( ES_NULO ( p_secParcial ) || ( VerificarSec ( p_secParcial, p_cVal, 2 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 3: con 2 cadenas se esperaba { uno, \"\" }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecuenciaLiterales * p_secVacia = SSecLitCrearDesdeVector ( p_cVal, 0 );
+	if ( ES_NULO ( p_secVacia ) || ( SSecLitEsValida ( p_secVacia ) != 1 ) ||
+		 ( SSecLitNumElementos ( p_secVacia ) != 0 ) )
+	{
+		printf( "Error caso 4: con 0 cadenas se esperaba una secuencia vacia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SSecLitCrearDesdeVector ( NULL, 2 ) ) )
+	{
+		printf( "Error caso 5: con el vector nulo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SSecLitCrearDesdeVector ( p_cVal, -1 ) ) )
+	{
+		printf( "Error caso 6: con un numero negativo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* La nula va la ultima: las dos primeras ya estan copiadas, y la
+	   secuencia se destruye con ellas. */
+	const char * p_cConNula [ 3 ] = { "uno", "dos", NULL };
+	if ( ES_VALIDO ( SSecLitCrearDesdeVector ( p_cConNula, 3 ) ) )
+	{
+		printf( "Error caso 7: con una cadena nula se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecLitDestruir ( &p_secObj );
+	SSecLitDestruir ( &p_secParcial );
+	SSecLitDestruir ( &p_secVacia );
+	return ( iRes );
+}
+
+static const char * SiguienteCadena ( int * p_iCont )
+{
+	static const char * p_cValores [ 3 ] = { "x", "y", "z" };
+	const char * p_cRes;
+
+	p_cRes = p_cValores [ *p_iCont % 3 ];
+	*p_iCont = *p_iCont + 1;
+	return ( p_cRes );
+}
+
+/* Cualquier numero de cadenas, sin marca de fin; cada argumento se evalua
+   una sola vez. */
+static int TestSSecLitCrearConValores01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecLitCrearConValores 01:\n" );
+
+	const char * p_cVal [ 4 ] = { "a", "", "c", "a" };
+	SSecuenciaLiterales * p_secObj = SSecLitCrearConValores ( "a", "", "c", "a" );
+	if ( ES_NULO ( p_secObj ) || ( VerificarSec ( p_secObj, p_cVal, 4 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { a, \"\", c, a }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	const char * p_cUna [ 1 ] = { "sola" };
+	SSecuenciaLiterales * p_secUna = SSecLitCrearConValores ( "sola" );
+	if ( ES_NULO ( p_secUna ) || ( VerificarSec ( p_secUna, p_cUna, 1 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 2: se esperaba { sola }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* El orden en que se evaluan los inicializadores no esta fijado: se
+	   comprueba el numero de llamadas y que esten las tres cadenas. */
+	int iCont = 0;
+	SSecuenciaLiterales * p_secLlamadas = SSecLitCrearConValores ( SiguienteCadena ( &iCont ), SiguienteCadena ( &iCont ), SiguienteCadena ( &iCont ) );
+	if ( iCont != 3 )
+	{
+		printf( "Error caso 3: se esperaban 3 llamadas: %d\n", iCont );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( SSecLitNumElementos ( p_secLlamadas ) != 3 ) || ( SSecLitExiste ( p_secLlamadas, "x" ) != 1 ) ||
+		 ( SSecLitExiste ( p_secLlamadas, "y" ) != 1 ) || ( SSecLitExiste ( p_secLlamadas, "z" ) != 1 ) )
+	{
+		printf( "Error caso 4: se esperaban las cadenas x, y y z\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecLitDestruir ( &p_secObj );
+	SSecLitDestruir ( &p_secUna );
+	SSecLitDestruir ( &p_secLlamadas );
+	return ( iRes );
+}
+
+
 int TestSSecuenciaLiterales ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -464,7 +573,9 @@ int TestSSecuenciaLiterales ()
 			( TestSSecLitBuscarSiguiente01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecLitOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecLitListaLit01 () == BOOL_VAL_CIERTO ) &&
-			( TestSSecLitUnion01 () == BOOL_VAL_CIERTO ) )
+			( TestSSecLitUnion01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecLitCrearDesdeVector01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecLitCrearConValores01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

@@ -21,6 +21,15 @@ typedef struct
 
 SListaLiterales * SLisLitCrear ();
 SListaLiterales * SLisLitEncapsular ( SListaPtr * p_lisDatos );
+SListaLiterales * SLisLitCrearDesdeVector ( const char * const * p_p_cValores, int iNumValores );
+
+/* Lista con copias de las cadenas que se le pasen, cuantas sean: el numero lo
+   cuenta el compilador, sin marca de fin. Necesita al menos una; para una
+   lista vacia, SLisLitCrear. Cada valor se evalua una vez: el segundo vector
+   solo lo mide sizeof. */
+#define SLisLitCrearConValores( ... ) \
+	SLisLitCrearDesdeVector ( (const char * const []) { __VA_ARGS__ }, \
+		(int) ( sizeof ( (const char * const []) { __VA_ARGS__ } ) / sizeof ( char * ) ) )
 
 
 void SLisLitDestruir ( SListaLiterales ** p_p_lisObj );

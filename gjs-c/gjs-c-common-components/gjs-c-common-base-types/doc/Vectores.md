@@ -87,9 +87,16 @@ Añade dos cosas sobre la base:
 Y no tiene `LimpiarElemento` ni `Limpiar`: para un vector de valores, "limpiar"
 es `SVecIntInicializar`.
 
+`SVecIntCrearDesdeVector ( const int *, int iNumValores )` crea un vector de
+`iNumValores` posiciones con los primeros valores del vector de C, y
+`SVecIntCrearConValores ( 5, 0, 7 )` es su macro, para cualquier número de
+valores, el 0 incluido. Como un vector no tiene 0 posiciones, con 0 valores
+devuelve `NULL`, igual que con el vector nulo, un número negativo o una
+asignación fallida.
+
 ### `SVectorLiterales`
 
-Es la variante con más funciones (12) porque combina el control de propiedad de
+Es la variante con más funciones (13) porque combina el control de propiedad de
 `SVectorPtr` con la doble forma de asignación que ya aparece en
 [SListaLiterales](Listas.md):
 
@@ -99,6 +106,14 @@ Es la variante con más funciones (12) porque combina el control de propiedad de
 | `SVecLitAsignarDup` | `const char *` | **Duplica** la cadena y guarda la copia             |
 
 Más `SVecLitExiste ( …, const char * )` y las tres de liberación.
+
+`SVecLitCrearDesdeVector ( const char * const *, int iNumValores )` crea un
+vector de `iNumValores` posiciones con **copias** de las cadenas, como
+`AsignarDup`, y la liberación activada; `SVecLitCrearConValores ( "a", NULL, "c" )`
+es su macro. A diferencia de las listas, secuencias y conjuntos, una cadena
+nula **no** es un error: deja su posición vacía, que en un vector es un estado
+normal. Con 0 cadenas, el vector nulo o un número negativo devuelve `NULL`. Un
+vector `char * []` necesita el molde `(const char * const *)`.
 
 ## Comportamiento
 

@@ -665,6 +665,125 @@ static int TestSLisLitDuplicar01 ()
 	return ( iRes );
 }
 
+/* Copia el numero de cadenas pedido, en orden, con el cursor al inicio y la
+   liberacion activada; 0 cadenas dan una lista vacia, y el vector nulo, un
+   numero negativo o una cadena nula, nulo. */
+static int TestSLisLitCrearDesdeVector01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLisLitCrearDesdeVector 01:\n" );
+
+	const char * p_cVal [ 3 ] = { "uno", "", "tres" };
+	SListaLiterales * p_lisObj = SLisLitCrearDesdeVector ( p_cVal, 3 );
+	if ( ES_NULO ( p_lisObj ) || ( VerificarContenido ( p_lisObj, p_cVal, 3 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { uno, \"\", tres }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( SLisLitElemento ( p_lisObj, 0 ) == p_cVal [ 0 ] ) || ( SLisLitElemento ( p_lisObj, 2 ) == p_cVal [ 2 ] ) )
+	{
+		printf( "Error caso 2: la lista deberia guardar copias, no las cadenas del vector\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SLisLitLiberacionMemoriaActivada ( p_lisObj ) != 1 )
+	{
+		printf( "Error caso 3: la lista deberia ser duena de sus copias\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SLisLitPosicion ( p_lisObj ) != 0 )
+	{
+		printf( "Error caso 4: el cursor deberia estar en 0: %d\n", SLisLitPosicion ( p_lisObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SListaLiterales * p_lisParcial = SLisLitCrearDesdeVector ( p_cVal, 2 );
+	if ( ES_NULO ( p_lisParcial ) || ( VerificarContenido ( p_lisParcial, p_cVal, 2 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 5: con 2 cadenas se esperaba { uno, \"\" }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SListaLiterales * p_lisVacia = SLisLitCrearDesdeVector ( p_cVal, 0 );
+	if ( ES_NULO ( p_lisVacia ) || ( SLisLitEsValida ( p_lisVacia ) != 1 ) ||
+		 ( SLisLitNumElementos ( p_lisVacia ) != 0 ) )
+	{
+		printf( "Error caso 6: con 0 cadenas se esperaba una lista vacia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SLisLitCrearDesdeVector ( NULL, 2 ) ) )
+	{
+		printf( "Error caso 7: con el vector nulo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SLisLitCrearDesdeVector ( p_cVal, -1 ) ) )
+	{
+		printf( "Error caso 8: con un numero negativo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* La nula va la ultima: las dos primeras ya estan copiadas, y la lista
+	   se destruye con ellas. */
+	const char * p_cConNula [ 3 ] = { "uno", "dos", NULL };
+	if ( ES_VALIDO ( SLisLitCrearDesdeVector ( p_cConNula, 3 ) ) )
+	{
+		printf( "Error caso 9: con una cadena nula se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisLitDestruir ( &p_lisObj );
+	SLisLitDestruir ( &p_lisParcial );
+	SLisLitDestruir ( &p_lisVacia );
+	return ( iRes );
+}
+
+static const char * Siguiente ( int * p_iCont )
+{
+	static const char * p_cValores [ 3 ] = { "x", "y", "z" };
+	const char * p_cRes;
+
+	p_cRes = p_cValores [ *p_iCont % 3 ];
+	*p_iCont = *p_iCont + 1;
+	return ( p_cRes );
+}
+
+/* Cualquier numero de cadenas, sin marca de fin; cada argumento se evalua
+   una sola vez. */
+static int TestSLisLitCrearConValores01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLisLitCrearConValores 01:\n" );
+
+	const char * p_cVal [ 4 ] = { "a", "", "c", "a" };
+	SListaLiterales * p_lisObj = SLisLitCrearConValores ( "a", "", "c", "a" );
+	if ( ES_NULO ( p_lisObj ) || ( VerificarContenido ( p_lisObj, p_cVal, 4 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { a, \"\", c, a }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	const char * p_cUna [ 1 ] = { "sola" };
+	SListaLiterales * p_lisUna = SLisLitCrearConValores ( "sola" );
+	if ( ES_NULO ( p_lisUna ) || ( VerificarContenido ( p_lisUna, p_cUna, 1 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 2: se esperaba { sola }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* El orden en que se evaluan los inicializadores no esta fijado: se
+	   comprueba el numero de llamadas y que esten las tres cadenas. */
+	int iCont = 0;
+	SListaLiterales * p_lisLlamadas = SLisLitCrearConValores ( Siguiente ( &iCont ), Siguiente ( &iCont ), Siguiente ( &iCont ) );
+	if ( iCont != 3 )
+	{
+		printf( "Error caso 3: se esperaban 3 llamadas: %d\n", iCont );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( SLisLitNumElementos ( p_lisLlamadas ) != 3 ) || ( SLisLitExiste ( p_lisLlamadas, "x" ) != 1 ) ||
+		 ( SLisLitExiste ( p_lisLlamadas, "y" ) != 1 ) || ( SLisLitExiste ( p_lisLlamadas, "z" ) != 1 ) )
+	{
+		printf( "Error caso 4: se esperaban las cadenas x, y y z\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisLitDestruir ( &p_lisObj );
+	SLisLitDestruir ( &p_lisUna );
+	SLisLitDestruir ( &p_lisLlamadas );
+	return ( iRes );
+}
+
 
 /* 1 solo con el cursor sobre un elemento: no en una vacia, ni deposicionada,
    ni con la lista nula. */
@@ -854,6 +973,8 @@ int TestSListaLiterales ()
 			( TestSLisLitEliminarLista01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisLitOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisLitDuplicar01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLisLitCrearDesdeVector01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLisLitCrearConValores01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisLitRepeticiones01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisLitEstaPosicionada01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisLitEncapsular01 () == BOOL_VAL_CIERTO ) )

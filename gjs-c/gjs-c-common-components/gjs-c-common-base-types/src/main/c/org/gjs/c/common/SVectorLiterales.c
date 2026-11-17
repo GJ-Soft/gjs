@@ -31,6 +31,47 @@ SVectorLiterales * SVecLitCrear ( int iNumElementos )
 	return ( p_vecObj );
 }
 
+/* Vector de iNumValores posiciones con copias de las primeras cadenas de
+   p_p_cValores, en orden y con la liberacion activada: una cadena nula deja
+   su posicion vacia. NULL si el vector es nulo, el numero no es positivo (un
+   vector no tiene 0 posiciones) o falla alguna copia. */
+SVectorLiterales * SVecLitCrearDesdeVector ( const char * const * p_p_cValores, int iNumValores )
+{
+	SVectorLiterales *	p_vecRes;
+	int		iPos;
+	int		iError;
+
+	if ( ES_VALIDO ( p_p_cValores ) )
+	{
+		p_vecRes = SVecLitCrear ( iNumValores );
+		if ( ES_VALIDO ( p_vecRes ) )
+		{
+			iError = 0;
+			iPos = 0;
+			while ( ( iError == 0 ) && ( iPos < iNumValores ) )
+			{
+				if ( ES_VALIDO ( p_p_cValores [ iPos ] ) )
+				{
+					if ( SVecLitAsignarDup ( p_vecRes, iPos, p_p_cValores [ iPos ] ) != 1 )
+					{
+						iError = 1;
+					}
+				}
+				iPos = iPos + 1;
+			}
+			if ( iError == 1 )
+			{
+				SVecLitDestruir ( &p_vecRes );
+			}
+		}
+	}
+	else
+	{
+		p_vecRes = NULL;
+	}
+	return ( p_vecRes );
+}
+
 void SVecLitDestruir ( SVectorLiterales ** p_p_vecObj )
 {
 	SVectorLiterales * p_vecObj;

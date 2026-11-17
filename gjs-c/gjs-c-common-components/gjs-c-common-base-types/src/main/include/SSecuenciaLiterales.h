@@ -28,6 +28,15 @@ typedef struct
 
 SSecuenciaLiterales * SSecLitCrear ();
 SSecuenciaLiterales * SSecLitCrearDesdeLista ( SListaLiterales * p_lisValores );
+SSecuenciaLiterales * SSecLitCrearDesdeVector ( const char * const * p_p_cValores, int iNumValores );
+
+/* Secuencia con copias de las cadenas que se le pasen, cuantas sean. El
+   numero lo cuenta el compilador, sin marca de fin. Necesita al menos un
+   valor: para una secuencia vacia, SSecLitCrear. Cada valor se evalua una
+   vez: el segundo vector solo lo mide sizeof. */
+#define SSecLitCrearConValores( ... ) \
+	SSecLitCrearDesdeVector ( (const char * const []) { __VA_ARGS__ }, \
+		(int) ( sizeof ( (const char * const []) { __VA_ARGS__ } ) / sizeof ( char * ) ) )
 
 
 void SSecLitDestruir ( SSecuenciaLiterales ** p_p_secObj );

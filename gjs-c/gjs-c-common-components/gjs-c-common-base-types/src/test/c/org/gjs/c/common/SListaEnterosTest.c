@@ -939,6 +939,110 @@ static int TestSLisIntDuplicar01 ()
 	return ( iRes );
 }
 
+/* Copia el numero de valores pedido, en orden y con el cursor al inicio; 0
+   valores dan una lista vacia, y el vector nulo o un numero negativo, nulo. */
+static int TestSLisIntCrearDesdeVector01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLisIntCrearDesdeVector 01:\n" );
+
+	int iVal [ 4 ] = { 0, INT_MIN, INT_MAX, -5 };
+	SListaEnteros * p_lisObj = SLisIntCrearDesdeVector ( iVal, 4 );
+	if ( ES_NULO ( p_lisObj ) || ( VerificarContenido ( p_lisObj, iVal, 4 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { 0, INT_MIN, INT_MAX, -5 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SLisIntPosicion ( p_lisObj ) != 0 )
+	{
+		printf( "Error caso 2: el cursor deberia estar en 0: %d\n", SLisIntPosicion ( p_lisObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SListaEnteros * p_lisParcial = SLisIntCrearDesdeVector ( iVal, 2 );
+	if ( ES_NULO ( p_lisParcial ) || ( VerificarContenido ( p_lisParcial, iVal, 2 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 3: con 2 valores se esperaba { 0, INT_MIN }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SListaEnteros * p_lisVacia = SLisIntCrearDesdeVector ( iVal, 0 );
+	if ( ES_NULO ( p_lisVacia ) || ( SLisIntEsValida ( p_lisVacia ) != 1 ) ||
+		 ( SLisIntNumElementos ( p_lisVacia ) != 0 ) )
+	{
+		printf( "Error caso 4: con 0 valores se esperaba una lista vacia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SLisIntCrearDesdeVector ( NULL, 2 ) ) )
+	{
+		printf( "Error caso 5: con el vector nulo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SLisIntCrearDesdeVector ( iVal, -1 ) ) )
+	{
+		printf( "Error caso 6: con un numero negativo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisIntDestruir ( &p_lisObj );
+	SLisIntDestruir ( &p_lisParcial );
+	SLisIntDestruir ( &p_lisVacia );
+	return ( iRes );
+}
+
+static int Siguiente ( int * p_iCont )
+{
+	*p_iCont = *p_iCont + 1;
+	return ( *p_iCont );
+}
+
+/* Cualquier numero de valores, el 0 incluido, sin marca de fin; cada
+   argumento se evalua una sola vez. */
+static int TestSLisIntCrearConValores01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLisIntCrearConValores 01:\n" );
+
+	int iVal [ 5 ] = { 5, 0, 7, -3, 0 };
+	SListaEnteros * p_lisObj = SLisIntCrearConValores ( 5, 0, 7, -3, 0 );
+	if ( ES_NULO ( p_lisObj ) || ( VerificarContenido ( p_lisObj, iVal, 5 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { 5, 0, 7, -3, 0 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	int iCero [ 1 ] = { 0 };
+	SListaEnteros * p_lisCero = SLisIntCrearConValores ( 0 );
+	if ( ES_NULO ( p_lisCero ) || ( VerificarContenido ( p_lisCero, iCero, 1 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 2: se esperaba { 0 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	int iExtremos [ 2 ] = { INT_MIN, INT_MAX };
+	SListaEnteros * p_lisExtremos = SLisIntCrearConValores ( INT_MIN, INT_MAX );
+	if ( ES_NULO ( p_lisExtremos ) || ( VerificarContenido ( p_lisExtremos, iExtremos, 2 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 3: se esperaba { INT_MIN, INT_MAX }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* El orden en que se evaluan los inicializadores no esta fijado: se
+	   comprueba el numero de llamadas y que esten los tres valores. */
+	int iCont = 0;
+	SListaEnteros * p_lisLlamadas = SLisIntCrearConValores ( Siguiente ( &iCont ), Siguiente ( &iCont ), Siguiente ( &iCont ) );
+	if ( iCont != 3 )
+	{
+		printf( "Error caso 4: se esperaban 3 llamadas: %d\n", iCont );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( SLisIntNumElementos ( p_lisLlamadas ) != 3 ) || ( SLisIntExiste ( p_lisLlamadas, 1 ) != 1 ) ||
+		 ( SLisIntExiste ( p_lisLlamadas, 2 ) != 1 ) || ( SLisIntExiste ( p_lisLlamadas, 3 ) != 1 ) )
+	{
+		printf( "Error caso 5: se esperaban los valores 1, 2 y 3\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisIntDestruir ( &p_lisObj );
+	SLisIntDestruir ( &p_lisCero );
+	SLisIntDestruir ( &p_lisExtremos );
+	SLisIntDestruir ( &p_lisLlamadas );
+	return ( iRes );
+}
+
 
 /* 1 solo con el cursor sobre un elemento: no en una vacia, ni deposicionada,
    ni con la lista nula. */
@@ -1104,6 +1208,8 @@ int TestSListaEnteros ()
 			( TestSLisIntEliminarLista01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntDuplicar01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLisIntCrearDesdeVector01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLisIntCrearConValores01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntRepeticiones01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntEstaPosicionada01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntEncapsular01 () == BOOL_VAL_CIERTO ) )

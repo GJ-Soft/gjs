@@ -60,10 +60,10 @@ Volver al [README](../README.md).
 | ----------------------------- | ------------ | ----------------------------- | --------- | ---- | -------------------------------------- |
 | `SLista`                      | `SLis`       | `SLista`                      | 58        | ✔    | [Listas](Listas.md)                    |
 | `SListaPtr`                   | `SLisp`      | `SListaPtr`                   | 86        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnteros`               | `SLisInt`    | `SListaEnteros`               | 57        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnterosLargos`         | `SLisIntl`   | `SListaEnterosLargos`         | 57        | ✔    | [Listas](Listas.md)                    |
-| `SListaEnterosLargosSinSigno` | `SLisIntLss` | `SListaEnterosLargosSinSigno` | 56        | ✔    | [Listas](Listas.md)                    |
-| `SListaLiterales`             | `SLisLit`    | `SListaLiterales`             | 62        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnteros`               | `SLisInt`    | `SListaEnteros`               | 58        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnterosLargos`         | `SLisIntl`   | `SListaEnterosLargos`         | 58        | ✔    | [Listas](Listas.md)                    |
+| `SListaEnterosLargosSinSigno` | `SLisIntLss` | `SListaEnterosLargosSinSigno` | 57        | ✔    | [Listas](Listas.md)                    |
+| `SListaLiterales`             | `SLisLit`    | `SListaLiterales`             | 63        | ✔    | [Listas](Listas.md)                    |
 | `SListaOrdenada`              | `SLisOrd`    | `SListaOrdenada`              | 61        | ✔    | [Listas](Listas.md)                    |
 | `SListaOrdenadaPtr`           | `SLispOrd`   | `SListaOrdenadaPtr`           | 71        | ✔    | [Listas](Listas.md)                    |
 | `SListaVec`                   | `SVLis`      | `SVLista`                     | 21        | ✔    | [Listas](Listas.md)                    |
@@ -74,10 +74,10 @@ Volver al [README](../README.md).
 | --------------------------------- | ------------ | --------------------------------- | --------- | ---- | --------------------------- |
 | `SSecuencia`                      | `SSec`       | `SSecuencia`                      | 42        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaPtr`                   | `SSecp`      | `SSecuenciaPtr`                   | 76        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnteros`               | `SSecInt`    | `SSecuenciaEnteros`               | 41        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnterosLargos`         | `SSecIntl`   | `SSecuenciaEnterosLargos`         | 40        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaEnterosLargosSinSigno` | `SSecIntLss` | `SSecuenciaEnterosLargosSinSigno` | 39        | ✔    | [Secuencias](Secuencias.md) |
-| `SSecuenciaLiterales`             | `SSecLit`    | `SSecuenciaLiterales`             | 36        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnteros`               | `SSecInt`    | `SSecuenciaEnteros`               | 42        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnterosLargos`         | `SSecIntl`   | `SSecuenciaEnterosLargos`         | 41        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaEnterosLargosSinSigno` | `SSecIntLss` | `SSecuenciaEnterosLargosSinSigno` | 40        | ✔    | [Secuencias](Secuencias.md) |
+| `SSecuenciaLiterales`             | `SSecLit`    | `SSecuenciaLiterales`             | 37        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaUnica`                 | `SSecUn`     | `SSecuenciaUnica`                 | 40        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaUnicaPtr`              | `SSecpUn`    | `SSecuenciaUnicaPtr`              | 77        | ✔    | [Secuencias](Secuencias.md) |
 | `SSecuenciaParejas`               | `SSecPrj`    | `SSecuenciaParejas`               | 10        | ✔    | [Secuencias](Secuencias.md) |
@@ -89,8 +89,8 @@ Volver al [README](../README.md).
 | ------------------ | --------- | ------------------ | --------- | ---- | ----------------------- |
 | `SVector`          | `SVec`    | `SVector`          | 8         | ✔    | [Vectores](Vectores.md) |
 | `SVectorPtr`       | `SVecp`   | `SVectorPtr`       | 10        | ✔    | [Vectores](Vectores.md) |
-| `SVectorEnteros`   | `SVecInt` | `SVectorEnteros`   | 8         | ✔    | [Vectores](Vectores.md) |
-| `SVectorLiterales` | `SVecLit` | `SVectorLiterales` | 12        | ✔    | [Vectores](Vectores.md) |
+| `SVectorEnteros`   | `SVecInt` | `SVectorEnteros`   | 9         | ✔    | [Vectores](Vectores.md) |
+| `SVectorLiterales` | `SVecLit` | `SVectorLiterales` | 13        | ✔    | [Vectores](Vectores.md) |
 | `SVectorFlags`     | `SVecFlg` | `SVectorFlags`     | 10        | ✔    | [Flags](Flags.md)       |
 | `SMatrizFlags`     | `SMatFlg` | `SMatrizFlags`     | 10        | ✔    | [Flags](Flags.md)       |
 
@@ -110,7 +110,7 @@ Volver al [README](../README.md).
 | `SColaPtr`           | `SColp`   | `SColaPtr`           | 21        | ✔    | [Colas](Colas.md)         |
 | `SConjunto`          | `SCnj`    | `SConjunto`          | 47        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoPtr`       | `SCnjp`   | `SConjuntoPtr`       | 64        | ✔    | [Conjuntos](Conjuntos.md) |
-| `SConjuntoLiterales` | `SCnjLit` | `SConjuntoLiterales` | 32        | ✔    | [Conjuntos](Conjuntos.md) |
+| `SConjuntoLiterales` | `SCnjLit` | `SConjuntoLiterales` | 33        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoReferencias` | `SCnjRef` | `SConjuntoReferencias` | 15        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoId`        | `SCnjId`  | `SConjuntoId`        | 18        | ✔    | [Conjuntos](Conjuntos.md) |
 
@@ -177,7 +177,7 @@ Volver al [README](../README.md).
 
 | Módulo              | Prefijo                | Struct | Funciones | Test | Documento                                 |
 | ------------------- | ---------------------- | ------ | --------- | ---- | ----------------------------------------- |
-| `UtilesColecciones` | el de la de origen     | —      | 8         | ✔    | [UtilesColecciones](UtilesColecciones.md) |
+| `UtilesColecciones` | el de la de origen     | —      | 14        | ✔    | [UtilesColecciones](UtilesColecciones.md) |
 
 ---
 

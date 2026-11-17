@@ -6,7 +6,7 @@ contenedores sobre el que se construyen las capas superiores: bloques de
 memoria, listas, secuencias, vectores, tablas, pilas, colas, conjuntos, árboles
 y grafos.
 
-Es el módulo más grande del stack C: **79 módulos** en 5.955 líneas de cabeceras
+Es el módulo más grande del stack C: **79 módulos** en 6.067 líneas de cabeceras
 y algo más de 52.500 de implementación.
 
 ---

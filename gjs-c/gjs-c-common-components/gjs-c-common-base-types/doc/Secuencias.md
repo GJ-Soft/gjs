@@ -132,6 +132,14 @@ Las tres comparten API salvo por el tipo del dato y por una diferencia:
 
 - `SSecIntCrearDesdeLista ( SListaEnteros * )` crea la secuencia con **copias**
   de los valores de la lista, que no se toca.
+- `SSecIntCrearDesdeVector ( const int *, int iNumValores )` (`SSecIntl…` con
+  `const long *`, `SSecIntLss…` con `const unsigned long *`) crea la secuencia
+  con los `iNumValores` primeros valores del vector, en orden. Con 0 da una
+  secuencia vacía, y con el vector nulo, un número negativo o una inserción
+  fallida, `NULL`. `SSecIntCrearConValores ( ... )` (y `SSecIntl…`,
+  `SSecIntLss…`) es la **macro** sobre ella que admite cualquier número de
+  valores, el 0 incluido, sin número delante ni marca de fin, como la de
+  [SListaEnteros](Listas.md): `SSecIntCrearConValores ( 5, 0, 7 )`.
 - Búsqueda por valor: `Existe`, `Repeticiones`, `Buscar` (que es
   `BuscarPrimero`) y `BuscarSiguiente ( …, iDato, int iPos )`, que busca
   detrás de `iPos`: con -1, desde el principio. Comparten el recorrido con las
@@ -167,6 +175,14 @@ Comparan el contenido, como las de [SListaLiterales](Listas.md).
 las cadenas; `SSecLitSecuencia` devuelve la `SSecuenciaPtr` interna y
 `SSecLitLista`, su `SListaPtr`; `SSecLitListaLit` devuelve una `SListaLiterales`
 **nueva**, con copias de las cadenas. `SSecLitInsertar` falla con 0, no con -1.
+
+`SSecLitCrearDesdeVector ( const char * const *, int iNumValores )` crea la
+secuencia con copias de las `iNumValores` primeras cadenas del vector, en orden,
+y `SSecLitCrearConValores ( "uno", "", "tres" )` es su macro, para cualquier
+número de cadenas. Con 0 cadenas da una secuencia vacía; una cadena nula hace
+fallar la creación entera y devuelve `NULL`. Como en
+[SListaLiterales](Listas.md), un vector `char * []` necesita el molde
+`(const char * const *)`.
 
 Tiene las [operaciones con otras secuencias y listas](#operaciones-con-otras-secuencias-y-listas),
 con otra `SSecuenciaLiterales` o con una `SListaLiterales`, comparando el

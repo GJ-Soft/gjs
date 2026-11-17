@@ -337,3 +337,117 @@ SListaPtr * SVecpConvertirAListaExt ( SVectorPtr * p_vecObj, PFUNPBYTEPB fDuplic
 	return ( p_lisRes );
 }
 
+/* Secuencia y conjunto envuelven una lista: las conversiones delegan en las
+   copias de lista que ya existen. A conjunto, SCnj(p)CrearDesdeLista copia
+   los datos distintos y descarta los repetidos; a secuencia, se duplica la
+   lista del conjunto, que sale en su orden, y la secuencia se queda con la
+   copia. Si falla cualquier copia, NULL. */
+SConjunto * SSecConvertirAConjunto ( SSecuencia * p_secObj, PFUNINTPVPV fComparar )
+{
+	SConjunto *	p_cnjRes;
+
+	if ( SSecEsValida ( p_secObj ) == 1 )
+	{
+		p_cnjRes = SCnjCrearDesdeLista ( SSecLista ( p_secObj ), fComparar );
+	}
+	else
+	{
+		p_cnjRes = NULL;
+	}
+	return ( p_cnjRes );
+}
+
+SSecuencia * SCnjConvertirASecuencia ( SConjunto * p_cnjObj )
+{
+	SSecuencia *	p_secRes;
+	SLista *		p_lisCopia;
+
+	if ( SCnjEsValido ( p_cnjObj ) == 1 )
+	{
+		p_lisCopia = SLisOrdDuplicarLista ( SCnjLista ( p_cnjObj ) );
+		p_secRes = SSecEncapsularLista ( p_lisCopia );
+		if ( ES_NULO ( p_secRes ) )
+		{
+			SLisDestruir ( &p_lisCopia );
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
+/* En las Ptr el resultado es dueno de sus copias: el conjunto y la lista
+   duplicada salen con la liberacion activada. */
+SConjuntoPtr * SSecpConvertirAConjunto ( SSecuenciaPtr * p_secObj, PFUNINTPVPV fComparar, int iNumBytes )
+{
+	SConjuntoPtr *	p_cnjRes;
+
+	if ( SSecpEsValida ( p_secObj ) == 1 )
+	{
+		p_cnjRes = SCnjpCrearDesdeLista ( SSecpLista ( p_secObj ), fComparar, iNumBytes );
+	}
+	else
+	{
+		p_cnjRes = NULL;
+	}
+	return ( p_cnjRes );
+}
+
+SSecuenciaPtr * SCnjpConvertirASecuencia ( SConjuntoPtr * p_cnjObj, int iNumBytes )
+{
+	SSecuenciaPtr *	p_secRes;
+	SListaPtr *		p_lisCopia;
+
+	if ( SCnjpEsValido ( p_cnjObj ) == 1 )
+	{
+		p_lisCopia = SLispOrdDuplicarLista ( SCnjpLista ( p_cnjObj ), iNumBytes );
+		p_secRes = SSecpEncapsularLista ( p_lisCopia );
+		if ( ES_NULO ( p_secRes ) )
+		{
+			SLispDestruir ( &p_lisCopia );
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
+SConjuntoPtr * SSecpConvertirAConjuntoExt ( SSecuenciaPtr * p_secObj, PFUNINTPVPV fComparar, PFUNPBYTEPB fDuplicar )
+{
+	SConjuntoPtr *	p_cnjRes;
+
+	if ( SSecpEsValida ( p_secObj ) == 1 )
+	{
+		p_cnjRes = SCnjpCrearDesdeListaExt ( SSecpLista ( p_secObj ), fComparar, fDuplicar );
+	}
+	else
+	{
+		p_cnjRes = NULL;
+	}
+	return ( p_cnjRes );
+}
+
+SSecuenciaPtr * SCnjpConvertirASecuenciaExt ( SConjuntoPtr * p_cnjObj, PFUNPBYTEPB fDuplicar )
+{
+	SSecuenciaPtr *	p_secRes;
+	SListaPtr *		p_lisCopia;
+
+	if ( SCnjpEsValido ( p_cnjObj ) == 1 )
+	{
+		p_lisCopia = SLispOrdDuplicarListaExt ( SCnjpLista ( p_cnjObj ), fDuplicar );
+		p_secRes = SSecpEncapsularLista ( p_lisCopia );
+		if ( ES_NULO ( p_secRes ) )
+		{
+			SLispDestruir ( &p_lisCopia );
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}

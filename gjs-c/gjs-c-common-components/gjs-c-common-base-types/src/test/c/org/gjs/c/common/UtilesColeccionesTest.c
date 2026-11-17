@@ -49,6 +49,23 @@ static SLista * ListaEnteros ( int iVal1, int iVal2, int iVal3 )
 	return ( p_lisRes );
 }
 
+static int CompararEnteros ( void * p_vVal1, void * p_vVal2 )
+{
+	int iVal1 = *( (int *) p_vVal1 );
+	int iVal2 = *( (int *) p_vVal2 );
+	int iRes = 0;
+
+	if ( iVal1 < iVal2 )
+	{
+		iRes = -1;
+	}
+	else if ( iVal1 > iVal2 )
+	{
+		iRes = 1;
+	}
+	return ( iRes );
+}
+
 static SListaPtr * ListaPtrEnteros ( int iVal1, int iVal2, int iVal3 )
 {
 	SListaPtr * p_lisRes = SLispCrear ();
@@ -421,6 +438,234 @@ static int TestUtlColListaPtrExt01 ()
 }
 
 
+/* { 3, 1, 3 } da el conjunto { 1, 3 }, ordenado y sin repetidos, y vuelve a
+   la secuencia { 1, 3 }; siempre con copias, sin tocar el origen. */
+static int TestUtlColConjunto01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test UtlColConjunto 01:\n" );
+
+	SLista * p_lisVal = ListaEnteros ( 3, 1, 3 );
+	SSecuencia * p_secObj = SSecEncapsularLista ( p_lisVal );
+	SConjunto * p_cnjObj = SSecConvertirAConjunto ( p_secObj, CompararEnteros );
+	SSecuencia * p_secVuelta = NULL;
+	if ( ES_NULO ( p_cnjObj ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al convertir la secuencia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( ( SCnjNumElementos ( p_cnjObj ) != 2 ) ||
+			 ( SElmEntero ( SCnjElemento ( p_cnjObj, 0 ) ) != 1 ) ||
+			 ( SElmEntero ( SCnjElemento ( p_cnjObj, 1 ) ) != 3 ) )
+		{
+			printf( "Error caso 2: se esperaba el conjunto { 1, 3 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecNumElementos ( p_secObj ) != 3 ) || ( SCnjElemento ( p_cnjObj, 0 ) == SSecElemento ( p_secObj, 1 ) ) )
+		{
+			printf( "Error caso 3: la secuencia deberia seguir con 3 y el conjunto tener copias\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		p_secVuelta = SCnjConvertirASecuencia ( p_cnjObj );
+		if ( ES_NULO ( p_secVuelta ) )
+		{
+			printf( "Error caso 4: no se esperaba nulo al convertir el conjunto\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			if ( ( SSecNumElementos ( p_secVuelta ) != 2 ) ||
+				 ( SElmEntero ( SSecElemento ( p_secVuelta, 0 ) ) != 1 ) ||
+				 ( SElmEntero ( SSecElemento ( p_secVuelta, 1 ) ) != 3 ) )
+			{
+				printf( "Error caso 5: se esperaba la secuencia { 1, 3 }\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			if ( ( SCnjNumElementos ( p_cnjObj ) != 2 ) || ( SSecElemento ( p_secVuelta, 0 ) == SCnjElemento ( p_cnjObj, 0 ) ) )
+			{
+				printf( "Error caso 6: el conjunto deberia seguir con 2 y la secuencia tener copias\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+	}
+
+	/* Vacias en los dos sentidos: no son un error. */
+	SSecuencia * p_secVacia = SSecCrear ();
+	SConjunto * p_cnjVacio = SSecConvertirAConjunto ( p_secVacia, CompararEnteros );
+	SSecuencia * p_secDeVacio = SCnjConvertirASecuencia ( p_cnjVacio );
+	if ( ES_NULO ( p_cnjVacio ) || ( SCnjNumElementos ( p_cnjVacio ) != 0 ) ||
+		 ES_NULO ( p_secDeVacio ) || ( SSecNumElementos ( p_secDeVacio ) != 0 ) )
+	{
+		printf( "Error caso 7: de vacia se esperaba vacio, y de vacio, vacia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+
+	if ( ES_VALIDO ( SSecConvertirAConjunto ( NULL, CompararEnteros ) ) ||
+		 ES_VALIDO ( SSecConvertirAConjunto ( p_secObj, NULL ) ) ||
+		 ES_VALIDO ( SCnjConvertirASecuencia ( NULL ) ) )
+	{
+		printf( "Error caso 8: con argumentos nulos se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecDestruir ( &p_secObj );
+	SCnjDestruir ( &p_cnjObj );
+	SSecDestruir ( &p_secVuelta );
+	SSecDestruir ( &p_secVacia );
+	SCnjDestruir ( &p_cnjVacio );
+	SSecDestruir ( &p_secDeVacio );
+	return ( iRes );
+}
+
+static int TestUtlColConjuntoPtr01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test UtlColConjuntoPtr 01:\n" );
+
+	SListaPtr * p_lisVal = ListaPtrEnteros ( 3, 1, 3 );
+	SSecuenciaPtr * p_secObj = SSecpEncapsularLista ( p_lisVal );
+	SConjuntoPtr * p_cnjObj = SSecpConvertirAConjunto ( p_secObj, CompararEnteros, TAM_ENTERO );
+	SSecuenciaPtr * p_secVuelta = NULL;
+	if ( ES_NULO ( p_cnjObj ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al convertir la secuencia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		if ( ( SCnjpNumElementos ( p_cnjObj ) != 2 ) ||
+			 ( Entero ( SCnjpElemento ( p_cnjObj, 0 ) ) != 1 ) ||
+			 ( Entero ( SCnjpElemento ( p_cnjObj, 1 ) ) != 3 ) )
+		{
+			printf( "Error caso 2: se esperaba el conjunto { 1, 3 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SSecpNumElementos ( p_secObj ) != 3 ) || ( SCnjpElemento ( p_cnjObj, 0 ) == SSecpElemento ( p_secObj, 1 ) ) ||
+			 ( SCnjpLiberacionMemoriaActivada ( p_cnjObj ) != 1 ) )
+		{
+			printf( "Error caso 3: la secuencia deberia seguir con 3 y el conjunto ser dueno de sus copias\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		p_secVuelta = SCnjpConvertirASecuencia ( p_cnjObj, TAM_ENTERO );
+		if ( ES_NULO ( p_secVuelta ) )
+		{
+			printf( "Error caso 4: no se esperaba nulo al convertir el conjunto\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			if ( ( SSecpNumElementos ( p_secVuelta ) != 2 ) ||
+				 ( Entero ( SSecpElemento ( p_secVuelta, 0 ) ) != 1 ) ||
+				 ( Entero ( SSecpElemento ( p_secVuelta, 1 ) ) != 3 ) )
+			{
+				printf( "Error caso 5: se esperaba la secuencia { 1, 3 }\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+			if ( ( SSecpElemento ( p_secVuelta, 0 ) == SCnjpElemento ( p_cnjObj, 0 ) ) ||
+				 ( SSecpLiberacionMemoriaActivada ( p_secVuelta ) != 1 ) )
+			{
+				printf( "Error caso 6: la secuencia deberia ser duena de sus copias\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		if ( ES_VALIDO ( SCnjpConvertirASecuencia ( p_cnjObj, 0 ) ) )
+		{
+			printf( "Error caso 7: con 0 bytes se esperaba nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+
+	if ( ES_VALIDO ( SSecpConvertirAConjunto ( p_secObj, CompararEnteros, 0 ) ) ||
+		 ES_VALIDO ( SSecpConvertirAConjunto ( NULL, CompararEnteros, TAM_ENTERO ) ) ||
+		 ES_VALIDO ( SSecpConvertirAConjunto ( p_secObj, NULL, TAM_ENTERO ) ) ||
+		 ES_VALIDO ( SCnjpConvertirASecuencia ( NULL, TAM_ENTERO ) ) )
+	{
+		printf( "Error caso 8: con 0 bytes o argumentos nulos se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecpDestruir ( &p_secObj );
+	SCnjpDestruir ( &p_cnjObj );
+	SSecpDestruir ( &p_secVuelta );
+	return ( iRes );
+}
+
+static int TestUtlColConjuntoPtrExt01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test UtlColConjuntoPtrExt 01:\n" );
+
+	SListaPtr * p_lisVal = ListaPtrEnteros ( 3, 1, 3 );
+	SSecuenciaPtr * p_secObj = SSecpEncapsularLista ( p_lisVal );
+	iNumDuplicados = 0;
+	SConjuntoPtr * p_cnjObj = SSecpConvertirAConjuntoExt ( p_secObj, CompararEnteros, DuplicarEntero );
+	SSecuenciaPtr * p_secVuelta = NULL;
+	if ( ES_NULO ( p_cnjObj ) )
+	{
+		printf( "Error caso 1: no se esperaba nulo al convertir la secuencia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	else
+	{
+		/* El 3 repetido no se copia. */
+		if ( iNumDuplicados != 2 )
+		{
+			printf( "Error caso 2: se esperaban 2 llamadas a la funcion: %d\n", iNumDuplicados );
+			iRes = BOOL_VAL_FALSO;
+		}
+		if ( ( SCnjpNumElementos ( p_cnjObj ) != 2 ) ||
+			 ( Entero ( SCnjpElemento ( p_cnjObj, 0 ) ) != 1 ) ||
+			 ( Entero ( SCnjpElemento ( p_cnjObj, 1 ) ) != 3 ) )
+		{
+			printf( "Error caso 3: se esperaba el conjunto { 1, 3 }\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+
+		iNumDuplicados = 0;
+		p_secVuelta = SCnjpConvertirASecuenciaExt ( p_cnjObj, DuplicarEntero );
+		if ( ES_NULO ( p_secVuelta ) )
+		{
+			printf( "Error caso 4: no se esperaba nulo al convertir el conjunto\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+		else
+		{
+			if ( iNumDuplicados != 2 )
+			{
+				printf( "Error caso 5: se esperaban 2 llamadas a la funcion: %d\n", iNumDuplicados );
+				iRes = BOOL_VAL_FALSO;
+			}
+			if ( ( SSecpNumElementos ( p_secVuelta ) != 2 ) ||
+				 ( Entero ( SSecpElemento ( p_secVuelta, 0 ) ) != 1 ) ||
+				 ( Entero ( SSecpElemento ( p_secVuelta, 1 ) ) != 3 ) )
+			{
+				printf( "Error caso 6: se esperaba la secuencia { 1, 3 }\n" );
+				iRes = BOOL_VAL_FALSO;
+			}
+		}
+		if ( ES_VALIDO ( SCnjpConvertirASecuenciaExt ( p_cnjObj, NULL ) ) )
+		{
+			printf( "Error caso 7: sin funcion de duplicado deberia dar nulo\n" );
+			iRes = BOOL_VAL_FALSO;
+		}
+	}
+
+	if ( ES_VALIDO ( SSecpConvertirAConjuntoExt ( p_secObj, CompararEnteros, NULL ) ) ||
+		 ES_VALIDO ( SSecpConvertirAConjuntoExt ( NULL, CompararEnteros, DuplicarEntero ) ) ||
+		 ES_VALIDO ( SCnjpConvertirASecuenciaExt ( NULL, DuplicarEntero ) ) )
+	{
+		printf( "Error caso 8: sin funcion de duplicado o con argumentos nulos deberia dar nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecpDestruir ( &p_secObj );
+	SCnjpDestruir ( &p_cnjObj );
+	SSecpDestruir ( &p_secVuelta );
+	return ( iRes );
+}
+
+
 
 int TestUtilesColecciones ()
 {
@@ -429,7 +674,10 @@ int TestUtilesColecciones ()
 	if ( ( TestUtlColNodos01 () == BOOL_VAL_CIERTO ) &&
 			( TestUtlColLista01 () == BOOL_VAL_CIERTO ) &&
 			( TestUtlColListaPtr01 () == BOOL_VAL_CIERTO ) &&
-			( TestUtlColListaPtrExt01 () == BOOL_VAL_CIERTO ) )
+			( TestUtlColListaPtrExt01 () == BOOL_VAL_CIERTO ) &&
+			( TestUtlColConjunto01 () == BOOL_VAL_CIERTO ) &&
+			( TestUtlColConjuntoPtr01 () == BOOL_VAL_CIERTO ) &&
+			( TestUtlColConjuntoPtrExt01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

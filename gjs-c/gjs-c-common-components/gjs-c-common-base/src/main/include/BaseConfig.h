@@ -86,6 +86,7 @@
 
 
 #include <stdint.h>
+#include <stdarg.h>
 
 
 #if ( !defined ( NULL ) )

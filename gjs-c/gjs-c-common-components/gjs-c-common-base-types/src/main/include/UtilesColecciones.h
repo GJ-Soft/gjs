@@ -40,4 +40,15 @@ SVectorPtr * SLispConvertirAVectorExt ( SListaPtr * p_lisObj, PFUNPBYTEPB fDupli
 SListaPtr * SVecpConvertirAListaExt ( SVectorPtr * p_vecObj, PFUNPBYTEPB fDuplicar );
 
 
+// Conversion entre secuencias y conjuntos ( siempre copian los datos; al
+// conjunto, ordenado con fComparar, los repetidos entran una vez ):
+SConjunto * SSecConvertirAConjunto ( SSecuencia * p_secObj, PFUNINTPVPV fComparar );
+SSecuencia * SCnjConvertirASecuencia ( SConjunto * p_cnjObj );
+
+SConjuntoPtr * SSecpConvertirAConjunto ( SSecuenciaPtr * p_secObj, PFUNINTPVPV fComparar, int iNumBytes );
+SSecuenciaPtr * SCnjpConvertirASecuencia ( SConjuntoPtr * p_cnjObj, int iNumBytes );
+SConjuntoPtr * SSecpConvertirAConjuntoExt ( SSecuenciaPtr * p_secObj, PFUNINTPVPV fComparar, PFUNPBYTEPB fDuplicar );
+SSecuenciaPtr * SCnjpConvertirASecuenciaExt ( SConjuntoPtr * p_cnjObj, PFUNPBYTEPB fDuplicar );
+
+
 #endif

@@ -38,6 +38,57 @@ SListaEnteros * SLisIntEncapsular ( SLista * p_lisDatos )
 	return ( p_lisRes );
 }
 
+/* Copia los iNumValores primeros de p_iValores, en orden, con el cursor al
+   inicio. Con 0 valores da una lista vacia; NULL si el vector es nulo, el
+   numero es negativo o falla alguna insercion. */
+SListaEnteros * SLisIntCrearDesdeVector ( const int * p_iValores, int iNumValores )
+{
+	SListaEnteros *	p_lisRes;
+	int				iPos;
+	int				iError;
+
+	if ( ES_VALIDO ( p_iValores ) )
+	{
+		if ( iNumValores >= 0 )
+		{
+			p_lisRes = SLisIntCrear ();
+			if ( ES_VALIDO ( p_lisRes ) )
+			{
+				iError = 0;
+				iPos = 0;
+				while ( ( iError == 0 ) && ( iPos < iNumValores ) )
+				{
+					if ( SLisIntInsertarDetras ( p_lisRes, p_iValores [ iPos ] ) == 1 )
+					{
+						iPos = iPos + 1;
+					}
+					else
+					{
+						iError = 1;
+					}
+				}
+				if ( iError == 1 )
+				{
+					SLisIntDestruir ( &p_lisRes );
+				}
+				else
+				{
+					SLisIntInicio ( p_lisRes );
+				}
+			}
+		}
+		else
+		{
+			p_lisRes = NULL;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
 void SLisIntDestruir ( SListaEnteros ** p_p_lisObj )
 {
 	SListaEnteros * p_lisObj;

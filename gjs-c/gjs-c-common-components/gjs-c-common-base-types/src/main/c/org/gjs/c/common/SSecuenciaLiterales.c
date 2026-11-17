@@ -42,6 +42,54 @@ SSecuenciaLiterales * SSecLitCrearDesdeLista ( SListaLiterales * p_lisValores )
 	return ( p_secRes );
 }
 
+/* Copia de cada una de las iNumValores primeras cadenas de p_p_cValores, en
+   orden; la secuencia es duena de sus copias. Con 0 cadenas da una secuencia
+   vacia; NULL si el vector es nulo, el numero es negativo, alguna cadena es
+   nula o falla alguna copia o insercion. */
+SSecuenciaLiterales * SSecLitCrearDesdeVector ( const char * const * p_p_cValores, int iNumValores )
+{
+	SSecuenciaLiterales *	p_secRes;
+	int		iPos;
+	int		iError;
+
+	if ( ES_VALIDO ( p_p_cValores ) )
+	{
+		if ( iNumValores >= 0 )
+		{
+			p_secRes = SSecLitCrear ();
+			if ( ES_VALIDO ( p_secRes ) )
+			{
+				iError = 0;
+				iPos = 0;
+				while ( ( iError == 0 ) && ( iPos < iNumValores ) )
+				{
+					if ( SSecLitInsertar ( p_secRes, p_p_cValores [ iPos ] ) == 1 )
+					{
+						iPos = iPos + 1;
+					}
+					else
+					{
+						iError = 1;
+					}
+				}
+				if ( iError == 1 )
+				{
+					SSecLitDestruir ( &p_secRes );
+				}
+			}
+		}
+		else
+		{
+			p_secRes = NULL;
+		}
+	}
+	else
+	{
+		p_secRes = NULL;
+	}
+	return ( p_secRes );
+}
+
 void SSecLitDestruir ( SSecuenciaLiterales ** p_p_secObj )
 {
 	SSecuenciaLiterales * p_secObj;

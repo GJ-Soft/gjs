@@ -598,6 +598,98 @@ static int TestSSecIntLssUnion01 ()
 	return ( iRes );
 }
 
+/* Secuencia con el numero de valores pedido, en orden; 0 valores dan una
+   secuencia vacia, y el vector nulo o un numero negativo, nulo. */
+static int TestSSecIntLssCrearDesdeVector01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecIntLssCrearDesdeVector 01:\n" );
+
+	unsigned long ulVal [ 4 ] = { 0, ULONG_MAX, ULONG_MITAD, 5 };
+	SSecuenciaEnterosLargosSinSigno * p_secObj = SSecIntLssCrearDesdeVector ( ulVal, 4 );
+	if ( ES_NULO ( p_secObj ) || ( VerificarSec ( p_secObj, ulVal, 4 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { 0, ULONG_MAX, LONG_MAX + 1, 5 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecuenciaEnterosLargosSinSigno * p_secParcial = SSecIntLssCrearDesdeVector ( ulVal, 2 );
+	if ( ES_NULO ( p_secParcial ) || ( VerificarSec ( p_secParcial, ulVal, 2 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 2: con 2 valores se esperaban los dos primeros\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecuenciaEnterosLargosSinSigno * p_secVacia = SSecIntLssCrearDesdeVector ( ulVal, 0 );
+	if ( ES_NULO ( p_secVacia ) || ( SSecIntLssEsValida ( p_secVacia ) != 1 ) ||
+		 ( SSecIntLssNumElementos ( p_secVacia ) != 0 ) )
+	{
+		printf( "Error caso 3: con 0 valores se esperaba una secuencia vacia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SSecIntLssCrearDesdeVector ( NULL, 2 ) ) )
+	{
+		printf( "Error caso 4: con el vector nulo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SSecIntLssCrearDesdeVector ( ulVal, -1 ) ) )
+	{
+		printf( "Error caso 5: con un numero negativo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecIntLssDestruir ( &p_secObj );
+	SSecIntLssDestruir ( &p_secParcial );
+	SSecIntLssDestruir ( &p_secVacia );
+	return ( iRes );
+}
+
+static unsigned long SiguienteValor ( unsigned long * p_ulCont )
+{
+	*p_ulCont = *p_ulCont + 1;
+	return ( *p_ulCont );
+}
+
+/* Cualquier numero de valores, el 0 incluido, sin marca de fin; cada
+   argumento se evalua una sola vez. */
+static int TestSSecIntLssCrearConValores01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecIntLssCrearConValores 01:\n" );
+
+	unsigned long ulVal [ 5 ] = { 5, 0, ULONG_MAX, ULONG_MITAD, 0 };
+	SSecuenciaEnterosLargosSinSigno * p_secObj = SSecIntLssCrearConValores ( 5, 0, ULONG_MAX, ULONG_MITAD, 0 );
+	if ( ES_NULO ( p_secObj ) || ( VerificarSec ( p_secObj, ulVal, 5 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { 5, 0, ULONG_MAX, LONG_MAX + 1, 0 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	unsigned long ulCero [ 1 ] = { 0 };
+	SSecuenciaEnterosLargosSinSigno * p_secCero = SSecIntLssCrearConValores ( 0 );
+	if ( ES_NULO ( p_secCero ) || ( VerificarSec ( p_secCero, ulCero, 1 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 2: se esperaba { 0 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* El orden en que se evaluan los inicializadores no esta fijado: se
+	   comprueba el numero de llamadas y que esten los tres valores. */
+	unsigned long ulCont = 0;
+	SSecuenciaEnterosLargosSinSigno * p_secLlamadas = SSecIntLssCrearConValores ( SiguienteValor ( &ulCont ), SiguienteValor ( &ulCont ), SiguienteValor ( &ulCont ) );
+	if ( ulCont != 3 )
+	{
+		printf( "Error caso 3: se esperaban 3 llamadas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( SSecIntLssNumElementos ( p_secLlamadas ) != 3 ) || ( SSecIntLssExiste ( p_secLlamadas, 1 ) != 1 ) ||
+		 ( SSecIntLssExiste ( p_secLlamadas, 2 ) != 1 ) || ( SSecIntLssExiste ( p_secLlamadas, 3 ) != 1 ) )
+	{
+		printf( "Error caso 4: se esperaban los valores 1, 2 y 3\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecIntLssDestruir ( &p_secObj );
+	SSecIntLssDestruir ( &p_secCero );
+	SSecIntLssDestruir ( &p_secLlamadas );
+	return ( iRes );
+}
+
+
 int TestSSecuenciaEnterosLargosSinSigno ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -609,7 +701,9 @@ int TestSSecuenciaEnterosLargosSinSigno ()
 			( TestSSecIntLssBuscarSiguiente01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecIntLssListaIntLss01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecIntLssOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
-			( TestSSecIntLssUnion01 () == BOOL_VAL_CIERTO ) )
+			( TestSSecIntLssUnion01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecIntLssCrearDesdeVector01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecIntLssCrearConValores01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

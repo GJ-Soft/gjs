@@ -1029,6 +1029,102 @@ static int TestSLisIntLssDuplicar01 ()
 	return ( iRes );
 }
 
+/* Copia el numero de valores pedido, en orden y con el cursor al inicio; 0
+   valores dan una lista vacia, y el vector nulo o un numero negativo, nulo. */
+static int TestSLisIntLssCrearDesdeVector01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLisIntLssCrearDesdeVector 01:\n" );
+
+	unsigned long ulVal [ 4 ] = { 0, ULONG_MAX, ULONG_MITAD, 5 };
+	SListaEnterosLargosSinSigno * p_lisObj = SLisIntLssCrearDesdeVector ( ulVal, 4 );
+	if ( ES_NULO ( p_lisObj ) || ( VerificarContenido ( p_lisObj, ulVal, 4 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { 0, ULONG_MAX, LONG_MAX + 1, 5 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( SLisIntLssPosicion ( p_lisObj ) != 0 )
+	{
+		printf( "Error caso 2: el cursor deberia estar en 0: %d\n", SLisIntLssPosicion ( p_lisObj ) );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SListaEnterosLargosSinSigno * p_lisParcial = SLisIntLssCrearDesdeVector ( ulVal, 2 );
+	if ( ES_NULO ( p_lisParcial ) || ( VerificarContenido ( p_lisParcial, ulVal, 2 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 3: con 2 valores se esperaba { 0, ULONG_MAX }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SListaEnterosLargosSinSigno * p_lisVacia = SLisIntLssCrearDesdeVector ( ulVal, 0 );
+	if ( ES_NULO ( p_lisVacia ) || ( SLisIntLssEsValida ( p_lisVacia ) != 1 ) ||
+		 ( SLisIntLssNumElementos ( p_lisVacia ) != 0 ) )
+	{
+		printf( "Error caso 4: con 0 valores se esperaba una lista vacia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SLisIntLssCrearDesdeVector ( NULL, 2 ) ) )
+	{
+		printf( "Error caso 5: con el vector nulo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SLisIntLssCrearDesdeVector ( ulVal, -1 ) ) )
+	{
+		printf( "Error caso 6: con un numero negativo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisIntLssDestruir ( &p_lisObj );
+	SLisIntLssDestruir ( &p_lisParcial );
+	SLisIntLssDestruir ( &p_lisVacia );
+	return ( iRes );
+}
+
+static unsigned long Siguiente ( unsigned long * p_ulCont )
+{
+	*p_ulCont = *p_ulCont + 1;
+	return ( *p_ulCont );
+}
+
+/* Cualquier numero de valores, el 0 incluido, sin marca de fin; cada
+   argumento se evalua una sola vez. */
+static int TestSLisIntLssCrearConValores01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SLisIntLssCrearConValores 01:\n" );
+
+	unsigned long ulVal [ 5 ] = { 5, 0, ULONG_MAX, ULONG_MITAD, 0 };
+	SListaEnterosLargosSinSigno * p_lisObj = SLisIntLssCrearConValores ( 5, 0, ULONG_MAX, ULONG_MITAD, 0 );
+	if ( ES_NULO ( p_lisObj ) || ( VerificarContenido ( p_lisObj, ulVal, 5 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { 5, 0, ULONG_MAX, LONG_MAX + 1, 0 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	unsigned long ulCero [ 1 ] = { 0 };
+	SListaEnterosLargosSinSigno * p_lisCero = SLisIntLssCrearConValores ( 0 );
+	if ( ES_NULO ( p_lisCero ) || ( VerificarContenido ( p_lisCero, ulCero, 1 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 2: se esperaba { 0 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* El orden en que se evaluan los inicializadores no esta fijado: se
+	   comprueba el numero de llamadas y que esten los tres valores. */
+	unsigned long ulCont = 0;
+	SListaEnterosLargosSinSigno * p_lisLlamadas = SLisIntLssCrearConValores ( Siguiente ( &ulCont ), Siguiente ( &ulCont ), Siguiente ( &ulCont ) );
+	if ( ulCont != 3 )
+	{
+		printf( "Error caso 3: se esperaban 3 llamadas: %lu\n", ulCont );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( SLisIntLssNumElementos ( p_lisLlamadas ) != 3 ) || ( SLisIntLssExiste ( p_lisLlamadas, 1 ) != 1 ) ||
+		 ( SLisIntLssExiste ( p_lisLlamadas, 2 ) != 1 ) || ( SLisIntLssExiste ( p_lisLlamadas, 3 ) != 1 ) )
+	{
+		printf( "Error caso 4: se esperaban los valores 1, 2 y 3\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SLisIntLssDestruir ( &p_lisObj );
+	SLisIntLssDestruir ( &p_lisCero );
+	SLisIntLssDestruir ( &p_lisLlamadas );
+	return ( iRes );
+}
+
 
 /* 1 solo con el cursor sobre un elemento: no en una vacia, ni deposicionada,
    ni con la lista nula. */
@@ -1194,6 +1290,8 @@ int TestSListaEnterosLargosSinSigno ()
 			( TestSLisIntLssOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntLssOperacionesListas02 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntLssDuplicar01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLisIntLssCrearDesdeVector01 () == BOOL_VAL_CIERTO ) &&
+			( TestSLisIntLssCrearConValores01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntLssRepeticiones01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntLssEstaPosicionada01 () == BOOL_VAL_CIERTO ) &&
 			( TestSLisIntLssEncapsular01 () == BOOL_VAL_CIERTO ) )

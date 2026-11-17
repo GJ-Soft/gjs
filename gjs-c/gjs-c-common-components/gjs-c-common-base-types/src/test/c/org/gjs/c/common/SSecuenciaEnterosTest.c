@@ -566,6 +566,98 @@ static int TestSSecIntUnion01 ()
 	return ( iRes );
 }
 
+/* Secuencia con el numero de valores pedido, en orden; 0 valores dan una
+   secuencia vacia, y el vector nulo o un numero negativo, nulo. */
+static int TestSSecIntCrearDesdeVector01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecIntCrearDesdeVector 01:\n" );
+
+	int iVal [ 4 ] = { 0, INT_MIN, INT_MAX, -5 };
+	SSecuenciaEnteros * p_secObj = SSecIntCrearDesdeVector ( iVal, 4 );
+	if ( ES_NULO ( p_secObj ) || ( VerificarSec ( p_secObj, iVal, 4 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { 0, INT_MIN, INT_MAX, -5 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecuenciaEnteros * p_secParcial = SSecIntCrearDesdeVector ( iVal, 2 );
+	if ( ES_NULO ( p_secParcial ) || ( VerificarSec ( p_secParcial, iVal, 2 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 2: con 2 valores se esperaban los dos primeros\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecuenciaEnteros * p_secVacia = SSecIntCrearDesdeVector ( iVal, 0 );
+	if ( ES_NULO ( p_secVacia ) || ( SSecIntEsValida ( p_secVacia ) != 1 ) ||
+		 ( SSecIntNumElementos ( p_secVacia ) != 0 ) )
+	{
+		printf( "Error caso 3: con 0 valores se esperaba una secuencia vacia\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SSecIntCrearDesdeVector ( NULL, 2 ) ) )
+	{
+		printf( "Error caso 4: con el vector nulo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ES_VALIDO ( SSecIntCrearDesdeVector ( iVal, -1 ) ) )
+	{
+		printf( "Error caso 5: con un numero negativo se esperaba nulo\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecIntDestruir ( &p_secObj );
+	SSecIntDestruir ( &p_secParcial );
+	SSecIntDestruir ( &p_secVacia );
+	return ( iRes );
+}
+
+static int SiguienteValor ( int * p_iCont )
+{
+	*p_iCont = *p_iCont + 1;
+	return ( *p_iCont );
+}
+
+/* Cualquier numero de valores, el 0 incluido, sin marca de fin; cada
+   argumento se evalua una sola vez. */
+static int TestSSecIntCrearConValores01 ()
+{
+	int iRes = BOOL_VAL_CIERTO;
+	printf( "Test SSecIntCrearConValores 01:\n" );
+
+	int iVal [ 5 ] = { 5, 0, 7, -3, 0 };
+	SSecuenciaEnteros * p_secObj = SSecIntCrearConValores ( 5, 0, 7, -3, 0 );
+	if ( ES_NULO ( p_secObj ) || ( VerificarSec ( p_secObj, iVal, 5 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 1: se esperaba { 5, 0, 7, -3, 0 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	int iCero [ 1 ] = { 0 };
+	SSecuenciaEnteros * p_secCero = SSecIntCrearConValores ( 0 );
+	if ( ES_NULO ( p_secCero ) || ( VerificarSec ( p_secCero, iCero, 1 ) != BOOL_VAL_CIERTO ) )
+	{
+		printf( "Error caso 2: se esperaba { 0 }\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	/* El orden en que se evaluan los inicializadores no esta fijado: se
+	   comprueba el numero de llamadas y que esten los tres valores. */
+	int iCont = 0;
+	SSecuenciaEnteros * p_secLlamadas = SSecIntCrearConValores ( SiguienteValor ( &iCont ), SiguienteValor ( &iCont ), SiguienteValor ( &iCont ) );
+	if ( iCont != 3 )
+	{
+		printf( "Error caso 3: se esperaban 3 llamadas\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	if ( ( SSecIntNumElementos ( p_secLlamadas ) != 3 ) || ( SSecIntExiste ( p_secLlamadas, 1 ) != 1 ) ||
+		 ( SSecIntExiste ( p_secLlamadas, 2 ) != 1 ) || ( SSecIntExiste ( p_secLlamadas, 3 ) != 1 ) )
+	{
+		printf( "Error caso 4: se esperaban los valores 1, 2 y 3\n" );
+		iRes = BOOL_VAL_FALSO;
+	}
+	SSecIntDestruir ( &p_secObj );
+	SSecIntDestruir ( &p_secCero );
+	SSecIntDestruir ( &p_secLlamadas );
+	return ( iRes );
+}
+
+
 int TestSSecuenciaEnteros ()
 {
 	int iRes = BOOL_VAL_CIERTO;
@@ -576,7 +668,9 @@ int TestSSecuenciaEnteros ()
 			( TestSSecIntBuscarSiguiente01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecIntListaInt01 () == BOOL_VAL_CIERTO ) &&
 			( TestSSecIntOperacionesListas01 () == BOOL_VAL_CIERTO ) &&
-			( TestSSecIntUnion01 () == BOOL_VAL_CIERTO ) )
+			( TestSSecIntUnion01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecIntCrearDesdeVector01 () == BOOL_VAL_CIERTO ) &&
+			( TestSSecIntCrearConValores01 () == BOOL_VAL_CIERTO ) )
 	{
 		printf ( "%sResultado: OK%s\n", ANSI_VERDE, ANSI_RESETEAR );
 	}

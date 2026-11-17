@@ -6,7 +6,7 @@
 | Fuente       | `src/main/c/org/gjs/c/common/UtilesColecciones.c` |
 | Prefijo      | el de la estructura de origen (`SElm`, `SLis`…)   |
 | Struct       | —                                                 |
-| Funciones    | 8                                                 |
+| Funciones    | 14                                                |
 | Incluido por | `TiposBasicos.h`                                  |
 | Test         | `UtilesColeccionesTest.c` → `TestUtilesColecciones()` |
 
@@ -43,6 +43,22 @@ las conversiones que se vayan añadiendo.
 | `SVectorPtr * SLispConvertirAVectorExt ( SListaPtr *, PFUNPBYTEPB fDuplicar )` | Copia cada dato con `fDuplicar`.         |
 | `SListaPtr * SVecpConvertirAListaExt ( SVectorPtr *, PFUNPBYTEPB fDuplicar )`  | Copia cada posición con `fDuplicar`.     |
 
+### Entre secuencias y conjuntos
+
+| Función                                                                                                | Descripción                                                    |
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `SConjunto * SSecConvertirAConjunto ( SSecuencia *, PFUNINTPVPV fComparar )`                           | Conjunto ordenado con `fComparar`, con copias de los distintos. |
+| `SSecuencia * SCnjConvertirASecuencia ( SConjunto * )`                                                 | Secuencia con copias, en el orden del conjunto.                |
+| `SConjuntoPtr * SSecpConvertirAConjunto ( SSecuenciaPtr *, PFUNINTPVPV fComparar, int iNumBytes )`     | Copia `iNumBytes` de cada dato distinto.                       |
+| `SSecuenciaPtr * SCnjpConvertirASecuencia ( SConjuntoPtr *, int iNumBytes )`                           | Copia `iNumBytes` de cada dato.                                |
+| `SConjuntoPtr * SSecpConvertirAConjuntoExt ( SSecuenciaPtr *, PFUNINTPVPV fComparar, PFUNPBYTEPB fDuplicar )` | Copia cada dato distinto con `fDuplicar`.               |
+| `SSecuenciaPtr * SCnjpConvertirASecuenciaExt ( SConjuntoPtr *, PFUNPBYTEPB fDuplicar )`                | Copia cada dato con `fDuplicar`.                               |
+
+Delegan en las copias de lista que ya existen: a conjunto,
+`SCnjCrearDesdeLista` / `SCnjpCrearDesdeLista(Ext)` sobre la lista de la
+secuencia; a secuencia, `SLisOrdDuplicarLista` / `SLispOrdDuplicarLista(Ext)`
+sobre la del conjunto, y la secuencia se queda con la copia.
+
 ## Comportamiento
 
 - **Siempre copian.** El origen queda intacto y sigue siendo de quien lo pasó;
@@ -51,7 +67,12 @@ las conversiones que se vayan añadiendo.
   por defecto (1).
 - **Todo o nada.** Si falla la copia o la inserción de un dato, se destruye lo
   ya convertido y se devuelve `NULL`.
-- **Una lista vacía no se convierte**: `SVecCrear` y `SVecpCrear` no admiten
+- **Al conjunto, los repetidos entran una vez**, según `fComparar`, que es
+  obligatoria: sin ella no se puede crear el conjunto y se devuelve `NULL`. Con
+  `Ext`, la función de duplicado solo se llama para los datos que entran.
+- **Secuencias y conjuntos vacíos sí se convierten**, en otro vacío: las dos
+  estructuras admiten cero elementos, a diferencia de los vectores.
+- **Una lista vacía no se convierte** a vector: `SVecCrear` y `SVecpCrear` no admiten
   cero posiciones, así que se devuelve `NULL`, igual que con un error.
 - **Un vector con posiciones vacías tampoco**: una posición a `NULL` cuenta
   como dato que no se puede copiar, y se devuelve `NULL`.
@@ -63,9 +84,12 @@ las conversiones que se vayan añadiendo.
 
 - [SElemento](SElemento.md), [SContenido](SContenido.md), [SBloque](SBloque.md).
 - [Listas](Listas.md) y [Vectores](Vectores.md).
+- [Secuencias](Secuencias.md) y [Conjuntos](Conjuntos.md).
 
 ## Test
 
 `UtilesColeccionesTest.c` → `TestUtilesColecciones()`: nodos en los dos
 sentidos, listas y vectores ida y vuelta (también con `Ext`), y los casos de
 lista vacía, vector con huecos, 0 bytes, función nula y argumentos nulos.
+Secuencias y conjuntos ida y vuelta, normales, `Ptr` y `Ext`: repetidos,
+orden, copias, liberación, vacíos, sin comparador, 0 bytes y argumentos nulos.

@@ -25,6 +25,15 @@ typedef struct
 
 SSecuenciaEnterosLargos * SSecIntlCrear ();
 SSecuenciaEnterosLargos * SSecIntlCrearDesdeLista ( SListaEnterosLargos * p_lisValores );
+SSecuenciaEnterosLargos * SSecIntlCrearDesdeVector ( const long * p_lValores, int iNumValores );
+
+/* Secuencia con los valores que se le pasen, cuantos sean y sean cuales
+   sean (el 0 tambien). El numero lo cuenta el compilador, sin marca de fin.
+   Necesita al menos un valor: para una secuencia vacia, SSecIntlCrear. Cada
+   valor se evalua una vez: el segundo vector solo lo mide sizeof. */
+#define SSecIntlCrearConValores( ... ) \
+	SSecIntlCrearDesdeVector ( (const long []) { __VA_ARGS__ }, \
+		(int) ( sizeof ( (const long []) { __VA_ARGS__ } ) / sizeof ( long ) ) )
 
 
 void SSecIntlDestruir ( SSecuenciaEnterosLargos ** p_p_secObj );

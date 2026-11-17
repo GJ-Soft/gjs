@@ -62,6 +62,59 @@ SListaLiterales * SLisLitEncapsular ( SListaPtr * p_lisDatos )
 	return ( p_lisRes );
 }
 
+/* Copia de cada una de las iNumValores primeras cadenas de p_p_cValores, en
+   orden, con el cursor al inicio y la liberacion activada: la lista es duena
+   de sus copias. Con 0 cadenas da una lista vacia; NULL si el vector es nulo,
+   el numero es negativo, alguna cadena es nula o falla alguna copia o
+   insercion. */
+SListaLiterales * SLisLitCrearDesdeVector ( const char * const * p_p_cValores, int iNumValores )
+{
+	SListaLiterales *	p_lisRes;
+	int		iPos;
+	int		iError;
+
+	if ( ES_VALIDO ( p_p_cValores ) )
+	{
+		if ( iNumValores >= 0 )
+		{
+			p_lisRes = SLisLitCrear ();
+			if ( ES_VALIDO ( p_lisRes ) )
+			{
+				iError = 0;
+				iPos = 0;
+				while ( ( iError == 0 ) && ( iPos < iNumValores ) )
+				{
+					if ( SLisLitInsertarDupDetras ( p_lisRes, p_p_cValores [ iPos ] ) == 1 )
+					{
+						iPos = iPos + 1;
+					}
+					else
+					{
+						iError = 1;
+					}
+				}
+				if ( iError == 1 )
+				{
+					SLisLitDestruir ( &p_lisRes );
+				}
+				else
+				{
+					SLisLitInicio ( p_lisRes );
+				}
+			}
+		}
+		else
+		{
+			p_lisRes = NULL;
+		}
+	}
+	else
+	{
+		p_lisRes = NULL;
+	}
+	return ( p_lisRes );
+}
+
 void SLisLitDestruir ( SListaLiterales ** p_p_lisObj )
 {
 	SListaLiterales * p_lisObj;
