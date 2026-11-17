@@ -72,8 +72,6 @@
 
 #		include	<windows.h>
 #		undef RGB
-#		include	<windows.h>
-#		undef RGB
 #		include <stdio.h>
 #		include <stdarg.h>
 #		include <limits.h>
@@ -86,7 +84,6 @@
 
 
 #include <stdint.h>
-#include <stdarg.h>
 
 
 #if ( !defined ( NULL ) )
