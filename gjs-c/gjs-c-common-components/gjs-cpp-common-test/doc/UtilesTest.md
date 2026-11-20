@@ -82,7 +82,7 @@ Hay una segunda cabecera, `ControlTest.h`, que es **casi el mismo fichero**:
 declara las mismas 21 funciones, en el mismo orden, en el mismo espacio de
 nombres. Es el nombre viejo del módulo, heredado de `gjs-c-common-test`.
 
-Tres cosas la hacen digna de mención:
+Dos cosas la hacen digna de mención:
 
 1. **Comparte la guarda de inclusión con `UtilesTest.h`**:
 
@@ -94,9 +94,7 @@ Tres cosas la hacen digna de mención:
    idéntica en las dos. Quien incluyera las dos se quedaría **con la que llegase
    primero, sin aviso**. Es el mismo defecto que ya está anotado en el stack C
    entre `SLista.h` y `SListaHash.h`.
-2. **No compilaría si alguien la incluyera.** Declara `const wstring &` sin
-   cualificar, y ninguna de sus inclusiones trae `using namespace std;`.
-3. **Su `.cpp` no le corresponde.** `ControlTest.cpp` —52 líneas— define
+2. **Su `.cpp` no le corresponde.** `ControlTest.cpp` —52 líneas— define
    `IniTest()` y `FinTest()`, dos funciones que **no están declaradas en ninguna
    cabecera**, y ni siquiera incluye `ControlTest.h`.
 

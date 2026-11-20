@@ -41,6 +41,9 @@
 		<gjs.nar.compiler.language>c++</gjs.nar.compiler.language>
 		<gjs.nar.language.version>20</gjs.nar.language.version>
 		<gjs.nar.language.standard>gnu++${gjs.nar.language.version}</gjs.nar.language.standard>
+		<!-- Las opciones solo de C++ de gjs-c-nar-parent y de este pom, para el perfil
+		     verify-headers. -->
+		<gjs.verify.headers.language.options>-fabi-version=0 -Wno-write-strings -Wno-conversion-null -fpermissive</gjs.verify.headers.language.options>
 		
 		<!-- Dependency versions -->
 		<!-- Gjs versions -->

@@ -170,7 +170,9 @@ normal): **BUILD SUCCESS**.
   versión C++ de los verificadores —referencias `int &`, sobrecarga,
   `std::vector`— y su `#define` es el mismo
   `_ORG_GJS_C_CC_C_TEST_UTILESTEST_H`, de modo que las dos cabeceras se anulan
-  entre sí. Ver [ControlTest](doc/ControlTest.md).
+  entre sí. Está excluida del perfil `verify-headers`
+  (`gjs.verify.headers.excludes` en el `pom.xml`). Ver
+  [ControlTest](doc/ControlTest.md).
 - **`STestEjecutarTest` y `STestEjecutarTextExe` están declaradas y no
   implementadas.** Las equivalentes de `SBancoTests` sí lo están. Ver
   [STest](doc/STest.md).

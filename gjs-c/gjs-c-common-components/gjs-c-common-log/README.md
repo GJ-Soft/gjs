@@ -134,10 +134,13 @@ normal): **BUILD SUCCESS**, 2/2 suites en OK.
   este módulo.
 - **`SLogRutaFichero` tiene la condición invertida**: devuelve la ruta cuando el
   log **no** está iniciado, y `NULL` cuando sí. Justo al revés de lo útil.
-- **`Log.h` y `MDC.h` no son C válido.** Son el esqueleto de un envoltorio de
-  log4cxx en C++: usan `map<string,string>`, sobrecarga de funciones y
-  argumentos por defecto. Están comentadas fuera de la fachada, que es lo único
-  que permite que el componente compile. Ver [Pendientes](doc/Pendientes.md).
+- **`Log.h` no es C válido.** Es, con `MDC.h`, el esqueleto de un envoltorio de
+  log4cxx en C++: usa `map<string,string>`, sobrecarga de funciones y
+  argumentos por defecto. `MDC.h` sí es C, pero sus cuatro funciones no tienen
+  implementación. Las dos están comentadas fuera de la fachada, que es lo único
+  que permite que el componente compile, y `Log.h` está excluida del perfil
+  `verify-headers` (`gjs.verify.headers.excludes` en el `pom.xml`). Ver
+  [Pendientes](doc/Pendientes.md).
 - **`Log.h` redefine cinco constantes `LOG_NIVEL_*`** con valores distintos a los
   de `NivelesLog.h`.
 - **`SLog.h` usa `_SLOG_H` como guardián de inclusión**, sin el prefijo

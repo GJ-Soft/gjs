@@ -1,6 +1,9 @@
 #ifndef _ORG_GJS_C_CC_CPP_SERVIDOR_H
 #define _ORG_GJS_C_CC_CPP_SERVIDOR_H
 
+#include <string>
+#include <thread>
+
 
 
 #include <SocketServidor.h>

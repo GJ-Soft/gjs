@@ -54,6 +54,7 @@ punto falla.
 | `initialize` | `read-project-properties` (licencia) | `gjs-parent` |
 | `initialize` | `prepare-compile`: script Groovy que resuelve el contexto C/C++ y escribe `target/custom/compile-context.properties` | `gjs-c-common-parent` |
 | `process-sources` | `check`: cppcheck e informe HTML (perfil `cppcheck`) | `gjs-c-common-parent` |
+| `process-sources` | `verify-headers`: cada cabecera de `src/main/include` con `-fsyntax-only`, despues de `nar-include-path` (perfil `verify-headers`) | `gjs-c-nar-parent` |
 | `generate-resources` | `copy-resources` al directorio nar | `gjs-c-nar-parent` |
 | `generate-test-sources` | `prepare-tests`: `target/test-nar/internal/test.properties` | `gjs-c-common-parent` |
 | `generate-test-resources` | `copy-test-resources` al directorio de test nar | `gjs-c-nar-parent` |

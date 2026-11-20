@@ -31,8 +31,8 @@ namespace org
 			void VerificarValor ( const std::string & sInfoCaso, bool bResultado, bool bEsperado, bool & bRes );			
 			void VerificarValor ( const std::string & sInfoCaso, double dResultado, double dEsperado, bool & bRes );			
 			void VerificarValor ( const std::string & sInfoCaso, float fResultado, float fEsperado, bool & bRes );			
-			void VerificarValor ( const std::string & sInfoCaso, const wstring & sResultado, const wstring & sEsperado, bool & bRes );
-			void VerificarValor ( const std::string & sInfoCaso, const wstring & sResultado, const wchar_t * p_cEsperado, bool & bRes );			
+			void VerificarValor ( const std::string & sInfoCaso, const std::wstring & sResultado, const std::wstring & sEsperado, bool & bRes );
+			void VerificarValor ( const std::string & sInfoCaso, const std::wstring & sResultado, const wchar_t * p_cEsperado, bool & bRes );			
 			void VerificarValor ( const std::string & sInfoCaso, const wchar_t * p_cResultado, const wchar_t * p_cEsperado, bool & bRes );		
 
 			void VerificarValor ( const std::string & sInfoCaso, IComparable & objResultado, IComparable & objEsperado, bool & bRes );			

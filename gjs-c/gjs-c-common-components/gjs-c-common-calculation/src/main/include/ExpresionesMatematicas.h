@@ -13,6 +13,8 @@
 #ifndef _ORG_GJS_C_CC_EXPRESIONESMATEMATICAS_H
 #define _ORG_GJS_C_CC_EXPRESIONESMATEMATICAS_H
 
+#include <stdarg.h>
+
 
 
 

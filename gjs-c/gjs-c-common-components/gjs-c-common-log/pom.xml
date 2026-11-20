@@ -17,6 +17,10 @@
 
 	<properties>
 		<checkSeverity>style</checkSeverity>	
+		<!-- Perfil verify-headers: Log.h es C++ ( map<string,string>, sobrecargas,
+		     argumentos por defecto ), no C. Ver "Log.h no es C valido" en el
+		     README. Quitar de aqui cuando se resuelva. -->
+		<gjs.verify.headers.excludes>Log.h</gjs.verify.headers.excludes>
 	</properties>
 
     <dependencies>

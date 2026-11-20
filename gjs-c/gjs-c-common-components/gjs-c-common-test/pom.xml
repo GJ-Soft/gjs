@@ -17,6 +17,10 @@
 
 	<properties>
 		<checkSeverity>style</checkSeverity>	
+		<!-- Perfil verify-headers: ControlTest.h es C++ ( int &, std::vector ), no C.
+		     Ver "ControlTest.h no es C" en el README. Quitar de aqui cuando se
+		     resuelva. -->
+		<gjs.verify.headers.excludes>ControlTest.h</gjs.verify.headers.excludes>
 	</properties>
 
 

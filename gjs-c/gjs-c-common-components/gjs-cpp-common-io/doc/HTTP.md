@@ -123,8 +123,6 @@ el servidor no responda `200`.
   `ServidorHTTP.h` y la clase `ServidorHTTP`; sólo el nombre del fichero está
   mal. Compila igual —el `nar-maven-plugin` toma todos los `.cpp` del árbol—,
   pero rompe la correspondencia cabecera/fuente que sigue el resto del stack.
-- **`HTTPConstantes.h` usa `std::string` sin incluir `<string>`.** Sólo compila
-  porque llega detrás de otra cabecera que ya lo trajo.
 - **`ClienteHTTP.h` hace `using namespace org::gjs::cpp::common;` en el ámbito
   global.**
 - **El constructor de `ServidorHTTP` cambia el directorio actual del proceso**

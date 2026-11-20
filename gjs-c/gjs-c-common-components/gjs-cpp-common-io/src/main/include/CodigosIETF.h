@@ -1,6 +1,8 @@
 #ifndef _ORG_GJS_C_CC_CPP_CODIGOS_IETF_H
 #define _ORG_GJS_C_CC_CPP_CODIGOS_IETF_H
 
+#include <string>
+
 
 
 

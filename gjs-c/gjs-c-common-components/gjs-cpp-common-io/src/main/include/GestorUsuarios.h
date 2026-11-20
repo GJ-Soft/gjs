@@ -2,6 +2,7 @@
 #define _ORG_GJS_C_CC_CPP_GESTOR_USUARIOS_H
 
 #include <map>
+#include <string>
 
 
 

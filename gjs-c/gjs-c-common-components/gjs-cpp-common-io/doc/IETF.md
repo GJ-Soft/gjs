@@ -116,10 +116,6 @@ HTTP. `ClienteServidorIETFTest.cpp` levanta un servidor IETF genérico.
   es **`EHLO`**. Con esa constante, un servidor SMTP montado sobre este
   componente anunciaría y aceptaría un verbo que no existe. No hay servidor SMTP
   en el componente, así que hoy no rompe nada.
-- **`CodigosIETF.h` usa `std::string` sin incluir `<string>`.** Compila porque
-  siempre llega detrás de otra cabecera que ya lo trajo —la fachada la coloca
-  después de `SocketExcepcion.h`—, pero incluida en solitario no compila. Lo
-  mismo le pasa a `HTTPConstantes.h`.
 - **`ClienteIETF.h` hace `using namespace org::gjs::cpp::common;` en el ámbito
   global**, antes de abrir su propio espacio de nombres. Cualquiera que incluya
   la fachada se lo come, y con él `ClienteFTP.h` y `ClienteHTTP.h`, que repiten
