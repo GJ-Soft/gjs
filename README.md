@@ -98,7 +98,7 @@ Notes:
 |---------|--------|----------|
 | `cppcheck` | Runs cppcheck over `src/main/<language>` and writes a browsable HTML report. | `cppcheck` and `cppcheck-htmlreport` in `${cpp.checkDir}`, and a Windows Python in `cpp.check.python`. |
 | `cobertura` | Compiles with `--coverage` and runs gcovr after the tests; the report goes to `target/site/coverage/index.html`. Work in progress. | gcovr under the Cygwin Python 3.9 (`tomli` included). |
-| `verify-headers` | Before the compilation, checks with `-fsyntax-only` that every header in `src/main/include` compiles on its own. Errors fail the build; warnings are only shown. A module leaves out known offenders with `gjs.verify.headers.excludes` (Ant patterns). | Nothing beyond the build toolchain. |
+| `verify-headers` | Before the compilation, runs `nar-verify-headers`: every header in `src/main/include` is compiled on its own with `-fsyntax-only` and the very configuration of `nar-compile`. Errors fail the build; warnings are only shown. A module leaves out known offenders with `nar.verifyHeaders.excludes` (comma separated Ant patterns). | nar-maven-plugin 4.1.0 or later. |
 
 
 ### Optional profiles (Python)

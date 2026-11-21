@@ -283,6 +283,21 @@ void * SEntNomContenido ( SEntidadNom * p_entnObj )
 	return ( p_vRes );
 }
 
+SPtr * SEntNomContenidoPtr ( SEntidadNom * p_entnObj )
+{
+	SPtr * p_ptrRes;
+
+	if ( ES_VALIDO ( p_entnObj ) )
+	{
+		p_ptrRes = SEntContenidoPtr ( p_entnObj->p_entInfo );
+	}
+	else
+	{
+		p_ptrRes = NULL;
+	}
+	return ( p_ptrRes );
+}
+
 SEntidad * SEntNomBase ( SEntidadNom * p_entnObj )
 {
 	SEntidad * p_entRes;

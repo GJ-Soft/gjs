@@ -17,6 +17,8 @@
 #ifndef _ORG_GJS_C_CC_SIDADAP_H
 #define _ORG_GJS_C_CC_SIDADAP_H
 
+
+
 #include <SPtr.h>
 
 

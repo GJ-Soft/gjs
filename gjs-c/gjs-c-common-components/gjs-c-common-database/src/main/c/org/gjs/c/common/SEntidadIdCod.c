@@ -276,6 +276,22 @@ void * SEntIdCodContenido ( SEntidadIdCod * p_enticObj )
 	return ( p_vRes );
 }
 
+
+SPtr * SEntIdCodContenidoPtr ( SEntidadIdCod * p_enticObj )
+{
+	SPtr * p_ptrRes;
+
+	if ( ES_VALIDO ( p_enticObj ) )
+	{
+		p_ptrRes = SEntContenidoPtr ( p_enticObj->p_entInfo );
+	}
+	else
+	{
+		p_ptrRes = NULL;
+	}
+	return ( p_ptrRes );
+}
+
 SEntidad * SEntIdCodBase ( SEntidadIdCod * p_enticObj )
 {
 	SEntidad * p_entRes;

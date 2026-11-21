@@ -28,6 +28,46 @@ SVectorRealesDobles * SVecRealdCrear ( int iNumElementos )
 	return ( p_vecObj );
 }
 
+/* Vector de iNumValores posiciones con los primeros valores de p_dValores,
+   en orden. NULL si el vector es nulo, el numero no es positivo (un vector no
+   tiene 0 posiciones) o falla alguna asignacion. */
+SVectorRealesDobles * SVecRealdCrearDesdeVector ( const double * p_dValores, int iNumValores )
+{
+	SVectorRealesDobles *	p_vecRes;
+	int						iPos;
+	int						iError;
+
+	if ( ES_VALIDO ( p_dValores ) )
+	{
+		p_vecRes = SVecRealdCrear ( iNumValores );
+		if ( ES_VALIDO ( p_vecRes ) )
+		{
+			iError = 0;
+			iPos = 0;
+			while ( ( iError == 0 ) && ( iPos < iNumValores ) )
+			{
+				if ( SVecRealdAsignar ( p_vecRes, iPos, p_dValores [ iPos ] ) == 1 )
+				{
+					iPos = iPos + 1;
+				}
+				else
+				{
+					iError = 1;
+				}
+			}
+			if ( iError == 1 )
+			{
+				SVecRealdDestruir ( &p_vecRes );
+			}
+		}
+	}
+	else
+	{
+		p_vecRes = NULL;
+	}
+	return ( p_vecRes );
+}
+
 void SVecRealdDestruir ( SVectorRealesDobles ** p_p_vecObj )
 {
 	SVectorRealesDobles * p_vecObj;

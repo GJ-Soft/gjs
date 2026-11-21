@@ -113,18 +113,6 @@
 		     las concatena al directorio de trabajo. Todas las rutas que reciba se
 		     convierten antes con cygpath -u, con el ${cpp.cygpath} que hereda de
 		     gjs-c-common-parent (alli lo necesita doxygen por lo mismo). -->
-
-		<!-- Perfil verify-headers -->
-		<gjs.verify.headers.dir>${project.basedir}/src/main/include</gjs.verify.headers.dir>
-		<!-- Cabeceras que el perfil no comprueba, como patrones de Ant relativos a
-		     gjs.verify.headers.dir, separados por comas o espacios. Para las que se
-		     sabe que no se sostienen solas y estan pendientes de arreglo: cada
-		     modulo pone aqui las suyas, con el motivo al lado. -->
-		<gjs.verify.headers.excludes></gjs.verify.headers.excludes>
-		<!-- Opciones de <c>/<cpp> que solo valen para un lenguaje. En la compilacion
-		     normal van todas a los dos, pero aqui gcc avisaria en cada cabecera C de
-		     las que son de C++; por eso las de C++ las pone gjs-cpp-parent. -->
-		<gjs.verify.headers.language.options></gjs.verify.headers.language.options>
 	</properties>
 
 	<build>	
@@ -565,71 +553,30 @@
 			     cabecera que no se sostiene sola: la que usa un tipo o una macro que
 			     solo esta definida porque el .c que la incluye trae antes otra.
 
-			     Va en process-sources, despues de nar-include-path: las dos comparten
-			     fase y la del ciclo de vida corre antes que las declaradas en el pom
-			     (ver el perfil cobertura). De alli sale ${nar.include.path}, con las
-			     cabeceras propias y las de las dependencias ya desempaquetadas, en el
-			     mismo orden que usa nar-compile.
+			     Lo hace el goal nar-verify-headers del plugin, en process-sources, con
+			     la misma configuracion de <c>/<cpp> que nar-compile: opciones,
+			     defines, estandar, prefijo del toolchain y cabeceras de las
+			     dependencias, con lo que anadan los perfiles activos. Elige el bloque
+			     por los fuentes del modulo, asi que las .h del stack C++ salen como
+			     C++. Los errores rompen el build; los avisos solo se muestran.
 
-			     Las opciones se repiten a mano: el plugin no publica su linea de
-			     compilacion. Si se toca la lista de <options> de <c>/<cpp>, hay que
-			     tocar tambien esta.
-
-			     Una sola invocacion de gcc con todas las cabeceras ( parallel ): cada
-			     fichero es una unidad de compilacion aparte, y asi salen todos los
-			     errores de una vez en lugar de pararse en el primero. Los avisos se
-			     muestran pero no rompen el build; los errores si. Con verbose, apply
-			     deja en el log cuantas cabeceras ha pasado; sin el, una ejecucion
-			     limpia no se distingue de una que no ha mirado nada. -->
+			     Un modulo deja fuera las cabeceras que se sabe que no se sostienen
+			     solas con la propiedad nar.verifyHeaders.excludes ( patrones de Ant
+			     separados por comas ), con el motivo al lado. -->
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
+						<groupId>org.gjsoft.maven.plugins</groupId>
+						<artifactId>nar-maven-plugin</artifactId>
 						<executions>
 							<execution>
 								<id>verify-headers</id>
-								<phase>process-sources</phase>
+								<goals>
+									<goal>nar-verify-headers</goal>
+								</goals>
 								<configuration>
 									<skip>${skip.if.not.source}</skip>
-									<target name="verify-headers">
-										<fail unless="nar.include.path" message="Falta nar.include.path: verify-headers necesita que nar-include-path haya corrido antes ( no vale con nar.includePath.skip )"/>
-										<!-- Un -I por directorio, entrecomillado por si la ruta lleva
-										     espacios; arg line respeta las comillas al partir. -->
-										<path id="verify.headers.include.path" path="${nar.include.path}"/>
-										<pathconvert property="verify.headers.includes" refid="verify.headers.include.path" pathsep="&quot; -I&quot;"/>
-										<apply executable="${gjs.nar.toolchain.prefix}${gjs.nar.compiler}" dir="${gjs.verify.headers.dir}" parallel="true" relative="true" skipemptyfilesets="true" failonerror="true" verbose="true">
-											<arg value="-fsyntax-only"/>
-											<!-- c-header / c++-header: tratadas como cabecera, sin el aviso
-											     de '#pragma once in main file'. En el stack C++ las .h son
-											     C++, por eso se toma el lenguaje del compilador y no la
-											     extension. -->
-											<arg value="-x"/>
-											<arg value="${gjs.nar.compiler.language}-header"/>
-											<arg value="-std=${gjs.nar.language.standard}"/>
-											<arg value="-m${gjs.nar.architecture.bits}"/>
-											<arg value="${gjs.nar.threads.option}"/>
-											<arg value="-Wall"/>
-											<arg value="-Wno-switch"/>
-											<arg value="-Wno-sign-compare"/>
-											<arg value="-Wno-pointer-arith"/>
-											<arg value="-Wunused-result"/>
-											<arg line="${gjs.verify.headers.language.options}"/>
-											<arg value="${gjs.nar.locale.option}"/>
-											<arg line="${gjs.nar.platform.options}"/>
-											<arg line="${gjs.compiler.additionalOptions}"/>
-											<arg line="-I&quot;${verify.headers.includes}&quot;"/>
-											<srcfile/>
-											<fileset dir="${gjs.verify.headers.dir}" erroronmissingdir="false" excludes="${gjs.verify.headers.excludes}">
-												<include name="**/*.h"/>
-												<include name="**/*.hpp"/>
-											</fileset>
-										</apply>
-									</target>
 								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
 							</execution>
 						</executions>
 					</plugin>
@@ -666,6 +613,7 @@
 													<goal>nar-unpack</goal>
 													<goal>nar-gnu-configure</goal>
 													<goal>nar-include-path</goal>
+													<goal>nar-verify-headers</goal>
 													<goal>nar-system-generate</goal>
 													<goal>nar-resources</goal>
 													<goal>nar-gnu-resources</goal>

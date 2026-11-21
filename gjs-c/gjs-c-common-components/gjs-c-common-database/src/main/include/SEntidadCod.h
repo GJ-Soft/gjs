@@ -32,6 +32,7 @@ SCodigo * SEntCodCodigo ( SEntidadCod * p_entcObj );
 SCadena * SEntCodValorCodigo ( SEntidadCod * p_entcObj );
 const char * SEntCodValorCodigoLit ( SEntidadCod * p_entcObj );
 void * SEntCodContenido ( SEntidadCod * p_entcObj );
+SPtr * SEntCodContenidoPtr ( SEntidadCod * p_entcObj );
 
 int SEntCodEstablecerCodigo ( SEntidadCod * p_entcObj, SCodigo * p_codEntidad );
 int SEntCodEstablecerValorCodigo ( SEntidadCod * p_entcObj, SCadena * p_cadValor );

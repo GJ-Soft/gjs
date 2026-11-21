@@ -139,7 +139,7 @@ normal): **BUILD SUCCESS**, 2/2 suites en OK.
   argumentos por defecto. `MDC.h` sí es C, pero sus cuatro funciones no tienen
   implementación. Las dos están comentadas fuera de la fachada, que es lo único
   que permite que el componente compile, y `Log.h` está excluida del perfil
-  `verify-headers` (`gjs.verify.headers.excludes` en el `pom.xml`). Ver
+  `verify-headers` (`nar.verifyHeaders.excludes` en el `pom.xml`). Ver
   [Pendientes](doc/Pendientes.md).
 - **`Log.h` redefine cinco constantes `LOG_NIVEL_*`** con valores distintos a los
   de `NivelesLog.h`.

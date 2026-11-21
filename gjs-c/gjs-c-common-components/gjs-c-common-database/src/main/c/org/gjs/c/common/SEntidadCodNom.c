@@ -377,6 +377,22 @@ void * SEntCodNomContenido ( SEntidadCodNom * p_entcnObj )
 	return ( p_vRes );
 }
 
+
+SPtr * SEntCodNomContenidoPtr ( SEntidadCodNom * p_entcnObj )
+{
+	SPtr * p_ptrRes;
+
+	if ( ES_VALIDO ( p_entcnObj ) )
+	{
+		p_ptrRes = SEntCodContenidoPtr ( p_entcnObj->p_entcInfo );
+	}
+	else
+	{
+		p_ptrRes = NULL;
+	}
+	return ( p_ptrRes );
+}
+
 int SEntCodNomEstablecerContenido ( SEntidadCodNom * p_entcnObj, void * p_vContenido )
 {
 	int iRes;

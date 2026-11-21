@@ -36,6 +36,8 @@ const char * SEntCodNomValorCodigoLit ( SEntidadCodNom * p_entcnObj );
 SNombre * SEntCodNomNombre ( SEntidadCodNom * p_entcnObj );
 SCadena * SEntCodNomValorNombre ( SEntidadCodNom * p_entcnObj );
 const char * SEntCodNomValorNombreLit ( SEntidadCodNom * p_entcnObj );
+SPtr * SEntCodNomContenidoPtr ( SEntidadCodNom * p_entcnObj );
+
 void * SEntCodNomContenido ( SEntidadCodNom * p_entcnObj );
 /* Devuelve el SEntidadCod interno, NO una copia: es para meter la entidad en
    colecciones que trabajen con la clase base. No destruirlo, y no usarlo

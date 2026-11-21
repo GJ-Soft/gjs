@@ -49,11 +49,11 @@ Volver al [README](../README.md).
 
 | Módulo                   | Prefijo     | Se apoya en  | Funciones | Fachada | Test | Documento                       |
 | ------------------------ | ----------- | ------------ | --------- | ------- | ---- | ------------------------------- |
-| `SListaRealesDobles`     | `SLisReald` | `SLista`     | 28        | ✔       | ✔    | [RealesDobles](RealesDobles.md) |
-| `SVectorRealesDobles`    | `SVecReald` | `SVector`    | 8         | ✔       | ✔    | [RealesDobles](RealesDobles.md) |
-| `SSecuenciaRealesDobles` | `SSecReald` | `SSecuencia` | 10        | ✔       | ✔    | [RealesDobles](RealesDobles.md) |
+| `SListaRealesDobles`     | `SLisReald` | `SLista`     | 57        | ✔       | ✔    | [RealesDobles](RealesDobles.md) |
+| `SVectorRealesDobles`    | `SVecReald` | `SVector`    | 9         | ✔       | ✔    | [RealesDobles](RealesDobles.md) |
+| `SSecuenciaRealesDobles` | `SSecReald` | `SSecuencia` | 42        | ✔       | ✔    | [RealesDobles](RealesDobles.md) |
 | `STablaRealesDobles`     | `STabReald` | `STabla`     | 10        | ✔       | ✔    | [RealesDobles](RealesDobles.md) |
-| `SPilaRealesDobles`      | `SPilReald` | `SPila`      | 10        | ✔       | ✔    | [RealesDobles](RealesDobles.md) |
+| `SPilaRealesDobles`      | `SPilReald` | `SPila`      | 12        | ✔       | ✔    | [RealesDobles](RealesDobles.md) |
 
 ### Análisis real
 

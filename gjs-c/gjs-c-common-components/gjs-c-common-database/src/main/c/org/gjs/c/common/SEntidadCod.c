@@ -311,6 +311,21 @@ void * SEntCodContenido ( SEntidadCod * p_entcObj )
 	return ( p_vRes );
 }
 
+SPtr * SEntCodContenidoPtr ( SEntidadCod * p_entcObj )
+{
+	SPtr * p_ptrRes;
+
+	if ( ES_VALIDO ( p_entcObj ) )
+	{
+		p_ptrRes = p_entcObj->p_ptrContenido;
+	}
+	else
+	{
+		p_ptrRes = NULL;
+	}
+	return ( p_ptrRes );
+}
+
 int SEntCodEstablecerContenido ( SEntidadCod * p_entcObj, void * p_vContenido )
 {
 	int iRes;

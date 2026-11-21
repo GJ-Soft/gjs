@@ -32,11 +32,11 @@ Volver al [README](../README.md).
 
 | Módulo           | Prefijo      | Struct           | Funciones | Test | Documento                 |
 | ---------------- | ------------ | ---------------- | --------- | ---- | ------------------------- |
-| `SEntidad`       | `SEnt`       | `SEntidad`       | 40        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadNom`    | `SEntNom`    | `SEntidadNom`    | 55        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadCod`    | `SEntCod`    | `SEntidadCod`    | 46        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadCodNom` | `SEntCodNom` | `SEntidadCodNom` | 59        | ✔    | [Entidades](Entidades.md) |
-| `SEntidadIdCod`  | `SEntIdCod`  | `SEntidadIdCod`  | 55        | ✔    | [Entidades](Entidades.md) |
+| `SEntidad`       | `SEnt`       | `SEntidad`       | 41        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadNom`    | `SEntNom`    | `SEntidadNom`    | 56        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadCod`    | `SEntCod`    | `SEntidadCod`    | 47        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadCodNom` | `SEntCodNom` | `SEntidadCodNom` | 60        | ✔    | [Entidades](Entidades.md) |
+| `SEntidadIdCod`  | `SEntIdCod`  | `SEntidadIdCod`  | 56        | ✔    | [Entidades](Entidades.md) |
 
 ### Colecciones
 

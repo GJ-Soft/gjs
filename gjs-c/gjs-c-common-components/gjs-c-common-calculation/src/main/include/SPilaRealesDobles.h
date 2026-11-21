@@ -9,6 +9,7 @@
 
 
 #include <SPila.h>
+#include <SListaRealesDobles.h>
 
 
 
@@ -36,6 +37,8 @@ double SPilRealdPrimero ( SPilaRealesDobles * p_pilObj );
 double SPilRealdDesapilar ( SPilaRealesDobles * p_pilObj );
 
 int SPilRealdApilar ( SPilaRealesDobles * p_pilObj, double dDato );
+int SPilRealdApilarTodos ( SPilaRealesDobles * p_pilObj, SListaRealesDobles * p_lisValores );
+int SPilRealdApilarTodosDup ( SPilaRealesDobles * p_pilObj, SListaRealesDobles * p_lisValores );
 int SPilRealdEliminarPrimero ( SPilaRealesDobles * p_pilObj );
 int SPilRealdVaciar ( SPilaRealesDobles * p_pilObj );
 

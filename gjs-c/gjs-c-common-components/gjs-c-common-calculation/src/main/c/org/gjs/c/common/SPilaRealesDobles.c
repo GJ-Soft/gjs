@@ -162,6 +162,52 @@ int SPilRealdApilar ( SPilaRealesDobles * p_pilObj, double dDato )
 	return ( iRes );
 }
 
+/* Apilan los valores de la lista con las de SPila: ver alli el orden, y que
+   ApilarTodos los mueve y ApilarTodosDup los copia. */
+int SPilRealdApilarTodos ( SPilaRealesDobles * p_pilObj, SListaRealesDobles * p_lisValores )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_pilObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SPilApilarTodos ( p_pilObj->p_pilDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
+int SPilRealdApilarTodosDup ( SPilaRealesDobles * p_pilObj, SListaRealesDobles * p_lisValores )
+{
+	int iRes;
+
+	if ( ES_VALIDO ( p_pilObj ) )
+	{
+		if ( ES_VALIDO ( p_lisValores ) )
+		{
+			iRes = SPilApilarTodosDup ( p_pilObj->p_pilDatos, p_lisValores->p_lisDatos );
+		}
+		else
+		{
+			iRes = 0;
+		}
+	}
+	else
+	{
+		iRes = 0;
+	}
+	return ( iRes );
+}
+
 int SPilRealdEliminarPrimero ( SPilaRealesDobles * p_pilObj )
 {
 	int iRes;

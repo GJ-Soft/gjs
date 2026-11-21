@@ -190,9 +190,15 @@ Es la parte que más conviene tener clara:
 
 ### Acceso
 
-`SEntId` (el `SId` interno), `SEntValorId` (el número), `SEntContenido`,
-`SEntEsValida`. Las derivadas añaden el suyo (`SEntNomNombre`,
-`SEntNomValorNombre`, `SEntNomValorNombreLit`…) y un accesor a la base.
+`SEntId` (el `SId` interno), `SEntValorId` (el número), `SEntContenido` (el
+objeto contenido), `SEntContenidoPtr` (el `SPtr` que lo envuelve), `SEntEsValida`.
+Las derivadas añaden el suyo (`SEntNomNombre`, `SEntNomValorNombre`,
+`SEntNomValorNombreLit`…), su `…ContenidoPtr` y un accesor a la base.
+
+> **`SEntContenidoPtr` y los `…ContenidoPtr` de las derivadas devuelven el `SPtr`
+> interno, no una copia**: sigue siendo de la entidad. No hay que destruirlo, ni
+> usarlo después de destruir la entidad. Las derivadas que envuelven otra entidad
+> (`SEntNom`, `SEntIdCod`, `SEntCodNom`) devuelven el de la entidad interna.
 
 > **`SEntNomBase`, `SEntIdCodBase` y `SEntCodNomBase` devuelven el objeto
 > interno, no una copia.** Están para meter la entidad en colecciones que

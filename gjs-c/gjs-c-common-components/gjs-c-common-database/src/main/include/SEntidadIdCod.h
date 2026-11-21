@@ -34,6 +34,8 @@ SCodigo * SEntIdCodCodigo ( SEntidadIdCod * p_enticObj );
 SCadena * SEntIdCodValorCodigo ( SEntidadIdCod * p_enticObj );
 const char * SEntIdCodValorCodigoLit ( SEntidadIdCod * p_enticObj );
 void * SEntIdCodContenido ( SEntidadIdCod * p_enticObj );
+SPtr * SEntIdCodContenidoPtr ( SEntidadIdCod * p_enticObj );
+
 /* Devuelve el SEntidad interno, NO una copia: es para meter la entidad en
    colecciones que trabajen con la clase base. No destruirlo, y no usarlo
    despues de destruir el SEntidadIdCod que lo contiene. De momento sin const, a

@@ -31,6 +31,7 @@ int SEntTieneContenido ( SEntidad * p_entObj );
 SId * SEntId ( SEntidad * p_entObj );
 unsigned long SEntValorId ( SEntidad * p_entObj );
 void * SEntContenido ( SEntidad * p_entObj );
+SPtr * SEntContenidoPtr ( SEntidad * p_entObj );
 
 int SEntEstablecerId ( SEntidad * p_entObj, SId * p_idEntidad );
 int SEntEstablecerValorId ( SEntidad * p_entObj, unsigned long ulId );

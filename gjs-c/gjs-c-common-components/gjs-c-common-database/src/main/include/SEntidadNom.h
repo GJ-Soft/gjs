@@ -36,6 +36,8 @@ SNombre * SEntNomNombre ( SEntidadNom * p_entnObj );
 SCadena * SEntNomValorNombre ( SEntidadNom * p_entnObj );
 const char * SEntNomValorNombreLit ( SEntidadNom * p_entnObj );
 void * SEntNomContenido ( SEntidadNom * p_entnObj );
+SPtr * SEntNomContenidoPtr ( SEntidadNom * p_entnObj );
+
 /* Devuelve el SEntidad interno, NO una copia: es para meter la entidad en
    colecciones que trabajen con la clase base. No destruirlo, y no usarlo
    despues de destruir el SEntidadNom que lo contiene. De momento sin const, a
