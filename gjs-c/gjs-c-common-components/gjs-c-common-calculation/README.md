@@ -1,10 +1,11 @@
 # gjs-c-common-calculation
 
 Librería de **cálculo** en C del stack GJS: operaciones matemáticas, ángulos en
-tres sistemas de unidades, intervalos, formas lineales, funciones reales y
-contenedores especializados en `double`.
+tres sistemas de unidades, intervalos, formas lineales, funciones reales,
+vectores, puntos y matrices de N dimensiones, y contenedores especializados en
+`double`.
 
-14 módulos en 5.428 líneas. Es el módulo más pequeño de los grandes del stack, y
+18 módulos en 10.501 líneas. Es el módulo más pequeño de los grandes del stack, y
 también el que más piezas incompletas tiene: dos de sus cabeceras declaran una
 API que **no está implementada**.
 
@@ -83,13 +84,15 @@ Los tres modos habituales
 tener instalados antes `gjs-c-common-base` y `gjs-c-common-base-types`.
 
 **Verificado** en el modo normal (Cygwin POSIX, `mvn clean install`):
-`BUILD SUCCESS`, 14 suites, 0 KO.
+`BUILD SUCCESS` con las 14 suites anteriores a las de vectores y matrices.
+Esas cuatro pasan montando el `Test.exe` a mano con las opciones del pom; falta
+pasarlas por `mvn`.
 
 ---
 
 ## Tests
 
-**14 suites** registradas en `src/test/c/.../Test.c`.
+**18 suites** registradas en `src/test/c/.../Test.c`.
 
 Sin test: las siete cabeceras sin fuente, incluidas
 [SDominioReal y SDominioSimpleReal](doc/Dominios.md), que sí declaran API.

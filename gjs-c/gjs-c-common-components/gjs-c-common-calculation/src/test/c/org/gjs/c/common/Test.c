@@ -2,7 +2,7 @@
 
 
 
-#define NUM_TESTS        14
+#define NUM_TESTS        18
 
 extern int TestAngulos ();
 extern int TestRadianes ();
@@ -18,6 +18,10 @@ extern int TestSVectorRealesDobles ();
 extern int TestSPilaRealesDobles ();
 extern int TestSSecuenciaRealesDobles ();
 extern int TestSTablaRealesDobles ();
+extern int TestSVectorND ();
+extern int TestSPuntoND ();
+extern int TestSMatrizNxM ();
+extern int TestSMatrizCuadradaND ();
 
 
 char ** testArrayInit ()
@@ -37,6 +41,10 @@ char ** testArrayInit ()
     p_p_cTests[ 11 ] = CadDuplicar ( "SPilaRealesDoblesTest" );
     p_p_cTests[ 12 ] = CadDuplicar ( "SSecuenciaRealesDoblesTest" );
     p_p_cTests[ 13 ] = CadDuplicar ( "STablaRealesDoblesTest" );
+    p_p_cTests[ 14 ] = CadDuplicar ( "SVectorNDTest" );
+    p_p_cTests[ 15 ] = CadDuplicar ( "SPuntoNDTest" );
+    p_p_cTests[ 16 ] = CadDuplicar ( "SMatrizNxMTest" );
+    p_p_cTests[ 17 ] = CadDuplicar ( "SMatrizCuadradaNDTest" );
     return p_p_cTests;
 }
 
@@ -57,6 +65,10 @@ PFUNINTV * functionArrayInit ()
     p_fTests[ 11 ] = TestSPilaRealesDobles;
     p_fTests[ 12 ] = TestSSecuenciaRealesDobles;
     p_fTests[ 13 ] = TestSTablaRealesDobles;
+    p_fTests[ 14 ] = TestSVectorND;
+    p_fTests[ 15 ] = TestSPuntoND;
+    p_fTests[ 16 ] = TestSMatrizNxM;
+    p_fTests[ 17 ] = TestSMatrizCuadradaND;
     return p_fTests;
 }
 

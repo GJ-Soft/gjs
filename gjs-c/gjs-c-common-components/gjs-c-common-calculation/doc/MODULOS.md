@@ -1,6 +1,6 @@
 # Módulos de gjs-c-common-calculation
 
-Índice y orquestación: **14 fuentes** y **21 cabeceras**.
+Índice y orquestación: **18 fuentes** y **25 cabeceras**.
 
 Volver al [README](../README.md).
 
@@ -15,6 +15,7 @@ Volver al [README](../README.md).
   ├───────────────────────────────────────────────────────────────────────┤
   │ 2. Objetos de cálculo                                                 │
   │    SIntervalo · SFormaLineal · contenedores de reales dobles          │
+  │    vectores, puntos y matrices de N dimensiones                       │
   ├───────────────────────────────────────────────────────────────────────┤
   │ 1. Operaciones y unidades                                             │
   │    CalculoOperaciones · Angulos / Radianes / Gradianes · Epsilon      │
@@ -44,6 +45,15 @@ Volver al [README](../README.md).
 | -------------- | --------- | -------------- | --------- | ------- | ---- | ------------------------------- |
 | `SIntervalo`   | `SIntv`   | `SIntervalo`   | 26        | ✔       | ✔    | [SIntervalo](SIntervalo.md)     |
 | `SFormaLineal` | `SFrmLin` | `SFormaLineal` | 19        | ✔       | ✔    | [SFormaLineal](SFormaLineal.md) |
+
+### Vectores y matrices
+
+| Módulo              | Prefijo   | Struct              | Funciones | Fachada | Test | Documento                               |
+| ------------------- | --------- | ------------------- | --------- | ------- | ---- | --------------------------------------- |
+| `SVectorND`         | `SVecND`  | `SVectorND`         | 29        | ✔       | ✔    | [VectoresMatrices](VectoresMatrices.md) |
+| `SPuntoND`          | `SPntND`  | `SPuntoND`          | 20        | ✔       | ✔    | [VectoresMatrices](VectoresMatrices.md) |
+| `SMatrizNxM`        | `SMatNxM` | `SMatrizNxM`        | 39        | ✔       | ✔    | [VectoresMatrices](VectoresMatrices.md) |
+| `SMatrizCuadradaND` | `SMatND`  | `SMatrizCuadradaND` | 35        | ✔       | ✔    | [VectoresMatrices](VectoresMatrices.md) |
 
 ### Contenedores de reales dobles
 
@@ -75,7 +85,8 @@ Los dos últimos **no tienen fuente**: ver [Dominios](Dominios.md).
 Cabecera fachada. Incluye `ConstantesMatematicas.h`, `Epsilon.h`,
 `CalculoOperaciones.h`, `ExpresionesMatematicas.h`,
 `FuncionesMatematicasBasicas.h`, `Radianes.h`, `Angulos.h`, `Gradianes.h`,
-`SIntervalo.h`, `SFormaLineal.h` y los cinco contenedores de reales dobles.
+`SIntervalo.h`, `SFormaLineal.h`, los cuatro de vectores y matrices y los
+cinco contenedores de reales dobles.
 
 Deja fuera `CalculoDefs.h`, `SFuncionReal.h` y las tres cabeceras de dominios.
 

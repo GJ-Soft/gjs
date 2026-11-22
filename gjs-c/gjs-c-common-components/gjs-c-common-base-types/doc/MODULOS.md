@@ -1,6 +1,6 @@
 # Módulos de gjs-c-common-base-types
 
-Índice y orquestación de los módulos de la librería: **81 fuentes** y **83
+Índice y orquestación de los módulos de la librería: **82 fuentes** y **84
 cabeceras**. Como la mayoría son variantes del mismo contenedor sobre distinto
 tipo de elemento, la documentación se agrupa **por familias**: cada documento
 describe el contenedor base y tabula en qué se diferencian sus especializaciones.
@@ -113,6 +113,7 @@ Volver al [README](../README.md).
 | `SConjuntoLiterales` | `SCnjLit` | `SConjuntoLiterales` | 33        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoReferencias` | `SCnjRef` | `SConjuntoReferencias` | 15        | ✔    | [Conjuntos](Conjuntos.md) |
 | `SConjuntoId`        | `SCnjId`  | `SConjuntoId`        | 18        | ✔    | [Conjuntos](Conjuntos.md) |
+| `SConjuntoEnteros`   | `SCnjInt` | `SConjuntoEnteros`   | 38        | ✔    | [Conjuntos](Conjuntos.md) |
 
 ### Nodos
 
@@ -185,7 +186,7 @@ Volver al [README](../README.md).
 
 ### `TiposBasicos.h`
 
-Cabecera fachada. Incluye las 77 cabeceras de módulo **excepto `SArbolB.h` y
+Cabecera fachada. Incluye las 78 cabeceras de módulo **excepto `SArbolB.h` y
 `SListaVec.h`**, que hay que incluir a mano.
 
 > La línea 100 incluye `<SSecuenciaEnteroslargosSinSigno.h>` con `l` minúscula,

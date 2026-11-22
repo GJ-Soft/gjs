@@ -103,6 +103,7 @@
 #include <SPilaLiterales.h>
 #include <SPilaEnteros.h>
 #include <SConjuntoLiterales.h>
+#include <SConjuntoEnteros.h>
 #include <SArbolEnteros.h>
 #include <SArbolBinEnteros.h>
 #include <SArbolLiterales.h>

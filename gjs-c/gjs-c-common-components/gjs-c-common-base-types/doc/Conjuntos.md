@@ -2,9 +2,9 @@
 
 | Dato          | Valor                                                                             |
 | ------------- | --------------------------------------------------------------------------------- |
-| Módulos       | 5                                                                                 |
-| Cabeceras     | `SConjunto.h`, `SConjuntoPtr.h`, `SConjuntoLiterales.h`, `SConjuntoReferencias.h`, `SConjuntoId.h` |
-| Prefijos      | `SCnj`, `SCnjp`, `SCnjLit`, `SCnjRef`, `SCnjId`                                           |
+| Módulos       | 6                                                                                 |
+| Cabeceras     | `SConjunto.h`, `SConjuntoPtr.h`, `SConjuntoLiterales.h`, `SConjuntoReferencias.h`, `SConjuntoId.h`, `SConjuntoEnteros.h` |
+| Prefijos      | `SCnj`, `SCnjp`, `SCnjLit`, `SCnjRef`, `SCnjId`, `SCnjInt`                                        |
 | Incluidos por | `TiposBasicos.h`                                                                  |
 | Tests         | Uno por módulo                                                                    |
 
@@ -131,6 +131,7 @@ conjunto**.
 | `SConjuntoPtr`       | `SListaOrdenadaPtr`         | `byte *`                  | El que se pase    | Configurable   |
 | `SConjuntoLiterales` | `SConjuntoPtr`              | `char *`                  | Fijo, de cadenas  | Configurable   |
 | `SConjuntoReferencias` | `SConjuntoPtr`            | [SReferencia](ParejasReferencias.md) | Fijo, por alias | El conjunto |
+| `SConjuntoEnteros`   | `SConjunto`                 | `int`, por valor          | Fijo, de enteros  | El conjunto    |
 
 ### `SConjuntoPtr`
 
@@ -203,6 +204,29 @@ molde `(const char * const *)`, como en [SListaLiterales](Listas.md).
 
 Con un nulo devuelven 0 o `NULL` sin tocar nada. Si no se puede crear el
 conjunto de una `Extraer…`, las cadenas vuelven al de origen.
+
+### `SConjuntoEnteros`
+
+Conjunto de `int` sin repetir, ordenado de menor a mayor, sobre un `SConjunto`
+con un comparador de enteros propio. Como `SConjuntoLiterales`, el constructor
+no recibe comparador y todo lo que entra se copia: guarda los valores, no
+punteros.
+
+| Función ( `SCnjInt` )                                        | Qué hace                                                       |
+| ------------------------------------------------------------ | -------------------------------------------------------------- |
+| `Crear`, `CrearDesdeLista`, `CrearDesdeVector`, `CrearConValores` (macro) | Los repetidos entran una vez. Con 0 valores, vacío.  |
+| `Insertar`                                                   | 0 si el valor ya estaba.                                       |
+| `Elemento`, `Existe`, `Buscar`                               | Por posición (0 si no hay) y por valor (-1 si no está).        |
+| `Modificar ( …, iElem, iDato )`                              | El valor cambia **de sitio**; 0 sin tocar nada si `iDato` ya está. |
+| `Eliminar ( …, iElem )`, `Vaciar`                            | Por posición, como `SCnjEliminarElem`.                         |
+| `Min`, `Max`, `ObtenerParametros`                            | Primero y último; vacío, `INT_MAX` e `INT_MIN`.                |
+| `DefinidaPositiva`, `SemidefinidaPositiva`                   | Todos > 0 y todos >= 0; el vacío cumple las dos.               |
+| `Conjunto`, `Lista`, `ListaInt`                              | El `SConjunto` y su `SListaOrdenada` internos; una `SListaEnteros` nueva con copias. |
+| `ExistenTodos`, `ExisteAlguno`, `EliminarConjunto`, `ExtraerConjunto`, `Union`, `Interseccion`, `Diferencia` (y `…Lista`, con una `SListaEnteros`) | Como las de `SConjunto`. |
+| `Concatenar` / `ConcatenarLista`                             | Inserta copias de los que falten, como `SCnjInsertarConjunto`. |
+
+Además `Destruir`, `EsValido`, `EstaVacio` y `NumElementos`. Ordena por el valor
+del entero, no por sus bytes: `-3` va delante de `0`.
 
 ### `SConjuntoReferencias`
 
@@ -279,7 +303,7 @@ Además `Crear`, `Destruir`, `EsValido`, `EstaVacio` y `NumElementos`.
 ## Tests
 
 `SConjuntoTest.c`, `SConjuntoPtrTest.c`, `SConjuntoLiteralesTest.c`,
-`SConjuntoReferenciasTest.c`, `SConjuntoIdTest.c`.
+`SConjuntoReferenciasTest.c`, `SConjuntoIdTest.c`, `SConjuntoEnterosTest.c`.
 
 ## Observaciones
 
